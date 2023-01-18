@@ -540,6 +540,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
               ? 'profile'
               : 'debug',
       'has_mobile_services': mobileServices.isServiceAvailable,
+      'is_television': device.isTelevision,
       'locales': WidgetsBinding.instance.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });

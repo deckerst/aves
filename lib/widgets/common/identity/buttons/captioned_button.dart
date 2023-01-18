@@ -8,7 +8,7 @@ class CaptionedButton extends StatefulWidget {
   final Animation<double> scale;
   final Widget captionText;
   final CaptionedIconButtonBuilder iconButtonBuilder;
-  final bool showCaption;
+  final bool autofocus, showCaption;
   final VoidCallback? onPressed;
 
   static const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 8);
@@ -21,6 +21,7 @@ class CaptionedButton extends StatefulWidget {
     CaptionedIconButtonBuilder? iconButtonBuilder,
     String? caption,
     Widget? captionText,
+    this.autofocus = false,
     this.showCaption = true,
     required this.onPressed,
   })  : assert(icon != null || iconButtonBuilder != null),
@@ -57,6 +58,7 @@ class CaptionedButton extends StatefulWidget {
 class _CaptionedButtonState extends State<CaptionedButton> {
   final FocusNode _focusNode = FocusNode();
   final ValueNotifier<bool> _focusedNotifier = ValueNotifier(false);
+  bool _didAutofocus = false;
 
   @override
   void initState() {
@@ -66,10 +68,19 @@ class _CaptionedButtonState extends State<CaptionedButton> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _handleAutofocus();
+  }
+
+  @override
   void didUpdateWidget(covariant CaptionedButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.onPressed != widget.onPressed) {
       _updateTraversal();
+    }
+    if (oldWidget.autofocus != widget.autofocus) {
+      _handleAutofocus();
     }
   }
 
@@ -118,6 +129,13 @@ class _CaptionedButtonState extends State<CaptionedButton> {
         ],
       ),
     );
+  }
+
+  void _handleAutofocus() {
+    if (!_didAutofocus && widget.autofocus) {
+      FocusScope.of(context).autofocus(_focusNode);
+      _didAutofocus = true;
+    }
   }
 
   void _onFocusChanged() => _focusedNotifier.value = _focusNode.hasFocus;

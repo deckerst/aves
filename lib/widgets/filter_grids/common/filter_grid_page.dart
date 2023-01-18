@@ -115,15 +115,23 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     );
 
     if (useTvLayout) {
+      final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
       return Scaffold(
-        body: Row(
-          children: [
-            TvRail(
-              controller: context.read<TvRailController>(),
-            ),
-            Expanded(child: body),
-          ],
-        ),
+        body: canNavigate
+            ? Row(
+                children: [
+                  TvRail(
+                    controller: context.read<TvRailController>(),
+                  ),
+                  Expanded(child: body),
+                ],
+              )
+            : DirectionalSafeArea(
+                top: false,
+                end: false,
+                bottom: false,
+                child: body,
+              ),
         resizeToAvoidBottomInset: false,
         extendBody: true,
       );

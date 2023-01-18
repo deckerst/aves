@@ -6,11 +6,13 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 class MarkdownContainer extends StatelessWidget {
   final String data;
   final TextDirection? textDirection;
+  final ScrollController? scrollController;
 
   const MarkdownContainer({
     super.key,
     required this.data,
     this.textDirection,
+    this.scrollController,
   });
 
   static const double maxWidth = 460;
@@ -44,6 +46,7 @@ class MarkdownContainer extends StatelessWidget {
                 data: data,
                 selectable: true,
                 onTapLink: (text, href, title) => AvesApp.launchUrl(href),
+                controller: scrollController,
                 shrinkWrap: true,
               ),
             ),

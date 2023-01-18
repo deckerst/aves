@@ -277,11 +277,12 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
                 MapAction.zoomIn,
                 MapAction.zoomOut,
               ]
-                  .map((action) => Padding(
+                  .mapIndexed((i, action) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: CaptionedButton(
                           icon: action.getIcon(),
                           caption: action.getText(context),
+                          autofocus: i == 0,
                           onPressed: () => MapActionDelegate(_mapController).onActionSelected(context, action),
                         ),
                       ))
