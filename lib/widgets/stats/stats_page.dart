@@ -15,6 +15,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -96,6 +97,7 @@ class _StatsPageState extends State<StatsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     return ValueListenableBuilder<bool>(
       valueListenable: _isPageAnimatingNotifier,
       builder: (context, animating, child) {
@@ -196,6 +198,7 @@ class _StatsPageState extends State<StatsPage> {
                       ),
                     ),
                     children: [
+                      const TvEdgeFocus(),
                       mimeDonuts,
                       Histogram(
                         entries: entries,
@@ -218,7 +221,7 @@ class _StatsPageState extends State<StatsPage> {
 
         return Scaffold(
           appBar: AppBar(
-            automaticallyImplyLeading: !settings.useTvLayout,
+            automaticallyImplyLeading: !useTvLayout,
             title: Text(l10n.statsPageTitle),
           ),
           body: GestureAreaProtectorStack(
@@ -274,23 +277,15 @@ class _StatsPageState extends State<StatsPage> {
       style: Constants.knownTitleTextStyle,
     );
     if (settings.useTvLayout) {
-      final primaryColor = Theme.of(context).colorScheme.primary;
       header = Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         alignment: AlignmentDirectional.centerStart,
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkResponse(
-            onTap: onHeaderPressed,
-            containedInkWell: true,
-            highlightShape: BoxShape.rectangle,
-            borderRadius: const BorderRadius.all(Radius.circular(123)),
-            hoverColor: primaryColor.withOpacity(0.04),
-            splashColor: primaryColor.withOpacity(0.12),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: header,
-            ),
+        child: InkWell(
+          onTap: onHeaderPressed,
+          borderRadius: const BorderRadius.all(Radius.circular(123)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: header,
           ),
         ),
       );

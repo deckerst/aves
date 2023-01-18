@@ -56,9 +56,8 @@ class _XmpDirTileState extends State<XmpDirTile> {
       return nsPrefix;
     }).entries.map((kv) {
       final nsPrefix = kv.key;
-      final nsUri = _schemaRegistryPrefixes[nsPrefix] ?? '';
       final rawProps = Map.fromEntries(kv.value);
-      return XmpNamespace.create(nsUri, nsPrefix, rawProps);
+      return XmpNamespace.create(_schemaRegistryPrefixes, nsPrefix, rawProps);
     }).toList()
       ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
     return AvesExpansionTile(

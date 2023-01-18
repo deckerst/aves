@@ -3,30 +3,27 @@ import 'dart:async';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/media_session_service.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
-import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
-import 'package:aves/widgets/viewer/visual/video.dart';
+import 'package:aves/widgets/viewer/visual/video/cover.dart';
+import 'package:aves/widgets/viewer/visual/video/subtitle/subtitle.dart';
+import 'package:aves/widgets/viewer/visual/video/swipe_action.dart';
+import 'package:aves/widgets/viewer/visual/video/video_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
-import 'package:collection/collection.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,26 +52,14 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   late ValueNotifier<ViewState> _viewStateNotifier;
   late AvesMagnifierController _magnifierController;
   final List<StreamSubscription> _subscriptions = [];
-  ImageStream? _videoCoverStream;
-  late ImageStreamListener _videoCoverStreamListener;
-  final ValueNotifier<ImageInfo?> _videoCoverInfoNotifier = ValueNotifier(null);
   final ValueNotifier<Widget?> _actionFeedbackChildNotifier = ValueNotifier(null);
-
-  AvesMagnifierController? _dismissedCoverMagnifierController;
-
-  AvesMagnifierController get dismissedCoverMagnifierController {
-    _dismissedCoverMagnifierController ??= AvesMagnifierController();
-    return _dismissedCoverMagnifierController!;
-  }
+  OverlayEntry? _actionFeedbackOverlayEntry;
 
   AvesEntry get mainEntry => widget.mainEntry;
 
   AvesEntry get entry => widget.pageEntry;
 
   ViewerController get viewerController => widget.viewerController;
-
-  // use the high res photo as cover for the video part of a motion photo
-  ImageProvider get videoCoverUriImage => mainEntry.isMotionPhoto ? mainEntry.uriImage : entry.uriImage;
 
   static const rasterMaxScale = ScaleLevel(factor: 5);
   static const vectorMaxScale = ScaleLevel(factor: 25);
@@ -110,9 +95,6 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
     if (entry.isVideo) {
       _subscriptions.add(mediaSessionService.mediaCommands.listen(_onMediaCommand));
-      _videoCoverStreamListener = ImageStreamListener((image, _) => _videoCoverInfoNotifier.value = image);
-      _videoCoverStream = videoCoverUriImage.resolve(ImageConfiguration.empty);
-      _videoCoverStream!.addListener(_videoCoverStreamListener);
     }
     viewerController.startAutopilotAnimation(
         vsync: this,
@@ -127,9 +109,6 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
 
   void _unregisterWidget(EntryPageView oldWidget) {
     viewerController.stopAutopilotAnimation(vsync: this);
-    _videoCoverStream?.removeListener(_videoCoverStreamListener);
-    _videoCoverStream = null;
-    _videoCoverInfoNotifier.value = null;
     _magnifierController.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
@@ -222,169 +201,169 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
       builder: (context, sar, child) {
         final videoDisplaySize = entry.videoDisplaySize(sar);
 
-        return Selector<Settings, Tuple2<bool, bool>>(
-          selector: (context, s) => Tuple2(s.videoGestureDoubleTapTogglePlay, s.videoGestureSideDoubleTapSeek),
+        return Selector<Settings, Tuple3<bool, bool, bool>>(
+          selector: (context, s) => Tuple3(
+            s.videoGestureDoubleTapTogglePlay,
+            s.videoGestureSideDoubleTapSeek,
+            s.videoGestureVerticalDragBrightnessVolume,
+          ),
           builder: (context, s, child) {
             final playGesture = s.item1;
             final seekGesture = s.item2;
-            final useActionGesture = playGesture || seekGesture;
+            final useVerticalDragGesture = s.item3;
+            final useTapGesture = playGesture || seekGesture;
 
-            void _applyAction(EntryAction action, {IconData? Function()? icon}) {
-              _actionFeedbackChildNotifier.value = DecoratedIcon(
-                icon?.call() ?? action.getIconData(),
-                size: 48,
-                color: Colors.white,
-                shadows: const [
-                  Shadow(
-                    color: Colors.black,
-                    blurRadius: 4,
-                  )
-                ],
-              );
-              VideoActionNotification(
-                controller: videoController,
-                action: action,
-              ).dispatch(context);
+            MagnifierDoubleTapCallback? onDoubleTap;
+            MagnifierGestureScaleStartCallback? onScaleStart;
+            MagnifierGestureScaleUpdateCallback? onScaleUpdate;
+            MagnifierGestureScaleEndCallback? onScaleEnd;
+
+            if (useTapGesture) {
+              void _applyAction(EntryAction action, {IconData? Function()? icon}) {
+                _actionFeedbackChildNotifier.value = DecoratedIcon(
+                  icon?.call() ?? action.getIconData(),
+                  size: 48,
+                  color: Colors.white,
+                  shadows: const [
+                    Shadow(
+                      color: Colors.black,
+                      blurRadius: 4,
+                    )
+                  ],
+                );
+                VideoActionNotification(
+                  controller: videoController,
+                  action: action,
+                ).dispatch(context);
+              }
+
+              onDoubleTap = (alignment) {
+                final x = alignment.x;
+                if (seekGesture) {
+                  if (x < sideRatio) {
+                    _applyAction(EntryAction.videoReplay10);
+                    return true;
+                  } else if (x > 1 - sideRatio) {
+                    _applyAction(EntryAction.videoSkip10);
+                    return true;
+                  }
+                }
+                if (playGesture) {
+                  _applyAction(
+                    EntryAction.videoTogglePlay,
+                    icon: () => videoController.isPlaying ? AIcons.pause : AIcons.play,
+                  );
+                  return true;
+                }
+                return false;
+              };
             }
 
-            MagnifierDoubleTapCallback? _onDoubleTap = useActionGesture
-                ? (alignment) {
-                    final x = alignment.x;
-                    if (seekGesture) {
-                      if (x < sideRatio) {
-                        _applyAction(EntryAction.videoReplay10);
-                        return true;
-                      } else if (x > 1 - sideRatio) {
-                        _applyAction(EntryAction.videoSkip10);
-                        return true;
-                      }
-                    }
-                    if (playGesture) {
-                      _applyAction(
-                        EntryAction.videoTogglePlay,
-                        icon: () => videoController.isPlaying ? AIcons.pause : AIcons.play,
-                      );
-                      return true;
-                    }
-                    return false;
-                  }
-                : null;
+            if (useVerticalDragGesture) {
+              SwipeAction? swipeAction;
+              var move = Offset.zero;
+              var dropped = false;
+              double? startValue;
+              final valueNotifier = ValueNotifier<double?>(null);
 
+              onScaleStart = (details, doubleTap, boundaries) {
+                dropped = details.pointerCount > 1 || doubleTap;
+                if (dropped) return;
+
+                startValue = null;
+                valueNotifier.value = null;
+                final alignmentX = details.focalPoint.dx / boundaries.viewportSize.width;
+                final action = alignmentX > .5 ? SwipeAction.volume : SwipeAction.brightness;
+                action.get().then((v) => startValue = v);
+                swipeAction = action;
+                move = Offset.zero;
+                _actionFeedbackOverlayEntry = OverlayEntry(
+                  builder: (context) => SwipeActionFeedback(
+                    action: action,
+                    valueNotifier: valueNotifier,
+                  ),
+                );
+                Overlay.of(context)!.insert(_actionFeedbackOverlayEntry!);
+              };
+              onScaleUpdate = (details) {
+                move += details.focalPointDelta;
+                dropped |= details.pointerCount > 1;
+                if (valueNotifier.value == null) {
+                  dropped |= MagnifierGestureRecognizer.isXPan(move);
+                }
+                if (dropped) return false;
+
+                final _startValue = startValue;
+                if (_startValue != null) {
+                  final double value = (_startValue - move.dy / SwipeActionFeedback.height).clamp(0, 1);
+                  valueNotifier.value = value;
+                  swipeAction?.set(value);
+                }
+                return true;
+              };
+              onScaleEnd = (details) {
+                if (_actionFeedbackOverlayEntry != null) {
+                  _actionFeedbackOverlayEntry!.remove();
+                  _actionFeedbackOverlayEntry = null;
+                }
+              };
+            }
+
+            Widget videoChild = Stack(
+              children: [
+                _buildMagnifier(
+                  displaySize: videoDisplaySize,
+                  onScaleStart: onScaleStart,
+                  onScaleUpdate: onScaleUpdate,
+                  onScaleEnd: onScaleEnd,
+                  onDoubleTap: onDoubleTap,
+                  child: VideoView(
+                    entry: entry,
+                    controller: videoController,
+                  ),
+                ),
+                VideoSubtitles(
+                  controller: videoController,
+                  viewStateNotifier: _viewStateNotifier,
+                ),
+                if (useTapGesture)
+                  ValueListenableBuilder<Widget?>(
+                    valueListenable: _actionFeedbackChildNotifier,
+                    builder: (context, feedbackChild, child) => ActionFeedback(
+                      child: feedbackChild,
+                    ),
+                  ),
+              ],
+            );
+            if (useVerticalDragGesture) {
+              videoChild = MagnifierGestureDetectorScope.of(context)!.copyWith(
+                acceptPointerEvent: MagnifierGestureRecognizer.isYPan,
+                child: videoChild,
+              );
+            }
             return Stack(
               fit: StackFit.expand,
               children: [
-                Stack(
-                  children: [
-                    _buildMagnifier(
-                      displaySize: videoDisplaySize,
-                      onDoubleTap: _onDoubleTap,
-                      child: VideoView(
-                        entry: entry,
-                        controller: videoController,
-                      ),
-                    ),
-                    VideoSubtitles(
-                      controller: videoController,
-                      viewStateNotifier: _viewStateNotifier,
-                    ),
-                    if (settings.videoShowRawTimedText)
-                      VideoSubtitles(
-                        controller: videoController,
-                        viewStateNotifier: _viewStateNotifier,
-                        debugMode: true,
-                      ),
-                    if (useActionGesture)
-                      ValueListenableBuilder<Widget?>(
-                        valueListenable: _actionFeedbackChildNotifier,
-                        builder: (context, feedbackChild, child) => ActionFeedback(
-                          child: feedbackChild,
-                        ),
-                      ),
-                  ],
-                ),
-                _buildVideoCover(
+                videoChild,
+                VideoCover(
+                  mainEntry: mainEntry,
+                  pageEntry: entry,
+                  magnifierController: _magnifierController,
                   videoController: videoController,
                   videoDisplaySize: videoDisplaySize,
-                  onDoubleTap: _onDoubleTap,
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  StreamBuilder<VideoStatus> _buildVideoCover({
-    required AvesVideoController videoController,
-    required Size videoDisplaySize,
-    required MagnifierDoubleTapCallback? onDoubleTap,
-  }) {
-    // fade out image to ease transition with the player
-    return StreamBuilder<VideoStatus>(
-      stream: videoController.statusStream,
-      builder: (context, snapshot) {
-        final showCover = !videoController.isReady;
-        return IgnorePointer(
-          ignoring: !showCover,
-          child: AnimatedOpacity(
-            opacity: showCover ? 1 : 0,
-            curve: Curves.easeInCirc,
-            duration: Durations.viewerVideoPlayerTransition,
-            onEnd: () {
-              // while cover is fading out, the same controller is used for both the cover and the video,
-              // and both fire scale boundaries events, so we make sure that in the end
-              // the scale boundaries from the video are used after the cover is gone
-              final boundaries = _magnifierController.scaleBoundaries;
-              if (boundaries != null) {
-                _magnifierController.setScaleBoundaries(
-                  boundaries.copyWith(
-                    childSize: videoDisplaySize,
-                  ),
-                );
-              }
-            },
-            child: ValueListenableBuilder<ImageInfo?>(
-              valueListenable: _videoCoverInfoNotifier,
-              builder: (context, videoCoverInfo, child) {
-                if (videoCoverInfo != null) {
-                  // full cover image may have a different size and different aspect ratio
-                  final coverSize = Size(
-                    videoCoverInfo.image.width.toDouble(),
-                    videoCoverInfo.image.height.toDouble(),
-                  );
-                  // when the cover is the same size as the video itself
-                  // (which is often the case when the cover is not embedded but just a frame),
-                  // we can reuse the same magnifier and preserve its state when switching from cover to video
-                  final coverController = showCover || coverSize == videoDisplaySize ? _magnifierController : dismissedCoverMagnifierController;
-                  return _buildMagnifier(
+                  onTap: _onTap,
+                  magnifierBuilder: (coverController, coverSize, videoCoverUriImage) => _buildMagnifier(
                     controller: coverController,
                     displaySize: coverSize,
                     onDoubleTap: onDoubleTap,
                     child: Image(
                       image: videoCoverUriImage,
                     ),
-                  );
-                }
-
-                // default to cached thumbnail, if any
-                final extent = entry.cachedThumbnails.firstOrNull?.key.extent;
-                if (extent != null && extent > 0) {
-                  return GestureDetector(
-                    onTap: _onTap,
-                    child: ThumbnailImage(
-                      entry: entry,
-                      extent: extent,
-                      fit: BoxFit.contain,
-                      showLoadingBackground: false,
-                    ),
-                  );
-                }
-
-                return const SizedBox();
-              },
-            ),
-          ),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -396,6 +375,9 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     ScaleLevel maxScale = rasterMaxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
+    MagnifierGestureScaleStartCallback? onScaleStart,
+    MagnifierGestureScaleUpdateCallback? onScaleUpdate,
+    MagnifierGestureScaleEndCallback? onScaleEnd,
     MagnifierDoubleTapCallback? onDoubleTap,
     required Widget child,
   }) {
@@ -413,6 +395,9 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
       initialScale: viewerController.initialScale,
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
+      onScaleStart: onScaleStart,
+      onScaleUpdate: onScaleUpdate,
+      onScaleEnd: onScaleEnd,
       onTap: (c, s, a, p) => _onTap(alignment: a),
       onDoubleTap: onDoubleTap,
       child: child,
@@ -487,5 +472,3 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     }
   }
 }
-
-typedef MagnifierTapCallback = void Function(Offset childPosition);

@@ -5,6 +5,7 @@ import 'package:aves/widgets/about/credits.dart';
 import 'package:aves/widgets/about/licenses.dart';
 import 'package:aves/widgets/about/translators.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -28,7 +29,8 @@ class AboutPage extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildListDelegate(
               [
-                AppReference(showLogo: !useTvLayout),
+                const TvEdgeFocus(),
+                const AppReference(),
                 if (!settings.useTvLayout) ...[
                   const Divider(),
                   const BugReport(),

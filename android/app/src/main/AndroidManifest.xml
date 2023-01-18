@@ -214,6 +214,15 @@ This change eventually prevents building the app with Flutter v3.3.3.
         </receiver>
 
         <service
+            android:name=".MediaPlaybackService"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <service
             android:name=".AnalysisService"
             android:description="@string/analysis_service_description"
             android:exported="false" />

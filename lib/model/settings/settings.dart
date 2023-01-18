@@ -41,7 +41,6 @@ class Settings extends ChangeNotifier {
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneKey,
-    videoShowRawTimedTextKey,
     searchHistoryKey,
     platformAccelerometerRotationKey,
     platformTransitionAnimationScaleKey,
@@ -131,10 +130,10 @@ class Settings extends ChangeNotifier {
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
   static const videoAutoPlayModeKey = 'video_auto_play_mode';
   static const videoLoopModeKey = 'video_loop';
-  static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
   static const videoControlsKey = 'video_controls';
   static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
   static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';
+  static const videoGestureVerticalDragBrightnessVolumeKey = 'video_gesture_vertical_drag_brightness_volume';
 
   // subtitles
   static const subtitleFontSizeKey = 'subtitle_font_size';
@@ -637,10 +636,6 @@ class Settings extends ChangeNotifier {
 
   set videoLoopMode(VideoLoopMode newValue) => _set(videoLoopModeKey, newValue.toString());
 
-  bool get videoShowRawTimedText => getBool(videoShowRawTimedTextKey) ?? SettingsDefaults.videoShowRawTimedText;
-
-  set videoShowRawTimedText(bool newValue) => _set(videoShowRawTimedTextKey, newValue);
-
   VideoControls get videoControls => getEnumOrDefault(videoControlsKey, SettingsDefaults.videoControls, VideoControls.values);
 
   set videoControls(VideoControls newValue) => _set(videoControlsKey, newValue.toString());
@@ -652,6 +647,10 @@ class Settings extends ChangeNotifier {
   bool get videoGestureSideDoubleTapSeek => getBool(videoGestureSideDoubleTapSeekKey) ?? SettingsDefaults.videoGestureSideDoubleTapSeek;
 
   set videoGestureSideDoubleTapSeek(bool newValue) => _set(videoGestureSideDoubleTapSeekKey, newValue);
+
+  bool get videoGestureVerticalDragBrightnessVolume => getBool(videoGestureVerticalDragBrightnessVolumeKey) ?? SettingsDefaults.videoGestureVerticalDragBrightnessVolume;
+
+  set videoGestureVerticalDragBrightnessVolume(bool newValue) => _set(videoGestureVerticalDragBrightnessVolumeKey, newValue);
 
   // subtitles
 
@@ -1039,6 +1038,7 @@ class Settings extends ChangeNotifier {
             case enableVideoHardwareAccelerationKey:
             case videoGestureDoubleTapTogglePlayKey:
             case videoGestureSideDoubleTapSeekKey:
+            case videoGestureVerticalDragBrightnessVolumeKey:
             case subtitleShowOutlineKey:
             case tagEditorCurrentFilterSectionExpandedKey:
             case saveSearchHistoryKey:

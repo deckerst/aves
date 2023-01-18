@@ -13,6 +13,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
@@ -128,6 +129,53 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     Selection<FilterGridItem<AlbumFilter>> selection,
     AlbumChipSetActionDelegate actionDelegate,
   ) {
+    final itemCount = actionDelegate.allItems.length;
+    final isSelecting = selection.isSelecting;
+    final selectedItems = selection.selectedItems;
+    final selectedFilters = selectedItems.map((v) => v.filter).toSet();
+
+    bool isVisible(ChipSetAction action) => actionDelegate.isVisible(
+          action,
+          appMode: appMode,
+          isSelecting: isSelecting,
+          itemCount: itemCount,
+          selectedFilters: selectedFilters,
+        );
+
+    return settings.useTvLayout
+        ? _buildTelevisionActions(
+            context: context,
+            isVisible: isVisible,
+            actionDelegate: actionDelegate,
+          )
+        : _buildMobileActions(
+            context: context,
+            isVisible: isVisible,
+            actionDelegate: actionDelegate,
+          );
+  }
+
+  List<Widget> _buildTelevisionActions({
+    required BuildContext context,
+    required bool Function(ChipSetAction action) isVisible,
+    required AlbumChipSetActionDelegate actionDelegate,
+  }) {
+    return [
+      ...ChipSetActions.general,
+    ].where(isVisible).map((action) {
+      return CaptionedButton(
+        icon: action.getIcon(),
+        caption: action.getText(context),
+        onPressed: () => actionDelegate.onActionSelected(context, {}, action),
+      );
+    }).toList();
+  }
+
+  List<Widget> _buildMobileActions({
+    required BuildContext context,
+    required bool Function(ChipSetAction action) isVisible,
+    required AlbumChipSetActionDelegate actionDelegate,
+  }) {
     return [
       if (widget.moveType != null)
         IconButton(
@@ -149,7 +197,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
         child: PopupMenuButton<ChipSetAction>(
           itemBuilder: (context) {
             return [
-              FilterGridAppBar.toMenuItem(context, ChipSetAction.configureView, enabled: true),
+              ...ChipSetActions.general.where(isVisible).map((action) => FilterGridAppBar.toMenuItem(context, action, enabled: true)),
               const PopupMenuDivider(),
               FilterGridAppBar.toMenuItem(context, ChipSetAction.toggleTitleSearch, enabled: true),
             ];

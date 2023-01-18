@@ -7,7 +7,6 @@ class Namespaces {
   static const avm = 'http://www.communicatingastronomy.org/avm/1.0/';
   static const camera = 'http://pix4d.com/camera/1.0/';
   static const cc = 'http://creativecommons.org/ns#';
-  static const container = 'http://ns.google.com/photos/1.0/container/';
   static const creatorAtom = 'http://ns.adobe.com/creatorAtom/1.0/';
   static const crd = 'http://ns.adobe.com/camera-raw-defaults/1.0/';
   static const crlcp = 'http://ns.adobe.com/camera-raw-embedded-lens-profile/1.0/';
@@ -26,9 +25,13 @@ class Namespaces {
   static const exifEx = 'http://cipa.jp/exif/1.0/';
   static const gAudio = 'http://ns.google.com/photos/1.0/audio/';
   static const gCamera = 'http://ns.google.com/photos/1.0/camera/';
+  static const gContainer = 'http://ns.google.com/photos/1.0/container/';
   static const gCreations = 'http://ns.google.com/photos/1.0/creations/';
   static const gDepth = 'http://ns.google.com/photos/1.0/depthmap/';
   static const gDevice = 'http://ns.google.com/photos/dd/1.0/device/';
+  static const gDeviceCamera = 'http://ns.google.com/photos/dd/1.0/camera/';
+  static const gDeviceContainer = 'http://ns.google.com/photos/dd/1.0/container/';
+  static const gDeviceItem = 'http://ns.google.com/photos/dd/1.0/item/';
   static const gFocus = 'http://ns.google.com/photos/1.0/focus/';
   static const gImage = 'http://ns.google.com/photos/1.0/image/';
   static const gPano = 'http://ns.google.com/photos/1.0/panorama/';
@@ -83,7 +86,6 @@ class Namespaces {
     avm: 'Astronomy Visualization',
     camera: 'Pix4D Camera',
     cc: 'Creative Commons',
-    container: 'Container',
     crd: 'Camera Raw Defaults',
     creatorAtom: 'After Effects',
     crs: 'Camera Raw Settings',
@@ -97,6 +99,7 @@ class Namespaces {
     exifEx: 'Exif Ex',
     gAudio: 'Google Audio',
     gCamera: 'Google Camera',
+    gContainer: 'Google Container',
     gCreations: 'Google Creations',
     gDepth: 'Google Depth',
     gDevice: 'Google Device',
@@ -138,7 +141,7 @@ class Namespaces {
   };
 
   static final defaultPrefixes = {
-    container: 'Container',
+    gContainer: 'Container',
     dc: 'dc',
     gCamera: 'GCamera',
     microsoftPhoto: 'MicrosoftPhoto',

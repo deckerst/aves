@@ -1206,5 +1206,9 @@
   "filterLocatedLabel": "Localizado",
   "@filterLocatedLabel": {},
   "filterTaggedLabel": "Etiquetado",
-  "@filterTaggedLabel": {}
+  "@filterTaggedLabel": {},
+  "tooManyItemsErrorDialogMessage": "Vuelva a intentarlo con menos elementos.",
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Deslice hacia arriba o hacia abajo para ajustar el brillo o el volumen",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }
