@@ -1208,5 +1208,7 @@
   "filterLocatedLabel": "위치 있음",
   "@filterLocatedLabel": {},
   "tooManyItemsErrorDialogMessage": "항목 수를 줄이고 다시 시도하세요.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "위아래로 스와이프해서 밝기/음량을 조절하기",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }
