@@ -31,7 +31,7 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
-import 'package:aves/widgets/filter_grids/album_pick.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';

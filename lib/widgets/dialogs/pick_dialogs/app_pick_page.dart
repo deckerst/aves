@@ -1,4 +1,5 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
@@ -37,8 +38,10 @@ class _AppPickPageState extends State<AppPickPage> {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = settings.useTvLayout;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: !useTvLayout,
         title: Text(context.l10n.appPickDialogTitle),
       ),
       body: SafeArea(
@@ -57,7 +60,7 @@ class _AppPickPageState extends State<AppPickPage> {
             final packages = allPackages.where((package) => package.categoryLauncher).toList()..sort((a, b) => compareAsciiUpperCase(_displayName(a), _displayName(b)));
             return Column(
               children: [
-                QueryBar(queryNotifier: _queryNotifier),
+                if (!useTvLayout) QueryBar(queryNotifier: _queryNotifier),
                 ValueListenableBuilder<String>(
                   valueListenable: _queryNotifier,
                   builder: (context, query, child) {

@@ -10,12 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppReference extends StatefulWidget {
-  final bool showLogo;
-
-  const AppReference({
-    super.key,
-    required this.showLogo,
-  });
+  const AppReference({super.key});
 
   @override
   State<AppReference> createState() => _AppReferenceState();
@@ -23,6 +18,13 @@ class AppReference extends StatefulWidget {
 
 class _AppReferenceState extends State<AppReference> {
   late Future<PackageInfo> _packageInfoLoader;
+
+  static const _appTitleStyle = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.normal,
+    letterSpacing: 1.0,
+    fontFeatures: [FontFeature.enable('smcp')],
+  );
 
   @override
   void initState() {
@@ -44,28 +46,19 @@ class _AppReferenceState extends State<AppReference> {
   }
 
   Widget _buildAvesLine() {
-    const style = TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.normal,
-      letterSpacing: 1.0,
-      fontFeatures: [FontFeature.enable('smcp')],
-    );
-
     return FutureBuilder<PackageInfo>(
       future: _packageInfoLoader,
       builder: (context, snapshot) {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (widget.showLogo) ...[
-              AvesLogo(
-                size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.3,
-              ),
-              const SizedBox(width: 8),
-            ],
+            AvesLogo(
+              size: _appTitleStyle.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.3,
+            ),
+            const SizedBox(width: 8),
             Text(
               '${context.l10n.appName} ${snapshot.data?.version}',
-              style: style,
+              style: _appTitleStyle,
             ),
           ],
         );

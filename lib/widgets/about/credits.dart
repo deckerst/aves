@@ -1,4 +1,4 @@
-import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +14,7 @@ class AboutCredits extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutCreditsSectionTitle, style: Constants.knownTitleTextStyle),
-            ),
-          ),
+          AboutSectionTitle(text: l10n.aboutCreditsSectionTitle),
           const SizedBox(height: 8),
           Text.rich(
             TextSpan(

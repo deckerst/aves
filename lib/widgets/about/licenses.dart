@@ -1,8 +1,9 @@
 import 'package:aves/app_flavor.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/dependencies.dart';
+import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -50,30 +51,32 @@ class _LicensesState extends State<Licenses> {
           [
             _buildHeader(),
             const SizedBox(height: 16),
-            AvesExpansionTile(
-              title: context.l10n.aboutLicensesAndroidLibrariesSectionTitle,
-              highlightColor: colors.fromBrandColor(BrandColors.android),
-              expandedNotifier: _expandedNotifier,
-              children: _platform.map((package) => LicenseRow(package: package)).toList(),
-            ),
-            AvesExpansionTile(
-              title: context.l10n.aboutLicensesFlutterPluginsSectionTitle,
-              highlightColor: colors.fromBrandColor(BrandColors.flutter),
-              expandedNotifier: _expandedNotifier,
-              children: _flutterPlugins.map((package) => LicenseRow(package: package)).toList(),
-            ),
-            AvesExpansionTile(
-              title: context.l10n.aboutLicensesFlutterPackagesSectionTitle,
-              highlightColor: colors.fromBrandColor(BrandColors.flutter),
-              expandedNotifier: _expandedNotifier,
-              children: _flutterPackages.map((package) => LicenseRow(package: package)).toList(),
-            ),
-            AvesExpansionTile(
-              title: context.l10n.aboutLicensesDartPackagesSectionTitle,
-              highlightColor: colors.fromBrandColor(BrandColors.flutter),
-              expandedNotifier: _expandedNotifier,
-              children: _dartPackages.map((package) => LicenseRow(package: package)).toList(),
-            ),
+            if (!settings.useTvLayout) ...[
+              AvesExpansionTile(
+                title: context.l10n.aboutLicensesAndroidLibrariesSectionTitle,
+                highlightColor: colors.fromBrandColor(BrandColors.android),
+                expandedNotifier: _expandedNotifier,
+                children: _platform.map((package) => LicenseRow(package: package)).toList(),
+              ),
+              AvesExpansionTile(
+                title: context.l10n.aboutLicensesFlutterPluginsSectionTitle,
+                highlightColor: colors.fromBrandColor(BrandColors.flutter),
+                expandedNotifier: _expandedNotifier,
+                children: _flutterPlugins.map((package) => LicenseRow(package: package)).toList(),
+              ),
+              AvesExpansionTile(
+                title: context.l10n.aboutLicensesFlutterPackagesSectionTitle,
+                highlightColor: colors.fromBrandColor(BrandColors.flutter),
+                expandedNotifier: _expandedNotifier,
+                children: _flutterPackages.map((package) => LicenseRow(package: package)).toList(),
+              ),
+              AvesExpansionTile(
+                title: context.l10n.aboutLicensesDartPackagesSectionTitle,
+                highlightColor: colors.fromBrandColor(BrandColors.flutter),
+                expandedNotifier: _expandedNotifier,
+                children: _dartPackages.map((package) => LicenseRow(package: package)).toList(),
+              ),
+            ],
             Center(
               child: AvesOutlinedButton(
                 label: context.l10n.aboutLicensesShowAllButtonLabel,
@@ -104,13 +107,7 @@ class _LicensesState extends State<Licenses> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(context.l10n.aboutLicensesSectionTitle, style: Constants.knownTitleTextStyle),
-            ),
-          ),
+          AboutSectionTitle(text: context.l10n.aboutLicensesSectionTitle),
           const SizedBox(height: 8),
           Text(context.l10n.aboutLicensesBanner),
         ],

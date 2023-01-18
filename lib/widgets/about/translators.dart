@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
@@ -55,23 +56,16 @@ class AboutTranslators extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutTranslatorsSectionTitle, style: Constants.knownTitleTextStyle),
-            ),
-          ),
+          AboutSectionTitle(text: context.l10n.aboutTranslatorsSectionTitle),
           const SizedBox(height: 8),
           _RandomTextSpanHighlighter(
             spans: translators.map((v) => v.name).toList(),
-            highlightColor: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
           const SizedBox(height: 16),
         ],
@@ -82,11 +76,11 @@ class AboutTranslators extends StatelessWidget {
 
 class _RandomTextSpanHighlighter extends StatefulWidget {
   final List<String> spans;
-  final Color highlightColor;
+  final Color color;
 
   const _RandomTextSpanHighlighter({
     required this.spans,
-    required this.highlightColor,
+    required this.color,
   });
 
   @override
@@ -103,18 +97,21 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
   void initState() {
     super.initState();
 
+    final color = widget.color;
     _baseStyle = TextStyle(
+      color: color.withOpacity(.7),
       shadows: [
         Shadow(
-          color: widget.highlightColor.withOpacity(0),
+          color: color.withOpacity(0),
           blurRadius: 0,
         )
       ],
     );
     final highlightStyle = TextStyle(
+      color: color.withOpacity(1),
       shadows: [
         Shadow(
-          color: widget.highlightColor,
+          color: color.withOpacity(1),
           blurRadius: 3,
         )
       ],
@@ -133,7 +130,7 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
       ..repeat(reverse: true);
     _animatedStyle = ShadowedTextStyleTween(begin: _baseStyle, end: highlightStyle).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.linear,
+      curve: Curves.easeInOutCubic,
     ));
   }
 
