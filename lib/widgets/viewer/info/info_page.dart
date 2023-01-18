@@ -7,6 +7,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
@@ -281,6 +282,9 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       child: CustomScrollView(
         controller: widget.scrollController,
         slivers: [
+          const SliverToBoxAdapter(
+            child: TvEdgeFocus(),
+          ),
           InfoAppBar(
             entry: entry,
             collection: collection,
