@@ -138,10 +138,12 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
               child: child!,
             );
           },
-          child: InfoPage(
-            collection: collection,
-            entryNotifier: widget.entryNotifier,
-            isScrollingNotifier: _isVerticallyScrollingNotifier,
+          child: FocusScope(
+            child: InfoPage(
+              collection: collection,
+              entryNotifier: widget.entryNotifier,
+              isScrollingNotifier: _isVerticallyScrollingNotifier,
+            ),
           ),
         ),
       );

@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
@@ -30,8 +31,10 @@ class _DrawerFixedListTabState<T> extends State<DrawerFixedListTab<T>> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const DrawerEditorBanner(),
-        const Divider(height: 0),
+        if (!settings.useTvLayout) ...[
+          const DrawerEditorBanner(),
+          const Divider(height: 0),
+        ],
         Flexible(
           child: ReorderableListView.builder(
             itemBuilder: (context, index) {
