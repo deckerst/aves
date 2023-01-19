@@ -422,8 +422,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   void _goToSearch() {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,

@@ -249,16 +249,14 @@ class _TvRailState extends State<TvRail> {
       );
 
   void _goTo(String routeName) {
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       PageNavTile.routeBuilder(context, routeName),
       (route) => false,
     );
   }
 
   void _goToCollection(BuildContext context, CollectionFilter? filter) {
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(

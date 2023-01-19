@@ -30,7 +30,7 @@ class InfoSearchDelegate extends SearchDelegate {
         icon: AnimatedIcons.menu_arrow,
         progress: transitionAnimation,
       ),
-      onPressed: () => Navigator.pop(context),
+      onPressed: () => Navigator.maybeOf(context)?.pop(),
       tooltip: MaterialLocalizations.of(context).backButtonTooltip,
     );
   }

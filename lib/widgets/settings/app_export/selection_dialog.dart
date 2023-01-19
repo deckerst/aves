@@ -56,7 +56,7 @@ class _AppExportItemSelectionDialogState extends State<AppExportItemSelectionDia
       actions: [
         const CancelButton(),
         TextButton(
-          onPressed: _selectedItems.isEmpty ? null : () => Navigator.pop(context, _selectedItems),
+          onPressed: _selectedItems.isEmpty ? null : () => Navigator.maybeOf(context)?.pop(_selectedItems),
           child: Text(context.l10n.applyButtonLabel),
         ),
       ],

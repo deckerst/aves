@@ -123,8 +123,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
     final album = entry.directory;
     final uri = entry.uri;
 
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(

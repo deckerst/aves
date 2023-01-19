@@ -83,7 +83,7 @@ class _AppPickPageState extends State<AppPickPage> {
                               return ReselectableRadioListTile<String?>(
                                 value: '',
                                 groupValue: _selectedValue,
-                                onChanged: (v) => Navigator.pop(context, v),
+                                onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
                                 reselectable: true,
                                 title: Text(
                                   context.l10n.appPickDialogNone,
@@ -100,7 +100,7 @@ class _AppPickPageState extends State<AppPickPage> {
                           return ReselectableRadioListTile<String?>(
                             value: package.packageName,
                             groupValue: _selectedValue,
-                            onChanged: (v) => Navigator.pop(context, v),
+                            onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
                             reselectable: true,
                             title: Text.rich(
                               TextSpan(

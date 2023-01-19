@@ -330,8 +330,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         targetFilters.removeWhere((f) => f is AlbumFilter);
         targetFilters.add(AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum)));
       }
-      unawaited(Navigator.pushAndRemoveUntil(
-        context,
+      unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
         MaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (context) => CollectionPage(

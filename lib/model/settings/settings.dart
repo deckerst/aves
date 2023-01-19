@@ -30,6 +30,7 @@ import 'package:latlong2/latlong.dart';
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
+  final List<StreamSubscription> _subscriptions = [];
   final EventChannel _platformSettingsChangeChannel = const OptionalEventChannel('deckers.thibault/aves/settings_change');
   final StreamController<SettingsChangedEvent> _updateStreamController = StreamController.broadcast();
 
@@ -209,7 +210,10 @@ class Settings extends ChangeNotifier {
     await settingsStore.init();
     _appliedLocale = null;
     if (monitorPlatformSettings) {
-      _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?));
+      _subscriptions
+        ..forEach((sub) => sub.cancel())
+        ..clear();
+      _subscriptions.add(_platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?)));
     }
   }
 

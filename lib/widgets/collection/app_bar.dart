@@ -678,8 +678,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _goToSearch() {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,

@@ -159,7 +159,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.pop(context, _buildAlbumPath(_nameController.text));
+      Navigator.maybeOf(context)?.pop(_buildAlbumPath(_nameController.text));
     }
   }
 }

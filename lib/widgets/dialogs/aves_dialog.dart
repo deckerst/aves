@@ -166,7 +166,7 @@ class CancelButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.pop(context),
+      onPressed: () => Navigator.maybeOf(context)?.pop(),
       child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
     );
   }
@@ -178,7 +178,7 @@ class OkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.pop(context),
+      onPressed: () => Navigator.maybeOf(context)?.pop(),
       child: Text(MaterialLocalizations.of(context).okButtonLabel),
     );
   }

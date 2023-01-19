@@ -144,8 +144,7 @@ class _HiddenPaths extends StatelessWidget {
               icon: const Icon(AIcons.add),
               label: context.l10n.addPathTooltip,
               onPressed: () async {
-                final path = await Navigator.push(
-                  context,
+                final path = await Navigator.maybeOf(context)?.push(
                   MaterialPageRoute<String>(
                     settings: const RouteSettings(name: FilePickerPage.routeName),
                     builder: (context) => const FilePickerPage(),

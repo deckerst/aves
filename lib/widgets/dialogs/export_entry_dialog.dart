@@ -130,7 +130,7 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
                               height: height,
                             )
                           : null;
-                      Navigator.pop(context, options);
+                      Navigator.maybeOf(context)?.pop(options);
                     }
                   : null,
               child: Text(l10n.applyButtonLabel),

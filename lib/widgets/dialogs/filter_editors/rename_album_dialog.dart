@@ -88,7 +88,7 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.pop(context, _nameController.text);
+      Navigator.maybeOf(context)?.pop(_nameController.text);
     }
   }
 }

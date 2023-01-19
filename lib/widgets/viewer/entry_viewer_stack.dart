@@ -503,8 +503,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (baseCollection == null) return;
 
     _onLeave();
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
@@ -602,7 +601,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     }
 
     if (Navigator.canPop(context)) {
-      Navigator.pop(context);
+      Navigator.maybeOf(context)?.pop();
     } else {
       _leaveViewer();
     }
@@ -639,7 +638,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (Navigator.canPop(context)) {
       void pop() {
         _onLeave();
-        Navigator.pop(context);
+        Navigator.maybeOf(context)?.pop();
       }
 
       // closing hero, with viewer as source

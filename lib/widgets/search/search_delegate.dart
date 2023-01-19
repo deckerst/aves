@@ -320,8 +320,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
 
   void _jumpToCollectionPage(BuildContext context, Set<CollectionFilter> filters) {
     clean();
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(

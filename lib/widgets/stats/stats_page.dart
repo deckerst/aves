@@ -253,8 +253,7 @@ class _StatsPageState extends State<StatsPage> {
     final totalEntryCount = entries.length;
     final hasMore = maxRowCount != null && entryCountMap.length > maxRowCount;
     final onHeaderPressed = hasMore
-        ? () => Navigator.push(
-              context,
+        ? () => Navigator.maybeOf(context)?.push(
               MaterialPageRoute(
                 settings: const RouteSettings(name: StatsTopPage.routeName),
                 builder: (context) => StatsTopPage(
@@ -334,12 +333,11 @@ class _StatsPageState extends State<StatsPage> {
     // even when the target is a child of an `AnimatedList`.
     // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
     // as it may not trigger if there is no subsequent build.
-    Future.delayed(const Duration(milliseconds: 100), () => Navigator.popUntil(context, (route) => route.settings.name == CollectionPage.routeName));
+    Future.delayed(const Duration(milliseconds: 100), () => Navigator.maybeOf(context)?.popUntil((route) => route.settings.name == CollectionPage.routeName));
   }
 
   void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(

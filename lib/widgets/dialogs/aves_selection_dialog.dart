@@ -89,7 +89,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
         const CancelButton(),
         if (needConfirmation)
           TextButton(
-            onPressed: () => Navigator.pop(context, _selectedValue),
+            onPressed: () => Navigator.maybeOf(context)?.pop(_selectedValue),
             child: Text(confirmationButtonLabel),
           ),
       ],
@@ -129,7 +129,7 @@ class SelectionRadioListTile<T> extends StatelessWidget {
         if (needConfirmation) {
           setGroupValue(v as T);
         } else {
-          Navigator.pop(context, v);
+          Navigator.maybeOf(context)?.pop(v);
         }
       },
       reselectable: true,

@@ -60,7 +60,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
                     key: Key(value.toString()),
                     value: value,
                     groupValue: _selectedValue,
-                    onChanged: (v) => Navigator.pop(context, v),
+                    onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
                     reselectable: true,
                     title: Text(
                       title,

@@ -456,8 +456,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void _goToViewer(AvesEntry? initialEntry) {
     if (initialEntry == null) return;
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
@@ -476,8 +475,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
     if (!isMainMode) return;
 
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(

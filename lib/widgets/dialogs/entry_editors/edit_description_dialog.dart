@@ -103,6 +103,6 @@ class _EditEntryTitleDescriptionDialogState extends State<EditEntryTitleDescript
       final text = _fieldController(field).text;
       return MapEntry(field, text.isEmpty ? null : text);
     }));
-    return Navigator.pop<Map<DescriptionField, String?>>(context, modifier);
+    return Navigator.maybeOf(context)?.pop<Map<DescriptionField, String?>>(modifier);
   }
 }

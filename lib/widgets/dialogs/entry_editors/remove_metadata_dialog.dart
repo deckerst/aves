@@ -136,5 +136,5 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
 
   void _validate() => _isValidNotifier.value = _types.isNotEmpty;
 
-  void _submit(BuildContext context) => Navigator.pop(context, _types);
+  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop(_types);
 }

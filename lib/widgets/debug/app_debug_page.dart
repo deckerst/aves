@@ -196,8 +196,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
         );
         break;
       case AppDebugAction.greenScreen:
-        await Navigator.push(
-          context,
+        await Navigator.maybeOf(context)?.push(
           MaterialPageRoute(
             builder: (context) => const Scaffold(
               backgroundColor: Colors.green,

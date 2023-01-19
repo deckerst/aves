@@ -150,7 +150,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           key: const Key('button-apply'),
           onPressed: () {
             tileExtentController.setUserPreferredColumnCount(_columnCountNotifier.value);
-            Navigator.pop(context, Tuple4(_selectedSort, _selectedGroup, _selectedLayout, _reverseSort));
+            Navigator.maybeOf(context)?.pop(Tuple4(_selectedSort, _selectedGroup, _selectedLayout, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
         )

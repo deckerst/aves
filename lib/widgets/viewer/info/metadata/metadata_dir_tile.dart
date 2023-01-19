@@ -93,8 +93,7 @@ class MetadataDirTile extends StatelessWidget {
       'Metadata': InfoRowGroup.linkSpanBuilder(
         linkText: (context) => context.l10n.viewerInfoViewXmlLinkText,
         onTap: (context) {
-          Navigator.push(
-            context,
+          Navigator.maybeOf(context)?.push(
             MaterialPageRoute(
               settings: const RouteSettings(name: SourceViewerPage.routeName),
               builder: (context) => SourceViewerPage(

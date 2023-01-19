@@ -116,7 +116,7 @@ class _AvesConfirmationDialogState extends State<_AvesConfirmationDialog> {
             if (_skip.value) {
               _skipConfirmation(widget.type);
             }
-            Navigator.pop(context, true);
+            Navigator.maybeOf(context)?.pop(true);
           },
           child: Text(widget.confirmationButtonLabel),
         ),

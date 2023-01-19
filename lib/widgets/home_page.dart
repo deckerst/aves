@@ -16,6 +16,7 @@ import 'package:aves/services/global_search.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/services/widget_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -95,10 +96,7 @@ class _HomePageState extends State<HomePage> {
       // do not check whether permission was granted, because some app stores
       // hide in some countries apps that force quit on permission denial
       await [
-        Permission.storage,
-        // for media access on Android >=13
-        Permission.photos,
-        Permission.videos,
+        ...Constants.storagePermissions,
         // to access media with unredacted metadata with scoped storage (Android >=10)
         Permission.accessMediaLocation,
       ].request();
@@ -239,8 +237,7 @@ class _HomePageState extends State<HomePage> {
 
     // `pushReplacement` is not enough in some edge cases
     // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
-    unawaited(Navigator.pushAndRemoveUntil(
-      context,
+    unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
       await _getRedirectRoute(appMode),
       (route) => false,
     ));

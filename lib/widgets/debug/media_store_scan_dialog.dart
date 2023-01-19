@@ -41,7 +41,7 @@ class _MediaStoreScanDirDialogState extends State<MediaStoreScanDirDialog> {
                       }
                     });
                   }
-                  Navigator.pop(context);
+                  Navigator.maybeOf(context)?.pop();
                 },
           child: const Text('Scan'),
         )

@@ -234,7 +234,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.applyButtonLabel),
           ),
         ],
@@ -262,8 +262,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       listenToSource: true,
       fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != targetEntry).toList(),
     );
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
@@ -276,8 +275,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   }
 
   void _goToDebug(BuildContext context, AvesEntry targetEntry) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: targetEntry),

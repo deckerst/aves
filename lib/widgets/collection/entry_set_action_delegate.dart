@@ -342,8 +342,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _rename(BuildContext context) async {
     final entries = _getTargetItems(context).toList();
 
-    final pattern = await Navigator.push<NamingPattern>(
-      context,
+    final pattern = await Navigator.maybeOf(context)?.push<NamingPattern>(
       MaterialPageRoute(
         settings: const RouteSettings(name: RenameEntrySetPage.routeName),
         builder: (context) => RenameEntrySetPage(
@@ -468,7 +467,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           const CancelButton(),
           if (supported.isNotEmpty)
             TextButton(
-              onPressed: () => Navigator.pop(context, true),
+              onPressed: () => Navigator.maybeOf(context)?.pop(true),
               child: Text(l10n.continueButtonLabel),
             ),
         ],
@@ -523,8 +522,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
     if (editableEntries == null || editableEntries.isEmpty) return null;
 
-    final location = await Navigator.push(
-      context,
+    final location = await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) => LocationPickPage(
@@ -548,7 +546,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.applyButtonLabel),
           ),
         ],
@@ -621,8 +619,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       filters: collection.filters,
       fixedSelection: entries.where((entry) => entry.hasGps).toList(),
     );
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(collection: mapCollection),
@@ -635,8 +632,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     final entries = _getTargetItems(context);
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
         builder: (context) {
@@ -656,8 +652,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     final entries = _getTargetItems(context);
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
@@ -672,8 +667,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   void _goToSearch(BuildContext context) {
     final collection = context.read<CollectionLens>();
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,

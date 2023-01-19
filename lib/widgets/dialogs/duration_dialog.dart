@@ -106,5 +106,5 @@ class _DurationDialogState extends State<DurationDialog> {
     );
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _minutes.value * secondsInMinute + _seconds.value);
+  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop(_minutes.value * secondsInMinute + _seconds.value);
 }

@@ -248,8 +248,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       source: context.read<CollectionSource>(),
       fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
     );
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(collection: mapCollection),
@@ -259,8 +258,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToSlideshow(BuildContext context, Set<T> filters) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
         builder: (context) {
@@ -276,8 +274,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToStats(BuildContext context, Set<T> filters) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) {
@@ -291,8 +288,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToSearch(BuildContext context) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
@@ -310,7 +306,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.hideButtonLabel),
           ),
         ],
