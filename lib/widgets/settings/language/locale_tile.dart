@@ -25,8 +25,7 @@ class LocaleTile extends StatelessWidget {
         },
       ),
       onTap: () async {
-        final value = await Navigator.push<Locale>(
-          context,
+        final value = await Navigator.maybeOf(context)?.push<Locale>(
           MaterialPageRoute(
             settings: const RouteSettings(name: LocaleSelectionPage.routeName),
             builder: (context) => const LocaleSelectionPage(),

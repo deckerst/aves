@@ -460,8 +460,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                   // local context may be deactivated when action is triggered after navigation
                   final context = AvesApp.navigatorKey.currentContext;
                   if (context != null) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
+                    Navigator.maybeOf(context)?.pushAndRemoveUntil(
                       MaterialPageRoute(
                         settings: const RouteSettings(name: CollectionPage.routeName),
                         builder: (context) => CollectionPage(
@@ -521,8 +520,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry targetEntry) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
@@ -540,8 +538,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   void _goToDebug(BuildContext context, AvesEntry targetEntry) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: targetEntry),

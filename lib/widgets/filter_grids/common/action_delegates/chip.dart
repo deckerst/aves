@@ -40,8 +40,7 @@ class ChipActionDelegate {
     WidgetBuilder pageBuilder,
   ) {
     context.read<HighlightInfo>().set(filter);
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: RouteSettings(name: routeName),
         builder: pageBuilder,
@@ -58,7 +57,7 @@ class ChipActionDelegate {
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.hideButtonLabel),
           ),
         ],

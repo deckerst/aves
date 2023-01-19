@@ -61,7 +61,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
           }
           break;
         case AppMode.pickFilterInternal:
-          Navigator.pop<T>(context, filter);
+          Navigator.maybeOf(context)?.pop<T>(filter);
           break;
         case AppMode.pickMediaInternal:
         case AppMode.screenSaver:
@@ -96,8 +96,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      Navigator.push(
-        context,
+      Navigator.maybeOf(context)?.push(
         MaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (context) => CollectionPage(

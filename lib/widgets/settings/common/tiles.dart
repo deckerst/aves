@@ -24,8 +24,7 @@ class SettingsSubPageTile extends StatelessWidget {
     return ListTile(
       title: Text(title),
       onTap: () {
-        Navigator.push(
-          context,
+        Navigator.maybeOf(context)?.push(
           MaterialPageRoute(
             settings: RouteSettings(name: routeName),
             builder: builder,

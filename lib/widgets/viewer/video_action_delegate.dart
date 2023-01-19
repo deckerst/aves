@@ -120,8 +120,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                 if (context != null) {
                   final source = _collection.source;
                   final newUri = newFields['uri'] as String?;
-                  Navigator.pushAndRemoveUntil(
-                    context,
+                  Navigator.maybeOf(context)?.pushAndRemoveUntil(
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
@@ -181,8 +180,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       resumePosition = controller.currentPosition;
       await controller.pause();
     }
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: VideoSettingsPage.routeName),
         builder: (context) => const VideoSettingsPage(),

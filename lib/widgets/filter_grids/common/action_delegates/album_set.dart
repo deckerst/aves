@@ -191,8 +191,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
               highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
             } else {
               highlightInfo.set(filter);
-              await Navigator.pushAndRemoveUntil(
-                context,
+              await Navigator.maybeOf(context)?.pushAndRemoveUntil(
                 MaterialPageRoute(
                   settings: const RouteSettings(name: AlbumListPage.routeName),
                   builder: (_) => const AlbumListPage(),
@@ -239,7 +238,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(l10n.deleteButtonLabel),
           ),
         ],

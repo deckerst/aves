@@ -135,8 +135,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
   void _goTo(BuildContext context, List<AvesBottomNavItem> items, int index) {
     final item = items[index];
     final routeName = item.route;
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: RouteSettings(name: routeName),
         builder: (context) {

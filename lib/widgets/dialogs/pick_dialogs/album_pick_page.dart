@@ -35,8 +35,7 @@ Future<String?> pickAlbum({
     // source may not be fully initialized in view mode
     await source.init();
   }
-  final filter = await Navigator.push(
-    context,
+  final filter = await Navigator.maybeOf(context)?.push(
     MaterialPageRoute<AlbumFilter>(
       settings: const RouteSettings(name: _AlbumPickPage.routeName),
       builder: (context) => _AlbumPickPage(source: source, moveType: moveType),
@@ -188,7 +187,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
             // wait for the dialog to hide as applying the change may block the UI
             await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
             if (newAlbum != null && newAlbum.isNotEmpty) {
-              Navigator.pop<AlbumFilter>(context, AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum)));
+              Navigator.maybeOf(context)?.pop<AlbumFilter>(AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum)));
             }
           },
           tooltip: context.l10n.createAlbumTooltip,

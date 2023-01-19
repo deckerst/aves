@@ -180,8 +180,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
             fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
           )
         : null;
-    final latLng = await Navigator.push(
-      context,
+    final latLng = await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) => LocationPickPage(
@@ -222,8 +221,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     final _collection = widget.collection;
     if (_collection == null) return;
 
-    final entry = await Navigator.push<AvesEntry>(
-      context,
+    final entry = await Navigator.maybeOf(context)?.push<AvesEntry>(
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickPage.routeName),
         builder: (context) => ItemPickPage(
@@ -330,16 +328,16 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   void _submit(BuildContext context) {
     switch (_action) {
       case LocationEditAction.chooseOnMap:
-        Navigator.pop(context, _mapCoordinates);
+        Navigator.maybeOf(context)?.pop(_mapCoordinates);
         break;
       case LocationEditAction.copyItem:
-        Navigator.pop(context, _copyItemSource.latLng);
+        Navigator.maybeOf(context)?.pop(_copyItemSource.latLng);
         break;
       case LocationEditAction.setCustom:
-        Navigator.pop(context, _parseLatLng());
+        Navigator.maybeOf(context)?.pop(_parseLatLng());
         break;
       case LocationEditAction.remove:
-        Navigator.pop(context, ExtraAvesEntryMetadataEdition.removalLocation);
+        Navigator.maybeOf(context)?.pop(ExtraAvesEntryMetadataEdition.removalLocation);
         break;
     }
   }

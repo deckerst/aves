@@ -51,7 +51,7 @@ class InteractiveTile extends StatelessWidget {
             selection.toggleSelection(entry);
             break;
           case AppMode.pickMediaInternal:
-            Navigator.pop(context, entry);
+            Navigator.maybeOf(context)?.pop(entry);
             break;
           case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickFilterInternal:
@@ -81,8 +81,7 @@ class InteractiveTile extends StatelessWidget {
   }
 
   void _goToViewer(BuildContext context) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {

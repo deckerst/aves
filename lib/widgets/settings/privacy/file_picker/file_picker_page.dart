@@ -129,7 +129,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
                 padding: const EdgeInsets.all(8),
                 child: AvesOutlinedButton(
                   label: l10n.filePickerUseThisFolder,
-                  onPressed: () => Navigator.pop(context, currentDirectoryPath),
+                  onPressed: () => Navigator.maybeOf(context)?.pop(currentDirectoryPath),
                 ),
               ),
             ],
@@ -165,7 +165,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
               leading: Icon(icon),
               title: Text(v.getDescription(context)),
               onTap: () async {
-                Navigator.pop(context);
+                Navigator.maybeOf(context)?.pop();
                 await Future.delayed(Durations.drawerTransitionAnimation);
                 _goTo(v.path);
                 setState(() {});

@@ -185,7 +185,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                   label: l10n.entryActionRename,
                   onPressed: () {
                     settings.entryRenamingPattern = _patternTextController.text;
-                    Navigator.pop<NamingPattern>(context, _namingPatternNotifier.value);
+                    Navigator.maybeOf(context)?.pop<NamingPattern>(_namingPatternNotifier.value);
                   },
                 ),
               ),

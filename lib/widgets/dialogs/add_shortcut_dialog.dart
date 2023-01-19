@@ -108,8 +108,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     final _collection = widget.collection;
     if (_collection == null) return;
 
-    final entry = await Navigator.push<AvesEntry>(
-      context,
+    final entry = await Navigator.maybeOf(context)?.push<AvesEntry>(
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickPage.routeName),
         builder: (context) {
@@ -142,7 +141,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.pop(context, Tuple2<AvesEntry?, String>(_coverEntry, _nameController.text));
+      Navigator.maybeOf(context)?.pop(Tuple2<AvesEntry?, String>(_coverEntry, _nameController.text));
     }
   }
 }

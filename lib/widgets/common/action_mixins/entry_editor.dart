@@ -82,8 +82,7 @@ mixin EntryEditorMixin {
       final filters = <CollectionFilter>{...v.tags.map(TagFilter.new)};
       return MapEntry(v, filters);
     }));
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: TagEditorPage.routeName),
         builder: (context) => TagEditorPage(
@@ -128,7 +127,7 @@ mixin EntryEditorMixin {
           actions: [
             const CancelButton(),
             TextButton(
-              onPressed: () => Navigator.pop(context, true),
+              onPressed: () => Navigator.maybeOf(context)?.pop(true),
               child: Text(context.l10n.applyButtonLabel),
             ),
           ],

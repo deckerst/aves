@@ -329,8 +329,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final _collection = widget.collection;
     if (_collection == null) return;
 
-    final entry = await Navigator.push<AvesEntry>(
-      context,
+    final entry = await Navigator.maybeOf(context)?.push<AvesEntry>(
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickPage.routeName),
         builder: (context) => ItemPickPage(
@@ -384,7 +383,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.pop(context, _getModifier());
+      Navigator.maybeOf(context)?.pop(_getModifier());
     }
   }
 }

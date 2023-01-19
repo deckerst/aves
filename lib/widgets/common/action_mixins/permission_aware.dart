@@ -56,7 +56,7 @@ mixin PermissionAwareMixin {
             actions: [
               const CancelButton(),
               TextButton(
-                onPressed: () => Navigator.pop(context, true),
+                onPressed: () => Navigator.maybeOf(context)?.pop(true),
                 child: Text(MaterialLocalizations.of(context).okButtonLabel),
               ),
             ],

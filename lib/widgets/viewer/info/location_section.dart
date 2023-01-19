@@ -137,8 +137,7 @@ class _LocationSectionState extends State<LocationSection> {
       listenToSource: true,
       fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
     );
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(

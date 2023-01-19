@@ -172,7 +172,18 @@ open class MainActivity : FlutterActivity() {
         mediaSessionHandler.dispose()
         mediaStoreChangeStreamHandler.dispose()
         settingsChangeStreamHandler.dispose()
-        super.onDestroy()
+        try {
+            super.onDestroy()
+        } catch (e: Exception) {
+            // on Android 11, app may crash as follows:
+            // `Fatal Exception:`
+            // `java.lang.RuntimeException: Unable to destroy activity {deckers.thibault.aves/deckers.thibault.aves.MainActivity}:`
+            // `java.lang.IllegalArgumentException: NetworkCallback was not registered`
+            // related to this error:
+            // `Package android does not belong to 10162`
+            // cf https://issuetracker.google.com/issues/175055271
+            Log.e(LOG_TAG, "failed while destroying activity", e)
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

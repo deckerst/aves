@@ -284,8 +284,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
   }
 
   void _goToSearch(BuildContext context) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: SettingsSearchDelegate(
           searchFieldLabel: context.l10n.settingsSearchFieldLabel,

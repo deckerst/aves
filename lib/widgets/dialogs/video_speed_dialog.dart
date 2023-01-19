@@ -66,5 +66,5 @@ class _VideoSpeedDialogState extends State<VideoSpeedDialog> {
     );
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, _speed);
+  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop(_speed);
 }

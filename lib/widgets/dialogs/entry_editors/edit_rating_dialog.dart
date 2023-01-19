@@ -126,7 +126,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
         entryRating = 0;
         break;
     }
-    Navigator.pop(context, entryRating);
+    Navigator.maybeOf(context)?.pop(entryRating);
   }
 }
 

@@ -96,7 +96,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
       actions: [
         const CancelButton(),
         TextButton(
-          onPressed: () => Navigator.pop(context, color),
+          onPressed: () => Navigator.maybeOf(context)?.pop(color),
           child: Text(context.l10n.applyButtonLabel),
         ),
       ],

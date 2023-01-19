@@ -6,6 +6,7 @@ import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 
 abstract class MediaSessionService {
   Stream<MediaCommandEvent> get mediaCommands;
@@ -15,14 +16,22 @@ abstract class MediaSessionService {
   Future<void> release();
 }
 
-class PlatformMediaSessionService implements MediaSessionService {
+class PlatformMediaSessionService implements MediaSessionService, Disposable {
   static const _platformObject = MethodChannel('deckers.thibault/aves/media_session');
 
+  final List<StreamSubscription> _subscriptions = [];
   final EventChannel _mediaCommandChannel = const OptionalEventChannel('deckers.thibault/aves/media_command');
   final StreamController _streamController = StreamController.broadcast();
 
   PlatformMediaSessionService() {
-    _mediaCommandChannel.receiveBroadcastStream().listen((event) => _onMediaCommand(event as Map?));
+    _subscriptions.add(_mediaCommandChannel.receiveBroadcastStream().listen((event) => _onMediaCommand(event as Map?)));
+  }
+
+  @override
+  FutureOr onDispose() {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
   }
 
   @override

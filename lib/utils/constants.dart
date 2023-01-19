@@ -2,8 +2,16 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Constants {
+  static const storagePermissions = [
+    Permission.storage,
+    // for media access on Android >=13
+    Permission.photos,
+    Permission.videos,
+  ];
+
   static const separator = ' • ';
 
   // `Color(0x00FFFFFF)` is different from `Color(0x00000000)` (or `Colors.transparent`)

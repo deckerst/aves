@@ -222,8 +222,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void _goToPolicyPage() {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: PolicyPage.routeName),
         builder: (context) => const PolicyPage(),

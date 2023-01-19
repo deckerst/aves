@@ -153,7 +153,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     ];
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, {
+  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop({
         StreamType.video: _currentVideo,
         StreamType.audio: _currentAudio,
         StreamType.text: _currentText,
