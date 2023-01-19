@@ -110,9 +110,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           return canWrite;
         case EntryAction.copyToClipboard:
         case EntryAction.open:
+        case EntryAction.setAs:
           return !settings.useTvLayout;
         case EntryAction.info:
-        case EntryAction.setAs:
         case EntryAction.share:
           return true;
         case EntryAction.restore:

@@ -164,7 +164,7 @@ class _WelcomePageState extends State<WelcomePage> {
     final canEnableErrorReporting = context.select<AppFlavor, bool>((v) => v.canEnableErrorReporting);
     const contentPadding = EdgeInsets.symmetric(horizontal: 8);
     final switches = ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: MarkdownContainer.maxWidth),
+      constraints: const BoxConstraints(maxWidth: MarkdownContainer.mobileMaxWidth),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
