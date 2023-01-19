@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,6 @@ class AvesDialog extends StatelessWidget {
   final String? title;
   final ScrollController scrollController;
   final List<Widget>? scrollableContent;
-  final bool hasScrollBar;
   final double horizontalContentPadding;
   final Widget? content;
   final List<Widget> actions;
@@ -24,7 +24,6 @@ class AvesDialog extends StatelessWidget {
     this.title,
     ScrollController? scrollController,
     this.scrollableContent,
-    this.hasScrollBar = true,
     this.horizontalContentPadding = defaultHorizontalContentPadding,
     this.content,
     required this.actions,
@@ -69,7 +68,7 @@ class AvesDialog extends StatelessWidget {
         children: scrollableContent!,
       );
 
-      if (hasScrollBar) {
+      if (!settings.useTvLayout) {
         child = Theme(
           data: Theme.of(context).copyWith(
             scrollbarTheme: ScrollbarThemeData(
