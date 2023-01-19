@@ -55,6 +55,7 @@ class MimeTypes {
   static const aviMSVideo = 'video/msvideo';
   static const aviVnd = 'video/vnd.avi';
   static const aviXMSVideo = 'video/x-msvideo';
+  static const dvd = 'video/dvd';
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
   static const mkv = 'video/mkv';
@@ -90,7 +91,7 @@ class MimeTypes {
 
   static const Set<String> _knownOpaqueImages = {jpeg};
 
-  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviMSVideo, aviVnd, aviXMSVideo, flv, flvX, mkv, mkvX, mov, movX, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
+  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviMSVideo, aviVnd, aviXMSVideo, dvd, flv, flvX, mkv, mkvX, mov, movX, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
 
   static final Set<String> knownMediaTypes = {
     anyImage,
