@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- SD card access grant on Android Lollipop
+
 ## <a id="v1.7.10"></a>[v1.7.10] - 2023-01-18
 
 ### Added

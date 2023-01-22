@@ -41,7 +41,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canGrantDirectoryAccess" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canPrint" to (sdkInt >= Build.VERSION_CODES.KITKAT),
-                "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
+                "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.M),
                 "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),
                 "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
                 "hasGeocoder" to Geocoder.isPresent(),
