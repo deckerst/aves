@@ -51,14 +51,17 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
 
     private suspend fun updateSession(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        val title = call.argument<String>("title")
+        val title = call.argument<String>("title") ?: uri?.toString()
         val durationMillis = call.argument<Number>("durationMillis")?.toLong()
         val stateString = call.argument<String>("state")
         val positionMillis = call.argument<Number>("positionMillis")?.toLong()
         val playbackSpeed = call.argument<Number>("playbackSpeed")?.toFloat()
 
         if (uri == null || title == null || durationMillis == null || stateString == null || positionMillis == null || playbackSpeed == null) {
-            result.error("update-args", "missing arguments", null)
+            result.error(
+                "updateSession-args", "missing arguments: uri=$uri, title=$title, durationMillis=$durationMillis" +
+                        ", stateString=$stateString, positionMillis=$positionMillis, playbackSpeed=$playbackSpeed", null
+            )
             return
         }
 
