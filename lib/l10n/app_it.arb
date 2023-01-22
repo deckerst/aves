@@ -1208,5 +1208,7 @@
   "settingsViewerShowDescription": "Mostra la descrizione",
   "@settingsViewerShowDescription": {},
   "tooManyItemsErrorDialogMessage": "Riprova con meno elementi.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Trascina su o giù per aggiustare luminosità/volume",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }

@@ -1366,5 +1366,7 @@
   "settingsModificationWarningDialogMessage": "Andre innstillinger vil bli endret.",
   "@settingsModificationWarningDialogMessage": {},
   "tooManyItemsErrorDialogMessage": "Prøv igjen med færre elementer.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Dra opp eller ned for å justere lys-/lydstyrke",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }
