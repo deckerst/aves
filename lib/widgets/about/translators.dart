@@ -45,6 +45,7 @@ class AboutTranslators extends StatelessWidget {
     Contributor('Tijolinho', 'pedrohenrique29.alfenas@gmail.com'),
     Contributor('Piotr K', '1337.kelt@gmail.com'),
     Contributor('rehork', 'cooky@e.email'),
+    Contributor('Eric', 'hamburger2048@users.noreply.hosted.weblate.org'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
@@ -52,6 +53,7 @@ class AboutTranslators extends StatelessWidget {
     // Contributor('tryvseu', 'tryvseu@tuta.io'), // Nynorsk
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
+    // Contributor('Aitor Salaberria', 'trslbrr@gmail.com'), // Basque
   };
 
   @override
