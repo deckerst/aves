@@ -313,7 +313,7 @@
   "@videoPlaybackMuted": {},
   "videoPlaybackWithSound": "Přehrát se zvukem",
   "@videoPlaybackWithSound": {},
-  "themeBrightnessLight": "Svetlé",
+  "themeBrightnessLight": "Světlé",
   "@themeBrightnessLight": {},
   "themeBrightnessDark": "Tmavé",
   "@themeBrightnessDark": {},
@@ -485,13 +485,13 @@
   "@renameEntrySetPagePreviewSectionTitle": {},
   "renameProcessorName": "Název",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat toto album a tuto položku?} =2..4{Smazat toto album a tyto {count} položky?} other{Smazat toto album a těchto {count} položek?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat toto album a v něm obsaženou položku?} =2..4{Smazat toto album a v něm obsažené {count} položky?} other{Smazat toto album a v něm obsažených {count} položek?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat tato alba a jejich položku?} =2..4{Smazat tato alba a jejich {count} položky?} other{Smazat tato alba a jejich {count} položek?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat tato alba a v nich obsaženou položku?} =2..4{Smazat tato alba a v nich obsažené {count} položky?} other{Smazat tato alba a v nich obsažených {count} položek?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -1354,5 +1354,19 @@
   "mapAttributionStamen": "Mapová data © [OpenStreetMap](https://www.openstreetmap.org/copyright) přispěvatelé • Dlaždice z [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "panoramaDisableSensorControl": "Zakázat ovládání senzorem",
-  "@panoramaDisableSensorControl": {}
+  "@panoramaDisableSensorControl": {},
+  "filterLocatedLabel": "S polohou",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Se štítky",
+  "@filterTaggedLabel": {},
+  "settingsDisplayUseTvInterface": "Rozhraní Android TV",
+  "@settingsDisplayUseTvInterface": {},
+  "tooManyItemsErrorDialogMessage": "Zkuste znovu s několika dalšími položkami.",
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsModificationWarningDialogMessage": "Ostatní nastavení budou upravena.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsViewerShowDescription": "Zobrazit popis",
+  "@settingsViewerShowDescription": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Potáhnout nahoru či dolů pro úpravu jasu/hlasitosti",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }

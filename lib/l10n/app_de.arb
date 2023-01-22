@@ -389,9 +389,9 @@
   "@renameProcessorCounter": {},
   "renameProcessorName": "Name",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Sicher, dass dieses Album und der Inhalt gelöscht werden soll?} other{Sicher, dass dieses Album und deren {count} Elemente gelöscht werden sollen?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Das Album und das darin enthaltene Element löschen?} other{Das Album und die {count} darin enthaltenen Elemente löschen?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {},
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Sicher, dass diese Alben und deren Inhalt gelöscht werden sollen?} other{Sicher, dass diese Alben und deren {count} Elemente gelöscht werden sollen?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Diese Alben und die darin enthaltenen Elemente löschen?} other{Diese Alben und die darin enthaltenen {count} Objekte löschen?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {},
   "exportEntryDialogFormat": "Format:",
   "@exportEntryDialogFormat": {},
@@ -595,7 +595,7 @@
   "@collectionCopySuccessFeedback": {},
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 Element verschoben} other{{count} Elemente verschoben}}",
   "@collectionMoveSuccessFeedback": {},
-  "collectionRenameSuccessFeedback": "{count, plural, =1{1 Element unmebannt} other{{count} Elemente umbenannt}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{1 Element umbenannt} other{{count} Elemente umbenannt}}",
   "@collectionRenameSuccessFeedback": {},
   "collectionEditSuccessFeedback": "{count, plural, =1{1 Element bearbeitet} other{ {count} Elemente bearbeitet}}",
   "@collectionEditSuccessFeedback": {},
@@ -1188,5 +1188,27 @@
   "entryInfoActionRemoveLocation": "Standort entfernen",
   "@entryInfoActionRemoveLocation": {},
   "entryActionShareVideoOnly": "Nur das Video teilen",
-  "@entryActionShareVideoOnly": {}
+  "@entryActionShareVideoOnly": {},
+  "filterLocatedLabel": "Mit Standort",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "Getaggt",
+  "@filterTaggedLabel": {},
+  "settingsAccessibilityShowPinchGestureAlternatives": "Alternativen für Multi-Touch-Gesten anzeigen",
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "settingsDisplayUseTvInterface": "Android-TV Oberfläche",
+  "@settingsDisplayUseTvInterface": {},
+  "columnCount": "{count, plural, =1{1 Spalte} other{{count} Spalten}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Nach oben oder unten wischen, um die Helligkeit/Lautstärke einzustellen",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {},
+  "tooManyItemsErrorDialogMessage": "Noch einmal mit weniger Elementen versuchen.",
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsModificationWarningDialogMessage": "Andere Einstellungen werden angepasst.",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsViewerShowDescription": "Beschreibung anzeigen",
+  "@settingsViewerShowDescription": {}
 }

@@ -1,0 +1,85 @@
+{
+  "saveTooltip": "Gorde",
+  "@saveTooltip": {},
+  "columnCount": "{count, plural, =1{zutabe 1} other{{count} zutabe}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "timeSeconds": "{seconds, plural, =1{segundu 1} other{{seconds} segundu}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "timeMinutes": "{minutes, plural, =1{minutu 1} other{{minutes} minutu}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "timeDays": "{days, plural, =1{egun 1} other{{days} egun}}",
+  "@timeDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "focalLength": "{length} mm",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "applyButtonLabel": "APLIKATU",
+  "@applyButtonLabel": {},
+  "deleteButtonLabel": "EZABATU",
+  "@deleteButtonLabel": {},
+  "nextButtonLabel": "HURRENGOA",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "ERAKUTSI",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "EZKUTATU",
+  "@hideButtonLabel": {},
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeMessage": "Ongi etorri",
+  "@welcomeMessage": {},
+  "welcomeOptional": "Aukerazkoa",
+  "@welcomeOptional": {},
+  "itemCount": "{count, plural, =1{elementu 1} other{{count} elementu}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "welcomeTermsToggle": "Termino eta baldintzekin ados nago",
+  "@welcomeTermsToggle": {},
+  "cancelTooltip": "Utzi",
+  "@cancelTooltip": {},
+  "continueButtonLabel": "JARRAITU",
+  "@continueButtonLabel": {},
+  "nextTooltip": "Hurrengoa",
+  "@nextTooltip": {},
+  "changeTooltip": "Aldatu",
+  "@changeTooltip": {},
+  "clearTooltip": "Garbitu",
+  "@clearTooltip": {},
+  "previousTooltip": "Aurrekoa",
+  "@previousTooltip": {},
+  "showTooltip": "Erakutsi",
+  "@showTooltip": {},
+  "actionRemove": "Ezabatu",
+  "@actionRemove": {},
+  "resetTooltip": "Berrezarri",
+  "@resetTooltip": {},
+  "hideTooltip": "Ezkutatu",
+  "@hideTooltip": {},
+  "doubleBackExitMessage": "Sakatu \"itzuli\" berriro irteteko.",
+  "@doubleBackExitMessage": {},
+  "pickTooltip": "Aukeratu",
+  "@pickTooltip": {}
+}
