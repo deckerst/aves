@@ -16,6 +16,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
@@ -125,7 +126,7 @@ class _CollectionPageState extends State<CollectionPage> {
 
           Widget page;
           if (useTvLayout) {
-            page = Scaffold(
+            page = AvesScaffold(
               body: Row(
                 children: [
                   TvRail(
@@ -150,7 +151,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     _draggableScrollBarEventStreamController.add(notification.event);
                     return false;
                   },
-                  child: Scaffold(
+                  child: AvesScaffold(
                     body: body,
                     floatingActionButton: _buildFab(context, hasSelection),
                     drawer: canNavigate ? AppDrawer(currentCollection: _collection) : null,

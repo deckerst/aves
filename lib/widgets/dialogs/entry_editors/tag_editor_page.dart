@@ -6,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -61,7 +62,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
     });
     List<MapEntry<CollectionFilter, int>> sortedTags = _sortCurrentTags(entryCountByTag);
 
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.tagEditorPageTitle),
         actions: [

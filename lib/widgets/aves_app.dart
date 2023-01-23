@@ -29,6 +29,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -210,7 +211,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         }
                         final home = initialized
                             ? _getFirstPage()
-                            : Scaffold(
+                            : AvesScaffold(
                                 body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                               );
                         return Selector<Settings, Tuple3<Locale?, AvesThemeBrightness, bool>>(

@@ -4,6 +4,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/basic/reselectable_radio_list_tile.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/language/locale_tile.dart';
 import 'package:collection/collection.dart';
@@ -31,7 +32,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
   @override
   Widget build(BuildContext context) {
     final useTvLayout = settings.useTvLayout;
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !useTvLayout,
         title: Text(context.l10n.settingsLanguagePageTitle),

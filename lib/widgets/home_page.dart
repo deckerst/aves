@@ -18,6 +18,7 @@ import 'package:aves/services/widget_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
@@ -88,7 +89,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) => const Scaffold();
+  Widget build(BuildContext context) => const AvesScaffold();
 
   Future<void> _setup() async {
     final stopwatch = Stopwatch()..start();

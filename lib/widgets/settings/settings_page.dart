@@ -13,6 +13,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -74,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
     final appBarTitle = Text(context.l10n.settingsPageTitle);
 
     if (settings.useTvLayout) {
-      return Scaffold(
+      return AvesScaffold(
         body: AvesPopScope(
           handlers: const [TvNavigationPopHandler.pop],
           child: Row(
@@ -148,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
         ),
       );
     } else {
-      return Scaffold(
+      return AvesScaffold(
         appBar: AppBar(
           title: InteractiveAppBarTitle(
             onTap: () => _goToSearch(context),

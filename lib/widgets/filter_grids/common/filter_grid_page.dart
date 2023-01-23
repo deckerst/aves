@@ -13,6 +13,7 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
@@ -117,7 +118,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
     if (useTvLayout) {
       final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
-      return Scaffold(
+      return AvesScaffold(
         body: canNavigate
             ? Row(
                 children: [
@@ -148,7 +149,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               _draggableScrollBarEventStreamController.add(notification.event);
               return false;
             },
-            child: Scaffold(
+            child: AvesScaffold(
               body: body,
               drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar

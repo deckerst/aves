@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/viewer/controller.dart';
@@ -59,7 +60,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
     final entries = _slideshowCollection.sortedEntries;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.slideshow),
-      child: Scaffold(
+      child: AvesScaffold(
         body: entries.isEmpty
             ? EmptyContent(
                 icon: AIcons.image,
