@@ -5,6 +5,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
@@ -520,13 +521,15 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   Future<void> _checkInitHighlight() async {
     final highlightInfo = context.read<HighlightInfo>();
     final filter = highlightInfo.clear();
-    if (filter is T) {
-      final gridItem = visibleSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
-      if (gridItem != null) {
-        await Future.delayed(Durations.highlightScrollInitDelay);
-        highlightInfo.trackItem(gridItem, highlightItem: filter);
-      }
-    }
+    if (filter is! T) return;
+
+    final item = visibleSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
+    if (item == null) return;
+
+    await Future.delayed(Durations.highlightScrollInitDelay);
+
+    final animate = context.read<Settings>().accessibilityAnimations.animate;
+    highlightInfo.trackItem(item, animate: animate, highlightItem: filter);
   }
 }
 
