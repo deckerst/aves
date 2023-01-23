@@ -243,9 +243,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  void _leaveSelectionMode(BuildContext context) {
-    final selection = context.read<Selection<AvesEntry>?>();
-    selection?.browse();
+  void _browse(BuildContext context) {
+    context.read<Selection<AvesEntry>?>()?.browse();
   }
 
   Set<AvesEntry> _getTargetItems(BuildContext context) {
@@ -278,7 +277,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     collection.source.analyze(controller, entries: entries);
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _delete(BuildContext context) async {
@@ -329,14 +328,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       },
     );
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
     await doMove(context, moveType: moveType, entries: entries);
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _rename(BuildContext context) async {
@@ -358,7 +357,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     })).whereNotNullValue();
     await rename(context, entriesToNewName: entriesToNewName, persist: true);
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _toggleFavourite(BuildContext context) async {
@@ -369,7 +368,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       await favourites.add(entries);
     }
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _edit(
@@ -437,7 +436,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
       },
     );
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<Set<AvesEntry>?> _getEditableTargetItems(

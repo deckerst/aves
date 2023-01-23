@@ -230,6 +230,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       context,
       moveType: moveType,
       entriesByDestination: entriesByDestination,
+      onSuccess: onSuccess,
     );
   }
 
