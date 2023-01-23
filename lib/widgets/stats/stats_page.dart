@@ -15,6 +15,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -219,7 +220,7 @@ class _StatsPageState extends State<StatsPage> {
           }
         }
 
-        return Scaffold(
+        return AvesScaffold(
           appBar: AppBar(
             automaticallyImplyLeading: !useTvLayout,
             title: Text(l10n.statsPageTitle),
@@ -366,7 +367,7 @@ class StatsTopPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(title),

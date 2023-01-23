@@ -8,6 +8,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -58,7 +59,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.renameEntrySetPageTitle),
       ),

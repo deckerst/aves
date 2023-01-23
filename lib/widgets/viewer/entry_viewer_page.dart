@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
@@ -40,7 +41,7 @@ class _EntryViewerPageState extends State<EntryViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AvesScaffold(
       body: ViewStateConductorProvider(
         child: VideoConductorProvider(
           child: MultiPageConductorProvider(

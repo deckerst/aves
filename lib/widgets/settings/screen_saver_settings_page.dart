@@ -3,6 +3,7 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/slideshow_video_playback.dart';
 import 'package:aves/model/settings/enums/viewer_transition.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/collection_tile.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
@@ -17,7 +18,7 @@ class ScreenSaverSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.settingsScreenSaverPageTitle),
       ),

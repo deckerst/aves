@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
@@ -123,7 +124,7 @@ class _SearchPageState extends State<SearchPage> {
       case null:
         break;
     }
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         leading: Hero(
           tag: AvesAppBar.leadingHeroTag,

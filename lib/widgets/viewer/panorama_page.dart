@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
@@ -60,7 +61,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
         _onLeave();
         return SynchronousFuture(true);
       },
-      child: Scaffold(
+      child: AvesScaffold(
         body: Stack(
           children: [
             ValueListenableBuilder<SensorControl>(

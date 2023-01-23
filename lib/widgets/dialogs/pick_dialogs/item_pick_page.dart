@@ -5,6 +5,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:collection/collection.dart';
@@ -39,7 +40,7 @@ class _ItemPickPageState extends State<ItemPickPage> {
     final liveFilter = collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.pickMediaInternal),
-      child: Scaffold(
+      child: AvesScaffold(
         body: SelectionProvider<AvesEntry>(
           child: QueryProvider(
             initialQuery: liveFilter?.query,

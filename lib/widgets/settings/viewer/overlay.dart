@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class ViewerOverlayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final useTvLayout = settings.useTvLayout;
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !useTvLayout,
         title: Text(context.l10n.settingsViewerOverlayPageTitle),

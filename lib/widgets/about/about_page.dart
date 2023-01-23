@@ -5,6 +5,7 @@ import 'package:aves/widgets/about/credits.dart';
 import 'package:aves/widgets/about/licenses.dart';
 import 'package:aves/widgets/about/translators.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
@@ -50,7 +51,7 @@ class AboutPage extends StatelessWidget {
     );
 
     if (useTvLayout) {
-      return Scaffold(
+      return AvesScaffold(
         body: AvesPopScope(
           handlers: const [TvNavigationPopHandler.pop],
           child: Row(
@@ -69,7 +70,7 @@ class AboutPage extends StatelessWidget {
         ),
       );
     } else {
-      return Scaffold(
+      return AvesScaffold(
         appBar: AppBar(
           title: appBarTitle,
         ),

@@ -1,6 +1,7 @@
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/video_controls.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class VideoControlsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(context.l10n.settingsVideoControlsPageTitle),
       ),
