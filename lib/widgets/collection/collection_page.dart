@@ -7,6 +7,7 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -214,11 +215,13 @@ class _CollectionPageState extends State<CollectionPage> {
     final highlightTest = widget.highlightTest;
     if (highlightTest == null) return;
 
+    final item = _collection.sortedEntries.firstWhereOrNull(highlightTest);
+    if (item == null) return;
+
     final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
     await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
-    final targetEntry = _collection.sortedEntries.firstWhereOrNull(highlightTest);
-    if (targetEntry != null) {
-      context.read<HighlightInfo>().trackItem(targetEntry, highlightItem: targetEntry);
-    }
+
+    final animate = context.read<Settings>().accessibilityAnimations.animate;
+    context.read<HighlightInfo>().trackItem(item, animate: animate, highlightItem: item);
   }
 }
