@@ -24,7 +24,7 @@ class MagnifierGestureDetectorScope extends InheritedWidget {
     required Widget child,
   }) : super(child: child);
 
-  static MagnifierGestureDetectorScope? of(BuildContext context) {
+  static MagnifierGestureDetectorScope? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MagnifierGestureDetectorScope>();
   }
 

@@ -336,10 +336,13 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
               ],
             );
             if (useVerticalDragGesture) {
-              videoChild = MagnifierGestureDetectorScope.of(context)!.copyWith(
-                acceptPointerEvent: MagnifierGestureRecognizer.isYPan,
-                child: videoChild,
-              );
+              final scope = MagnifierGestureDetectorScope.maybeOf(context);
+              if (scope != null) {
+                videoChild = scope.copyWith(
+                  acceptPointerEvent: MagnifierGestureRecognizer.isYPan,
+                  child: videoChild,
+                );
+              }
             }
             return Stack(
               fit: StackFit.expand,
