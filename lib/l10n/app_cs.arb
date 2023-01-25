@@ -44,19 +44,19 @@
       }
     }
   },
-  "timeDays": "{days, plural, =1{1 den} =2..4{{days} dny} other{{days} dnů}}",
+  "timeDays": "{days, plural, =1{1 den} few{{days} dny} other{{days} dnů}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
     }
   },
-  "itemCount": "{count, plural, =1{1 položka} =2..4{{count} položky} other{{count} položek}}",
+  "itemCount": "{count, plural, =1{1 položka} few{{count} položky} other{{count} položek}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "columnCount": "{count, plural, =1{1 sloupec} =2..4{{count} sloupce} other{{count} sloupců}}",
+  "columnCount": "{count, plural, =1{1 sloupec} few{{count} sloupce} other{{count} sloupců}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -436,7 +436,7 @@
   "@addShortcutButtonLabel": {},
   "noMatchingAppDialogMessage": "Pro tuto operaci není k dispozici žádná aplikace.",
   "@noMatchingAppDialogMessage": {},
-  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Smazat tuto položku?} =2..4{Smazat tyto {count} položky?} other{Smazat těchto {count} položek?}}",
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Smazat tuto položku?} few{Smazat tyto {count} položky?} other{Smazat těchto {count} položek?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -485,13 +485,13 @@
   "@renameEntrySetPagePreviewSectionTitle": {},
   "renameProcessorName": "Název",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat toto album a v něm obsaženou položku?} =2..4{Smazat toto album a v něm obsažené {count} položky?} other{Smazat toto album a v něm obsažených {count} položek?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat toto album a v něm obsaženou položku?} few{Smazat toto album a v něm obsažené {count} položky?} other{Smazat toto album a v něm obsažených {count} položek?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat tato alba a v nich obsaženou položku?} =2..4{Smazat tato alba a v nich obsažené {count} položky?} other{Smazat tato alba a v nich obsažených {count} položek?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat tato alba a v nich obsaženou položku?} few{Smazat tato alba a v nich obsažené {count} položky?} other{Smazat tato alba a v nich obsažených {count} položek?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -955,7 +955,7 @@
   "@nameConflictStrategySkip": {},
   "keepScreenOnNever": "Nikdy",
   "@keepScreenOnNever": {},
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Přesunout tuto položku do koše?} =2..4{Přesunout tyto {count} položky do koše?} other{Přesunout těchto {count} položek do koše?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Přesunout tuto položku do koše?} few{Přesunout tyto {count} položky do koše?} other{Přesunout těchto {count} položek do koše?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -1121,25 +1121,25 @@
       "count": {}
     }
   },
-  "collectionCopySuccessFeedback": "{count, plural, =1{Zkopírována 1 položka} =2..4{Zkopírovány {count} položky} other{Zkopírováno {count} položek}}",
+  "collectionCopySuccessFeedback": "{count, plural, =1{Zkopírována 1 položka} few{Zkopírovány {count} položky} other{Zkopírováno {count} položek}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionMoveSuccessFeedback": "{count, plural, =1{Přesunuta 1 položka} =2..4{Přesunuty {count} položky} other{Přesunuto {count} položek}}",
+  "collectionMoveSuccessFeedback": "{count, plural, =1{Přesunuta 1 položka} few{Přesunuty {count} položky} other{Přesunuto {count} položek}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionRenameSuccessFeedback": "{count, plural, =1{Přejmenována 1 položka} =2..4{Přejmenovány {count} položky} other{Přejmenováno {count} položek}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{Přejmenována 1 položka} few{Přejmenovány {count} položky} other{Přejmenováno {count} položek}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionEditSuccessFeedback": "{count, plural, =1{Upravena 1 položka} =2..4{Upraveny {count} položky} other{Upraveno {count} položek}}",
+  "collectionEditSuccessFeedback": "{count, plural, =1{Upravena 1 položka} few{Upraveny {count} položky} other{Upraveno {count} položek}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {}
@@ -1283,13 +1283,13 @@
   "@settingsThumbnailShowVideoDuration": {},
   "settingsCollectionQuickActionsTile": "Rychlé akce",
   "@settingsCollectionQuickActionsTile": {},
-  "timeMinutes": "{minutes, plural, =1{1 minuta} =2..4{{minutes} minuty} other{{minutes} minut}}",
+  "timeMinutes": "{minutes, plural, =1{1 minuta} few{{minutes} minuty} other{{minutes} minut}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 sekunda} =2..4{{seconds} sekundy} other{{seconds} sekund}}",
+  "timeSeconds": "{seconds, plural, =1{1 sekunda} few{{seconds} sekundy} other{{seconds} sekund}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -1331,7 +1331,7 @@
   "@settingsStorageAccessBanner": {},
   "settingsUnitSystemTile": "Jednotky",
   "@settingsUnitSystemTile": {},
-  "statsWithGps": "{count, plural, =1{1 položka s polohou} =2..4{{count} položky s polohou} other{{count} položek s polohou}}",
+  "statsWithGps": "{count, plural, =1{1 položka s polohou} few{{count} položky s polohou} other{{count} položek s polohou}}",
   "@statsWithGps": {
     "placeholders": {
       "count": {}
