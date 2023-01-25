@@ -235,31 +235,31 @@
   "@displayRefreshRatePreferLowest": {},
   "videoPlaybackMuted": "Odtwarzaj bez dźwięku",
   "@videoPlaybackMuted": {},
-  "itemCount": "{count, plural, =1{1 element} =2..4{{count} elementy} other{{count} elelmentów}}",
+  "itemCount": "{count, plural, =1{1 element} few{{count} elementy} other{{count} elelmentów}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "columnCount": "{count, plural, =1{1 rząd} =2..4{{count} rzędy} other{{count} rzędów}}",
+  "columnCount": "{count, plural, =1{1 rząd} few{{count} rzędy} other{{count} rzędów}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 sekunda} =2..4{{seconds} sekundy} other{{seconds} sekund}}",
+  "timeSeconds": "{seconds, plural, =1{1 sekunda} few{{seconds} sekundy} other{{seconds} sekund}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minuta} =2..4{{minutes} minuty} other{{minutes} minut}}",
+  "timeMinutes": "{minutes, plural, =1{1 minuta} few{{minutes} minuty} other{{minutes} minut}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 dzień} =2..4{{days} dni} other{{days} dni}}",
+  "timeDays": "{days, plural, =1{1 dzień} few{{days} dni} other{{days} dni}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -547,7 +547,7 @@
   "@renameProcessorCounter": {},
   "renameProcessorName": "Nazwa",
   "@renameProcessorName": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Usunąć ten album i jego element?} =2..4{Usunąć ten album i jego {count} elementy?} other{Usunąć ten album i jego {count} elementów?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Usunąć ten album i jego element?} few{Usunąć ten album i jego {count} elementy?} other{Usunąć ten album i jego {count} elementów?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -603,13 +603,13 @@
   "@sectionUnknown": {},
   "dateToday": "Dzisiaj",
   "@dateToday": {},
-  "collectionCopySuccessFeedback": "{count, plural, =1{Skopiowano 1 element} =2..4{Skopiowano {count} elementy} other{Skopiowano {count} elementów}}",
+  "collectionCopySuccessFeedback": "{count, plural, =1{Skopiowano 1 element} few{Skopiowano {count} elementy} other{Skopiowano {count} elementów}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {}
     }
   },
-  "collectionEditSuccessFeedback": "{count, plural, =1{Wyedytowano 1 element} =2..4{Wyedytowano {count} elementy} other{Wyedytowano {count} elementów}}",
+  "collectionEditSuccessFeedback": "{count, plural, =1{Wyedytowano 1 element} few{Wyedytowano {count} elementy} other{Wyedytowano {count} elementów}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {}
@@ -815,7 +815,7 @@
   "@albumGroupType": {},
   "renameEntrySetPagePreviewSectionTitle": "Podgląd",
   "@renameEntrySetPagePreviewSectionTitle": {},
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Usunąć te albumy i ich element?} =2..4{Usunąć te albumy i ich {count} elementy?} other{Usunąć te albumy i ich {count} elementów?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Usunąć te albumy i ich element?} few{Usunąć te albumy i ich {count} elementy?} other{Usunąć te albumy i ich {count} elementów?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
@@ -903,7 +903,7 @@
       "count": {}
     }
   },
-  "collectionMoveSuccessFeedback": "{count, plural, =1{Przeniesiono 1 element} =2..4{Przeniesiono {count} elementy} other{Przeniesiono {count} elementów}}",
+  "collectionMoveSuccessFeedback": "{count, plural, =1{Przeniesiono 1 element} few{Przeniesiono {count} elementy} other{Przeniesiono {count} elementów}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {}
@@ -1319,7 +1319,7 @@
   "@settingsStorageAccessPageTitle": {},
   "settingsStorageAccessBanner": "Niektóre katalogi wymagają jawnego udzielenia dostępu, aby modyfikować znajdujące się w nich pliki. Możesz przejrzeć tutaj katalogi, do których wcześniej udzielono dostępu.",
   "@settingsStorageAccessBanner": {},
-  "statsWithGps": "{count, plural, =1{1 element z położeniem} =2..4{{count} elementy z położeniem} other{{count} elementów z położeniem}}",
+  "statsWithGps": "{count, plural, =1{1 element z położeniem} few{{count} elementy z położeniem} other{{count} elementów z położeniem}}",
   "@statsWithGps": {
     "placeholders": {
       "count": {}
