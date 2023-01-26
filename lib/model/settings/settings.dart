@@ -152,6 +152,7 @@ class Settings extends ChangeNotifier {
   // tag editor
 
   static const tagEditorCurrentFilterSectionExpandedKey = 'tag_editor_current_filter_section_expanded';
+  static const tagEditorExpandedSectionKey = 'tag_editor_expanded_section';
 
   // map
   static const mapStyleKey = 'info_map_style';
@@ -702,6 +703,10 @@ class Settings extends ChangeNotifier {
 
   set tagEditorCurrentFilterSectionExpanded(bool newValue) => _set(tagEditorCurrentFilterSectionExpandedKey, newValue);
 
+  String? get tagEditorExpandedSection => getString(tagEditorExpandedSectionKey);
+
+  set tagEditorExpandedSection(String? newValue) => _set(tagEditorExpandedSectionKey, newValue);
+
   // map
 
   EntryMapStyle? get mapStyle {
@@ -1080,6 +1085,7 @@ class Settings extends ChangeNotifier {
             case videoControlsKey:
             case subtitleTextAlignmentKey:
             case subtitleTextPositionKey:
+            case tagEditorExpandedSectionKey:
             case mapStyleKey:
             case mapDefaultCenterKey:
             case coordinateFormatKey:
