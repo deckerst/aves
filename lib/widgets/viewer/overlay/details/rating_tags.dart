@@ -5,6 +5,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/text/animated_diff.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
+import 'package:collection/collection.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
         break;
     }
 
-    final tags = entry.tags.join(Constants.separator);
+    final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final hasTags = tags.isNotEmpty;
 
     final animationDuration = context.select<DurationsData, Duration>((v) => v.textDiffAnimation);
@@ -50,7 +51,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
           const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
           Expanded(
             child: AnimatedDiffText(
-              tags,
+              tags.join(Constants.separator),
               strutStyle: Constants.overflowStrutStyle,
               duration: animationDuration,
             ),
