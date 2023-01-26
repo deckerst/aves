@@ -64,6 +64,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   final AChangeNotifier _verticalScrollNotifier = AChangeNotifier();
   bool _overlayInitialized = false;
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
+  final ValueNotifier<bool> _overlayExpandedNotifier = ValueNotifier(false);
   late AnimationController _overlayAnimationController;
   late Animation<double> _overlayButtonScale, _overlayVideoControlScale, _overlayOpacity;
   late Animation<Offset> _overlayTopOffset;
@@ -161,8 +162,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChanged);
-    _verticalPager.removeListener(_onVerticalPageControllerChanged);
+    _overlayVisible.dispose();
+    _overlayExpandedNotifier.dispose();
+    _verticalPager.dispose();
+    _heroInfoNotifier.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
     super.dispose();
@@ -295,9 +298,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
           child: ViewerTopOverlay(
             entries: entries,
             index: _currentEntryIndex,
-            hasCollection: hasCollection,
             mainEntry: mainEntry,
             scale: _overlayButtonScale,
+            hasCollection: hasCollection,
+            expandedNotifier: _overlayExpandedNotifier,
             availableSize: availableSize,
             viewInsets: _frozenViewInsets,
             viewPadding: _frozenViewPadding,

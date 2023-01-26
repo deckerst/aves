@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Viewer: overlay details expand/collapse on tap
+
 ### Fixed
 
 - SD card access grant on Android Lollipop
