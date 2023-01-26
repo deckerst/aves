@@ -9,6 +9,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/details/date.dart';
 import 'package:aves/widgets/viewer/overlay/details/description.dart';
+import 'package:aves/widgets/viewer/overlay/details/expander.dart';
 import 'package:aves/widgets/viewer/overlay/details/location.dart';
 import 'package:aves/widgets/viewer/overlay/details/position_title.dart';
 import 'package:aves/widgets/viewer/overlay/details/rating_tags.dart';
@@ -23,6 +24,7 @@ class ViewerDetailOverlay extends StatefulWidget {
   final int index;
   final bool hasCollection;
   final MultiPageController? multiPageController;
+  final ValueNotifier<bool> expandedNotifier;
   final Size availableSize;
 
   const ViewerDetailOverlay({
@@ -31,6 +33,7 @@ class ViewerDetailOverlay extends StatefulWidget {
     required this.index,
     required this.hasCollection,
     required this.multiPageController,
+    required this.expandedNotifier,
     required this.availableSize,
   });
 
@@ -102,6 +105,7 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
                 position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
                 availableWidth: widget.availableSize.width,
                 multiPageController: multiPageController,
+                expandedNotifier: widget.expandedNotifier,
               );
 
           return multiPageController != null
@@ -123,6 +127,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   final String? position;
   final double availableWidth;
   final MultiPageController? multiPageController;
+  final ValueNotifier<bool> expandedNotifier;
 
   static const double _interRowPadding = 2.0;
   static const double _subRowMinWidth = 300.0;
@@ -140,6 +145,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
     required this.position,
     required this.availableWidth,
     required this.multiPageController,
+    required this.expandedNotifier,
   });
 
   @override
@@ -152,7 +158,11 @@ class ViewerDetailOverlayContent extends StatelessWidget {
     return AnimatedBuilder(
       animation: pageEntry.metadataChangeNotifier,
       builder: (context, child) {
-        final positionTitle = OverlayPositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
+        final positionTitle = OverlayPositionTitleRow(
+          entry: pageEntry,
+          collectionPosition: position,
+          multiPageController: multiPageController,
+        );
         return DefaultTextStyle(
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 shadows: shadows(context),
@@ -172,7 +182,10 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
                 final rows = <Widget>[];
                 if (positionTitle.isNotEmpty) {
-                  rows.add(positionTitle);
+                  rows.add(OverlayRowExpander(
+                    expandedNotifier: expandedNotifier,
+                    child: positionTitle,
+                  ));
                   rows.add(const SizedBox(height: _interRowPadding));
                 }
                 if (twoColumns) {
@@ -225,13 +238,19 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   Widget _buildRatingTagsFullRow(BuildContext context) => _buildFullRowSwitcher(
         context: context,
         visible: pageEntry.rating != 0 || pageEntry.tags.isNotEmpty,
-        builder: (context) => OverlayRatingTagsRow(entry: pageEntry),
+        builder: (context) => OverlayRowExpander(
+          expandedNotifier: expandedNotifier,
+          child: OverlayRatingTagsRow(entry: pageEntry),
+        ),
       );
 
   Widget _buildDescriptionFullRow(BuildContext context) => _buildFullRowSwitcher(
         context: context,
         visible: description != null,
-        builder: (context) => OverlayDescriptionRow(description: description!),
+        builder: (context) => OverlayRowExpander(
+          expandedNotifier: expandedNotifier,
+          child: OverlayDescriptionRow(description: description!),
+        ),
       );
 
   Widget _buildShootingFullRow(BuildContext context, double subRowWidth) => _buildFullRowSwitcher(

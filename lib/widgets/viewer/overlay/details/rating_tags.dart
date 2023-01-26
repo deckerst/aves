@@ -1,14 +1,11 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/basic/text/animated_diff.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
 import 'package:collection/collection.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class OverlayRatingTagsRow extends AnimatedWidget {
   final AvesEntry entry;
@@ -37,27 +34,28 @@ class OverlayRatingTagsRow extends AnimatedWidget {
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final hasTags = tags.isNotEmpty;
 
-    final animationDuration = context.select<DurationsData, Duration>((v) => v.textDiffAnimation);
-    return Row(
-      children: [
-        AnimatedDiffText(
-          ratingString,
-          strutStyle: Constants.overflowStrutStyle,
-          duration: animationDuration,
-        ),
-        if (hasTags) ...[
-          if (ratingString.isNotEmpty) const Text(Constants.separator),
-          DecoratedIcon(AIcons.tag, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
-          const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
-          Expanded(
-            child: AnimatedDiffText(
-              tags.join(Constants.separator),
-              strutStyle: Constants.overflowStrutStyle,
-              duration: animationDuration,
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: ratingString),
+          if (hasTags) ...[
+            if (ratingString.isNotEmpty) const TextSpan(text: Constants.separator),
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
+                child: DecoratedIcon(
+                  AIcons.tag,
+                  size: ViewerDetailOverlayContent.iconSize,
+                  shadows: ViewerDetailOverlayContent.shadows(context),
+                ),
+              ),
             ),
-          ),
+            TextSpan(text: tags.join(Constants.separator)),
+          ]
         ],
-      ],
+      ),
+      strutStyle: Constants.overflowStrutStyle,
     );
   }
 }
