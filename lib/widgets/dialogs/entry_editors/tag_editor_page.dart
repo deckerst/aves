@@ -42,6 +42,8 @@ class _TagEditorPageState extends State<TagEditorPage> {
   @override
   void initState() {
     super.initState();
+    _expandedSectionNotifier.value = settings.tagEditorExpandedSection;
+    _expandedSectionNotifier.addListener(() => settings.tagEditorExpandedSection = _expandedSectionNotifier.value);
     _initTopTags();
   }
 
