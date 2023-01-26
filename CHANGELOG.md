@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: overlay details expand/collapse on tap
 
+### Changed
+
+- remember pin status of albums becoming empty
+
 ### Fixed
 
 - SD card access grant on Android Lollipop
