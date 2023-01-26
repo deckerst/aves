@@ -81,13 +81,10 @@ mixin AlbumMixin on SourceBase {
       invalidateAlbumFilterSummary(directories: emptyAlbums);
 
       final bookmarks = settings.drawerAlbumBookmarks;
-      final pinnedFilters = settings.pinnedFilters;
       emptyAlbums.forEach((album) {
         bookmarks?.remove(album);
-        pinnedFilters.removeWhere((filter) => filter is AlbumFilter && filter.album == album);
       });
       settings.drawerAlbumBookmarks = bookmarks;
-      settings.pinnedFilters = pinnedFilters;
     }
   }
 
