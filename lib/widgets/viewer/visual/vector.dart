@@ -138,7 +138,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     return ValueListenableBuilder<bool>(
       valueListenable: _fullImageLoaded,
       builder: (context, fullImageLoaded, child) {
-        if (fullImageLoaded) return const SizedBox.shrink();
+        if (fullImageLoaded) return const SizedBox();
 
         return Center(
           child: AspectRatio(

@@ -36,7 +36,7 @@ class _DebugAndroidCodecSectionState extends State<DebugAndroidCodecSection> wit
             future: _loader,
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
-              if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
               final codecs = snapshot.data!.map((codec) {
                 return codec.map((k, v) => MapEntry(k.toString(), v.toString()));
               }).toList()

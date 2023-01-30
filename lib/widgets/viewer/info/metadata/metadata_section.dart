@@ -79,7 +79,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
             builder: (context, metadata, child) {
               Widget content;
               if (metadata.isEmpty) {
-                content = const SizedBox.shrink();
+                content = const SizedBox();
               } else {
                 final durations = context.watch<DurationsData>();
                 content = Column(

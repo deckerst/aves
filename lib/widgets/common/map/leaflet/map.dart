@@ -203,7 +203,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
       case EntryMapStyle.stamenWatercolor:
         return const StamenWatercolorLayer();
       default:
-        return const SizedBox.shrink();
+        return const SizedBox();
     }
   }
 
