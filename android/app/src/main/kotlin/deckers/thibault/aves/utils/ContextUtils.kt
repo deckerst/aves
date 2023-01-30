@@ -7,6 +7,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import deckers.thibault.aves.utils.UriUtils.tryParseId
@@ -30,7 +31,13 @@ object ContextUtils {
         return am.getRunningServices(Integer.MAX_VALUE).any { it.service.className == serviceClass.name }
     }
 
-    fun Context.queryContentResolverProp(uri: Uri, mimeType: String, prop: String): Any? {
+    // `flag`: `DocumentsContract.Document.FLAG_SUPPORTS_COPY`, etc.
+    fun Context.queryDocumentProviderFlag(docUri: Uri, flag: Int): Boolean {
+        val flags = queryContentPropValue(docUri, "", DocumentsContract.Document.COLUMN_FLAGS) as Long?
+        return if (flags != null) (flags.toInt() and flag) == flag else false
+    }
+
+    fun Context.queryContentPropValue(uri: Uri, mimeType: String, column: String): Any? {
         var contentUri: Uri = uri
         if (StorageUtils.isMediaStoreContentUri(uri)) {
             uri.tryParseId()?.let { id ->
@@ -43,26 +50,26 @@ object ContextUtils {
             }
         }
 
-        // throws SQLiteException when the requested prop is not a known column
-        val cursor = contentResolver.query(contentUri, arrayOf(prop), null, null, null)
-        if (cursor == null || !cursor.moveToFirst()) {
-            throw Exception("failed to get cursor for contentUri=$contentUri")
-        }
-
         var value: Any? = null
         try {
-            value = when (cursor.getType(0)) {
-                Cursor.FIELD_TYPE_NULL -> null
-                Cursor.FIELD_TYPE_INTEGER -> cursor.getLong(0)
-                Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(0)
-                Cursor.FIELD_TYPE_STRING -> cursor.getString(0)
-                Cursor.FIELD_TYPE_BLOB -> cursor.getBlob(0)
-                else -> null
+            val cursor = contentResolver.query(contentUri, arrayOf(column), null, null, null)
+            if (cursor == null || !cursor.moveToFirst()) {
+                Log.w(LOG_TAG, "failed to get cursor for contentUri=$contentUri column=$column")
+            } else {
+                value = when (cursor.getType(0)) {
+                    Cursor.FIELD_TYPE_NULL -> null
+                    Cursor.FIELD_TYPE_INTEGER -> cursor.getLong(0)
+                    Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(0)
+                    Cursor.FIELD_TYPE_STRING -> cursor.getString(0)
+                    Cursor.FIELD_TYPE_BLOB -> cursor.getBlob(0)
+                    else -> null
+                }
+                cursor.close()
             }
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get value for contentUri=$contentUri key=$prop", e)
+            // throws SQLiteException/IllegalArgumentException when the requested prop is not a known column
+            Log.w(LOG_TAG, "failed to get value for contentUri=$contentUri column=$column", e)
         }
-        cursor.close()
         return value
     }
 }
