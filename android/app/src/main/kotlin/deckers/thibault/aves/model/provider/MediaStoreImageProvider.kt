@@ -30,6 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.OutputStream
+import java.io.SyncFailedException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
@@ -512,7 +513,16 @@ class MediaStoreImageProvider : ImageProvider() {
             targetDir = targetDir,
             targetDirDocFile = targetDirDocFile,
             targetNameWithoutExtension = targetNameWithoutExtension,
-        ) { output: OutputStream -> sourceDocFile.copyTo(output) }
+        ) { output: OutputStream ->
+            try {
+                sourceDocFile.copyTo(output)
+            } catch (e: SyncFailedException) {
+                // The copied file is synced after writing, but it consistently fails in some cases
+                // (e.g. copying to SD card on Xiaomi 2201117PG with Android 11).
+                // It seems this failure can be safely ignored, as the new file is complete.
+                Log.w(LOG_TAG, "sync failure after copying from uri=$sourceUri, path=$sourcePath to targetDir=$targetDir", e)
+            }
+        }
 
         if (!copy) {
             // delete original entry
