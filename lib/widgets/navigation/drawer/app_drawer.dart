@@ -204,7 +204,7 @@ class _AppDrawerState extends State<AppDrawer> {
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {
           final albums = settings.drawerAlbumBookmarks ?? AppDrawer.getDefaultAlbums(context);
-          if (albums.isEmpty) return const SizedBox.shrink();
+          if (albums.isEmpty) return const SizedBox();
           return Column(
             children: [
               const Divider(),

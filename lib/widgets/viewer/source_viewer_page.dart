@@ -40,7 +40,7 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
           future: _loader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (!snapshot.hasData) return const SizedBox.shrink();
+            if (!snapshot.hasData) return const SizedBox();
 
             final data = snapshot.data!;
             final source = data.length < maxCodeSize ? data : '${data.substring(0, maxCodeSize)}\n\n*** TRUNCATED ***';

@@ -40,7 +40,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
               return Text(snapshot.error.toString());
             }
             if (snapshot.connectionState != ConnectionState.done && _lastPaths == null) {
-              return const SizedBox.shrink();
+              return const SizedBox();
             }
             _lastPaths = snapshot.data!..sort();
             if (_lastPaths!.isEmpty) {

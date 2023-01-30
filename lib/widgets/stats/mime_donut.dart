@@ -42,7 +42,7 @@ class _MimeDonutState extends State<MimeDonut> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
 
-    if (byMimeTypes.isEmpty) return const SizedBox.shrink();
+    if (byMimeTypes.isEmpty) return const SizedBox();
 
     final l10n = context.l10n;
     final locale = l10n.localeName;

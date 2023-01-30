@@ -50,7 +50,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
               ),
             );
           }
-          return const SizedBox.shrink();
+          return const SizedBox();
         });
   }
 }

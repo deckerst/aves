@@ -50,7 +50,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -71,7 +71,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -92,7 +92,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -113,7 +113,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -134,7 +134,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -155,7 +155,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -176,7 +176,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -197,7 +197,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
@@ -218,7 +218,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
                   return Row(
                     children: [
