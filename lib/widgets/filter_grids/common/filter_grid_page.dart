@@ -620,7 +620,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scrollView = _buildScrollView(context);
-    return _buildDraggableScrollView(scrollView);
+    return settings.useTvLayout ? scrollView : _buildDraggableScrollView(scrollView);
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {

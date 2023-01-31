@@ -97,49 +97,8 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                         primary: false,
                       ),
                     ),
-                    Expanded(
-                      child: ValueListenableBuilder<int>(
-                        valueListenable: _tvSelectedIndexNotifier,
-                        builder: (context, selectedIndex, child) {
-                          final rail = NavigationRail(
-                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                            extended: true,
-                            destinations: sections
-                                .map((section) => NavigationRailDestination(
-                                      icon: section.icon(context),
-                                      label: Text(section.title(context)),
-                                    ))
-                                .toList(),
-                            selectedIndex: selectedIndex,
-                            onDestinationSelected: (index) => _tvSelectedIndexNotifier.value = index,
-                            minExtendedWidth: TvRail.minExtendedWidth,
-                          );
-                          return LayoutBuilder(
-                            builder: (context, constraints) {
-                              return Row(
-                                children: [
-                                  SingleChildScrollView(
-                                    child: ConstrainedBox(
-                                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                                      child: IntrinsicHeight(child: rail),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: MediaQuery.removePadding(
-                                      context: context,
-                                      removeLeft: !context.isRtl,
-                                      removeRight: context.isRtl,
-                                      child: _SettingsSectionBody(
-                                        loader: Future.value(sections[selectedIndex].tiles(context)),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      ),
+                    const Expanded(
+                      child: _TvRail(),
                     ),
                   ],
                 ),
@@ -354,6 +313,71 @@ class _SettingsSectionBody extends StatelessWidget {
         return _SettingsListView(
           key: ValueKey(loader),
           children: tiles.map((v) => v.build(context)).toList(),
+        );
+      },
+    );
+  }
+}
+
+class _TvRail extends StatefulWidget {
+  const _TvRail();
+
+  @override
+  State<_TvRail> createState() => _TvRailState();
+}
+
+class _TvRailState extends State<_TvRail> {
+  final ValueNotifier<int> _indexNotifier = ValueNotifier(0);
+
+  @override
+  void dispose() {
+    _indexNotifier.dispose();
+    super.dispose();
+  }
+
+  static final List<SettingsSection> sections = _SettingsPageState.sections;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: _indexNotifier,
+      builder: (context, selectedIndex, child) {
+        final rail = NavigationRail(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          extended: true,
+          destinations: sections
+              .map((section) => NavigationRailDestination(
+                    icon: section.icon(context),
+                    label: Text(section.title(context)),
+                  ))
+              .toList(),
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) => _indexNotifier.value = index,
+          minExtendedWidth: TvRail.minExtendedWidth,
+        );
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              children: [
+                SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: IntrinsicHeight(child: rail),
+                  ),
+                ),
+                Expanded(
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeLeft: !context.isRtl,
+                    removeRight: context.isRtl,
+                    child: _SettingsSectionBody(
+                      loader: Future.value(sections[selectedIndex].tiles(context)),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );

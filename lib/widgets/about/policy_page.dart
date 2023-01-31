@@ -1,6 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/behaviour/intents.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,11 +39,11 @@ class _PolicyPageState extends State<PolicyPage> {
         child: FocusableActionDetector(
           autofocus: true,
           shortcuts: const {
-            SingleActivator(LogicalKeyboardKey.arrowUp): _ScrollIntent.up(),
-            SingleActivator(LogicalKeyboardKey.arrowDown): _ScrollIntent.down(),
+            SingleActivator(LogicalKeyboardKey.arrowUp): VerticalScrollIntent.up(),
+            SingleActivator(LogicalKeyboardKey.arrowDown): VerticalScrollIntent.down(),
           },
           actions: {
-            _ScrollIntent: CallbackAction<_ScrollIntent>(onInvoke: _onScrollIntent),
+            VerticalScrollIntent: VerticalScrollIntentAction(scrollController: _scrollController),
           },
           child: Center(
             child: FutureBuilder<String>(
@@ -65,38 +66,4 @@ class _PolicyPageState extends State<PolicyPage> {
       ),
     );
   }
-
-  void _onScrollIntent(_ScrollIntent intent) {
-    late int factor;
-    switch (intent.type) {
-      case _ScrollDirection.up:
-        factor = -1;
-        break;
-      case _ScrollDirection.down:
-        factor = 1;
-        break;
-    }
-    _scrollController.animateTo(
-      _scrollController.offset + factor * 150,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeOutCubic,
-    );
-  }
-}
-
-class _ScrollIntent extends Intent {
-  const _ScrollIntent({
-    required this.type,
-  });
-
-  const _ScrollIntent.up() : type = _ScrollDirection.up;
-
-  const _ScrollIntent.down() : type = _ScrollDirection.down;
-
-  final _ScrollDirection type;
-}
-
-enum _ScrollDirection {
-  up,
-  down,
 }
