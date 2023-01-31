@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_info.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
+import 'package:aves/widgets/viewer/info/metadata/tv_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -92,15 +95,32 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
                         child: child,
                       ),
                     ),
-                    children: [
-                      const SectionRow(icon: AIcons.info),
-                      ...metadata.entries.map((kv) => MetadataDirTile(
-                            entry: entry,
-                            title: kv.key,
-                            dir: kv.value,
-                            expandedDirectoryNotifier: _expandedDirectoryNotifier,
-                          )),
-                    ],
+                    children: settings.useTvLayout
+                        ? [
+                            AvesOutlinedButton(
+                              label: MaterialLocalizations.of(context).moreButtonTooltip,
+                              onPressed: () {
+                                Navigator.maybeOf(context)?.push(
+                                  MaterialPageRoute(
+                                    settings: const RouteSettings(name: TvMetadataPage.routeName),
+                                    builder: (context) => TvMetadataPage(
+                                      entry: entry,
+                                      metadata: metadata,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ]
+                        : [
+                            const SectionRow(icon: AIcons.info),
+                            ...metadata.entries.map((kv) => MetadataDirTile(
+                                  entry: entry,
+                                  title: kv.key,
+                                  dir: kv.value,
+                                  expandedDirectoryNotifier: _expandedDirectoryNotifier,
+                                )),
+                          ],
                   ),
                 );
               }

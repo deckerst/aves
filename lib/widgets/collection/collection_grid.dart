@@ -441,7 +441,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
   @override
   Widget build(BuildContext context) {
     final scrollView = _buildScrollView(widget.appBar, widget.collection);
-    return _buildDraggableScrollView(scrollView, widget.collection);
+    return settings.useTvLayout ? scrollView : _buildDraggableScrollView(scrollView, widget.collection);
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView, CollectionLens collection) {

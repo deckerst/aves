@@ -1,40 +1,26 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/xmp_utils.dart';
-import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class XmpDirTile extends StatefulWidget {
-  final AvesEntry entry;
-  final String title;
+class XmpDirTileBody extends StatefulWidget {
   final SplayTreeMap<String, String> allTags, tags;
-  final ValueNotifier<String?>? expandedNotifier;
-  final bool initiallyExpanded;
 
-  const XmpDirTile({
+  const XmpDirTileBody({
     super.key,
-    required this.entry,
-    required this.title,
     required this.allTags,
     required this.tags,
-    required this.expandedNotifier,
-    required this.initiallyExpanded,
   });
 
   @override
-  State<XmpDirTile> createState() => _XmpDirTileState();
+  State<XmpDirTileBody> createState() => _XmpDirTileBodyState();
 }
 
-class _XmpDirTileState extends State<XmpDirTile> {
+class _XmpDirTileBodyState extends State<XmpDirTileBody> {
   late final Map<String, String> _schemaRegistryPrefixes, _tags;
-
-  AvesEntry get entry => widget.entry;
 
   static const schemaRegistryPrefixesKey = 'schemaRegistryPrefixes';
 
@@ -60,21 +46,10 @@ class _XmpDirTileState extends State<XmpDirTile> {
       return XmpNamespace.create(_schemaRegistryPrefixes, nsPrefix, rawProps);
     }).toList()
       ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
-    return AvesExpansionTile(
-      // title may contain parent to distinguish multiple XMP directories
-      title: widget.title,
-      highlightColor: context.select<AvesColorsData, Color>((v) => v.xmp),
-      expandedNotifier: widget.expandedNotifier,
-      initiallyExpanded: widget.initiallyExpanded,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: sections.expand((section) => section.buildNamespaceSection(context)).toList(),
-          ),
-        ),
-      ],
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: sections.expand((section) => section.buildNamespaceSection(context)).toList(),
     );
   }
 }
