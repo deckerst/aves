@@ -88,6 +88,7 @@ mixin SizeAwareMixin {
           actions: const [OkButton()],
         );
       },
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
   }
 }

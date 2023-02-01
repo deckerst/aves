@@ -13,6 +13,7 @@ Future<void> showSelectionDialog<T>({
   final value = await showDialog<T>(
     context: context,
     builder: builder,
+    routeSettings: const RouteSettings(name: AvesSelectionDialog.routeName),
   );
   // wait for the dialog to hide as applying the change may block the UI
   await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
@@ -24,6 +25,8 @@ Future<void> showSelectionDialog<T>({
 typedef TextBuilder<T> = String Function(T value);
 
 class AvesSelectionDialog<T> extends StatefulWidget {
+  static const routeName = '/dialog/selection';
+
   final T initialValue;
   final Map<T, String> options;
   final TextBuilder<T>? optionSubtitleBuilder;

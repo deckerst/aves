@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EditEntryDateDialog extends StatefulWidget {
+  static const routeName = '/dialog/edit_entry_date';
+
   final AvesEntry entry;
   final CollectionLens? collection;
 

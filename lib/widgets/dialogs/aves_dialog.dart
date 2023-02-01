@@ -5,6 +5,9 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 class AvesDialog extends StatelessWidget {
+  static const confirmationRouteName = '/dialog/confirmation';
+  static const warningRouteName = '/dialog/warning';
+
   final String? title;
   final ScrollController scrollController;
   final List<Widget>? scrollableContent;
@@ -157,6 +160,7 @@ Future<void> showNoMatchingAppDialog(BuildContext context) => showDialog(
         content: Text(context.l10n.noMatchingAppDialogMessage),
         actions: const [OkButton()],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
 
 class CancelButton extends StatelessWidget {

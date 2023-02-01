@@ -22,6 +22,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class EditEntryLocationDialog extends StatefulWidget {
+  static const routeName = '/dialog/edit_entry_location';
+
   final AvesEntry entry;
   final CollectionLens? collection;
 

@@ -151,6 +151,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       builder: (context) => VideoStreamSelectionDialog(
         streams: Map.fromEntries(streams.map((stream) => MapEntry(stream, currentSelectedIndices.contains(stream.index)))),
       ),
+      routeSettings: const RouteSettings(name: VideoStreamSelectionDialog.routeName),
     );
     if (userSelectedStreams == null || userSelectedStreams.isEmpty) return;
 
@@ -168,6 +169,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         min: controller.minSpeed,
         max: controller.maxSpeed,
       ),
+      routeSettings: const RouteSettings(name: VideoSpeedDialog.routeName),
     );
     if (newSpeed == null) return;
 

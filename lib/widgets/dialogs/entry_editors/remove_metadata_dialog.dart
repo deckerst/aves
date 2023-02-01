@@ -16,6 +16,8 @@ import 'package:provider/provider.dart';
 import '../aves_dialog.dart';
 
 class RemoveEntryMetadataDialog extends StatefulWidget {
+  static const routeName = '/dialog/remove_entry_metadata';
+
   final bool showJpegTypes;
 
   const RemoveEntryMetadataDialog({

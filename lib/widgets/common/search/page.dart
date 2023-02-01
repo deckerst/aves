@@ -13,10 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class SearchPage extends StatefulWidget {
+  static const routeName = '/search';
+
   final AvesSearchDelegate delegate;
   final Animation<double> animation;
-
-  static const routeName = '/search';
 
   const SearchPage({
     super.key,

@@ -149,10 +149,13 @@ mixin FeedbackMixin {
             onDone?.call(processed);
           },
         ),
+        routeSettings: const RouteSettings(name: ReportOverlay.routeName),
       );
 }
 
 class ReportOverlay<T> extends StatefulWidget {
+  static const routeName = '/dialog/report_overlay';
+
   final Stream<T> opStream;
   final int? itemCount;
   final VoidCallback? onCancel;

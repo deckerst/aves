@@ -30,6 +30,7 @@ mixin EntryEditorMixin {
         entry: entries.first,
         collection: collection,
       ),
+      routeSettings: const RouteSettings(name: EditEntryDateDialog.routeName),
     );
   }
 
@@ -44,6 +45,7 @@ mixin EntryEditorMixin {
         entry: entry,
         collection: collection,
       ),
+      routeSettings: const RouteSettings(name: EditEntryLocationDialog.routeName),
     );
   }
 
@@ -60,6 +62,7 @@ mixin EntryEditorMixin {
         initialTitle: initialTitle,
         initialDescription: initialDescription,
       ),
+      routeSettings: const RouteSettings(name: EditEntryTitleDescriptionDialog.routeName),
     );
   }
 
@@ -71,6 +74,7 @@ mixin EntryEditorMixin {
       builder: (context) => EditEntryRatingDialog(
         entry: entries.first,
       ),
+      routeSettings: const RouteSettings(name: EditEntryRatingDialog.routeName),
     );
   }
 
@@ -116,6 +120,7 @@ mixin EntryEditorMixin {
       builder: (context) => RemoveEntryMetadataDialog(
         showJpegTypes: entries.any((entry) => entry.mimeType == MimeTypes.jpeg),
       ),
+      routeSettings: const RouteSettings(name: RemoveEntryMetadataDialog.routeName),
     );
     if (types == null || types.isEmpty) return null;
 
@@ -132,6 +137,7 @@ mixin EntryEditorMixin {
             ),
           ],
         ),
+        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
       );
       if (confirmed == null || !confirmed) return null;
     }

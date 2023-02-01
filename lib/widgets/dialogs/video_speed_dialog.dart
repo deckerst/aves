@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'aves_dialog.dart';
 
 class VideoSpeedDialog extends StatefulWidget {
+  static const routeName = '/dialog/select_video_speed';
+
   final double current, min, max;
 
   const VideoSpeedDialog({

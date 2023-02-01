@@ -85,6 +85,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   }
 
   void onActionSelected(BuildContext context, AvesEntry targetEntry, CollectionLens? collection, EntryAction action) async {
+    await reportService.log('$action');
     _eventStreamController.add(ActionStartedEvent(action));
     switch (action) {
       // general
@@ -239,6 +240,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
     if (confirmed == null || !confirmed) return;
 

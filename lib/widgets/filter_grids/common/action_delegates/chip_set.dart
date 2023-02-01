@@ -11,6 +11,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/enums/view.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -150,6 +151,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void onActionSelected(BuildContext context, Set<T> filters, ChipSetAction action) {
+    reportService.log('$action');
     switch (action) {
       // general
       case ChipSetAction.configureView:
@@ -235,6 +237,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
           tileExtentController: extentController,
         );
       },
+      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
@@ -313,6 +316,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
 
@@ -333,6 +337,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         customPackage: existingCover?.item2,
         customColor: existingCover?.item3,
       ),
+      routeSettings: const RouteSettings(name: CoverSelectionDialog.routeName),
     );
     if (selectedCover == null) return;
 

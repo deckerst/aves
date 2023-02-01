@@ -2,6 +2,7 @@ import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 
 class ChipActionDelegate {
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
+    reportService.log('$action');
     switch (action) {
       case ChipAction.goToAlbumPage:
         _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
@@ -62,6 +64,7 @@ class ChipActionDelegate {
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
 

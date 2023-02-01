@@ -117,6 +117,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   @override
   void onActionSelected(BuildContext context, Set<AlbumFilter> filters, ChipSetAction action) {
+    reportService.log('$action');
     switch (action) {
       // general
       case ChipSetAction.createAlbum:
@@ -159,6 +160,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
           tileExtentController: extentController,
         );
       },
+      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
@@ -174,6 +176,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     final newAlbum = await showDialog<String>(
       context: context,
       builder: (context) => const CreateAlbumDialog(),
+      routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
     );
     if (newAlbum != null && newAlbum.isNotEmpty) {
       final source = context.read<CollectionSource>();
@@ -243,6 +246,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
 
@@ -301,6 +305,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameAlbumDialog(album: album),
+      routeSettings: const RouteSettings(name: RenameAlbumDialog.routeName),
     );
     if (newName == null || newName.isEmpty) return;
 

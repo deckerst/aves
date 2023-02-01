@@ -160,6 +160,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void onActionSelected(BuildContext context, EntrySetAction action) {
+    reportService.log('$action');
     switch (action) {
       // general
       case EntrySetAction.configureView:
@@ -266,6 +267,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           content: Text(context.l10n.tooManyItemsErrorDialogMessage),
           actions: const [OkButton()],
         ),
+        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
       );
     }
   }
@@ -471,6 +473,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
             ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
     if (confirmed == null || !confirmed) return null;
 
@@ -550,6 +553,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
     if (confirmed == null || !confirmed) return;
 
@@ -694,6 +698,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         defaultName: defaultName ?? '',
         collection: collection,
       ),
+      routeSettings: const RouteSettings(name: AddShortcutDialog.routeName),
     );
     if (result == null) return;
 

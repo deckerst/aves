@@ -173,6 +173,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   void onActionSelected(BuildContext context, EntryAction action) {
+    reportService.log('$action');
     final targetEntry = _getTargetEntry(context, action);
 
     switch (action) {
@@ -345,6 +346,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       builder: (context) => AddShortcutDialog(
         defaultName: targetEntry.bestTitle ?? '',
       ),
+      routeSettings: const RouteSettings(name: AddShortcutDialog.routeName),
     );
     if (result == null) return;
 
@@ -407,6 +409,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final options = await showDialog<EntryExportOptions>(
       context: context,
       builder: (context) => ExportEntryDialog(entry: targetEntry),
+      routeSettings: const RouteSettings(name: ExportEntryDialog.routeName),
     );
     if (options == null) return;
 
@@ -504,6 +507,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameEntryDialog(entry: targetEntry),
+      routeSettings: const RouteSettings(name: RenameEntryDialog.routeName),
     );
     if (newName == null || newName.isEmpty || newName == targetEntry.filenameWithoutExtension) return;
 

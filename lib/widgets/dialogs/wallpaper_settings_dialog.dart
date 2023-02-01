@@ -8,6 +8,8 @@ import 'package:tuple/tuple.dart';
 import 'aves_dialog.dart';
 
 class WallpaperSettingsDialog extends StatefulWidget {
+  static const routeName = '/dialog/wallpaper_settings';
+
   const WallpaperSettingsDialog({super.key});
 
   @override

@@ -23,6 +23,8 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class CoverSelectionDialog extends StatefulWidget {
+  static const routeName = '/dialog/select_cover';
+
   final CollectionFilter filter;
   final AvesEntry? customEntry;
   final String? customPackage;
@@ -384,6 +386,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         // picker controls are not on edge and palette panel is more stable
         initialValue: _customColor ?? const Color(0xff3f51b5),
       ),
+      routeSettings: const RouteSettings(name: ColorPickerDialog.routeName),
     );
     if (color != null) {
       _customColor = color;
