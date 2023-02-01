@@ -14,6 +14,8 @@ import 'package:tuple/tuple.dart';
 import 'aves_dialog.dart';
 
 class AddShortcutDialog extends StatefulWidget {
+  static const routeName = '/dialog/add_shortcut';
+
   final CollectionLens? collection;
   final String defaultName;
 

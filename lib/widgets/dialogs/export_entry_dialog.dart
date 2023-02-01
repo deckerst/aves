@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'aves_dialog.dart';
 
 class ExportEntryDialog extends StatefulWidget {
+  static const routeName = '/dialog/export_entry';
+
   final AvesEntry entry;
 
   const ExportEntryDialog({

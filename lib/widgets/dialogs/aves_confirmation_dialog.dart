@@ -43,6 +43,7 @@ Future<bool> showConfirmationDialog({
       delegate: effectiveDelegate,
       confirmationButtonLabel: confirmationButtonLabel,
     ),
+    routeSettings: const RouteSettings(name: _AvesConfirmationDialog.routeName),
   );
   if (confirmed == null) return false;
 
@@ -78,6 +79,8 @@ void _skipConfirmation(ConfirmationDialog type) {
 }
 
 class _AvesConfirmationDialog extends StatefulWidget {
+  static const routeName = '/dialog/confirmation';
+
   final ConfirmationDialog type;
   final ConfirmationDialogDelegate delegate;
   final String confirmationButtonLabel;

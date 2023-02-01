@@ -354,6 +354,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     debugPrint('$runtimeType lifecycle ${state.name}');
+    reportService.log('Lifecycle ${state.name}');
     switch (state) {
       case AppLifecycleState.inactive:
         switch (_appModeNotifier.value) {
@@ -557,7 +558,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     // do not reset when relaunching the app
     if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
-    reportService.log('New intent');
+    reportService.log('New intent data=$intentData');
     AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => _getFirstPage(intentData: intentData),

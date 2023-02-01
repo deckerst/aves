@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import '../aves_dialog.dart';
 
 class CreateAlbumDialog extends StatefulWidget {
+  static const routeName = '/dialog/create_album';
+
   const CreateAlbumDialog({super.key});
 
   @override

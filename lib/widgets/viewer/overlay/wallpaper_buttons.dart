@@ -59,6 +59,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     final value = await showDialog<Tuple2<WallpaperTarget, bool>>(
       context: context,
       builder: (context) => const WallpaperSettingsDialog(),
+      routeSettings: const RouteSettings(name: WallpaperSettingsDialog.routeName),
     );
     if (value == null) return;
 

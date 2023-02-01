@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import '../aves_dialog.dart';
 
 class RenameEntryDialog extends StatefulWidget {
+  static const routeName = '/dialog/rename_entry';
+
   final AvesEntry entry;
 
   const RenameEntryDialog({

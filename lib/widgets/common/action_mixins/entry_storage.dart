@@ -80,6 +80,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
             message: originAlbums.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
             confirmationButtonLabel: l10n.continueButtonLabel,
           ),
+          routeSettings: const RouteSettings(name: AvesSelectionDialog.routeName),
         );
         if (value == null) return;
         nameConflictStrategy = value;

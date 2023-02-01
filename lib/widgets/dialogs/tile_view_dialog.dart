@@ -14,6 +14,8 @@ import 'package:tuple/tuple.dart';
 import 'aves_dialog.dart';
 
 class TileViewDialog<S, G, L> extends StatefulWidget {
+  static const routeName = '/dialog/tile_view';
+
   final Tuple4<S?, G?, L?, bool> initialValue;
   final List<TileViewDialogOption<S>> sortOptions;
   final List<TileViewDialogOption<G>> groupOptions;

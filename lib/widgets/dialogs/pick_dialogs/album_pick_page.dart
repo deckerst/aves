@@ -183,6 +183,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
             final newAlbum = await showDialog<String>(
               context: context,
               builder: (context) => const CreateAlbumDialog(),
+              routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
             );
             // wait for the dialog to hide as applying the change may block the UI
             await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);

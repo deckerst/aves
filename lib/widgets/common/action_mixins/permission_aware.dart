@@ -62,6 +62,7 @@ mixin PermissionAwareMixin {
             ],
           );
         },
+        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
       );
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
@@ -73,6 +74,7 @@ mixin PermissionAwareMixin {
             content: Text(context.l10n.missingSystemFilePickerDialogMessage),
             actions: const [OkButton()],
           ),
+          routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
         );
         return false;
       }
@@ -96,6 +98,7 @@ mixin PermissionAwareMixin {
           actions: const [OkButton()],
         );
       },
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
   }
 }

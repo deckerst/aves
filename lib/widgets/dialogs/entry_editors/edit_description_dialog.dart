@@ -6,6 +6,8 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 class EditEntryTitleDescriptionDialog extends StatefulWidget {
+  static const routeName = '/dialog/edit_entry_title_description';
+
   final String initialTitle, initialDescription;
 
   const EditEntryTitleDescriptionDialog({

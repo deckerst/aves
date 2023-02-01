@@ -6,6 +6,8 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 class RenameAlbumDialog extends StatefulWidget {
+  static const routeName = '/dialog/rename_album';
+
   final String album;
 
   const RenameAlbumDialog({
