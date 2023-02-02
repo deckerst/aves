@@ -105,7 +105,7 @@ class AvesFilterChip extends StatefulWidget {
       // after the user is done with the popup menu
       FocusManager.instance.primaryFocus?.unfocus();
 
-      final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+      final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
       const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
       final selectedAction = await showMenu<ChipAction>(
         context: context,

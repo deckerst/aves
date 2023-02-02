@@ -123,7 +123,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
               _taskQueueOverlayEntry = OverlayEntry(
                 builder: (context) => const DebugTaskQueueOverlay(),
               );
-              Overlay.of(context)!.insert(_taskQueueOverlayEntry!);
+              Overlay.of(context).insert(_taskQueueOverlayEntry!);
             } else {
               _taskQueueOverlayEntry = null;
             }

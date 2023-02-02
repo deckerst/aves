@@ -57,7 +57,8 @@ mixin PermissionAwareMixin {
               const CancelButton(),
               TextButton(
                 onPressed: () => Navigator.maybeOf(context)?.pop(true),
-                child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                // MD2 button labels were upper case but they are lower case in MD3
+                child: Text(MaterialLocalizations.of(context).okButtonLabel.toUpperCase()),
               ),
             ],
           );

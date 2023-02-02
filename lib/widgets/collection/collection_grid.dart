@@ -218,7 +218,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
           child: _CollectionSectionedContent(
             collection: collection,
             isScrollingNotifier: _isScrollingNotifier,
-            scrollController: PrimaryScrollController.of(context)!,
+            scrollController: PrimaryScrollController.of(context),
             tileLayout: tileLayout,
             selectable: selectable,
           ),

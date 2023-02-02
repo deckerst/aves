@@ -165,7 +165,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         );
         break;
     }
-    Overlay.of(scrollableContext)!.insert(_overlayEntry!);
+    Overlay.of(scrollableContext).insert(_overlayEntry!);
   }
 
   void _onScaleUpdate(ScaleUpdateDetails details) {

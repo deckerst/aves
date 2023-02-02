@@ -283,7 +283,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
                     valueNotifier: valueNotifier,
                   ),
                 );
-                Overlay.of(context)!.insert(_actionFeedbackOverlayEntry!);
+                Overlay.of(context).insert(_actionFeedbackOverlayEntry!);
               };
               onScaleUpdate = (details) {
                 move += details.focalPointDelta;

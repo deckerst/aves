@@ -517,7 +517,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     Offset tapLocalPosition,
     WidgetBuilder markerBuilder,
   ) async {
-    final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
     final selectedAction = await showMenu<MapClusterAction>(
       context: context,
