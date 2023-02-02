@@ -415,7 +415,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                 selectable: widget.selectable,
                 emptyBuilder: widget.emptyBuilder,
                 bannerBuilder: _getFilterBanner,
-                scrollController: PrimaryScrollController.of(context)!,
+                scrollController: PrimaryScrollController.of(context),
                 tileLayout: tileLayout,
               ),
             );
