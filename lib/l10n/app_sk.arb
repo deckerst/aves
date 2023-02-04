@@ -27,13 +27,13 @@
   "@chipActionDelete": {},
   "welcomeTermsToggle": "Súhlasím s pravidlami a podmienkami",
   "@welcomeTermsToggle": {},
-  "timeDays": "Dni",
+  "timeDays": "{days, plural, other{{days} dni}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
     }
   },
-  "focalLength": "Dĺžka",
+  "focalLength": "{length} mm",
   "@focalLength": {
     "placeholders": {
       "length": {
@@ -50,7 +50,7 @@
   "@doubleBackExitMessage": {},
   "welcomeOptional": "Voliteľné",
   "@welcomeOptional": {},
-  "timeMinutes": "Minúty",
+  "timeMinutes": "{minutes, plural, other{{minutes} minúty}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
