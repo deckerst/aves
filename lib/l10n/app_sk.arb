@@ -1,0 +1,93 @@
+{
+  "deleteButtonLabel": "ODSTRÁNIŤ",
+  "@deleteButtonLabel": {},
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeMessage": "Vitajte v Aves",
+  "@welcomeMessage": {},
+  "cancelTooltip": "ZRUŠIŤ",
+  "@cancelTooltip": {},
+  "changeTooltip": "ZMENIŤ",
+  "@changeTooltip": {},
+  "clearTooltip": "VYČISTIŤ",
+  "@clearTooltip": {},
+  "previousTooltip": "PREDCHÁDZAJÚCE",
+  "@previousTooltip": {},
+  "nextTooltip": "Ďalej",
+  "@nextTooltip": {},
+  "showTooltip": "Zobraziť",
+  "@showTooltip": {},
+  "resetTooltip": "Znovu",
+  "@resetTooltip": {},
+  "saveTooltip": "Uložiť",
+  "@saveTooltip": {},
+  "pickTooltip": "Vybrať",
+  "@pickTooltip": {},
+  "chipActionDelete": "Odstrániť",
+  "@chipActionDelete": {},
+  "welcomeTermsToggle": "Súhlasím s pravidlami a podmienkami",
+  "@welcomeTermsToggle": {},
+  "timeDays": "Dni",
+  "@timeDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "focalLength": "Dĺžka",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "applyButtonLabel": "POUŽIŤ",
+  "@applyButtonLabel": {},
+  "continueButtonLabel": "POKRAČOVAŤ",
+  "@continueButtonLabel": {},
+  "doubleBackExitMessage": "Stlač znovu \"späť\" pre ukončenie.",
+  "@doubleBackExitMessage": {},
+  "welcomeOptional": "Voliteľné",
+  "@welcomeOptional": {},
+  "timeMinutes": "Minúty",
+  "@timeMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "nextButtonLabel": "ĎALEJ",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "ZOBRAZIŤ",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "SCHOVAŤ",
+  "@hideButtonLabel": {},
+  "hideTooltip": "Schovať",
+  "@hideTooltip": {},
+  "actionRemove": "Odstrániť",
+  "@actionRemove": {},
+  "sourceStateLoading": "Načítavanie",
+  "@sourceStateLoading": {},
+  "sourceStateCataloguing": "Indexovanie",
+  "@sourceStateCataloguing": {},
+  "doNotAskAgain": "Nepýtať sa znovu",
+  "@doNotAskAgain": {},
+  "chipActionGoToAlbumPage": "Zobraziť v albumoch",
+  "@chipActionGoToAlbumPage": {},
+  "sourceStateLocatingCountries": "Hľadanie krajín",
+  "@sourceStateLocatingCountries": {},
+  "sourceStateLocatingPlaces": "Hľadanie miest",
+  "@sourceStateLocatingPlaces": {},
+  "chipActionGoToCountryPage": "Zobraziť v krajinách",
+  "@chipActionGoToCountryPage": {},
+  "chipActionGoToTagPage": "Zobraziť v označeniach",
+  "@chipActionGoToTagPage": {},
+  "chipActionFilterOut": "Filtrovať",
+  "@chipActionFilterOut": {},
+  "chipActionFilterIn": "Prefiltrovať",
+  "@chipActionFilterIn": {},
+  "chipActionHide": "Skryť",
+  "@chipActionHide": {},
+  "chipActionPin": "Pripnúť na začiatok",
+  "@chipActionPin": {}
+}

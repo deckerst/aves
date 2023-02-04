@@ -1366,5 +1366,7 @@
   "settingsDisplayUseTvInterface": "Interfață Android TV",
   "@settingsDisplayUseTvInterface": {},
   "tooManyItemsErrorDialogMessage": "Încearcă din nou cu mai puține elemente.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Glisați în sus sau în jos pentru a regla luminozitatea/volumul",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }
