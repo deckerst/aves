@@ -71,15 +71,16 @@ class ViewerButtons extends StatelessWidget {
             selector: (context, s) => s.isRotationLocked,
             builder: (context, s, child) {
               final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(actionDelegate.isVisible).where(actionDelegate.canApply).take(availableCount - 1).toList();
-              final topLevelActions = EntryActions.topLevel.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
-              final exportActions = EntryActions.export.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
-              final videoActions = EntryActions.video.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
+              List<EntryAction> getMenuActions(List<EntryAction> categoryActions) {
+                return categoryActions.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
+              }
+
               return ViewerButtonRowContent(
                 actionDelegate: EntryActionDelegate(mainEntry, pageEntry, collection),
                 quickActions: quickActions,
-                topLevelActions: topLevelActions,
-                exportActions: exportActions,
-                videoActions: videoActions,
+                topLevelActions: getMenuActions(EntryActions.topLevel),
+                exportActions: getMenuActions(EntryActions.export),
+                videoActions: getMenuActions(EntryActions.video),
                 scale: scale,
                 mainEntry: mainEntry,
                 pageEntry: pageEntry,
