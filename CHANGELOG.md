@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: overlay details expand/collapse on tap
+- Viewer: export actions available as quick actions
 - TV: improved support for Info
 
 ### Changed

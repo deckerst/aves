@@ -71,13 +71,15 @@ class EntryActions {
   ];
 
   static const export = [
+    ...exportInternal,
+    ...exportExternal,
+  ];
+
+  static const exportInternal = [
     EntryAction.convert,
     EntryAction.addShortcut,
     EntryAction.copyToClipboard,
     EntryAction.print,
-    EntryAction.open,
-    EntryAction.openMap,
-    EntryAction.setAs,
   ];
 
   static const exportExternal = [
