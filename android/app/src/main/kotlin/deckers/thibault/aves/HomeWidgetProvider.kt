@@ -90,7 +90,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val messenger = flutterEngine!!.dartExecutor
         val channel = MethodChannel(messenger, WIDGET_DRAW_CHANNEL)
         try {
-            val bytes = suspendCoroutine { cont ->
+            val bytes = suspendCoroutine<Any?> { cont ->
                 defaultScope.launch {
                     FlutterUtils.runOnUiThread {
                         channel.invokeMethod("drawWidget", hashMapOf(
@@ -194,7 +194,10 @@ class HomeWidgetProvider : AppWidgetProvider() {
         }
 
         private fun initChannels(context: Context) {
-            val messenger = flutterEngine!!.dartExecutor
+            val engine = flutterEngine
+            engine ?: throw Exception("Flutter engine is not initialized")
+
+            val messenger = engine.dartExecutor
 
             // dart -> platform -> dart
             // - need Context

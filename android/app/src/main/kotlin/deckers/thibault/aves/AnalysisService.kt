@@ -79,7 +79,10 @@ class AnalysisService : Service() {
     }
 
     private fun initChannels(context: Context) {
-        val messenger = flutterEngine!!.dartExecutor
+        val engine = flutterEngine
+        engine ?: throw Exception("Flutter engine is not initialized")
+
+        val messenger = engine.dartExecutor
 
         // channels for analysis
 
