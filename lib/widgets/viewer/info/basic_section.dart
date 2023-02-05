@@ -235,9 +235,11 @@ class _BasicSectionState extends State<BasicSection> {
 
   void _onScrollingChanged() {
     if (!widget.isScrollingNotifier.value) {
-      // using `autofocus` while scrolling seems to fail for widget built offscreen
-      // so we give focus to this page when the screen is no longer scrolling
-      _chipFocusNode.children.firstOrNull?.requestFocus();
+      if (settings.useTvLayout) {
+        // using `autofocus` while scrolling seems to fail for widget built offscreen
+        // so we give focus to this page when the screen is no longer scrolling
+        _chipFocusNode.children.firstOrNull?.requestFocus();
+      }
     }
   }
 }
