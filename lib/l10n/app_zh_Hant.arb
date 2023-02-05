@@ -124,7 +124,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "播放速度",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "設定",
+  "viewerActionSettings": "設定",
   "@videoActionSettings": {},
   "slideshowActionResume": "繼續",
   "@slideshowActionResume": {},

@@ -151,7 +151,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "播放速度",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "设置",
+  "viewerActionSettings": "设置",
   "@videoActionSettings": {},
   "slideshowActionResume": "继续",
   "@slideshowActionResume": {},

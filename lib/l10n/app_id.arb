@@ -147,7 +147,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Kecepatan pemutaran",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Pengaturan",
+  "viewerActionSettings": "Pengaturan",
   "@videoActionSettings": {},
   "slideshowActionResume": "Lanjutkan",
   "@slideshowActionResume": {},

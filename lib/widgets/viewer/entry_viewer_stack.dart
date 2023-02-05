@@ -260,6 +260,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         return [];
       case AppMode.slideshow:
         return [
+          _buildViewerTopOverlay(availableSize),
           _buildSlideshowBottomOverlay(availableSize),
         ];
       default:

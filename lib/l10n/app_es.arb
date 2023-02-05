@@ -147,7 +147,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Velocidad de reproducción",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Ajustes",
+  "viewerActionSettings": "Ajustes",
   "@videoActionSettings": {},
   "slideshowActionResume": "Reanudar",
   "@slideshowActionResume": {},

@@ -121,7 +121,7 @@
   "@videoActionSkip10": {},
   "slideshowActionShowInCollection": "แสดงคอลเลกชัน",
   "@slideshowActionShowInCollection": {},
-  "videoActionSettings": "ตั้งค่า",
+  "viewerActionSettings": "ตั้งค่า",
   "@videoActionSettings": {},
   "slideshowActionResume": "เล่นต่อ",
   "@slideshowActionResume": {},

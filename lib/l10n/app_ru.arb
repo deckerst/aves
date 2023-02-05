@@ -151,7 +151,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Скорость вопспроизведения",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Настройки",
+  "viewerActionSettings": "Настройки",
   "@videoActionSettings": {},
   "slideshowActionResume": "Продолжить",
   "@slideshowActionResume": {},

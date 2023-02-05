@@ -119,7 +119,8 @@
   "videoActionSkip10": "Seek forward 10 seconds",
   "videoActionSelectStreams": "Select tracks",
   "videoActionSetSpeed": "Playback speed",
-  "videoActionSettings": "Settings",
+
+  "viewerActionSettings": "Settings",
 
   "slideshowActionResume": "Resume",
   "slideshowActionShowInCollection": "Show in Collection",

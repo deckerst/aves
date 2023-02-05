@@ -151,7 +151,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Ταχύτητα αναπαραγωγής",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Ρυθμίσεις",
+  "viewerActionSettings": "Ρυθμίσεις",
   "@videoActionSettings": {},
   "slideshowActionResume": "Συνέχιση",
   "@slideshowActionResume": {},

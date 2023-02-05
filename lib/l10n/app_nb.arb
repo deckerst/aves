@@ -76,7 +76,7 @@
   "@videoActionSkip10": {},
   "videoActionSetSpeed": "Avspillingshastighet",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Innstillinger",
+  "viewerActionSettings": "Innstillinger",
   "@videoActionSettings": {},
   "entryInfoActionEditTitleDescription": "Rediger navn og beskrivelse",
   "@entryInfoActionEditTitleDescription": {},

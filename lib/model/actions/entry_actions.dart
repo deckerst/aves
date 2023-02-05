@@ -188,7 +188,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.videoSetSpeed:
         return context.l10n.videoActionSetSpeed;
       case EntryAction.videoSettings:
-        return context.l10n.videoActionSettings;
+        return context.l10n.viewerActionSettings;
       case EntryAction.videoTogglePlay:
         // different data depending on toggle state
         return context.l10n.videoActionPlay;
