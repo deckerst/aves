@@ -151,7 +151,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "재생 배속",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "설정",
+  "viewerActionSettings": "설정",
   "@videoActionSettings": {},
   "slideshowActionResume": "이어서",
   "@slideshowActionResume": {},

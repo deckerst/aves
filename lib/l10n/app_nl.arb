@@ -151,7 +151,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Afspeelsnelheid",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Instellingen",
+  "viewerActionSettings": "Instellingen",
   "@videoActionSettings": {},
   "slideshowActionResume": "Hervatten",
   "@slideshowActionResume": {},

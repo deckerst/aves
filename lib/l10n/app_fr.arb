@@ -151,7 +151,7 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Vitesse de lecture",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Préférences",
+  "viewerActionSettings": "Préférences",
   "@videoActionSettings": {},
   "slideshowActionResume": "Reprendre",
   "@slideshowActionResume": {},
