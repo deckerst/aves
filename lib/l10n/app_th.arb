@@ -122,7 +122,7 @@
   "slideshowActionShowInCollection": "แสดงคอลเลกชัน",
   "@slideshowActionShowInCollection": {},
   "viewerActionSettings": "ตั้งค่า",
-  "@videoActionSettings": {},
+  "@viewerActionSettings": {},
   "slideshowActionResume": "เล่นต่อ",
   "@slideshowActionResume": {},
   "entryInfoActionEditTitleDescription": "แก้ไขชื่อและคำบรรยาย",

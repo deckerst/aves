@@ -152,7 +152,7 @@
   "videoActionSetSpeed": "재생 배속",
   "@videoActionSetSpeed": {},
   "viewerActionSettings": "설정",
-  "@videoActionSettings": {},
+  "@viewerActionSettings": {},
   "slideshowActionResume": "이어서",
   "@slideshowActionResume": {},
   "slideshowActionShowInCollection": "미디어 페이지에서 보기",
