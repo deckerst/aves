@@ -148,7 +148,7 @@
   "videoActionSetSpeed": "再生速度",
   "@videoActionSetSpeed": {},
   "viewerActionSettings": "設定",
-  "@videoActionSettings": {},
+  "@viewerActionSettings": {},
   "slideshowActionResume": "再開",
   "@slideshowActionResume": {},
   "slideshowActionShowInCollection": "コレクションで表示",

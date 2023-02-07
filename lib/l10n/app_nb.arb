@@ -77,7 +77,7 @@
   "videoActionSetSpeed": "Avspillingshastighet",
   "@videoActionSetSpeed": {},
   "viewerActionSettings": "Innstillinger",
-  "@videoActionSettings": {},
+  "@viewerActionSettings": {},
   "entryInfoActionEditTitleDescription": "Rediger navn og beskrivelse",
   "@entryInfoActionEditTitleDescription": {},
   "filterNoDateLabel": "Udatert",

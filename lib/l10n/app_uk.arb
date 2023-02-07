@@ -127,7 +127,7 @@
   "videoActionSelectStreams": "Вибрати доріжку",
   "@videoActionSelectStreams": {},
   "viewerActionSettings": "Налаштування",
-  "@videoActionSettings": {},
+  "@viewerActionSettings": {},
   "slideshowActionResume": "Продовжити",
   "@slideshowActionResume": {},
   "slideshowActionShowInCollection": "Показати у Колекції",

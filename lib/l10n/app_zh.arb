@@ -152,7 +152,7 @@
   "videoActionSetSpeed": "播放速度",
   "@videoActionSetSpeed": {},
   "viewerActionSettings": "设置",
-  "@videoActionSettings": {},
+  "@viewerActionSettings": {},
   "slideshowActionResume": "继续",
   "@slideshowActionResume": {},
   "slideshowActionShowInCollection": "在媒体集中显示",

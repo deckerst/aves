@@ -152,7 +152,7 @@
   "videoActionSetSpeed": "Скорость вопспроизведения",
   "@videoActionSetSpeed": {},
   "viewerActionSettings": "Настройки",
-  "@videoActionSettings": {},
+  "@viewerActionSettings": {},
   "slideshowActionResume": "Продолжить",
   "@slideshowActionResume": {},
   "slideshowActionShowInCollection": "Показать в Коллекции",
