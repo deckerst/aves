@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> aplikácia je schopná si poradiť s veľkým množstvom rôznych formátov obrázkov a videí, ako napríklad typickými JPEG a MP4, ale aj s exotickejšími <b> TIFF, SVG, AVI a mnoho iných</b>! Aplikácia skenuje média v zariadení a identifikje <b>fotky v pohybe</b>, <b>panorámy</b> , <b>360° videá</b>, ako aj <b>GeoTIFF</b> súbory.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>Navigácia a vyhľadávanie</b> je dôležitou súčasťou aplikácie <i>Aves</i>. Jej cieľom je poskytnúť užívateľom jednoduchý prechod z albumov, do fotiek, tagov, máp, atď.
 
-<i>Aves</i> integrates with Android (from KitKat to Android 13, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> je schopný pracovať s Android (od KitKat do Android 13, včetne Android TV) a ponúka rozšírenia ako <b>miniaplikácie (widgety)</b>, <b>skratky aplikácie</b>, <b>šetrič obrazovky</b> a <b>globálne vyhľadávanie</b>. Rovnako poskytuje <b>prehľadávnie médií</b>.
