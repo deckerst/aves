@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: export actions available as quick actions
 - Slideshow: added settings quick action
 - TV: improved support for Info
+- Basque translation (thanks Aitor Salaberria)
 
 ### Changed
 
