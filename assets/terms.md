@@ -2,7 +2,7 @@
 
 “Aves Gallery” is an open-source gallery and metadata explorer app allowing you to access and manage your local photos and videos.
 
-You must use the app for legal, authorized and acceptable purposes.
+The app is designed for legal, authorized and acceptable purposes.
 
 ## Disclaimer
 
