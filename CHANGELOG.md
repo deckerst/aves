@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - remember pin status of albums becoming empty
-- upgraded Flutter to stable v3.7.1
+- upgraded Flutter to stable v3.7.2
 
 ### Fixed
 
