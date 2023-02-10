@@ -13,7 +13,7 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.7.2
+  flutter: 3.7.3
   sdk: ">=2.19.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
