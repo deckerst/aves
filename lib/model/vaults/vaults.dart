@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/enums.dart';
@@ -26,7 +27,7 @@ class Vaults extends ChangeNotifier {
   Future<void> init() async {
     _rows = await metadataDb.loadAllVaults();
     _vaultDirPaths = null;
-    final screenStateStream = Screen().screenStateStream;
+    final screenStateStream = Platform.isAndroid ? Screen().screenStateStream : null;
     if (screenStateStream != null) {
       _subscriptions.add(screenStateStream.where((event) => event == ScreenStateEvent.SCREEN_OFF).listen((event) => _onScreenOff()));
     }
