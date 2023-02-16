@@ -699,8 +699,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Нет альбомов",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Создать альбом",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "СОЗДАТЬ",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "новый",

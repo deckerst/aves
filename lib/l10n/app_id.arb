@@ -683,8 +683,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Tidak ada album",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Buat album",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "BUAT",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "baru",

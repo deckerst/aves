@@ -743,8 +743,6 @@
   "@sortByRating": {},
   "viewerInfoLabelUri": "URI",
   "@viewerInfoLabelUri": {},
-  "createAlbumTooltip": "Creați un album",
-  "@createAlbumTooltip": {},
   "viewerInfoLabelDescription": "Descriere",
   "@viewerInfoLabelDescription": {},
   "settingsThumbnailOverlayPageTitle": "Suprapunere",

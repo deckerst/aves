@@ -615,8 +615,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "沒有相簿",
   "@albumEmpty": {},
-  "createAlbumTooltip": "建立相簿",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "建立",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "新的",

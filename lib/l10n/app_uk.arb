@@ -885,8 +885,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Немає альбомів",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Створити альбом",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "СТВОРИТИ",
   "@createAlbumButtonLabel": {},
   "countryPageTitle": "Країни",
