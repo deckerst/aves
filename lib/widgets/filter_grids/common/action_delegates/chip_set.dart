@@ -17,6 +17,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -33,7 +34,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, VaultAwareMixin {
   Iterable<FilterGridItem<T>> get allItems;
 
   ChipSortFactor get sortFactor;
@@ -88,6 +89,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.toggleTitleSearch:
         return !useTvLayout && !isSelecting;
       case ChipSetAction.createAlbum:
+      case ChipSetAction.createVault:
         return false;
       // browsing or selecting
       case ChipSetAction.map:
@@ -95,19 +97,21 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.stats:
         return isMain;
       // selecting (single/multiple filters)
-      case ChipSetAction.delete:
-        return false;
       case ChipSetAction.hide:
         return isMain;
       case ChipSetAction.pin:
         return !hasSelection || !settings.pinnedFilters.containsAll(selectedFilters);
       case ChipSetAction.unpin:
         return hasSelection && settings.pinnedFilters.containsAll(selectedFilters);
-      // selecting (single filter)
-      case ChipSetAction.rename:
+      case ChipSetAction.delete:
+      case ChipSetAction.lockVault:
         return false;
+      // selecting (single filter)
       case ChipSetAction.setCover:
         return isMain;
+      case ChipSetAction.rename:
+      case ChipSetAction.configureVault:
+        return false;
     }
   }
 
@@ -131,6 +135,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.search:
       case ChipSetAction.toggleTitleSearch:
       case ChipSetAction.createAlbum:
+      case ChipSetAction.createVault:
         return true;
       // browsing or selecting
       case ChipSetAction.map:
@@ -142,10 +147,12 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.hide:
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
+      case ChipSetAction.lockVault:
         return hasSelection;
       // selecting (single filter)
       case ChipSetAction.rename:
       case ChipSetAction.setCover:
+      case ChipSetAction.configureVault:
         return selectedItemCount == 1;
     }
   }
@@ -174,6 +181,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         context.read<Query>().toggle();
         break;
       case ChipSetAction.createAlbum:
+      case ChipSetAction.createVault:
         break;
       // browsing or selecting
       case ChipSetAction.map:
@@ -186,8 +194,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         _goToStats(context, filters);
         break;
       // selecting (single/multiple filters)
-      case ChipSetAction.delete:
-        break;
       case ChipSetAction.hide:
         _hide(context, filters);
         break;
@@ -199,11 +205,15 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
         _browse(context);
         break;
-      // selecting (single filter)
-      case ChipSetAction.rename:
+      case ChipSetAction.delete:
+      case ChipSetAction.lockVault:
         break;
+      // selecting (single filter)
       case ChipSetAction.setCover:
         _setCover(context, filters.first);
+        break;
+      case ChipSetAction.rename:
+      case ChipSetAction.configureVault:
         break;
     }
   }
@@ -326,6 +336,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _setCover(BuildContext context, T filter) async {
+    if (!await unlockFilter(context, filter)) return;
+
     final existingCover = covers.of(filter);
     final entryId = existingCover?.item1;
     final customEntry = entryId != null ? context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId) : null;

@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/collection_utils.dart';
@@ -61,8 +62,10 @@ mixin AlbumMixin on SourceBase {
   }
 
   void updateDirectories() {
-    final visibleDirectories = visibleEntries.map((entry) => entry.directory).toSet();
-    addDirectories(albums: visibleDirectories);
+    addDirectories(albums: {
+      ...visibleEntries.map((entry) => entry.directory),
+      ...vaults.all.map((v) => v.path),
+    });
     cleanEmptyAlbums();
   }
 
@@ -73,22 +76,24 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
-  void cleanEmptyAlbums([Set<String?>? albums]) {
-    final emptyAlbums = (albums ?? _directories).where((v) => _isEmptyAlbum(v) && !_newAlbums.contains(v)).toSet();
-    if (emptyAlbums.isNotEmpty) {
-      _directories.removeAll(emptyAlbums);
+  void cleanEmptyAlbums([Set<String>? albums]) {
+    final removableAlbums = (albums ?? _directories).where(_isRemovable).toSet();
+    if (removableAlbums.isNotEmpty) {
+      _directories.removeAll(removableAlbums);
       _onAlbumChanged();
-      invalidateAlbumFilterSummary(directories: emptyAlbums);
+      invalidateAlbumFilterSummary(directories: removableAlbums);
 
       final bookmarks = settings.drawerAlbumBookmarks;
-      emptyAlbums.forEach((album) {
+      removableAlbums.forEach((album) {
         bookmarks?.remove(album);
       });
       settings.drawerAlbumBookmarks = bookmarks;
     }
   }
 
-  bool _isEmptyAlbum(String? album) => !visibleEntries.any((entry) => entry.directory == album);
+  bool _isRemovable(String album) {
+    return !(visibleEntries.any((entry) => entry.directory == album) || _newAlbums.contains(album) || vaults.isVault(album));
+  }
 
   // filter summary
 
@@ -166,8 +171,8 @@ mixin AlbumMixin on SourceBase {
     final separator = pContext.separator;
     assert(!dirPath.endsWith(separator));
 
+    final type = androidFileUtils.getAlbumType(dirPath);
     if (context != null) {
-      final type = androidFileUtils.getAlbumType(dirPath);
       switch (type) {
         case AlbumType.camera:
           return context.l10n.albumCamera;
@@ -180,10 +185,13 @@ mixin AlbumMixin on SourceBase {
         case AlbumType.videoCaptures:
           return context.l10n.albumVideoCaptures;
         case AlbumType.regular:
+        case AlbumType.vault:
         case AlbumType.app:
           break;
       }
     }
+
+    if (type == AlbumType.vault) return pContext.basename(dirPath);
 
     final dir = VolumeRelativeDirectory.fromPath(dirPath);
     if (dir == null) return dirPath;

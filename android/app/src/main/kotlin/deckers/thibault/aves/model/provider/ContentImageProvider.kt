@@ -44,6 +44,7 @@ internal class ContentImageProvider : ImageProvider() {
         }
 
         val fields: FieldMap = hashMapOf(
+            "origin" to SourceEntry.ORIGIN_UNKNOWN_CONTENT,
             "uri" to uri.toString(),
             "sourceMimeType" to mimeType,
         )

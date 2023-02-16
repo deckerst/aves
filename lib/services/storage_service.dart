@@ -9,6 +9,8 @@ import 'package:streams_channel/streams_channel.dart';
 abstract class StorageService {
   Future<Set<StorageVolume>> getStorageVolumes();
 
+  Future<String> getVaultRoot();
+
   Future<int?> getFreeSpace(StorageVolume volume);
 
   Future<List<String>> getGrantedDirectories();
@@ -51,6 +53,17 @@ class PlatformStorageService implements StorageService {
       await reportService.recordError(e, stack);
     }
     return {};
+  }
+
+  @override
+  Future<String> getVaultRoot() async {
+    try {
+      final result = await _platform.invokeMethod('getVaultRoot');
+      return result as String;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return '';
   }
 
   @override

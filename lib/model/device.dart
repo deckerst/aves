@@ -1,15 +1,19 @@
 import 'package:aves/services/common/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 final Device device = Device._private();
 
 class Device {
   late final String _userAgent;
-  late final bool _canGrantDirectoryAccess, _canPinShortcut, _canPrint, _canRenderFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper;
+  late final bool _canAuthenticateUser, _canGrantDirectoryAccess, _canPinShortcut, _canPrint;
+  late final bool _canRenderFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper, _canUseCrypto;
   late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode;
 
   String get userAgent => _userAgent;
+
+  bool get canAuthenticateUser => _canAuthenticateUser;
 
   bool get canGrantDirectoryAccess => _canGrantDirectoryAccess;
 
@@ -22,6 +26,10 @@ class Device {
   bool get canRequestManageMedia => _canRequestManageMedia;
 
   bool get canSetLockScreenWallpaper => _canSetLockScreenWallpaper;
+
+  bool get canUseCrypto => _canUseCrypto;
+
+  bool get canUseVaults => canAuthenticateUser || canUseCrypto;
 
   bool get hasGeocoder => _hasGeocoder;
 
@@ -42,6 +50,9 @@ class Device {
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     _isTelevision = androidInfo.systemFeatures.contains('android.software.leanback');
 
+    final auth = LocalAuthentication();
+    _canAuthenticateUser = await auth.canCheckBiometrics || await auth.isDeviceSupported();
+
     final capabilities = await deviceService.getCapabilities();
     _canGrantDirectoryAccess = capabilities['canGrantDirectoryAccess'] ?? false;
     _canPinShortcut = capabilities['canPinShortcut'] ?? false;
@@ -49,6 +60,7 @@ class Device {
     _canRenderFlagEmojis = capabilities['canRenderFlagEmojis'] ?? false;
     _canRequestManageMedia = capabilities['canRequestManageMedia'] ?? false;
     _canSetLockScreenWallpaper = capabilities['canSetLockScreenWallpaper'] ?? false;
+    _canUseCrypto = capabilities['canUseCrypto'] ?? false;
     _hasGeocoder = capabilities['hasGeocoder'] ?? false;
     _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;

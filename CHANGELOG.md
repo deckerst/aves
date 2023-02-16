@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Vaults
 - Viewer: overlay details expand/collapse on tap
 - Viewer: export actions available as quick actions
 - Slideshow: added settings quick action
@@ -14,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- disabling the recycle bin will delete forever items in it
 - remember pin status of albums becoming empty
 - upgraded Flutter to stable v3.7.3
 

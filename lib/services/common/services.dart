@@ -12,6 +12,7 @@ import 'package:aves/services/media/media_session_service.dart';
 import 'package:aves/services/media/media_store_service.dart';
 import 'package:aves/services/metadata/metadata_edit_service.dart';
 import 'package:aves/services/metadata/metadata_fetch_service.dart';
+import 'package:aves/services/security_service.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/window_service.dart';
 import 'package:aves_report/aves_report.dart';
@@ -41,6 +42,7 @@ final MetadataEditService metadataEditService = getIt<MetadataEditService>();
 final MetadataFetchService metadataFetchService = getIt<MetadataFetchService>();
 final MobileServices mobileServices = getIt<MobileServices>();
 final ReportService reportService = getIt<ReportService>();
+final SecurityService securityService = getIt<SecurityService>();
 final StorageService storageService = getIt<StorageService>();
 final WindowService windowService = getIt<WindowService>();
 
@@ -60,6 +62,7 @@ void initPlatformServices() {
   getIt.registerLazySingleton<MetadataFetchService>(PlatformMetadataFetchService.new);
   getIt.registerLazySingleton<MobileServices>(PlatformMobileServices.new);
   getIt.registerLazySingleton<ReportService>(PlatformReportService.new);
+  getIt.registerLazySingleton<SecurityService>(PlatformSecurityService.new);
   getIt.registerLazySingleton<StorageService>(PlatformStorageService.new);
   getIt.registerLazySingleton<WindowService>(PlatformWindowService.new);
 }

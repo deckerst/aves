@@ -135,22 +135,26 @@ mixin FeedbackMixin {
     required Stream<T> opStream,
     int? itemCount,
     VoidCallback? onCancel,
-    void Function(Set<T> processed)? onDone,
-  }) =>
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => ReportOverlay<T>(
-          opStream: opStream,
-          itemCount: itemCount,
-          onCancel: onCancel,
-          onDone: (processed) {
-            Navigator.maybeOf(context)?.pop();
-            onDone?.call(processed);
-          },
-        ),
-        routeSettings: const RouteSettings(name: ReportOverlay.routeName),
-      );
+    Future<void> Function(Set<T> processed)? onDone,
+  }) async {
+    final completer = Completer();
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ReportOverlay<T>(
+        opStream: opStream,
+        itemCount: itemCount,
+        onCancel: onCancel,
+        onDone: (processed) async {
+          Navigator.maybeOf(context)?.pop();
+          await onDone?.call(processed);
+          completer.complete();
+        },
+      ),
+      routeSettings: const RouteSettings(name: ReportOverlay.routeName),
+    );
+    return completer.future;
+  }
 }
 
 class ReportOverlay<T> extends StatefulWidget {

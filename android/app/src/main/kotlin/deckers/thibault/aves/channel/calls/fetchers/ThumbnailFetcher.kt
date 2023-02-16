@@ -109,7 +109,7 @@ class ThumbnailFetcher internal constructor(
         } else {
             @Suppress("deprecation")
             var bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null)
-            // from Android 10, returned thumbnail is already rotated according to EXIF orientation
+            // from Android 10 (API 29), returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
                 bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }

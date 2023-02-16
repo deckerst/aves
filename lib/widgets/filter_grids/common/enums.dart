@@ -2,7 +2,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
-enum AlbumImportance { newAlbum, pinned, special, apps, regular }
+enum AlbumImportance { newAlbum, pinned, special, apps, vaults, regular }
 
 extension ExtraAlbumImportance on AlbumImportance {
   String getText(BuildContext context) {
@@ -15,6 +15,8 @@ extension ExtraAlbumImportance on AlbumImportance {
         return context.l10n.albumTierSpecial;
       case AlbumImportance.apps:
         return context.l10n.albumTierApps;
+      case AlbumImportance.vaults:
+        return context.l10n.albumTierVaults;
       case AlbumImportance.regular:
         return context.l10n.albumTierRegular;
     }
@@ -30,6 +32,8 @@ extension ExtraAlbumImportance on AlbumImportance {
         return AIcons.important;
       case AlbumImportance.apps:
         return AIcons.app;
+      case AlbumImportance.vaults:
+        return AIcons.locked;
       case AlbumImportance.regular:
         return AIcons.album;
     }

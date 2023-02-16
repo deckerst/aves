@@ -41,7 +41,7 @@ class Settings extends ChangeNotifier {
   static const int _recentFilterHistoryMax = 10;
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
-    catalogTimeZoneKey,
+    catalogTimeZoneRawOffsetMillisKey,
     searchHistoryKey,
     platformAccelerometerRotationKey,
     platformTransitionAnimationScaleKey,
@@ -57,7 +57,7 @@ class Settings extends ChangeNotifier {
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
-  static const catalogTimeZoneKey = 'catalog_time_zone';
+  static const catalogTimeZoneRawOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';
@@ -78,6 +78,7 @@ class Settings extends ChangeNotifier {
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
   static const enableBottomNavigationBarKey = 'show_bottom_navigation_bar';
+  static const confirmCreateVaultKey = 'confirm_create_vault';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
   static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
@@ -282,10 +283,10 @@ class Settings extends ChangeNotifier {
   }
 
   Future<void> sanitize() async {
-    if (timeToTakeAction == AccessibilityTimeout.system && !(await AccessibilityService.hasRecommendedTimeouts())) {
+    if (timeToTakeAction == AccessibilityTimeout.system && !await AccessibilityService.hasRecommendedTimeouts()) {
       _set(timeToTakeActionKey, null);
     }
-    if (viewerUseCutout != SettingsDefaults.viewerUseCutout && !(await windowService.isCutoutAware())) {
+    if (viewerUseCutout != SettingsDefaults.viewerUseCutout && !await windowService.isCutoutAware()) {
       _set(viewerUseCutoutKey, null);
     }
   }
@@ -361,9 +362,9 @@ class Settings extends ChangeNotifier {
     return _appliedLocale!;
   }
 
-  String get catalogTimeZone => getString(catalogTimeZoneKey) ?? '';
+  int get catalogTimeZoneRawOffsetMillis => getInt(catalogTimeZoneRawOffsetMillisKey) ?? 0;
 
-  set catalogTimeZone(String newValue) => _set(catalogTimeZoneKey, newValue);
+  set catalogTimeZoneRawOffsetMillis(int newValue) => _set(catalogTimeZoneRawOffsetMillisKey, newValue);
 
   double getTileExtent(String routeName) => getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
@@ -437,19 +438,23 @@ class Settings extends ChangeNotifier {
 
   set enableBottomNavigationBar(bool newValue) => _set(enableBottomNavigationBarKey, newValue);
 
-  bool get confirmDeleteForever => getBool(confirmDeleteForeverKey) ?? SettingsDefaults.confirmDeleteForever;
+  bool get confirmCreateVault => getBool(confirmCreateVaultKey) ?? SettingsDefaults.confirm;
+
+  set confirmCreateVault(bool newValue) => _set(confirmCreateVaultKey, newValue);
+
+  bool get confirmDeleteForever => getBool(confirmDeleteForeverKey) ?? SettingsDefaults.confirm;
 
   set confirmDeleteForever(bool newValue) => _set(confirmDeleteForeverKey, newValue);
 
-  bool get confirmMoveToBin => getBool(confirmMoveToBinKey) ?? SettingsDefaults.confirmMoveToBin;
+  bool get confirmMoveToBin => getBool(confirmMoveToBinKey) ?? SettingsDefaults.confirm;
 
   set confirmMoveToBin(bool newValue) => _set(confirmMoveToBinKey, newValue);
 
-  bool get confirmMoveUndatedItems => getBool(confirmMoveUndatedItemsKey) ?? SettingsDefaults.confirmMoveUndatedItems;
+  bool get confirmMoveUndatedItems => getBool(confirmMoveUndatedItemsKey) ?? SettingsDefaults.confirm;
 
   set confirmMoveUndatedItems(bool newValue) => _set(confirmMoveUndatedItemsKey, newValue);
 
-  bool get confirmAfterMoveToBin => getBool(confirmAfterMoveToBinKey) ?? SettingsDefaults.confirmAfterMoveToBin;
+  bool get confirmAfterMoveToBin => getBool(confirmAfterMoveToBinKey) ?? SettingsDefaults.confirm;
 
   set confirmAfterMoveToBin(bool newValue) => _set(confirmAfterMoveToBinKey, newValue);
 
@@ -1019,6 +1024,7 @@ class Settings extends ChangeNotifier {
             case enableBlurEffectKey:
             case enableBottomNavigationBarKey:
             case mustBackTwiceToExitKey:
+            case confirmCreateVaultKey:
             case confirmDeleteForeverKey:
             case confirmMoveToBinKey:
             case confirmMoveUndatedItemsKey:

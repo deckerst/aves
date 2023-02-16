@@ -5,6 +5,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
+import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/video_playback.dart';
 
 abstract class MetadataDb {
@@ -16,17 +17,17 @@ abstract class MetadataDb {
 
   Future<void> reset();
 
-  Future<void> removeIds(Iterable<int> ids, {Set<EntryDataType>? dataTypes});
+  Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes});
 
   // entries
 
   Future<void> clearEntries();
 
-  Future<Set<AvesEntry>> loadEntries({String? directory});
+  Future<Set<AvesEntry>> loadEntries({int? origin, String? directory});
 
-  Future<Set<AvesEntry>> loadEntriesById(Iterable<int> ids);
+  Future<Set<AvesEntry>> loadEntriesById(Set<int> ids);
 
-  Future<void> saveEntries(Iterable<AvesEntry> entries);
+  Future<void> saveEntries(Set<AvesEntry> entries);
 
   Future<void> updateEntry(int id, AvesEntry entry);
 
@@ -44,7 +45,7 @@ abstract class MetadataDb {
 
   Future<Set<CatalogMetadata>> loadCatalogMetadata();
 
-  Future<Set<CatalogMetadata>> loadCatalogMetadataById(Iterable<int> ids);
+  Future<Set<CatalogMetadata>> loadCatalogMetadataById(Set<int> ids);
 
   Future<void> saveCatalogMetadata(Set<CatalogMetadata> metadataEntries);
 
@@ -56,11 +57,23 @@ abstract class MetadataDb {
 
   Future<Set<AddressDetails>> loadAddresses();
 
-  Future<Set<AddressDetails>> loadAddressesById(Iterable<int> ids);
+  Future<Set<AddressDetails>> loadAddressesById(Set<int> ids);
 
   Future<void> saveAddresses(Set<AddressDetails> addresses);
 
   Future<void> updateAddress(int id, AddressDetails? address);
+
+  // vaults
+
+  Future<void> clearVaults();
+
+  Future<Set<VaultDetails>> loadAllVaults();
+
+  Future<void> addVaults(Set<VaultDetails> rows);
+
+  Future<void> updateVault(String oldName, VaultDetails row);
+
+  Future<void> removeVaults(Set<VaultDetails> rows);
 
   // trash
 
@@ -76,11 +89,11 @@ abstract class MetadataDb {
 
   Future<Set<FavouriteRow>> loadAllFavourites();
 
-  Future<void> addFavourites(Iterable<FavouriteRow> rows);
+  Future<void> addFavourites(Set<FavouriteRow> rows);
 
   Future<void> updateFavouriteId(int id, FavouriteRow row);
 
-  Future<void> removeFavourites(Iterable<FavouriteRow> rows);
+  Future<void> removeFavourites(Set<FavouriteRow> rows);
 
   // covers
 
@@ -88,7 +101,7 @@ abstract class MetadataDb {
 
   Future<Set<CoverRow>> loadAllCovers();
 
-  Future<void> addCovers(Iterable<CoverRow> rows);
+  Future<void> addCovers(Set<CoverRow> rows);
 
   Future<void> updateCoverEntryId(int id, CoverRow row);
 
@@ -104,5 +117,5 @@ abstract class MetadataDb {
 
   Future<void> addVideoPlayback(Set<VideoPlaybackRow> rows);
 
-  Future<void> removeVideoPlayback(Iterable<int> ids);
+  Future<void> removeVideoPlayback(Set<int> ids);
 }

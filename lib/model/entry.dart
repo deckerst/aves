@@ -20,6 +20,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
@@ -28,6 +29,13 @@ import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 enum EntryDataType { basic, aspectRatio, catalog, address, references }
+
+class EntryOrigins {
+  static const int mediaStoreContent = 0;
+  static const int unknownContent = 1;
+  static const int file = 2;
+  static const int vault = 3;
+}
 
 class AvesEntry {
   // `sizeBytes`, `dateModifiedSecs` can be missing in viewer mode
@@ -40,6 +48,7 @@ class AvesEntry {
   int width, height, sourceRotationDegrees;
   int? sizeBytes, dateAddedSecs, _dateModifiedSecs, sourceDateTakenMillis, _durationMillis;
   bool trashed;
+  int origin;
 
   int? _catalogDateMillis;
   CatalogMetadata? _catalogMetadata;
@@ -67,6 +76,7 @@ class AvesEntry {
     required this.sourceDateTakenMillis,
     required int? durationMillis,
     required this.trashed,
+    required this.origin,
     this.burstEntries,
   }) : id = id ?? 0 {
     this.path = path;
@@ -87,6 +97,7 @@ class AvesEntry {
     String? title,
     int? dateAddedSecs,
     int? dateModifiedSecs,
+    int? origin,
     List<AvesEntry>? burstEntries,
   }) {
     final copyEntryId = id ?? this.id;
@@ -107,6 +118,7 @@ class AvesEntry {
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
       trashed: trashed,
+      origin: origin ?? this.origin,
       burstEntries: burstEntries ?? this.burstEntries,
     )
       ..catalogMetadata = _catalogMetadata?.copyWith(id: copyEntryId)
@@ -135,6 +147,7 @@ class AvesEntry {
       sourceDateTakenMillis: map['sourceDateTakenMillis'] as int?,
       durationMillis: map['durationMillis'] as int?,
       trashed: (map['trashed'] as int? ?? 0) != 0,
+      origin: map['origin'] as int,
     );
   }
 
@@ -156,6 +169,7 @@ class AvesEntry {
       'sourceDateTakenMillis': sourceDateTakenMillis,
       'durationMillis': durationMillis,
       'trashed': trashed ? 1 : 0,
+      'origin': origin,
     };
   }
 
@@ -173,6 +187,7 @@ class AvesEntry {
       'sizeBytes': sizeBytes,
       'trashed': trashed,
       'trashPath': trashDetails?.path,
+      'origin': origin,
     };
   }
 
@@ -281,7 +296,9 @@ class AvesEntry {
 
   bool get isMediaStoreMediaContent => isMediaStoreContent && {'/external/images/', '/external/video/'}.any(uri.contains);
 
-  bool get canEdit => !settings.isReadOnly && path != null && !trashed && isMediaStoreContent;
+  bool get isVaultContent => path?.startsWith(androidFileUtils.vaultRoot) ?? false;
+
+  bool get canEdit => !settings.isReadOnly && path != null && !trashed && (isMediaStoreContent || isVaultContent);
 
   bool get canEditDate => canEdit && (canEditExif || canEditXmp);
 

@@ -29,7 +29,7 @@ class AvesDialog extends StatelessWidget {
     this.scrollableContent,
     this.horizontalContentPadding = defaultHorizontalContentPadding,
     this.content,
-    required this.actions,
+    this.actions = const [],
   })  : assert((scrollableContent != null) ^ (content != null)),
         scrollController = scrollController ?? ScrollController();
 

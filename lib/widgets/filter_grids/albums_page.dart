@@ -99,6 +99,7 @@ class AlbumListPage extends StatelessWidget {
       case AlbumChipGroupFactor.importance:
         final specialKey = AlbumImportanceSectionKey.special(context);
         final appsKey = AlbumImportanceSectionKey.apps(context);
+        final vaultKey = AlbumImportanceSectionKey.vault(context);
         final regularKey = AlbumImportanceSectionKey.regular(context);
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           switch (covers.effectiveAlbumType(kv.filter.album)) {
@@ -106,6 +107,8 @@ class AlbumListPage extends StatelessWidget {
               return regularKey;
             case AlbumType.app:
               return appsKey;
+            case AlbumType.vault:
+              return vaultKey;
             default:
               return specialKey;
           }
@@ -115,6 +118,7 @@ class AlbumListPage extends StatelessWidget {
           // group ordering
           if (sections.containsKey(specialKey)) specialKey: sections[specialKey]!,
           if (sections.containsKey(appsKey)) appsKey: sections[appsKey]!,
+          if (sections.containsKey(vaultKey)) vaultKey: sections[vaultKey]!,
           if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
         };
         break;

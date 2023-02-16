@@ -17,6 +17,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
@@ -24,6 +25,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
+import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -44,8 +46,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-
-import '../common/action_mixins/entry_storage.dart';
 
 class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin {
   bool isVisible(
@@ -284,10 +284,29 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   Future<void> _delete(BuildContext context) async {
     final entries = _getTargetItems(context);
+    final byBinUsage = groupBy<AvesEntry, bool>(entries, (entry) {
+      final details = vaults.getVault(entry.directory);
+      return details?.useBin ?? settings.enableBin;
+    });
+    await Future.forEach(
+        byBinUsage.entries,
+        (kv) => doDelete(
+              context: context,
+              entries: kv.value.toSet(),
+              enableBin: kv.key,
+            ));
 
+    _browse(context);
+  }
+
+  Future<void> doDelete({
+    required BuildContext context,
+    required Set<AvesEntry> entries,
+    required bool enableBin,
+  }) async {
     final pureTrash = entries.every((entry) => entry.trashed);
-    if (settings.enableBin && !pureTrash) {
-      await _move(context, moveType: MoveType.toBin);
+    if (enableBin && !pureTrash) {
+      await doMove(context, moveType: MoveType.toBin, entries: entries);
       return;
     }
 
@@ -296,7 +315,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
     final todoCount = entries.length;
 
-    if (!await showConfirmationDialog(
+    if (!await showSkippableConfirmationDialog(
       context: context,
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
@@ -329,8 +348,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         await storageService.deleteEmptyDirectories(storageDirs);
       },
     );
-
-    _browse(context);
   }
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {

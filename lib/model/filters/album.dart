@@ -73,6 +73,7 @@ class AlbumFilter extends CoveredCollectionFilter {
     final albumType = covers.effectiveAlbumType(album);
     switch (albumType) {
       case AlbumType.regular:
+      case AlbumType.vault:
         break;
       case AlbumType.app:
         final appColor = colors.appColor(album);
