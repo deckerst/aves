@@ -657,8 +657,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "アルバムはありません",
   "@albumEmpty": {},
-  "createAlbumTooltip": "アルバムを作成",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "作成",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "新規",

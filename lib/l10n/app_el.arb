@@ -699,8 +699,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Δεν υπάρχουν άλμπουμ",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Δημιουργία άλμπουμ",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "ΔΗΜΙΟΥΡΓΙΑ",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "Νέα",

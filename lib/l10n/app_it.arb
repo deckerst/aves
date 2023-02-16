@@ -699,8 +699,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Nessun album",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Crea album",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "CREA",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "nuovo",

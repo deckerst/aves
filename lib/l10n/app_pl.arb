@@ -705,8 +705,6 @@
   "@sortByItemCount": {},
   "sortBySize": "Według rozmiaru",
   "@sortBySize": {},
-  "createAlbumTooltip": "Utwórz album",
-  "@createAlbumTooltip": {},
   "albumEmpty": "Brak albumów",
   "@albumEmpty": {},
   "renameEntrySetPageTitle": "Zmień nazwę",

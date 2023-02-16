@@ -699,8 +699,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Keine Alben",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Album erstellen",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "ERSTELLE",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "Neu",

@@ -629,8 +629,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Albüm yok",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Albüm oluştur",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "OLUŞTUR",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "yeni",
