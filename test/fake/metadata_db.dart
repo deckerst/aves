@@ -6,6 +6,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
+import 'package:aves/model/vaults/details.dart';
 import 'package:flutter/foundation.dart';
 import 'package:test/fake.dart';
 
@@ -35,9 +36,15 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   // date taken
 
   @override
+  Future<void> clearDates() => SynchronousFuture(null);
+
+  @override
   Future<Map<int?, int?>> loadDates() => SynchronousFuture({});
 
   // catalog metadata
+
+  @override
+  Future<void> clearCatalogMetadata() => SynchronousFuture(null);
 
   @override
   Future<Set<CatalogMetadata>> loadCatalogMetadata() => SynchronousFuture({});
@@ -58,6 +65,11 @@ class FakeMetadataDb extends Fake implements MetadataDb {
 
   @override
   Future<void> updateAddress(int id, AddressDetails? address) => SynchronousFuture(null);
+
+  // vaults
+
+  @override
+  Future<Set<VaultDetails>> loadAllVaults() => SynchronousFuture({});
 
   // trash
 
