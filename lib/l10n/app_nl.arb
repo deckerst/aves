@@ -693,8 +693,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Geen albums",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Album aanmaken",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "AANMAKEN",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "nieuw",
