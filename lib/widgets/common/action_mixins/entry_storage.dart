@@ -194,7 +194,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   }) async {
     if (moveType == MoveType.toBin) {
       final l10n = context.l10n;
-      if (!await showConfirmationDialog(
+      if (!await showSkippableConfirmationDialog(
         context: context,
         type: ConfirmationDialog.moveToBin,
         message: l10n.binEntriesConfirmationDialogMessage(entries.length),
@@ -291,7 +291,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       return dateMillis == null || dateMillis == 0;
     }).toSet();
     if (undatedItems.isNotEmpty) {
-      if (!await showConfirmationDialog(
+      if (!await showSkippableConfirmationDialog(
         context: context,
         type: ConfirmationDialog.moveUndatedItems,
         delegate: MoveUndatedConfirmationDialogDelegate(),

@@ -9,6 +9,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
+import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
@@ -26,6 +27,7 @@ class SqfliteMetadataDb implements MetadataDb {
   static const addressTable = 'address';
   static const favouriteTable = 'favourites';
   static const coverTable = 'covers';
+  static const vaultTable = 'vaults';
   static const trashTable = 'trash';
   static const videoPlaybackTable = 'videoPlayback';
 
@@ -55,6 +57,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ', sourceDateTakenMillis INTEGER'
             ', durationMillis INTEGER'
             ', trashed INTEGER DEFAULT 0'
+            ', origin INTEGER DEFAULT 0'
             ')');
         await db.execute('CREATE TABLE $dateTakenTable('
             'id INTEGER PRIMARY KEY'
@@ -89,6 +92,12 @@ class SqfliteMetadataDb implements MetadataDb {
             ', packageName TEXT'
             ', color INTEGER'
             ')');
+        await db.execute('CREATE TABLE $vaultTable('
+            'name TEXT PRIMARY KEY'
+            ', autoLock INTEGER'
+            ', useBin INTEGER'
+            ', lockType TEXT'
+            ')');
         await db.execute('CREATE TABLE $trashTable('
             'id INTEGER PRIMARY KEY'
             ', path TEXT'
@@ -100,7 +109,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 10,
+      version: 11,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT max(id) AS maxId FROM $entryTable');
@@ -122,7 +131,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeIds(Iterable<int> ids, {Set<EntryDataType>? dataTypes}) async {
+  Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes}) async {
     if (ids.isEmpty) return;
 
     final _dataTypes = dataTypes ?? EntryDataType.values.toSet();
@@ -162,15 +171,23 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<Set<AvesEntry>> loadEntries({String? directory}) async {
+  Future<Set<AvesEntry>> loadEntries({int? origin, String? directory}) async {
+    String? where;
+    final whereArgs = <Object?>[];
+
+    if (origin != null) {
+      where = 'origin = ?';
+      whereArgs.add(origin);
+    }
+
     if (directory != null) {
       final separator = pContext.separator;
       if (!directory.endsWith(separator)) {
         directory = '$directory$separator';
       }
 
-      const where = 'path LIKE ?';
-      final whereArgs = ['$directory%'];
+      where = '${where != null ? '$where AND ' : ''}path LIKE ?';
+      whereArgs.add('$directory%');
       final rows = await _db.query(entryTable, where: where, whereArgs: whereArgs);
 
       final dirLength = directory.length;
@@ -184,15 +201,15 @@ class SqfliteMetadataDb implements MetadataDb {
           .toSet();
     }
 
-    final rows = await _db.query(entryTable);
+    final rows = await _db.query(entryTable, where: where, whereArgs: whereArgs);
     return rows.map(AvesEntry.fromMap).toSet();
   }
 
   @override
-  Future<Set<AvesEntry>> loadEntriesById(Iterable<int> ids) => _getByIds(ids, entryTable, AvesEntry.fromMap);
+  Future<Set<AvesEntry>> loadEntriesById(Set<int> ids) => _getByIds(ids, entryTable, AvesEntry.fromMap);
 
   @override
-  Future<void> saveEntries(Iterable<AvesEntry> entries) async {
+  Future<void> saveEntries(Set<AvesEntry> entries) async {
     if (entries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
     final batch = _db.batch();
@@ -258,7 +275,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<Set<CatalogMetadata>> loadCatalogMetadataById(Iterable<int> ids) => _getByIds(ids, metadataTable, CatalogMetadata.fromMap);
+  Future<Set<CatalogMetadata>> loadCatalogMetadataById(Set<int> ids) => _getByIds(ids, metadataTable, CatalogMetadata.fromMap);
 
   @override
   Future<void> saveCatalogMetadata(Set<CatalogMetadata> metadataEntries) async {
@@ -317,7 +334,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<Set<AddressDetails>> loadAddressesById(Iterable<int> ids) => _getByIds(ids, addressTable, AddressDetails.fromMap);
+  Future<Set<AddressDetails>> loadAddressesById(Set<int> ids) => _getByIds(ids, addressTable, AddressDetails.fromMap);
 
   @override
   Future<void> saveAddresses(Set<AddressDetails> addresses) async {
@@ -344,6 +361,54 @@ class SqfliteMetadataDb implements MetadataDb {
       address.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  // vaults
+
+  @override
+  Future<void> clearVaults() async {
+    final count = await _db.delete(vaultTable, where: '1');
+    debugPrint('$runtimeType clearVaults deleted $count rows');
+  }
+
+  @override
+  Future<Set<VaultDetails>> loadAllVaults() async {
+    final rows = await _db.query(vaultTable);
+    return rows.map(VaultDetails.fromMap).toSet();
+  }
+
+  @override
+  Future<void> addVaults(Set<VaultDetails> rows) async {
+    if (rows.isEmpty) return;
+    final batch = _db.batch();
+    rows.forEach((row) => _batchInsertVault(batch, row));
+    await batch.commit(noResult: true);
+  }
+
+  @override
+  Future<void> updateVault(String oldName, VaultDetails row) async {
+    final batch = _db.batch();
+    batch.delete(vaultTable, where: 'name = ?', whereArgs: [oldName]);
+    _batchInsertVault(batch, row);
+    await batch.commit(noResult: true);
+  }
+
+  void _batchInsertVault(Batch batch, VaultDetails row) {
+    batch.insert(
+      vaultTable,
+      row.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  Future<void> removeVaults(Set<VaultDetails> rows) async {
+    if (rows.isEmpty) return;
+
+    // using array in `whereArgs` and using it with `where id IN ?` is a pain, so we prefer `batch` instead
+    final batch = _db.batch();
+    rows.map((v) => v.name).forEach((name) => batch.delete(vaultTable, where: 'name = ?', whereArgs: [name]));
+    await batch.commit(noResult: true);
   }
 
   // trash
@@ -392,7 +457,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> addFavourites(Iterable<FavouriteRow> rows) async {
+  Future<void> addFavourites(Set<FavouriteRow> rows) async {
     if (rows.isEmpty) return;
     final batch = _db.batch();
     rows.forEach((row) => _batchInsertFavourite(batch, row));
@@ -416,7 +481,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeFavourites(Iterable<FavouriteRow> rows) async {
+  Future<void> removeFavourites(Set<FavouriteRow> rows) async {
     if (rows.isEmpty) return;
     final ids = rows.map((row) => row.entryId);
     if (ids.isEmpty) return;
@@ -442,7 +507,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> addCovers(Iterable<CoverRow> rows) async {
+  Future<void> addCovers(Set<CoverRow> rows) async {
     if (rows.isEmpty) return;
 
     final batch = _db.batch();
@@ -532,7 +597,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeVideoPlayback(Iterable<int> ids) async {
+  Future<void> removeVideoPlayback(Set<int> ids) async {
     if (ids.isEmpty) return;
 
     // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
@@ -543,7 +608,7 @@ class SqfliteMetadataDb implements MetadataDb {
 
   // convenience methods
 
-  Future<Set<T>> _getByIds<T>(Iterable<int> ids, String table, T Function(Map<String, Object?> row) mapRow) async {
+  Future<Set<T>> _getByIds<T>(Set<int> ids, String table, T Function(Map<String, Object?> row) mapRow) async {
     if (ids.isEmpty) return {};
     final rows = await _db.query(
       table,

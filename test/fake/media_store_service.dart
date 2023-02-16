@@ -39,6 +39,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
     contentId ??= id;
     final date = dateSecs;
     return AvesEntry(
+      origin: EntryOrigins.mediaStoreContent,
       id: id,
       uri: 'content://media/external/images/media/$contentId',
       path: '$album/$filenameWithoutExtension.jpg',

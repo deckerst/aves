@@ -19,15 +19,15 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<void> init() => SynchronousFuture(null);
 
   @override
-  Future<void> removeIds(Iterable<int> ids, {Set<EntryDataType>? dataTypes}) => SynchronousFuture(null);
+  Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes}) => SynchronousFuture(null);
 
   // entries
 
   @override
-  Future<Set<AvesEntry>> loadEntries({String? directory}) => SynchronousFuture({});
+  Future<Set<AvesEntry>> loadEntries({int? origin, String? directory}) => SynchronousFuture({});
 
   @override
-  Future<void> saveEntries(Iterable<AvesEntry> entries) => SynchronousFuture(null);
+  Future<void> saveEntries(Set<AvesEntry> entries) => SynchronousFuture(null);
 
   @override
   Future<void> updateEntry(int id, AvesEntry entry) => SynchronousFuture(null);
@@ -76,13 +76,13 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<Set<FavouriteRow>> loadAllFavourites() => SynchronousFuture({});
 
   @override
-  Future<void> addFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
+  Future<void> addFavourites(Set<FavouriteRow> rows) => SynchronousFuture(null);
 
   @override
   Future<void> updateFavouriteId(int id, FavouriteRow row) => SynchronousFuture(null);
 
   @override
-  Future<void> removeFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
+  Future<void> removeFavourites(Set<FavouriteRow> rows) => SynchronousFuture(null);
 
   // covers
 
@@ -90,7 +90,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<Set<CoverRow>> loadAllCovers() => SynchronousFuture({});
 
   @override
-  Future<void> addCovers(Iterable<CoverRow> rows) => SynchronousFuture(null);
+  Future<void> addCovers(Set<CoverRow> rows) => SynchronousFuture(null);
 
   @override
   Future<void> updateCoverEntryId(int id, CoverRow row) => SynchronousFuture(null);
@@ -101,5 +101,5 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   // video playback
 
   @override
-  Future<void> removeVideoPlayback(Iterable<int> ids) => SynchronousFuture(null);
+  Future<void> removeVideoPlayback(Set<int> ids) => SynchronousFuture(null);
 }

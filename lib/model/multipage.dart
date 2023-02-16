@@ -107,6 +107,7 @@ class MultiPageInfo {
       sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
       durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
       trashed: trashed,
+      origin: mainEntry.origin,
     )
       ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
         mimeType: pageInfo.mimeType,

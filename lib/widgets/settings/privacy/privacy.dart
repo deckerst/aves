@@ -3,10 +3,15 @@ import 'dart:async';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/privacy/access_grants_page.dart';
@@ -92,7 +97,41 @@ class SettingsTilePrivacyEnableBin extends SettingsTile {
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
         selector: (context, s) => s.enableBin,
-        onChanged: (v) {
+        onChanged: (v) async {
+          final l10n = context.l10n;
+          if (!v) {
+            if (vaults.all.any((v) => v.useBin)) {
+              await showDialog<bool>(
+                context: context,
+                builder: (context) => AvesDialog(
+                  content: Text(l10n.vaultBinUsageDialogMessage),
+                  actions: const [OkButton()],
+                ),
+              );
+              return;
+            }
+
+            final source = context.read<CollectionSource>();
+            final trashedEntries = source.trashedEntries;
+            if (trashedEntries.isNotEmpty) {
+              if (!await showConfirmationDialog(
+                context: context,
+                message: l10n.settingsDisablingBinWarningDialogMessage,
+                confirmationButtonLabel: l10n.applyButtonLabel,
+              )) return;
+
+              // delete forever trashed items
+              await EntrySetActionDelegate().doDelete(
+                context: context,
+                entries: trashedEntries,
+                enableBin: false,
+              );
+
+              // in case of failure or cancellation
+              if (source.trashedEntries.isNotEmpty) return;
+            }
+          }
+
           settings.enableBin = v;
           if (!v) {
             settings.searchHistory = [];

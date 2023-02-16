@@ -9,9 +9,11 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
@@ -22,7 +24,7 @@ import 'package:provider/provider.dart';
 class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final T filter;
   final double extent, thumbnailExtent;
-  final bool showText, pinned;
+  final bool showText, pinned, locked;
   final String? banner;
   final FilterCallback? onTap;
   final HeroType heroType;
@@ -34,6 +36,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     double? thumbnailExtent,
     this.showText = true,
     this.pinned = false,
+    required this.locked,
     this.banner,
     this.onTap,
     this.heroType = HeroType.onTap,
@@ -98,17 +101,18 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   }
 
   Widget _buildChip(BuildContext context, CollectionSource source) {
-    final entry = source.coverEntry(filter);
+    final _filter = filter;
+    final entry = _filter is AlbumFilter && vaults.isLocked(_filter.album) ? null : source.coverEntry(_filter);
     final titlePadding = min<double>(4.0, extent / 32);
     Key? chipKey;
-    if (filter is AlbumFilter) {
+    if (_filter is AlbumFilter) {
       // when we asynchronously fetch installed app names,
       // album filters themselves do not change, but decoration derived from it does
       chipKey = ValueKey(androidFileUtils.areAppNamesReadyNotifier.value);
     }
     return AvesFilterChip(
       key: chipKey,
-      filter: filter,
+      filter: _filter,
       showText: showText,
       showGenericIcon: false,
       decoration: AvesFilterDecoration(
@@ -128,10 +132,10 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           },
           child: entry == null
               ? StreamBuilder<Set<CollectionFilter>?>(
-                  stream: covers.colorChangeStream.where((event) => event == null || event.contains(filter)),
+                  stream: covers.colorChangeStream.where((event) => event == null || event.contains(_filter)),
                   builder: (context, snapshot) {
                     return FutureBuilder<Color>(
-                      future: filter.color(context),
+                      future: _filter.color(context),
                       builder: (context, snapshot) {
                         final color = snapshot.data;
                         const neutral = Colors.white;
@@ -159,7 +163,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         radius: radius(extent),
       ),
       banner: banner,
-      details: showText ? _buildDetails(context, source, filter) : null,
+      details: showText ? _buildDetails(context, source, _filter) : null,
       padding: titlePadding,
       heroType: heroType,
       onTap: onTap,
@@ -199,8 +203,18 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
               size: iconSize,
             ),
           ),
+        if (filter is AlbumFilter && vaults.isVault(filter.album))
+          AnimatedPadding(
+            padding: EdgeInsetsDirectional.only(end: padding),
+            duration: Durations.chipDecorationAnimation,
+            child: Icon(
+              AIcons.locked,
+              color: _detailColor(context),
+              size: iconSize,
+            ),
+          ),
         Text(
-          numberFormat.format(source.count(filter)),
+          locked ? Constants.overlayUnknown : numberFormat.format(source.count(filter)),
           style: TextStyle(
             color: _detailColor(context),
             fontSize: fontSize,

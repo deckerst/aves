@@ -9,6 +9,7 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
@@ -346,57 +347,63 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                           extent: thumbnailExtent,
                           child: FilterListDetailsTheme(
                             extent: thumbnailExtent,
-                            child: SectionedFilterListLayoutProvider<T>(
-                              sections: visibleSections,
-                              showHeaders: widget.showHeaders,
-                              selectable: widget.selectable,
-                              tileLayout: tileLayout,
-                              scrollableWidth: scrollableWidth,
-                              columnCount: columnCount,
-                              spacing: tileSpacing,
-                              horizontalPadding: horizontalPadding,
-                              tileWidth: thumbnailExtent,
-                              tileHeight: tileHeight,
-                              tileBuilder: (gridItem, tileSize) {
-                                final extent = tileSize.shortestSide;
-                                final tile = InteractiveFilterTile(
-                                  gridItem: gridItem,
-                                  chipExtent: extent,
-                                  thumbnailExtent: extent,
+                            child: AnimatedBuilder(
+                              animation: vaults,
+                              builder: (context, child) {
+                                return SectionedFilterListLayoutProvider<T>(
+                                  sections: visibleSections,
+                                  showHeaders: widget.showHeaders,
+                                  selectable: widget.selectable,
                                   tileLayout: tileLayout,
-                                  banner: _getFilterBanner(context, gridItem.filter),
-                                  heroType: widget.heroType,
-                                );
-                                if (!settings.useTvLayout) return tile;
+                                  scrollableWidth: scrollableWidth,
+                                  columnCount: columnCount,
+                                  spacing: tileSpacing,
+                                  horizontalPadding: horizontalPadding,
+                                  tileWidth: thumbnailExtent,
+                                  tileHeight: tileHeight,
+                                  tileBuilder: (gridItem, tileSize) {
+                                    final extent = tileSize.shortestSide;
+                                    final tile = InteractiveFilterTile(
+                                      gridItem: gridItem,
+                                      chipExtent: extent,
+                                      thumbnailExtent: extent,
+                                      tileLayout: tileLayout,
+                                      banner: _getFilterBanner(context, gridItem.filter),
+                                      heroType: widget.heroType,
+                                    );
+                                    if (!settings.useTvLayout) return tile;
 
-                                return Focus(
-                                  onFocusChange: (focused) {
-                                    if (focused) {
-                                      _focusedItemNotifier.value = gridItem;
-                                    } else if (_focusedItemNotifier.value == gridItem) {
-                                      _focusedItemNotifier.value = null;
-                                    }
+                                    return Focus(
+                                      onFocusChange: (focused) {
+                                        if (focused) {
+                                          _focusedItemNotifier.value = gridItem;
+                                        } else if (_focusedItemNotifier.value == gridItem) {
+                                          _focusedItemNotifier.value = null;
+                                        }
+                                      },
+                                      child: ValueListenableBuilder<FilterGridItem<T>?>(
+                                        valueListenable: _focusedItemNotifier,
+                                        builder: (context, focusedItem, child) {
+                                          return AnimatedScale(
+                                            scale: focusedItem == gridItem ? 1 : .9,
+                                            curve: Curves.fastOutSlowIn,
+                                            duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+                                            child: child!,
+                                          );
+                                        },
+                                        child: tile,
+                                      ),
+                                    );
                                   },
-                                  child: ValueListenableBuilder<FilterGridItem<T>?>(
-                                    valueListenable: _focusedItemNotifier,
-                                    builder: (context, focusedItem, child) {
-                                      return AnimatedScale(
-                                        scale: focusedItem == gridItem ? 1 : .9,
-                                        curve: Curves.fastOutSlowIn,
-                                        duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
-                                        child: child!,
-                                      );
-                                    },
-                                    child: tile,
-                                  ),
+                                  tileAnimationDelay: tileAnimationDelay,
+                                  coverRatioResolver: (item) {
+                                    final coverEntry = source.coverEntry(item.filter) ?? item.entry;
+                                    return coverEntry?.displayAspectRatio ?? 1;
+                                  },
+                                  child: child!,
                                 );
                               },
-                              tileAnimationDelay: tileAnimationDelay,
-                              coverRatioResolver: (item) {
-                                final coverEntry = source.coverEntry(item.filter) ?? item.entry;
-                                return coverEntry?.displayAspectRatio ?? 1;
-                              },
-                              child: child!,
+                              child: child,
                             ),
                           ),
                         );

@@ -39,7 +39,7 @@ class _DbTabState extends State<DbTab> {
   void _loadDatabase() {
     final id = entry.id;
     _dbDateLoader = metadataDb.loadDates().then((values) => values[id]);
-    _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbEntryLoader = metadataDb.loadEntriesById({id}).then((values) => values.firstOrNull);
     _dbMetadataLoader = metadataDb.loadCatalogMetadata().then((values) => values.firstWhereOrNull((row) => row.id == id));
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhereOrNull((row) => row.id == id));
     _dbTrashDetailsLoader = metadataDb.loadAllTrashDetails().then((values) => values.firstWhereOrNull((row) => row.id == id));

@@ -69,6 +69,7 @@ class ViewerDebugPage extends StatelessWidget {
           info: {
             'hash': '#${shortHash(entry)}',
             'id': '${entry.id}',
+            'origin': '${entry.origin}',
             'contentId': '${entry.contentId}',
             'uri': entry.uri,
             'path': entry.path ?? '',

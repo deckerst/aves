@@ -39,6 +39,12 @@ class ConfirmationDialogPage extends StatelessWidget {
             onChanged: (v) => settings.confirmAfterMoveToBin = v,
             title: l10n.settingsConfirmationAfterMoveToBinItems,
           ),
+          const Divider(height: 32),
+          SettingsSwitchListTile(
+            selector: (context, s) => s.confirmCreateVault,
+            onChanged: (v) => settings.confirmCreateVault = v,
+            title: l10n.settingsConfirmationVaultDataLoss,
+          ),
         ]),
       ),
     );

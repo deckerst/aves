@@ -26,6 +26,11 @@ extension ExtraAppMode on AppMode {
 
   bool get canSelectFilter => this == AppMode.main;
 
+  bool get canCreateFilter => {
+        AppMode.main,
+        AppMode.pickFilterInternal,
+      }.contains(this);
+
   bool get isPickingMedia => {
         AppMode.pickSingleMediaExternal,
         AppMode.pickMultipleMediaExternal,

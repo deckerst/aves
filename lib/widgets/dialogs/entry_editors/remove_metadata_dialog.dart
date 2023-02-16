@@ -9,11 +9,10 @@ import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../aves_dialog.dart';
 
 class RemoveEntryMetadataDialog extends StatefulWidget {
   static const routeName = '/dialog/remove_entry_metadata';

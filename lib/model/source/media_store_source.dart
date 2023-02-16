@@ -8,6 +8,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
@@ -44,17 +45,18 @@ class MediaStoreSource extends CollectionSource {
     final stopwatch = Stopwatch()..start();
     state = SourceState.loading;
     await metadataDb.init();
+    await vaults.init();
     await favourites.init();
     await covers.init();
-    final currentTimeZone = await deviceService.getDefaultTimeZone();
-    if (currentTimeZone != null) {
-      final catalogTimeZone = settings.catalogTimeZone;
-      if (currentTimeZone != catalogTimeZone) {
+    final currentTimeZoneOffset = await deviceService.getDefaultTimeZoneRawOffsetMillis();
+    if (currentTimeZoneOffset != null) {
+      final catalogTimeZoneOffset = settings.catalogTimeZoneRawOffsetMillis;
+      if (currentTimeZoneOffset != catalogTimeZoneOffset) {
         // clear catalog metadata to get correct date/times when moving to a different time zone
         debugPrint('$runtimeType clear catalog metadata to get correct date/times');
         await metadataDb.clearDates();
         await metadataDb.clearCatalogMetadata();
-        settings.catalogTimeZone = currentTimeZone;
+        settings.catalogTimeZoneRawOffsetMillis = currentTimeZoneOffset;
       }
     }
     await loadDates();
@@ -74,7 +76,7 @@ class MediaStoreSource extends CollectionSource {
 
     final Set<AvesEntry> topEntries = {};
     if (loadTopEntriesFirst) {
-      final topIds = settings.topEntryIds;
+      final topIds = settings.topEntryIds?.toSet();
       if (topIds != null) {
         debugPrint('$runtimeType refresh ${stopwatch.elapsed} load ${topIds.length} top entries');
         topEntries.addAll(await metadataDb.loadEntriesById(topIds));
@@ -83,7 +85,7 @@ class MediaStoreSource extends CollectionSource {
     }
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} fetch known entries');
-    final knownEntries = await metadataDb.loadEntries(directory: directory);
+    final knownEntries = await metadataDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: directory);
     final knownLiveEntries = knownEntries.where((entry) => !entry.trashed).toSet();
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete entries');
@@ -102,6 +104,8 @@ class MediaStoreSource extends CollectionSource {
     // add entries without notifying, so that the collection is not refreshed
     // with items that may be hidden right away because of their metadata
     addEntries(knownEntries, notify: false);
+
+    await _addVaultEntries(directory);
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} load metadata');
     if (directory != null) {
@@ -129,7 +133,7 @@ class MediaStoreSource extends CollectionSource {
     // clean up obsolete entries
     if (removedEntries.isNotEmpty) {
       debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
-      await metadataDb.removeIds(removedEntries.map((entry) => entry.id));
+      await metadataDb.removeIds(removedEntries.map((entry) => entry.id).toSet());
     }
 
     // verify paths because some apps move files without updating their `last modified date`
@@ -274,6 +278,36 @@ class MediaStoreSource extends CollectionSource {
       await refreshEntries(entriesToRefresh, EntryDataType.values.toSet());
     }
 
+    await _refreshVaultEntries(changedUris.where(vaults.isVaultEntryUri).toSet());
+
     return tempUris;
+  }
+
+  // vault
+
+  Future<void> _addVaultEntries(String? directory) async {
+    addEntries(await metadataDb.loadEntries(origin: EntryOrigins.vault, directory: directory));
+  }
+
+  Future<void> _refreshVaultEntries(Set<String> changedUris) async {
+    final entriesToRefresh = <AvesEntry>{};
+    final existingDirectories = <String>{};
+
+    for (final uri in changedUris) {
+      final existingEntry = allEntries.firstWhereOrNull((entry) => entry.uri == uri);
+      if (existingEntry != null) {
+        entriesToRefresh.add(existingEntry);
+        final existingDirectory = existingEntry.directory;
+        if (existingDirectory != null) {
+          existingDirectories.add(existingDirectory);
+        }
+      }
+    }
+
+    invalidateAlbumFilterSummary(directories: existingDirectories);
+
+    if (entriesToRefresh.isNotEmpty) {
+      await refreshEntries(entriesToRefresh, EntryDataType.values.toSet());
+    }
   }
 }

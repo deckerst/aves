@@ -17,3 +17,13 @@ extension ExtraMapNullableKeyValue<K extends Object, V> on Map<K?, V?> {
 extension ExtraNumIterable on Iterable<int?> {
   int get sum => fold(0, (prev, v) => prev + (v ?? 0));
 }
+
+extension ExtraEnum<T extends Enum> on Iterable<T> {
+  T safeByName(String name, T defaultValue) {
+    try {
+      return byName(name);
+    } catch (error) {
+      return defaultValue;
+    }
+  }
+}

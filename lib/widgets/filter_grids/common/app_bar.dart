@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +52,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   @override
   State<FilterGridAppBar<T, CSAD>> createState() => _FilterGridAppBarState<T, CSAD>();
 
-  static PopupMenuItem<ChipSetAction> toMenuItem(BuildContext context, ChipSetAction action, {required bool enabled}) {
+  static PopupMenuEntry<ChipSetAction> toMenuItem(BuildContext context, ChipSetAction action, {required bool enabled}) {
     late Widget child;
     switch (action) {
       case ChipSetAction.toggleTitleSearch:
@@ -286,7 +287,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     return [
       ...ChipSetActions.general,
       ...isSelecting ? ChipSetActions.selection : ChipSetActions.browsing,
-    ].where(isVisible).map((action) {
+    ].whereNotNull().where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
         iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
@@ -326,15 +327,20 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
             final browsingMenuActions = ChipSetActions.browsing.where((v) => !browsingQuickActions.contains(v));
             final selectionMenuActions = ChipSetActions.selection.where((v) => !selectionQuickActions.contains(v));
-            final contextualMenuItems = (isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
-                  (action) => FilterGridAppBar.toMenuItem(context, action, enabled: canApply(action)),
-                );
+            final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).toList();
+            if (contextualMenuActions.isNotEmpty && contextualMenuActions.first == null) contextualMenuActions.removeAt(0);
+            if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) contextualMenuActions.removeLast();
 
             return [
               ...generalMenuItems,
-              if (contextualMenuItems.isNotEmpty) ...[
+              if (contextualMenuActions.isNotEmpty) ...[
                 const PopupMenuDivider(),
-                ...contextualMenuItems,
+                ...contextualMenuActions.map(
+                  (action) {
+                    if (action == null) return const PopupMenuDivider();
+                    return FilterGridAppBar.toMenuItem(context, action, enabled: canApply(action));
+                  },
+                ),
               ],
             ];
           },

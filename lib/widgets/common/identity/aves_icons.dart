@@ -1,6 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -339,8 +340,9 @@ class IconUtils {
                 height: size,
               )
             : null;
+      case AlbumType.vault:
+        return buildIcon(vaults.isLocked(albumPath) ? AIcons.locked : AIcons.unlocked);
       case AlbumType.regular:
-      default:
         return null;
     }
   }

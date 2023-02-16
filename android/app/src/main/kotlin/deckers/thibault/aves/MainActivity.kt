@@ -25,14 +25,15 @@ import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import deckers.thibault.aves.utils.FlutterUtils.isSoftwareRenderingRequired
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
-open class MainActivity : FlutterActivity() {
+open class MainActivity : FlutterFragmentActivity() {
     private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
     private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
@@ -68,8 +69,12 @@ open class MainActivity : FlutterActivity() {
 //                .build()
 //        )
         super.onCreate(savedInstanceState)
+    }
 
-        val messenger = flutterEngine!!.dartExecutor
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        val messenger = flutterEngine.dartExecutor
 
         // notification: platform -> dart
         analysisStreamHandler = AnalysisStreamHandler().apply {
@@ -99,6 +104,7 @@ open class MainActivity : FlutterActivity() {
         MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
+        MethodChannel(messenger, SecurityHandler.CHANNEL).setMethodCallHandler(SecurityHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
         // - need ContextWrapper
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
@@ -193,6 +199,7 @@ open class MainActivity : FlutterActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(requestCode, resultCode, data)
             DELETE_SINGLE_PERMISSION_REQUEST,
@@ -255,7 +262,7 @@ open class MainActivity : FlutterActivity() {
             Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
                     // MIME type is optional
-                    val type = intent.type ?: intent.resolveType(context)
+                    val type = intent.type ?: intent.resolveType(this)
                     return hashMapOf(
                         INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW,
                         INTENT_DATA_KEY_MIME_TYPE to type,
@@ -325,7 +332,7 @@ open class MainActivity : FlutterActivity() {
     private fun submitPickedItems(call: MethodCall) {
         val pickedUris = call.argument<List<String>>("uris")
         if (pickedUris != null && pickedUris.isNotEmpty()) {
-            val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(context, Uri.parse(uriString)) }
+            val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
             val intent = Intent().apply {
                 val firstUri = toUri(pickedUris.first())
                 if (pickedUris.size == 1) {

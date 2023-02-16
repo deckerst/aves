@@ -170,6 +170,11 @@ object XMP {
                             }
                         }
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
+
+                        // TODO TLAD [mp4] `IsoFile` init may fail if a skipped box has a `org.mp4parser.boxes.iso14496.part12.MetaBox` as parent,
+                        // because `MetaBox.parse()` changes the argument `dataSource` to a `RewindableReadableByteChannel`,
+                        // so it is no longer a seekable `FileChannel`, which is a requirement to skip boxes.
+
                         IsoFile(channel, boxParser).use { isoFile ->
                             isoFile.processBoxes(UserBox::class.java, true) { box, _ ->
                                 val boxSize = box.size

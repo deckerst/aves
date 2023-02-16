@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup disableIfNoEncryptionCapabilities="true">
+        <include
+            domain="file"
+            path="." />
+        <include
+            domain="database"
+            path="." />
+        <include
+            domain="external"
+            path="." />
+        <include
+            domain="sharedpref"
+            path="." />
+        <exclude
+            domain="sharedpref"
+            path="secret_shared_prefs.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <include
+            domain="file"
+            path="." />
+        <include
+            domain="database"
+            path="." />
+        <include
+            domain="external"
+            path="." />
+        <include
+            domain="sharedpref"
+            path="." />
+        <exclude
+            domain="sharedpref"
+            path="secret_shared_prefs.xml" />
+    </device-transfer>
+</data-extraction-rules>

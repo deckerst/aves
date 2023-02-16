@@ -1,3 +1,4 @@
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
@@ -10,7 +11,8 @@ final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 class AndroidFileUtils {
   static const String trashDirPath = '#trash';
 
-  late final String separator, primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;
+  late final String separator, vaultRoot, primaryStorage;
+  late final String dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;
   late final Set<String> videoCapturesPaths;
   Set<StorageVolume> storageVolumes = {};
   Set<Package> _packages = {};
@@ -28,6 +30,7 @@ class AndroidFileUtils {
 
     separator = pContext.separator;
     await _initStorageVolumes();
+    vaultRoot = await storageService.getVaultRoot();
     primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? separator;
     // standard
     dcimPath = pContext.join(primaryStorage, 'DCIM');
@@ -90,15 +93,17 @@ class AndroidFileUtils {
 
   bool isOnRemovableStorage(String path) => getStorageVolume(path)?.isRemovable ?? false;
 
-  AlbumType getAlbumType(String albumPath) {
-    if (isCameraPath(albumPath)) return AlbumType.camera;
-    if (isDownloadPath(albumPath)) return AlbumType.download;
-    if (isScreenRecordingsPath(albumPath)) return AlbumType.screenRecordings;
-    if (isScreenshotsPath(albumPath)) return AlbumType.screenshots;
-    if (isVideoCapturesPath(albumPath)) return AlbumType.videoCaptures;
+  AlbumType getAlbumType(String dirPath) {
+    if (vaults.isVault(dirPath)) return AlbumType.vault;
 
-    final dir = pContext.split(albumPath).last;
-    if (albumPath.startsWith(primaryStorage) && _potentialAppDirs.contains(dir)) return AlbumType.app;
+    if (isCameraPath(dirPath)) return AlbumType.camera;
+    if (isDownloadPath(dirPath)) return AlbumType.download;
+    if (isScreenRecordingsPath(dirPath)) return AlbumType.screenRecordings;
+    if (isScreenshotsPath(dirPath)) return AlbumType.screenshots;
+    if (isVideoCapturesPath(dirPath)) return AlbumType.videoCaptures;
+
+    final dir = pContext.split(dirPath).last;
+    if (dirPath.startsWith(primaryStorage) && _potentialAppDirs.contains(dir)) return AlbumType.app;
 
     return AlbumType.regular;
   }
@@ -115,7 +120,16 @@ class AndroidFileUtils {
   }
 }
 
-enum AlbumType { regular, app, camera, download, screenRecordings, screenshots, videoCaptures }
+enum AlbumType {
+  regular,
+  vault,
+  app,
+  camera,
+  download,
+  screenRecordings,
+  screenshots,
+  videoCaptures,
+}
 
 class Package {
   final String packageName;

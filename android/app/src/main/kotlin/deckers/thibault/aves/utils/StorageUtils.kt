@@ -45,29 +45,33 @@ object StorageUtils {
     const val TRASH_PATH_PLACEHOLDER = "#trash"
 
     private fun isAppFile(context: Context, path: String): Boolean {
-        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
-        return filesDirs.any { path.startsWith(it.path) }
+        val dirs = context.getExternalFilesDirs(null).filterNotNull()
+        return dirs.any { path.startsWith(it.path) }
     }
 
     private fun appExternalFilesDirFor(context: Context, path: String): File? {
-        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
+        val dirs = context.getExternalFilesDirs(null).filterNotNull()
         val volumePath = getVolumePath(context, path)
-        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.firstOrNull()
+        return volumePath?.let { dirs.firstOrNull { it.startsWith(volumePath) } } ?: dirs.firstOrNull()
     }
 
     fun trashDirFor(context: Context, path: String): File? {
-        val filesDir = appExternalFilesDirFor(context, path)
-        if (filesDir == null) {
+        val externalFilesDir = appExternalFilesDirFor(context, path)
+        if (externalFilesDir == null) {
             Log.e(LOG_TAG, "failed to find external files dir for path=$path")
             return null
         }
-        val trashDir = File(filesDir, "trash")
+        val trashDir = File(externalFilesDir, "trash")
         if (!trashDir.exists() && !trashDir.mkdirs()) {
             Log.e(LOG_TAG, "failed to create directories at path=$trashDir")
             return null
         }
         return trashDir
     }
+
+    fun getVaultRoot(context: Context) = ensureTrailingSeparator(File(context.filesDir, "vault").path)
+
+    fun isInVault(context: Context, path: String) = path.startsWith(getVaultRoot(context))
 
     /**
      * Volume paths
@@ -545,7 +549,7 @@ object StorageUtils {
     }
 
     // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
-    // to work around a bug from Android 10 where metadata redaction corrupts HEIC images.
+    // to work around a bug from Android 10 (API 29) where metadata redaction corrupts HEIC images.
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
     // for some non image/video content URIs (e.g. `downloads`, `file`)
     fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long? = null): Uri {

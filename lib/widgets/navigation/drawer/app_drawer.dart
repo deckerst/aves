@@ -107,11 +107,10 @@ class _AppDrawerState extends State<AppDrawer> {
     Future<void> goTo(String routeName, WidgetBuilder pageBuilder) async {
       Navigator.maybeOf(context)?.pop();
       await Future.delayed(Durations.drawerTransitionAnimation);
-      await Navigator.maybeOf(context)?.push(
-          MaterialPageRoute(
-            settings: RouteSettings(name: routeName),
-            builder: pageBuilder,
-          ));
+      await Navigator.maybeOf(context)?.push(MaterialPageRoute(
+        settings: RouteSettings(name: routeName),
+        builder: pageBuilder,
+      ));
     }
 
     return Container(
