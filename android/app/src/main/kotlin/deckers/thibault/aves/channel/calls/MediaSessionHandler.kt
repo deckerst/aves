@@ -35,6 +35,15 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
     }
 
     fun dispose() {
+        unregisterNoisyAudioReceiver()
+    }
+
+    private fun registerNoisyAudioReceiver() {
+        context.registerReceiver(noisyAudioReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+        isNoisyAudioReceiverRegistered = true
+    }
+
+    private fun unregisterNoisyAudioReceiver() {
         if (isNoisyAudioReceiverRegistered) {
             context.unregisterReceiver(noisyAudioReceiver)
             isNoisyAudioReceiverRegistered = false
@@ -70,7 +79,7 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
             STATE_PAUSED -> PlaybackStateCompat.STATE_PAUSED
             STATE_PLAYING -> PlaybackStateCompat.STATE_PLAYING
             else -> {
-                result.error("update-state", "unknown state=$stateString", null)
+                result.error("updateSession-state", "unknown state=$stateString", null)
                 return
             }
         }
@@ -93,39 +102,41 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
             .build()
 
         FlutterUtils.runOnUiThread {
-            if (session == null) {
-                val mbrIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_PLAY_PAUSE)
-                val mbrName = ComponentName(context, MediaButtonReceiver::class.java)
-                session = MediaSessionCompat(context, "aves", mbrName, mbrIntent).apply {
-                    setCallback(mediaCommandHandler)
+            try {
+                if (session == null) {
+                    val mbrIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_PLAY_PAUSE)
+                    val mbrName = ComponentName(context, MediaButtonReceiver::class.java)
+                    session = MediaSessionCompat(context, "aves", mbrName, mbrIntent).apply {
+                        setCallback(mediaCommandHandler)
+                    }
                 }
-            }
-            session!!.apply {
-                val metadata = MediaMetadataCompat.Builder()
-                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                    .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
-                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMillis)
-                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString())
-                    .build()
-                setMetadata(metadata)
-                setPlaybackState(playbackState)
-                if (!isActive) {
-                    isActive = true
+                session!!.apply {
+                    val metadata = MediaMetadataCompat.Builder()
+                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                        .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMillis)
+                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, uri.toString())
+                        .build()
+                    setMetadata(metadata)
+                    setPlaybackState(playbackState)
+                    if (!isActive) {
+                        isActive = true
+                    }
                 }
-            }
 
-            val isPlaying = state == PlaybackStateCompat.STATE_PLAYING
-            if (!wasPlaying && isPlaying) {
-                context.registerReceiver(noisyAudioReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
-                isNoisyAudioReceiverRegistered = true
-            } else if (wasPlaying && !isPlaying) {
-                context.unregisterReceiver(noisyAudioReceiver)
-                isNoisyAudioReceiverRegistered = false
+                val isPlaying = state == PlaybackStateCompat.STATE_PLAYING
+                if (!wasPlaying && isPlaying) {
+                    registerNoisyAudioReceiver()
+                } else if (wasPlaying && !isPlaying) {
+                    unregisterNoisyAudioReceiver()
+                }
+                wasPlaying = isPlaying
+
+                result.success(null)
+            } catch (e: Exception) {
+                result.error("updateSession-exception", e.message, e.stackTraceToString())
             }
-            wasPlaying = isPlaying
         }
-
-        result.success(null)
     }
 
     private fun releaseSession(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

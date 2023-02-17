@@ -37,12 +37,16 @@ class AnalysisService : Service() {
             }
         }
 
-        initChannels(this)
+        try {
+            initChannels(this)
 
-        HandlerThread("Analysis service handler", Process.THREAD_PRIORITY_BACKGROUND).apply {
-            start()
-            serviceLooper = looper
-            serviceHandler = ServiceHandler(looper)
+            HandlerThread("Analysis service handler", Process.THREAD_PRIORITY_BACKGROUND).apply {
+                start()
+                serviceLooper = looper
+                serviceHandler = ServiceHandler(looper)
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to initialize service", e)
         }
     }
 
