@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 - disabling the recycle bin will delete forever items in it
 - remember pin status of albums becoming empty
+- allow setting dates before 1970/01/01
 - upgraded Flutter to stable v3.7.3
 
 ### Fixed
