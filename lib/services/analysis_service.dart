@@ -29,6 +29,7 @@ class AnalysisService {
   }
 
   static Future<void> startService({required bool force, List<int>? entryIds}) async {
+    await reportService.log('Start analysis service${entryIds != null ? ' for ${entryIds.length} items' : ''}');
     try {
       await _platform.invokeMethod('startService', <String, dynamic>{
         'entryIds': entryIds,
