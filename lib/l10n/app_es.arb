@@ -1243,7 +1243,7 @@
   "@settingsDisablingBinWarningDialogMessage": {},
   "chipActionCreateVault": "Crear una caja fuerte",
   "@chipActionCreateVault": {},
-  "newVaultWarningDialogMessage": "Los elementos de los almacenes sólo están disponibles para esta aplicación y no para otras.\n\nSi desinstalas esta aplicación o borras sus datos, perderás todos estos elementos.",
+  "newVaultWarningDialogMessage": "Los elementos de la caja fuerte sólo están disponibles para esta aplicación y no para otras.\n\nSi desinstalas esta aplicación o borras sus datos, perderás todos estos elementos.",
   "@newVaultWarningDialogMessage": {},
   "authenticateToUnlockVault": "Autentificarse para desbloquear la caja fuerte",
   "@authenticateToUnlockVault": {},
