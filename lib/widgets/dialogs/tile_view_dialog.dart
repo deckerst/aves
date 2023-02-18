@@ -172,53 +172,76 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   }) {
     if (options.isEmpty || !show) return const SizedBox();
 
+    final label = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
+      child: Row(
+        children: [
+          Icon(icon),
+          const SizedBox(width: 16),
+          Expanded(
+            child: HighlightTitle(
+              title: title,
+              showHighlight: false,
+            ),
+          ),
+          if (trailing != null) trailing,
+        ],
+      ),
+    );
+    final selector = TextDropdownButton<T>(
+      values: options.map((v) => v.value).toList(),
+      valueText: (v) => options.firstWhere((option) => option.value == v).title,
+      valueIcon: (v) => options.firstWhere((option) => option.value == v).icon,
+      value: value,
+      onChanged: (v) => setState(() => onChanged(v)),
+      isExpanded: true,
+      dropdownColor: Themes.thirdLayerColor(context),
+    );
+
     final iconSize = IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
+    final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
+    final child = isPortrait
+        ? Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              label,
+              Padding(
+                padding: EdgeInsetsDirectional.only(start: iconSize + 16, end: 12),
+                child: selector,
+              ),
+              if (bottom != null)
+                Padding(
+                  padding: EdgeInsetsDirectional.only(start: iconSize + 16),
+                  child: bottom,
+                ),
+            ],
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: label),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    selector,
+                    if (bottom != null) bottom,
+                  ],
+                ),
+              ),
+            ],
+          );
+
     return TooltipTheme(
       data: TooltipTheme.of(context).copyWith(
         preferBelow: false,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-              child: Row(
-                children: [
-                  Icon(icon),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: HighlightTitle(
-                      title: title,
-                      showHighlight: false,
-                    ),
-                  ),
-                  if (trailing != null) trailing,
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.only(start: iconSize + 16, end: 12),
-              child: TextDropdownButton<T>(
-                values: options.map((v) => v.value).toList(),
-                valueText: (v) => options.firstWhere((option) => option.value == v).title,
-                valueIcon: (v) => options.firstWhere((option) => option.value == v).icon,
-                value: value,
-                onChanged: (v) => setState(() => onChanged(v)),
-                isExpanded: true,
-                dropdownColor: Themes.thirdLayerColor(context),
-              ),
-            ),
-            if (bottom != null)
-              Padding(
-                padding: EdgeInsetsDirectional.only(start: iconSize + 16),
-                child: bottom,
-              ),
-          ],
-        ),
+        padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
+        child: child,
       ),
     );
   }
