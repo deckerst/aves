@@ -55,6 +55,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
                   Navigator.maybeOf(context)?.pop<String>(password);
                 }
               },
+              autofillHints: const [AutofillHints.password],
             ),
           ),
         ],
