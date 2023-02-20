@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.8.0"></a>[v1.8.0] - 2023-02-20
+## <a id="v1.8.1"></a>[v1.8.1] - 2023-02-21
 
 ### Added
 
@@ -27,6 +27,8 @@ All notable changes to this project will be documented in this file.
 - SD card access grant on Android Lollipop
 - copying to SD card in some cases
 - sharing SD card files referred by `file` URI
+
+## <a id="v1.8.0"></a>[v1.8.0] - 2023-02-20 [YANKED]
 
 ## <a id="v1.7.10"></a>[v1.7.10] - 2023-01-18
 
