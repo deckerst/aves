@@ -466,14 +466,16 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       if (!_overlayVisible.value) {
         _overlayVisible.value = true;
       }
+    } else if (notification is PopVisualNotification) {
+      _popVisual();
     } else if (notification is ShowInfoPageNotification) {
       _goToVerticalPage(infoPage);
-    } else if (notification is JumpToPreviousEntryNotification) {
-      _jumpToHorizontalPageByDelta(-1);
-    } else if (notification is JumpToNextEntryNotification) {
-      _jumpToHorizontalPageByDelta(1);
-    } else if (notification is JumpToEntryNotification) {
-      _jumpToHorizontalPageByIndex(notification.index);
+    } else if (notification is ShowPreviousEntryNotification) {
+      _goToHorizontalPageByDelta(delta: -1, animate: notification.animate);
+    } else if (notification is ShowNextEntryNotification) {
+      _goToHorizontalPageByDelta(delta: 1, animate: notification.animate);
+    } else if (notification is ShowEntryNotification) {
+      _goToHorizontalPageByIndex(page: notification.index, animate: notification.animate);
     } else if (notification is VideoActionNotification) {
       final controller = notification.controller;
       final action = notification.action;
@@ -545,23 +547,33 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     }
   }
 
-  void _jumpToHorizontalPageByDelta(int delta) {
+  void _goToHorizontalPageByDelta({required int delta, required bool animate}) {
     if (_horizontalPager.positions.isEmpty) return;
 
     final page = _horizontalPager.page?.round();
     if (page != null) {
-      _jumpToHorizontalPageByIndex(page + delta);
+      _goToHorizontalPageByIndex(page: page + delta, animate: animate);
     }
   }
 
-  void _jumpToHorizontalPageByIndex(int target) {
+  Future<void> _goToHorizontalPageByIndex({required int page, required bool animate}) async {
     final _collection = collection;
     if (_collection != null) {
       if (!widget.viewerController.repeat) {
-        target = target.clamp(0, _collection.entryCount - 1);
+        page = page.clamp(0, _collection.entryCount - 1);
       }
-      if (_currentEntryIndex != target) {
-        _horizontalPager.jumpToPage(target);
+      if (_currentEntryIndex != page) {
+        final animationDuration = animate ? context.read<DurationsData>().viewerVerticalPageScrollAnimation : Duration.zero;
+        if (animationDuration > Duration.zero) {
+          // duration & curve should feel similar to changing page by vertical fling
+          await _horizontalPager.animateToPage(
+            page,
+            duration: animationDuration,
+            curve: Curves.easeOutQuart,
+          );
+        } else {
+          _horizontalPager.jumpToPage(page);
+        }
       }
     }
   }
