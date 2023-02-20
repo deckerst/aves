@@ -83,7 +83,7 @@ dependencies:
   pdf:
   percent_indicator:
   permission_handler:
-  pinput:
+  pin_code_fields:
   printing:
   proj4dart:
   provider:
