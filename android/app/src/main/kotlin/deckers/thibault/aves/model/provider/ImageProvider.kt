@@ -68,13 +68,75 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException("`moveMultiple` is not supported by this image provider"))
     }
 
-    open suspend fun renameMultiple(
+    suspend fun renameMultiple(
         activity: Activity,
         entriesToNewName: Map<AvesEntry, String>,
         isCancelledOp: CancelCheck,
         callback: ImageOpCallback,
     ) {
-        callback.onFailure(UnsupportedOperationException("`renameMultiple` is not supported by this image provider"))
+        for (kv in entriesToNewName) {
+            val entry = kv.key
+            val desiredName = kv.value
+
+            val sourceUri = entry.uri
+            val sourcePath = entry.path
+            val mimeType = entry.mimeType
+
+            val result: FieldMap = hashMapOf(
+                "uri" to sourceUri.toString(),
+                "success" to false,
+            )
+
+            // prevent naming with a `.` prefix as it would hide the file and remove it from the Media Store
+            if (sourcePath != null && !desiredName.startsWith('.')) {
+                try {
+                    var newFields: FieldMap = skippedFieldMap
+                    if (!isCancelledOp()) {
+                        val desiredNameWithoutExtension = desiredName.substringBeforeLast(".")
+
+                        val oldFile = File(sourcePath)
+                        if (oldFile.nameWithoutExtension != desiredNameWithoutExtension) {
+                            oldFile.parent?.let { dir ->
+                                resolveTargetFileNameWithoutExtension(
+                                    contextWrapper = activity,
+                                    dir = dir,
+                                    desiredNameWithoutExtension = desiredNameWithoutExtension,
+                                    mimeType = mimeType,
+                                    conflictStrategy = NameConflictStrategy.RENAME,
+                                )?.let { targetNameWithoutExtension ->
+                                    val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
+                                    val newFile = File(dir, targetFileName)
+                                    if (oldFile != newFile) {
+                                        newFields = renameSingle(
+                                            activity = activity,
+                                            mimeType = mimeType,
+                                            oldMediaUri = sourceUri,
+                                            oldPath = sourcePath,
+                                            newFile = newFile,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    result["newFields"] = newFields
+                    result["success"] = true
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to rename to newFileName=$desiredName entry with sourcePath=$sourcePath", e)
+                }
+            }
+            callback.onSuccess(result)
+        }
+    }
+
+    open suspend fun renameSingle(
+        activity: Activity,
+        mimeType: String,
+        oldMediaUri: Uri,
+        oldPath: String,
+        newFile: File,
+    ): FieldMap {
+        throw UnsupportedOperationException("`renameSingle` is not supported by this image provider")
     }
 
     open fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: FieldMap, callback: ImageOpCallback) {
