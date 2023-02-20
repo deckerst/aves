@@ -138,9 +138,9 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
     controller.setScaleState(nextScaleState, source, childFocalPoint: childFocalPoint);
   }
 
-  CornersRange cornersX({double? scale}) {
+  EdgeRange getXEdges({double? scale}) {
     final boundaries = scaleBoundaries;
-    if (boundaries == null) return const CornersRange(0, 0);
+    if (boundaries == null) return const EdgeRange(0, 0);
 
     final _scale = scale ?? this.scale!;
 
@@ -152,12 +152,12 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
 
     final minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
     final maxX = ((positionX + 1).abs() / 2) * widthDiff;
-    return CornersRange(minX, maxX);
+    return EdgeRange(minX, maxX);
   }
 
-  CornersRange cornersY({double? scale}) {
+  EdgeRange getYEdges({double? scale}) {
     final boundaries = scaleBoundaries;
-    if (boundaries == null) return const CornersRange(0, 0);
+    if (boundaries == null) return const EdgeRange(0, 0);
 
     final _scale = scale ?? this.scale!;
 
@@ -169,7 +169,7 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
 
     final minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
     final maxY = ((positionY + 1).abs() / 2) * heightDiff;
-    return CornersRange(minY, maxY);
+    return EdgeRange(minY, maxY);
   }
 
   Offset clampPosition({Offset? position, double? scale}) {
@@ -187,14 +187,14 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
 
     var finalX = 0.0;
     if (screenWidth < computedWidth) {
-      final cornersX = this.cornersX(scale: _scale);
-      finalX = _position.dx.clamp(cornersX.min, cornersX.max);
+      final range = getXEdges(scale: _scale);
+      finalX = _position.dx.clamp(range.min, range.max);
     }
 
     var finalY = 0.0;
     if (screenHeight < computedHeight) {
-      final cornersY = this.cornersY(scale: _scale);
-      finalY = _position.dy.clamp(cornersY.min, cornersY.max);
+      final range = getYEdges(scale: _scale);
+      finalY = _position.dy.clamp(range.min, range.max);
     }
 
     return Offset(finalX, finalY);
@@ -202,8 +202,8 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
 }
 
 /// Simple class to store a min and a max value
-class CornersRange {
-  const CornersRange(this.min, this.max);
+class EdgeRange {
+  const EdgeRange(this.min, this.max);
 
   final double min;
   final double max;

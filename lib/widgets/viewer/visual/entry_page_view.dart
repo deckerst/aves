@@ -401,20 +401,38 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
       onScaleStart: onScaleStart,
       onScaleUpdate: onScaleUpdate,
       onScaleEnd: onScaleEnd,
+      onFling: _onFling,
       onTap: (c, s, a, p) => _onTap(alignment: a),
       onDoubleTap: onDoubleTap,
       child: child,
     );
   }
 
+  void _onFling(AxisDirection direction) {
+    switch (direction) {
+      case AxisDirection.left:
+        const ShowPreviousEntryNotification(animate: true).dispatch(context);
+        break;
+      case AxisDirection.right:
+        const ShowNextEntryNotification(animate: true).dispatch(context);
+        break;
+      case AxisDirection.up:
+        PopVisualNotification().dispatch(context);
+        break;
+      case AxisDirection.down:
+        ShowInfoPageNotification().dispatch(context);
+        break;
+    }
+  }
+
   void _onTap({Alignment? alignment}) {
     if (settings.viewerGestureSideTapNext && alignment != null) {
       final x = alignment.x;
       if (x < sideRatio) {
-        JumpToPreviousEntryNotification().dispatch(context);
+        const ShowPreviousEntryNotification(animate: false).dispatch(context);
         return;
       } else if (x > 1 - sideRatio) {
-        JumpToNextEntryNotification().dispatch(context);
+        const ShowNextEntryNotification(animate: false).dispatch(context);
         return;
       }
     }

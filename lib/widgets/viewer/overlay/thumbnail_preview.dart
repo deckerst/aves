@@ -60,13 +60,13 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
       entryCount: entryCount,
       entryBuilder: (index) => 0 <= index && index < entryCount ? entries[index] : null,
       indexNotifier: _entryIndexNotifier,
-      onTap: (index) => JumpToEntryNotification(index: index).dispatch(context),
+      onTap: (index) => ShowEntryNotification(animate: false, index: index).dispatch(context),
     );
   }
 
   void _onScrollerIndexChanged() => _debouncer(() {
         if (mounted) {
-          JumpToEntryNotification(index: _entryIndexNotifier.value).dispatch(context);
+          ShowEntryNotification(animate: false, index: _entryIndexNotifier.value).dispatch(context);
         }
       });
 }

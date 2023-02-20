@@ -5,11 +5,14 @@ import 'package:aves_magnifier/src/controller/controller_delegate.dart';
 import 'package:aves_magnifier/src/controller/state.dart';
 import 'package:aves_magnifier/src/core/gesture_detector.dart';
 import 'package:aves_magnifier/src/magnifier.dart';
-import 'package:aves_magnifier/src/pan/corner_hit_detector.dart';
+import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
 import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
 import 'package:aves_magnifier/src/scale/state.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 /// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to the controller state and mounts the entire Layout
@@ -21,6 +24,7 @@ class MagnifierCore extends StatefulWidget {
   final MagnifierGestureScaleStartCallback? onScaleStart;
   final MagnifierGestureScaleUpdateCallback? onScaleUpdate;
   final MagnifierGestureScaleEndCallback? onScaleEnd;
+  final MagnifierGestureFlingCallback? onFling;
   final MagnifierTapCallback? onTap;
   final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
@@ -34,6 +38,7 @@ class MagnifierCore extends StatefulWidget {
     this.onScaleStart,
     this.onScaleUpdate,
     this.onScaleEnd,
+    this.onFling,
     this.onTap,
     this.onDoubleTap,
     required this.child,
@@ -43,7 +48,7 @@ class MagnifierCore extends StatefulWidget {
   State<StatefulWidget> createState() => _MagnifierCoreState();
 }
 
-class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, AvesMagnifierControllerDelegate, CornerHitDetector {
+class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, AvesMagnifierControllerDelegate, EdgeHitDetector {
   Offset? _startFocalPoint, _lastViewportFocalPosition;
   double? _startScale, _quickScaleLastY, _quickScaleLastDistance;
   late bool _dropped, _doubleTap, _quickScaleMoved;
@@ -56,6 +61,8 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   late Animation<Offset> _positionAnimation;
 
   ScaleBoundaries? cachedScaleBoundaries;
+
+  static const _flingPointerKind = PointerDeviceKind.unknown;
 
   @override
   void initState() {
@@ -104,11 +111,20 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     controller.update(position: _positionAnimation.value, source: ChangeSource.animation);
   }
 
+  Stopwatch? _scaleStopwatch;
+  VelocityTracker? _velocityTracker;
+  var _mayFlingLTRB = const Tuple4(false, false, false, false);
+
   void onScaleStart(ScaleStartDetails details, bool doubleTap) {
     final boundaries = scaleBoundaries;
     if (boundaries == null) return;
 
     widget.onScaleStart?.call(details, doubleTap, boundaries);
+
+    _scaleStopwatch = Stopwatch()..start();
+    _velocityTracker = VelocityTracker.withKind(_flingPointerKind);
+    _mayFlingLTRB = const Tuple4(true, true, true, true);
+    _updateMayFling();
 
     _startScale = scale;
     _startFocalPoint = details.localFocalPoint;
@@ -129,6 +145,12 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
     _dropped |= widget.onScaleUpdate?.call(details) ?? false;
     if (_dropped) return;
+
+    final elapsed = _scaleStopwatch?.elapsed;
+    if (elapsed != null) {
+      _velocityTracker?.addPosition(elapsed, details.focalPoint);
+    }
+    _updateMayFling();
 
     double newScale;
     if (_doubleTap) {
@@ -168,6 +190,29 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
     widget.onScaleEnd?.call(details);
 
+    _updateMayFling();
+    final estimate = _velocityTracker?.getVelocityEstimate();
+    final onFling = widget.onFling;
+    if (estimate != null && onFling != null) {
+      if (_isFlingGesture(estimate, _flingPointerKind, Axis.horizontal)) {
+        final left = _mayFlingLTRB.item1;
+        final right = _mayFlingLTRB.item3;
+        if (left) {
+          onFling(AxisDirection.left);
+        } else if (right) {
+          onFling(AxisDirection.right);
+        }
+      } else if (_isFlingGesture(estimate, _flingPointerKind, Axis.vertical)) {
+        final up = _mayFlingLTRB.item2;
+        final down = _mayFlingLTRB.item4;
+        if (up) {
+          onFling(AxisDirection.up);
+        } else if (down) {
+          onFling(AxisDirection.down);
+        }
+      }
+    }
+
     final _position = controller.position;
     final _scale = controller.scale!;
     final maxScale = boundaries.maxScale;
@@ -205,6 +250,31 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
     if (_scale != _startScale) {
       _lastScaleGestureDate = DateTime.now();
+    }
+  }
+
+  void _updateMayFling() {
+    final xHit = getXEdgeHit();
+    final yHit = getYEdgeHit();
+    _mayFlingLTRB = Tuple4(
+      _mayFlingLTRB.item1 && xHit.hasHitMin,
+      _mayFlingLTRB.item2 && yHit.hasHitMin,
+      _mayFlingLTRB.item3 && xHit.hasHitMax,
+      _mayFlingLTRB.item4 && yHit.hasHitMax,
+    );
+  }
+
+  bool _isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind, Axis axis) {
+    final gestureSettings = context.read<MediaQueryData>().gestureSettings;
+    const minVelocity = kMinFlingVelocity;
+    final minDistance = computeHitSlop(kind, gestureSettings);
+
+    final pps = estimate.pixelsPerSecond;
+    final offset = estimate.offset;
+    if (axis == Axis.horizontal) {
+      return pps.dx.abs() > minVelocity && offset.dx.abs() > minDistance;
+    } else {
+      return pps.dy.abs() > minVelocity && offset.dy.abs() > minDistance;
     }
   }
 
