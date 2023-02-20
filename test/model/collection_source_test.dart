@@ -26,6 +26,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' as p;
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import '../fake/android_app_service.dart';
 import '../fake/availability.dart';
@@ -66,6 +67,7 @@ void main() {
     getIt.registerLazySingleton<StorageService>(FakeStorageService.new);
     getIt.registerLazySingleton<WindowService>(FakeWindowService.new);
 
+    SharedPreferencesStorePlatform.instance = InMemorySharedPreferencesStore.empty();
     await settings.init(monitorPlatformSettings: false);
     settings.canUseAnalysisService = false;
     await androidFileUtils.init();

@@ -14,7 +14,10 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -50,7 +53,7 @@ class StatsPage extends StatefulWidget {
   State<StatsPage> createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> {
+class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMixin {
   final Map<String, int> _entryCountPerCountry = {}, _entryCountPerPlace = {}, _entryCountPerTag = {}, _entryCountPerAlbum = {};
   final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
@@ -219,7 +222,7 @@ class _StatsPageState extends State<StatsPage> {
           }
         }
 
-        return Scaffold(
+        return AvesScaffold(
           appBar: AppBar(
             automaticallyImplyLeading: !useTvLayout,
             title: Text(l10n.statsPageTitle),
@@ -253,8 +256,7 @@ class _StatsPageState extends State<StatsPage> {
     final totalEntryCount = entries.length;
     final hasMore = maxRowCount != null && entryCountMap.length > maxRowCount;
     final onHeaderPressed = hasMore
-        ? () => Navigator.push(
-              context,
+        ? () => Navigator.maybeOf(context)?.push(
               MaterialPageRoute(
                 settings: const RouteSettings(name: StatsTopPage.routeName),
                 builder: (context) => StatsTopPage(
@@ -319,7 +321,9 @@ class _StatsPageState extends State<StatsPage> {
     ];
   }
 
-  void _onFilterSelection(BuildContext context, CollectionFilter filter) {
+  Future<void> _onFilterSelection(BuildContext context, CollectionFilter filter) async {
+    if (!await unlockFilter(context, filter)) return;
+
     if (widget.parentCollection != null) {
       _applyToParentCollectionPage(context, filter);
     } else {
@@ -334,12 +338,11 @@ class _StatsPageState extends State<StatsPage> {
     // even when the target is a child of an `AnimatedList`.
     // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
     // as it may not trigger if there is no subsequent build.
-    Future.delayed(const Duration(milliseconds: 100), () => Navigator.popUntil(context, (route) => route.settings.name == CollectionPage.routeName));
+    Future.delayed(const Duration(milliseconds: 100), () => Navigator.maybeOf(context)?.popUntil((route) => route.settings.name == CollectionPage.routeName));
   }
 
   void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
@@ -368,7 +371,7 @@ class StatsTopPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(title),

@@ -6,6 +6,8 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 class RenameAlbumDialog extends StatefulWidget {
+  static const routeName = '/dialog/rename_album';
+
   final String album;
 
   const RenameAlbumDialog({
@@ -88,7 +90,7 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.pop(context, _nameController.text);
+      Navigator.maybeOf(context)?.pop(_nameController.text);
     }
   }
 }

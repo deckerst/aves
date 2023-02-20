@@ -72,7 +72,10 @@ class SearchSuggestionsProvider : ContentProvider() {
             }
         }
 
-        val messenger = flutterEngine!!.dartExecutor
+        val engine = flutterEngine
+        engine ?: throw Exception("Flutter engine is not initialized")
+
+        val messenger = engine.dartExecutor
         val backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL).apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {

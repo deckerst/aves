@@ -19,6 +19,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
@@ -59,7 +60,7 @@ class MapPage extends StatelessWidget {
     // as the map can be stacked on top of other pages
     // that catch highlight events and will not let it bubble up
     return HighlightInfoProvider(
-      child: Scaffold(
+      child: AvesScaffold(
         body: SafeArea(
           left: false,
           top: false,
@@ -456,8 +457,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void _goToViewer(AvesEntry? initialEntry) {
     if (initialEntry == null) return;
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
@@ -476,8 +476,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
     if (!isMainMode) return;
 
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
@@ -518,7 +517,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     Offset tapLocalPosition,
     WidgetBuilder markerBuilder,
   ) async {
-    final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
     final selectedAction = await showMenu<MapClusterAction>(
       context: context,

@@ -15,7 +15,7 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper.processBoxes
 import deckers.thibault.aves.metadata.Mp4ParserHelper.toBytes
 import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
 import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
-import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
+import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -130,7 +130,7 @@ object XMP {
     ) {
         if (MimeTypes.isHeic(mimeType) && !foundXmp && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
-                val xmpBytes = context.queryContentResolverProp(uri, mimeType, MediaStore.MediaColumns.XMP)
+                val xmpBytes = context.queryContentPropValue(uri, mimeType, MediaStore.MediaColumns.XMP)
                 if (xmpBytes is ByteArray && xmpBytes.size > 0) {
                     val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, SafeXmpReader.PARSE_OPTIONS)
                     processXmp(xmpMeta)
@@ -170,6 +170,11 @@ object XMP {
                             }
                         }
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
+
+                        // TODO TLAD [mp4] `IsoFile` init may fail if a skipped box has a `org.mp4parser.boxes.iso14496.part12.MetaBox` as parent,
+                        // because `MetaBox.parse()` changes the argument `dataSource` to a `RewindableReadableByteChannel`,
+                        // so it is no longer a seekable `FileChannel`, which is a requirement to skip boxes.
+
                         IsoFile(channel, boxParser).use { isoFile ->
                             isoFile.processBoxes(UserBox::class.java, true) { box, _ ->
                                 val boxSize = box.size

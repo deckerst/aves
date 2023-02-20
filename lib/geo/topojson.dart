@@ -1,24 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 // cf https://github.com/topojson/topojson-specification
 class TopoJson {
-  Future<Topology?> parse(String data) async {
-    return compute<String, Topology?>(_isoParse, data);
-  }
-
-  static Topology? _isoParse(String jsonData) {
+  Future<Topology?> parse(String jsonData) async {
     try {
-      final data = jsonDecode(jsonData) as Map<String, dynamic>;
-      return Topology.parse(data);
+      return Isolate.run<Topology>(() {
+        final data = jsonDecode(jsonData) as Map<String, dynamic>;
+        return Topology.parse(data);
+      });
     } catch (error, stack) {
-      // an unhandled error in a spawn isolate would make the app crash
       debugPrint('failed to parse TopoJSON with error=$error\n$stack');
+      return null;
     }
-    return null;
   }
 }
 

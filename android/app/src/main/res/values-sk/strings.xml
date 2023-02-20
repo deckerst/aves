@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_shortcut_short_label">Hľadať</string>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">Rám fotky</string>
+    <string name="wallpaper">Tapeta</string>
+    <string name="videos_shortcut_short_label">Videá</string>
+    <string name="analysis_notification_action_stop">Zastaviť</string>
+    <string name="analysis_channel_name">Skenovanie médií</string>
+    <string name="analysis_service_description">Skenovanie obrázkov &amp; videí</string>
+    <string name="analysis_notification_default_title">Skenovanie média</string>
+</resources>

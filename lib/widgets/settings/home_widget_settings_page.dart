@@ -8,6 +8,7 @@ import 'package:aves/services/widget_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -67,7 +68,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.settingsWidgetPageTitle),
       ),

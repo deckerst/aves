@@ -12,7 +12,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         result.success(true)
     }
 
-    override fun keepScreenOn(call: MethodCall, result: MethodChannel.Result) {
+    private fun setWindowFlag(call: MethodCall, result: MethodChannel.Result, flag: Int) {
         val on = call.argument<Boolean>("on")
         if (on == null) {
             result.error("keepOn-args", "missing arguments", null)
@@ -20,8 +20,6 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         }
 
         val window = activity.window
-        val flag = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-
         val old = (window.attributes.flags and flag) != 0
         if (old != on) {
             if (on) {
@@ -31,6 +29,14 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
             }
         }
         result.success(null)
+    }
+
+    override fun keepScreenOn(call: MethodCall, result: MethodChannel.Result) {
+        setWindowFlag(call, result, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun secureScreen(call: MethodCall, result: MethodChannel.Result) {
+        setWindowFlag(call, result, WindowManager.LayoutParams.FLAG_SECURE)
     }
 
     override fun requestOrientation(call: MethodCall, result: MethodChannel.Result) {

@@ -13,6 +13,7 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
         when (call.method) {
             "isActivity" -> Coresult.safe(call, result, ::isActivity)
             "keepScreenOn" -> Coresult.safe(call, result, ::keepScreenOn)
+            "secureScreen" -> Coresult.safe(call, result, ::secureScreen)
             "isRotationLocked" -> Coresult.safe(call, result, ::isRotationLocked)
             "requestOrientation" -> Coresult.safe(call, result, ::requestOrientation)
             "isCutoutAware" -> Coresult.safe(call, result, ::isCutoutAware)
@@ -24,6 +25,8 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
     abstract fun isActivity(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun keepScreenOn(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun secureScreen(call: MethodCall, result: MethodChannel.Result)
 
     private fun isRotationLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var locked = false

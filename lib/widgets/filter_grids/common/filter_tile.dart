@@ -1,10 +1,14 @@
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -35,7 +39,7 @@ class InteractiveFilterTile<T extends CollectionFilter> extends StatefulWidget {
   State<InteractiveFilterTile<T>> createState() => _InteractiveFilterTileState<T>();
 }
 
-class _InteractiveFilterTileState<T extends CollectionFilter> extends State<InteractiveFilterTile<T>> {
+class _InteractiveFilterTileState<T extends CollectionFilter> extends State<InteractiveFilterTile<T>> with FeedbackMixin, VaultAwareMixin {
   HeroType? _heroTypeOverride;
 
   FilterGridItem<T> get gridItem => widget.gridItem;
@@ -46,7 +50,9 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
   Widget build(BuildContext context) {
     final filter = gridItem.filter;
 
-    void onTap() {
+    Future<void> onTap() async {
+      if (!await unlockFilter(context, filter)) return;
+
       final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
       switch (appMode) {
         case AppMode.main:
@@ -61,7 +67,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
           }
           break;
         case AppMode.pickFilterInternal:
-          Navigator.pop<T>(context, filter);
+          Navigator.maybeOf(context)?.pop<T>(filter);
           break;
         case AppMode.pickMediaInternal:
         case AppMode.screenSaver:
@@ -96,8 +102,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      Navigator.push(
-        context,
+      Navigator.maybeOf(context)?.push(
         MaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (context) => CollectionPage(
@@ -136,6 +141,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final filter = gridItem.filter;
     final pinned = settings.pinnedFilters.contains(filter);
+    final locked = filter is AlbumFilter && vaults.isLocked(filter.album);
     final onChipTap = onTap != null ? (filter) => onTap?.call() : null;
 
     switch (tileLayout) {
@@ -152,6 +158,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
             thumbnailExtent: thumbnailExtent,
             showText: true,
             pinned: pinned,
+            locked: locked,
             banner: banner,
             onTap: onChipTap,
             heroType: heroType,
@@ -171,6 +178,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
                 extent: chipExtent,
                 thumbnailExtent: thumbnailExtent,
                 showText: false,
+                locked: locked,
                 banner: banner,
                 onTap: onChipTap,
                 heroType: heroType,
@@ -180,6 +188,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
               child: FilterListDetails(
                 gridItem: gridItem,
                 pinned: pinned,
+                locked: locked,
               ),
             ),
           ],

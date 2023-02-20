@@ -7,6 +7,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/about/policy_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -49,7 +50,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AvesScaffold(
       body: SafeArea(
         child: Center(
           child: FutureBuilder<String>(
@@ -164,7 +165,7 @@ class _WelcomePageState extends State<WelcomePage> {
     final canEnableErrorReporting = context.select<AppFlavor, bool>((v) => v.canEnableErrorReporting);
     const contentPadding = EdgeInsets.symmetric(horizontal: 8);
     final switches = ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: MarkdownContainer.maxWidth),
+      constraints: const BoxConstraints(maxWidth: MarkdownContainer.mobileMaxWidth),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -222,8 +223,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   void _goToPolicyPage() {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: PolicyPage.routeName),
         builder: (context) => const PolicyPage(),

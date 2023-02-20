@@ -8,6 +8,7 @@ enum ChipAction {
   goToTagPage,
   reverse,
   hide,
+  lockVault,
 }
 
 extension ExtraChipAction on ChipAction {
@@ -24,6 +25,8 @@ extension ExtraChipAction on ChipAction {
         return context.l10n.chipActionFilterOut;
       case ChipAction.hide:
         return context.l10n.chipActionHide;
+      case ChipAction.lockVault:
+        return context.l10n.chipActionLock;
     }
   }
 
@@ -41,6 +44,8 @@ extension ExtraChipAction on ChipAction {
         return AIcons.reverse;
       case ChipAction.hide:
         return AIcons.hide;
+      case ChipAction.lockVault:
+        return AIcons.vaultLock;
     }
   }
 }

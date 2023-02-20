@@ -6,6 +6,8 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 class EditEntryRatingDialog extends StatefulWidget {
+  static const routeName = '/dialog/edit_entry_rating';
+
   final AvesEntry entry;
 
   const EditEntryRatingDialog({
@@ -126,7 +128,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
         entryRating = 0;
         break;
     }
-    Navigator.pop(context, entryRating);
+    Navigator.maybeOf(context)?.pop(entryRating);
   }
 }
 

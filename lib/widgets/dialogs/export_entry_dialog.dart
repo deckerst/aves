@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'aves_dialog.dart';
 
 class ExportEntryDialog extends StatefulWidget {
+  static const routeName = '/dialog/export_entry';
+
   final AvesEntry entry;
 
   const ExportEntryDialog({
@@ -130,7 +132,7 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
                               height: height,
                             )
                           : null;
-                      Navigator.pop(context, options);
+                      Navigator.maybeOf(context)?.pop(options);
                     }
                   : null,
               child: Text(l10n.applyButtonLabel),

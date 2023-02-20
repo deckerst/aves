@@ -7,14 +7,14 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
-version: 1.7.10+90
+version: 1.8.0+91
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.3.10
-  sdk: ">=2.18.0 <3.0.0"
+  flutter: 3.7.3
+  sdk: ">=2.19.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
 # dependency GitHub repos should be referenced via `https://`, not `git://`
@@ -69,6 +69,7 @@ dependencies:
   get_it:
   intl:
   latlong2:
+  local_auth:
   material_color_utilities:
   material_design_icons_flutter:
   overlay_support:
@@ -82,10 +83,12 @@ dependencies:
   pdf:
   percent_indicator:
   permission_handler:
+  pinput:
   printing:
   proj4dart:
   provider:
   screen_brightness:
+  screen_state:
   shared_preferences:
   smooth_page_indicator:
   sqflite:
@@ -104,6 +107,7 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   flutter_lints:
+  shared_preferences_platform_interface:
   test:
 
 flutter:

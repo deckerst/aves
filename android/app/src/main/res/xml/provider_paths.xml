@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
+    <!-- `external-path` only covers files on regular device storage -->
     <external-path
-        name="external_files"
+        name="external"
+        path="." />
+
+    <!-- `root-path` is necessary to cover files on removable storage -->
+    <!-- cf https://iditect.com/article/fileprovider-for-android-get-content-uri-through-fileprovider.html -->
+    <!--suppress AndroidElementNotAllowed -->
+    <root-path
+        name="root"
         path="." />
 
     <!-- embedded images & other media that are exported for viewing and sharing -->

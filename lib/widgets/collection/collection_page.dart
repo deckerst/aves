@@ -7,6 +7,7 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -15,6 +16,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
@@ -124,7 +126,7 @@ class _CollectionPageState extends State<CollectionPage> {
 
           Widget page;
           if (useTvLayout) {
-            page = Scaffold(
+            page = AvesScaffold(
               body: Row(
                 children: [
                   TvRail(
@@ -149,7 +151,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     _draggableScrollBarEventStreamController.add(notification.event);
                     return false;
                   },
-                  child: Scaffold(
+                  child: AvesScaffold(
                     body: body,
                     floatingActionButton: _buildFab(context, hasSelection),
                     drawer: canNavigate ? AppDrawer(currentCollection: _collection) : null,
@@ -214,11 +216,13 @@ class _CollectionPageState extends State<CollectionPage> {
     final highlightTest = widget.highlightTest;
     if (highlightTest == null) return;
 
+    final item = _collection.sortedEntries.firstWhereOrNull(highlightTest);
+    if (item == null) return;
+
     final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
     await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
-    final targetEntry = _collection.sortedEntries.firstWhereOrNull(highlightTest);
-    if (targetEntry != null) {
-      context.read<HighlightInfo>().trackItem(targetEntry, highlightItem: targetEntry);
-    }
+
+    final animate = context.read<Settings>().accessibilityAnimations.animate;
+    context.read<HighlightInfo>().trackItem(item, animate: animate, highlightItem: item);
   }
 }

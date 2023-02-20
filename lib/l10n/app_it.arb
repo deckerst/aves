@@ -151,8 +151,8 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Velocità di riproduzione",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Impostazioni",
-  "@videoActionSettings": {},
+  "viewerActionSettings": "Impostazioni",
+  "@viewerActionSettings": {},
   "slideshowActionResume": "Riprendi",
   "@slideshowActionResume": {},
   "slideshowActionShowInCollection": "Mostra nella Collezione",
@@ -699,8 +699,6 @@
   "@albumPageTitle": {},
   "albumEmpty": "Nessun album",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Crea album",
-  "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "CREA",
   "@createAlbumButtonLabel": {},
   "newFilterBanner": "nuovo",
@@ -1208,5 +1206,7 @@
   "settingsViewerShowDescription": "Mostra la descrizione",
   "@settingsViewerShowDescription": {},
   "tooManyItemsErrorDialogMessage": "Riprova con meno elementi.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Trascina su o giù per aggiustare luminosità/volume",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }

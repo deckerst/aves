@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.net.toUri
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.MainActivity.Companion.DELETE_SINGLE_PERMISSION_REQUEST
@@ -30,6 +31,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.OutputStream
+import java.io.SyncFailedException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
@@ -219,6 +221,7 @@ class MediaStoreImageProvider : ImageProvider() {
                             Log.w(LOG_TAG, "failed to make entry from uri=$itemUri because of null MIME type")
                         } else {
                             var entryMap: FieldMap = hashMapOf(
+                                "origin" to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
                                 "uri" to itemUri.toString(),
                                 "path" to cursor.getString(pathColumn),
                                 "sourceMimeType" to mimeType,
@@ -349,7 +352,7 @@ class MediaStoreImageProvider : ImageProvider() {
             }
         } catch (securityException: SecurityException) {
             // even if the app has access permission granted on the containing directory,
-            // the delete request may yield a `RecoverableSecurityException` on Android >=10
+            // the delete request may yield a `RecoverableSecurityException` on API >=29
             // when the underlying file no longer exists and this is an orphaned entry in the Media Store
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && contextWrapper is Activity) {
                 Log.w(LOG_TAG, "caught a security exception when attempting to delete uri=$uri", securityException)
@@ -386,10 +389,12 @@ class MediaStoreImageProvider : ImageProvider() {
             val entries = kv.value
 
             val toBin = targetDir == StorageUtils.TRASH_PATH_PLACEHOLDER
+            val toVault = StorageUtils.isInVault(activity, targetDir)
+            val toAppDir = toBin || toVault
 
             var effectiveTargetDir: String? = null
             var targetDirDocFile: DocumentFileCompat? = null
-            if (!toBin) {
+            if (!toAppDir) {
                 effectiveTargetDir = targetDir
                 targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
                 if (!File(targetDir).exists()) {
@@ -437,13 +442,20 @@ class MediaStoreImageProvider : ImageProvider() {
                     // - there is no documentation regarding support for usage with removable storage
                     // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
                     try {
-                        if (toBin) {
-                            val trashDir = StorageUtils.trashDirFor(activity, sourcePath)
-                            if (trashDir != null) {
-                                effectiveTargetDir = ensureTrailingSeparator(trashDir.path)
-                                targetDirDocFile = DocumentFileCompat.fromFile(trashDir)
+                        val appDir = when {
+                            toBin -> StorageUtils.trashDirFor(activity, sourcePath)
+                            toVault -> File(targetDir)
+                            else -> null
+                        }
+                        if (appDir != null) {
+                            effectiveTargetDir = ensureTrailingSeparator(appDir.path)
+                            targetDirDocFile = DocumentFileCompat.fromFile(appDir)
+
+                            if (toVault) {
+                                appDir.mkdirs()
                             }
                         }
+
                         if (effectiveTargetDir != null) {
                             val newFields = if (isCancelledOp()) skippedFieldMap else {
                                 val sourceFile = File(sourcePath)
@@ -462,6 +474,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                         mimeType = mimeType,
                                         copy = copy,
                                         toBin = toBin,
+                                        toVault = toVault,
                                     )
                                 }
                             }
@@ -488,6 +501,7 @@ class MediaStoreImageProvider : ImageProvider() {
         mimeType: String,
         copy: Boolean,
         toBin: Boolean,
+        toVault: Boolean,
     ): FieldMap {
         val sourcePath = sourceFile.path
         val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
@@ -512,7 +526,16 @@ class MediaStoreImageProvider : ImageProvider() {
             targetDir = targetDir,
             targetDirDocFile = targetDirDocFile,
             targetNameWithoutExtension = targetNameWithoutExtension,
-        ) { output: OutputStream -> sourceDocFile.copyTo(output) }
+        ) { output: OutputStream ->
+            try {
+                sourceDocFile.copyTo(output)
+            } catch (e: SyncFailedException) {
+                // The copied file is synced after writing, but it consistently fails in some cases
+                // (e.g. copying to SD card on Xiaomi 2201117PG with Android 11).
+                // It seems this failure can be safely ignored, as the new file is complete.
+                Log.w(LOG_TAG, "sync failure after copying from uri=$sourceUri, path=$sourcePath to targetDir=$targetDir", e)
+            }
+        }
 
         if (!copy) {
             // delete original entry
@@ -522,13 +545,21 @@ class MediaStoreImageProvider : ImageProvider() {
                 Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
             }
         }
-        if (toBin) {
-            return hashMapOf(
+        return if (toBin) {
+            hashMapOf(
                 "trashed" to true,
                 "trashPath" to targetPath,
             )
+        } else if (toVault) {
+            hashMapOf(
+                "uri" to File(targetPath).toUri().toString(),
+                "contentId" to null,
+                "path" to targetPath,
+                "origin" to SourceEntry.ORIGIN_VAULT,
+            )
+        } else {
+            scanNewPath(activity, targetPath, mimeType)
         }
-        return scanNewPath(activity, targetPath, mimeType)
     }
 
     // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
@@ -910,7 +941,7 @@ class MediaStoreImageProvider : ImageProvider() {
         private val VIDEO_PROJECTION = arrayOf(
             *BASE_PROJECTION,
             MediaColumns.DURATION,
-            // `ORIENTATION` was only available for images before Android 10
+            // `ORIENTATION` was only available for images before Android 10 (API 29)
             *if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) arrayOf(
                 MediaStore.MediaColumns.ORIENTATION,
             ) else emptyArray()

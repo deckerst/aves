@@ -666,6 +666,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           tileExtentController: extentController,
         );
       },
+      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
@@ -678,8 +679,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _goToSearch() {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,

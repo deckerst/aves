@@ -9,6 +9,7 @@ import 'package:aves/services/analysis_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -44,7 +45,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: Scaffold(
+      child: AvesScaffold(
         appBar: AppBar(
           title: const Text('Debug'),
           actions: [
@@ -122,7 +123,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
               _taskQueueOverlayEntry = OverlayEntry(
                 builder: (context) => const DebugTaskQueueOverlay(),
               );
-              Overlay.of(context)!.insert(_taskQueueOverlayEntry!);
+              Overlay.of(context).insert(_taskQueueOverlayEntry!);
             } else {
               _taskQueueOverlayEntry = null;
             }
@@ -196,8 +197,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
         );
         break;
       case AppDebugAction.greenScreen:
-        await Navigator.push(
-          context,
+        await Navigator.maybeOf(context)?.push(
           MaterialPageRoute(
             builder: (context) => const Scaffold(
               backgroundColor: Colors.green,

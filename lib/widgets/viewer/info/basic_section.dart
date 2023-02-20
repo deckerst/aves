@@ -27,10 +27,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BasicSection extends StatelessWidget {
+class BasicSection extends StatefulWidget {
   final AvesEntry entry;
   final CollectionLens? collection;
   final EntryInfoActionDelegate actionDelegate;
+  final ValueNotifier<bool> isScrollingNotifier;
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
   final FilterCallback onFilter;
 
@@ -39,12 +40,54 @@ class BasicSection extends StatelessWidget {
     required this.entry,
     this.collection,
     required this.actionDelegate,
+    required this.isScrollingNotifier,
     required this.isEditingMetadataNotifier,
     required this.onFilter,
   });
 
   @override
+  State<BasicSection> createState() => _BasicSectionState();
+}
+
+class _BasicSectionState extends State<BasicSection> {
+  final FocusNode _chipFocusNode = FocusNode();
+
+  CollectionLens? get collection => widget.collection;
+
+  EntryInfoActionDelegate get actionDelegate => widget.actionDelegate;
+
+  @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+    _onScrollingChanged();
+  }
+
+  @override
+  void didUpdateWidget(covariant BasicSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    _chipFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _registerWidget(BasicSection widget) {
+    widget.isScrollingNotifier.addListener(_onScrollingChanged);
+  }
+
+  void _unregisterWidget(BasicSection widget) {
+    widget.isScrollingNotifier.removeListener(_onScrollingChanged);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final entry = widget.entry;
     return AnimatedBuilder(
         animation: entry.metadataChangeNotifier,
         builder: (context, child) {
@@ -52,7 +95,12 @@ class BasicSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _BasicInfo(entry: entry),
-              _buildChips(context),
+              Focus(
+                focusNode: _chipFocusNode,
+                skipTraversal: true,
+                canRequestFocus: false,
+                child: _buildChips(context),
+              ),
               _buildEditButtons(context),
             ],
           );
@@ -60,6 +108,7 @@ class BasicSection extends StatelessWidget {
   }
 
   Widget _buildChips(BuildContext context) {
+    final entry = widget.entry;
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final album = entry.directory;
     final filters = {
@@ -91,7 +140,7 @@ class BasicSection extends StatelessWidget {
             children: effectiveFilters
                 .map((filter) => AvesFilterChip(
                       filter: filter,
-                      onTap: onFilter,
+                      onTap: widget.onFilter,
                     ))
                 .toList(),
           ),
@@ -101,6 +150,7 @@ class BasicSection extends StatelessWidget {
   }
 
   Widget _buildEditButtons(BuildContext context) {
+    final entry = widget.entry;
     final children = [
       EntryAction.editRating,
       EntryAction.editTags,
@@ -124,8 +174,9 @@ class BasicSection extends StatelessWidget {
   }
 
   Widget _buildEditMetadataButton(BuildContext context, EntryAction action) {
+    final entry = widget.entry;
     return ValueListenableBuilder<EntryAction?>(
-      valueListenable: isEditingMetadataNotifier,
+      valueListenable: widget.isEditingMetadataNotifier,
       builder: (context, editingAction, child) {
         final isEditing = editingAction != null;
         final onPressed = isEditing ? null : () => actionDelegate.onActionSelected(context, entry, collection, action);
@@ -180,6 +231,16 @@ class BasicSection extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _onScrollingChanged() {
+    if (!widget.isScrollingNotifier.value) {
+      if (settings.useTvLayout) {
+        // using `autofocus` while scrolling seems to fail for widget built offscreen
+        // so we give focus to this page when the screen is no longer scrolling
+        _chipFocusNode.children.firstOrNull?.requestFocus();
+      }
+    }
   }
 }
 

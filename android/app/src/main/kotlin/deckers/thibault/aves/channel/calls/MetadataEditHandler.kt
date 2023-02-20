@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.io.FileNotFoundException
 
 class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -195,6 +196,8 @@ private class MetadataOpCallback(
             } else {
                 "$errorCodeBase-mp4largeother"
             }
+        } else if (throwable is FileNotFoundException) {
+            "$errorCodeBase-filenotfound"
         } else {
             "$errorCodeBase-failure"
         }

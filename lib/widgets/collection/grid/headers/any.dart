@@ -33,7 +33,7 @@ class CollectionSectionHeader extends StatelessWidget {
             height: height,
             child: header,
           )
-        : const SizedBox.shrink();
+        : const SizedBox();
   }
 
   Widget? _buildHeader(BuildContext context) {

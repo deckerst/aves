@@ -40,6 +40,7 @@ class ColorListTile extends StatelessWidget {
           builder: (context) => ColorPickerDialog(
             initialValue: value,
           ),
+          routeSettings: const RouteSettings(name: ColorPickerDialog.routeName),
         );
         if (color != null) {
           onChanged(color);
@@ -50,6 +51,8 @@ class ColorListTile extends StatelessWidget {
 }
 
 class ColorPickerDialog extends StatefulWidget {
+  static const routeName = '/dialog/pick_color';
+
   final Color initialValue;
 
   const ColorPickerDialog({
@@ -96,7 +99,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
       actions: [
         const CancelButton(),
         TextButton(
-          onPressed: () => Navigator.pop(context, color),
+          onPressed: () => Navigator.maybeOf(context)?.pop(color),
           child: Text(context.l10n.applyButtonLabel),
         ),
       ],

@@ -19,7 +19,7 @@ This change eventually prevents building the app with Flutter v3.3.3.
         android:required="false" />
 
     <!--
-    Scoped storage on Android 10 is inconvenient because users need to confirm edition on each individual file.
+    Scoped storage on Android 10 (API 29) is inconvenient because users need to confirm edition on each individual file.
     So we request `WRITE_EXTERNAL_STORAGE` until Android 10 (API 29), and enable `requestLegacyExternalStorage`
     -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -32,28 +32,35 @@ This change eventually prevents building the app with Flutter v3.3.3.
         android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
 
+    <!-- to access media with original metadata with scoped storage (API >=29) -->
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <!-- to analyze media in a service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- to fetch map tiles -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- from Android 12 (API 31), users can optionally grant access to the media management special permission -->
     <uses-permission
         android:name="android.permission.MANAGE_MEDIA"
         tools:ignore="ProtectedPermissions" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- to show foreground service progress via notification -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <!-- to access media with original metadata with scoped storage (Android >=10) -->
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-
+    <!-- to change wallpaper -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <!-- to unlock vaults (API >=28) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <!-- TODO TLAD remove this permission when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- for API <26 -->
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission
+        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
+        android:maxSdkVersion="25" />
 
-    <!-- allow install on API 19, but Google Maps is from API 20 -->
-    <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps" />
+    <!--
+    allow install on API 19, despite the `minSdkVersion` declared in dependencies:
+    - Google Maps is from API 20
+    - the Security library is from API 21
+    -->
+    <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps, androidx.security:security-crypto" />
 
     <!-- from Android 11, we should define <queries> to make other apps visible to this app -->
     <queries>
@@ -75,12 +82,14 @@ This change eventually prevents building the app with Flutter v3.3.3.
         android:allowBackup="true"
         android:appCategory="image"
         android:banner="@drawable/banner"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/full_backup_content"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
-        tools:targetApi="o">
+        tools:targetApi="s">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

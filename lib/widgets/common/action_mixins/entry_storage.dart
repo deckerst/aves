@@ -80,6 +80,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
             message: originAlbums.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
             confirmationButtonLabel: l10n.continueButtonLabel,
           ),
+          routeSettings: const RouteSettings(name: AvesSelectionDialog.routeName),
         );
         if (value == null) return;
         nameConflictStrategy = value;
@@ -193,7 +194,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   }) async {
     if (moveType == MoveType.toBin) {
       final l10n = context.l10n;
-      if (!await showConfirmationDialog(
+      if (!await showSkippableConfirmationDialog(
         context: context,
         type: ConfirmationDialog.moveToBin,
         message: l10n.binEntriesConfirmationDialogMessage(entries.length),
@@ -230,6 +231,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       context,
       moveType: moveType,
       entriesByDestination: entriesByDestination,
+      onSuccess: onSuccess,
     );
   }
 
@@ -289,7 +291,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       return dateMillis == null || dateMillis == 0;
     }).toSet();
     if (undatedItems.isNotEmpty) {
-      if (!await showConfirmationDialog(
+      if (!await showSkippableConfirmationDialog(
         context: context,
         type: ConfirmationDialog.moveUndatedItems,
         delegate: MoveUndatedConfirmationDialogDelegate(),
@@ -330,8 +332,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         targetFilters.removeWhere((f) => f is AlbumFilter);
         targetFilters.add(AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum)));
       }
-      unawaited(Navigator.pushAndRemoveUntil(
-        context,
+      unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
         MaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (context) => CollectionPage(

@@ -4,11 +4,12 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
-import '../aves_dialog.dart';
-
 class RenameEntryDialog extends StatefulWidget {
+  static const routeName = '/dialog/rename_entry';
+
   final AvesEntry entry;
 
   const RenameEntryDialog({
@@ -88,7 +89,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.pop(context, newName);
+      Navigator.maybeOf(context)?.pop(newName);
     }
   }
 }

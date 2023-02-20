@@ -13,6 +13,10 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(null)
     }
 
+    override fun secureScreen(call: MethodCall, result: MethodChannel.Result) {
+        result.success(null)
+    }
+
     override fun requestOrientation(call: MethodCall, result: MethodChannel.Result) {
         result.success(false)
     }

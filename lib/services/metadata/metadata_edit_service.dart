@@ -36,9 +36,7 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
-        await reportService.recordError(e, stack);
-      }
+      await _processPlatformException(entry, e, stack);
     }
     return {};
   }
@@ -52,9 +50,7 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
-        await reportService.recordError(e, stack);
-      }
+      await _processPlatformException(entry, e, stack);
     }
     return {};
   }
@@ -70,9 +66,7 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
-        await reportService.recordError(e, stack);
-      }
+      await _processPlatformException(entry, e, stack);
     }
     return {};
   }
@@ -91,9 +85,7 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
-        await reportService.recordError(e, stack);
-      }
+      await _processPlatformException(entry, e, stack);
     }
     return {};
   }
@@ -106,9 +98,7 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
-        await reportService.recordError(e, stack);
-      }
+      await _processPlatformException(entry, e, stack);
     }
     return {};
   }
@@ -122,10 +112,52 @@ class PlatformMetadataEditService implements MetadataEditService {
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
-        await reportService.recordError(e, stack);
-      }
+      await _processPlatformException(entry, e, stack);
     }
     return {};
   }
+
+  Future<void> _processPlatformException(AvesEntry entry, PlatformException e, StackTrace stack) async {
+    if (!entry.isMissingAtPath) {
+      final code = e.code;
+      if (code.endsWith('mp4largemoov')) {
+        await reportService.recordError(_Mp4LargeMoovException(code: e.code, message: e.message, details: e.details, stacktrace: e.stacktrace), stack);
+      } else if (code.endsWith('mp4largeother')) {
+        await reportService.recordError(_Mp4LargeOtherException(code: e.code, message: e.message, details: e.details, stacktrace: e.stacktrace), stack);
+      } else if (code.endsWith('filenotfound')) {
+        await reportService.recordError(_FileNotFoundException(code: e.code, message: e.message, details: e.details, stacktrace: e.stacktrace), stack);
+      } else {
+        await reportService.recordError(e, stack);
+      }
+    }
+  }
+}
+
+// distinct exceptions to convince Crashlytics to split reports into distinct issues
+
+class _Mp4LargeMoovException extends PlatformException {
+  _Mp4LargeMoovException({
+    required super.code,
+    required super.message,
+    required super.details,
+    required super.stacktrace,
+  });
+}
+
+class _Mp4LargeOtherException extends PlatformException {
+  _Mp4LargeOtherException({
+    required super.code,
+    required super.message,
+    required super.details,
+    required super.stacktrace,
+  });
+}
+
+class _FileNotFoundException extends PlatformException {
+  _FileNotFoundException({
+    required super.code,
+    required super.message,
+    required super.details,
+    required super.stacktrace,
+  });
 }

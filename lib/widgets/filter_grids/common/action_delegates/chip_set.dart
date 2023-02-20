@@ -11,11 +11,13 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/enums/view.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -32,7 +34,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, VaultAwareMixin {
   Iterable<FilterGridItem<T>> get allItems;
 
   ChipSortFactor get sortFactor;
@@ -87,6 +89,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.toggleTitleSearch:
         return !useTvLayout && !isSelecting;
       case ChipSetAction.createAlbum:
+      case ChipSetAction.createVault:
         return false;
       // browsing or selecting
       case ChipSetAction.map:
@@ -94,19 +97,21 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.stats:
         return isMain;
       // selecting (single/multiple filters)
-      case ChipSetAction.delete:
-        return false;
       case ChipSetAction.hide:
         return isMain;
       case ChipSetAction.pin:
         return !hasSelection || !settings.pinnedFilters.containsAll(selectedFilters);
       case ChipSetAction.unpin:
         return hasSelection && settings.pinnedFilters.containsAll(selectedFilters);
-      // selecting (single filter)
-      case ChipSetAction.rename:
+      case ChipSetAction.delete:
+      case ChipSetAction.lockVault:
         return false;
+      // selecting (single filter)
       case ChipSetAction.setCover:
         return isMain;
+      case ChipSetAction.rename:
+      case ChipSetAction.configureVault:
+        return false;
     }
   }
 
@@ -130,6 +135,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.search:
       case ChipSetAction.toggleTitleSearch:
       case ChipSetAction.createAlbum:
+      case ChipSetAction.createVault:
         return true;
       // browsing or selecting
       case ChipSetAction.map:
@@ -141,15 +147,18 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.hide:
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
+      case ChipSetAction.lockVault:
         return hasSelection;
       // selecting (single filter)
       case ChipSetAction.rename:
       case ChipSetAction.setCover:
+      case ChipSetAction.configureVault:
         return selectedItemCount == 1;
     }
   }
 
   void onActionSelected(BuildContext context, Set<T> filters, ChipSetAction action) {
+    reportService.log('$action');
     switch (action) {
       // general
       case ChipSetAction.configureView:
@@ -172,6 +181,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         context.read<Query>().toggle();
         break;
       case ChipSetAction.createAlbum:
+      case ChipSetAction.createVault:
         break;
       // browsing or selecting
       case ChipSetAction.map:
@@ -184,8 +194,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         _goToStats(context, filters);
         break;
       // selecting (single/multiple filters)
-      case ChipSetAction.delete:
-        break;
       case ChipSetAction.hide:
         _hide(context, filters);
         break;
@@ -197,16 +205,22 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
         _browse(context);
         break;
-      // selecting (single filter)
-      case ChipSetAction.rename:
+      case ChipSetAction.delete:
+      case ChipSetAction.lockVault:
         break;
+      // selecting (single filter)
       case ChipSetAction.setCover:
         _setCover(context, filters.first);
+        break;
+      case ChipSetAction.rename:
+      case ChipSetAction.configureVault:
         break;
     }
   }
 
-  void _browse(BuildContext context) => context.read<Selection<FilterGridItem<T>>>().browse();
+  void _browse(BuildContext context) {
+    context.read<Selection<FilterGridItem<T>>?>()?.browse();
+  }
 
   Iterable<AvesEntry> _selectedEntries(BuildContext context, Set<dynamic> filters) {
     final source = context.read<CollectionSource>();
@@ -233,6 +247,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
           tileExtentController: extentController,
         );
       },
+      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
@@ -248,8 +263,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       source: context.read<CollectionSource>(),
       fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
     );
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(collection: mapCollection),
@@ -259,8 +273,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToSlideshow(BuildContext context, Set<T> filters) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
         builder: (context) {
@@ -276,8 +289,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToStats(BuildContext context, Set<T> filters) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) {
@@ -291,8 +303,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _goToSearch(BuildContext context) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
@@ -310,11 +321,12 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.hideButtonLabel),
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
 
@@ -324,6 +336,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   void _setCover(BuildContext context, T filter) async {
+    if (!await unlockFilter(context, filter)) return;
+
     final existingCover = covers.of(filter);
     final entryId = existingCover?.item1;
     final customEntry = entryId != null ? context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId) : null;
@@ -335,6 +349,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         customPackage: existingCover?.item2,
         customColor: existingCover?.item3,
       ),
+      routeSettings: const RouteSettings(name: CoverSelectionDialog.routeName),
     );
     if (selectedCover == null) return;
 

@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.0"></a>[v1.8.0] - 2023-02-20
+
+### Added
+
+- Vaults
+- Viewer: overlay details expand/collapse on tap
+- Viewer: export actions available as quick actions
+- Slideshow: added settings quick action
+- TV: improved support for Info
+- Basque translation (thanks Aitor Salaberria)
+
+### Changed
+
+- disabling the recycle bin will delete forever items in it
+- remember pin status of albums becoming empty
+- allow setting dates before 1970/01/01
+- upgraded Flutter to stable v3.7.3
+
+### Fixed
+
+- SD card access grant on Android Lollipop
+- copying to SD card in some cases
+- sharing SD card files referred by `file` URI
+
 ## <a id="v1.7.10"></a>[v1.7.10] - 2023-01-18
 
 ### Added

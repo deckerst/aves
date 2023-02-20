@@ -60,8 +60,8 @@ class AIcons {
   // view
   static const IconData group = Icons.group_work_outlined;
   static const IconData layout = Icons.grid_view_outlined;
-  static const IconData layoutMosaic = Icons.view_compact_outlined;
-  static const IconData layoutGrid = Icons.view_comfy_outlined;
+  static const IconData layoutMosaic = Icons.view_comfy_outlined;
+  static const IconData layoutGrid = Icons.view_compact_outlined;
   static const IconData layoutList = Icons.list_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData sortOrder = Icons.swap_vert_outlined;
@@ -132,6 +132,9 @@ class AIcons {
   static const IconData streamVideo = Icons.movie_outlined;
   static const IconData streamAudio = Icons.audiotrack_outlined;
   static const IconData streamText = Icons.closed_caption_outlined;
+  static const IconData vaultLock = Icons.lock_outline;
+  static const IconData vaultAdd = Icons.enhanced_encryption_outlined;
+  static const IconData vaultConfigure = MdiIcons.shieldLockOutline;
   static const IconData videoSettings = Icons.video_settings_outlined;
   static const IconData view = Icons.grid_view_outlined;
   static const IconData zoomIn = Icons.add_outlined;
@@ -147,6 +150,8 @@ class AIcons {
   static const IconData downloadAlbum = Icons.file_download;
   static const IconData screenshotAlbum = Icons.screenshot_outlined;
   static const IconData recordingAlbum = Icons.smartphone_outlined;
+  static const IconData locked = Icons.lock_outline;
+  static const IconData unlocked = Icons.lock_open_outlined;
 
   // thumbnail overlay
   static const IconData animated = Icons.slideshow;

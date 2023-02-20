@@ -5,13 +5,16 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
@@ -116,7 +119,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
     if (useTvLayout) {
       final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
-      return Scaffold(
+      return AvesScaffold(
         body: canNavigate
             ? Row(
                 children: [
@@ -147,7 +150,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               _draggableScrollBarEventStreamController.add(notification.event);
               return false;
             },
-            child: Scaffold(
+            child: AvesScaffold(
               body: body,
               drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar
@@ -344,57 +347,63 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                           extent: thumbnailExtent,
                           child: FilterListDetailsTheme(
                             extent: thumbnailExtent,
-                            child: SectionedFilterListLayoutProvider<T>(
-                              sections: visibleSections,
-                              showHeaders: widget.showHeaders,
-                              selectable: widget.selectable,
-                              tileLayout: tileLayout,
-                              scrollableWidth: scrollableWidth,
-                              columnCount: columnCount,
-                              spacing: tileSpacing,
-                              horizontalPadding: horizontalPadding,
-                              tileWidth: thumbnailExtent,
-                              tileHeight: tileHeight,
-                              tileBuilder: (gridItem, tileSize) {
-                                final extent = tileSize.shortestSide;
-                                final tile = InteractiveFilterTile(
-                                  gridItem: gridItem,
-                                  chipExtent: extent,
-                                  thumbnailExtent: extent,
+                            child: AnimatedBuilder(
+                              animation: vaults,
+                              builder: (context, child) {
+                                return SectionedFilterListLayoutProvider<T>(
+                                  sections: visibleSections,
+                                  showHeaders: widget.showHeaders,
+                                  selectable: widget.selectable,
                                   tileLayout: tileLayout,
-                                  banner: _getFilterBanner(context, gridItem.filter),
-                                  heroType: widget.heroType,
-                                );
-                                if (!settings.useTvLayout) return tile;
+                                  scrollableWidth: scrollableWidth,
+                                  columnCount: columnCount,
+                                  spacing: tileSpacing,
+                                  horizontalPadding: horizontalPadding,
+                                  tileWidth: thumbnailExtent,
+                                  tileHeight: tileHeight,
+                                  tileBuilder: (gridItem, tileSize) {
+                                    final extent = tileSize.shortestSide;
+                                    final tile = InteractiveFilterTile(
+                                      gridItem: gridItem,
+                                      chipExtent: extent,
+                                      thumbnailExtent: extent,
+                                      tileLayout: tileLayout,
+                                      banner: _getFilterBanner(context, gridItem.filter),
+                                      heroType: widget.heroType,
+                                    );
+                                    if (!settings.useTvLayout) return tile;
 
-                                return Focus(
-                                  onFocusChange: (focused) {
-                                    if (focused) {
-                                      _focusedItemNotifier.value = gridItem;
-                                    } else if (_focusedItemNotifier.value == gridItem) {
-                                      _focusedItemNotifier.value = null;
-                                    }
+                                    return Focus(
+                                      onFocusChange: (focused) {
+                                        if (focused) {
+                                          _focusedItemNotifier.value = gridItem;
+                                        } else if (_focusedItemNotifier.value == gridItem) {
+                                          _focusedItemNotifier.value = null;
+                                        }
+                                      },
+                                      child: ValueListenableBuilder<FilterGridItem<T>?>(
+                                        valueListenable: _focusedItemNotifier,
+                                        builder: (context, focusedItem, child) {
+                                          return AnimatedScale(
+                                            scale: focusedItem == gridItem ? 1 : .9,
+                                            curve: Curves.fastOutSlowIn,
+                                            duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+                                            child: child!,
+                                          );
+                                        },
+                                        child: tile,
+                                      ),
+                                    );
                                   },
-                                  child: ValueListenableBuilder<FilterGridItem<T>?>(
-                                    valueListenable: _focusedItemNotifier,
-                                    builder: (context, focusedItem, child) {
-                                      return AnimatedScale(
-                                        scale: focusedItem == gridItem ? 1 : .9,
-                                        curve: Curves.fastOutSlowIn,
-                                        duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
-                                        child: child!,
-                                      );
-                                    },
-                                    child: tile,
-                                  ),
+                                  tileAnimationDelay: tileAnimationDelay,
+                                  coverRatioResolver: (item) {
+                                    final coverEntry = source.coverEntry(item.filter) ?? item.entry;
+                                    return coverEntry?.displayAspectRatio ?? 1;
+                                  },
+                                  child: child!,
                                 );
                               },
-                              tileAnimationDelay: tileAnimationDelay,
-                              coverRatioResolver: (item) {
-                                final coverEntry = source.coverEntry(item.filter) ?? item.entry;
-                                return coverEntry?.displayAspectRatio ?? 1;
-                              },
-                              child: child!,
+                              child: child,
                             ),
                           ),
                         );
@@ -413,7 +422,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                 selectable: widget.selectable,
                 emptyBuilder: widget.emptyBuilder,
                 bannerBuilder: _getFilterBanner,
-                scrollController: PrimaryScrollController.of(context)!,
+                scrollController: PrimaryScrollController.of(context),
                 tileLayout: tileLayout,
               ),
             );
@@ -520,13 +529,15 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   Future<void> _checkInitHighlight() async {
     final highlightInfo = context.read<HighlightInfo>();
     final filter = highlightInfo.clear();
-    if (filter is T) {
-      final gridItem = visibleSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
-      if (gridItem != null) {
-        await Future.delayed(Durations.highlightScrollInitDelay);
-        highlightInfo.trackItem(gridItem, highlightItem: filter);
-      }
-    }
+    if (filter is! T) return;
+
+    final item = visibleSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
+    if (item == null) return;
+
+    await Future.delayed(Durations.highlightScrollInitDelay);
+
+    final animate = context.read<Settings>().accessibilityAnimations.animate;
+    highlightInfo.trackItem(item, animate: animate, highlightItem: filter);
   }
 }
 
@@ -616,7 +627,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scrollView = _buildScrollView(context);
-    return _buildDraggableScrollView(scrollView);
+    return settings.useTvLayout ? scrollView : _buildDraggableScrollView(scrollView);
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {

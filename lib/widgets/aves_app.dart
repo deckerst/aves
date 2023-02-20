@@ -29,6 +29,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -54,7 +55,7 @@ class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
 
   // temporary exclude locales not ready yet for prime time
-  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'he', 'nn', 'th'}.map(Locale.new).toSet();
+  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'he', 'nn', 'sk', 'th'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
@@ -210,7 +211,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         }
                         final home = initialized
                             ? _getFirstPage()
-                            : Scaffold(
+                            : AvesScaffold(
                                 body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                               );
                         return Selector<Settings, Tuple3<Locale?, AvesThemeBrightness, bool>>(
@@ -353,6 +354,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     debugPrint('$runtimeType lifecycle ${state.name}');
+    reportService.log('Lifecycle ${state.name}');
     switch (state) {
       case AppLifecycleState.inactive:
         switch (_appModeNotifier.value) {
@@ -556,7 +558,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     // do not reset when relaunching the app
     if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
-    reportService.log('New intent');
+    reportService.log('New intent data=$intentData');
     AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => _getFirstPage(intentData: intentData),

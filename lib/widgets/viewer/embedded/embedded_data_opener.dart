@@ -72,8 +72,7 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
   }
 
   void _openTempEntry(BuildContext context, AvesEntry tempEntry) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) => EntryViewerPage(

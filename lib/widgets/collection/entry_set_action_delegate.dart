@@ -17,6 +17,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
@@ -24,6 +25,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
+import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -44,8 +46,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-
-import '../common/action_mixins/entry_storage.dart';
 
 class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin {
   bool isVisible(
@@ -160,6 +160,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void onActionSelected(BuildContext context, EntrySetAction action) {
+    reportService.log('$action');
     switch (action) {
       // general
       case EntrySetAction.configureView:
@@ -243,9 +244,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  void _leaveSelectionMode(BuildContext context) {
-    final selection = context.read<Selection<AvesEntry>?>();
-    selection?.browse();
+  void _browse(BuildContext context) {
+    context.read<Selection<AvesEntry>?>()?.browse();
   }
 
   Set<AvesEntry> _getTargetItems(BuildContext context) {
@@ -267,6 +267,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           content: Text(context.l10n.tooManyItemsErrorDialogMessage),
           actions: const [OkButton()],
         ),
+        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
       );
     }
   }
@@ -278,15 +279,34 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     collection.source.analyze(controller, entries: entries);
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _delete(BuildContext context) async {
     final entries = _getTargetItems(context);
+    final byBinUsage = groupBy<AvesEntry, bool>(entries, (entry) {
+      final details = vaults.getVault(entry.directory);
+      return details?.useBin ?? settings.enableBin;
+    });
+    await Future.forEach(
+        byBinUsage.entries,
+        (kv) => doDelete(
+              context: context,
+              entries: kv.value.toSet(),
+              enableBin: kv.key,
+            ));
 
+    _browse(context);
+  }
+
+  Future<void> doDelete({
+    required BuildContext context,
+    required Set<AvesEntry> entries,
+    required bool enableBin,
+  }) async {
     final pureTrash = entries.every((entry) => entry.trashed);
-    if (settings.enableBin && !pureTrash) {
-      await _move(context, moveType: MoveType.toBin);
+    if (enableBin && !pureTrash) {
+      await doMove(context, moveType: MoveType.toBin, entries: entries);
       return;
     }
 
@@ -295,7 +315,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
     final todoCount = entries.length;
 
-    if (!await showConfirmationDialog(
+    if (!await showSkippableConfirmationDialog(
       context: context,
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
@@ -328,22 +348,19 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         await storageService.deleteEmptyDirectories(storageDirs);
       },
     );
-
-    _leaveSelectionMode(context);
   }
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
     await doMove(context, moveType: moveType, entries: entries);
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _rename(BuildContext context) async {
     final entries = _getTargetItems(context).toList();
 
-    final pattern = await Navigator.push<NamingPattern>(
-      context,
+    final pattern = await Navigator.maybeOf(context)?.push<NamingPattern>(
       MaterialPageRoute(
         settings: const RouteSettings(name: RenameEntrySetPage.routeName),
         builder: (context) => RenameEntrySetPage(
@@ -359,7 +376,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     })).whereNotNullValue();
     await rename(context, entriesToNewName: entriesToNewName, persist: true);
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _toggleFavourite(BuildContext context) async {
@@ -370,7 +387,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       await favourites.add(entries);
     }
 
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<void> _edit(
@@ -438,7 +455,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
       },
     );
-    _leaveSelectionMode(context);
+    _browse(context);
   }
 
   Future<Set<AvesEntry>?> _getEditableTargetItems(
@@ -468,11 +485,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           const CancelButton(),
           if (supported.isNotEmpty)
             TextButton(
-              onPressed: () => Navigator.pop(context, true),
+              onPressed: () => Navigator.maybeOf(context)?.pop(true),
               child: Text(l10n.continueButtonLabel),
             ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
     if (confirmed == null || !confirmed) return null;
 
@@ -523,8 +541,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
     if (editableEntries == null || editableEntries.isEmpty) return null;
 
-    final location = await Navigator.push(
-      context,
+    final location = await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) => LocationPickPage(
@@ -548,11 +565,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.applyButtonLabel),
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
     if (confirmed == null || !confirmed) return;
 
@@ -621,8 +639,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       filters: collection.filters,
       fixedSelection: entries.where((entry) => entry.hasGps).toList(),
     );
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(collection: mapCollection),
@@ -635,8 +652,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     final entries = _getTargetItems(context);
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
         builder: (context) {
@@ -656,8 +672,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     final entries = _getTargetItems(context);
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
@@ -672,8 +687,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   void _goToSearch(BuildContext context) {
     final collection = context.read<CollectionLens>();
 
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
@@ -701,6 +715,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         defaultName: defaultName ?? '',
         collection: collection,
       ),
+      routeSettings: const RouteSettings(name: AddShortcutDialog.routeName),
     );
     if (result == null) return;
 

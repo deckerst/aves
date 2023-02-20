@@ -233,7 +233,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         actions: {
           _ShowPreviousIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(-1, animate: false)),
           _ShowNextIntent: CallbackAction<Intent>(onInvoke: (intent) => _goToHorizontalPage(1, animate: false)),
-          _LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.pop(context)),
+          _LeaveIntent: CallbackAction<Intent>(onInvoke: (intent) => Navigator.maybeOf(context)?.pop()),
           _ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoPageNotification().dispatch(context)),
           TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
           _TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
@@ -320,7 +320,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       await _entry.catalog(background: false, force: false, persist: true);
       await _entry.locate(background: false, force: false, geocoderLocale: settings.appliedLocale);
     } else {
-      Navigator.pop(context);
+      Navigator.maybeOf(context)?.pop();
     }
 
     // needed to refresh when entry changes but the page does not (e.g. on page deletion)

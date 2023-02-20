@@ -18,7 +18,7 @@ class DebugTaskQueueOverlay extends StatelessWidget {
               child: StreamBuilder<QueueState>(
                   stream: servicePolicy.queueStream,
                   builder: (context, snapshot) {
-                    if (snapshot.hasError) return const SizedBox.shrink();
+                    if (snapshot.hasError) return const SizedBox();
                     final queuedEntries = <MapEntry<dynamic, int>>[];
                     if (snapshot.hasData) {
                       final state = snapshot.data!;

@@ -47,6 +47,7 @@ class DebugSettingsSection extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
                 info: {
+                  'catalogTimeZoneRawOffsetMillis': '${settings.catalogTimeZoneRawOffsetMillis}',
                   'tileExtent - Collection': '${settings.getTileExtent(CollectionPage.routeName)}',
                   'tileExtent - Albums': '${settings.getTileExtent(AlbumListPage.routeName)}',
                   'tileExtent - Countries': '${settings.getTileExtent(CountryListPage.routeName)}',

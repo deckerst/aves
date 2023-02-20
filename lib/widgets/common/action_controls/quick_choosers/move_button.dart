@@ -38,11 +38,12 @@ class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
 
   @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
-    final options = settings.recentDestinationAlbums;
+    final source = context.read<CollectionSource>();
+    final rawAlbums = source.rawAlbums;
+    final options = settings.recentDestinationAlbums.where(rawAlbums.contains).toList();
     final takeCount = MenuQuickChooser.maxOptionCount - options.length;
     if (takeCount > 0) {
-      final source = context.read<CollectionSource>();
-      final filters = source.rawAlbums.whereNot(options.contains).map((album) => AlbumFilter(album, null)).toSet();
+      final filters = rawAlbums.whereNot(options.contains).map((album) => AlbumFilter(album, null)).toSet();
       final allMapEntries = filters.map((filter) => FilterGridItem(filter, source.recentEntry(filter))).toList();
       allMapEntries.sort(FilterNavigationPage.compareFiltersByDate);
       options.addAll(allMapEntries.take(takeCount).map((v) => v.filter.album));

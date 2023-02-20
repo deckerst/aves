@@ -811,11 +811,6 @@ abstract class ImageProvider {
         fields: List<String>,
         callback: ImageOpCallback,
     ) {
-        if (dateMillis != null && dateMillis < 0) {
-            callback.onFailure(Exception("dateMillis=$dateMillis cannot be negative"))
-            return
-        }
-
         val success = editExif(context, path, uri, mimeType, callback) { exif ->
             when {
                 dateMillis != null -> {

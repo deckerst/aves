@@ -7,6 +7,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -64,7 +65,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
         setState(() {});
         return SynchronousFuture(false);
       },
-      child: Scaffold(
+      child: AvesScaffold(
         appBar: AppBar(
           title: Text(_getTitle(context)),
           actions: [
@@ -129,7 +130,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
                 padding: const EdgeInsets.all(8),
                 child: AvesOutlinedButton(
                   label: l10n.filePickerUseThisFolder,
-                  onPressed: () => Navigator.pop(context, currentDirectoryPath),
+                  onPressed: () => Navigator.maybeOf(context)?.pop(currentDirectoryPath),
                 ),
               ),
             ],
@@ -165,7 +166,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
               leading: Icon(icon),
               title: Text(v.getDescription(context)),
               onTap: () async {
-                Navigator.pop(context);
+                Navigator.maybeOf(context)?.pop();
                 await Future.delayed(Durations.drawerTransitionAnimation);
                 _goTo(v.path);
                 setState(() {});

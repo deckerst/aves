@@ -14,6 +14,7 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -25,6 +26,7 @@ import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
@@ -47,7 +49,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin, EntryStorageMixin {
+class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin, EntryStorageMixin, VaultAwareMixin {
   final AvesEntry mainEntry, pageEntry;
   final CollectionLens? collection;
   final EntryInfoActionDelegate _metadataActionDelegate = EntryInfoActionDelegate();
@@ -110,9 +112,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           return canWrite;
         case EntryAction.copyToClipboard:
         case EntryAction.open:
+        case EntryAction.setAs:
           return !settings.useTvLayout;
         case EntryAction.info:
-        case EntryAction.setAs:
         case EntryAction.share:
           return true;
         case EntryAction.restore:
@@ -173,6 +175,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   void onActionSelected(BuildContext context, EntryAction action) {
+    reportService.log('$action');
     final targetEntry = _getTargetEntry(context, action);
 
     switch (action) {
@@ -289,11 +292,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  void quickMove(BuildContext context, String album, {required bool copy}) {
+  Future<void> quickMove(BuildContext context, String album, {required bool copy}) async {
+    if (!await unlockAlbum(context, album)) return;
+
     final targetEntry = _getTargetEntry(context, copy ? EntryAction.copy : EntryAction.move);
     if (!copy && targetEntry.directory == album) return;
 
-    doQuickMove(
+    await doQuickMove(
       context,
       moveType: copy ? MoveType.copy : MoveType.move,
       entriesByDestination: {
@@ -345,6 +350,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       builder: (context) => AddShortcutDialog(
         defaultName: targetEntry.bestTitle ?? '',
       ),
+      routeSettings: const RouteSettings(name: AddShortcutDialog.routeName),
     );
     if (result == null) return;
 
@@ -377,13 +383,16 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _delete(BuildContext context, AvesEntry targetEntry) async {
-    if (settings.enableBin && !targetEntry.trashed) {
+    final vault = vaults.getVault(targetEntry.directory);
+    final enableBin = vault?.useBin ?? settings.enableBin;
+
+    if (enableBin && !targetEntry.trashed) {
       await _move(context, targetEntry, moveType: MoveType.toBin);
       return;
     }
 
     final l10n = context.l10n;
-    if (!await showConfirmationDialog(
+    if (!await showSkippableConfirmationDialog(
       context: context,
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(1),
@@ -407,6 +416,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final options = await showDialog<EntryExportOptions>(
       context: context,
       builder: (context) => ExportEntryDialog(entry: targetEntry),
+      routeSettings: const RouteSettings(name: ExportEntryDialog.routeName),
     );
     if (options == null) return;
 
@@ -443,14 +453,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         nameConflictStrategy: NameConflictStrategy.rename,
       ),
       itemCount: selectionCount,
-      onDone: (processed) {
+      onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final exportedOps = successOps.where((e) => !e.skipped).toSet();
         final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet();
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
         source.resumeMonitoring();
-        source.refreshUris(newUris);
+        unawaited(source.refreshUris(newUris));
 
         final l10n = context.l10n;
         final showAction = isMainMode && newUris.isNotEmpty
@@ -460,8 +470,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                   // local context may be deactivated when action is triggered after navigation
                   final context = AvesApp.navigatorKey.currentContext;
                   if (context != null) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
+                    Navigator.maybeOf(context)?.pushAndRemoveUntil(
                       MaterialPageRoute(
                         settings: const RouteSettings(name: CollectionPage.routeName),
                         builder: (context) => CollectionPage(
@@ -505,6 +514,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameEntryDialog(entry: targetEntry),
+      routeSettings: const RouteSettings(name: RenameEntryDialog.routeName),
     );
     if (newName == null || newName.isEmpty || newName == targetEntry.filenameWithoutExtension) return;
 
@@ -521,8 +531,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry targetEntry) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
@@ -540,8 +549,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   void _goToDebug(BuildContext context, AvesEntry targetEntry) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: targetEntry),

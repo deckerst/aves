@@ -8,6 +8,8 @@ abstract class WindowService {
 
   Future<void> keepScreenOn(bool on);
 
+  Future<void> secureScreen(bool on);
+
   Future<bool> isRotationLocked();
 
   Future<void> requestOrientation([Orientation? orientation]);
@@ -35,6 +37,17 @@ class PlatformWindowService implements WindowService {
   Future<void> keepScreenOn(bool on) async {
     try {
       await _platform.invokeMethod('keepScreenOn', <String, dynamic>{
+        'on': on,
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+  }
+
+  @override
+  Future<void> secureScreen(bool on) async {
+    try {
+      await _platform.invokeMethod('secureScreen', <String, dynamic>{
         'on': on,
       });
     } on PlatformException catch (e, stack) {

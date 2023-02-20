@@ -110,23 +110,23 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     final itemVisibility = max(0, tileRect.intersect(viewportRect).height) / tileRect.height;
     if (!event.predicate(itemVisibility)) return;
 
+    double scrollOffset = tileRect.top + (tileRect.height - scrollableSize.height) * ((event.alignment.y + 1) / 2);
     // most of the time the app bar will be scrolled away after scaling,
     // so we compensate for it to center the focal point thumbnail
-    final appBarHeight = appBarHeightNotifier.value;
-    final scrollOffset = appBarHeight + tileRect.top + (tileRect.height - scrollableSize.height) * ((event.alignment.y + 1) / 2);
+    scrollOffset += appBarHeightNotifier.value;
+    scrollOffset = scrollOffset.clamp(0, scrollController.position.maxScrollExtent);
 
-    if (event.animate) {
-      if (scrollOffset > 0) {
+    if (scrollOffset > 0) {
+      if (event.animate) {
         await scrollController.animateTo(
           scrollOffset,
           duration: Duration(milliseconds: (scrollOffset / 2).round().clamp(Durations.highlightScrollAnimationMinMillis, Durations.highlightScrollAnimationMaxMillis)),
           curve: Curves.easeInOutCubic,
         );
+      } else {
+        scrollController.jumpTo(scrollOffset);
+        await Future.delayed(Durations.highlightJumpDelay);
       }
-    } else {
-      final maxScrollExtent = scrollController.position.maxScrollExtent;
-      scrollController.jumpTo(scrollOffset.clamp(.0, maxScrollExtent));
-      await Future.delayed(Durations.highlightJumpDelay);
     }
 
     final highlightItem = event.highlightItem;

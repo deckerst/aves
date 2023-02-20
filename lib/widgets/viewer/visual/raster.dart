@@ -164,7 +164,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     return ValueListenableBuilder<bool>(
       valueListenable: _fullImageLoaded,
       builder: (context, fullImageLoaded, child) {
-        if (fullImageLoaded) return const SizedBox.shrink();
+        if (fullImageLoaded) return const SizedBox();
 
         return Center(
           child: AspectRatio(
@@ -196,7 +196,7 @@ class _RasterImageViewState extends State<RasterImageView> {
       child = ValueListenableBuilder<bool>(
         valueListenable: _fullImageLoaded,
         builder: (context, fullImageLoaded, child) {
-          if (!fullImageLoaded) return const SizedBox.shrink();
+          if (!fullImageLoaded) return const SizedBox();
 
           return CustomPaint(
             painter: CheckeredPainter(

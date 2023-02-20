@@ -1,7 +1,12 @@
 import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/vaults/vaults.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -10,8 +15,26 @@ import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ChipActionDelegate {
+class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
+  bool isVisible(
+    ChipAction action, {
+    required CollectionFilter filter,
+  }) {
+    switch (action) {
+      case ChipAction.goToAlbumPage:
+      case ChipAction.goToCountryPage:
+      case ChipAction.goToTagPage:
+      case ChipAction.reverse:
+        return true;
+      case ChipAction.hide:
+        return !(filter is AlbumFilter && vaults.isVault(filter.album));
+      case ChipAction.lockVault:
+        return (filter is AlbumFilter && vaults.isVault(filter.album) && !vaults.isLocked(filter.album));
+    }
+  }
+
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
+    reportService.log('$action');
     switch (action) {
       case ChipAction.goToAlbumPage:
         _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
@@ -28,8 +51,10 @@ class ChipActionDelegate {
       case ChipAction.hide:
         _hide(context, filter);
         break;
-      default:
-        break;
+      case ChipAction.lockVault:
+        if (filter is AlbumFilter) {
+          lockFilters({filter});
+        }
     }
   }
 
@@ -40,8 +65,7 @@ class ChipActionDelegate {
     WidgetBuilder pageBuilder,
   ) {
     context.read<HighlightInfo>().set(filter);
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: RouteSettings(name: routeName),
         builder: pageBuilder,
@@ -58,11 +82,12 @@ class ChipActionDelegate {
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.hideButtonLabel),
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
 

@@ -47,16 +47,15 @@ class PageNavTile extends StatelessWidget {
               )
             : null,
         onTap: () {
-          Navigator.pop(context);
+          Navigator.maybeOf(context)?.pop();
           final route = routeBuilder(context, routeName);
           if (topLevel) {
-            Navigator.pushAndRemoveUntil(
-              context,
+            Navigator.maybeOf(context)?.pushAndRemoveUntil(
               route,
               (route) => false,
             );
           } else {
-            Navigator.push(context, route);
+            Navigator.maybeOf(context)?.push(route);
           }
         },
         selected: context.currentRouteName == routeName,

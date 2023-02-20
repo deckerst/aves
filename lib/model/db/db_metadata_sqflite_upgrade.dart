@@ -10,6 +10,7 @@ class MetadataDbUpgrader {
   static const addressTable = SqfliteMetadataDb.addressTable;
   static const favouriteTable = SqfliteMetadataDb.favouriteTable;
   static const coverTable = SqfliteMetadataDb.coverTable;
+  static const vaultTable = SqfliteMetadataDb.vaultTable;
   static const trashTable = SqfliteMetadataDb.trashTable;
   static const videoPlaybackTable = SqfliteMetadataDb.videoPlaybackTable;
 
@@ -44,6 +45,9 @@ class MetadataDbUpgrader {
           break;
         case 9:
           await _upgradeFrom9(db);
+          break;
+        case 10:
+          await _upgradeFrom10(db);
           break;
       }
       oldVersion++;
@@ -369,5 +373,18 @@ class MetadataDbUpgrader {
       batch.delete(videoPlaybackTable, where: where, whereArgs: whereArgs);
     });
     await batch.commit(noResult: true);
+  }
+
+  static Future<void> _upgradeFrom10(Database db) async {
+    debugPrint('upgrading DB from v10');
+
+    await db.execute('ALTER TABLE $entryTable ADD COLUMN origin INTEGER DEFAULT 0;');
+
+    await db.execute('CREATE TABLE $vaultTable('
+        'name TEXT PRIMARY KEY'
+        ', autoLock INTEGER'
+        ', useBin INTEGER'
+        ', lockType TEXT'
+        ')');
   }
 }
