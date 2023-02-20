@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
   final FilterGridItem<T> gridItem;
-  final bool pinned;
+  final bool pinned, locked;
 
   T get filter => gridItem.filter;
 
@@ -26,6 +26,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
     super.key,
     required this.gridItem,
     required this.pinned,
+    required this.locked,
   });
 
   @override
@@ -72,9 +73,11 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
             // otherwise the leading icon will be low-res scaled up/down
             textScaleFactor: 1,
           ),
-          const SizedBox(height: FilterListDetailsTheme.titleDetailPadding),
-          if (detailsTheme.showDate) _buildDateRow(context, detailsTheme, hasTitleLeading),
-          if (detailsTheme.showCount) _buildCountRow(context, detailsTheme, hasTitleLeading),
+          if (!locked) ...[
+            const SizedBox(height: FilterListDetailsTheme.titleDetailPadding),
+            if (detailsTheme.showDate) _buildDateRow(context, detailsTheme, hasTitleLeading),
+            if (detailsTheme.showCount) _buildCountRow(context, detailsTheme, hasTitleLeading),
+          ],
         ],
       ),
     );

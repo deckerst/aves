@@ -1,13 +1,17 @@
 import 'dart:ui';
 
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AvesDialog extends StatelessWidget {
+  static const confirmationRouteName = '/dialog/confirmation';
+  static const warningRouteName = '/dialog/warning';
+
   final String? title;
   final ScrollController scrollController;
   final List<Widget>? scrollableContent;
-  final bool hasScrollBar;
   final double horizontalContentPadding;
   final Widget? content;
   final List<Widget> actions;
@@ -24,10 +28,9 @@ class AvesDialog extends StatelessWidget {
     this.title,
     ScrollController? scrollController,
     this.scrollableContent,
-    this.hasScrollBar = true,
     this.horizontalContentPadding = defaultHorizontalContentPadding,
     this.content,
-    required this.actions,
+    this.actions = const [],
   })  : assert((scrollableContent != null) ^ (content != null)),
         scrollController = scrollController ?? ScrollController();
 
@@ -69,7 +72,7 @@ class AvesDialog extends StatelessWidget {
         children: scrollableContent!,
       );
 
-      if (hasScrollBar) {
+      if (!settings.useTvLayout) {
         child = Theme(
           data: Theme.of(context).copyWith(
             scrollbarTheme: ScrollbarThemeData(
@@ -101,7 +104,7 @@ class AvesDialog extends StatelessWidget {
         // workaround because the dialog tries
         // to size itself to the content intrinsic size,
         // but the `ListView` viewport does not have one
-        width: 1,
+        width: context.select<MediaQueryData, double>((mq) => mq.size.width / 2),
         child: DecoratedBox(
           decoration: contentDecoration(context),
           child: child,
@@ -158,6 +161,7 @@ Future<void> showNoMatchingAppDialog(BuildContext context) => showDialog(
         content: Text(context.l10n.noMatchingAppDialogMessage),
         actions: const [OkButton()],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
 
 class CancelButton extends StatelessWidget {
@@ -166,8 +170,9 @@ class CancelButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.pop(context),
-      child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+      onPressed: () => Navigator.maybeOf(context)?.pop(),
+      // MD2 button labels were upper case but they are lower case in MD3
+      child: Text(MaterialLocalizations.of(context).cancelButtonLabel.toUpperCase()),
     );
   }
 }
@@ -178,8 +183,9 @@ class OkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.pop(context),
-      child: Text(MaterialLocalizations.of(context).okButtonLabel),
+      onPressed: () => Navigator.maybeOf(context)?.pop(),
+      // MD2 button labels were upper case but they are lower case in MD3
+      child: Text(MaterialLocalizations.of(context).okButtonLabel.toUpperCase()),
     );
   }
 }

@@ -283,7 +283,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
                     valueNotifier: valueNotifier,
                   ),
                 );
-                Overlay.of(context)!.insert(_actionFeedbackOverlayEntry!);
+                Overlay.of(context).insert(_actionFeedbackOverlayEntry!);
               };
               onScaleUpdate = (details) {
                 move += details.focalPointDelta;
@@ -336,10 +336,13 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
               ],
             );
             if (useVerticalDragGesture) {
-              videoChild = MagnifierGestureDetectorScope.of(context)!.copyWith(
-                acceptPointerEvent: MagnifierGestureRecognizer.isYPan,
-                child: videoChild,
-              );
+              final scope = MagnifierGestureDetectorScope.maybeOf(context);
+              if (scope != null) {
+                videoChild = scope.copyWith(
+                  acceptPointerEvent: MagnifierGestureRecognizer.isYPan,
+                  child: videoChild,
+                );
+              }
             }
             return Stack(
               fit: StackFit.expand,

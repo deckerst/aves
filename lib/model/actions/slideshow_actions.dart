@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 enum SlideshowAction {
   resume,
   showInCollection,
+  settings,
 }
 
 extension ExtraSlideshowAction on SlideshowAction {
@@ -14,6 +15,8 @@ extension ExtraSlideshowAction on SlideshowAction {
         return context.l10n.slideshowActionResume;
       case SlideshowAction.showInCollection:
         return context.l10n.slideshowActionShowInCollection;
+      case SlideshowAction.settings:
+        return context.l10n.viewerActionSettings;
     }
   }
 
@@ -25,6 +28,8 @@ extension ExtraSlideshowAction on SlideshowAction {
         return AIcons.play;
       case SlideshowAction.showInCollection:
         return AIcons.allCollection;
+      case SlideshowAction.settings:
+        return AIcons.settings;
     }
   }
 }

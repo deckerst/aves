@@ -67,7 +67,7 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeRational
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.ContextUtils.queryContentResolverProp
+import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
@@ -104,8 +104,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "getPanoramaInfo" -> ioScope.launch { safe(call, result, ::getPanoramaInfo) }
             "getIptc" -> ioScope.launch { safe(call, result, ::getIptc) }
             "getXmp" -> ioScope.launch { safe(call, result, ::getXmp) }
-            "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentResolverProp) }
-            "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentResolverProp) }
+            "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentProp) }
+            "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentPropValue) }
             "getDate" -> ioScope.launch { safe(call, result, ::getDate) }
             "getDescription" -> ioScope.launch { safe(call, result, ::getDescription) }
             else -> result.notImplemented()
@@ -1047,10 +1047,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.success(xmpStrings)
     }
 
-    private fun hasContentResolverProp(call: MethodCall, result: MethodChannel.Result) {
+    private fun hasContentProp(call: MethodCall, result: MethodChannel.Result) {
         val prop = call.argument<String>("prop")
         if (prop == null) {
-            result.error("hasContentResolverProp-args", "missing arguments", null)
+            result.error("hasContentProp-args", "missing arguments", null)
             return
         }
 
@@ -1058,27 +1058,27 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             when (prop) {
                 "owner_package_name" -> Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 else -> {
-                    result.error("hasContentResolverProp-unknown", "unknown property=$prop", null)
+                    result.error("hasContentProp-unknown", "unknown property=$prop", null)
                     return
                 }
             }
         )
     }
 
-    private fun getContentResolverProp(call: MethodCall, result: MethodChannel.Result) {
+    private fun getContentPropValue(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val prop = call.argument<String>("prop")
         if (mimeType == null || uri == null || prop == null) {
-            result.error("getContentResolverProp-args", "missing arguments", null)
+            result.error("getContentPropValue-args", "missing arguments", null)
             return
         }
 
         try {
-            val value = context.queryContentResolverProp(uri, mimeType, prop)
+            val value = context.queryContentPropValue(uri, mimeType, prop)
             result.success(value?.toString())
         } catch (e: Exception) {
-            result.error("getContentResolverProp-query", "failed to query prop for uri=$uri", e.message)
+            result.error("getContentPropValue-query", "failed to query prop for uri=$uri", e.message)
         }
     }
 

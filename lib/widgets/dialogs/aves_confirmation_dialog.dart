@@ -5,6 +5,86 @@ import 'package:flutter/material.dart';
 
 import 'aves_dialog.dart';
 
+Future<bool> showConfirmationDialog({
+  required BuildContext context,
+  required String message,
+  required String confirmationButtonLabel,
+}) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => AvesDialog(
+      content: Text(message),
+      actions: [
+        const CancelButton(),
+        TextButton(
+          onPressed: () => Navigator.maybeOf(context)?.pop(true),
+          child: Text(confirmationButtonLabel),
+        ),
+      ],
+    ),
+    routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
+  );
+  return confirmed ?? false;
+}
+
+Future<bool> showSkippableConfirmationDialog({
+  required BuildContext context,
+  required ConfirmationDialog type,
+  String? message,
+  ConfirmationDialogDelegate? delegate,
+  required String confirmationButtonLabel,
+}) async {
+  if (!_shouldConfirm(type)) return true;
+
+  assert((message != null) ^ (delegate != null));
+  final effectiveDelegate = delegate ?? MessageConfirmationDialogDelegate(message!);
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => _SkippableConfirmationDialog(
+      type: type,
+      delegate: effectiveDelegate,
+      confirmationButtonLabel: confirmationButtonLabel,
+    ),
+    routeSettings: const RouteSettings(name: _SkippableConfirmationDialog.routeName),
+  );
+  if (confirmed == null) return false;
+
+  if (confirmed) {
+    effectiveDelegate.apply();
+  }
+  return confirmed;
+}
+
+bool _shouldConfirm(ConfirmationDialog type) {
+  switch (type) {
+    case ConfirmationDialog.createVault:
+      return settings.confirmCreateVault;
+    case ConfirmationDialog.deleteForever:
+      return settings.confirmDeleteForever;
+    case ConfirmationDialog.moveToBin:
+      return settings.confirmMoveToBin;
+    case ConfirmationDialog.moveUndatedItems:
+      return settings.confirmMoveUndatedItems;
+  }
+}
+
+void _skipConfirmation(ConfirmationDialog type) {
+  switch (type) {
+    case ConfirmationDialog.createVault:
+      settings.confirmCreateVault = false;
+      break;
+    case ConfirmationDialog.deleteForever:
+      settings.confirmDeleteForever = false;
+      break;
+    case ConfirmationDialog.moveToBin:
+      settings.confirmMoveToBin = false;
+      break;
+    case ConfirmationDialog.moveUndatedItems:
+      settings.confirmMoveUndatedItems = false;
+      break;
+  }
+}
+
 abstract class ConfirmationDialogDelegate {
   List<Widget> build(BuildContext context);
 
@@ -25,74 +105,24 @@ class MessageConfirmationDialogDelegate extends ConfirmationDialogDelegate {
       ];
 }
 
-Future<bool> showConfirmationDialog({
-  required BuildContext context,
-  required ConfirmationDialog type,
-  String? message,
-  ConfirmationDialogDelegate? delegate,
-  required String confirmationButtonLabel,
-}) async {
-  if (!_shouldConfirm(type)) return true;
+class _SkippableConfirmationDialog extends StatefulWidget {
+  static const routeName = '/dialog/skippable_confirmation';
 
-  assert((message != null) ^ (delegate != null));
-  final effectiveDelegate = delegate ?? MessageConfirmationDialogDelegate(message!);
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (context) => _AvesConfirmationDialog(
-      type: type,
-      delegate: effectiveDelegate,
-      confirmationButtonLabel: confirmationButtonLabel,
-    ),
-  );
-  if (confirmed == null) return false;
-
-  if (confirmed) {
-    effectiveDelegate.apply();
-  }
-  return confirmed;
-}
-
-bool _shouldConfirm(ConfirmationDialog type) {
-  switch (type) {
-    case ConfirmationDialog.deleteForever:
-      return settings.confirmDeleteForever;
-    case ConfirmationDialog.moveToBin:
-      return settings.confirmMoveToBin;
-    case ConfirmationDialog.moveUndatedItems:
-      return settings.confirmMoveUndatedItems;
-  }
-}
-
-void _skipConfirmation(ConfirmationDialog type) {
-  switch (type) {
-    case ConfirmationDialog.deleteForever:
-      settings.confirmDeleteForever = false;
-      break;
-    case ConfirmationDialog.moveToBin:
-      settings.confirmMoveToBin = false;
-      break;
-    case ConfirmationDialog.moveUndatedItems:
-      settings.confirmMoveUndatedItems = false;
-      break;
-  }
-}
-
-class _AvesConfirmationDialog extends StatefulWidget {
   final ConfirmationDialog type;
   final ConfirmationDialogDelegate delegate;
   final String confirmationButtonLabel;
 
-  const _AvesConfirmationDialog({
+  const _SkippableConfirmationDialog({
     required this.type,
     required this.delegate,
     required this.confirmationButtonLabel,
   });
 
   @override
-  State<_AvesConfirmationDialog> createState() => _AvesConfirmationDialogState();
+  State<_SkippableConfirmationDialog> createState() => _SkippableConfirmationDialogState();
 }
 
-class _AvesConfirmationDialogState extends State<_AvesConfirmationDialog> {
+class _SkippableConfirmationDialogState extends State<_SkippableConfirmationDialog> {
   final ValueNotifier<bool> _skip = ValueNotifier(false);
 
   @override
@@ -116,7 +146,7 @@ class _AvesConfirmationDialogState extends State<_AvesConfirmationDialog> {
             if (_skip.value) {
               _skipConfirmation(widget.type);
             }
-            Navigator.pop(context, true);
+            Navigator.maybeOf(context)?.pop(true);
           },
           child: Text(widget.confirmationButtonLabel),
         ),

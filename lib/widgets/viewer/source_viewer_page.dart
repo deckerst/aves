@@ -1,4 +1,5 @@
 import 'package:aves/widgets/common/aves_highlight.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/darcula.dart';
@@ -30,7 +31,7 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(context.l10n.sourceViewerPageTitle),
       ),
@@ -39,7 +40,7 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
           future: _loader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (!snapshot.hasData) return const SizedBox.shrink();
+            if (!snapshot.hasData) return const SizedBox();
 
             final data = snapshot.data!;
             final source = data.length < maxCodeSize ? data : '${data.substring(0, maxCodeSize)}\n\n*** TRUNCATED ***';

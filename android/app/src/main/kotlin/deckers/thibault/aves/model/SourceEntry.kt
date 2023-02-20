@@ -33,6 +33,7 @@ import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 
 class SourceEntry {
+    private val origin: Int
     val uri: Uri // content or file URI
     var path: String? = null // best effort to get local path
     private val sourceMimeType: String
@@ -48,12 +49,14 @@ class SourceEntry {
 
     private var foundExif: Boolean = false
 
-    constructor(uri: Uri, sourceMimeType: String) {
+    constructor(origin: Int, uri: Uri, sourceMimeType: String) {
+        this.origin = origin
         this.uri = uri
         this.sourceMimeType = sourceMimeType
     }
 
     constructor(map: FieldMap) {
+        origin = map["origin"] as Int
         uri = Uri.parse(map["uri"] as String)
         path = map["path"] as String?
         sourceMimeType = map["sourceMimeType"] as String
@@ -77,6 +80,7 @@ class SourceEntry {
 
     fun toMap(): FieldMap {
         return hashMapOf(
+            "origin" to origin,
             "uri" to uri.toString(),
             "path" to path,
             "sourceMimeType" to sourceMimeType,
@@ -249,13 +253,15 @@ class SourceEntry {
 
     private fun fillByTiffDecode(context: Context) {
         try {
-            val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd() ?: return
-            val options = TiffBitmapFactory.Options().apply {
-                inJustDecodeBounds = true
+            context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
+                val fd = pfd.detachFd()
+                val options = TiffBitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                TiffBitmapFactory.decodeFileDescriptor(fd, options)
+                width = options.outWidth
+                height = options.outHeight
             }
-            TiffBitmapFactory.decodeFileDescriptor(fd, options)
-            width = options.outWidth
-            height = options.outHeight
         } catch (e: Exception) {
             // ignore
         }
@@ -267,5 +273,11 @@ class SourceEntry {
             is Int -> o.toLong()
             else -> o as? Long
         }
+
+        // should match `EntryOrigins` on the Dart side
+        const val ORIGIN_MEDIA_STORE_CONTENT = 0
+        const val ORIGIN_UNKNOWN_CONTENT = 1
+        const val ORIGIN_FILE = 2
+        const val ORIGIN_VAULT = 3
     }
 }

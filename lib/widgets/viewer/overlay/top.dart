@@ -16,6 +16,7 @@ class ViewerTopOverlay extends StatelessWidget {
   final AvesEntry mainEntry;
   final Animation<double> scale;
   final bool hasCollection;
+  final ValueNotifier<bool> expandedNotifier;
   final Size availableSize;
   final EdgeInsets? viewInsets, viewPadding;
 
@@ -26,6 +27,7 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.mainEntry,
     required this.scale,
     required this.hasCollection,
+    required this.expandedNotifier,
     required this.availableSize,
     required this.viewInsets,
     required this.viewPadding,
@@ -51,23 +53,27 @@ class ViewerTopOverlay extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (showInfo)
-              BlurredRect(
-                enabled: blurred,
-                child: Container(
-                  color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
-                  child: SafeArea(
-                    bottom: false,
-                    minimum: EdgeInsets.only(
-                      left: viewInsetsPadding.left,
-                      top: viewInsetsPadding.top,
-                      right: viewInsetsPadding.right,
-                    ),
-                    child: ViewerDetailOverlay(
-                      index: index,
-                      entries: entries,
-                      hasCollection: hasCollection,
-                      multiPageController: multiPageController,
-                      availableSize: availableSize,
+              GestureDetector(
+                onTap: () => expandedNotifier.value = !expandedNotifier.value,
+                child: BlurredRect(
+                  enabled: blurred,
+                  child: Container(
+                    color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
+                    child: SafeArea(
+                      bottom: false,
+                      minimum: EdgeInsets.only(
+                        left: viewInsetsPadding.left,
+                        top: viewInsetsPadding.top,
+                        right: viewInsetsPadding.right,
+                      ),
+                      child: ViewerDetailOverlay(
+                        index: index,
+                        entries: entries,
+                        hasCollection: hasCollection,
+                        multiPageController: multiPageController,
+                        expandedNotifier: expandedNotifier,
+                        availableSize: availableSize,
+                      ),
                     ),
                   ),
                 ),

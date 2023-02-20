@@ -12,6 +12,7 @@ enum ChipSetAction {
   search,
   toggleTitleSearch,
   createAlbum,
+  createVault,
   // browsing or selecting
   map,
   slideshow,
@@ -21,9 +22,11 @@ enum ChipSetAction {
   hide,
   pin,
   unpin,
+  lockVault,
   // selecting (single filter)
   rename,
   setCover,
+  configureVault,
 }
 
 class ChipSetActions {
@@ -34,15 +37,20 @@ class ChipSetActions {
     ChipSetAction.selectNone,
   ];
 
+  // `null` items are converted to dividers
   static const browsing = [
     ChipSetAction.search,
     ChipSetAction.toggleTitleSearch,
-    ChipSetAction.createAlbum,
+    null,
     ChipSetAction.map,
     ChipSetAction.slideshow,
     ChipSetAction.stats,
+    null,
+    ChipSetAction.createAlbum,
+    ChipSetAction.createVault,
   ];
 
+  // `null` items are converted to dividers
   static const selection = [
     ChipSetAction.setCover,
     ChipSetAction.pin,
@@ -50,9 +58,13 @@ class ChipSetActions {
     ChipSetAction.delete,
     ChipSetAction.rename,
     ChipSetAction.hide,
+    null,
     ChipSetAction.map,
     ChipSetAction.slideshow,
     ChipSetAction.stats,
+    null,
+    ChipSetAction.configureVault,
+    ChipSetAction.lockVault,
   ];
 }
 
@@ -76,6 +88,8 @@ extension ExtraChipSetAction on ChipSetAction {
         return context.l10n.collectionActionShowTitleSearch;
       case ChipSetAction.createAlbum:
         return context.l10n.chipActionCreateAlbum;
+      case ChipSetAction.createVault:
+        return context.l10n.chipActionCreateVault;
       // browsing or selecting
       case ChipSetAction.map:
         return context.l10n.menuActionMap;
@@ -92,11 +106,15 @@ extension ExtraChipSetAction on ChipSetAction {
         return context.l10n.chipActionPin;
       case ChipSetAction.unpin:
         return context.l10n.chipActionUnpin;
+      case ChipSetAction.lockVault:
+        return context.l10n.chipActionLock;
       // selecting (single filter)
       case ChipSetAction.rename:
         return context.l10n.chipActionRename;
       case ChipSetAction.setCover:
         return context.l10n.chipActionSetCover;
+      case ChipSetAction.configureVault:
+        return context.l10n.chipActionConfigureVault;
     }
   }
 
@@ -121,6 +139,8 @@ extension ExtraChipSetAction on ChipSetAction {
         return AIcons.filter;
       case ChipSetAction.createAlbum:
         return AIcons.add;
+      case ChipSetAction.createVault:
+        return AIcons.vaultAdd;
       // browsing or selecting
       case ChipSetAction.map:
         return AIcons.map;
@@ -137,11 +157,15 @@ extension ExtraChipSetAction on ChipSetAction {
         return AIcons.pin;
       case ChipSetAction.unpin:
         return AIcons.unpin;
+      case ChipSetAction.lockVault:
+        return AIcons.vaultLock;
       // selecting (single filter)
       case ChipSetAction.rename:
         return AIcons.name;
       case ChipSetAction.setCover:
         return AIcons.setCover;
+      case ChipSetAction.configureVault:
+        return AIcons.vaultConfigure;
     }
   }
 }

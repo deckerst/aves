@@ -119,7 +119,7 @@ object PermissionManager {
                             dirSet.add("")
                         }
                     } else {
-                        // request volume root until Android 10
+                        // request volume root until Android 10 (API 29)
                         dirSet.add("")
                     }
                     dirsPerVolume[volumePath] = dirSet

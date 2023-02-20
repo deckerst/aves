@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -38,6 +39,8 @@ class Covers {
   Set<CoverRow> get all => Set.unmodifiable(_rows);
 
   Tuple3<int?, String?, Color?>? of(CollectionFilter filter) {
+    if (filter is AlbumFilter && vaults.isLocked(filter.album)) return null;
+
     final row = _rows.firstWhereOrNull((row) => row.filter == filter);
     return row != null ? Tuple3(row.entryId, row.packageName, row.color) : null;
   }

@@ -8,6 +8,7 @@ class SupportedLocales {
     'el': 'Ελληνικά',
     'en': 'English',
     'es': 'Español (México)',
+    'eu': 'Euskara',
     'fr': 'Français',
     'id': 'Bahasa Indonesia',
     'it': 'Italiano',

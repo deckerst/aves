@@ -1,5 +1,6 @@
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(context.l10n.settingsStorageAccessPageTitle),
       ),
@@ -39,7 +40,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
               return Text(snapshot.error.toString());
             }
             if (snapshot.connectionState != ConnectionState.done && _lastPaths == null) {
-              return const SizedBox.shrink();
+              return const SizedBox();
             }
             _lastPaths = snapshot.data!..sort();
             if (_lastPaths!.isEmpty) {

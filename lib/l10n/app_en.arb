@@ -78,11 +78,14 @@
   "chipActionFilterOut": "Filter out",
   "chipActionFilterIn": "Filter in",
   "chipActionHide": "Hide",
+  "chipActionLock": "Lock",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",
   "chipActionRename": "Rename",
   "chipActionSetCover": "Set cover",
   "chipActionCreateAlbum": "Create album",
+  "chipActionCreateVault": "Create vault",
+  "chipActionConfigureVault": "Configure vault",
 
   "entryActionCopyToClipboard": "Copy to clipboard",
   "entryActionDelete": "Delete",
@@ -119,7 +122,8 @@
   "videoActionSkip10": "Seek forward 10 seconds",
   "videoActionSelectStreams": "Select tracks",
   "videoActionSetSpeed": "Playback speed",
-  "videoActionSettings": "Settings",
+
+  "viewerActionSettings": "Settings",
 
   "slideshowActionResume": "Resume",
   "slideshowActionShowInCollection": "Show in Collection",
@@ -157,6 +161,16 @@
   "filterMimeImageLabel": "Image",
   "filterMimeVideoLabel": "Video",
 
+  "accessibilityAnimationsRemove": "Prevent screen effects",
+  "accessibilityAnimationsKeep": "Keep screen effects",
+
+  "albumTierNew": "New",
+  "albumTierPinned": "Pinned",
+  "albumTierSpecial": "Common",
+  "albumTierApps": "Apps",
+  "albumTierVaults": "Vaults",
+  "albumTierRegular": "Others",
+
   "coordinateFormatDms": "DMS",
   "coordinateFormatDecimal": "Decimal degrees",
   "coordinateDms": "{coordinate} {direction}",
@@ -177,17 +191,13 @@
   "coordinateDmsEast": "E",
   "coordinateDmsWest": "W",
 
-  "unitSystemMetric": "Metric",
-  "unitSystemImperial": "Imperial",
+  "displayRefreshRatePreferHighest": "Highest rate",
+  "displayRefreshRatePreferLowest": "Lowest rate",
 
-  "videoLoopModeNever": "Never",
-  "videoLoopModeShortOnly": "Short videos only",
-  "videoLoopModeAlways": "Always",
-
-  "videoControlsPlay": "Play",
-  "videoControlsPlaySeek": "Play & seek backward/forward",
-  "videoControlsPlayOutside": "Open with other player",
-  "videoControlsNone": "None",
+  "keepScreenOnNever": "Never",
+  "keepScreenOnVideoPlayback": "During video playback",
+  "keepScreenOnViewerOnly": "Viewer page only",
+  "keepScreenOnAlways": "Always",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
@@ -202,27 +212,31 @@
   "nameConflictStrategyReplace": "Replace",
   "nameConflictStrategySkip": "Skip",
 
-  "keepScreenOnNever": "Never",
-  "keepScreenOnVideoPlayback": "During video playback",
-  "keepScreenOnViewerOnly": "Viewer page only",
-  "keepScreenOnAlways": "Always",
-
-  "accessibilityAnimationsRemove": "Prevent screen effects",
-  "accessibilityAnimationsKeep": "Keep screen effects",
-
-  "displayRefreshRatePreferHighest": "Highest rate",
-  "displayRefreshRatePreferLowest": "Lowest rate",
-
   "subtitlePositionTop": "Top",
   "subtitlePositionBottom": "Bottom",
-
-  "videoPlaybackSkip": "Skip",
-  "videoPlaybackMuted": "Play muted",
-  "videoPlaybackWithSound": "Play with sound",
 
   "themeBrightnessLight": "Light",
   "themeBrightnessDark": "Dark",
   "themeBrightnessBlack": "Black",
+
+  "unitSystemMetric": "Metric",
+  "unitSystemImperial": "Imperial",
+
+  "vaultLockTypePin": "Pin",
+  "vaultLockTypePassword": "Password",
+
+  "videoControlsPlay": "Play",
+  "videoControlsPlaySeek": "Play & seek backward/forward",
+  "videoControlsPlayOutside": "Open with other player",
+  "videoControlsNone": "None",
+
+  "videoLoopModeNever": "Never",
+  "videoLoopModeShortOnly": "Short videos only",
+  "videoLoopModeAlways": "Always",
+
+  "videoPlaybackSkip": "Skip",
+  "videoPlaybackMuted": "Play muted",
+  "videoPlaybackWithSound": "Play with sound",
 
   "viewerTransitionSlide": "Slide",
   "viewerTransitionParallax": "Parallax",
@@ -240,12 +254,6 @@
   "widgetOpenPageHome": "Open home",
   "widgetOpenPageCollection": "Open collection",
   "widgetOpenPageViewer": "Open viewer",
-
-  "albumTierNew": "New",
-  "albumTierPinned": "Pinned",
-  "albumTierSpecial": "Common",
-  "albumTierApps": "Apps",
-  "albumTierRegular": "Others",
 
   "storageVolumeDescriptionFallbackPrimary": "Internal storage",
   "storageVolumeDescriptionFallbackNonPrimary": "SD card",
@@ -365,6 +373,23 @@
   "newAlbumDialogNameLabel": "Album name",
   "newAlbumDialogNameLabelAlreadyExistsHelper": "Directory already exists",
   "newAlbumDialogStorageLabel": "Storage:",
+
+  "newVaultWarningDialogMessage": "Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.",
+  "newVaultDialogTitle": "New Vault",
+  "configureVaultDialogTitle": "Configure Vault",
+  "vaultDialogLockModeWhenScreenOff": "Lock when screen turns off",
+  "vaultDialogLockTypeLabel": "Lock type",
+
+  "pinDialogEnter": "Enter pin",
+  "pinDialogConfirm": "Confirm pin",
+
+  "passwordDialogEnter": "Enter password",
+  "passwordDialogConfirm": "Confirm password",
+
+  "authenticateToConfigureVault": "Authenticate to configure vault",
+  "authenticateToUnlockVault": "Authenticate to unlock vault",
+
+  "vaultBinUsageDialogMessage": "Some vaults are using the recycle bin.",
 
   "renameAlbumDialogLabel": "New name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
@@ -634,7 +659,6 @@
 
   "albumPageTitle": "Albums",
   "albumEmpty": "No albums",
-  "createAlbumTooltip": "Create album",
   "createAlbumButtonLabel": "CREATE",
   "newFilterBanner": "new",
 
@@ -687,6 +711,7 @@
   "settingsConfirmationBeforeMoveToBinItems": "Ask before moving items to the recycle bin",
   "settingsConfirmationBeforeMoveUndatedItems": "Ask before moving undated items",
   "settingsConfirmationAfterMoveToBinItems": "Show message after moving items to the recycle bin",
+  "settingsConfirmationVaultDataLoss": "Show vault data loss warning",
 
   "settingsNavigationDrawerTile": "Navigation menu",
   "settingsNavigationDrawerEditorPageTitle": "Navigation Menu",
@@ -790,6 +815,7 @@
   "settingsSaveSearchHistory": "Save search history",
   "settingsEnableBin": "Use recycle bin",
   "settingsEnableBinSubtitle": "Keep deleted items for 30 days",
+  "settingsDisablingBinWarningDialogMessage": "Items in the recycle bin will be deleted forever.",
   "settingsAllowMediaManagement": "Allow media management",
 
   "settingsHiddenItemsTile": "Hidden items",

@@ -87,7 +87,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
   }
 
   void _showChooser(LongPressStartDetails details) {
-    final overlay = Overlay.of(context)!;
+    final overlay = Overlay.of(context);
     final triggerBox = context.findRenderObject() as RenderBox;
     final overlayBox = overlay.context.findRenderObject() as RenderBox;
     final triggerRect = RelativeRect.fromRect(

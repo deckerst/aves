@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class HomeWidgetSettingsActivity : MainActivity() {
@@ -28,8 +29,12 @@ class HomeWidgetSettingsActivity : MainActivity() {
             finish()
             return
         }
+    }
 
-        val messenger = flutterEngine!!.dartExecutor
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        val messenger = flutterEngine.dartExecutor
         MethodChannel(messenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "configure" -> {
@@ -42,9 +47,9 @@ class HomeWidgetSettingsActivity : MainActivity() {
     }
 
     private fun saveWidget() {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetManager = AppWidgetManager.getInstance(this)
         val widgetInfo = appWidgetManager.getAppWidgetOptions(appWidgetId)
-        HomeWidgetProvider().onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, widgetInfo)
+        HomeWidgetProvider().onAppWidgetOptionsChanged(this, appWidgetManager, appWidgetId, widgetInfo)
 
         val intent = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         setResult(RESULT_OK, intent)

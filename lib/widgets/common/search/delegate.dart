@@ -61,7 +61,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
 
   void goBack(BuildContext context) {
     clean();
-    Navigator.pop(context);
+    Navigator.maybeOf(context)?.pop();
   }
 
   void clean() {

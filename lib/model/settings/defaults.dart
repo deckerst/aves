@@ -31,10 +31,7 @@ class SettingsDefaults {
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
   static const enableBottomNavigationBar = true;
-  static const confirmDeleteForever = true;
-  static const confirmMoveToBin = true;
-  static const confirmMoveUndatedItems = true;
-  static const confirmAfterMoveToBin = true;
+  static const confirm = true;
   static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
     null,

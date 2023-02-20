@@ -19,6 +19,8 @@ import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -30,7 +32,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CollectionSearchDelegate extends AvesSearchDelegate {
+class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, VaultAwareMixin {
   final CollectionSource source;
   final CollectionLens? parentCollection;
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
@@ -285,11 +287,13 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
     return cleanQuery.isNotEmpty ? QueryFilter(cleanQuery, colorful: colorful) : null;
   }
 
-  void _select(BuildContext context, CollectionFilter? filter) {
+  Future<void> _select(BuildContext context, CollectionFilter? filter) async {
     if (filter == null) {
       goBack(context);
       return;
     }
+
+    if (!await unlockFilter(context, filter)) return;
 
     if (settings.saveSearchHistory) {
       final history = settings.searchHistory
@@ -320,8 +324,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate {
 
   void _jumpToCollectionPage(BuildContext context, Set<CollectionFilter> filters) {
     clean();
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(

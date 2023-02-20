@@ -57,9 +57,8 @@ class CollectionNavTile extends StatelessWidget {
   }
 
   void _goToCollection(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pop();
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(

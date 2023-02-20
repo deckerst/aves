@@ -23,6 +23,8 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class CoverSelectionDialog extends StatefulWidget {
+  static const routeName = '/dialog/select_cover';
+
   final CollectionFilter filter;
   final AvesEntry? customEntry;
   final String? customPackage;
@@ -161,7 +163,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
               final entry = _isCustomEntry ? _customEntry : null;
               final package = _isCustomPackage ? _customPackage : null;
               final color = _isCustomColor ? _customColor : null;
-              return Navigator.pop(context, Tuple3<AvesEntry?, String?, Color?>(entry, package, color));
+              return Navigator.maybeOf(context)?.pop(Tuple3<AvesEntry?, String?, Color?>(entry, package, color));
             },
             child: Text(l10n.applyButtonLabel),
           )
@@ -340,8 +342,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   }
 
   Future<void> _pickEntry() async {
-    final entry = await Navigator.push<AvesEntry>(
-      context,
+    final entry = await Navigator.maybeOf(context)?.push<AvesEntry>(
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickPage.routeName),
         builder: (context) => ItemPickPage(
@@ -361,8 +362,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   }
 
   Future<void> _pickPackage() async {
-    final package = await Navigator.push<String>(
-      context,
+    final package = await Navigator.maybeOf(context)?.push<String>(
       MaterialPageRoute(
         settings: const RouteSettings(name: AppPickPage.routeName),
         builder: (context) => AppPickPage(
@@ -386,6 +386,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         // picker controls are not on edge and palette panel is more stable
         initialValue: _customColor ?? const Color(0xff3f51b5),
       ),
+      routeSettings: const RouteSettings(name: ColorPickerDialog.routeName),
     );
     if (color != null) {
       _customColor = color;

@@ -16,8 +16,7 @@ class TvNavigationPopHandler {
       return true;
     }
 
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       _getHomeRoute(),
       (route) => false,
     );

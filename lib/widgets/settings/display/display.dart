@@ -125,7 +125,7 @@ class SettingsTileDisplayForceTvLayout extends SettingsTile {
                 actions: [
                   const CancelButton(),
                   TextButton(
-                    onPressed: () => Navigator.pop(context, true),
+                    onPressed: () => Navigator.maybeOf(context)?.pop(true),
                     child: Text(l10n.applyButtonLabel),
                   ),
                 ],

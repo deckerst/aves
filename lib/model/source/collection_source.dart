@@ -18,6 +18,7 @@ import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/model/source/trash.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
@@ -60,8 +61,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       final oldValue = event.oldValue;
       if (oldValue is List<String>?) {
         final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
-        _onFilterVisibilityChanged(oldHiddenFilters, settings.hiddenFilters);
+        final newlyVisibleFilters = oldHiddenFilters.whereNot(settings.hiddenFilters.contains).toSet();
+        _onFilterVisibilityChanged(newlyVisibleFilters);
       }
+    });
+    vaults.addListener(() {
+      final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
+      _onFilterVisibilityChanged(newlyVisibleFilters);
     });
   }
 
@@ -108,16 +114,22 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     _savedDates = Map.unmodifiable(await metadataDb.loadDates());
   }
 
+  Set<CollectionFilter> _getAppHiddenFilters() => {
+        ...settings.hiddenFilters,
+        ...vaults.vaultDirectories.where(vaults.isLocked).map((v) => AlbumFilter(v, null)),
+      };
+
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
     final hiddenFilters = {
       TrashFilter.instance,
-      ...settings.hiddenFilters,
+      ..._getAppHiddenFilters(),
     };
     return entries.where((entry) => !hiddenFilters.any((filter) => filter.test(entry)));
   }
 
   Iterable<AvesEntry> _applyTrashFilter(Iterable<AvesEntry> entries) {
-    return entries.where(TrashFilter.instance.test);
+    final hiddenFilters = _getAppHiddenFilters();
+    return entries.where(TrashFilter.instance.test).where((entry) => !hiddenFilters.any((filter) => filter.test(entry)));
   }
 
   void _invalidate({Set<AvesEntry>? entries, bool notify = true}) {
@@ -198,23 +210,24 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> _moveEntry(AvesEntry entry, Map newFields, {required bool persist}) async {
     newFields.keys.forEach((key) {
+      final newValue = newFields[key];
       switch (key) {
         case 'contentId':
-          entry.contentId = newFields['contentId'] as int?;
+          entry.contentId = newValue as int?;
           break;
         case 'dateModifiedSecs':
           // `dateModifiedSecs` changes when moving entries to another directory,
           // but it does not change when renaming the containing directory
-          entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int?;
+          entry.dateModifiedSecs = newValue as int?;
           break;
         case 'path':
-          entry.path = newFields['path'] as String?;
+          entry.path = newValue as String?;
           break;
         case 'title':
-          entry.sourceTitle = newFields['title'] as String?;
+          entry.sourceTitle = newValue as String?;
           break;
         case 'trashed':
-          final trashed = newFields['trashed'] as bool;
+          final trashed = newValue as bool;
           entry.trashed = trashed;
           entry.trashDetails = trashed
               ? TrashDetails(
@@ -225,7 +238,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
               : null;
           break;
         case 'uri':
-          entry.uri = newFields['uri'] as String;
+          entry.uri = newValue as String;
+          break;
+        case 'origin':
+          entry.origin = newValue as int;
           break;
       }
     });
@@ -251,6 +267,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     final bookmark = settings.drawerAlbumBookmarks?.indexOf(sourceAlbum);
     final pinned = settings.pinnedFilters.contains(oldFilter);
 
+    if (vaults.isVault(sourceAlbum)) {
+      await vaults.rename(sourceAlbum, destinationAlbum);
+    }
+
     final existingCover = covers.of(oldFilter);
     await covers.set(
       filter: newFilter,
@@ -266,6 +286,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       destinationAlbums: {destinationAlbum},
       movedOps: movedOps,
     );
+
     // restore bookmark and pin, as the obsolete album got removed and its associated state cleaned
     if (bookmark != null && bookmark != -1) {
       settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..insert(bookmark, destinationAlbum);
@@ -312,6 +333,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
             title: newFields['title'] as String?,
             dateAddedSecs: newFields['dateAddedSecs'] as int?,
             dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
+            origin: newFields['origin'] as int?,
           ));
         } else {
           debugPrint('failed to find source entry with uri=$sourceUri');
@@ -345,7 +367,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         break;
       case MoveType.move:
       case MoveType.export:
-        cleanEmptyAlbums(fromAlbums);
+        cleanEmptyAlbums(fromAlbums.whereNotNull().toSet());
         addDirectories(albums: destinationAlbums);
         break;
       case MoveType.toBin:
@@ -507,11 +529,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return recentEntry(filter);
   }
 
-  void _onFilterVisibilityChanged(Set<CollectionFilter> oldHiddenFilters, Set<CollectionFilter> currentHiddenFilters) {
+  void _onFilterVisibilityChanged(Set<CollectionFilter> newlyVisibleFilters) {
     updateDerivedFilters();
     eventBus.fire(const FilterVisibilityChangedEvent());
 
-    final newlyVisibleFilters = oldHiddenFilters.whereNot(currentHiddenFilters.contains).toSet();
     if (newlyVisibleFilters.isNotEmpty) {
       final candidateEntries = visibleEntries.where((entry) => newlyVisibleFilters.any((f) => f.test(entry))).toSet();
       analyze(null, entries: candidateEntries);

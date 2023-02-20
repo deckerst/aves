@@ -8,6 +8,7 @@ import androidx.core.os.EnvironmentCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.PermissionManager
+import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.getPrimaryVolumePath
 import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
 import io.flutter.plugin.common.MethodCall
@@ -25,6 +26,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getStorageVolumes" -> ioScope.launch { safe(call, result, ::getStorageVolumes) }
+            "getVaultRoot" -> ioScope.launch { safe(call, result, ::getVaultRoot) }
             "getFreeSpace" -> ioScope.launch { safe(call, result, ::getFreeSpace) }
             "getGrantedDirectories" -> ioScope.launch { safe(call, result, ::getGrantedDirectories) }
             "getInaccessibleDirectories" -> ioScope.launch { safe(call, result, ::getInaccessibleDirectories) }
@@ -86,6 +88,10 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(volumes)
+    }
+
+    private fun getVaultRoot(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(StorageUtils.getVaultRoot(context))
     }
 
     private fun getFreeSpace(call: MethodCall, result: MethodChannel.Result) {

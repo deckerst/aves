@@ -14,12 +14,24 @@ class OverlayDescriptionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        DecoratedIcon(AIcons.description, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
-        const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
-        Expanded(child: Text(description, strutStyle: Constants.overflowStrutStyle)),
-      ],
+    return Text.rich(
+      TextSpan(
+        children: [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
+              child: DecoratedIcon(
+                AIcons.description,
+                size: ViewerDetailOverlayContent.iconSize,
+                shadows: ViewerDetailOverlayContent.shadows(context),
+              ),
+            ),
+          ),
+          TextSpan(text: description),
+        ],
+      ),
+      strutStyle: Constants.overflowStrutStyle,
     );
   }
 }

@@ -46,34 +46,27 @@ class AvesExpansionTile extends StatelessWidget {
 
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     final theme = Theme.of(context);
-    return Theme(
-      data: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(
-          // color used by the `ExpansionTileCard` for selected text and icons
-          secondary: theme.colorScheme.onBackground,
-        ),
-      ),
-      child: ExpansionTileCard(
-        // key is expected by test driver
-        key: Key('tilecard-$value'),
-        value: value,
-        expandedNotifier: expandedNotifier,
-        title: titleChild,
-        expandable: enabled,
-        initiallyExpanded: initiallyExpanded,
-        finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
-        baseColor: theme.scaffoldBackgroundColor,
-        expandedColor: theme.canvasColor,
-        duration: animationDuration,
-        shadowColor: theme.shadowColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Divider(thickness: 1, height: 1),
-            const SizedBox(height: 4),
-            if (enabled) ...children,
-          ],
-        ),
+    return ExpansionTileCard(
+      // key is expected by test driver
+      key: Key('tilecard-$value'),
+      value: value,
+      expandedNotifier: expandedNotifier,
+      title: titleChild,
+      expandable: enabled,
+      initiallyExpanded: initiallyExpanded,
+      finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
+      baseColor: theme.scaffoldBackgroundColor,
+      expandedColor: theme.canvasColor,
+      expandedTextColor: theme.colorScheme.onBackground,
+      duration: animationDuration,
+      shadowColor: theme.shadowColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Divider(thickness: 1, height: 1),
+          const SizedBox(height: 4),
+          if (enabled) ...children,
+        ],
       ),
     );
   }

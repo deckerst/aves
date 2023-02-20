@@ -37,7 +37,7 @@ class MapButtonPanel extends StatelessWidget {
         if (!settings.useTvLayout) {
           navigationButton = MapOverlayButton(
             icon: const BackButtonIcon(),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.maybeOf(context)?.pop(),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           );
         }

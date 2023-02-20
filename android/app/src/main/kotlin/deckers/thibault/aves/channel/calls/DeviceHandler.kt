@@ -21,7 +21,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "canManageMedia" -> safe(call, result, ::canManageMedia)
             "getCapabilities" -> safe(call, result, ::getCapabilities)
-            "getDefaultTimeZone" -> safe(call, result, ::getDefaultTimeZone)
+            "getDefaultTimeZoneRawOffsetMillis" -> safe(call, result, ::getDefaultTimeZoneRawOffsetMillis)
             "getLocales" -> safe(call, result, ::getLocales)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
@@ -41,9 +41,10 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canGrantDirectoryAccess" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canPrint" to (sdkInt >= Build.VERSION_CODES.KITKAT),
-                "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
+                "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.M),
                 "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),
                 "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
+                "canUseCrypto" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to (sdkInt >= Build.VERSION_CODES.S),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
@@ -52,8 +53,8 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         )
     }
 
-    private fun getDefaultTimeZone(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(TimeZone.getDefault().id)
+    private fun getDefaultTimeZoneRawOffsetMillis(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(TimeZone.getDefault().rawOffset)
     }
 
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

@@ -1,5 +1,6 @@
 package deckers.thibault.aves.utils
 
+import android.webkit.MimeTypeMap
 import androidx.exifinterface.media.ExifInterface
 
 object MimeTypes {
@@ -153,47 +154,11 @@ object MimeTypes {
     // among other refs:
     // - https://android.googlesource.com/platform/external/mime-support/+/refs/heads/master/mime.types
     fun extensionFor(mimeType: String): String? = when (mimeType) {
-        ARW -> ".arw"
         AVI, AVI_VND -> ".avi"
-        AVIF -> ".avif"
-        BMP -> ".bmp"
-        CR2 -> ".cr2"
-        CRW -> ".crw"
-        DCR -> ".dcr"
-        DJVU -> ".djvu"
-        DNG -> ".dng"
-        ERF -> ".erf"
-        GIF -> ".gif"
         HEIC, HEIF -> ".heif"
-        ICO -> ".ico"
-        JPEG -> ".jpg"
-        K25 -> ".k25"
-        KDC -> ".kdc"
-        MKV -> ".mkv"
-        MOV -> ".mov"
         MP2T, MP2TS -> ".m2ts"
-        MP4 -> ".mp4"
-        MRW -> ".mrw"
-        NEF -> ".nef"
-        NRW -> ".nrw"
-        OGV -> ".ogv"
-        ORF -> ".orf"
-        PEF -> ".pef"
-        PNG -> ".png"
         PSD_VND, PSD_X -> ".psd"
-        RAF -> ".raf"
-        RAW -> ".raw"
-        RW2 -> ".rw2"
-        SR2 -> ".sr2"
-        SRF -> ".srf"
-        SRW -> ".srw"
-        SVG -> ".svg"
-        TIFF -> ".tiff"
-        WBMP -> ".wbmp"
-        WEBM -> ".webm"
-        WEBP -> ".webp"
-        X3F -> ".x3f"
-        else -> null
+        else -> MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.let { ".$it" }
     }
 
     val TIFF_EXTENSION_PATTERN = Regex(".*\\.tiff?", RegexOption.IGNORE_CASE)

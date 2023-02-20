@@ -6,6 +6,8 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 class EditEntryTitleDescriptionDialog extends StatefulWidget {
+  static const routeName = '/dialog/edit_entry_title_description';
+
   final String initialTitle, initialDescription;
 
   const EditEntryTitleDescriptionDialog({
@@ -103,6 +105,6 @@ class _EditEntryTitleDescriptionDialogState extends State<EditEntryTitleDescript
       final text = _fieldController(field).text;
       return MapEntry(field, text.isEmpty ? null : text);
     }));
-    return Navigator.pop<Map<DescriptionField, String?>>(context, modifier);
+    return Navigator.maybeOf(context)?.pop<Map<DescriptionField, String?>>(modifier);
   }
 }

@@ -76,8 +76,8 @@
   "@videoActionSkip10": {},
   "videoActionSetSpeed": "Avspillingshastighet",
   "@videoActionSetSpeed": {},
-  "videoActionSettings": "Innstillinger",
-  "@videoActionSettings": {},
+  "viewerActionSettings": "Innstillinger",
+  "@viewerActionSettings": {},
   "entryInfoActionEditTitleDescription": "Rediger navn og beskrivelse",
   "@entryInfoActionEditTitleDescription": {},
   "filterNoDateLabel": "Udatert",
@@ -709,8 +709,6 @@
   "@albumVideoCaptures": {},
   "albumEmpty": "Ingen album",
   "@albumEmpty": {},
-  "createAlbumTooltip": "Opprett album",
-  "@createAlbumTooltip": {},
   "binPageTitle": "Papirkurv",
   "@binPageTitle": {},
   "countryPageTitle": "Land",
@@ -1366,5 +1364,7 @@
   "settingsModificationWarningDialogMessage": "Andre innstillinger vil bli endret.",
   "@settingsModificationWarningDialogMessage": {},
   "tooManyItemsErrorDialogMessage": "Prøv igjen med færre elementer.",
-  "@tooManyItemsErrorDialogMessage": {}
+  "@tooManyItemsErrorDialogMessage": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Dra opp eller ned for å justere lys-/lydstyrke",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
 }

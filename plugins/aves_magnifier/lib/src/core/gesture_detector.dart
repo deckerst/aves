@@ -54,7 +54,7 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
       );
     }
 
-    final scope = MagnifierGestureDetectorScope.of(context);
+    final scope = MagnifierGestureDetectorScope.maybeOf(context);
     if (scope != null) {
       gestures[MagnifierGestureRecognizer] = GestureRecognizerFactoryWithHandlers<MagnifierGestureRecognizer>(
         () => MagnifierGestureRecognizer(

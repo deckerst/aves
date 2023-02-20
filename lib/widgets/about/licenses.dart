@@ -80,8 +80,7 @@ class _LicensesState extends State<Licenses> {
             Center(
               child: AvesOutlinedButton(
                 label: context.l10n.aboutLicensesShowAllButtonLabel,
-                onPressed: () => Navigator.push(
-                  context,
+                onPressed: () => Navigator.maybeOf(context)?.push(
                   MaterialPageRoute(
                     builder: (context) => Theme(
                       data: Theme.of(context).copyWith(

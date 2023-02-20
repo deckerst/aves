@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include
+        domain="file"
+        path="." />
+    <include
+        domain="database"
+        path="." />
+    <include
+        domain="external"
+        path="." />
+    <include
+        domain="sharedpref"
+        path="." />
+    <exclude
+        domain="sharedpref"
+        path="secret_shared_prefs.xml" />
+</full-backup-content>

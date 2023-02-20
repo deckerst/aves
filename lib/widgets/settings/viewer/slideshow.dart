@@ -2,6 +2,7 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/slideshow_video_playback.dart';
 import 'package:aves/model/settings/enums/viewer_transition.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class ViewerSlideshowPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(l10n.settingsViewerSlideshowPageTitle),

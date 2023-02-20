@@ -85,6 +85,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   }
 
   void onActionSelected(BuildContext context, AvesEntry targetEntry, CollectionLens? collection, EntryAction action) async {
+    await reportService.log('$action');
     _eventStreamController.add(ActionStartedEvent(action));
     switch (action) {
       // general
@@ -234,11 +235,12 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.applyButtonLabel),
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
     if (confirmed == null || !confirmed) return;
 
@@ -262,8 +264,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       listenToSource: true,
       fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).where((entry) => entry != targetEntry).toList(),
     );
-    await Navigator.push(
-      context,
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: MapPage.routeName),
         builder: (context) => MapPage(
@@ -276,8 +277,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   }
 
   void _goToDebug(BuildContext context, AvesEntry targetEntry) {
-    Navigator.push(
-      context,
+    Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: targetEntry),

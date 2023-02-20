@@ -40,16 +40,60 @@ class MetadataDirTile extends StatelessWidget {
     var tags = dir.tags;
     if (tags.isEmpty) return const SizedBox();
 
+    return AvesExpansionTile(
+      title: title,
+      highlightColor: getTitleColor(context, dir),
+      expandedNotifier: expandedDirectoryNotifier,
+      initiallyExpanded: initiallyExpanded,
+      children: [
+        MetadataDirTileBody(
+          entry: entry,
+          dir: dir,
+          showThumbnails: showThumbnails,
+        ),
+      ],
+    );
+  }
+
+  static Color getTitleColor(BuildContext context, MetadataDirectory dir) {
     final dirName = dir.name;
     if (dirName == MetadataDirectory.xmpDirectory) {
-      return XmpDirTile(
-        entry: entry,
-        title: title,
-        allTags: dir.allTags,
-        tags: tags,
-        expandedNotifier: expandedDirectoryNotifier,
-        initiallyExpanded: initiallyExpanded,
-      );
+      return context.select<AvesColorsData, Color>((v) => v.xmp);
+    } else {
+      final colors = context.watch<AvesColorsData>();
+      return dir.color ?? colors.fromBrandColor(BrandColors.get(dirName)) ?? colors.fromString(dirName);
+    }
+  }
+}
+
+class MetadataDirTileBody extends StatelessWidget {
+  final AvesEntry entry;
+  final MetadataDirectory dir;
+  final bool showThumbnails;
+
+  const MetadataDirTileBody({
+    super.key,
+    required this.entry,
+    required this.dir,
+    this.showThumbnails = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var tags = dir.tags;
+
+    late final List<Widget> children;
+    final dirName = dir.name;
+    if (dirName == MetadataDirectory.xmpDirectory) {
+      children = [
+        Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          child: XmpDirTileBody(
+            allTags: dir.allTags,
+            tags: tags,
+          ),
+        ),
+      ];
     } else {
       Map<String, InfoValueSpanBuilder>? linkHandlers;
       switch (dirName) {
@@ -67,25 +111,23 @@ class MetadataDirTile extends StatelessWidget {
           break;
       }
 
-      final colors = context.watch<AvesColorsData>();
-      return AvesExpansionTile(
-        title: title,
-        highlightColor: dir.color ?? colors.fromBrandColor(BrandColors.get(dirName)) ?? colors.fromString(dirName),
-        expandedNotifier: expandedDirectoryNotifier,
-        initiallyExpanded: initiallyExpanded,
-        children: [
-          if (showThumbnails && dirName == MetadataDirectory.exifThumbnailDirectory) MetadataThumbnails(entry: entry),
-          Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: InfoRowGroup(
-              info: tags,
-              maxValueLength: Constants.infoGroupMaxValueLength,
-              spanBuilders: linkHandlers,
-            ),
+      children = [
+        if (showThumbnails && dirName == MetadataDirectory.exifThumbnailDirectory) MetadataThumbnails(entry: entry),
+        Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          child: InfoRowGroup(
+            info: tags,
+            maxValueLength: Constants.infoGroupMaxValueLength,
+            spanBuilders: linkHandlers,
           ),
-        ],
-      );
+        ),
+      ];
     }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 
   static Map<String, InfoValueSpanBuilder> getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
@@ -93,8 +135,7 @@ class MetadataDirTile extends StatelessWidget {
       'Metadata': InfoRowGroup.linkSpanBuilder(
         linkText: (context) => context.l10n.viewerInfoViewXmlLinkText,
         onTap: (context) {
-          Navigator.push(
-            context,
+          Navigator.maybeOf(context)?.push(
             MaterialPageRoute(
               settings: const RouteSettings(name: SourceViewerPage.routeName),
               builder: (context) => SourceViewerPage(

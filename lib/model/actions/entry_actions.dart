@@ -71,13 +71,15 @@ class EntryActions {
   ];
 
   static const export = [
+    ...exportInternal,
+    ...exportExternal,
+  ];
+
+  static const exportInternal = [
     EntryAction.convert,
     EntryAction.addShortcut,
     EntryAction.copyToClipboard,
     EntryAction.print,
-    EntryAction.open,
-    EntryAction.openMap,
-    EntryAction.setAs,
   ];
 
   static const exportExternal = [
@@ -186,7 +188,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.videoSetSpeed:
         return context.l10n.videoActionSetSpeed;
       case EntryAction.videoSettings:
-        return context.l10n.videoActionSettings;
+        return context.l10n.viewerActionSettings;
       case EntryAction.videoTogglePlay:
         // different data depending on toggle state
         return context.l10n.videoActionPlay;

@@ -139,8 +139,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         var destinationDir = arguments["destinationPath"] as String?
         val mimeType = arguments["mimeType"] as String?
-        val width = arguments["width"] as Int?
-        val height = arguments["height"] as Int?
+        val width = (arguments["width"] as Number?)?.toInt()
+        val height = (arguments["height"] as Number?)?.toInt()
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
         if (destinationDir == null || mimeType == null || width == null || height == null || nameConflictStrategy == null) {
             error("export-args", "missing arguments", null)

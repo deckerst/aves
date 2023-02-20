@@ -1,5 +1,6 @@
 import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class CollectionActionEditorPage extends StatelessWidget {
 
     return DefaultTabController(
       length: tabs.length,
-      child: Scaffold(
+      child: AvesScaffold(
         appBar: AppBar(
           title: Text(context.l10n.settingsCollectionQuickActionEditorPageTitle),
           bottom: TabBar(

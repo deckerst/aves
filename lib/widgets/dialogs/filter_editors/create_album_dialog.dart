@@ -4,12 +4,13 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../aves_dialog.dart';
-
 class CreateAlbumDialog extends StatefulWidget {
+  static const routeName = '/dialog/create_album';
+
   const CreateAlbumDialog({super.key});
 
   @override
@@ -159,7 +160,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.pop(context, _buildAlbumPath(_nameController.text));
+      Navigator.maybeOf(context)?.pop(_buildAlbumPath(_nameController.text));
     }
   }
 }

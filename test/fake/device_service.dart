@@ -4,5 +4,5 @@ import 'package:test/fake.dart';
 
 class FakeDeviceService extends Fake implements DeviceService {
   @override
-  Future<String> getDefaultTimeZone() => SynchronousFuture('');
+  Future<int> getDefaultTimeZoneRawOffsetMillis() => SynchronousFuture(3600000);
 }

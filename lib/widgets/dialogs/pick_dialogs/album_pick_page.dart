@@ -4,10 +4,13 @@ import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/vaults/details.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu.dart';
@@ -16,7 +19,9 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
 import 'package:aves/widgets/filter_grids/common/app_bar.dart';
@@ -35,8 +40,7 @@ Future<String?> pickAlbum({
     // source may not be fully initialized in view mode
     await source.init();
   }
-  final filter = await Navigator.push(
-    context,
+  final filter = await Navigator.maybeOf(context)?.push(
     MaterialPageRoute<AlbumFilter>(
       settings: const RouteSettings(name: _AlbumPickPage.routeName),
       builder: (context) => _AlbumPickPage(source: source, moveType: moveType),
@@ -79,6 +83,19 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
         return context.l10n.albumPickPageTitlePick;
     }
   }
+
+  static const _quickActions = [
+    ChipSetAction.createAlbum,
+  ];
+
+  // `null` items are converted to dividers
+  static const _menuActions = [
+    ...ChipSetActions.general,
+    null,
+    ChipSetAction.toggleTitleSearch,
+    null,
+    ChipSetAction.createVault,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -142,23 +159,37 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
           selectedFilters: selectedFilters,
         );
 
+    void onActionSelected(ChipSetAction action) {
+      switch (action) {
+        case ChipSetAction.createAlbum:
+          _createAlbum();
+          break;
+        case ChipSetAction.createVault:
+          _createVault();
+          break;
+        default:
+          actionDelegate.onActionSelected(context, {}, action);
+          break;
+      }
+    }
+
     return settings.useTvLayout
         ? _buildTelevisionActions(
             context: context,
             isVisible: isVisible,
-            actionDelegate: actionDelegate,
+            onActionSelected: onActionSelected,
           )
         : _buildMobileActions(
             context: context,
             isVisible: isVisible,
-            actionDelegate: actionDelegate,
+            onActionSelected: onActionSelected,
           );
   }
 
   List<Widget> _buildTelevisionActions({
     required BuildContext context,
     required bool Function(ChipSetAction action) isVisible,
-    required AlbumChipSetActionDelegate actionDelegate,
+    required void Function(ChipSetAction action) onActionSelected,
   }) {
     return [
       ...ChipSetActions.general,
@@ -166,7 +197,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
       return CaptionedButton(
         icon: action.getIcon(),
         caption: action.getText(context),
-        onPressed: () => actionDelegate.onActionSelected(context, {}, action),
+        onPressed: () => onActionSelected(action),
       );
     }).toList();
   }
@@ -174,33 +205,22 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   List<Widget> _buildMobileActions({
     required BuildContext context,
     required bool Function(ChipSetAction action) isVisible,
-    required AlbumChipSetActionDelegate actionDelegate,
+    required void Function(ChipSetAction action) onActionSelected,
   }) {
     return [
       if (widget.moveType != null)
-        IconButton(
-          icon: const Icon(AIcons.add),
-          onPressed: () async {
-            final newAlbum = await showDialog<String>(
-              context: context,
-              builder: (context) => const CreateAlbumDialog(),
-            );
-            // wait for the dialog to hide as applying the change may block the UI
-            await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
-            if (newAlbum != null && newAlbum.isNotEmpty) {
-              Navigator.pop<AlbumFilter>(context, AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum)));
-            }
-          },
-          tooltip: context.l10n.createAlbumTooltip,
-        ),
+        ..._quickActions.where(isVisible).map((action) => IconButton(
+              icon: action.getIcon(),
+              onPressed: () => onActionSelected(action),
+              tooltip: action.getText(context),
+            )),
       MenuIconTheme(
         child: PopupMenuButton<ChipSetAction>(
           itemBuilder: (context) {
-            return [
-              ...ChipSetActions.general.where(isVisible).map((action) => FilterGridAppBar.toMenuItem(context, action, enabled: true)),
-              const PopupMenuDivider(),
-              FilterGridAppBar.toMenuItem(context, ChipSetAction.toggleTitleSearch, enabled: true),
-            ];
+            return _menuActions.where((v) => v == null || isVisible(v)).map((action) {
+              if (action == null) return const PopupMenuDivider();
+              return FilterGridAppBar.toMenuItem(context, action, enabled: true);
+            }).toList();
           },
           onSelected: (action) async {
             // remove focus, if any, to prevent the keyboard from showing up
@@ -209,10 +229,53 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
 
             // wait for the popup menu to hide before proceeding with the action
             await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-            actionDelegate.onActionSelected(context, {}, action);
+            onActionSelected(action);
           },
         ),
       ),
     ];
+  }
+
+  Future<void> _createAlbum() async {
+    final directory = await showDialog<String>(
+      context: context,
+      builder: (context) => const CreateAlbumDialog(),
+      routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
+    );
+    if (directory == null) return;
+
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+
+    _pickAlbum(directory);
+  }
+
+  Future<void> _createVault() async {
+    final l10n = context.l10n;
+    if (!await showSkippableConfirmationDialog(
+      context: context,
+      type: ConfirmationDialog.createVault,
+      message: l10n.newVaultWarningDialogMessage,
+      confirmationButtonLabel: l10n.continueButtonLabel,
+    )) return;
+
+    final details = await showDialog<VaultDetails>(
+      context: context,
+      builder: (context) => const EditVaultDialog(),
+      routeSettings: const RouteSettings(name: EditVaultDialog.routeName),
+    );
+    if (details == null) return;
+
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+
+    await vaults.create(details);
+    _pickAlbum(details.path);
+  }
+
+  void _pickAlbum(String directory) {
+    source.createAlbum(directory);
+    final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
+    Navigator.maybeOf(context)?.pop<AlbumFilter>(filter);
   }
 }

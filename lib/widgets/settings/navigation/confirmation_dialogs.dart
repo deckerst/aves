@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class ConfirmationDialogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.settingsConfirmationDialogTitle),
       ),
@@ -37,6 +38,12 @@ class ConfirmationDialogPage extends StatelessWidget {
             selector: (context, s) => s.confirmAfterMoveToBin,
             onChanged: (v) => settings.confirmAfterMoveToBin = v,
             title: l10n.settingsConfirmationAfterMoveToBinItems,
+          ),
+          const Divider(height: 32),
+          SettingsSwitchListTile(
+            selector: (context, s) => s.confirmCreateVault,
+            onChanged: (v) => settings.confirmCreateVault = v,
+            title: l10n.settingsConfirmationVaultDataLoss,
           ),
         ]),
       ),

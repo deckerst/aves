@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
@@ -22,7 +23,7 @@ class ThumbnailOverlayPage extends StatelessWidget {
     final iconSize = _getIconSize(context);
     final iconColor = _getIconColor(context);
 
-    return Scaffold(
+    return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !settings.useTvLayout,
         title: Text(context.l10n.settingsThumbnailOverlayPageTitle),

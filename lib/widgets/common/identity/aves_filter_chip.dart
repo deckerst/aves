@@ -99,14 +99,16 @@ class AvesFilterChip extends StatefulWidget {
         if (filter is TagFilter) ChipAction.goToTagPage,
         ChipAction.reverse,
         ChipAction.hide,
+        ChipAction.lockVault,
       ];
 
       // remove focus, if any, to prevent the keyboard from showing up
       // after the user is done with the popup menu
       FocusManager.instance.primaryFocus?.unfocus();
 
-      final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+      final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
       const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
+      final actionDelegate = ChipActionDelegate();
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
@@ -115,7 +117,7 @@ class AvesFilterChip extends StatefulWidget {
             child: Text(filter.getLabel(context)),
           ),
           const PopupMenuDivider(),
-          ...actions.map((action) {
+          ...actions.where((action) => actionDelegate.isVisible(action, filter: filter)).map((action) {
             late String text;
             if (action == ChipAction.reverse) {
               text = filter.reversed ? context.l10n.chipActionFilterIn : context.l10n.chipActionFilterOut;
@@ -134,7 +136,7 @@ class AvesFilterChip extends StatefulWidget {
       if (selectedAction != null) {
         // wait for the popup menu to hide before proceeding with the action
         await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-        ChipActionDelegate().onActionSelected(context, filter, selectedAction);
+        actionDelegate.onActionSelected(context, filter, selectedAction);
       }
     }
   }

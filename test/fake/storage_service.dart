@@ -27,4 +27,7 @@ class FakeStorageService extends Fake implements StorageService {
           state: 'fake',
         ),
       });
+
+  @override
+  Future<String> getVaultRoot() => SynchronousFuture('/vault/');
 }

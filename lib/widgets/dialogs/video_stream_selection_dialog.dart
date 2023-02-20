@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'aves_dialog.dart';
 
 class VideoStreamSelectionDialog extends StatefulWidget {
+  static const routeName = '/dialog/select_video_stream';
+
   final Map<StreamSummary, bool> streams;
 
   const VideoStreamSelectionDialog({
@@ -153,7 +155,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     ];
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, {
+  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop({
         StreamType.video: _currentVideo,
         StreamType.audio: _currentAudio,
         StreamType.text: _currentText,

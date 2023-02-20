@@ -50,7 +50,6 @@ class Themes {
         cardColor: _lightSecondLayer,
         dialogBackgroundColor: _lightSecondLayer,
         indicatorColor: accentColor,
-        toggleableActiveColor: accentColor,
         typography: _typography,
         appBarTheme: AppBarTheme(
           backgroundColor: _lightFirstLayer,
@@ -104,7 +103,6 @@ class Themes {
         cardColor: _darkSecondLayer,
         dialogBackgroundColor: _darkSecondLayer,
         indicatorColor: accentColor,
-        toggleableActiveColor: accentColor,
         typography: _typography,
         appBarTheme: AppBarTheme(
           backgroundColor: _darkFirstLayer,

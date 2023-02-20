@@ -56,12 +56,14 @@ mixin PermissionAwareMixin {
             actions: [
               const CancelButton(),
               TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                onPressed: () => Navigator.maybeOf(context)?.pop(true),
+                // MD2 button labels were upper case but they are lower case in MD3
+                child: Text(MaterialLocalizations.of(context).okButtonLabel.toUpperCase()),
               ),
             ],
           );
         },
+        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
       );
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
@@ -73,6 +75,7 @@ mixin PermissionAwareMixin {
             content: Text(context.l10n.missingSystemFilePickerDialogMessage),
             actions: const [OkButton()],
           ),
+          routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
         );
         return false;
       }
@@ -96,6 +99,7 @@ mixin PermissionAwareMixin {
           actions: const [OkButton()],
         );
       },
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
   }
 }

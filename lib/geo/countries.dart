@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:aves/geo/topojson.dart';
 import 'package:collection/collection.dart';
@@ -48,26 +49,22 @@ class CountryTopology {
     final topology = await getTopology();
     if (topology == null) return null;
 
-    return compute<_IsoNumericCodeMapData, Map<int, Set<LatLng>>>(_isoNumericCodeMap, _IsoNumericCodeMapData(topology, positions));
-  }
-
-  static Future<Map<int, Set<LatLng>>> _isoNumericCodeMap(_IsoNumericCodeMapData data) async {
     try {
-      final topology = data.topology;
-      final countries = (topology.objects['countries'] as GeometryCollection).geometries;
-      final byCode = <int, Set<LatLng>>{};
-      for (final position in data.positions) {
-        final code = _getNumeric(topology, countries, position);
-        if (code != null) {
-          byCode[code] = (byCode[code] ?? {})..add(position);
+      return Isolate.run<Map<int, Set<LatLng>>>(() {
+        final countries = (topology.objects['countries'] as GeometryCollection).geometries;
+        final byCode = <int, Set<LatLng>>{};
+        for (final position in positions) {
+          final code = _getNumeric(topology, countries, position);
+          if (code != null) {
+            byCode[code] = (byCode[code] ?? {})..add(position);
+          }
         }
-      }
-      return byCode;
+        return byCode;
+      });
     } catch (error, stack) {
-      // an unhandled error in a spawn isolate would make the app crash
       debugPrint('failed to get country codes with error=$error\n$stack');
+      return null;
     }
-    return {};
   }
 
   static int? _getNumeric(Topology topology, List<Geometry> mruCountries, LatLng position) {
@@ -95,11 +92,4 @@ class CountryTopology {
     }
     return null;
   }
-}
-
-class _IsoNumericCodeMapData {
-  Topology topology;
-  Set<LatLng> positions;
-
-  _IsoNumericCodeMapData(this.topology, this.positions);
 }

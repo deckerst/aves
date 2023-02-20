@@ -1,20 +1,26 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/slideshow_actions.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/settings/viewer/slideshow.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class SlideshowPage extends StatefulWidget {
   static const routeName = '/collection/slideshow';
@@ -31,36 +37,33 @@ class SlideshowPage extends StatefulWidget {
 }
 
 class _SlideshowPageState extends State<SlideshowPage> {
-  late final ViewerController _viewerController;
-  late final CollectionLens _slideshowCollection;
+  late ViewerController _viewerController;
+  late CollectionLens _slideshowCollection;
+  AvesEntry? _initialEntry;
+
+  CollectionSource get source => widget.collection.source;
 
   @override
   void initState() {
     super.initState();
-    _viewerController = ViewerController(
-      initialScale: ScaleLevel(ref: settings.slideshowFillScreen ? ScaleReference.covered : ScaleReference.contained),
-      transition: settings.slideshowTransition,
-      repeat: settings.slideshowRepeat,
-      autopilot: true,
-      autopilotInterval: Duration(seconds: settings.slideshowInterval),
-      autopilotAnimatedZoom: settings.slideshowAnimatedZoomEffect,
-    );
+    _initViewerController(autopilot: true);
     _initSlideshowCollection();
+    _initialEntry = _slideshowCollection.sortedEntries.firstOrNull;
   }
 
   @override
   void dispose() {
-    _viewerController.dispose();
+    _disposeViewerController();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final entries = _slideshowCollection.sortedEntries;
+    final initialEntry = _initialEntry;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.slideshow),
-      child: Scaffold(
-        body: entries.isEmpty
+      child: AvesScaffold(
+        body: initialEntry == null
             ? EmptyContent(
                 icon: AIcons.image,
                 text: context.l10n.collectionEmptyImages,
@@ -75,8 +78,9 @@ class _SlideshowPageState extends State<SlideshowPage> {
                         return true;
                       },
                       child: EntryViewerStack(
+                        key: ValueKey(_viewerController),
                         collection: _slideshowCollection,
-                        initialEntry: entries.first,
+                        initialEntry: initialEntry,
                         viewerController: _viewerController,
                       ),
                     ),
@@ -87,9 +91,21 @@ class _SlideshowPageState extends State<SlideshowPage> {
     );
   }
 
+  void _initViewerController({required bool autopilot}) {
+    _viewerController = ViewerController(
+      initialScale: ScaleLevel(ref: settings.slideshowFillScreen ? ScaleReference.covered : ScaleReference.contained),
+      transition: settings.slideshowTransition,
+      repeat: settings.slideshowRepeat,
+      autopilot: autopilot,
+      autopilotInterval: Duration(seconds: settings.slideshowInterval),
+      autopilotAnimatedZoom: settings.slideshowAnimatedZoomEffect,
+    );
+  }
+
+  void _disposeViewerController() => _viewerController.dispose();
+
   void _initSlideshowCollection() {
-    final originalCollection = widget.collection;
-    var entries = originalCollection.sortedEntries;
+    var entries = List.of(widget.collection.sortedEntries);
     if (settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip) {
       entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
     }
@@ -97,7 +113,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
       entries.shuffle();
     }
     _slideshowCollection = CollectionLens(
-      source: originalCollection.source,
+      source: source,
       listenToSource: false,
       fixedSort: true,
       fixedSelection: entries,
@@ -112,19 +128,20 @@ class _SlideshowPageState extends State<SlideshowPage> {
       case SlideshowAction.showInCollection:
         _showInCollection();
         break;
+      case SlideshowAction.settings:
+        _showSettings(context);
+        break;
     }
   }
 
   void _showInCollection() {
-    final entry = _viewerController.entryNotifier.value;
-    if (entry == null) return;
+    final currentEntry = _viewerController.entryNotifier.value;
+    if (currentEntry == null) return;
 
-    final source = _slideshowCollection.source;
-    final album = entry.directory;
-    final uri = entry.uri;
+    final album = currentEntry.directory;
+    final uri = currentEntry.uri;
 
-    Navigator.pushAndRemoveUntil(
-      context,
+    Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
@@ -135,6 +152,29 @@ class _SlideshowPageState extends State<SlideshowPage> {
       ),
       (route) => false,
     );
+  }
+
+  Tuple2<bool, bool> get collectionSettings => Tuple2(settings.slideshowShuffle, settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip);
+
+  Future<void> _showSettings(BuildContext context) async {
+    final oldCollectionSettings = collectionSettings;
+    final currentEntry = _viewerController.entryNotifier.value;
+
+    await Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: ViewerSlideshowPage.routeName),
+        builder: (context) => const ViewerSlideshowPage(),
+      ),
+    );
+
+    _disposeViewerController();
+    _initViewerController(autopilot: false);
+    if (oldCollectionSettings != collectionSettings) {
+      _initSlideshowCollection();
+    }
+    final slideshowEntries = _slideshowCollection.sortedEntries;
+    _initialEntry = slideshowEntries.contains(currentEntry) ? currentEntry : slideshowEntries.firstOrNull;
+    setState(() {});
   }
 }
 

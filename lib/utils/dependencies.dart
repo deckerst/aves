@@ -81,6 +81,12 @@ class Dependencies {
       sourceUrl: 'https://github.com/ajinasokan/flutter_displaymode',
     ),
     Dependency(
+      name: 'Local Auth',
+      license: bsd3,
+      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/local_auth/local_auth/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/local_auth/local_auth',
+    ),
+    Dependency(
       name: 'Package Info Plus',
       license: bsd3,
       licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/package_info_plus/package_info_plus/LICENSE',
@@ -102,10 +108,16 @@ class Dependencies {
       sourceUrl: 'https://github.com/aaassseee/screen_brightness',
     ),
     Dependency(
+      name: 'Screen State',
+      license: mit,
+      licenseUrl: 'https://github.com/cph-cachet/flutter-plugins/blob/master/packages/screen_state/LICENSE',
+      sourceUrl: 'https://github.com/cph-cachet/flutter-plugins/tree/master/packages/screen_state',
+    ),
+    Dependency(
       name: 'Shared Preferences',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/shared_preferences/shared_preferences/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/shared_preferences/shared_preferences',
+      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/shared_preferences/shared_preferences/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/shared_preferences/shared_preferences',
     ),
     Dependency(
       name: 'sqflite',
@@ -120,8 +132,8 @@ class Dependencies {
     Dependency(
       name: 'URL Launcher',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/url_launcher/url_launcher',
+      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/url_launcher/url_launcher/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/url_launcher/url_launcher',
     ),
     Dependency(
       name: 'Volume Controller',
@@ -139,8 +151,8 @@ class Dependencies {
     Dependency(
       name: 'Google Maps for Flutter',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/google_maps_flutter/google_maps_flutter/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/google_maps_flutter/google_maps_flutter',
+      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/google_maps_flutter/google_maps_flutter/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/google_maps_flutter/google_maps_flutter',
     ),
   ];
 
@@ -219,8 +231,8 @@ class Dependencies {
     Dependency(
       name: 'Flutter Markdown',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/flutter_markdown/LICENSE',
-      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/flutter_markdown',
+      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/flutter_markdown/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/flutter_markdown',
     ),
     Dependency(
       name: 'Flutter Staggered Animations',
@@ -240,8 +252,8 @@ class Dependencies {
     Dependency(
       name: 'Palette Generator',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/palette_generator/LICENSE',
-      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/palette_generator',
+      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/palette_generator/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/palette_generator',
     ),
     Dependency(
       name: 'Panorama (Aves fork)',
@@ -252,6 +264,11 @@ class Dependencies {
       name: 'Percent Indicator',
       license: bsd2,
       sourceUrl: 'https://github.com/diegoveloper/flutter_percent_indicator',
+    ),
+    Dependency(
+      name: 'Pinput',
+      license: mit,
+      sourceUrl: 'https://github.com/Tkko/Flutter_PinPut',
     ),
     Dependency(
       name: 'Provider',
@@ -294,8 +311,8 @@ class Dependencies {
     Dependency(
       name: 'Flutter Lints',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/flutter_lints/LICENSE',
-      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/flutter_lints',
+      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/flutter_lints/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/flutter_lints',
     ),
     Dependency(
       name: 'Get It',

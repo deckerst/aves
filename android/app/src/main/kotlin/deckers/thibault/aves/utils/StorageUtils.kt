@@ -39,34 +39,39 @@ object StorageUtils {
 
     private const val TREE_URI_ROOT = "content://$EXTERNAL_STORAGE_PROVIDER_AUTHORITY/tree/"
 
+    private val UUID_PATTERN = Regex("[A-Fa-f\\d-]+")
     private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
 
     const val TRASH_PATH_PLACEHOLDER = "#trash"
 
     private fun isAppFile(context: Context, path: String): Boolean {
-        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
-        return filesDirs.any { path.startsWith(it.path) }
+        val dirs = context.getExternalFilesDirs(null).filterNotNull()
+        return dirs.any { path.startsWith(it.path) }
     }
 
     private fun appExternalFilesDirFor(context: Context, path: String): File? {
-        val filesDirs = context.getExternalFilesDirs(null).filterNotNull()
+        val dirs = context.getExternalFilesDirs(null).filterNotNull()
         val volumePath = getVolumePath(context, path)
-        return volumePath?.let { filesDirs.firstOrNull { it.startsWith(volumePath) } } ?: filesDirs.firstOrNull()
+        return volumePath?.let { dirs.firstOrNull { it.startsWith(volumePath) } } ?: dirs.firstOrNull()
     }
 
     fun trashDirFor(context: Context, path: String): File? {
-        val filesDir = appExternalFilesDirFor(context, path)
-        if (filesDir == null) {
+        val externalFilesDir = appExternalFilesDirFor(context, path)
+        if (externalFilesDir == null) {
             Log.e(LOG_TAG, "failed to find external files dir for path=$path")
             return null
         }
-        val trashDir = File(filesDir, "trash")
+        val trashDir = File(externalFilesDir, "trash")
         if (!trashDir.exists() && !trashDir.mkdirs()) {
             Log.e(LOG_TAG, "failed to create directories at path=$trashDir")
             return null
         }
         return trashDir
     }
+
+    fun getVaultRoot(context: Context) = ensureTrailingSeparator(File(context.filesDir, "vault").path)
+
+    fun isInVault(context: Context, path: String) = path.startsWith(getVaultRoot(context))
 
     /**
      * Volume paths
@@ -259,6 +264,7 @@ object StorageUtils {
     // e.g.
     // /storage/emulated/0/         -> primary
     // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
+    // /storage/extSdCard/          -> 1234-5678 [Android 5.1.1, Samsung Galaxy Core Prime]
     private fun getVolumeUuidForDocumentUri(context: Context, anyPath: String): String? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
@@ -278,7 +284,22 @@ object StorageUtils {
                 return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
             }
             volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }?.let { uuid ->
-                return uuid.uppercase(Locale.ROOT)
+                if (uuid.matches(UUID_PATTERN)) {
+                    return uuid.uppercase(Locale.ROOT)
+                }
+            }
+
+            // fallback when UUID does not appear in the SD card volume path
+            context.contentResolver.persistedUriPermissions.firstOrNull { uriPermission ->
+                convertTreeDocumentUriToDirPath(context, uriPermission.uri)?.let {
+                    getVolumePath(context, it)?.let { grantedVolumePath ->
+                        grantedVolumePath == volumePath
+                    }
+                } ?: false
+            }?.let { uriPermission ->
+                splitTreeDocumentUri(uriPermission.uri)?.let { (uuid, _) ->
+                    return uuid
+                }
             }
         }
 
@@ -289,6 +310,7 @@ object StorageUtils {
     // e.g.
     // primary      -> /storage/emulated/0/
     // 10F9-3F13    -> /storage/10F9-3F13/
+    // 1234-5678    -> /storage/extSdCard/ [Android 5.1.1, Samsung Galaxy Core Prime]
     private fun getVolumePathFromTreeDocumentUriUuid(context: Context, uuid: String): String? {
         if (uuid == EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID) {
             return getPrimaryVolumePath(context)
@@ -317,6 +339,10 @@ object StorageUtils {
                 return volumePath
             }
         }
+
+        // fallback when UUID does not appear in the SD card volume path
+        val primaryVolumePath = getPrimaryVolumePath(context)
+        getVolumePaths(context).firstOrNull { it != primaryVolumePath }?.let { return it }
 
         Log.e(LOG_TAG, "failed to find volume path for UUID=$uuid")
         return null
@@ -350,9 +376,9 @@ object StorageUtils {
     }
 
     // e.g.
-    // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
-    // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
-    fun convertTreeDocumentUriToDirPath(context: Context, treeDocumentUri: Uri): String? {
+    // content://com.android.externalstorage.documents/tree/primary%3A              -> ("primary", "")
+    // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> ("10F9-3F13", "Pictures")
+    private fun splitTreeDocumentUri(treeDocumentUri: Uri): Pair<String, String>? {
         val treeDocumentUriString = treeDocumentUri.toString()
         if (treeDocumentUriString.length <= TREE_URI_ROOT.length) return null
         val encoded = treeDocumentUriString.substring(TREE_URI_ROOT.length)
@@ -362,11 +388,22 @@ object StorageUtils {
                 val uuid = group(1)
                 val relativePath = group(2)
                 if (uuid != null && relativePath != null) {
-                    val volumePath = getVolumePathFromTreeDocumentUriUuid(context, uuid)
-                    if (volumePath != null) {
-                        return ensureTrailingSeparator(volumePath + relativePath)
-                    }
+                    return Pair(uuid, relativePath)
                 }
+            }
+        }
+        Log.e(LOG_TAG, "failed to split treeDocumentUri=$treeDocumentUri to UUID and relative path")
+        return null
+    }
+
+    // e.g.
+    // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
+    // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
+    fun convertTreeDocumentUriToDirPath(context: Context, treeDocumentUri: Uri): String? {
+        splitTreeDocumentUri(treeDocumentUri)?.let { (uuid, relativePath) ->
+            val volumePath = getVolumePathFromTreeDocumentUriUuid(context, uuid)
+            if (volumePath != null) {
+                return ensureTrailingSeparator(volumePath + relativePath)
             }
         }
         Log.e(LOG_TAG, "failed to convert treeDocumentUri=$treeDocumentUri to path")
@@ -512,7 +549,7 @@ object StorageUtils {
     }
 
     // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
-    // to work around a bug from Android 10 where metadata redaction corrupts HEIC images.
+    // to work around a bug from Android 10 (API 29) where metadata redaction corrupts HEIC images.
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
     // for some non image/video content URIs (e.g. `downloads`, `file`)
     fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long? = null): Uri {

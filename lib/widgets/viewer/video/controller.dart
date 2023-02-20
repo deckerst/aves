@@ -70,15 +70,16 @@ abstract class AvesVideoController {
         content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.maybeOf(context)?.pop(false),
             child: Text(context.l10n.videoStartOverButtonLabel),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(context.l10n.videoResumeButtonLabel),
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (resume == null || !resume) return 0;
     return resumeTime;

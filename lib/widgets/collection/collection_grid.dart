@@ -13,6 +13,7 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
@@ -217,7 +218,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
           child: _CollectionSectionedContent(
             collection: collection,
             isScrollingNotifier: _isScrollingNotifier,
-            scrollController: PrimaryScrollController.of(context)!,
+            scrollController: PrimaryScrollController.of(context),
             tileLayout: tileLayout,
             selectable: selectable,
           ),
@@ -440,7 +441,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
   @override
   Widget build(BuildContext context) {
     final scrollView = _buildScrollView(widget.appBar, widget.collection);
-    return _buildDraggableScrollView(scrollView, widget.collection);
+    return settings.useTvLayout ? scrollView : _buildDraggableScrollView(scrollView, widget.collection);
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView, CollectionLens collection) {
@@ -642,5 +643,5 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     return crumbs;
   }
 
-  Future<bool> get _isStoragePermissionGranted => Permission.storage.status.then((status) => status.isGranted);
+  Future<bool> get _isStoragePermissionGranted => Future.wait(Constants.storagePermissions.map((v) => v.status)).then((v) => v.any((status) => status.isGranted));
 }

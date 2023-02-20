@@ -26,7 +26,7 @@ class Favourites with ChangeNotifier {
   FavouriteRow _entryToRow(AvesEntry entry) => FavouriteRow(entryId: entry.id);
 
   Future<void> add(Set<AvesEntry> entries) async {
-    final newRows = entries.map(_entryToRow);
+    final newRows = entries.map(_entryToRow).toSet();
 
     await metadataDb.addFavourites(newRows);
     _rows.addAll(newRows);

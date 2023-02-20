@@ -3,14 +3,19 @@ import 'dart:io';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/device.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/enums/view.dart';
+import 'package:aves/model/vaults/details.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -18,10 +23,13 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_album_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -32,7 +40,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin {
+class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin, VaultAwareMixin {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
 
   AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumFilter>> items) : _items = items;
@@ -73,12 +81,24 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     required int itemCount,
     required Set<AlbumFilter> selectedFilters,
   }) {
+    final selectedSingleItem = selectedFilters.length == 1;
+    final isMain = appMode == AppMode.main;
+
+    final canCreate = !settings.isReadOnly && appMode.canCreateFilter && !isSelecting;
     switch (action) {
       case ChipSetAction.createAlbum:
-        return !settings.isReadOnly && appMode == AppMode.main && !isSelecting;
+        return canCreate;
+      case ChipSetAction.createVault:
+        return canCreate && device.canUseVaults;
       case ChipSetAction.delete:
       case ChipSetAction.rename:
-        return !settings.isReadOnly && appMode == AppMode.main && isSelecting;
+        return isMain && isSelecting && !settings.isReadOnly;
+      case ChipSetAction.hide:
+        return isMain && selectedFilters.none((v) => vaults.isVault(v.album));
+      case ChipSetAction.configureVault:
+        return isMain && selectedSingleItem && vaults.isVault(selectedFilters.first.album);
+      case ChipSetAction.lockVault:
+        return isMain && selectedFilters.any((v) => vaults.isVault(v.album));
       default:
         return super.isVisible(
           action,
@@ -97,14 +117,25 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     required int itemCount,
     required Set<AlbumFilter> selectedFilters,
   }) {
+    final selectedItemCount = selectedFilters.length;
+    final hasSelection = selectedItemCount > 0;
+
     switch (action) {
       case ChipSetAction.rename:
-        {
-          if (selectedFilters.length != 1) return false;
-          // do not allow renaming volume root
-          final dir = VolumeRelativeDirectory.fromPath(selectedFilters.first.album);
-          return dir != null && dir.relativeDir.isNotEmpty;
-        }
+        if (selectedFilters.length != 1) return false;
+
+        final dirPath = selectedFilters.first.album;
+        if (vaults.isVault(dirPath)) return true;
+
+        // do not allow renaming volume root
+        final dir = VolumeRelativeDirectory.fromPath(dirPath);
+        return dir != null && dir.relativeDir.isNotEmpty;
+      case ChipSetAction.hide:
+        return hasSelection;
+      case ChipSetAction.lockVault:
+        return selectedFilters.map((v) => v.album).any((v) => vaults.isVault(v) && !vaults.isLocked(v));
+      case ChipSetAction.configureVault:
+        return true;
       default:
         return super.canApply(
           action,
@@ -117,18 +148,29 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   @override
   void onActionSelected(BuildContext context, Set<AlbumFilter> filters, ChipSetAction action) {
+    reportService.log('$action');
     switch (action) {
       // general
       case ChipSetAction.createAlbum:
-        _createAlbum(context);
+        _createAlbum(context, locked: false);
+        break;
+      case ChipSetAction.createVault:
+        _createAlbum(context, locked: true);
         break;
       // single/multiple filters
       case ChipSetAction.delete:
         _delete(context, filters);
         break;
+      case ChipSetAction.lockVault:
+        lockFilters(filters);
+        _browse(context);
+        break;
       // single filter
       case ChipSetAction.rename:
         _rename(context, filters.first);
+        break;
+      case ChipSetAction.configureVault:
+        _configureVault(context, filters.first);
         break;
       default:
         break;
@@ -159,6 +201,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
           tileExtentController: extentController,
         );
       },
+      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
@@ -170,51 +213,92 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     }
   }
 
-  void _createAlbum(BuildContext context) async {
-    final newAlbum = await showDialog<String>(
-      context: context,
-      builder: (context) => const CreateAlbumDialog(),
-    );
-    if (newAlbum != null && newAlbum.isNotEmpty) {
-      final source = context.read<CollectionSource>();
-      source.createAlbum(newAlbum);
+  void _createAlbum(BuildContext context, {required bool locked}) async {
+    final l10n = context.l10n;
+    final source = context.read<CollectionSource>();
+    late final String? directory;
+    if (locked) {
+      if (!await showSkippableConfirmationDialog(
+        context: context,
+        type: ConfirmationDialog.createVault,
+        message: l10n.newVaultWarningDialogMessage,
+        confirmationButtonLabel: l10n.continueButtonLabel,
+      )) return;
 
-      final showAction = SnackBarAction(
-        label: context.l10n.showButtonLabel,
-        onPressed: () async {
-          // local context may be deactivated when action is triggered after navigation
-          final context = AvesApp.navigatorKey.currentContext;
-          if (context != null) {
-            final highlightInfo = context.read<HighlightInfo>();
-            final filter = AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum));
-            if (context.currentRouteName == AlbumListPage.routeName) {
-              highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
-            } else {
-              highlightInfo.set(filter);
-              await Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: AlbumListPage.routeName),
-                  builder: (_) => const AlbumListPage(),
-                ),
-                (route) => false,
-              );
-            }
-          }
-        },
+      final details = await showDialog<VaultDetails>(
+        context: context,
+        builder: (context) => const EditVaultDialog(),
+        routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
       );
-      showFeedback(context, context.l10n.genericSuccessFeedback, showAction);
+      if (details == null) return;
+
+      await vaults.create(details);
+      directory = details.path;
+    } else {
+      directory = await showDialog<String>(
+        context: context,
+        builder: (context) => const CreateAlbumDialog(),
+        routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
+      );
+      if (directory == null) return;
     }
+    source.createAlbum(directory);
+
+    final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
+    final showAction = SnackBarAction(
+      label: l10n.showButtonLabel,
+      onPressed: () async {
+        // local context may be deactivated when action is triggered after navigation
+        final context = AvesApp.navigatorKey.currentContext;
+        if (context != null) {
+          final highlightInfo = context.read<HighlightInfo>();
+          if (context.currentRouteName == AlbumListPage.routeName) {
+            highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
+          } else {
+            highlightInfo.set(filter);
+            await Navigator.maybeOf(context)?.pushAndRemoveUntil(
+              MaterialPageRoute(
+                settings: const RouteSettings(name: AlbumListPage.routeName),
+                builder: (_) => const AlbumListPage(),
+              ),
+              (route) => false,
+            );
+          }
+        }
+      },
+    );
+    showFeedback(context, l10n.genericSuccessFeedback, showAction);
   }
 
   Future<void> _delete(BuildContext context, Set<AlbumFilter> filters) async {
+    final byBinUsage = groupBy<AlbumFilter, bool>(filters, (filter) {
+      final details = vaults.getVault(filter.album);
+      return details?.useBin ?? settings.enableBin;
+    });
+    await Future.forEach(
+        byBinUsage.entries,
+        (kv) => _doDelete(
+              context: context,
+              filters: kv.value.toSet(),
+              enableBin: kv.key,
+            ));
+    _browse(context);
+  }
+
+  Future<void> _doDelete({
+    required BuildContext context,
+    required Set<AlbumFilter> filters,
+    required bool enableBin,
+  }) async {
+    if (!await unlockFilters(context, filters)) return;
+
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoAlbums = filters.map((v) => v.album).toSet();
     final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
     final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
 
-    if (settings.enableBin && filledAlbums.isNotEmpty) {
+    if (enableBin && filledAlbums.isNotEmpty) {
       await doMove(
         context,
         moveType: MoveType.toBin,
@@ -229,7 +313,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     }
 
     final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
     final todoCount = todoEntries.length;
 
     final confirmed = await showDialog<bool>(
@@ -239,11 +322,12 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         actions: [
           const CancelButton(),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.maybeOf(context)?.pop(true),
             child: Text(l10n.deleteButtonLabel),
           ),
         ],
       ),
+      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
 
@@ -251,6 +335,26 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     source.cleanEmptyAlbums(emptyAlbums);
 
     if (!await checkStoragePermissionForAlbums(context, filledAlbums)) return;
+
+    await _deleteEntriesForever(context, todoEntries);
+
+    final vaultAlbumFilters = filters.where((v) => vaults.isVault(v.album)).toSet();
+    if (vaultAlbumFilters.isNotEmpty) {
+      final allEntries = source.allEntries;
+      final emptyVaultAlbums = vaultAlbumFilters.whereNot((v) => allEntries.any(v.test)).map((v) => v.album).toSet();
+      await vaults.remove(emptyVaultAlbums);
+    }
+  }
+
+  Future<void> _deleteEntriesForever(BuildContext context, Set<AvesEntry> todoEntries) async {
+    if (todoEntries.isEmpty) return;
+
+    final source = context.read<CollectionSource>();
+    final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
+
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final todoCount = todoEntries.length;
 
     source.pauseMonitoring();
     final opId = mediaEditService.newOpId;
@@ -280,30 +384,40 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
   }
 
   Future<void> _rename(BuildContext context, AlbumFilter filter) async {
+    if (!await unlockFilter(context, filter)) return;
+
+    final album = filter.album;
+    if (!vaults.isVault(album)) {
+      final dir = VolumeRelativeDirectory.fromPath(album);
+      // do not allow renaming volume root
+      if (dir == null || dir.relativeDir.isEmpty) return;
+
+      // check whether renaming is possible given OS restrictions,
+      // before asking to input a new name
+      final restrictedDirs = await storageService.getRestrictedDirectories();
+      if (restrictedDirs.contains(dir)) {
+        await showRestrictedDirectoryDialog(context, dir);
+        return;
+      }
+    }
+
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (context) => RenameAlbumDialog(album: album),
+      routeSettings: const RouteSettings(name: RenameAlbumDialog.routeName),
+    );
+    if (newName == null || newName.isEmpty) return;
+
+    await _doRename(context, filter, newName);
+  }
+
+  Future<void> _doRename(BuildContext context, AlbumFilter filter, String newName) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final source = context.read<CollectionSource>();
     final album = filter.album;
     final todoEntries = source.visibleEntries.where(filter.test).toSet();
     final todoCount = todoEntries.length;
-
-    final dir = VolumeRelativeDirectory.fromPath(album);
-    // do not allow renaming volume root
-    if (dir == null || dir.relativeDir.isEmpty) return;
-
-    // check whether renaming is possible given OS restrictions,
-    // before asking to input a new name
-    final restrictedDirs = await storageService.getRestrictedDirectories();
-    if (restrictedDirs.contains(dir)) {
-      await showRestrictedDirectoryDialog(context, dir);
-      return;
-    }
-
-    final newName = await showDialog<String>(
-      context: context,
-      builder: (context) => RenameAlbumDialog(album: album),
-    );
-    if (newName == null || newName.isEmpty) return;
 
     final destinationAlbumParent = pContext.dirname(album);
     final destinationAlbum = pContext.join(destinationAlbumParent, newName);
@@ -348,5 +462,38 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         await storageService.deleteEmptyDirectories({album});
       },
     );
+  }
+
+  Future<void> _configureVault(BuildContext context, AlbumFilter filter) async {
+    if (!await unlockFilter(context, filter)) return;
+
+    final oldDetails = vaults.getVault(filter.album);
+    if (oldDetails == null) return;
+
+    final newDetails = await showDialog<VaultDetails>(
+      context: context,
+      builder: (context) => EditVaultDialog(initialDetails: oldDetails),
+      routeSettings: const RouteSettings(name: EditVaultDialog.routeName),
+    );
+    if (newDetails == null || oldDetails == newDetails) return;
+
+    if (oldDetails.useBin && !newDetails.useBin) {
+      final filter = AlbumFilter(oldDetails.path, null);
+      final source = context.read<CollectionSource>();
+      await _deleteEntriesForever(context, source.trashedEntries.where(filter.test).toSet());
+    }
+
+    final oldName = oldDetails.name;
+    final newName = newDetails.name;
+    if (oldName != newName) {
+      await vaults.update(newDetails.copyWith(name: oldName));
+      // wipe the old pass, if any, so that it does not overwrite the new pass
+      // when renaming the vault afterwards
+      await securityService.writeValue(oldDetails.passKey, null);
+      await _doRename(context, filter, newName);
+    } else {
+      await vaults.update(newDetails);
+      _browse(context);
+    }
   }
 }

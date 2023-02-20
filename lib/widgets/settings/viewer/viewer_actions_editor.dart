@@ -25,6 +25,7 @@ class ViewerActionEditorPage extends StatelessWidget {
       EntryAction.flip,
     ],
     [
+      ...EntryActions.exportInternal,
       EntryAction.videoCaptureFrame,
       EntryAction.videoToggleMute,
       EntryAction.videoSetSpeed,
