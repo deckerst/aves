@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.0"></a>[v1.8.0] - 2023-02-20
+
 ### Added
 
 - Vaults
