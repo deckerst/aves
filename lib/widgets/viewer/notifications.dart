@@ -7,16 +7,38 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
+class PopVisualNotification extends Notification {}
+
+@immutable
 class ShowImageNotification extends Notification {}
 
 @immutable
 class ShowInfoPageNotification extends Notification {}
 
 @immutable
-class TvShowLessInfoNotification extends Notification {}
+class ShowPreviousEntryNotification extends Notification {
+  final bool animate;
+
+  const ShowPreviousEntryNotification({required this.animate});
+}
 
 @immutable
-class TvShowMoreInfoNotification extends Notification {}
+class ShowNextEntryNotification extends Notification {
+  final bool animate;
+
+  const ShowNextEntryNotification({required this.animate});
+}
+
+@immutable
+class ShowEntryNotification extends Notification {
+  final bool animate;
+  final int index;
+
+  const ShowEntryNotification({
+    required this.animate,
+    required this.index,
+  });
+}
 
 @immutable
 class ToggleOverlayNotification extends Notification {
@@ -26,17 +48,10 @@ class ToggleOverlayNotification extends Notification {
 }
 
 @immutable
-class JumpToPreviousEntryNotification extends Notification {}
+class TvShowLessInfoNotification extends Notification {}
 
 @immutable
-class JumpToNextEntryNotification extends Notification {}
-
-@immutable
-class JumpToEntryNotification extends Notification {
-  final int index;
-
-  const JumpToEntryNotification({required this.index});
-}
+class TvShowMoreInfoNotification extends Notification {}
 
 @immutable
 class VideoActionNotification extends Notification {

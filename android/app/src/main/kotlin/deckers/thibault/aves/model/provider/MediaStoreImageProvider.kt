@@ -552,10 +552,10 @@ class MediaStoreImageProvider : ImageProvider() {
             )
         } else if (toVault) {
             hashMapOf(
+                "origin" to SourceEntry.ORIGIN_VAULT,
                 "uri" to File(targetPath).toUri().toString(),
                 "contentId" to null,
                 "path" to targetPath,
-                "origin" to SourceEntry.ORIGIN_VAULT,
             )
         } else {
             scanNewPath(activity, targetPath, mimeType)
@@ -626,74 +626,16 @@ class MediaStoreImageProvider : ImageProvider() {
         return targetDir + fileName
     }
 
-    override suspend fun renameMultiple(
-        activity: Activity,
-        entriesToNewName: Map<AvesEntry, String>,
-        isCancelledOp: CancelCheck,
-        callback: ImageOpCallback,
-    ) {
-        for (kv in entriesToNewName) {
-            val entry = kv.key
-            val desiredName = kv.value
-
-            val sourceUri = entry.uri
-            val sourcePath = entry.path
-            val mimeType = entry.mimeType
-
-            val result: FieldMap = hashMapOf(
-                "uri" to sourceUri.toString(),
-                "success" to false,
-            )
-
-            // prevent naming with a `.` prefix as it would hide the file and remove it from the Media Store
-            if (sourcePath != null && !desiredName.startsWith('.')) {
-                try {
-                    val newFields = if (isCancelledOp()) skippedFieldMap else renameSingle(
-                        activity = activity,
-                        mimeType = mimeType,
-                        oldMediaUri = sourceUri,
-                        oldPath = sourcePath,
-                        desiredName = desiredName,
-                    )
-                    result["newFields"] = newFields
-                    result["success"] = true
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to rename to newFileName=$desiredName entry with sourcePath=$sourcePath", e)
-                }
-            }
-            callback.onSuccess(result)
-        }
-    }
-
-    private suspend fun renameSingle(
+    override suspend fun renameSingle(
         activity: Activity,
         mimeType: String,
         oldMediaUri: Uri,
         oldPath: String,
-        desiredName: String,
-    ): FieldMap {
-        val desiredNameWithoutExtension = desiredName.substringBeforeLast(".")
-
-        val oldFile = File(oldPath)
-        if (oldFile.nameWithoutExtension == desiredNameWithoutExtension) return skippedFieldMap
-
-        val dir = oldFile.parent ?: return skippedFieldMap
-        val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
-            contextWrapper = activity,
-            dir = dir,
-            desiredNameWithoutExtension = desiredNameWithoutExtension,
-            mimeType = mimeType,
-            conflictStrategy = NameConflictStrategy.RENAME,
-        ) ?: return skippedFieldMap
-        val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
-
-        val newFile = File(dir, targetFileName)
-        return when {
-            oldFile == newFile -> skippedFieldMap
-            StorageUtils.canEditByFile(activity, oldPath) -> renameSingleByFile(activity, mimeType, oldMediaUri, oldPath, newFile)
-            isMediaUriPermissionGranted(activity, oldMediaUri, mimeType) -> renameSingleByMediaStore(activity, mimeType, oldMediaUri, newFile)
-            else -> renameSingleByTreeDoc(activity, mimeType, oldMediaUri, oldPath, newFile)
-        }
+        newFile: File,
+    ): FieldMap = when {
+        StorageUtils.canEditByFile(activity, oldPath) -> renameSingleByFile(activity, mimeType, oldMediaUri, oldPath, newFile)
+        isMediaUriPermissionGranted(activity, oldMediaUri, mimeType) -> renameSingleByMediaStore(activity, mimeType, oldMediaUri, newFile)
+        else -> renameSingleByTreeDoc(activity, mimeType, oldMediaUri, oldPath, newFile)
     }
 
     private suspend fun renameSingleByMediaStore(
@@ -851,10 +793,12 @@ class MediaStoreImageProvider : ImageProvider() {
                 try {
                     val cursor = context.contentResolver.query(uri, projection, null, null, null)
                     if (cursor != null && cursor.moveToFirst()) {
-                        val newFields = HashMap<String, Any?>()
-                        newFields["uri"] = uri.toString()
-                        newFields["contentId"] = uri.tryParseId()
-                        newFields["path"] = path
+                        val newFields = hashMapOf<String, Any?>(
+                            "origin" to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
+                            "uri" to uri.toString(),
+                            "contentId" to uri.tryParseId(),
+                            "path" to path,
+                        )
                         cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields["dateAddedSecs"] = cursor.getInt(it) }
                         cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
                         cursor.close()

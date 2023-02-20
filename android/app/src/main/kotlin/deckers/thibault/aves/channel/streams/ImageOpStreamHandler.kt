@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -219,18 +220,20 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             entriesToNewName[AvesEntry(rawEntry)] = newName
         }
 
-        // assume same provider for all entries
-        val firstEntry = entriesToNewName.keys.first()
-        val provider = getProvider(firstEntry.uri)
-        if (provider == null) {
-            error("rename-provider", "failed to find provider for entry=$firstEntry", null)
-            return
+        val byProvider = entriesToNewName.entries.groupBy { kv -> getProvider(kv.key.uri) }
+        for ((provider, entryList) in byProvider) {
+            if (provider == null) {
+                error("rename-provider", "failed to find provider for entry=${entryList.firstOrNull()}", null)
+                return
+            }
+
+            val entryMap = mapOf(*entryList.map { Pair(it.key, it.value) }.toTypedArray())
+            provider.renameMultiple(activity, entryMap, ::isCancelledOp, object : ImageOpCallback {
+                override fun onSuccess(fields: FieldMap) = success(fields)
+                override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
+            })
         }
 
-        provider.renameMultiple(activity, entriesToNewName, ::isCancelledOp, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = success(fields)
-            override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
-        })
         endOfStream()
     }
 

@@ -266,9 +266,9 @@ class Dependencies {
       sourceUrl: 'https://github.com/diegoveloper/flutter_percent_indicator',
     ),
     Dependency(
-      name: 'Pinput',
+      name: 'Pin Code Fields',
       license: mit,
-      sourceUrl: 'https://github.com/Tkko/Flutter_PinPut',
+      sourceUrl: 'https://github.com/adar2378/pin_code_fields',
     ),
     Dependency(
       name: 'Provider',
