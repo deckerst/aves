@@ -44,7 +44,18 @@ class _PasswordDialogState extends State<PasswordDialog> {
               onSubmitted: (password) {
                 if (widget.needConfirmation) {
                   if (_confirming) {
-                    Navigator.maybeOf(context)?.pop<String>(_firstPassword == password ? password : null);
+                    final match = _firstPassword == password;
+                    Navigator.maybeOf(context)?.pop<String>(match ? password : null);
+                    if (!match) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AvesDialog(
+                          content: Text(context.l10n.genericFailureFeedback),
+                          actions: const [OkButton()],
+                        ),
+                        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+                      );
+                    }
                   } else {
                     _firstPassword = password;
                     _controller.clear();

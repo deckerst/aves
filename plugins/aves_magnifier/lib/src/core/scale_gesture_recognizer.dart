@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:aves_magnifier/aves_magnifier.dart';
-import 'package:aves_magnifier/src/pan/corner_hit_detector.dart';
+import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
-  final CornerHitDetector hitDetector;
+  final EdgeHitDetector hitDetector;
   final MagnifierGestureDetectorScope scope;
   final ValueNotifier<TapDownDetails?> doubleTapDetails;
 
@@ -104,14 +104,15 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
     }
 
     final validateAxis = scope.axis;
+    final canFling = scope.escapeByFling;
     final move = _initialFocalPoint! - _currentFocalPoint!;
     bool shouldMove = scope.acceptPointerEvent?.call(move) ?? false;
 
     if (!shouldMove) {
       if (validateAxis.length == 2) {
         // the image is the descendant of gesture detector(s) handling drag in both directions
-        final shouldMoveX = validateAxis.contains(Axis.horizontal) && hitDetector.shouldMoveX(move);
-        final shouldMoveY = validateAxis.contains(Axis.vertical) && hitDetector.shouldMoveY(move);
+        final shouldMoveX = validateAxis.contains(Axis.horizontal) && hitDetector.shouldMoveX(move, canFling);
+        final shouldMoveY = validateAxis.contains(Axis.vertical) && hitDetector.shouldMoveY(move, canFling);
         if (shouldMoveX == shouldMoveY) {
           // consistently can/cannot pan the image in both direction the same way
           shouldMove = shouldMoveX;
@@ -122,7 +123,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
         }
       } else {
         // the image is the descendant of a gesture detector handling drag in one direction
-        shouldMove = validateAxis.contains(Axis.vertical) ? hitDetector.shouldMoveY(move) : hitDetector.shouldMoveX(move);
+        shouldMove = validateAxis.contains(Axis.vertical) ? hitDetector.shouldMoveY(move, canFling) : hitDetector.shouldMoveX(move, canFling);
       }
     }
 

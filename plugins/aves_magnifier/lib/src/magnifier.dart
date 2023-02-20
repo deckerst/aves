@@ -32,6 +32,7 @@ class AvesMagnifier extends StatelessWidget {
     this.onScaleStart,
     this.onScaleUpdate,
     this.onScaleEnd,
+    this.onFling,
     this.onTap,
     this.onDoubleTap,
     required this.child,
@@ -58,6 +59,7 @@ class AvesMagnifier extends StatelessWidget {
   final MagnifierGestureScaleStartCallback? onScaleStart;
   final MagnifierGestureScaleUpdateCallback? onScaleUpdate;
   final MagnifierGestureScaleEndCallback? onScaleEnd;
+  final MagnifierGestureFlingCallback? onFling;
   final MagnifierTapCallback? onTap;
   final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
@@ -82,6 +84,7 @@ class AvesMagnifier extends StatelessWidget {
           onScaleStart: onScaleStart,
           onScaleUpdate: onScaleUpdate,
           onScaleEnd: onScaleEnd,
+          onFling: onFling,
           onTap: onTap,
           onDoubleTap: onDoubleTap,
           child: child,
@@ -101,3 +104,4 @@ typedef MagnifierDoubleTapCallback = bool Function(Alignment alignment);
 typedef MagnifierGestureScaleStartCallback = void Function(ScaleStartDetails details, bool doubleTap, ScaleBoundaries boundaries);
 typedef MagnifierGestureScaleUpdateCallback = bool Function(ScaleUpdateDetails details);
 typedef MagnifierGestureScaleEndCallback = void Function(ScaleEndDetails details);
+typedef MagnifierGestureFlingCallback = void Function(AxisDirection direction);

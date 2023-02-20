@@ -1,5 +1,6 @@
 package deckers.thibault.aves.model.provider
 
+import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.net.Uri
@@ -51,6 +52,26 @@ internal class FileImageProvider : ImageProvider() {
         if (file.delete()) return
 
         throw Exception("failed to delete entry with uri=$uri path=$path")
+    }
+
+    override suspend fun renameSingle(
+        activity: Activity,
+        mimeType: String,
+        oldMediaUri: Uri,
+        oldPath: String,
+        newFile: File,
+    ): FieldMap {
+        Log.d(LOG_TAG, "rename file at path=$oldPath")
+        val renamed = File(oldPath).renameTo(newFile)
+        if (!renamed) {
+            throw Exception("failed to rename file at path=$oldPath")
+        }
+
+        return hashMapOf(
+            "uri" to Uri.fromFile(newFile).toString(),
+            "path" to newFile.path,
+            "dateModifiedSecs" to newFile.lastModified() / 1000,
+        )
     }
 
     override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: FieldMap, callback: ImageOpCallback) {
