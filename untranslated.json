@@ -636,31 +636,6 @@
     "settingsDisablingBinWarningDialogMessage"
   ],
 
-  "el": [
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "tooManyItemsErrorDialogMessage",
-    "settingsConfirmationVaultDataLoss",
-    "settingsVideoGestureVerticalDragBrightnessVolume",
-    "settingsDisablingBinWarningDialogMessage"
-  ],
-
   "eu": [
     "chipActionLock",
     "chipActionCreateVault",
@@ -2260,29 +2235,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "settingsConfirmationVaultDataLoss",
-    "settingsDisablingBinWarningDialogMessage"
-  ],
-
   "it": [
     "chipActionLock",
     "chipActionCreateVault",
@@ -2757,29 +2709,6 @@
     "wallpaperUseScrollEffect"
   ],
 
-  "pl": [
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "settingsConfirmationVaultDataLoss",
-    "settingsDisablingBinWarningDialogMessage"
-  ],
-
   "pt": [
     "columnCount",
     "chipActionLock",
@@ -2803,29 +2732,6 @@
     "tooManyItemsErrorDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsVideoGestureVerticalDragBrightnessVolume",
-    "settingsDisablingBinWarningDialogMessage"
-  ],
-
-  "ro": [
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "settingsConfirmationVaultDataLoss",
     "settingsDisablingBinWarningDialogMessage"
   ],
 
@@ -3614,29 +3520,6 @@
   ],
 
   "tr": [
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "settingsConfirmationVaultDataLoss",
-    "settingsDisablingBinWarningDialogMessage"
-  ],
-
-  "uk": [
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
