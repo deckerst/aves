@@ -3,11 +3,11 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
-import 'package:aves/model/source/location/country.dart';
+import 'package:aves/model/source/location/place.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/filter_grids/common/action_delegates/country_set.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/place_set.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:collection/collection.dart';
@@ -15,16 +15,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class CountryListPage extends StatelessWidget {
-  static const routeName = '/countries';
+class PlaceListPage extends StatelessWidget {
+  static const routeName = '/places';
 
-  const CountryListPage({super.key});
+  const PlaceListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
     return Selector<Settings, Tuple3<ChipSortFactor, bool, Set<CollectionFilter>>>(
-      selector: (context, s) => Tuple3(s.countrySortFactor, s.countrySortReverse, s.pinnedFilters),
+      selector: (context, s) => Tuple3(s.placeSortFactor, s.placeSortReverse, s.pinnedFilters),
       shouldRebuild: (t1, t2) {
         // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within `TupleN`
         const eq = DeepCollectionEquality();
@@ -32,19 +32,19 @@ class CountryListPage extends StatelessWidget {
       },
       builder: (context, s, child) {
         return StreamBuilder(
-          stream: source.eventBus.on<CountriesChangedEvent>(),
+          stream: source.eventBus.on<PlacesChangedEvent>(),
           builder: (context, snapshot) {
             final gridItems = _getGridItems(source);
-            return FilterNavigationPage<LocationFilter, CountryChipSetActionDelegate>(
+            return FilterNavigationPage<LocationFilter, PlaceChipSetActionDelegate>(
               source: source,
-              title: context.l10n.countryPageTitle,
-              sortFactor: settings.countrySortFactor,
-              actionDelegate: CountryChipSetActionDelegate(gridItems),
+              title: context.l10n.placePageTitle,
+              sortFactor: settings.placeSortFactor,
+              actionDelegate: PlaceChipSetActionDelegate(gridItems),
               filterSections: _groupToSections(gridItems),
               applyQuery: applyQuery,
               emptyBuilder: () => EmptyContent(
-                icon: AIcons.country,
-                text: context.l10n.countryEmpty,
+                icon: AIcons.place,
+                text: context.l10n.placeEmpty,
               ),
             );
           },
@@ -58,9 +58,9 @@ class CountryListPage extends StatelessWidget {
   }
 
   List<FilterGridItem<LocationFilter>> _getGridItems(CollectionSource source) {
-    final filters = source.sortedCountries.map((location) => LocationFilter(LocationLevel.country, location)).toSet();
+    final filters = source.sortedPlaces.map((location) => LocationFilter(LocationLevel.place, location)).toSet();
 
-    return FilterNavigationPage.sort(settings.countrySortFactor, settings.countrySortReverse, source, filters);
+    return FilterNavigationPage.sort(settings.placeSortFactor, settings.placeSortReverse, source, filters);
   }
 
   static Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _groupToSections(Iterable<FilterGridItem<LocationFilter>> sortedMapEntries) {

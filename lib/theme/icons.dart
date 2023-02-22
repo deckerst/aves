@@ -36,6 +36,8 @@ class AIcons {
   static const IconData language = Icons.translate_outlined;
   static const IconData location = Icons.place_outlined;
   static const IconData locationUnlocated = Icons.location_off_outlined;
+  static const IconData country = Icons.flag_outlined;
+  static const IconData place = Icons.place_outlined;
   static const IconData mainStorage = Icons.smartphone_outlined;
   static const IconData mimeType = Icons.code_outlined;
   static const IconData opacity = Icons.opacity;

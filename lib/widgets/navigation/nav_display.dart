@@ -9,6 +9,7 @@ import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,8 @@ class NavigationDisplay {
         return l10n.drawerAlbumPage;
       case CountryListPage.routeName:
         return l10n.drawerCountryPage;
+      case PlaceListPage.routeName:
+        return l10n.drawerPlacePage;
       case TagListPage.routeName:
         return l10n.drawerTagPage;
       case SettingsPage.routeName:
@@ -55,7 +58,9 @@ class NavigationDisplay {
       case AlbumListPage.routeName:
         return AIcons.album;
       case CountryListPage.routeName:
-        return AIcons.location;
+        return AIcons.country;
+      case PlaceListPage.routeName:
+        return AIcons.place;
       case TagListPage.routeName:
         return AIcons.tag;
       case SettingsPage.routeName:

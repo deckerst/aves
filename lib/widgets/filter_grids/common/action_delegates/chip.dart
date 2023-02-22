@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
     switch (action) {
       case ChipAction.goToAlbumPage:
       case ChipAction.goToCountryPage:
+      case ChipAction.goToPlacePage:
       case ChipAction.goToTagPage:
       case ChipAction.reverse:
         return true;
@@ -41,6 +43,9 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         break;
       case ChipAction.goToCountryPage:
         _goTo(context, filter, CountryListPage.routeName, (context) => const CountryListPage());
+        break;
+      case ChipAction.goToPlacePage:
+        _goTo(context, filter, PlaceListPage.routeName, (context) => const PlaceListPage());
         break;
       case ChipAction.goToTagPage:
         _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());

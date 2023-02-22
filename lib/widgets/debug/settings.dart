@@ -3,6 +3,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,7 @@ class DebugSettingsSection extends StatelessWidget {
                   'tileExtent - Collection': '${settings.getTileExtent(CollectionPage.routeName)}',
                   'tileExtent - Albums': '${settings.getTileExtent(AlbumListPage.routeName)}',
                   'tileExtent - Countries': '${settings.getTileExtent(CountryListPage.routeName)}',
+                  'tileExtent - Places': '${settings.getTileExtent(PlaceListPage.routeName)}',
                   'tileExtent - Tags': '${settings.getTileExtent(TagListPage.routeName)}',
                   'infoMapZoom': '${settings.infoMapZoom}',
                   'collectionSelectionQuickActions': '${settings.collectionSelectionQuickActions}',
