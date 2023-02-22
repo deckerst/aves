@@ -6,6 +6,7 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
 
@@ -40,6 +41,7 @@ class SettingsDefaults {
   static const drawerPageBookmarks = [
     AlbumListPage.routeName,
     CountryListPage.routeName,
+    PlaceListPage.routeName,
     TagListPage.routeName,
   ];
 
@@ -65,6 +67,7 @@ class SettingsDefaults {
   static const albumGroupFactor = AlbumChipGroupFactor.importance;
   static const albumSortFactor = ChipSortFactor.name;
   static const countrySortFactor = ChipSortFactor.name;
+  static const placeSortFactor = ChipSortFactor.name;
   static const tagSortFactor = ChipSortFactor.name;
 
   // viewer

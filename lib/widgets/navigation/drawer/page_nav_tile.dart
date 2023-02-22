@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
@@ -88,6 +89,8 @@ class PageNavTile extends StatelessWidget {
         return (_) => const AlbumListPage();
       case CountryListPage.routeName:
         return (_) => const CountryListPage();
+      case PlaceListPage.routeName:
+        return (_) => const PlaceListPage();
       case TagListPage.routeName:
         return (_) => const TagListPage();
       case SettingsPage.routeName:

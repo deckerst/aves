@@ -20,6 +20,7 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
@@ -106,9 +107,11 @@ class Settings extends ChangeNotifier {
   static const albumGroupFactorKey = 'album_group_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
+  static const placeSortFactorKey = 'place_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
   static const albumSortReverseKey = 'album_sort_reverse';
   static const countrySortReverseKey = 'country_sort_reverse';
+  static const placeSortReverseKey = 'place_sort_reverse';
   static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
@@ -265,6 +268,7 @@ class Settings extends ChangeNotifier {
       drawerPageBookmarks = [
         AlbumListPage.routeName,
         CountryListPage.routeName,
+        PlaceListPage.routeName,
         TagListPage.routeName,
         SearchPage.routeName,
       ];
@@ -543,6 +547,10 @@ class Settings extends ChangeNotifier {
 
   set countrySortFactor(ChipSortFactor newValue) => _set(countrySortFactorKey, newValue.toString());
 
+  ChipSortFactor get placeSortFactor => getEnumOrDefault(placeSortFactorKey, SettingsDefaults.placeSortFactor, ChipSortFactor.values);
+
+  set placeSortFactor(ChipSortFactor newValue) => _set(placeSortFactorKey, newValue.toString());
+
   ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => _set(tagSortFactorKey, newValue.toString());
@@ -554,6 +562,10 @@ class Settings extends ChangeNotifier {
   bool get countrySortReverse => getBool(countrySortReverseKey) ?? false;
 
   set countrySortReverse(bool newValue) => _set(countrySortReverseKey, newValue);
+
+  bool get placeSortReverse => getBool(placeSortReverseKey) ?? false;
+
+  set placeSortReverse(bool newValue) => _set(placeSortReverseKey, newValue);
 
   bool get tagSortReverse => getBool(tagSortReverseKey) ?? false;
 
@@ -1038,6 +1050,7 @@ class Settings extends ChangeNotifier {
             case showThumbnailVideoDurationKey:
             case albumSortReverseKey:
             case countrySortReverseKey:
+            case placeSortReverseKey:
             case tagSortReverseKey:
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
@@ -1084,6 +1097,7 @@ class Settings extends ChangeNotifier {
             case albumGroupFactorKey:
             case albumSortFactorKey:
             case countrySortFactorKey:
+            case placeSortFactorKey:
             case tagSortFactorKey:
             case imageBackgroundKey:
             case videoAutoPlayModeKey:

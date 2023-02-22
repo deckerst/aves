@@ -51,6 +51,8 @@ class LocationFilter extends CoveredCollectionFilter {
 
   String? get countryCode => _countryCode;
 
+  String get place => _location;
+
   @override
   EntryFilter get positiveTest => _test;
 
@@ -65,17 +67,25 @@ class LocationFilter extends CoveredCollectionFilter {
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
-    if (_countryCode != null && device.canRenderFlagEmojis) {
-      final flag = countryCodeToFlag(_countryCode);
-      if (flag != null) {
-        return Text(
-          flag,
-          style: TextStyle(fontSize: size),
-          textScaleFactor: 1.0,
-        );
-      }
+    if (_location.isEmpty) {
+      return Icon(AIcons.locationUnlocated, size: size);
     }
-    return Icon(_location.isEmpty ? AIcons.locationUnlocated : AIcons.location, size: size);
+    switch (level) {
+      case LocationLevel.place:
+        return Icon(AIcons.place, size: size);
+      case LocationLevel.country:
+        if (_countryCode != null && device.canRenderFlagEmojis) {
+          final flag = countryCodeToFlag(_countryCode);
+          if (flag != null) {
+            return Text(
+              flag,
+              style: TextStyle(fontSize: size),
+              textScaleFactor: 1.0,
+            );
+          }
+        }
+        return Icon(AIcons.country, size: size);
+    }
   }
 
   @override

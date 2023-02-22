@@ -6,7 +6,8 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/location.dart';
+import 'package:aves/model/source/location/country.dart';
+import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -19,6 +20,7 @@ import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/drawer/collection_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
@@ -240,6 +242,12 @@ class _AppDrawerState extends State<AppDrawer> {
             trailing = StreamBuilder(
               stream: source.eventBus.on<CountriesChangedEvent>(),
               builder: (context, _) => Text('${source.sortedCountries.length}'),
+            );
+            break;
+          case PlaceListPage.routeName:
+            trailing = StreamBuilder(
+              stream: source.eventBus.on<PlacesChangedEvent>(),
+              builder: (context, _) => Text('${source.sortedPlaces.length}'),
             );
             break;
           case TagListPage.routeName:

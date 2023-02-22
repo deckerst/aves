@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Places: page & navigation entry
+
+### Fixed
+
+- replacing when moving item to vault
+- exporting item to vault
+
 ## <a id="v1.8.1"></a>[v1.8.1] - 2023-02-21
 
 ### Added

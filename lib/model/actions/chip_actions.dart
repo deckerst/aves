@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 enum ChipAction {
   goToAlbumPage,
   goToCountryPage,
+  goToPlacePage,
   goToTagPage,
   reverse,
   hide,
@@ -18,6 +19,8 @@ extension ExtraChipAction on ChipAction {
         return context.l10n.chipActionGoToAlbumPage;
       case ChipAction.goToCountryPage:
         return context.l10n.chipActionGoToCountryPage;
+      case ChipAction.goToPlacePage:
+        return context.l10n.chipActionGoToPlacePage;
       case ChipAction.goToTagPage:
         return context.l10n.chipActionGoToTagPage;
       case ChipAction.reverse:
@@ -37,7 +40,9 @@ extension ExtraChipAction on ChipAction {
       case ChipAction.goToAlbumPage:
         return AIcons.album;
       case ChipAction.goToCountryPage:
-        return AIcons.location;
+        return AIcons.country;
+      case ChipAction.goToPlacePage:
+        return AIcons.place;
       case ChipAction.goToTagPage:
         return AIcons.tag;
       case ChipAction.reverse:
