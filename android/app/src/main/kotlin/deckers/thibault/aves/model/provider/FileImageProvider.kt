@@ -53,13 +53,15 @@ internal class FileImageProvider : ImageProvider() {
     }
 
     override suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
-        val file = File(File(uri.path!!).path)
-        if (!file.exists()) return
+        path ?: throw Exception("failed to delete file because path is null")
 
-        Log.d(LOG_TAG, "delete file at uri=$uri")
-        if (file.delete()) return
-
-        throw Exception("failed to delete entry with uri=$uri path=$path")
+        val file = File(path)
+        if (file.exists()) {
+            Log.d(LOG_TAG, "delete file at path=$path")
+            if (!file.delete()) {
+                throw Exception("failed to delete entry with uri=$uri path=$path")
+            }
+        }
     }
 
     override suspend fun renameSingle(
