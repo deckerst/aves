@@ -70,7 +70,7 @@ object MimeTypes {
 
     fun isRaw(mimeType: String): Boolean {
         return when (mimeType) {
-            ARW, CR2, DNG, NEF, NRW, ORF, PEF, RAF, RW2, SRW -> true
+            ARW, CR2, CRW, DCR, DNG, ERF, K25, KDC, MRW, NEF, NRW, ORF, PEF, RAF, RAW, RW2, SR2, SRF, SRW, X3F -> true
             else -> false
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.net.Uri
 import android.util.Log
+import android.webkit.MimeTypeMap
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
@@ -12,12 +13,19 @@ import java.io.File
 
 internal class FileImageProvider : ImageProvider() {
     override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
-        if (sourceMimeType == null) {
-            callback.onFailure(Exception("MIME type is null for uri=$uri"))
-            return
+        val mimeType = if (sourceMimeType != null) {
+            sourceMimeType
+        } else {
+            val fromExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
+            if (fromExtension != null) {
+                fromExtension
+            } else {
+                callback.onFailure(Exception("MIME type was not provided and cannot be guessed from extension of uri=$uri"))
+                return
+            }
         }
 
-        val entry = SourceEntry(SourceEntry.ORIGIN_FILE, uri, sourceMimeType)
+        val entry = SourceEntry(SourceEntry.ORIGIN_FILE, uri, mimeType)
 
         val path = uri.path
         if (path != null) {
