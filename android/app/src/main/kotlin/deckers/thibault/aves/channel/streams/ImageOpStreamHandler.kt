@@ -92,19 +92,6 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     }
 
     private suspend fun delete() {
-        if (entryMapList.isEmpty()) {
-            endOfStream()
-            return
-        }
-
-        // assume same provider for all entries
-        val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
-        if (provider == null) {
-            error("delete-provider", "failed to find provider for entry=$firstEntry", null)
-            return
-        }
-
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
             val mimeType = entry.mimeType
@@ -119,12 +106,14 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             if (isCancelledOp()) {
                 result["skipped"] = true
             } else {
-                try {
-                    provider.delete(activity, uri, path, mimeType)
-                    result["success"] = true
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
-                    result["success"] = false
+                result["success"] = false
+                getProvider(uri)?.let { provider ->
+                    try {
+                        provider.delete(activity, uri, path, mimeType)
+                        result["success"] = true
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
+                    }
                 }
             }
             success(result)

@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -31,10 +32,7 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper.updateRotation
 import deckers.thibault.aves.metadata.Mp4ParserHelper.updateXmp
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
-import deckers.thibault.aves.model.AvesEntry
-import deckers.thibault.aves.model.ExifOrientationOp
-import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.model.NameConflictStrategy
+import deckers.thibault.aves.model.*
 import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.FileUtils.transferTo
@@ -51,6 +49,19 @@ import java.util.*
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException("`fetchSingle` is not supported by this image provider"))
+    }
+
+    suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap {
+        return if (StorageUtils.isInVault(context, path)) {
+            hashMapOf(
+                "origin" to SourceEntry.ORIGIN_VAULT,
+                "uri" to File(path).toUri().toString(),
+                "contentId" to null,
+                "path" to path,
+            )
+        } else {
+            MediaStoreImageProvider().scanNewPathByMediaStore(context, path, mimeType)
+        }
     }
 
     open suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
@@ -294,8 +305,7 @@ abstract class ImageProvider {
                 }
             }
 
-            val mediaStoreImageProvider = MediaStoreImageProvider()
-            val targetPath = mediaStoreImageProvider.createSingle(
+            val targetPath = MediaStoreImageProvider().createSingle(
                 activity = activity,
                 mimeType = targetMimeType,
                 targetDir = targetDir,
@@ -303,7 +313,7 @@ abstract class ImageProvider {
                 targetNameWithoutExtension = targetNameWithoutExtension,
                 write = write,
             )
-            return mediaStoreImageProvider.scanNewPath(activity, targetPath, exportMimeType)
+            return scanNewPath(activity, targetPath, exportMimeType)
         } finally {
             // clearing Glide target should happen after effectively writing the bitmap
             Glide.with(activity).clear(target)
@@ -422,7 +432,7 @@ abstract class ImageProvider {
 
             val fileName = targetDocFile.name
             val targetFullPath = targetDir + fileName
-            val newFields = MediaStoreImageProvider().scanNewPath(contextWrapper, targetFullPath, captureMimeType)
+            val newFields = scanNewPath(contextWrapper, targetFullPath, captureMimeType)
             callback.onSuccess(newFields)
         } catch (e: Exception) {
             callback.onFailure(e)
