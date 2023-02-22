@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -53,14 +52,30 @@ abstract class ImageProvider {
 
     suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap {
         return if (StorageUtils.isInVault(context, path)) {
+            val uri = Uri.fromFile(File(path))
             hashMapOf(
                 "origin" to SourceEntry.ORIGIN_VAULT,
-                "uri" to File(path).toUri().toString(),
+                "uri" to uri.toString(),
                 "contentId" to null,
                 "path" to path,
             )
         } else {
             MediaStoreImageProvider().scanNewPathByMediaStore(context, path, mimeType)
+        }
+    }
+
+    private suspend fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
+        if (StorageUtils.isInVault(contextWrapper, path)) {
+            FileImageProvider().apply {
+                val uri = Uri.fromFile(File(path))
+                delete(contextWrapper, uri, path, mimeType)
+            }
+        } else {
+            MediaStoreImageProvider().apply {
+                val uri = getContentUriForPath(contextWrapper, path)
+                uri ?: throw Exception("failed to find content URI for path=$path")
+                delete(contextWrapper, uri, path, mimeType)
+            }
         }
     }
 
@@ -461,12 +476,7 @@ abstract class ImageProvider {
             }
             NameConflictStrategy.REPLACE -> {
                 if (targetFile.exists()) {
-                    val path = targetFile.path
-                    MediaStoreImageProvider().apply {
-                        val uri = getContentUriForPath(contextWrapper, path)
-                        uri ?: throw Exception("failed to find content URI for path=$path")
-                        delete(contextWrapper, uri, path, mimeType)
-                    }
+                    deletePath(contextWrapper, targetFile.path, mimeType)
                 }
                 desiredNameWithoutExtension
             }
