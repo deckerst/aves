@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Collection: bulk converting
+- Export: bulk converting
+- Export: write metadata when converting
 - Places: page & navigation entry
 
 ### Changed

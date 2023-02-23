@@ -127,6 +127,7 @@ class PlatformMediaEditService implements MediaEditService {
             'lengthUnit': options.lengthUnit.name,
             'width': options.width,
             'height': options.height,
+            'writeMetadata': options.writeMetadata,
             'destinationPath': destinationAlbum,
             'nameConflictStrategy': nameConflictStrategy.toPlatform(),
           })
@@ -187,14 +188,16 @@ class PlatformMediaEditService implements MediaEditService {
 @immutable
 class EntryConvertOptions extends Equatable {
   final String mimeType;
+  final bool writeMetadata;
   final LengthUnit lengthUnit;
   final int width, height;
 
   @override
-  List<Object?> get props => [mimeType, lengthUnit, width, height];
+  List<Object?> get props => [mimeType, writeMetadata, lengthUnit, width, height];
 
   const EntryConvertOptions({
     required this.mimeType,
+    required this.writeMetadata,
     required this.lengthUnit,
     required this.width,
     required this.height,

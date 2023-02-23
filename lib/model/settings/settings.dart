@@ -158,6 +158,11 @@ class Settings extends ChangeNotifier {
   static const tagEditorCurrentFilterSectionExpandedKey = 'tag_editor_current_filter_section_expanded';
   static const tagEditorExpandedSectionKey = 'tag_editor_expanded_section';
 
+  // converter
+
+  static const convertMimeTypeKey = 'convert_mime_type';
+  static const convertWriteMetadataKey = 'convert_write_metadata';
+
   // map
   static const mapStyleKey = 'info_map_style';
   static const mapDefaultCenterKey = 'map_default_center';
@@ -724,6 +729,16 @@ class Settings extends ChangeNotifier {
 
   set tagEditorExpandedSection(String? newValue) => _set(tagEditorExpandedSectionKey, newValue);
 
+  // converter
+
+  String get convertMimeType => getString(convertMimeTypeKey) ?? SettingsDefaults.convertMimeType;
+
+  set convertMimeType(String newValue) => _set(convertMimeTypeKey, newValue);
+
+  bool get convertWriteMetadata => getBool(convertWriteMetadataKey) ?? SettingsDefaults.convertWriteMetadata;
+
+  set convertWriteMetadata(bool newValue) => _set(convertWriteMetadataKey, newValue);
+
   // map
 
   EntryMapStyle? get mapStyle {
@@ -1069,6 +1084,7 @@ class Settings extends ChangeNotifier {
             case videoGestureVerticalDragBrightnessVolumeKey:
             case subtitleShowOutlineKey:
             case tagEditorCurrentFilterSectionExpandedKey:
+            case convertWriteMetadataKey:
             case saveSearchHistoryKey:
             case showPinchGestureAlternativesKey:
             case filePickerShowHiddenFilesKey:
@@ -1106,6 +1122,7 @@ class Settings extends ChangeNotifier {
             case subtitleTextAlignmentKey:
             case subtitleTextPositionKey:
             case tagEditorExpandedSectionKey:
+            case convertMimeTypeKey:
             case mapStyleKey:
             case mapDefaultCenterKey:
             case coordinateFormatKey:
