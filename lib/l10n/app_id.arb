@@ -1248,5 +1248,13 @@
   "newVaultWarningDialogMessage": "Item dalam brankas hanya tersedia untuk aplikasi ini dan bukan yang lain.\n\nJika Anda menghapus aplikasi ini, atau menghapus data aplikasi ini, Anda akan kehilangan semua item tersebut.",
   "@newVaultWarningDialogMessage": {},
   "settingsConfirmationVaultDataLoss": "Tampilkan peringatan kehilangan data brankas",
-  "@settingsConfirmationVaultDataLoss": {}
+  "@settingsConfirmationVaultDataLoss": {},
+  "chipActionGoToPlacePage": "Tampilkan di Tempat",
+  "@chipActionGoToPlacePage": {},
+  "placePageTitle": "Tempat",
+  "@placePageTitle": {},
+  "placeEmpty": "Tidak ada tempat",
+  "@placeEmpty": {},
+  "drawerPlacePage": "Tempat",
+  "@drawerPlacePage": {}
 }
