@@ -1,6 +1,9 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
+import 'package:aves/model/metadata/enums/length_unit.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/media/media_edit_service.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -8,26 +11,29 @@ import 'package:flutter/material.dart';
 
 import 'aves_dialog.dart';
 
-class ExportEntryDialog extends StatefulWidget {
-  static const routeName = '/dialog/export_entry';
+class ConvertEntryDialog extends StatefulWidget {
+  static const routeName = '/dialog/convert_entry';
 
-  final AvesEntry entry;
+  final Set<AvesEntry> entries;
 
-  const ExportEntryDialog({
+  const ConvertEntryDialog({
     super.key,
-    required this.entry,
+    required this.entries,
   });
 
   @override
-  State<ExportEntryDialog> createState() => _ExportEntryDialogState();
+  State<ConvertEntryDialog> createState() => _ConvertEntryDialogState();
 }
 
-class _ExportEntryDialogState extends State<ExportEntryDialog> {
+class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   final TextEditingController _widthController = TextEditingController(), _heightController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
-  String _mimeType = MimeTypes.jpeg;
+  late String _mimeType;
+  late bool _sameSized;
+  late List<LengthUnit> _lengthUnitOptions;
+  late LengthUnit _lengthUnit;
 
-  AvesEntry get entry => widget.entry;
+  Set<AvesEntry> get entries => widget.entries;
 
   static const imageExportFormats = [
     MimeTypes.bmp,
@@ -39,9 +45,29 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
   @override
   void initState() {
     super.initState();
-    _widthController.text = '${entry.isRotated ? entry.height : entry.width}';
-    _heightController.text = '${entry.isRotated ? entry.width : entry.height}';
+    _mimeType = MimeTypes.jpeg;
+    _sameSized = entries.map((entry) => entry.displaySize).toSet().length == 1;
+    _lengthUnitOptions = [
+      if (_sameSized) LengthUnit.px,
+      LengthUnit.percent,
+    ];
+    _lengthUnit = _lengthUnitOptions.first;
+    _initDimensions();
     _validate();
+  }
+
+  void _initDimensions() {
+    switch (_lengthUnit) {
+      case LengthUnit.px:
+        final displaySize = entries.first.displaySize;
+        _widthController.text = '${displaySize.width.round()}';
+        _heightController.text = '${displaySize.height.round()}';
+        break;
+      case LengthUnit.percent:
+        _widthController.text = '100';
+        _heightController.text = '100';
+        break;
+    }
   }
 
   @override
@@ -55,6 +81,14 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: AvesDialog.defaultHorizontalContentPadding);
+
+    // used by the drop down to match input decoration
+    final textFieldDecorationBorder = Border(
+      bottom: BorderSide(
+        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.38), //Color(0xFFBDBDBD),
+        width: 1.0,
+      ),
+    );
 
     return AvesDialog(
       scrollableContent: [
@@ -92,12 +126,25 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     final width = int.tryParse(value);
-                    _heightController.text = width != null ? '${(width / entry.displayAspectRatio).round()}' : '';
+                    if (width != null) {
+                      switch (_lengthUnit) {
+                        case LengthUnit.px:
+                          _heightController.text = '${(width / entries.first.displayAspectRatio).round()}';
+                          break;
+                        case LengthUnit.percent:
+                          _heightController.text = '$width';
+                          break;
+                      }
+                    } else {
+                      _heightController.text = '';
+                    }
                     _validate();
                   },
                 ),
               ),
+              const SizedBox(width: 8),
               const Text(AvesEntry.resolutionSeparator),
+              const SizedBox(width: 8),
               Expanded(
                 child: TextField(
                   controller: _heightController,
@@ -105,10 +152,45 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     final height = int.tryParse(value);
-                    _widthController.text = height != null ? '${(height * entry.displayAspectRatio).round()}' : '';
+                    if (height != null) {
+                      switch (_lengthUnit) {
+                        case LengthUnit.px:
+                          _widthController.text = '${(height * entries.first.displayAspectRatio).round()}';
+                          break;
+                        case LengthUnit.percent:
+                          _widthController.text = '$height';
+                          break;
+                      }
+                    } else {
+                      _widthController.text = '';
+                    }
                     _validate();
                   },
                 ),
+              ),
+              const SizedBox(width: 16),
+              TextDropdownButton<LengthUnit>(
+                values: _lengthUnitOptions,
+                valueText: (v) => v.getText(context),
+                value: _lengthUnit,
+                onChanged: _lengthUnitOptions.length > 1
+                    ? (v) {
+                        if (v != null && _lengthUnit != v) {
+                          _lengthUnit = v;
+                          _initDimensions();
+                          _validate();
+                          setState(() {});
+                        }
+                      }
+                    : null,
+                underline: Container(
+                  height: 1.0,
+                  decoration: BoxDecoration(
+                    border: textFieldDecorationBorder,
+                  ),
+                ),
+                itemHeight: 60,
+                dropdownColor: Themes.thirdLayerColor(context),
               ),
             ],
           ),
@@ -126,8 +208,9 @@ class _ExportEntryDialogState extends State<ExportEntryDialog> {
                       final width = int.tryParse(_widthController.text);
                       final height = int.tryParse(_heightController.text);
                       final options = (width != null && height != null)
-                          ? EntryExportOptions(
+                          ? EntryConvertOptions(
                               mimeType: _mimeType,
+                              lengthUnit: _lengthUnit,
                               width: width,
                               height: height,
                             )

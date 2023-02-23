@@ -200,6 +200,9 @@
   "keepScreenOnViewerOnly": "Viewer page only",
   "keepScreenOnAlways": "Always",
 
+  "lengthUnitPixel": "px",
+  "lengthUnitPercent": "%",
+
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Terrain)",

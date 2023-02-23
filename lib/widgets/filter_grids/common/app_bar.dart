@@ -327,9 +327,13 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
             final browsingMenuActions = ChipSetActions.browsing.where((v) => !browsingQuickActions.contains(v));
             final selectionMenuActions = ChipSetActions.selection.where((v) => !selectionQuickActions.contains(v));
-            final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).toList();
-            if (contextualMenuActions.isNotEmpty && contextualMenuActions.first == null) contextualMenuActions.removeAt(0);
-            if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) contextualMenuActions.removeLast();
+            final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<ChipSetAction?>[], (prev, v) {
+              if (v == null && (prev.isEmpty || prev.last == null)) return prev;
+              return [...prev, v];
+            });
+            if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
+              contextualMenuActions.removeLast();
+            }
 
             return [
               ...generalMenuItems,

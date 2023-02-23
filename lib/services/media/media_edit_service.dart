@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -28,7 +29,7 @@ abstract class MediaEditService {
 
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    required EntryExportOptions options,
+    required EntryConvertOptions options,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   });
@@ -113,16 +114,17 @@ class PlatformMediaEditService implements MediaEditService {
   @override
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    required EntryExportOptions options,
+    required EntryConvertOptions options,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   }) {
     try {
       return _opStream
           .receiveBroadcastStream(<String, dynamic>{
-            'op': 'export',
+            'op': 'convert',
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
             'mimeType': options.mimeType,
+            'lengthUnit': options.lengthUnit.name,
             'width': options.width,
             'height': options.height,
             'destinationPath': destinationAlbum,
@@ -183,15 +185,17 @@ class PlatformMediaEditService implements MediaEditService {
 }
 
 @immutable
-class EntryExportOptions extends Equatable {
+class EntryConvertOptions extends Equatable {
   final String mimeType;
+  final LengthUnit lengthUnit;
   final int width, height;
 
   @override
-  List<Object?> get props => [mimeType, width, height];
+  List<Object?> get props => [mimeType, lengthUnit, width, height];
 
-  const EntryExportOptions({
+  const EntryConvertOptions({
     required this.mimeType,
+    required this.lengthUnit,
     required this.width,
     required this.height,
   });

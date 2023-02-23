@@ -15,6 +15,8 @@ enum DateFieldSource {
   exifGpsDate,
 }
 
+enum LengthUnit { px, percent }
+
 enum LocationEditAction {
   chooseOnMap,
   copyItem,
