@@ -1,13 +1,17 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/length_unit.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/media/media_edit_service.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
 
@@ -28,8 +32,8 @@ class ConvertEntryDialog extends StatefulWidget {
 class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   final TextEditingController _widthController = TextEditingController(), _heightController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
-  late String _mimeType;
-  late bool _sameSized;
+  late ValueNotifier<String> _mimeTypeNotifier;
+  late bool _writeMetadata, _sameSized;
   late List<LengthUnit> _lengthUnitOptions;
   late LengthUnit _lengthUnit;
 
@@ -45,7 +49,8 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   @override
   void initState() {
     super.initState();
-    _mimeType = MimeTypes.jpeg;
+    _mimeTypeNotifier = ValueNotifier(settings.convertMimeType);
+    _writeMetadata = settings.convertWriteMetadata;
     _sameSized = entries.map((entry) => entry.displaySize).toSet().length == 1;
     _lengthUnitOptions = [
       if (_sameSized) LengthUnit.px,
@@ -103,10 +108,10 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
               TextDropdownButton<String>(
                 values: imageExportFormats,
                 valueText: MimeUtils.displayType,
-                value: _mimeType,
+                value: _mimeTypeNotifier.value,
                 onChanged: (selected) {
                   if (selected != null) {
-                    setState(() => _mimeType = selected);
+                    setState(() => _mimeTypeNotifier.value = selected);
                   }
                 },
               ),
@@ -195,7 +200,32 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        ValueListenableBuilder<String>(
+          valueListenable: _mimeTypeNotifier,
+          builder: (context, mimeType, child) {
+            Widget child;
+            if (MimeTypes.canEditExif(mimeType) || MimeTypes.canEditIptc(mimeType) || MimeTypes.canEditXmp(mimeType)) {
+              child = SwitchListTile(
+                value: _writeMetadata,
+                onChanged: (v) => setState(() => _writeMetadata = v),
+                title: Text(context.l10n.exportEntryDialogWriteMetadata),
+                contentPadding: const EdgeInsetsDirectional.only(
+                  start: AvesDialog.defaultHorizontalContentPadding,
+                  end: AvesDialog.defaultHorizontalContentPadding - 8,
+                ),
+              );
+            } else {
+              child = const SizedBox(height: 16);
+            }
+            return AnimatedSwitcher(
+              duration: context.read<DurationsData>().formTransition,
+              switchInCurve: Curves.easeInOutCubic,
+              switchOutCurve: Curves.easeInOutCubic,
+              transitionBuilder: AvesTransitions.formTransitionBuilder,
+              child: child,
+            );
+          },
+        ),
       ],
       actions: [
         const CancelButton(),
@@ -209,12 +239,19 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                       final height = int.tryParse(_heightController.text);
                       final options = (width != null && height != null)
                           ? EntryConvertOptions(
-                              mimeType: _mimeType,
+                              mimeType: _mimeTypeNotifier.value,
+                              writeMetadata: _writeMetadata,
                               lengthUnit: _lengthUnit,
                               width: width,
                               height: height,
                             )
                           : null;
+
+                      if (options != null) {
+                        settings.convertMimeType = options.mimeType;
+                        settings.convertWriteMetadata = options.writeMetadata;
+                      }
+
                       Navigator.maybeOf(context)?.pop(options);
                     }
                   : null,

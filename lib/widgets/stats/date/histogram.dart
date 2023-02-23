@@ -5,6 +5,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/stats/date/axis.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -343,14 +344,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
           duration: context.read<DurationsData>().formTransition,
           switchInCurve: Curves.easeInOutCubic,
           switchOutCurve: Curves.easeInOutCubic,
-          transitionBuilder: (child, animation) => FadeTransition(
-            opacity: animation,
-            child: SizeTransition(
-              sizeFactor: animation,
-              axisAlignment: -1,
-              child: child,
-            ),
-          ),
+          transitionBuilder: AvesTransitions.formTransitionBuilder,
           child: child,
         );
       },

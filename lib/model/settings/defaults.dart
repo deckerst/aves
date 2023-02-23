@@ -4,9 +4,9 @@ import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
-import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +41,6 @@ class SettingsDefaults {
   static const drawerPageBookmarks = [
     AlbumListPage.routeName,
     CountryListPage.routeName,
-    PlaceListPage.routeName,
     TagListPage.routeName,
   ];
 
@@ -115,6 +114,11 @@ class SettingsDefaults {
   // tag editor
 
   static const tagEditorCurrentFilterSectionExpanded = true;
+
+  // converter
+
+  static const convertMimeType = MimeTypes.jpeg;
+  static const convertWriteMetadata = true;
 
   // rendering
   static const imageBackground = EntryBackground.white;

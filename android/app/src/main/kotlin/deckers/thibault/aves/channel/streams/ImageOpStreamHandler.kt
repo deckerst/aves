@@ -132,8 +132,9 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val lengthUnit = arguments["lengthUnit"] as String?
         val width = (arguments["width"] as Number?)?.toInt()
         val height = (arguments["height"] as Number?)?.toInt()
+        val writeMetadata = arguments["writeMetadata"] as Boolean?
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
-        if (destinationDir == null || mimeType == null || lengthUnit == null || width == null || height == null || nameConflictStrategy == null) {
+        if (destinationDir == null || mimeType == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
             error("convert-args", "missing arguments", null)
             return
         }
@@ -148,10 +149,21 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         destinationDir = ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.convertMultiple(activity, mimeType, destinationDir, entries, lengthUnit, width, height, nameConflictStrategy, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = success(fields)
-            override fun onFailure(throwable: Throwable) = error("convert-failure", "failed to convert entries", throwable)
-        })
+        provider.convertMultiple(
+            activity = activity,
+            imageExportMimeType = mimeType,
+            targetDir = destinationDir,
+            entries = entries,
+            lengthUnit = lengthUnit,
+            width = width,
+            height = height,
+            writeMetadata = writeMetadata,
+            nameConflictStrategy = nameConflictStrategy,
+            callback = object : ImageOpCallback {
+                override fun onSuccess(fields: FieldMap) = success(fields)
+                override fun onFailure(throwable: Throwable) = error("convert-failure", "failed to convert entries", throwable)
+            },
+        )
         endOfStream()
     }
 
@@ -183,10 +195,17 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         // always use Media Store (as we move from or to it)
         val provider = MediaStoreImageProvider()
 
-        provider.moveMultiple(activity, copy, nameConflictStrategy, entriesByTargetDir, ::isCancelledOp, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = success(fields)
-            override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
-        })
+        provider.moveMultiple(
+            activity = activity,
+            copy = copy,
+            nameConflictStrategy = nameConflictStrategy,
+            entriesByTargetDir = entriesByTargetDir,
+            isCancelledOp = ::isCancelledOp,
+            callback = object : ImageOpCallback {
+                override fun onSuccess(fields: FieldMap) = success(fields)
+                override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
+            },
+        )
         endOfStream()
     }
 
@@ -218,10 +237,15 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             }
 
             val entryMap = mapOf(*entryList.map { Pair(it.key, it.value) }.toTypedArray())
-            provider.renameMultiple(activity, entryMap, ::isCancelledOp, object : ImageOpCallback {
-                override fun onSuccess(fields: FieldMap) = success(fields)
-                override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
-            })
+            provider.renameMultiple(
+                activity = activity,
+                entriesToNewName = entryMap,
+                isCancelledOp = ::isCancelledOp,
+                callback = object : ImageOpCallback {
+                    override fun onSuccess(fields: FieldMap) = success(fields)
+                    override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
+                },
+            )
         }
 
         endOfStream()

@@ -215,6 +215,7 @@
     "exportEntryDialogFormat",
     "exportEntryDialogWidth",
     "exportEntryDialogHeight",
+    "exportEntryDialogWriteMetadata",
     "renameEntryDialogLabel",
     "editEntryDialogCopyFromItem",
     "editEntryDialogTargetFieldsHeader",
@@ -766,6 +767,7 @@
     "exportEntryDialogFormat",
     "exportEntryDialogWidth",
     "exportEntryDialogHeight",
+    "exportEntryDialogWriteMetadata",
     "renameEntryDialogLabel",
     "editEntryDialogCopyFromItem",
     "editEntryDialogTargetFieldsHeader",
@@ -1182,6 +1184,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
@@ -1211,6 +1214,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
@@ -1220,9 +1224,14 @@
 
   "el": [
     "chipActionGoToPlacePage",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
+  ],
+
+  "es": [
+    "exportEntryDialogWriteMetadata"
   ],
 
   "eu": [
@@ -1247,6 +1256,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
@@ -1356,6 +1366,7 @@
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "renameEntryDialogLabel",
     "editEntryDialogCopyFromItem",
     "editEntryDialogTargetFieldsHeader",
@@ -1721,6 +1732,10 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "exportEntryDialogWriteMetadata"
+  ],
+
   "gl": [
     "columnCount",
     "chipActionGoToPlacePage",
@@ -1826,6 +1841,7 @@
     "exportEntryDialogFormat",
     "exportEntryDialogWidth",
     "exportEntryDialogHeight",
+    "exportEntryDialogWriteMetadata",
     "renameEntryDialogLabel",
     "editEntryDialogCopyFromItem",
     "editEntryDialogTargetFieldsHeader",
@@ -2454,6 +2470,7 @@
     "exportEntryDialogFormat",
     "exportEntryDialogWidth",
     "exportEntryDialogHeight",
+    "exportEntryDialogWriteMetadata",
     "renameEntryDialogLabel",
     "editEntryDialogCopyFromItem",
     "editEntryDialogTargetFieldsHeader",
@@ -2850,13 +2867,15 @@
 
   "id": [
     "lengthUnitPixel",
-    "lengthUnitPercent"
+    "lengthUnitPercent",
+    "exportEntryDialogWriteMetadata"
   ],
 
   "it": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -2894,6 +2913,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
     "placePageTitle",
@@ -2906,6 +2926,10 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ko": [
+    "exportEntryDialogWriteMetadata"
   ],
 
   "lt": [
@@ -2934,6 +2958,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
     "placePageTitle",
@@ -2969,6 +2994,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
@@ -3013,6 +3039,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
     "placePageTitle",
@@ -3064,6 +3091,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "editEntryDialogTargetFieldsHeader",
     "editEntryDateDialogSetCustom",
     "editEntryLocationDialogTitle",
@@ -3347,6 +3375,7 @@
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -3375,6 +3404,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
     "placePageTitle",
@@ -3388,6 +3418,7 @@
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -3417,6 +3448,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
     "placePageTitle",
@@ -3465,6 +3497,7 @@
     "vaultBinUsageDialogMessage",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "editEntryLocationDialogLatitude",
     "editEntryLocationDialogLongitude",
     "locationPickerUseThisLocationButton",
@@ -3873,6 +3906,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "editEntryDateDialogExtractFromTitle",
     "editEntryDateDialogShift",
     "removeEntryMetadataDialogTitle",
@@ -4217,6 +4251,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
@@ -4226,7 +4261,8 @@
 
   "uk": [
     "lengthUnitPixel",
-    "lengthUnitPercent"
+    "lengthUnitPercent",
+    "exportEntryDialogWriteMetadata"
   ],
 
   "zh": [
@@ -4253,6 +4289,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
     "placePageTitle",
@@ -4291,6 +4328,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
     "placePageTitle",
