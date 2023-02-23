@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Collection: bulk converting
 - Places: page & navigation entry
 
+### Changed
+
+- upgraded Flutter to stable v3.7.5
+
 ### Fixed
 
 - replacing when moving item to vault
