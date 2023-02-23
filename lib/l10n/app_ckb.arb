@@ -1,15 +1,16 @@
 {
+  "@@locale" : "ckb",
   "welcomeOptional": "ئارەزومەندانە",
   "@welcomeOptional": {},
   "welcomeTermsToggle": "ڕازیم بە مەرج و یاساکانی بەکارهێنان",
   "@welcomeTermsToggle": {},
-  "columnCount": "{count, plural, =1{١ ڕیز} other{{count} ڕیز}}",
+  "columnCount": "{count, plural, =1{١ ڕیز} other{ڕیز {count}}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{١ چرکە} other{{چرکە} seconds}}",
+  "timeSeconds": "{seconds, plural, =1{١ چرکە} other{چرکە {seconds}}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -91,7 +92,7 @@
   "@entryActionInfo": {},
   "entryActionRestore": "گێڕانەوە",
   "@entryActionRestore": {},
-  "timeDays": "{days, plural, =1{١ ڕۆژ} other{{ڕۆژ} days}}",
+  "timeDays": "{days, plural, =1{١ ڕۆژ} other{ڕۆژ {days}}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -130,7 +131,7 @@
   "@videoActionPause": {},
   "videoActionPlay": "لێدان",
   "@videoActionPlay": {},
-  "itemCount": "{count, plural, =1{١ دانە} other{{count} دانە}}",
+  "itemCount": "{count, plural, =1{١ دانە} other{دانە {count}}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
@@ -154,7 +155,7 @@
   "@chipActionCreateAlbum": {},
   "entryActionRename": "ناوگۆڕین",
   "@entryActionRename": {},
-  "timeMinutes": "{minutes, plural, =1{١ خولەک} other{{خولەک} minutes}}",
+  "timeMinutes": "{minutes, plural, =1{١ خولەک} other{خولەک {minutes}}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
