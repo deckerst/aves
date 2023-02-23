@@ -116,6 +116,8 @@
     "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "keepScreenOnAlways",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "mapStyleGoogleNormal",
     "mapStyleGoogleHybrid",
     "mapStyleGoogleTerrain",
@@ -600,6 +602,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -627,6 +631,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -650,6 +656,8 @@
 
   "el": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -657,6 +665,8 @@
 
   "es": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -668,6 +678,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -725,6 +737,8 @@
     "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "keepScreenOnAlways",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "nameConflictStrategySkip",
     "vaultLockTypePin",
     "vaultLockTypePassword",
@@ -1156,6 +1170,8 @@
 
   "fr": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -1187,6 +1203,8 @@
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
     "keepScreenOnVideoPlayback",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -1793,6 +1811,8 @@
     "keepScreenOnVideoPlayback",
     "keepScreenOnViewerOnly",
     "keepScreenOnAlways",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "mapStyleGoogleNormal",
     "mapStyleGoogleHybrid",
     "mapStyleGoogleTerrain",
@@ -2286,6 +2306,8 @@
 
   "id": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -2297,6 +2319,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2332,6 +2356,8 @@
     "filterTaggedLabel",
     "albumTierVaults",
     "keepScreenOnVideoPlayback",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "vaultLockTypePin",
@@ -2364,6 +2390,8 @@
 
   "ko": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -2379,6 +2407,8 @@
     "filterTaggedLabel",
     "albumTierVaults",
     "keepScreenOnVideoPlayback",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2412,6 +2442,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2450,6 +2482,8 @@
     "filterTaggedLabel",
     "albumTierVaults",
     "keepScreenOnVideoPlayback",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "vaultLockTypePin",
@@ -2500,6 +2534,8 @@
     "albumTierVaults",
     "displayRefreshRatePreferHighest",
     "displayRefreshRatePreferLowest",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "wallpaperTargetHome",
@@ -2798,6 +2834,8 @@
 
   "pl": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -2810,6 +2848,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2835,6 +2875,8 @@
 
   "ro": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -2848,6 +2890,8 @@
     "filterLocatedLabel",
     "filterTaggedLabel",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2885,6 +2929,8 @@
     "filterNoLocationLabel",
     "albumTierVaults",
     "coordinateDms",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "otherDirectoryDescription",
@@ -3300,6 +3346,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -3642,6 +3690,8 @@
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -3665,6 +3715,8 @@
 
   "uk": [
     "chipActionGoToPlacePage",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
@@ -3678,6 +3730,8 @@
     "filterLocatedLabel",
     "filterTaggedLabel",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -3714,6 +3768,8 @@
     "filterLocatedLabel",
     "filterTaggedLabel",
     "albumTierVaults",
+    "lengthUnitPixel",
+    "lengthUnitPercent",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",

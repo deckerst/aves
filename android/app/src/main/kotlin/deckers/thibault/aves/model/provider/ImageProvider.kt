@@ -169,11 +169,12 @@ abstract class ImageProvider {
         throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
-    suspend fun exportMultiple(
+    suspend fun convertMultiple(
         activity: Activity,
         imageExportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
+        lengthUnit: String,
         width: Int,
         height: Int,
         nameConflictStrategy: NameConflictStrategy,
@@ -208,6 +209,7 @@ abstract class ImageProvider {
                     sourceEntry = entry,
                     targetDir = targetDir,
                     targetDirDocFile = targetDirDocFile,
+                    lengthUnit = lengthUnit,
                     width = width,
                     height = height,
                     nameConflictStrategy = nameConflictStrategy,
@@ -227,6 +229,7 @@ abstract class ImageProvider {
         sourceEntry: AvesEntry,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
+        lengthUnit: String,
         width: Int,
         height: Int,
         nameConflictStrategy: NameConflictStrategy,
@@ -266,6 +269,19 @@ abstract class ImageProvider {
                     sourceDocFile.copyTo(output)
                 }
             } else {
+                val targetWidthPx: Int
+                val targetHeightPx: Int
+                when (lengthUnit) {
+                    LENGTH_UNIT_PERCENT -> {
+                        targetWidthPx = sourceEntry.displayWidth * width / 100
+                        targetHeightPx = sourceEntry.displayHeight * height / 100
+                    }
+                    else -> {
+                        targetWidthPx = width
+                        targetHeightPx = height
+                    }
+                }
+
                 val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
                     MultiTrackImage(activity, sourceUri, pageId)
                 } else if (sourceMimeType == MimeTypes.TIFF) {
@@ -286,7 +302,7 @@ abstract class ImageProvider {
                     .asBitmap()
                     .apply(glideOptions)
                     .load(model)
-                    .submit(width, height)
+                    .submit(targetWidthPx, targetHeightPx)
                 @Suppress("BlockingMethodInNonBlockingContext")
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
@@ -1208,6 +1224,8 @@ abstract class ImageProvider {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageProvider>()
+
+        private const val LENGTH_UNIT_PERCENT = "percent"
 
         val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
 

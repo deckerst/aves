@@ -25,6 +25,7 @@ enum EntrySetAction {
   copy,
   move,
   rename,
+  convert,
   toggleFavourite,
   rotateCCW,
   rotateCW,
@@ -45,13 +46,16 @@ class EntrySetActions {
     EntrySetAction.selectNone,
   ];
 
+  // `null` items are converted to dividers
   static const pageBrowsing = [
     EntrySetAction.searchCollection,
     EntrySetAction.toggleTitleSearch,
     EntrySetAction.addShortcut,
+    null,
     EntrySetAction.map,
     EntrySetAction.slideshow,
     EntrySetAction.stats,
+    null,
     EntrySetAction.rescan,
     EntrySetAction.emptyBin,
   ];
@@ -67,6 +71,7 @@ class EntrySetActions {
     EntrySetAction.rescan,
   ];
 
+  // `null` items are converted to dividers
   static const pageSelection = [
     EntrySetAction.share,
     EntrySetAction.delete,
@@ -74,10 +79,13 @@ class EntrySetActions {
     EntrySetAction.copy,
     EntrySetAction.move,
     EntrySetAction.rename,
+    EntrySetAction.convert,
     EntrySetAction.toggleFavourite,
+    null,
     EntrySetAction.map,
     EntrySetAction.slideshow,
     EntrySetAction.stats,
+    null,
     EntrySetAction.rescan,
     // editing actions are in their subsection
   ];
@@ -89,6 +97,7 @@ class EntrySetActions {
     EntrySetAction.copy,
     EntrySetAction.move,
     EntrySetAction.rename,
+    EntrySetAction.convert,
     EntrySetAction.toggleFavourite,
     EntrySetAction.map,
     EntrySetAction.slideshow,
@@ -163,6 +172,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return context.l10n.collectionActionMove;
       case EntrySetAction.rename:
         return context.l10n.entryActionRename;
+      case EntrySetAction.convert:
+        return context.l10n.entryActionConvert;
       case EntrySetAction.toggleFavourite:
         // different data depending on toggle state
         return context.l10n.entryActionAddFavourite;
@@ -232,6 +243,8 @@ extension ExtraEntrySetAction on EntrySetAction {
         return AIcons.move;
       case EntrySetAction.rename:
         return AIcons.name;
+      case EntrySetAction.convert:
+        return AIcons.convert;
       case EntrySetAction.toggleFavourite:
         // different data depending on toggle state
         return AIcons.favourite;

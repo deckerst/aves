@@ -94,6 +94,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
+      case EntrySetAction.convert:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
       case EntrySetAction.flip:
@@ -145,6 +146,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
+      case EntrySetAction.convert:
       case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:
@@ -210,6 +212,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         break;
       case EntrySetAction.rename:
         _rename(context);
+        break;
+      case EntrySetAction.convert:
+        _convert(context);
         break;
       case EntrySetAction.toggleFavourite:
         _toggleFavourite(context);
@@ -375,6 +380,13 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       return MapEntry(entry, '$newName${entry.extension}');
     })).whereNotNullValue();
     await rename(context, entriesToNewName: entriesToNewName, persist: true);
+
+    _browse(context);
+  }
+
+  void _convert(BuildContext context) {
+    final entries = _getTargetItems(context);
+    convert(context, entries);
 
     _browse(context);
   }

@@ -50,7 +50,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         when (op) {
             "delete" -> ioScope.launch { delete() }
-            "export" -> ioScope.launch { export() }
+            "convert" -> ioScope.launch { convert() }
             "move" -> ioScope.launch { move() }
             "rename" -> ioScope.launch { rename() }
             else -> endOfStream()
@@ -121,7 +121,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         endOfStream()
     }
 
-    private suspend fun export() {
+    private suspend fun convert() {
         if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
             endOfStream()
             return
@@ -129,11 +129,12 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         var destinationDir = arguments["destinationPath"] as String?
         val mimeType = arguments["mimeType"] as String?
+        val lengthUnit = arguments["lengthUnit"] as String?
         val width = (arguments["width"] as Number?)?.toInt()
         val height = (arguments["height"] as Number?)?.toInt()
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
-        if (destinationDir == null || mimeType == null || width == null || height == null || nameConflictStrategy == null) {
-            error("export-args", "missing arguments", null)
+        if (destinationDir == null || mimeType == null || lengthUnit == null || width == null || height == null || nameConflictStrategy == null) {
+            error("convert-args", "missing arguments", null)
             return
         }
 
@@ -141,15 +142,15 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val firstEntry = entryMapList.first()
         val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
         if (provider == null) {
-            error("export-provider", "failed to find provider for entry=$firstEntry", null)
+            error("convert-provider", "failed to find provider for entry=$firstEntry", null)
             return
         }
 
         destinationDir = ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.exportMultiple(activity, mimeType, destinationDir, entries, width, height, nameConflictStrategy, object : ImageOpCallback {
+        provider.convertMultiple(activity, mimeType, destinationDir, entries, lengthUnit, width, height, nameConflictStrategy, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
-            override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
+            override fun onFailure(throwable: Throwable) = error("convert-failure", "failed to convert entries", throwable)
         })
         endOfStream()
     }
