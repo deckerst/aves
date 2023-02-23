@@ -1248,5 +1248,9 @@
   "tooManyItemsErrorDialogMessage": "Δοκιμάστε ξανά με λιγότερα αρχεία.",
   "@tooManyItemsErrorDialogMessage": {},
   "settingsVideoGestureVerticalDragBrightnessVolume": "Σύρετε προς τα πάνω ή προς τα κάτω για να ρυθμίσετε τη φωτεινότητα/την ένταση του ήχου",
-  "@settingsVideoGestureVerticalDragBrightnessVolume": {}
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {},
+  "lengthUnitPixel": "px",
+  "@lengthUnitPixel": {}
 }
