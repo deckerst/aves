@@ -1260,5 +1260,7 @@
   "lengthUnitPixel": "px",
   "@lengthUnitPixel": {},
   "lengthUnitPercent": "%",
-  "@lengthUnitPercent": {}
+  "@lengthUnitPercent": {},
+  "exportEntryDialogWriteMetadata": "메타데이터 저장",
+  "@exportEntryDialogWriteMetadata": {}
 }
