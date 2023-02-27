@@ -1230,40 +1230,6 @@
     "placeEmpty"
   ],
 
-  "es": [
-    "exportEntryDialogWriteMetadata"
-  ],
-
-  "eu": [
-    "chipActionGoToPlacePage",
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "exportEntryDialogWriteMetadata",
-    "drawerPlacePage",
-    "placePageTitle",
-    "placeEmpty",
-    "settingsConfirmationVaultDataLoss",
-    "settingsDisablingBinWarningDialogMessage"
-  ],
-
   "fa": [
     "clearTooltip",
     "chipActionGoToPlacePage",
@@ -1730,10 +1696,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "exportEntryDialogWriteMetadata"
   ],
 
   "gl": [
@@ -2865,12 +2827,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "exportEntryDialogWriteMetadata"
-  ],
-
   "it": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
@@ -2926,10 +2882,6 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
-  ],
-
-  "ko": [
-    "exportEntryDialogWriteMetadata"
   ],
 
   "lt": [
@@ -3371,35 +3323,16 @@
     "wallpaperUseScrollEffect"
   ],
 
-  "pl": [
-    "chipActionGoToPlacePage",
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "exportEntryDialogWriteMetadata",
-    "drawerPlacePage",
-    "placePageTitle",
-    "placeEmpty"
-  ],
-
   "pt": [
     "columnCount",
     "chipActionGoToPlacePage",
-    "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
     "vaultLockTypePin",
-    "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
     "passwordDialogConfirm",
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
@@ -3427,27 +3360,11 @@
   "ru": [
     "chipActionGoToPlacePage",
     "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
     "filterLocatedLabel",
     "filterTaggedLabel",
-    "albumTierVaults",
     "lengthUnitPixel",
-    "lengthUnitPercent",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
@@ -3456,8 +3373,7 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsVideoGestureVerticalDragBrightnessVolume",
-    "settingsDisablingBinWarningDialogMessage",
-    "settingsDisplayUseTvInterface"
+    "settingsDisablingBinWarningDialogMessage"
   ],
 
   "sk": [
@@ -4257,12 +4173,6 @@
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
     "settingsDisablingBinWarningDialogMessage"
-  ],
-
-  "uk": [
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "exportEntryDialogWriteMetadata"
   ],
 
   "zh": [
