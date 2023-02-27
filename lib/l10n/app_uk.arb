@@ -1414,5 +1414,11 @@
   "chipActionGoToPlacePage": "Показати в Локаціях",
   "@chipActionGoToPlacePage": {},
   "placePageTitle": "Локації",
-  "@placePageTitle": {}
+  "@placePageTitle": {},
+  "exportEntryDialogWriteMetadata": "Напишіть метадані",
+  "@exportEntryDialogWriteMetadata": {},
+  "lengthUnitPixel": "px",
+  "@lengthUnitPixel": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {}
 }

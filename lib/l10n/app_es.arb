@@ -1260,5 +1260,7 @@
   "lengthUnitPixel": "px",
   "@lengthUnitPixel": {},
   "lengthUnitPercent": "%",
-  "@lengthUnitPercent": {}
+  "@lengthUnitPercent": {},
+  "exportEntryDialogWriteMetadata": "Escribir metadatos",
+  "@exportEntryDialogWriteMetadata": {}
 }

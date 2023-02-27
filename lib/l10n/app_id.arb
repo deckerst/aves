@@ -1256,5 +1256,11 @@
   "placeEmpty": "Tidak ada tempat",
   "@placeEmpty": {},
   "drawerPlacePage": "Tempat",
-  "@drawerPlacePage": {}
+  "@drawerPlacePage": {},
+  "exportEntryDialogWriteMetadata": "Tulis metadata",
+  "@exportEntryDialogWriteMetadata": {},
+  "lengthUnitPixel": "px",
+  "@lengthUnitPixel": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {}
 }
