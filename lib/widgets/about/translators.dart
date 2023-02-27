@@ -47,6 +47,8 @@ class AboutTranslators extends StatelessWidget {
     Contributor('rehork', 'cooky@e.email'),
     Contributor('Eric', 'hamburger2048@users.noreply.hosted.weblate.org'),
     Contributor('Aitor Salaberria', 'trslbrr@gmail.com'),
+    Contributor('Felipe Nogueira', 'contato.fnog@gmail.com'),
+    Contributor('kaajjo', 'claymanoff@gmail.com'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
