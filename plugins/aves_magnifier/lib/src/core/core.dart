@@ -197,18 +197,22 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       if (_isFlingGesture(estimate, _flingPointerKind, Axis.horizontal)) {
         final left = _mayFlingLTRB.item1;
         final right = _mayFlingLTRB.item3;
-        if (left) {
-          onFling(AxisDirection.left);
-        } else if (right) {
-          onFling(AxisDirection.right);
+        if (left ^ right) {
+          if (left) {
+            onFling(AxisDirection.left);
+          } else if (right) {
+            onFling(AxisDirection.right);
+          }
         }
       } else if (_isFlingGesture(estimate, _flingPointerKind, Axis.vertical)) {
         final up = _mayFlingLTRB.item2;
         final down = _mayFlingLTRB.item4;
-        if (up) {
-          onFling(AxisDirection.up);
-        } else if (down) {
-          onFling(AxisDirection.down);
+        if (up ^ down) {
+          if (up) {
+            onFling(AxisDirection.up);
+          } else if (down) {
+            onFling(AxisDirection.down);
+          }
         }
       }
     }

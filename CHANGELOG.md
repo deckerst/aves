@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- viewer pan/scale gestures interpreted as fling gestures
 - replacing when moving item to vault
 - exporting item to vault
 
