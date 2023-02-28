@@ -39,11 +39,11 @@ class _WelcomePageState extends State<WelcomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _initWelcomeSettings());
   }
 
-  // explicitly set consent values to current defaults
-  // so they are not subject to future default changes
   void _initWelcomeSettings() {
     // this should be done outside of `initState`/`build`
     settings.setContextualDefaults(context.read<AppFlavor>());
+    // explicitly set consent values to current defaults
+    // so they are not subject to future default changes
     settings.isInstalledAppAccessAllowed = SettingsDefaults.isInstalledAppAccessAllowed;
     settings.isErrorReportingAllowed = SettingsDefaults.isErrorReportingAllowed;
   }

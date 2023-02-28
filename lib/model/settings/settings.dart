@@ -20,6 +20,7 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
@@ -106,9 +107,11 @@ class Settings extends ChangeNotifier {
   static const albumGroupFactorKey = 'album_group_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
+  static const placeSortFactorKey = 'place_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
   static const albumSortReverseKey = 'album_sort_reverse';
   static const countrySortReverseKey = 'country_sort_reverse';
+  static const placeSortReverseKey = 'place_sort_reverse';
   static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
@@ -154,6 +157,11 @@ class Settings extends ChangeNotifier {
 
   static const tagEditorCurrentFilterSectionExpandedKey = 'tag_editor_current_filter_section_expanded';
   static const tagEditorExpandedSectionKey = 'tag_editor_expanded_section';
+
+  // converter
+
+  static const convertMimeTypeKey = 'convert_mime_type';
+  static const convertWriteMetadataKey = 'convert_write_metadata';
 
   // map
   static const mapStyleKey = 'info_map_style';
@@ -247,39 +255,40 @@ class Settings extends ChangeNotifier {
       }
     }
 
-    applyTvSettings();
+    if (settings.useTvLayout) {
+      applyTvSettings();
+    }
   }
 
   void applyTvSettings() {
-    if (settings.useTvLayout) {
-      themeBrightness = AvesThemeBrightness.dark;
-      mustBackTwiceToExit = false;
-      // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
-      keepScreenOn = KeepScreenOn.videoPlayback;
-      enableBottomNavigationBar = false;
-      drawerTypeBookmarks = [
-        null,
-        MimeFilter.video,
-        FavouriteFilter.instance,
-      ];
-      drawerPageBookmarks = [
-        AlbumListPage.routeName,
-        CountryListPage.routeName,
-        TagListPage.routeName,
-        SearchPage.routeName,
-      ];
-      showOverlayOnOpening = false;
-      showOverlayMinimap = false;
-      showOverlayThumbnailPreview = false;
-      viewerGestureSideTapNext = false;
-      viewerUseCutout = true;
-      viewerMaxBrightness = false;
-      videoControls = VideoControls.none;
-      videoGestureDoubleTapTogglePlay = false;
-      videoGestureSideDoubleTapSeek = false;
-      enableBin = false;
-      showPinchGestureAlternatives = true;
-    }
+    themeBrightness = AvesThemeBrightness.dark;
+    mustBackTwiceToExit = false;
+    // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+    keepScreenOn = KeepScreenOn.videoPlayback;
+    enableBottomNavigationBar = false;
+    drawerTypeBookmarks = [
+      null,
+      MimeFilter.video,
+      FavouriteFilter.instance,
+    ];
+    drawerPageBookmarks = [
+      AlbumListPage.routeName,
+      CountryListPage.routeName,
+      PlaceListPage.routeName,
+      TagListPage.routeName,
+      SearchPage.routeName,
+    ];
+    showOverlayOnOpening = false;
+    showOverlayMinimap = false;
+    showOverlayThumbnailPreview = false;
+    viewerGestureSideTapNext = false;
+    viewerUseCutout = true;
+    viewerMaxBrightness = false;
+    videoControls = VideoControls.none;
+    videoGestureDoubleTapTogglePlay = false;
+    videoGestureSideDoubleTapSeek = false;
+    enableBin = false;
+    showPinchGestureAlternatives = true;
   }
 
   Future<void> sanitize() async {
@@ -543,6 +552,10 @@ class Settings extends ChangeNotifier {
 
   set countrySortFactor(ChipSortFactor newValue) => _set(countrySortFactorKey, newValue.toString());
 
+  ChipSortFactor get placeSortFactor => getEnumOrDefault(placeSortFactorKey, SettingsDefaults.placeSortFactor, ChipSortFactor.values);
+
+  set placeSortFactor(ChipSortFactor newValue) => _set(placeSortFactorKey, newValue.toString());
+
   ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => _set(tagSortFactorKey, newValue.toString());
@@ -554,6 +567,10 @@ class Settings extends ChangeNotifier {
   bool get countrySortReverse => getBool(countrySortReverseKey) ?? false;
 
   set countrySortReverse(bool newValue) => _set(countrySortReverseKey, newValue);
+
+  bool get placeSortReverse => getBool(placeSortReverseKey) ?? false;
+
+  set placeSortReverse(bool newValue) => _set(placeSortReverseKey, newValue);
 
   bool get tagSortReverse => getBool(tagSortReverseKey) ?? false;
 
@@ -712,6 +729,16 @@ class Settings extends ChangeNotifier {
 
   set tagEditorExpandedSection(String? newValue) => _set(tagEditorExpandedSectionKey, newValue);
 
+  // converter
+
+  String get convertMimeType => getString(convertMimeTypeKey) ?? SettingsDefaults.convertMimeType;
+
+  set convertMimeType(String newValue) => _set(convertMimeTypeKey, newValue);
+
+  bool get convertWriteMetadata => getBool(convertWriteMetadataKey) ?? SettingsDefaults.convertWriteMetadata;
+
+  set convertWriteMetadata(bool newValue) => _set(convertWriteMetadataKey, newValue);
+
   // map
 
   EntryMapStyle? get mapStyle {
@@ -857,7 +884,7 @@ class Settings extends ChangeNotifier {
   bool? getBool(String key) {
     try {
       return settingsStore.getBool(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -866,7 +893,7 @@ class Settings extends ChangeNotifier {
   int? getInt(String key) {
     try {
       return settingsStore.getInt(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -875,7 +902,7 @@ class Settings extends ChangeNotifier {
   double? getDouble(String key) {
     try {
       return settingsStore.getDouble(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -884,7 +911,7 @@ class Settings extends ChangeNotifier {
   String? getString(String key) {
     try {
       return settingsStore.getString(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -893,7 +920,7 @@ class Settings extends ChangeNotifier {
   List<String>? getStringList(String key) {
     try {
       return settingsStore.getStringList(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -907,7 +934,7 @@ class Settings extends ChangeNotifier {
           return v;
         }
       }
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
     }
     return defaultValue;
@@ -1038,6 +1065,7 @@ class Settings extends ChangeNotifier {
             case showThumbnailVideoDurationKey:
             case albumSortReverseKey:
             case countrySortReverseKey:
+            case placeSortReverseKey:
             case tagSortReverseKey:
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
@@ -1056,6 +1084,7 @@ class Settings extends ChangeNotifier {
             case videoGestureVerticalDragBrightnessVolumeKey:
             case subtitleShowOutlineKey:
             case tagEditorCurrentFilterSectionExpandedKey:
+            case convertWriteMetadataKey:
             case saveSearchHistoryKey:
             case showPinchGestureAlternativesKey:
             case filePickerShowHiddenFilesKey:
@@ -1084,6 +1113,7 @@ class Settings extends ChangeNotifier {
             case albumGroupFactorKey:
             case albumSortFactorKey:
             case countrySortFactorKey:
+            case placeSortFactorKey:
             case tagSortFactorKey:
             case imageBackgroundKey:
             case videoAutoPlayModeKey:
@@ -1092,6 +1122,7 @@ class Settings extends ChangeNotifier {
             case subtitleTextAlignmentKey:
             case subtitleTextPositionKey:
             case tagEditorExpandedSectionKey:
+            case convertMimeTypeKey:
             case mapStyleKey:
             case mapDefaultCenterKey:
             case coordinateFormatKey:

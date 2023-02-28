@@ -3,7 +3,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
-import 'package:aves/model/source/location.dart';
+import 'package:aves/model/source/location/country.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -43,7 +43,7 @@ class CountryListPage extends StatelessWidget {
               filterSections: _groupToSections(gridItems),
               applyQuery: applyQuery,
               emptyBuilder: () => EmptyContent(
-                icon: AIcons.location,
+                icon: AIcons.country,
                 text: context.l10n.countryEmpty,
               ),
             );

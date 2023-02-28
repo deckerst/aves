@@ -18,10 +18,9 @@ extension ExtraThumbnailOverlayLocationIcon on ThumbnailOverlayLocationIcon {
 
   IconData getIcon(BuildContext context) {
     switch (this) {
-      case ThumbnailOverlayLocationIcon.located:
-        return AIcons.location;
       case ThumbnailOverlayLocationIcon.unlocated:
         return AIcons.locationUnlocated;
+      case ThumbnailOverlayLocationIcon.located:
       case ThumbnailOverlayLocationIcon.none:
         return AIcons.location;
     }

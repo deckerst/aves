@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.2"></a>[v1.8.2] - 2023-02-28
+
+### Added
+
+- Export: bulk converting
+- Export: write metadata when converting
+- Places: page & navigation entry
+
+### Changed
+
+- rating/tagging action icons
+- upgraded Flutter to stable v3.7.5
+
+### Fixed
+
+- viewer pan/scale gestures interpreted as fling gestures
+- replacing when moving item to vault
+- exporting item to vault
+
 ## <a id="v1.8.1"></a>[v1.8.1] - 2023-02-21
 
 ### Added

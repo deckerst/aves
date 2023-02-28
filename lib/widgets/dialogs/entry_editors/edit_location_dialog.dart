@@ -11,6 +11,7 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
@@ -114,7 +115,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                 duration: context.read<DurationsData>().formTransition,
                 switchInCurve: Curves.easeInOutCubic,
                 switchOutCurve: Curves.easeInOutCubic,
-                transitionBuilder: _formTransitionBuilder,
+                transitionBuilder: AvesTransitions.formTransitionBuilder,
                 child: Column(
                   key: ValueKey(_action),
                   mainAxisSize: MainAxisSize.min,
@@ -144,15 +145,6 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
       ),
     );
   }
-
-  Widget _formTransitionBuilder(Widget child, Animation<double> animation) => FadeTransition(
-        opacity: animation,
-        child: SizeTransition(
-          sizeFactor: animation,
-          axisAlignment: -1,
-          child: child,
-        ),
-      );
 
   Widget _buildChooseOnMapContent(BuildContext context) {
     final l10n = context.l10n;
@@ -297,7 +289,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     double? tryParse(String text) {
       try {
         return double.tryParse(text) ?? (coordinateFormatter.parse(text).toDouble());
-      } catch (e) {
+      } catch (error) {
         // ignore
         return null;
       }

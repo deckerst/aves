@@ -25,7 +25,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
-      if (!isMissingAtPath) {
+      if (!isMissingAtPath && userModifier.action != DateEditAction.copyField) {
         await reportService.recordError('failed to get date for modifier=$userModifier, entry=$this', null);
       }
       return {};

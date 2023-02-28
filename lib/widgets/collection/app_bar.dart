@@ -32,6 +32,7 @@ import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -342,7 +343,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       ...EntrySetActions.general,
       ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
-    ].where(isVisible).map((action) {
+    ].whereNotNull().where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
         iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
@@ -388,10 +389,21 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
             final browsingMenuActions = EntrySetActions.pageBrowsing.where((v) => !browsingQuickActions.contains(v));
             final selectionMenuActions = EntrySetActions.pageSelection.where((v) => !selectionQuickActions.contains(v));
-            final contextualMenuItems = [
-              ...(isSelecting ? selectionMenuActions : browsingMenuActions).where(isVisible).map(
-                    (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
-                  ),
+            final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<EntrySetAction?>[], (prev, v) {
+              if (v == null && (prev.isEmpty || prev.last == null)) return prev;
+              return [...prev, v];
+            });
+            if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
+              contextualMenuActions.removeLast();
+            }
+
+            final contextualMenuItems = <PopupMenuEntry<EntrySetAction>>[
+              ...contextualMenuActions.map(
+                (action) {
+                  if (action == null) return const PopupMenuDivider();
+                  return _toMenuItem(action, enabled: canApply(action), selection: selection);
+                },
+              ),
               if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash)
                 PopupMenuItem<EntrySetAction>(
                   enabled: hasSelection,
@@ -630,6 +642,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
+      case EntrySetAction.convert:
       case EntrySetAction.toggleFavourite:
       case EntrySetAction.rotateCCW:
       case EntrySetAction.rotateCW:

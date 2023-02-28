@@ -188,12 +188,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
     implementation 'androidx.media:media:1.6.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.security:security-crypto:1.1.0-alpha04'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha05'
 
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    implementation 'com.github.bumptech.glide:glide:4.15.0'
     // SLF4J implementation for `mp4parser`
     implementation 'org.slf4j:slf4j-simple:2.0.6'
 
@@ -207,10 +207,10 @@ dependencies {
     implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
 
     // huawei flavor only
-    huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.7.2.300'
+    huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.8.0.300'
 
-    kapt 'androidx.annotation:annotation:1.5.0'
-    kapt 'com.github.bumptech.glide:compiler:4.14.2'
+    kapt 'androidx.annotation:annotation:1.6.0'
+    kapt 'com.github.bumptech.glide:compiler:4.15.0'
 
     compileOnly rootProject.findProject(':streams_channel')
 }

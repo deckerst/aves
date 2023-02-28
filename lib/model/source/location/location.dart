@@ -6,15 +6,15 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/source/location/country.dart';
+import 'package:aves/model/source/location/place.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
 
-mixin LocationMixin on SourceBase {
+mixin LocationMixin on CountryMixin, PlaceMixin {
   static const commitCountThreshold = 200;
   static const _stopCheckCountThreshold = 50;
 
@@ -150,7 +150,7 @@ mixin LocationMixin on SourceBase {
   }
 
   void updateLocations() {
-    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).whereNotNull().toList();
+    final locations = visibleEntries.map((entry) => entry.addressDetails).whereNotNull().toList();
     final updatedPlaces = locations.map((address) => address.place).whereNotNull().where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedPlaces, sortedPlaces)) {
       sortedPlaces = List.unmodifiable(updatedPlaces);
@@ -177,67 +177,6 @@ mixin LocationMixin on SourceBase {
       eventBus.fire(CountriesChangedEvent());
     }
   }
-
-  // filter summary
-
-  // by country code
-  final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
-  final Map<String, AvesEntry?> _filterRecentEntryMap = {};
-
-  void invalidateCountryFilterSummary({
-    Set<AvesEntry>? entries,
-    Set<String>? countryCodes,
-    bool notify = true,
-  }) {
-    if (_filterEntryCountMap.isEmpty && _filterSizeMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
-
-    if (entries == null && countryCodes == null) {
-      _filterEntryCountMap.clear();
-      _filterSizeMap.clear();
-      _filterRecentEntryMap.clear();
-    } else {
-      countryCodes ??= {};
-      if (entries != null) {
-        countryCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull());
-      }
-      countryCodes.forEach((countryCode) {
-        _filterEntryCountMap.remove(countryCode);
-        _filterSizeMap.remove(countryCode);
-        _filterRecentEntryMap.remove(countryCode);
-      });
-    }
-    if (notify) {
-      eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
-    }
-  }
-
-  int countryEntryCount(LocationFilter filter) {
-    final countryCode = filter.countryCode;
-    if (countryCode == null) return 0;
-    return _filterEntryCountMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).length);
-  }
-
-  int countrySize(LocationFilter filter) {
-    final countryCode = filter.countryCode;
-    if (countryCode == null) return 0;
-    return _filterSizeMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
-  }
-
-  AvesEntry? countryRecentEntry(LocationFilter filter) {
-    final countryCode = filter.countryCode;
-    if (countryCode == null) return null;
-    return _filterRecentEntryMap.putIfAbsent(countryCode, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
-  }
 }
 
 class AddressMetadataChangedEvent {}
-
-class PlacesChangedEvent {}
-
-class CountriesChangedEvent {}
-
-class CountrySummaryInvalidatedEvent {
-  final Set<String>? countryCodes;
-
-  const CountrySummaryInvalidatedEvent(this.countryCodes);
-}

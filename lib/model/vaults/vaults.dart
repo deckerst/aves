@@ -154,7 +154,10 @@ class Vaults extends ChangeNotifier {
             localizedReason: context.l10n.authenticateToUnlockVault,
           );
         } on PlatformException catch (e, stack) {
-          await reportService.recordError(e, stack);
+          if (e.code != 'auth_in_progress') {
+            // `auth_in_progress`: `Authentication in progress`
+            await reportService.recordError(e, stack);
+          }
         }
         break;
       case VaultLockType.pin:

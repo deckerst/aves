@@ -16,6 +16,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
+import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/aves_app.dart';
@@ -27,6 +28,7 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:collection/collection.dart';
@@ -34,6 +36,100 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+  Future<void> convert(BuildContext context, Set<AvesEntry> targetEntries) async {
+    final options = await showDialog<EntryConvertOptions>(
+      context: context,
+      builder: (context) => ConvertEntryDialog(entries: targetEntries),
+      routeSettings: const RouteSettings(name: ConvertEntryDialog.routeName),
+    );
+    if (options == null) return;
+
+    final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
+    if (destinationAlbum == null) return;
+    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
+
+    if (!await checkFreeSpaceForMove(context, targetEntries, destinationAlbum, MoveType.export)) return;
+
+    final selection = <AvesEntry>{};
+    await Future.forEach(targetEntries, (targetEntry) async {
+      if (targetEntry.isMultiPage) {
+        final multiPageInfo = await targetEntry.getMultiPageInfo();
+        if (multiPageInfo != null) {
+          if (targetEntry.isMotionPhoto) {
+            await multiPageInfo.extractMotionPhotoVideo();
+          }
+          if (multiPageInfo.pageCount > 1) {
+            selection.addAll(multiPageInfo.exportEntries);
+          }
+        }
+      } else {
+        selection.add(targetEntry);
+      }
+    });
+
+    final selectionCount = selection.length;
+    final source = context.read<CollectionSource>();
+    source.pauseMonitoring();
+    await showOpReport<ExportOpEvent>(
+      context: context,
+      opStream: mediaEditService.export(
+        selection,
+        options: options,
+        destinationAlbum: destinationAlbum,
+        nameConflictStrategy: NameConflictStrategy.rename,
+      ),
+      itemCount: selectionCount,
+      onDone: (processed) async {
+        final successOps = processed.where((e) => e.success).toSet();
+        final exportedOps = successOps.where((e) => !e.skipped).toSet();
+        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet();
+        final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+
+        source.resumeMonitoring();
+        unawaited(source.refreshUris(newUris));
+
+        final l10n = context.l10n;
+        final showAction = isMainMode && newUris.isNotEmpty
+            ? SnackBarAction(
+                label: l10n.showButtonLabel,
+                onPressed: () {
+                  // local context may be deactivated when action is triggered after navigation
+                  final context = AvesApp.navigatorKey.currentContext;
+                  if (context != null) {
+                    Navigator.maybeOf(context)?.pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        settings: const RouteSettings(name: CollectionPage.routeName),
+                        builder: (context) => CollectionPage(
+                          source: source,
+                          filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                          highlightTest: (entry) => newUris.contains(entry.uri),
+                        ),
+                      ),
+                      (route) => false,
+                    );
+                  }
+                },
+              )
+            : null;
+        final successCount = successOps.length;
+        if (successCount < selectionCount) {
+          final count = selectionCount - successCount;
+          showFeedback(
+            context,
+            l10n.collectionExportFailureFeedback(count),
+            showAction,
+          );
+        } else {
+          showFeedback(
+            context,
+            l10n.genericSuccessFeedback,
+            showAction,
+          );
+        }
+      },
+    );
+  }
+
   Future<void> doQuickMove(
     BuildContext context, {
     required MoveType moveType,
