@@ -83,8 +83,6 @@ class AIcons {
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
   static const IconData edit = Icons.edit_outlined;
-  static const IconData editRating = MdiIcons.starPlusOutline;
-  static const IconData editTags = MdiIcons.tagPlusOutline;
   static const IconData emptyBin = Icons.delete_sweep_outlined;
   static const IconData export = Icons.open_with_outlined;
   static const IconData fileExport = MdiIcons.fileExportOutline;

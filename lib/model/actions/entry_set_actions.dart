@@ -261,9 +261,9 @@ extension ExtraEntrySetAction on EntrySetAction {
       case EntrySetAction.editTitleDescription:
         return AIcons.description;
       case EntrySetAction.editRating:
-        return AIcons.editRating;
+        return AIcons.rating;
       case EntrySetAction.editTags:
-        return AIcons.editTags;
+        return AIcons.tag;
       case EntrySetAction.removeMetadata:
         return AIcons.clear;
     }
