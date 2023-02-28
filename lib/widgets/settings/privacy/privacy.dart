@@ -97,49 +97,51 @@ class SettingsTilePrivacyEnableBin extends SettingsTile {
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
         selector: (context, s) => s.enableBin,
-        onChanged: (v) async {
-          final l10n = context.l10n;
-          if (!v) {
-            if (vaults.all.any((v) => v.useBin)) {
-              await showDialog<bool>(
-                context: context,
-                builder: (context) => AvesDialog(
-                  content: Text(l10n.vaultBinUsageDialogMessage),
-                  actions: const [OkButton()],
-                ),
-              );
-              return;
-            }
-
-            final source = context.read<CollectionSource>();
-            final trashedEntries = source.trashedEntries;
-            if (trashedEntries.isNotEmpty) {
-              if (!await showConfirmationDialog(
-                context: context,
-                message: l10n.settingsDisablingBinWarningDialogMessage,
-                confirmationButtonLabel: l10n.applyButtonLabel,
-              )) return;
-
-              // delete forever trashed items
-              await EntrySetActionDelegate().doDelete(
-                context: context,
-                entries: trashedEntries,
-                enableBin: false,
-              );
-
-              // in case of failure or cancellation
-              if (source.trashedEntries.isNotEmpty) return;
-            }
-          }
-
-          settings.enableBin = v;
-          if (!v) {
-            settings.searchHistory = [];
-          }
-        },
+        onChanged: (v) => setBinUsage(context, v),
         title: title(context),
         subtitle: context.l10n.settingsEnableBinSubtitle,
       );
+
+  static Future<bool> setBinUsage(BuildContext context, bool enabled) async {
+    final l10n = context.l10n;
+    if (!enabled) {
+      if (vaults.all.any((v) => v.useBin)) {
+        await showDialog<bool>(
+          context: context,
+          builder: (context) => AvesDialog(
+            content: Text(l10n.vaultBinUsageDialogMessage),
+            actions: const [OkButton()],
+          ),
+        );
+        return false;
+      }
+
+      final source = context.read<CollectionSource>();
+      final trashedEntries = source.trashedEntries;
+      if (trashedEntries.isNotEmpty) {
+        if (!await showConfirmationDialog(
+          context: context,
+          message: l10n.settingsDisablingBinWarningDialogMessage,
+          confirmationButtonLabel: l10n.applyButtonLabel,
+        )) return false;
+
+        // delete forever trashed items
+        await EntrySetActionDelegate().doDelete(
+          context: context,
+          entries: trashedEntries,
+          enableBin: false,
+        );
+
+        // in case of failure or cancellation
+        if (source.trashedEntries.isNotEmpty) return false;
+      }
+
+      settings.searchHistory = [];
+    }
+
+    settings.enableBin = enabled;
+    return true;
+  }
 }
 
 class SettingsTilePrivacyHiddenItems extends SettingsTile {

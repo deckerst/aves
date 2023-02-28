@@ -255,40 +255,40 @@ class Settings extends ChangeNotifier {
       }
     }
 
-    applyTvSettings();
+    if (settings.useTvLayout) {
+      applyTvSettings();
+    }
   }
 
   void applyTvSettings() {
-    if (settings.useTvLayout) {
-      themeBrightness = AvesThemeBrightness.dark;
-      mustBackTwiceToExit = false;
-      // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
-      keepScreenOn = KeepScreenOn.videoPlayback;
-      enableBottomNavigationBar = false;
-      drawerTypeBookmarks = [
-        null,
-        MimeFilter.video,
-        FavouriteFilter.instance,
-      ];
-      drawerPageBookmarks = [
-        AlbumListPage.routeName,
-        CountryListPage.routeName,
-        PlaceListPage.routeName,
-        TagListPage.routeName,
-        SearchPage.routeName,
-      ];
-      showOverlayOnOpening = false;
-      showOverlayMinimap = false;
-      showOverlayThumbnailPreview = false;
-      viewerGestureSideTapNext = false;
-      viewerUseCutout = true;
-      viewerMaxBrightness = false;
-      videoControls = VideoControls.none;
-      videoGestureDoubleTapTogglePlay = false;
-      videoGestureSideDoubleTapSeek = false;
-      enableBin = false;
-      showPinchGestureAlternatives = true;
-    }
+    themeBrightness = AvesThemeBrightness.dark;
+    mustBackTwiceToExit = false;
+    // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+    keepScreenOn = KeepScreenOn.videoPlayback;
+    enableBottomNavigationBar = false;
+    drawerTypeBookmarks = [
+      null,
+      MimeFilter.video,
+      FavouriteFilter.instance,
+    ];
+    drawerPageBookmarks = [
+      AlbumListPage.routeName,
+      CountryListPage.routeName,
+      PlaceListPage.routeName,
+      TagListPage.routeName,
+      SearchPage.routeName,
+    ];
+    showOverlayOnOpening = false;
+    showOverlayMinimap = false;
+    showOverlayThumbnailPreview = false;
+    viewerGestureSideTapNext = false;
+    viewerUseCutout = true;
+    viewerMaxBrightness = false;
+    videoControls = VideoControls.none;
+    videoGestureDoubleTapTogglePlay = false;
+    videoGestureSideDoubleTapSeek = false;
+    enableBin = false;
+    showPinchGestureAlternatives = true;
   }
 
   Future<void> sanitize() async {
@@ -884,7 +884,7 @@ class Settings extends ChangeNotifier {
   bool? getBool(String key) {
     try {
       return settingsStore.getBool(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -893,7 +893,7 @@ class Settings extends ChangeNotifier {
   int? getInt(String key) {
     try {
       return settingsStore.getInt(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -902,7 +902,7 @@ class Settings extends ChangeNotifier {
   double? getDouble(String key) {
     try {
       return settingsStore.getDouble(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -911,7 +911,7 @@ class Settings extends ChangeNotifier {
   String? getString(String key) {
     try {
       return settingsStore.getString(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -920,7 +920,7 @@ class Settings extends ChangeNotifier {
   List<String>? getStringList(String key) {
     try {
       return settingsStore.getStringList(key);
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
       return null;
     }
@@ -934,7 +934,7 @@ class Settings extends ChangeNotifier {
           return v;
         }
       }
-    } catch (e) {
+    } catch (error) {
       // ignore, could be obsolete value of different type
     }
     return defaultValue;
