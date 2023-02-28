@@ -62,7 +62,7 @@ class _MetadataTabState extends State<MetadataTab> {
           }
           try {
             value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
-          } catch (e) {
+          } catch (error) {
             value += ' (invalid DateTime})';
           }
         }

@@ -31,19 +31,20 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper.updateRotation
 import deckers.thibault.aves.metadata.Mp4ParserHelper.updateXmp
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
-import deckers.thibault.aves.model.AvesEntry
-import deckers.thibault.aves.model.ExifOrientationOp
-import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.model.NameConflictStrategy
+import deckers.thibault.aves.model.*
 import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.FileUtils.transferTo
 import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditIptc
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
+import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
+import deckers.thibault.aves.utils.MimeTypes.canReadWithPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import pixy.meta.meta.Metadata
+import pixy.meta.meta.MetadataType
 import java.io.*
 import java.nio.channels.Channels
 import java.util.*
@@ -51,6 +52,35 @@ import java.util.*
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException("`fetchSingle` is not supported by this image provider"))
+    }
+
+    suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap {
+        return if (StorageUtils.isInVault(context, path)) {
+            val uri = Uri.fromFile(File(path))
+            hashMapOf(
+                "origin" to SourceEntry.ORIGIN_VAULT,
+                "uri" to uri.toString(),
+                "contentId" to null,
+                "path" to path,
+            )
+        } else {
+            MediaStoreImageProvider().scanNewPathByMediaStore(context, path, mimeType)
+        }
+    }
+
+    private suspend fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
+        if (StorageUtils.isInVault(contextWrapper, path)) {
+            FileImageProvider().apply {
+                val uri = Uri.fromFile(File(path))
+                delete(contextWrapper, uri, path, mimeType)
+            }
+        } else {
+            MediaStoreImageProvider().apply {
+                val uri = getContentUriForPath(contextWrapper, path)
+                uri ?: throw Exception("failed to find content URI for path=$path")
+                delete(contextWrapper, uri, path, mimeType)
+            }
+        }
     }
 
     open suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
@@ -143,13 +173,15 @@ abstract class ImageProvider {
         throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
-    suspend fun exportMultiple(
+    suspend fun convertMultiple(
         activity: Activity,
         imageExportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
+        lengthUnit: String,
         width: Int,
         height: Int,
+        writeMetadata: Boolean,
         nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
     ) {
@@ -177,32 +209,36 @@ abstract class ImageProvider {
             val sourceMimeType = entry.mimeType
             val exportMimeType = if (isVideo(sourceMimeType)) sourceMimeType else imageExportMimeType
             try {
-                val newFields = exportSingle(
+                val newFields = convertSingle(
                     activity = activity,
                     sourceEntry = entry,
                     targetDir = targetDir,
                     targetDirDocFile = targetDirDocFile,
+                    lengthUnit = lengthUnit,
                     width = width,
                     height = height,
+                    writeMetadata = writeMetadata,
                     nameConflictStrategy = nameConflictStrategy,
                     exportMimeType = exportMimeType,
                 )
                 result["newFields"] = newFields
                 result["success"] = true
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to export to targetDir=$targetDir entry with sourcePath=$sourcePath pageId=$pageId", e)
+                Log.w(LOG_TAG, "failed to convert to targetDir=$targetDir entry with sourcePath=$sourcePath pageId=$pageId", e)
             }
             callback.onSuccess(result)
         }
     }
 
-    private suspend fun exportSingle(
+    private suspend fun convertSingle(
         activity: Activity,
         sourceEntry: AvesEntry,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
+        lengthUnit: String,
         width: Int,
         height: Int,
+        writeMetadata: Boolean,
         nameConflictStrategy: NameConflictStrategy,
         exportMimeType: String,
     ): FieldMap {
@@ -240,6 +276,13 @@ abstract class ImageProvider {
                     sourceDocFile.copyTo(output)
                 }
             } else {
+                var targetWidthPx: Int = if (sourceEntry.isRotated) height else width
+                var targetHeightPx: Int = if (sourceEntry.isRotated) width else height
+                if (lengthUnit == LENGTH_UNIT_PERCENT) {
+                    targetWidthPx = sourceEntry.width * targetWidthPx / 100
+                    targetHeightPx = sourceEntry.height * targetHeightPx / 100
+                }
+
                 val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
                     MultiTrackImage(activity, sourceUri, pageId)
                 } else if (sourceMimeType == MimeTypes.TIFF) {
@@ -260,7 +303,7 @@ abstract class ImageProvider {
                     .asBitmap()
                     .apply(glideOptions)
                     .load(model)
-                    .submit(width, height)
+                    .submit(targetWidthPx, targetHeightPx)
                 @Suppress("BlockingMethodInNonBlockingContext")
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
@@ -294,8 +337,7 @@ abstract class ImageProvider {
                 }
             }
 
-            val mediaStoreImageProvider = MediaStoreImageProvider()
-            val targetPath = mediaStoreImageProvider.createSingle(
+            val targetPath = MediaStoreImageProvider().createSingle(
                 activity = activity,
                 mimeType = targetMimeType,
                 targetDir = targetDir,
@@ -303,11 +345,112 @@ abstract class ImageProvider {
                 targetNameWithoutExtension = targetNameWithoutExtension,
                 write = write,
             )
-            return mediaStoreImageProvider.scanNewPath(activity, targetPath, exportMimeType)
+
+            val newFields = scanNewPath(activity, targetPath, exportMimeType)
+            val targetUri = Uri.parse(newFields["uri"] as String)
+            if (writeMetadata) {
+                copyMetadata(
+                    context = activity,
+                    sourceMimeType = sourceMimeType,
+                    sourceUri = sourceUri,
+                    targetMimeType = targetMimeType,
+                    targetUri = targetUri,
+                    targetPath = targetPath,
+                )
+            }
+
+            return newFields
         } finally {
             // clearing Glide target should happen after effectively writing the bitmap
             Glide.with(activity).clear(target)
         }
+    }
+
+    private fun copyMetadata(
+        context: Context,
+        sourceMimeType: String,
+        sourceUri: Uri,
+        targetMimeType: String,
+        targetUri: Uri,
+        targetPath: String,
+    ) {
+        val editableFile = File.createTempFile("aves", null).apply {
+            deleteOnExit()
+            // copy original file to a temporary file for editing
+            val inputStream = StorageUtils.openInputStream(context, targetUri)
+            transferFrom(inputStream, File(targetPath).length())
+        }
+
+        // copy IPTC / XMP via PixyMeta
+
+        var pixyIptc: pixy.meta.meta.iptc.IPTC? = null
+        var pixyXmp: pixy.meta.meta.xmp.XMP? = null
+        if (canReadWithPixyMeta(sourceMimeType)) {
+            StorageUtils.openInputStream(context, sourceUri)?.use { input ->
+                val metadata = Metadata.readMetadata(input)
+                if (canEditIptc(targetMimeType)) {
+                    pixyIptc = metadata[MetadataType.IPTC] as pixy.meta.meta.iptc.IPTC?
+                }
+                if (canEditXmp(targetMimeType)) {
+                    pixyXmp = metadata[MetadataType.XMP] as pixy.meta.meta.xmp.XMP?
+                }
+            }
+        }
+        if (pixyIptc != null || pixyXmp != null) {
+            editableFile.outputStream().use { output ->
+                if (pixyIptc != null) {
+                    // reopen input to read from start
+                    StorageUtils.openInputStream(context, targetUri)?.use { input ->
+                        val iptcs = pixyIptc!!.dataSets.flatMap { it.value }
+                        Metadata.insertIPTC(input, output, iptcs)
+                    }
+                }
+                if (pixyXmp != null) {
+                    // reopen input to read from start
+                    StorageUtils.openInputStream(context, targetUri)?.use { input ->
+                        val xmpString = pixyXmp!!.xmpDocString()
+                        val extendedXmp = if (pixyXmp!!.hasExtendedXmp()) pixyXmp!!.extendedXmpDocString() else null
+                        PixyMetaHelper.setXmp(input, output, xmpString, if (targetMimeType == MimeTypes.JPEG) extendedXmp else null)
+                    }
+                }
+            }
+        }
+
+        // copy Exif via ExifInterface
+
+        val exif = HashMap<String, String?>()
+        val skippedTags = listOf(
+            ExifInterface.TAG_IMAGE_LENGTH,
+            ExifInterface.TAG_IMAGE_WIDTH,
+            ExifInterface.TAG_ORIENTATION,
+            // Thumbnail Offset / Length
+            ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT,
+            ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH,
+            // Exif Image Width / Height
+            ExifInterface.TAG_PIXEL_X_DIMENSION,
+            ExifInterface.TAG_PIXEL_Y_DIMENSION,
+        )
+        if (canReadWithExifInterface(sourceMimeType) && canEditExif(targetMimeType)) {
+            StorageUtils.openInputStream(context, sourceUri)?.use { input ->
+                ExifInterface(input).apply {
+                    ExifInterfaceHelper.allTags.keys.filterNot { skippedTags.contains(it) }.filter { hasAttribute(it) }.forEach { tag ->
+                        exif[tag] = getAttribute(tag)
+                    }
+                }
+            }
+        }
+        if (exif.isNotEmpty()) {
+            ExifInterface(editableFile).apply {
+                exif.entries.forEach { (tag, value) ->
+                    setAttribute(tag, value)
+                }
+                saveAttributes()
+            }
+        }
+
+        // copy the edited temporary file back to the original
+        editableFile.transferTo(outputStream(context, targetMimeType, targetUri, targetPath))
+        editableFile.delete()
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -422,7 +565,7 @@ abstract class ImageProvider {
 
             val fileName = targetDocFile.name
             val targetFullPath = targetDir + fileName
-            val newFields = MediaStoreImageProvider().scanNewPath(contextWrapper, targetFullPath, captureMimeType)
+            val newFields = scanNewPath(contextWrapper, targetFullPath, captureMimeType)
             callback.onSuccess(newFields)
         } catch (e: Exception) {
             callback.onFailure(e)
@@ -451,12 +594,7 @@ abstract class ImageProvider {
             }
             NameConflictStrategy.REPLACE -> {
                 if (targetFile.exists()) {
-                    val path = targetFile.path
-                    MediaStoreImageProvider().apply {
-                        val uri = getContentUriForPath(contextWrapper, path)
-                        uri ?: throw Exception("failed to find content URI for path=$path")
-                        delete(contextWrapper, uri, path, mimeType)
-                    }
+                    deletePath(contextWrapper, targetFile.path, mimeType)
                 }
                 desiredNameWithoutExtension
             }
@@ -1188,6 +1326,8 @@ abstract class ImageProvider {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageProvider>()
+
+        private const val LENGTH_UNIT_PERCENT = "percent"
 
         val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
 

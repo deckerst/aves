@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
@@ -40,6 +41,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
   static const Set<String> _pageOptions = {
     AlbumListPage.routeName,
     CountryListPage.routeName,
+    PlaceListPage.routeName,
     TagListPage.routeName,
     SearchPage.routeName,
   };

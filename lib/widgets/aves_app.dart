@@ -55,7 +55,8 @@ class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
 
   // temporary exclude locales not ready yet for prime time
-  static final _unsupportedLocales = {'ar', 'fa', 'gl', 'he', 'nn', 'sk', 'th'}.map(Locale.new).toSet();
+  // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
+  static final _unsupportedLocales = {'ar', 'ckb', 'fa', 'gl', 'he', 'nn', 'sk', 'th'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');

@@ -74,6 +74,7 @@
   "chipActionDelete": "Delete",
   "chipActionGoToAlbumPage": "Show in Albums",
   "chipActionGoToCountryPage": "Show in Countries",
+  "chipActionGoToPlacePage": "Show in Places",
   "chipActionGoToTagPage": "Show in Tags",
   "chipActionFilterOut": "Filter out",
   "chipActionFilterIn": "Filter in",
@@ -198,6 +199,9 @@
   "keepScreenOnVideoPlayback": "During video playback",
   "keepScreenOnViewerOnly": "Viewer page only",
   "keepScreenOnAlways": "Always",
+
+  "lengthUnitPixel": "px",
+  "lengthUnitPercent": "%",
 
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
@@ -418,6 +422,7 @@
   "exportEntryDialogFormat": "Format:",
   "exportEntryDialogWidth": "Width",
   "exportEntryDialogHeight": "Height",
+  "exportEntryDialogWriteMetadata": "Write metadata",
 
   "renameEntryDialogLabel": "New name",
 
@@ -621,6 +626,7 @@
   "drawerCollectionSphericalVideos": "360° Videos",
   "drawerAlbumPage": "Albums",
   "drawerCountryPage": "Countries",
+  "drawerPlacePage": "Places",
   "drawerTagPage": "Tags",
 
   "sortByDate": "By date",
@@ -664,6 +670,9 @@
 
   "countryPageTitle": "Countries",
   "countryEmpty": "No countries",
+
+  "placePageTitle": "Places",
+  "placeEmpty": "No places",
 
   "tagPageTitle": "Tags",
   "tagEmpty": "No tags",

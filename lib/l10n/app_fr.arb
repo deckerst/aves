@@ -1248,5 +1248,19 @@
   "authenticateToUnlockVault": "Authentification pour déverrouiller le coffre-fort",
   "@authenticateToUnlockVault": {},
   "settingsDisablingBinWarningDialogMessage": "Les éléments dans la corbeille seront supprimés définitivement.",
-  "@settingsDisablingBinWarningDialogMessage": {}
+  "@settingsDisablingBinWarningDialogMessage": {},
+  "drawerPlacePage": "Lieux",
+  "@drawerPlacePage": {},
+  "placePageTitle": "Lieux",
+  "@placePageTitle": {},
+  "chipActionGoToPlacePage": "Afficher dans Lieux",
+  "@chipActionGoToPlacePage": {},
+  "placeEmpty": "Aucun lieu",
+  "@placeEmpty": {},
+  "lengthUnitPixel": "px",
+  "@lengthUnitPixel": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {},
+  "exportEntryDialogWriteMetadata": "Écrire les métadonnées",
+  "@exportEntryDialogWriteMetadata": {}
 }

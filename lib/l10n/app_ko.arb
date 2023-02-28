@@ -1248,5 +1248,19 @@
   "vaultBinUsageDialogMessage": "휴지통을 사용하는 금고가 있습니다.",
   "@vaultBinUsageDialogMessage": {},
   "settingsConfirmationVaultDataLoss": "금고에 관한 데이터 손실 경고",
-  "@settingsConfirmationVaultDataLoss": {}
+  "@settingsConfirmationVaultDataLoss": {},
+  "placePageTitle": "장소",
+  "@placePageTitle": {},
+  "drawerPlacePage": "장소",
+  "@drawerPlacePage": {},
+  "chipActionGoToPlacePage": "장소 페이지에서 보기",
+  "@chipActionGoToPlacePage": {},
+  "placeEmpty": "장소가 없습니다",
+  "@placeEmpty": {},
+  "lengthUnitPixel": "px",
+  "@lengthUnitPixel": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {},
+  "exportEntryDialogWriteMetadata": "메타데이터 저장",
+  "@exportEntryDialogWriteMetadata": {}
 }

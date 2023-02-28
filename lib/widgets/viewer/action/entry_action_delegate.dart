@@ -8,20 +8,14 @@ import 'package:aves/model/actions/share_actions.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_metadata_edition.dart';
-import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
-import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/services/media/enums.dart';
-import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/aves_app.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -32,8 +26,6 @@ import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
-import 'package:aves/widgets/dialogs/export_entry_dialog.dart';
-import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
@@ -42,7 +34,6 @@ import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -197,7 +188,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _move(context, targetEntry, moveType: MoveType.fromBin);
         break;
       case EntryAction.convert:
-        _convert(context, targetEntry);
+        convert(context, {targetEntry});
         break;
       case EntryAction.print:
         EntryPrinter(targetEntry).print(context);
@@ -410,98 +401,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
       EntryDeletedNotification({targetEntry}).dispatch(context);
     }
-  }
-
-  Future<void> _convert(BuildContext context, AvesEntry targetEntry) async {
-    final options = await showDialog<EntryExportOptions>(
-      context: context,
-      builder: (context) => ExportEntryDialog(entry: targetEntry),
-      routeSettings: const RouteSettings(name: ExportEntryDialog.routeName),
-    );
-    if (options == null) return;
-
-    final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
-    if (destinationAlbum == null) return;
-    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
-
-    if (!await checkFreeSpaceForMove(context, {targetEntry}, destinationAlbum, MoveType.export)) return;
-
-    final selection = <AvesEntry>{};
-    if (targetEntry.isMultiPage) {
-      final multiPageInfo = await targetEntry.getMultiPageInfo();
-      if (multiPageInfo != null) {
-        if (targetEntry.isMotionPhoto) {
-          await multiPageInfo.extractMotionPhotoVideo();
-        }
-        if (multiPageInfo.pageCount > 1) {
-          selection.addAll(multiPageInfo.exportEntries);
-        }
-      }
-    } else {
-      selection.add(targetEntry);
-    }
-
-    final selectionCount = selection.length;
-    final source = context.read<CollectionSource>();
-    source.pauseMonitoring();
-    await showOpReport<ExportOpEvent>(
-      context: context,
-      opStream: mediaEditService.export(
-        selection,
-        options: options,
-        destinationAlbum: destinationAlbum,
-        nameConflictStrategy: NameConflictStrategy.rename,
-      ),
-      itemCount: selectionCount,
-      onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final exportedOps = successOps.where((e) => !e.skipped).toSet();
-        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet();
-        final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
-
-        source.resumeMonitoring();
-        unawaited(source.refreshUris(newUris));
-
-        final l10n = context.l10n;
-        final showAction = isMainMode && newUris.isNotEmpty
-            ? SnackBarAction(
-                label: l10n.showButtonLabel,
-                onPressed: () {
-                  // local context may be deactivated when action is triggered after navigation
-                  final context = AvesApp.navigatorKey.currentContext;
-                  if (context != null) {
-                    Navigator.maybeOf(context)?.pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        settings: const RouteSettings(name: CollectionPage.routeName),
-                        builder: (context) => CollectionPage(
-                          source: source,
-                          filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                          highlightTest: (entry) => newUris.contains(entry.uri),
-                        ),
-                      ),
-                      (route) => false,
-                    );
-                  }
-                },
-              )
-            : null;
-        final successCount = successOps.length;
-        if (successCount < selectionCount) {
-          final count = selectionCount - successCount;
-          showFeedback(
-            context,
-            l10n.collectionExportFailureFeedback(count),
-            showAction,
-          );
-        } else {
-          showFeedback(
-            context,
-            l10n.genericSuccessFeedback,
-            showAction,
-          );
-        }
-      },
-    );
   }
 
   Future<void> _move(BuildContext context, AvesEntry targetEntry, {required MoveType moveType}) => doMove(

@@ -329,9 +329,9 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.editTitleDescription:
         return AIcons.description;
       case EntryAction.editRating:
-        return AIcons.editRating;
+        return AIcons.rating;
       case EntryAction.editTags:
-        return AIcons.editTags;
+        return AIcons.tag;
       case EntryAction.removeMetadata:
         return AIcons.clear;
       case EntryAction.exportMetadata:

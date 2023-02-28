@@ -250,8 +250,8 @@ object PermissionManager {
             for (uriPermission in context.contentResolver.persistedUriPermissions) {
                 val uri = uriPermission.uri
                 val path = StorageUtils.convertTreeDocumentUriToDirPath(context, uri)
-                if (path != null && !File(path).exists()) {
-                    Log.d(LOG_TAG, "revoke URI permission for obsolete path=$path")
+                if (path == null || !File(path).exists()) {
+                    Log.d(LOG_TAG, "revoke URI permission for obsolete uri=$uri path=$path")
                     releaseUriPermission(context, uri)
                 }
             }

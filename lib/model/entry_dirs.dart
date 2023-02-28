@@ -62,8 +62,12 @@ class EntryDir {
       final dir = Directory(resolved);
       if (dir.existsSync()) {
         final partLower = part.toLowerCase();
-        final childrenDirs = dir.listSync().where((v) => v.absolute is Directory).toSet();
-        found = childrenDirs.firstWhereOrNull((v) => pContext.basename(v.path).toLowerCase() == partLower);
+        try {
+          final childrenDirs = dir.listSync().where((v) => v.absolute is Directory).toSet();
+          found = childrenDirs.firstWhereOrNull((v) => pContext.basename(v.path).toLowerCase() == partLower);
+        } catch (error) {
+          // ignore, could be IO issue when listing directory
+        }
       }
       resolved = found?.path ?? '$resolved${pContext.separator}$part';
     }

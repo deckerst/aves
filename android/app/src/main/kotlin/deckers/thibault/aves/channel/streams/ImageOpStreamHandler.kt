@@ -50,7 +50,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         when (op) {
             "delete" -> ioScope.launch { delete() }
-            "export" -> ioScope.launch { export() }
+            "convert" -> ioScope.launch { convert() }
             "move" -> ioScope.launch { move() }
             "rename" -> ioScope.launch { rename() }
             else -> endOfStream()
@@ -92,19 +92,6 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
     }
 
     private suspend fun delete() {
-        if (entryMapList.isEmpty()) {
-            endOfStream()
-            return
-        }
-
-        // assume same provider for all entries
-        val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
-        if (provider == null) {
-            error("delete-provider", "failed to find provider for entry=$firstEntry", null)
-            return
-        }
-
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
             val mimeType = entry.mimeType
@@ -119,12 +106,14 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             if (isCancelledOp()) {
                 result["skipped"] = true
             } else {
-                try {
-                    provider.delete(activity, uri, path, mimeType)
-                    result["success"] = true
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
-                    result["success"] = false
+                result["success"] = false
+                getProvider(uri)?.let { provider ->
+                    try {
+                        provider.delete(activity, uri, path, mimeType)
+                        result["success"] = true
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
+                    }
                 }
             }
             success(result)
@@ -132,7 +121,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         endOfStream()
     }
 
-    private suspend fun export() {
+    private suspend fun convert() {
         if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
             endOfStream()
             return
@@ -140,11 +129,13 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         var destinationDir = arguments["destinationPath"] as String?
         val mimeType = arguments["mimeType"] as String?
+        val lengthUnit = arguments["lengthUnit"] as String?
         val width = (arguments["width"] as Number?)?.toInt()
         val height = (arguments["height"] as Number?)?.toInt()
+        val writeMetadata = arguments["writeMetadata"] as Boolean?
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
-        if (destinationDir == null || mimeType == null || width == null || height == null || nameConflictStrategy == null) {
-            error("export-args", "missing arguments", null)
+        if (destinationDir == null || mimeType == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
+            error("convert-args", "missing arguments", null)
             return
         }
 
@@ -152,16 +143,27 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val firstEntry = entryMapList.first()
         val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
         if (provider == null) {
-            error("export-provider", "failed to find provider for entry=$firstEntry", null)
+            error("convert-provider", "failed to find provider for entry=$firstEntry", null)
             return
         }
 
         destinationDir = ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.exportMultiple(activity, mimeType, destinationDir, entries, width, height, nameConflictStrategy, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = success(fields)
-            override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
-        })
+        provider.convertMultiple(
+            activity = activity,
+            imageExportMimeType = mimeType,
+            targetDir = destinationDir,
+            entries = entries,
+            lengthUnit = lengthUnit,
+            width = width,
+            height = height,
+            writeMetadata = writeMetadata,
+            nameConflictStrategy = nameConflictStrategy,
+            callback = object : ImageOpCallback {
+                override fun onSuccess(fields: FieldMap) = success(fields)
+                override fun onFailure(throwable: Throwable) = error("convert-failure", "failed to convert entries", throwable)
+            },
+        )
         endOfStream()
     }
 
@@ -193,10 +195,17 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         // always use Media Store (as we move from or to it)
         val provider = MediaStoreImageProvider()
 
-        provider.moveMultiple(activity, copy, nameConflictStrategy, entriesByTargetDir, ::isCancelledOp, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = success(fields)
-            override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
-        })
+        provider.moveMultiple(
+            activity = activity,
+            copy = copy,
+            nameConflictStrategy = nameConflictStrategy,
+            entriesByTargetDir = entriesByTargetDir,
+            isCancelledOp = ::isCancelledOp,
+            callback = object : ImageOpCallback {
+                override fun onSuccess(fields: FieldMap) = success(fields)
+                override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
+            },
+        )
         endOfStream()
     }
 
@@ -228,10 +237,15 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             }
 
             val entryMap = mapOf(*entryList.map { Pair(it.key, it.value) }.toTypedArray())
-            provider.renameMultiple(activity, entryMap, ::isCancelledOp, object : ImageOpCallback {
-                override fun onSuccess(fields: FieldMap) = success(fields)
-                override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
-            })
+            provider.renameMultiple(
+                activity = activity,
+                entriesToNewName = entryMap,
+                isCancelledOp = ::isCancelledOp,
+                callback = object : ImageOpCallback {
+                    override fun onSuccess(fields: FieldMap) = success(fields)
+                    override fun onFailure(throwable: Throwable) = error("rename-failure", "failed to rename", throwable.message)
+                },
+            )
         }
 
         endOfStream()

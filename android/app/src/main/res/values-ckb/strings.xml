@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ئاڤیس</string>
+    <string name="app_widget_label">قەراغی وێنە</string>
+    <string name="wallpaper">ڕوونما</string>
+    <string name="search_shortcut_short_label">گەڕان</string>
+    <string name="videos_shortcut_short_label">ڤیدیۆ</string>
+    <string name="analysis_channel_name">گەڕان بۆ فایل</string>
+    <string name="analysis_service_description">گەڕان بۆ وێنە و ڤیدیۆ</string>
+    <string name="analysis_notification_default_title">گەڕان بۆ فایلەکان</string>
+    <string name="analysis_notification_action_stop">وەستاندن</string>
+</resources>

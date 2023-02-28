@@ -105,7 +105,7 @@ class MediaStoreSource extends CollectionSource {
     // with items that may be hidden right away because of their metadata
     addEntries(knownEntries, notify: false);
 
-    await _addVaultEntries(directory);
+    await _loadVaultEntries(directory);
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} load metadata');
     if (directory != null) {
@@ -266,6 +266,13 @@ class MediaStoreSource extends CollectionSource {
       }
     }
 
+    await _refreshVaultEntries(
+      changedUris: changedUris.where(vaults.isVaultEntryUri).toSet(),
+      newEntries: newEntries,
+      entriesToRefresh: entriesToRefresh,
+      existingDirectories: existingDirectories,
+    );
+
     invalidateAlbumFilterSummary(directories: existingDirectories);
 
     if (newEntries.isNotEmpty) {
@@ -278,21 +285,21 @@ class MediaStoreSource extends CollectionSource {
       await refreshEntries(entriesToRefresh, EntryDataType.values.toSet());
     }
 
-    await _refreshVaultEntries(changedUris.where(vaults.isVaultEntryUri).toSet());
-
     return tempUris;
   }
 
   // vault
 
-  Future<void> _addVaultEntries(String? directory) async {
+  Future<void> _loadVaultEntries(String? directory) async {
     addEntries(await metadataDb.loadEntries(origin: EntryOrigins.vault, directory: directory));
   }
 
-  Future<void> _refreshVaultEntries(Set<String> changedUris) async {
-    final entriesToRefresh = <AvesEntry>{};
-    final existingDirectories = <String>{};
-
+  Future<void> _refreshVaultEntries({
+    required Set<String> changedUris,
+    required Set<AvesEntry> newEntries,
+    required Set<AvesEntry> entriesToRefresh,
+    required Set<String> existingDirectories,
+  }) async {
     for (final uri in changedUris) {
       final existingEntry = allEntries.firstWhereOrNull((entry) => entry.uri == uri);
       if (existingEntry != null) {
@@ -301,13 +308,15 @@ class MediaStoreSource extends CollectionSource {
         if (existingDirectory != null) {
           existingDirectories.add(existingDirectory);
         }
+      } else {
+        final sourceEntry = await mediaFetchService.getEntry(uri, null);
+        if (sourceEntry != null) {
+          newEntries.add(sourceEntry.copyWith(
+            id: metadataDb.nextId,
+            origin: EntryOrigins.vault,
+          ));
+        }
       }
-    }
-
-    invalidateAlbumFilterSummary(directories: existingDirectories);
-
-    if (entriesToRefresh.isNotEmpty) {
-      await refreshEntries(entriesToRefresh, EntryDataType.values.toSet());
     }
   }
 }

@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import androidx.core.net.toUri
+import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.MainActivity.Companion.DELETE_SINGLE_PERMISSION_REQUEST
@@ -30,6 +30,7 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.io.FileOutputStream
 import java.io.OutputStream
 import java.io.SyncFailedException
 import java.util.*
@@ -474,7 +475,6 @@ class MediaStoreImageProvider : ImageProvider() {
                                         mimeType = mimeType,
                                         copy = copy,
                                         toBin = toBin,
-                                        toVault = toVault,
                                     )
                                 }
                             }
@@ -501,7 +501,6 @@ class MediaStoreImageProvider : ImageProvider() {
         mimeType: String,
         copy: Boolean,
         toBin: Boolean,
-        toVault: Boolean,
     ): FieldMap {
         val sourcePath = sourceFile.path
         val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
@@ -550,21 +549,11 @@ class MediaStoreImageProvider : ImageProvider() {
                 "trashed" to true,
                 "trashPath" to targetPath,
             )
-        } else if (toVault) {
-            hashMapOf(
-                "origin" to SourceEntry.ORIGIN_VAULT,
-                "uri" to File(targetPath).toUri().toString(),
-                "contentId" to null,
-                "path" to targetPath,
-            )
         } else {
             scanNewPath(activity, targetPath, mimeType)
         }
     }
 
-    // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
-    // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
-    // when used with entry URI as `sourceDocumentUri`, and targetDirDocFile URI as `targetParentDocumentUri`
     fun createSingle(
         activity: Activity,
         mimeType: String,
@@ -573,33 +562,86 @@ class MediaStoreImageProvider : ImageProvider() {
         targetNameWithoutExtension: String,
         write: (OutputStream) -> Unit,
     ): String {
+        if (StorageUtils.isInVault(activity, targetDir)) {
+            return insertByFile(
+                targetDir = targetDir,
+                targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}",
+                write = write,
+            )
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val downloadDirPath = StorageUtils.getDownloadDirPath(activity, targetDir)
             val isDownloadSubdir = downloadDirPath != null && targetDir.startsWith(downloadDirPath)
             if (isDownloadSubdir) {
-                val volumePath = StorageUtils.getVolumePath(activity, targetDir)
-                val relativePath = targetDir.substring(volumePath?.length ?: 0)
-
-                val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
-                val values = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
-                    put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
-                    put(MediaStore.MediaColumns.IS_PENDING, 1)
-                }
-                val resolver = activity.contentResolver
-                val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
-
-                uri?.let {
-                    resolver.openOutputStream(uri)?.use(write)
-                    values.clear()
-                    values.put(MediaStore.MediaColumns.IS_PENDING, 0)
-                    resolver.update(uri, values, null, null)
-                } ?: throw Exception("MediaStore failed for some reason")
-
-                return File(targetDir, targetFileName).path
+                return insertByMediaStore(
+                    activity = activity,
+                    targetDir = targetDir,
+                    targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}",
+                    write = write,
+                )
             }
         }
 
+        return insertByTreeDoc(
+            activity = activity,
+            mimeType = mimeType,
+            targetDir = targetDir,
+            targetDirDocFile = targetDirDocFile,
+            targetNameWithoutExtension = targetNameWithoutExtension,
+            write = write,
+        )
+    }
+
+    private fun insertByFile(
+        targetDir: String,
+        targetFileName: String,
+        write: (OutputStream) -> Unit,
+    ): String {
+        val file = File(targetDir, targetFileName)
+        FileOutputStream(file).use(write)
+        return file.path
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun insertByMediaStore(
+        activity: Activity,
+        targetDir: String,
+        targetFileName: String,
+        write: (OutputStream) -> Unit,
+    ): String {
+        val volumePath = StorageUtils.getVolumePath(activity, targetDir)
+        val relativePath = targetDir.substring(volumePath?.length ?: 0)
+
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+        val resolver = activity.contentResolver
+        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+
+        uri?.let {
+            resolver.openOutputStream(uri)?.use(write)
+            values.clear()
+            values.put(MediaStore.MediaColumns.IS_PENDING, 0)
+            resolver.update(uri, values, null, null)
+        } ?: throw Exception("MediaStore failed for some reason")
+
+        return File(targetDir, targetFileName).path
+    }
+
+    // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
+    // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
+    // when used with entry URI as `sourceDocumentUri`, and targetDirDocFile URI as `targetParentDocumentUri`
+    private fun insertByTreeDoc(
+        activity: Activity,
+        mimeType: String,
+        targetDir: String,
+        targetDirDocFile: DocumentFileCompat?,
+        targetNameWithoutExtension: String,
+        write: (OutputStream) -> Unit,
+    ): String {
         targetDirDocFile ?: throw Exception("failed to get tree doc for directory at path=$targetDir")
 
         // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
@@ -670,7 +712,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
 
         // URI should not change
-        return scanNewPath(activity, newFile.path, mimeType)
+        return scanNewPathByMediaStore(activity, newFile.path, mimeType)
     }
 
     private suspend fun renameSingleByTreeDoc(
@@ -690,7 +732,7 @@ class MediaStoreImageProvider : ImageProvider() {
             throw Exception("failed to rename document at path=$oldPath")
         }
         scanObsoletePath(activity, oldMediaUri, oldPath, mimeType)
-        return scanNewPath(activity, newFile.path, mimeType)
+        return scanNewPathByMediaStore(activity, newFile.path, mimeType)
     }
 
     private suspend fun renameSingleByFile(
@@ -706,7 +748,7 @@ class MediaStoreImageProvider : ImageProvider() {
             throw Exception("failed to rename file at path=$oldPath")
         }
         scanObsoletePath(activity, oldMediaUri, oldPath, mimeType)
-        return scanNewPath(activity, newFile.path, mimeType)
+        return scanNewPathByMediaStore(activity, newFile.path, mimeType)
     }
 
     override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: FieldMap, callback: ImageOpCallback) {
@@ -757,10 +799,23 @@ class MediaStoreImageProvider : ImageProvider() {
         }
     }
 
-    suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
-        suspendCoroutine { cont -> tryScanNewPath(context, path = path, mimeType = mimeType, cont) }
+    suspend fun scanNewPathByMediaStore(context: Context, path: String, mimeType: String): FieldMap =
+        suspendCoroutine { cont ->
+            tryScanNewPathByMediaStore(
+                context = context,
+                path = path,
+                mimeType = mimeType,
+                cont = cont,
+            )
+        }
 
-    private fun tryScanNewPath(context: Context, path: String, mimeType: String, cont: Continuation<FieldMap>, iteration: Int = 0) {
+    private fun tryScanNewPathByMediaStore(
+        context: Context,
+        path: String,
+        mimeType: String,
+        cont: Continuation<FieldMap>,
+        iteration: Int = 0,
+    ) {
         // `scanFile` may (e.g. when copying to SD card on Android 10 (API 29)):
         // 1) yield no URI,
         // 2) yield a temporary URI that fails when queried,
@@ -832,7 +887,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 }
             }
 
-            tryScanNewPath(context, path = path, mimeType = mimeType, cont, iteration + 1)
+            tryScanNewPathByMediaStore(context, path = path, mimeType = mimeType, cont, iteration + 1)
         }
     }
 

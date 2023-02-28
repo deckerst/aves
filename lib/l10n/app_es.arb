@@ -1248,5 +1248,19 @@
   "authenticateToUnlockVault": "Autentificarse para desbloquear la caja fuerte",
   "@authenticateToUnlockVault": {},
   "settingsConfirmationVaultDataLoss": "Mostrar un aviso de pérdida de datos de la caja fuerte",
-  "@settingsConfirmationVaultDataLoss": {}
+  "@settingsConfirmationVaultDataLoss": {},
+  "drawerPlacePage": "Lugares",
+  "@drawerPlacePage": {},
+  "placePageTitle": "Lugares",
+  "@placePageTitle": {},
+  "placeEmpty": "Ningún lugar",
+  "@placeEmpty": {},
+  "chipActionGoToPlacePage": "Mostrar en lugares",
+  "@chipActionGoToPlacePage": {},
+  "lengthUnitPixel": "px",
+  "@lengthUnitPixel": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {},
+  "exportEntryDialogWriteMetadata": "Escribir metadatos",
+  "@exportEntryDialogWriteMetadata": {}
 }

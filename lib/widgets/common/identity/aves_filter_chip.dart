@@ -96,6 +96,7 @@ class AvesFilterChip extends StatefulWidget {
       final actions = [
         if (filter is AlbumFilter) ChipAction.goToAlbumPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
+        if ((filter is LocationFilter && filter.level == LocationLevel.place)) ChipAction.goToPlacePage,
         if (filter is TagFilter) ChipAction.goToTagPage,
         ChipAction.reverse,
         ChipAction.hide,

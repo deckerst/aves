@@ -7,13 +7,13 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
-version: 1.8.1+92
+version: 1.8.2+93
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.7.3
+  flutter: 3.7.5
   sdk: ">=2.19.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
@@ -89,7 +89,11 @@ dependencies:
   provider:
   screen_brightness:
   screen_state:
-  shared_preferences:
+# as of `shared_preferences` v2.0.18, upgrading packages downgrades `shared_preferences` to v0.5.4+6
+# because its dependency `shared_preferences_windows` v2.1.4 gets removed
+# because its dependency `path_provider_windows` v2.1.4 gets removed
+# so that the transitive `win32` gets upgraded to v4.x.x
+  shared_preferences: ">=2.0.0"
   smooth_page_indicator:
   sqflite:
   streams_channel:

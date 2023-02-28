@@ -15,6 +15,9 @@ class AvesEntry(map: FieldMap) {
     val trashed = map["trashed"] as Boolean
     val trashPath = map["trashPath"] as String?
 
+    val isRotated: Boolean
+        get() = rotationDegrees % 180 == 90
+
     companion object {
         // convenience method
         private fun toLong(o: Any?): Long? = when (o) {

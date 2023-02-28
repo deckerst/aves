@@ -23,8 +23,10 @@ class PlaceholderFilter extends CollectionFilter {
   PlaceholderFilter._private(this.placeholder) : super(reversed: false) {
     switch (placeholder) {
       case _country:
+        _icon = AIcons.country;
+        break;
       case _place:
-        _icon = AIcons.location;
+        _icon = AIcons.place;
         break;
     }
   }

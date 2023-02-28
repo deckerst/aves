@@ -15,7 +15,9 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/events.dart';
-import 'package:aves/model/source/location.dart';
+import 'package:aves/model/source/location/country.dart';
+import 'package:aves/model/source/location/location.dart';
+import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/model/source/trash.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -54,7 +56,7 @@ mixin SourceBase {
   void invalidateEntries();
 }
 
-abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin, TrashMixin {
+abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, LocationMixin, TagMixin, TrashMixin {
   CollectionSource() {
     settings.updateStream.where((event) => event.key == Settings.localeKey).listen((_) => invalidateAlbumDisplayNames());
     settings.updateStream.where((event) => event.key == Settings.hiddenFiltersKey).listen((event) {
@@ -136,6 +138,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     invalidateEntries();
     invalidateAlbumFilterSummary(entries: entries, notify: notify);
     invalidateCountryFilterSummary(entries: entries, notify: notify);
+    invalidatePlaceFilterSummary(entries: entries, notify: notify);
     invalidateTagFilterSummary(entries: entries, notify: notify);
   }
 
@@ -501,21 +504,42 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   int count(CollectionFilter filter) {
     if (filter is AlbumFilter) return albumEntryCount(filter);
-    if (filter is LocationFilter) return countryEntryCount(filter);
+    if (filter is LocationFilter) {
+      switch (filter.level) {
+        case LocationLevel.country:
+          return countryEntryCount(filter);
+        case LocationLevel.place:
+          return placeEntryCount(filter);
+      }
+    }
     if (filter is TagFilter) return tagEntryCount(filter);
     return 0;
   }
 
   int size(CollectionFilter filter) {
     if (filter is AlbumFilter) return albumSize(filter);
-    if (filter is LocationFilter) return countrySize(filter);
+    if (filter is LocationFilter) {
+      switch (filter.level) {
+        case LocationLevel.country:
+          return countrySize(filter);
+        case LocationLevel.place:
+          return placeSize(filter);
+      }
+    }
     if (filter is TagFilter) return tagSize(filter);
     return 0;
   }
 
   AvesEntry? recentEntry(CollectionFilter filter) {
     if (filter is AlbumFilter) return albumRecentEntry(filter);
-    if (filter is LocationFilter) return countryRecentEntry(filter);
+    if (filter is LocationFilter) {
+      switch (filter.level) {
+        case LocationLevel.country:
+          return countryRecentEntry(filter);
+        case LocationLevel.place:
+          return placeRecentEntry(filter);
+      }
+    }
     if (filter is TagFilter) return tagRecentEntry(filter);
     return null;
   }
