@@ -423,6 +423,12 @@ abstract class ImageProvider {
             ExifInterface.TAG_IMAGE_LENGTH,
             ExifInterface.TAG_IMAGE_WIDTH,
             ExifInterface.TAG_ORIENTATION,
+            // Thumbnail Offset / Length
+            ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT,
+            ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH,
+            // Exif Image Width / Height
+            ExifInterface.TAG_PIXEL_X_DIMENSION,
+            ExifInterface.TAG_PIXEL_Y_DIMENSION,
         )
         if (canReadWithExifInterface(sourceMimeType) && canEditExif(targetMimeType)) {
             StorageUtils.openInputStream(context, sourceUri)?.use { input ->
