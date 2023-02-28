@@ -289,7 +289,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     double? tryParse(String text) {
       try {
         return double.tryParse(text) ?? (coordinateFormatter.parse(text).toDouble());
-      } catch (e) {
+      } catch (error) {
         // ignore
         return null;
       }

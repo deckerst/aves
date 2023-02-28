@@ -27,9 +27,9 @@ class OptionalEventChannel extends EventChannel {
       });
       try {
         await methodChannel.invokeMethod<void>('listen', arguments);
-      } catch (exception, stack) {
+      } catch (error, stack) {
         FlutterError.reportError(FlutterErrorDetails(
-          exception: exception,
+          exception: error,
           stack: stack,
           library: 'services library',
           context: ErrorDescription('while activating platform stream on channel $name'),
@@ -39,9 +39,9 @@ class OptionalEventChannel extends EventChannel {
       binaryMessenger.setMessageHandler(name, null);
       try {
         await methodChannel.invokeMethod<void>('cancel', arguments);
-      } catch (exception, stack) {
+      } catch (error, stack) {
         FlutterError.reportError(FlutterErrorDetails(
-          exception: exception,
+          exception: error,
           stack: stack,
           library: 'services library',
           context: ErrorDescription('while de-activating platform stream on channel $name'),

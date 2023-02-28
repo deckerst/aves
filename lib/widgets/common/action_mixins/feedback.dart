@@ -26,7 +26,7 @@ mixin FeedbackMixin {
     ScaffoldMessengerState? scaffoldMessenger;
     try {
       scaffoldMessenger = ScaffoldMessenger.of(context);
-    } catch (e) {
+    } catch (error) {
       // minor issue: the page triggering this feedback likely
       // allows the user to navigate away and they did so
       debugPrint('failed to find ScaffoldMessenger in context');

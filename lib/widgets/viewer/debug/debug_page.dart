@@ -55,7 +55,7 @@ class ViewerDebugPage extends StatelessWidget {
       if (time != null && time > 0) {
         try {
           value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor)})';
-        } catch (e) {
+        } catch (error) {
           value += ' (invalid DateTime})';
         }
       }

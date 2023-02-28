@@ -36,7 +36,7 @@ DateTime? dateTimeFromMillis(int? millis, {bool isUtc = false}) {
   if (millis == null || millis == 0) return null;
   try {
     return DateTime.fromMillisecondsSinceEpoch(millis, isUtc: isUtc);
-  } catch (e) {
+  } catch (error) {
     // `DateTime`s can represent time values that are at a distance of at most 100,000,000
     // days from epoch (1970-01-01 UTC): -271821-04-20 to 275760-09-13.
     debugPrint('failed to build DateTime from timestamp in millis=$millis');
