@@ -40,6 +40,11 @@ class OptionalEventChannel extends EventChannel {
       try {
         await methodChannel.invokeMethod<void>('cancel', arguments);
       } catch (error, stack) {
+        if (error is PlatformException && error.message == 'No active stream to cancel') {
+          // ignore
+          return;
+        }
+
         FlutterError.reportError(FlutterErrorDetails(
           exception: error,
           stack: stack,
