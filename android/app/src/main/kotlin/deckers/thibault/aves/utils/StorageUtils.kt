@@ -693,7 +693,7 @@ object StorageUtils {
     class PathSegments(context: Context, fullPath: String) {
         var volumePath: String? = null // `volumePath` with trailing "/"
         var relativeDir: String? = null // `relativeDir` with trailing "/"
-        var fileName: String? = null // null for directories
+        private var fileName: String? = null // null for directories
 
         init {
             volumePath = getVolumePath(context, fullPath)
