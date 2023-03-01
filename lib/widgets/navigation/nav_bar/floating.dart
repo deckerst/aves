@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:flutter/material.dart';
 
 class FloatingNavBar extends StatefulWidget {
   final ScrollController? scrollController;
-  final Stream<DraggableScrollBarEvent> events;
+  final Stream<DraggableScrollbarEvent> events;
   final double childHeight;
   final Widget child;
 
@@ -109,12 +109,12 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
     }
   }
 
-  void _onDraggableScrollBarEvent(DraggableScrollBarEvent event) {
+  void _onDraggableScrollBarEvent(DraggableScrollbarEvent event) {
     switch (event) {
-      case DraggableScrollBarEvent.dragStart:
+      case DraggableScrollbarEvent.dragStart:
         _isDragging = true;
         break;
-      case DraggableScrollBarEvent.dragEnd:
+      case DraggableScrollbarEvent.dragEnd:
         _isDragging = false;
         break;
     }
