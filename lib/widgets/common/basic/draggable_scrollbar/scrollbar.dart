@@ -212,37 +212,40 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
                 ),
               );
             }),
-          RepaintBoundary(
-            child: GestureDetector(
-              onLongPressStart: (details) {
-                _longPressLastGlobalPosition = details.globalPosition;
-                _onVerticalDragStart();
-              },
-              onLongPressMoveUpdate: (details) {
-                final dy = (details.globalPosition - _longPressLastGlobalPosition).dy;
-                _longPressLastGlobalPosition = details.globalPosition;
-                _onVerticalDragUpdate(dy);
-              },
-              onLongPressEnd: (_) => _onVerticalDragEnd(),
-              onVerticalDragStart: (_) => _onVerticalDragStart(),
-              onVerticalDragUpdate: (details) => _onVerticalDragUpdate(details.delta.dy),
-              onVerticalDragEnd: (_) => _onVerticalDragEnd(),
-              child: ValueListenableBuilder<double>(
-                valueListenable: _thumbOffsetNotifier,
-                builder: (context, thumbOffset, child) => Container(
-                  alignment: AlignmentDirectional.topEnd,
-                  padding: EdgeInsets.only(top: thumbOffset) + widget.padding,
-                  child: widget.scrollThumbBuilder(
-                    widget.backgroundColor,
-                    _thumbAnimation,
-                    _labelAnimation,
-                    widget.scrollThumbSize.height,
-                    labelText: _isDragInProcess
-                        ? ValueListenableBuilder<double>(
-                            valueListenable: _viewOffsetNotifier,
-                            builder: (context, viewOffset, child) => widget.labelTextBuilder(viewOffset + thumbOffset),
-                          )
-                        : null,
+          // exclude semantics, otherwise this layer will block access to content layers below when using TalkBack
+          ExcludeSemantics(
+            child: RepaintBoundary(
+              child: GestureDetector(
+                onLongPressStart: (details) {
+                  _longPressLastGlobalPosition = details.globalPosition;
+                  _onVerticalDragStart();
+                },
+                onLongPressMoveUpdate: (details) {
+                  final dy = (details.globalPosition - _longPressLastGlobalPosition).dy;
+                  _longPressLastGlobalPosition = details.globalPosition;
+                  _onVerticalDragUpdate(dy);
+                },
+                onLongPressEnd: (_) => _onVerticalDragEnd(),
+                onVerticalDragStart: (_) => _onVerticalDragStart(),
+                onVerticalDragUpdate: (details) => _onVerticalDragUpdate(details.delta.dy),
+                onVerticalDragEnd: (_) => _onVerticalDragEnd(),
+                child: ValueListenableBuilder<double>(
+                  valueListenable: _thumbOffsetNotifier,
+                  builder: (context, thumbOffset, child) => Container(
+                    alignment: AlignmentDirectional.topEnd,
+                    padding: EdgeInsets.only(top: thumbOffset) + widget.padding,
+                    child: widget.scrollThumbBuilder(
+                      widget.backgroundColor,
+                      _thumbAnimation,
+                      _labelAnimation,
+                      widget.scrollThumbSize.height,
+                      labelText: _isDragInProcess
+                          ? ValueListenableBuilder<double>(
+                              valueListenable: _viewOffsetNotifier,
+                              builder: (context, viewOffset, child) => widget.labelTextBuilder(viewOffset + thumbOffset),
+                            )
+                          : null,
+                    ),
                   ),
                 ),
               ),

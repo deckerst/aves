@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- Accessibility: navigation with TalkBack
+
 ## <a id="v1.8.2"></a>[v1.8.2] - 2023-02-28
 
 ### Added
