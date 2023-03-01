@@ -760,10 +760,10 @@ packages:
     dependency: transitive
     description:
       name: node_preamble
-      sha256: "8ebdbaa3b96d5285d068f80772390d27c21e1fa10fb2df6627b1b9415043608d"
+      sha256: "6e7eac89047ab8a8d26cf16127b5ed26de65209847630400f9aefd7cd5c730db"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   overlay_support:
     dependency: "direct main"
     description:
@@ -1198,10 +1198,10 @@ packages:
     dependency: "direct main"
     description:
       name: sqflite
-      sha256: "78324387dc81df14f78df06019175a86a2ee0437624166c382e145d0a7fd9a4f"
+      sha256: "851d5040552cf911f4cabda08d003eca76b27da3ed0002978272e27c8fbf8ecc"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.4+1"
+    version: "2.2.5"
   sqflite_common:
     dependency: transitive
     description:
@@ -1493,4 +1493,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.19.0 <3.0.0"
-  flutter: ">=3.7.5"
+  flutter: ">=3.7.6"
