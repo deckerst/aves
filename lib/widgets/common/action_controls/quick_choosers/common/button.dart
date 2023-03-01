@@ -56,6 +56,19 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
   Widget build(BuildContext context) {
     final _hasChooser = hasChooser;
 
+    Widget child = IconButton(
+      icon: icon,
+      onPressed: widget.onPressed,
+      focusNode: widget.focusNode,
+      tooltip: _hasChooser ? null : tooltip,
+    );
+    if (_hasChooser) {
+      child = Semantics(
+        tooltip: tooltip,
+        child: child,
+      );
+    }
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPressStart: _hasChooser ? _showChooser : null,
@@ -70,12 +83,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
             }
           : null,
       onLongPressCancel: _clearChooserOverlayEntry,
-      child: IconButton(
-        icon: icon,
-        onPressed: widget.onPressed,
-        focusNode: widget.focusNode,
-        tooltip: _hasChooser ? null : tooltip,
-      ),
+      child: child,
     );
   }
 

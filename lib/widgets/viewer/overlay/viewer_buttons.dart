@@ -11,8 +11,10 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.da
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/mute.dart';
 import 'package:aves/widgets/common/action_controls/togglers/play.dart';
-import 'package:aves/widgets/common/basic/menu.dart';
-import 'package:aves/widgets/common/basic/popup_menu_button.dart';
+import 'package:aves/widgets/common/basic/popup/container.dart';
+import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
+import 'package:aves/widgets/common/basic/popup/menu_button.dart';
+import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
@@ -231,32 +233,26 @@ class ViewerButtonRowContent extends StatelessWidget {
                             if (pageEntry.canRotate || pageEntry.canFlip) _buildRotateAndFlipMenuItems(context),
                             ...topLevelActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                             if (exportActions.isNotEmpty)
-                              PopupMenuItem<EntryAction>(
-                                padding: EdgeInsets.zero,
-                                child: PopupMenuItemExpansionPanel<EntryAction>(
-                                  value: 'export',
-                                  expandedNotifier: _popupExpandedNotifier,
-                                  icon: AIcons.export,
-                                  title: context.l10n.entryActionExport,
-                                  items: [
-                                    ...exportInternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
-                                    if (exportInternalActions.isNotEmpty && exportExternalActions.isNotEmpty) const PopupMenuDivider(height: 0),
-                                    ...exportExternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
-                                  ],
-                                ),
+                              PopupMenuExpansionPanel<EntryAction>(
+                                value: 'export',
+                                expandedNotifier: _popupExpandedNotifier,
+                                icon: AIcons.export,
+                                title: context.l10n.entryActionExport,
+                                items: [
+                                  ...exportInternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
+                                  if (exportInternalActions.isNotEmpty && exportExternalActions.isNotEmpty) const PopupMenuDivider(height: 0),
+                                  ...exportExternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
+                                ],
                               ),
                             if (videoActions.isNotEmpty)
-                              PopupMenuItem<EntryAction>(
-                                padding: EdgeInsets.zero,
-                                child: PopupMenuItemExpansionPanel<EntryAction>(
-                                  value: 'video',
-                                  expandedNotifier: _popupExpandedNotifier,
-                                  icon: AIcons.video,
-                                  title: context.l10n.settingsVideoSectionTitle,
-                                  items: [
-                                    ...videoActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
-                                  ],
-                                ),
+                              PopupMenuExpansionPanel<EntryAction>(
+                                value: 'video',
+                                expandedNotifier: _popupExpandedNotifier,
+                                icon: AIcons.video,
+                                title: context.l10n.settingsVideoSectionTitle,
+                                items: [
+                                  ...videoActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
+                                ],
                               ),
                             if (!kReleaseMode) ...[
                               const PopupMenuDivider(),
@@ -357,7 +353,7 @@ class ViewerButtonRowContent extends StatelessWidget {
     );
   }
 
-  PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
+  PopupMenuEntry<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
     Widget buildDivider() => const SizedBox(
           height: 16,
           child: VerticalDivider(
@@ -383,29 +379,17 @@ class ViewerButtonRowContent extends StatelessWidget {
           ),
         );
 
-    return PopupMenuItem(
-      padding: EdgeInsets.zero,
-      child: IconTheme.merge(
-        data: IconThemeData(
-          color: ListTileTheme.of(context).iconColor,
-        ),
-        child: ColoredBox(
-          color: PopupMenuTheme.of(context).color!,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                buildDivider(),
-                buildItem(EntryAction.rotateCCW),
-                buildDivider(),
-                buildItem(EntryAction.rotateCW),
-                buildDivider(),
-                buildItem(EntryAction.flip),
-                buildDivider(),
-              ],
-            ),
-          ),
-        ),
+    return PopupMenuItemContainer(
+      child: Row(
+        children: [
+          buildDivider(),
+          buildItem(EntryAction.rotateCCW),
+          buildDivider(),
+          buildItem(EntryAction.rotateCW),
+          buildDivider(),
+          buildItem(EntryAction.flip),
+          buildDivider(),
+        ],
       ),
     );
   }

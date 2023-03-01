@@ -1,62 +1,9 @@
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MenuRow extends StatelessWidget {
-  final String text;
-  final Widget? icon;
-
-  const MenuRow({
-    super.key,
-    required this.text,
-    this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (icon != null)
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: 12),
-            child: IconTheme.merge(
-              data: IconThemeData(
-                color: ListTileTheme.of(context).iconColor,
-              ),
-              child: icon!,
-            ),
-          ),
-        Flexible(
-          child: Text(text),
-        ),
-      ],
-    );
-  }
-}
-
-// scale icons according to text scale
-class MenuIconTheme extends StatelessWidget {
-  final Widget child;
-
-  const MenuIconTheme({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final iconTheme = IconTheme.of(context);
-    return IconTheme(
-      data: iconTheme.copyWith(
-        size: iconTheme.size! * MediaQuery.textScaleFactorOf(context),
-      ),
-      child: child,
-    );
-  }
-}
-
-class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
+class PopupMenuExpansionPanel<T> extends PopupMenuEntry<T> {
   final bool enabled;
   final String value;
   final ValueNotifier<String?> expandedNotifier;
@@ -64,9 +11,10 @@ class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
   final String title;
   final List<PopupMenuEntry<T>> items;
 
-  PopupMenuItemExpansionPanel({
+  PopupMenuExpansionPanel({
     super.key,
     this.enabled = true,
+    this.height = kMinInteractiveDimension,
     required this.value,
     ValueNotifier<String?>? expandedNotifier,
     required this.icon,
@@ -75,10 +23,16 @@ class PopupMenuItemExpansionPanel<T> extends StatefulWidget {
   }) : expandedNotifier = expandedNotifier ?? ValueNotifier(null);
 
   @override
-  State<PopupMenuItemExpansionPanel<T>> createState() => _PopupMenuItemExpansionPanelState<T>();
+  final double height;
+
+  @override
+  bool represents(void value) => false;
+
+  @override
+  State<PopupMenuExpansionPanel<T>> createState() => _PopupMenuExpansionPanelState<T>();
 }
 
-class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionPanel<T>> {
+class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>> {
   // ref `_kMenuHorizontalPadding` used in `PopupMenuItem`
   static const double _horizontalPadding = 16;
 
@@ -103,16 +57,23 @@ class _PopupMenuItemExpansionPanelState<T> extends State<PopupMenuItemExpansionP
           elevation: 0,
           children: [
             ExpansionPanel(
-              headerBuilder: (context, isExpanded) => DefaultTextStyle(
-                style: style,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
-                  child: MenuRow(
-                    text: widget.title,
-                    icon: Icon(widget.icon),
+              headerBuilder: (context, isExpanded) {
+                return DefaultTextStyle(
+                  style: style,
+                  child: IconTheme.merge(
+                    data: IconThemeData(
+                      color: widget.enabled ? null : Theme.of(context).disabledColor,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+                      child: MenuRow(
+                        text: widget.title,
+                        icon: Icon(widget.icon),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
