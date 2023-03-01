@@ -19,7 +19,7 @@ import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/tile.dart';
-import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

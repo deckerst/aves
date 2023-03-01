@@ -1,7 +1,4 @@
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
-import 'package:aves/model/settings/settings.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
 
 class Durations {
   // Flutter animations (with margin)
@@ -70,26 +67,6 @@ class Durations {
   static const viewerThumbnailScrollDebounceDelay = Duration(milliseconds: 1000);
   static const mapInfoDebounceDelay = Duration(milliseconds: 150);
   static const mapIdleDebounceDelay = Duration(milliseconds: 100);
-}
-
-class DurationsProvider extends StatelessWidget {
-  final Widget child;
-
-  const DurationsProvider({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ProxyProvider<Settings, DurationsData>(
-      update: (context, settings, __) {
-        final enabled = settings.accessibilityAnimations.animate;
-        return enabled ? DurationsData() : DurationsData.noAnimation();
-      },
-      child: child,
-    );
-  }
 }
 
 @immutable
