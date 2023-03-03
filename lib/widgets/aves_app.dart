@@ -247,24 +247,39 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         // handle Android TV remote `select` button
                         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
                       },
-                      child: MaterialApp(
-                        navigatorKey: AvesApp.navigatorKey,
-                        home: home,
-                        navigatorObservers: _navigatorObservers,
-                        builder: (context, child) => _decorateAppChild(
-                          context: context,
-                          initialized: initialized,
-                          child: child,
+                      child: MediaQuery.fromWindow(
+                        child: Builder(
+                          builder: (context) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context).copyWith(
+                                // disable accessible navigation, as it impacts snack bar action timer
+                                // for all users of apps registered as accessibility services,
+                                // even though they are not for accessibility purposes (like TalkBack is)
+                                accessibleNavigation: false,
+                              ),
+                              child: MaterialApp(
+                                navigatorKey: AvesApp.navigatorKey,
+                                home: home,
+                                navigatorObservers: _navigatorObservers,
+                                builder: (context, child) => _decorateAppChild(
+                                  context: context,
+                                  initialized: initialized,
+                                  child: child,
+                                ),
+                                onGenerateTitle: (context) => context.l10n.appName,
+                                theme: lightTheme,
+                                darkTheme: darkTheme,
+                                themeMode: themeBrightness.appThemeMode,
+                                locale: settingsLocale,
+                                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                                supportedLocales: AvesApp.supportedLocales,
+                                // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
+                                scrollBehavior: StretchMaterialScrollBehavior(),
+                                useInheritedMediaQuery: true,
+                              ),
+                            );
+                          },
                         ),
-                        onGenerateTitle: (context) => context.l10n.appName,
-                        theme: lightTheme,
-                        darkTheme: darkTheme,
-                        themeMode: themeBrightness.appThemeMode,
-                        locale: settingsLocale,
-                        localizationsDelegates: AppLocalizations.localizationsDelegates,
-                        supportedLocales: AvesApp.supportedLocales,
-                        // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                        scrollBehavior: StretchMaterialScrollBehavior(),
                       ),
                     );
                   },
