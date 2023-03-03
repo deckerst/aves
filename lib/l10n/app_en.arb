@@ -226,7 +226,8 @@
   "unitSystemMetric": "Metric",
   "unitSystemImperial": "Imperial",
 
-  "vaultLockTypePin": "Pin",
+  "vaultLockTypePattern": "Pattern",
+  "vaultLockTypePin": "PIN",
   "vaultLockTypePassword": "Password",
 
   "videoControlsPlay": "Play",
@@ -384,8 +385,11 @@
   "vaultDialogLockModeWhenScreenOff": "Lock when screen turns off",
   "vaultDialogLockTypeLabel": "Lock type",
 
-  "pinDialogEnter": "Enter pin",
-  "pinDialogConfirm": "Confirm pin",
+  "patternDialogEnter": "Enter pattern",
+  "patternDialogConfirm": "Confirm pattern",
+
+  "pinDialogEnter": "Enter PIN",
+  "pinDialogConfirm": "Confirm PIN",
 
   "passwordDialogEnter": "Enter password",
   "passwordDialogConfirm": "Confirm password",

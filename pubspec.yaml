@@ -80,6 +80,7 @@ dependencies:
       url: https://github.com/deckerst/aves_panorama.git
       ref: aves
   path:
+  pattern_lock:
   pdf:
   percent_indicator:
   permission_handler:
