@@ -136,6 +136,7 @@
     "themeBrightnessBlack",
     "unitSystemMetric",
     "unitSystemImperial",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "videoControlsPlay",
@@ -195,6 +196,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -688,6 +691,7 @@
     "themeBrightnessBlack",
     "unitSystemMetric",
     "unitSystemImperial",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "videoControlsPlay",
@@ -747,6 +751,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -1170,6 +1176,7 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -1177,6 +1184,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -1200,6 +1209,7 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -1207,6 +1217,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -1224,10 +1236,25 @@
 
   "el": [
     "chipActionGoToPlacePage",
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty"
+  ],
+
+  "es": [
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm"
+  ],
+
+  "eu": [
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm"
   ],
 
   "fa": [
@@ -1269,6 +1296,7 @@
     "lengthUnitPixel",
     "lengthUnitPercent",
     "nameConflictStrategySkip",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "videoControlsNone",
@@ -1315,6 +1343,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -1698,6 +1728,12 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm"
+  ],
+
   "gl": [
     "columnCount",
     "chipActionGoToPlacePage",
@@ -1731,6 +1767,7 @@
     "themeBrightnessLight",
     "themeBrightnessDark",
     "themeBrightnessBlack",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "videoPlaybackSkip",
@@ -1783,6 +1820,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -2353,6 +2392,7 @@
     "themeBrightnessBlack",
     "unitSystemMetric",
     "unitSystemImperial",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "videoControlsPlay",
@@ -2412,6 +2452,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -2827,10 +2869,19 @@
     "filePickerUseThisFolder"
   ],
 
+  "id": [
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm"
+  ],
+
   "it": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
@@ -2855,6 +2906,7 @@
     "lengthUnitPercent",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2862,6 +2914,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -2884,6 +2938,12 @@
     "settingsWidgetDisplayedItem"
   ],
 
+  "ko": [
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm"
+  ],
+
   "lt": [
     "columnCount",
     "chipActionGoToPlacePage",
@@ -2896,6 +2956,7 @@
     "keepScreenOnVideoPlayback",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2903,6 +2964,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -2932,6 +2995,7 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -2939,6 +3003,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -2975,6 +3041,7 @@
     "lengthUnitPercent",
     "subtitlePositionTop",
     "subtitlePositionBottom",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "widgetDisplayedItemRandom",
@@ -2984,6 +3051,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -3026,6 +3095,7 @@
     "displayRefreshRatePreferLowest",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "wallpaperTargetHome",
@@ -3036,6 +3106,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -3323,6 +3395,12 @@
     "wallpaperUseScrollEffect"
   ],
 
+  "pl": [
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm"
+  ],
+
   "pt": [
     "columnCount",
     "chipActionGoToPlacePage",
@@ -3331,8 +3409,11 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "newVaultWarningDialogMessage",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "passwordDialogConfirm",
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
@@ -3351,6 +3432,9 @@
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
@@ -3363,6 +3447,9 @@
     "filterLocatedLabel",
     "filterTaggedLabel",
     "lengthUnitPixel",
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "exportEntryDialogWriteMetadata",
@@ -3390,6 +3477,7 @@
     "coordinateDms",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "otherDirectoryDescription",
@@ -3404,6 +3492,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -3808,6 +3898,7 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -3815,6 +3906,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -4153,6 +4246,7 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -4160,6 +4254,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -4175,6 +4271,12 @@
     "settingsDisablingBinWarningDialogMessage"
   ],
 
+  "uk": [
+    "vaultLockTypePattern",
+    "patternDialogEnter",
+    "patternDialogConfirm"
+  ],
+
   "zh": [
     "chipActionGoToPlacePage",
     "chipActionLock",
@@ -4185,6 +4287,7 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -4192,6 +4295,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",
@@ -4224,6 +4329,7 @@
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
+    "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
     "newVaultWarningDialogMessage",
@@ -4231,6 +4337,8 @@
     "configureVaultDialogTitle",
     "vaultDialogLockModeWhenScreenOff",
     "vaultDialogLockTypeLabel",
+    "patternDialogEnter",
+    "patternDialogConfirm",
     "pinDialogEnter",
     "pinDialogConfirm",
     "passwordDialogEnter",

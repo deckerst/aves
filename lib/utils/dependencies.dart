@@ -261,6 +261,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/zesage/panorama',
     ),
     Dependency(
+      name: 'Pattern Lock',
+      license: apache2,
+      sourceUrl: 'https://github.com/qwert2603/pattern_lock',
+    ),
+    Dependency(
       name: 'Percent Indicator',
       license: bsd2,
       sourceUrl: 'https://github.com/diegoveloper/flutter_percent_indicator',
