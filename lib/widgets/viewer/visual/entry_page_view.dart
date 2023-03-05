@@ -450,6 +450,12 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
       case MediaCommand.pause:
         videoController.pause();
         break;
+      case MediaCommand.skipToNext:
+        ShowNextVideoNotification().dispatch(context);
+        break;
+      case MediaCommand.skipToPrevious:
+        ShowPreviousVideoNotification().dispatch(context);
+        break;
       case MediaCommand.stop:
         videoController.pause();
         break;

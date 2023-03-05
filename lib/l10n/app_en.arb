@@ -793,6 +793,7 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Show videos",
   "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
+  "settingsVideoEnablePip": "Picture-in-picture",
   "settingsVideoAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeDialogTitle": "Loop Mode",

@@ -76,6 +76,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/deckerst/fijkplayer',
     ),
     Dependency(
+      name: 'Floating',
+      license: mit,
+      sourceUrl: 'https://github.com/wrbl606/floating',
+    ),
+    Dependency(
       name: 'Flutter Display Mode',
       license: mit,
       sourceUrl: 'https://github.com/ajinasokan/flutter_displaymode',

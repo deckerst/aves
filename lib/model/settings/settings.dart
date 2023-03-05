@@ -133,6 +133,7 @@ class Settings extends ChangeNotifier {
 
   // video
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
+  static const enableVideoPipKey = 'video_pip';
   static const videoAutoPlayModeKey = 'video_auto_play_mode';
   static const videoLoopModeKey = 'video_loop';
   static const videoControlsKey = 'video_controls';
@@ -284,6 +285,7 @@ class Settings extends ChangeNotifier {
     viewerGestureSideTapNext = false;
     viewerUseCutout = true;
     viewerMaxBrightness = false;
+    enableVideoPip = false;
     videoControls = VideoControls.none;
     videoGestureDoubleTapTogglePlay = false;
     videoGestureSideDoubleTapSeek = false;
@@ -297,6 +299,9 @@ class Settings extends ChangeNotifier {
     }
     if (viewerUseCutout != SettingsDefaults.viewerUseCutout && !await windowService.isCutoutAware()) {
       _set(viewerUseCutoutKey, null);
+    }
+    if (enableVideoPip && !device.supportPictureInPicture) {
+      _set(enableVideoPipKey, null);
     }
   }
 
@@ -654,6 +659,10 @@ class Settings extends ChangeNotifier {
   bool get enableVideoHardwareAcceleration => getBool(enableVideoHardwareAccelerationKey) ?? SettingsDefaults.enableVideoHardwareAcceleration;
 
   set enableVideoHardwareAcceleration(bool newValue) => _set(enableVideoHardwareAccelerationKey, newValue);
+
+  bool get enableVideoPip => getBool(enableVideoPipKey) ?? SettingsDefaults.enableVideoPip;
+
+  set enableVideoPip(bool newValue) => _set(enableVideoPipKey, newValue);
 
   VideoAutoPlayMode get videoAutoPlayMode => getEnumOrDefault(videoAutoPlayModeKey, SettingsDefaults.videoAutoPlayMode, VideoAutoPlayMode.values);
 
@@ -1078,6 +1087,7 @@ class Settings extends ChangeNotifier {
             case viewerUseCutoutKey:
             case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:
+            case enableVideoPipKey:
             case enableVideoHardwareAccelerationKey:
             case videoGestureDoubleTapTogglePlayKey:
             case videoGestureSideDoubleTapSeekKey:

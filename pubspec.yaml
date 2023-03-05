@@ -60,6 +60,10 @@ dependencies:
       url: https://github.com/deckerst/fijkplayer.git
       ref: aves
   flex_color_picker:
+  floating:
+    git:
+      url: https://github.com/deckerst/floating.git
+      ref: source-rect-hint
   fluster:
   flutter_displaymode:
   flutter_highlight:

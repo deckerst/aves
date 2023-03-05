@@ -3,11 +3,13 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/viewer_transition.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
+import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
+import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,40 +47,43 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
 
     return MagnifierGestureDetectorScope(
       axis: const [Axis.horizontal, Axis.vertical],
-      child: PageView.builder(
-        // key is expected by test driver
-        key: const Key('horizontal-pageview'),
-        scrollDirection: Axis.horizontal,
-        controller: pageController,
-        physics: MagnifierScrollerPhysics(
-          gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
-          parent: const BouncingScrollPhysics(),
+      child: NotificationListener(
+        onNotification: _handleNotification,
+        child: PageView.builder(
+          // key is expected by test driver
+          key: const Key('horizontal-pageview'),
+          scrollDirection: Axis.horizontal,
+          controller: pageController,
+          physics: MagnifierScrollerPhysics(
+            gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+            parent: const BouncingScrollPhysics(),
+          ),
+          onPageChanged: widget.onPageChanged,
+          itemBuilder: (context, index) {
+            final mainEntry = entries[index % entries.length];
+
+            final child = mainEntry.isMultiPage
+                ? PageEntryBuilder(
+                    multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                    builder: (pageEntry) => _buildViewer(mainEntry, pageEntry: pageEntry),
+                  )
+                : _buildViewer(mainEntry);
+
+            return Selector<Settings, bool>(
+              selector: (context, s) => s.accessibilityAnimations.animate,
+              builder: (context, animate, child) {
+                if (!animate) return child!;
+                return AnimatedBuilder(
+                  animation: pageController,
+                  builder: viewerController.transition.builder(pageController, index),
+                  child: child,
+                );
+              },
+              child: child,
+            );
+          },
+          itemCount: viewerController.repeat ? null : entries.length,
         ),
-        onPageChanged: widget.onPageChanged,
-        itemBuilder: (context, index) {
-          final mainEntry = entries[index % entries.length];
-
-          final child = mainEntry.isMultiPage
-              ? PageEntryBuilder(
-                  multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
-                  builder: (pageEntry) => _buildViewer(mainEntry, pageEntry: pageEntry),
-                )
-              : _buildViewer(mainEntry);
-
-          return Selector<Settings, bool>(
-            selector: (context, s) => s.accessibilityAnimations.animate,
-            builder: (context, animate, child) {
-              if (!animate) return child!;
-              return AnimatedBuilder(
-                animation: pageController,
-                builder: viewerController.transition.builder(pageController, index),
-                child: child,
-              );
-            },
-            child: child,
-          );
-        },
-        itemCount: viewerController.repeat ? null : entries.length,
       ),
     );
   }
@@ -92,6 +97,43 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
       viewerController: viewerController,
       onDisposed: () => widget.onViewDisposed(mainEntry, pageEntry),
     );
+  }
+
+  bool _handleNotification(dynamic notification) {
+    if (notification is ShowPreviousVideoNotification) {
+      _showPreviousVideo();
+    } else if (notification is ShowNextVideoNotification) {
+      _showNextVideo();
+    } else {
+      return false;
+    }
+    return true;
+  }
+
+  void _showPreviousVideo() {
+    final currentIndex = pageController.page?.round();
+    if (currentIndex != null) {
+      final previousVideoEntry = entries.take(currentIndex).lastWhereOrNull((entry) => entry.isVideo);
+      if (previousVideoEntry != null) {
+        final previousIndex = entries.indexOf(previousVideoEntry);
+        if (previousIndex != -1) {
+          ShowEntryNotification(animate: false, index: previousIndex).dispatch(context);
+        }
+      }
+    }
+  }
+
+  void _showNextVideo() {
+    final currentIndex = pageController.page?.round();
+    if (currentIndex != null) {
+      final nextVideoEntry = entries.skip(currentIndex + 1).firstWhereOrNull((entry) => entry.isVideo);
+      if (nextVideoEntry != null) {
+        final nextIndex = entries.indexOf(nextVideoEntry);
+        if (nextIndex != -1) {
+          ShowEntryNotification(animate: false, index: nextIndex).dispatch(context);
+        }
+      }
+    }
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/video_auto_play_mode.dart';
@@ -40,6 +41,7 @@ class VideoSection extends SettingsSection {
     return [
       if (!standalonePage) SettingsTileVideoShowVideos(),
       SettingsTileVideoEnableHardwareAcceleration(),
+      if (!settings.useTvLayout && device.supportPictureInPicture) SettingsTileVideoEnablePip(),
       SettingsTileVideoEnableAutoPlay(),
       SettingsTileVideoLoopMode(),
       if (!settings.useTvLayout) SettingsTileVideoControls(),
@@ -68,6 +70,18 @@ class SettingsTileVideoEnableHardwareAcceleration extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
         selector: (context, s) => s.enableVideoHardwareAcceleration,
         onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
+        title: title(context),
+      );
+}
+
+class SettingsTileVideoEnablePip extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsVideoEnablePip;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+        selector: (context, s) => s.enableVideoPip,
+        onChanged: (v) => settings.enableVideoPip = v,
         title: title(context),
       );
 }
