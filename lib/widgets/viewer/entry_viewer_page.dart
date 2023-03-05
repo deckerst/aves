@@ -41,12 +41,14 @@ class _EntryViewerPageState extends State<EntryViewerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final collection = widget.collection;
     return AvesScaffold(
       body: ViewStateConductorProvider(
         child: VideoConductorProvider(
+          collection: collection,
           child: MultiPageConductorProvider(
             child: EntryViewerStack(
-              collection: widget.collection,
+              collection: collection,
               initialEntry: widget.initialEntry,
               viewerController: _viewerController,
             ),
@@ -86,17 +88,19 @@ class ViewStateConductorProvider extends StatelessWidget {
 }
 
 class VideoConductorProvider extends StatelessWidget {
+  final CollectionLens? collection;
   final Widget? child;
 
   const VideoConductorProvider({
     super.key,
-    this.child,
+    this.collection,
+    required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     return Provider<VideoConductor>(
-      create: (context) => VideoConductor(),
+      create: (context) => VideoConductor(collection: collection),
       dispose: (context, value) => value.dispose(),
       child: child,
     );
@@ -108,7 +112,7 @@ class MultiPageConductorProvider extends StatelessWidget {
 
   const MultiPageConductorProvider({
     super.key,
-    this.child,
+    required this.child,
   });
 
   @override

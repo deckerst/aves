@@ -11,7 +11,11 @@ import 'package:get_it/get_it.dart';
 abstract class MediaSessionService {
   Stream<MediaCommandEvent> get mediaCommands;
 
-  Future<void> update(AvesVideoController controller);
+  Future<void> update({
+    required AvesVideoController controller,
+    required bool canSkipToNext,
+    required bool canSkipToPrevious,
+  });
 
   Future<void> release();
 }
@@ -38,7 +42,11 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
   Stream<MediaCommandEvent> get mediaCommands => _streamController.stream.where((event) => event is MediaCommandEvent).cast<MediaCommandEvent>();
 
   @override
-  Future<void> update(AvesVideoController controller) async {
+  Future<void> update({
+    required AvesVideoController controller,
+    required bool canSkipToNext,
+    required bool canSkipToPrevious,
+  }) async {
     final entry = controller.entry;
     try {
       await _platformObject.invokeMethod('update', <String, dynamic>{
@@ -48,6 +56,8 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
         'state': _toPlatformState(controller.status),
         'positionMillis': controller.currentPosition,
         'playbackSpeed': controller.speed,
+        'canSkipToNext': canSkipToNext,
+        'canSkipToPrevious': canSkipToPrevious,
       });
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -88,6 +98,12 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
       case 'pause':
         event = const MediaCommandEvent(MediaCommand.pause);
         break;
+      case 'skip_to_next':
+        event = const MediaCommandEvent(MediaCommand.skipToNext);
+        break;
+      case 'skip_to_previous':
+        event = const MediaCommandEvent(MediaCommand.skipToPrevious);
+        break;
       case 'stop':
         event = const MediaCommandEvent(MediaCommand.stop);
         break;
@@ -104,7 +120,7 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
   }
 }
 
-enum MediaCommand { play, pause, stop, seek }
+enum MediaCommand { play, pause, skipToNext, skipToPrevious, stop, seek }
 
 @immutable
 class MediaCommandEvent extends Equatable {

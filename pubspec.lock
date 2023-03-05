@@ -373,6 +373,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.2"
+  floating:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: source-rect-hint
+      resolved-ref: "84b2f7997da4393dedf3f2e09dd990e5d5492161"
+      url: "https://github.com/deckerst/floating.git"
+    source: git
+    version: "1.1.3"
   fluster:
     dependency: "direct main"
     description:

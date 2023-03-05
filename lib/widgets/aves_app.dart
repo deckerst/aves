@@ -362,7 +362,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint('$runtimeType lifecycle ${state.name}');
     reportService.log('Lifecycle ${state.name}');
     switch (state) {
       case AppLifecycleState.inactive:

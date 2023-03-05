@@ -1,5 +1,6 @@
 import 'package:aves/services/common/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:floating/floating.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -9,7 +10,7 @@ class Device {
   late final String _userAgent;
   late final bool _canAuthenticateUser, _canGrantDirectoryAccess, _canPinShortcut, _canPrint;
   late final bool _canRenderFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper, _canUseCrypto;
-  late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode;
+  late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
 
   String get userAgent => _userAgent;
 
@@ -41,6 +42,8 @@ class Device {
 
   bool get supportEdgeToEdgeUIMode => _supportEdgeToEdgeUIMode;
 
+  bool get supportPictureInPicture => _supportPictureInPicture;
+
   Device._private();
 
   Future<void> init() async {
@@ -52,6 +55,10 @@ class Device {
 
     final auth = LocalAuthentication();
     _canAuthenticateUser = await auth.canCheckBiometrics || await auth.isDeviceSupported();
+
+    final floating = Floating();
+    _supportPictureInPicture = await floating.isPipAvailable;
+    floating.dispose();
 
     final capabilities = await deviceService.getCapabilities();
     _canGrantDirectoryAccess = capabilities['canGrantDirectoryAccess'] ?? false;

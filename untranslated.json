@@ -479,6 +479,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -1034,6 +1035,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -1198,6 +1200,7 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsVideoEnablePip",
     "settingsDisablingBinWarningDialogMessage"
   ],
 
@@ -1231,6 +1234,7 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsVideoEnablePip",
     "settingsDisablingBinWarningDialogMessage"
   ],
 
@@ -1242,19 +1246,22 @@
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
-    "placeEmpty"
+    "placeEmpty",
+    "settingsVideoEnablePip"
   ],
 
   "es": [
     "vaultLockTypePattern",
     "patternDialogEnter",
-    "patternDialogConfirm"
+    "patternDialogConfirm",
+    "settingsVideoEnablePip"
   ],
 
   "eu": [
     "vaultLockTypePattern",
     "patternDialogEnter",
-    "patternDialogConfirm"
+    "patternDialogConfirm",
+    "settingsVideoEnablePip"
   ],
 
   "fa": [
@@ -1596,6 +1603,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -1731,7 +1739,8 @@
   "fr": [
     "vaultLockTypePattern",
     "patternDialogEnter",
-    "patternDialogConfirm"
+    "patternDialogConfirm",
+    "settingsVideoEnablePip"
   ],
 
   "gl": [
@@ -2103,6 +2112,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -2735,6 +2745,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -2872,7 +2883,8 @@
   "id": [
     "vaultLockTypePattern",
     "patternDialogEnter",
-    "patternDialogConfirm"
+    "patternDialogConfirm",
+    "settingsVideoEnablePip"
   ],
 
   "it": [
@@ -2885,7 +2897,8 @@
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
-    "placeEmpty"
+    "placeEmpty",
+    "settingsVideoEnablePip"
   ],
 
   "ja": [
@@ -2931,6 +2944,7 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
+    "settingsVideoEnablePip",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -2941,7 +2955,8 @@
   "ko": [
     "vaultLockTypePattern",
     "patternDialogEnter",
-    "patternDialogConfirm"
+    "patternDialogConfirm",
+    "settingsVideoEnablePip"
   ],
 
   "lt": [
@@ -2981,6 +2996,7 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
+    "settingsVideoEnablePip",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -3017,6 +3033,7 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsVideoEnablePip",
     "settingsDisablingBinWarningDialogMessage"
   ],
 
@@ -3069,6 +3086,7 @@
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowRatingTags",
     "settingsViewerShowDescription",
+    "settingsVideoEnablePip",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
@@ -3325,6 +3343,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -3398,7 +3417,8 @@
   "pl": [
     "vaultLockTypePattern",
     "patternDialogEnter",
-    "patternDialogConfirm"
+    "patternDialogConfirm",
+    "settingsVideoEnablePip"
   ],
 
   "pt": [
@@ -3424,6 +3444,7 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsVideoEnablePip",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage"
   ],
@@ -3438,7 +3459,8 @@
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
-    "placeEmpty"
+    "placeEmpty",
+    "settingsVideoEnablePip"
   ],
 
   "ru": [
@@ -3459,6 +3481,7 @@
     "placeEmpty",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsVideoEnablePip",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage"
   ],
@@ -3749,6 +3772,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -4104,6 +4128,7 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
+    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
@@ -4268,13 +4293,15 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsVideoEnablePip",
     "settingsDisablingBinWarningDialogMessage"
   ],
 
   "uk": [
     "vaultLockTypePattern",
     "patternDialogEnter",
-    "patternDialogConfirm"
+    "patternDialogConfirm",
+    "settingsVideoEnablePip"
   ],
 
   "zh": [
@@ -4312,6 +4339,7 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
+    "settingsVideoEnablePip",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -4354,6 +4382,7 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
+    "settingsVideoEnablePip",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
