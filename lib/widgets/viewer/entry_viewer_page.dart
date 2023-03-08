@@ -3,10 +3,8 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
-import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
-import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,16 +41,16 @@ class _EntryViewerPageState extends State<EntryViewerPage> {
   Widget build(BuildContext context) {
     final collection = widget.collection;
     return AvesScaffold(
-      body: ViewStateConductorProvider(
-        child: VideoConductorProvider(
+      body: MultiProvider(
+        providers: [
+          ViewStateConductorProvider(),
+          VideoConductorProvider(collection: collection),
+          MultiPageConductorProvider(),
+        ],
+        child: EntryViewerStack(
           collection: collection,
-          child: MultiPageConductorProvider(
-            child: EntryViewerStack(
-              collection: collection,
-              initialEntry: widget.initialEntry,
-              viewerController: _viewerController,
-            ),
-          ),
+          initialEntry: widget.initialEntry,
+          viewerController: _viewerController,
         ),
       ),
       backgroundColor: Navigator.canPop(context)
@@ -61,66 +59,6 @@ class _EntryViewerPageState extends State<EntryViewerPage> {
               ? Colors.black
               : Colors.white,
       resizeToAvoidBottomInset: false,
-    );
-  }
-}
-
-class ViewStateConductorProvider extends StatelessWidget {
-  final Widget? child;
-
-  const ViewStateConductorProvider({
-    super.key,
-    this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ProxyProvider<MediaQueryData, ViewStateConductor>(
-      create: (context) => ViewStateConductor(),
-      update: (context, mq, value) {
-        value!.viewportSize = mq.size;
-        return value;
-      },
-      dispose: (context, value) => value.dispose(),
-      child: child,
-    );
-  }
-}
-
-class VideoConductorProvider extends StatelessWidget {
-  final CollectionLens? collection;
-  final Widget? child;
-
-  const VideoConductorProvider({
-    super.key,
-    this.collection,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Provider<VideoConductor>(
-      create: (context) => VideoConductor(collection: collection),
-      dispose: (context, value) => value.dispose(),
-      child: child,
-    );
-  }
-}
-
-class MultiPageConductorProvider extends StatelessWidget {
-  final Widget? child;
-
-  const MultiPageConductorProvider({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Provider<MultiPageConductor>(
-      create: (context) => MultiPageConductor(),
-      dispose: (context, value) => value.dispose(),
-      child: child,
     );
   }
 }

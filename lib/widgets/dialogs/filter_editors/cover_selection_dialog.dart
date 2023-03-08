@@ -10,7 +10,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/basic/color_list_tile.dart';
+import 'package:aves/widgets/common/basic/list_tiles/color.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';

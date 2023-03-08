@@ -5,6 +5,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -21,6 +22,7 @@ import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/tile.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -39,8 +41,10 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
+import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -152,58 +156,64 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                           tileAnimationDelay = Duration.zero;
                         }
 
-                        return StreamBuilder(
-                          stream: source.eventBus.on<AspectRatioChangedEvent>(),
-                          builder: (context, snapshot) => SectionedEntryListLayoutProvider(
-                            collection: collection,
-                            selectable: selectable,
-                            scrollableWidth: scrollableWidth,
-                            tileLayout: tileLayout,
-                            columnCount: columnCount,
-                            spacing: tileSpacing,
-                            horizontalPadding: horizontalPadding,
-                            tileExtent: thumbnailExtent,
-                            tileBuilder: (entry, tileSize) {
-                              final extent = tileSize.shortestSide;
-                              return AnimatedBuilder(
-                                animation: favourites,
-                                builder: (context, child) {
-                                  Widget tile = InteractiveTile(
-                                    key: ValueKey(entry.id),
-                                    collection: collection,
-                                    entry: entry,
-                                    thumbnailExtent: extent,
-                                    tileLayout: tileLayout,
-                                    isScrollingNotifier: _isScrollingNotifier,
-                                  );
-                                  if (!settings.useTvLayout) return tile;
+                        return NotificationListener<OpenViewerNotification>(
+                          onNotification: (notification) {
+                            _goToViewer(collection, notification.entry);
+                            return true;
+                          },
+                          child: StreamBuilder(
+                            stream: source.eventBus.on<AspectRatioChangedEvent>(),
+                            builder: (context, snapshot) => SectionedEntryListLayoutProvider(
+                              collection: collection,
+                              selectable: selectable,
+                              scrollableWidth: scrollableWidth,
+                              tileLayout: tileLayout,
+                              columnCount: columnCount,
+                              spacing: tileSpacing,
+                              horizontalPadding: horizontalPadding,
+                              tileExtent: thumbnailExtent,
+                              tileBuilder: (entry, tileSize) {
+                                final extent = tileSize.shortestSide;
+                                return AnimatedBuilder(
+                                  animation: favourites,
+                                  builder: (context, child) {
+                                    Widget tile = InteractiveTile(
+                                      key: ValueKey(entry.id),
+                                      collection: collection,
+                                      entry: entry,
+                                      thumbnailExtent: extent,
+                                      tileLayout: tileLayout,
+                                      isScrollingNotifier: _isScrollingNotifier,
+                                    );
+                                    if (!settings.useTvLayout) return tile;
 
-                                  return Focus(
-                                    onFocusChange: (focused) {
-                                      if (focused) {
-                                        _focusedItemNotifier.value = entry;
-                                      } else if (_focusedItemNotifier.value == entry) {
-                                        _focusedItemNotifier.value = null;
-                                      }
-                                    },
-                                    child: ValueListenableBuilder<AvesEntry?>(
-                                      valueListenable: _focusedItemNotifier,
-                                      builder: (context, focusedItem, child) {
-                                        return AnimatedScale(
-                                          scale: focusedItem == entry ? 1 : .9,
-                                          curve: Curves.fastOutSlowIn,
-                                          duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
-                                          child: child!,
-                                        );
+                                    return Focus(
+                                      onFocusChange: (focused) {
+                                        if (focused) {
+                                          _focusedItemNotifier.value = entry;
+                                        } else if (_focusedItemNotifier.value == entry) {
+                                          _focusedItemNotifier.value = null;
+                                        }
                                       },
-                                      child: tile,
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            tileAnimationDelay: tileAnimationDelay,
-                            child: child!,
+                                      child: ValueListenableBuilder<AvesEntry?>(
+                                        valueListenable: _focusedItemNotifier,
+                                        builder: (context, focusedItem, child) {
+                                          return AnimatedScale(
+                                            scale: focusedItem == entry ? 1 : .9,
+                                            curve: Curves.fastOutSlowIn,
+                                            duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+                                            child: child!,
+                                          );
+                                        },
+                                        child: tile,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              tileAnimationDelay: tileAnimationDelay,
+                              child: child!,
+                            ),
                           ),
                         );
                       },
@@ -225,6 +235,34 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
         );
         return sectionedListLayoutProvider;
       },
+    );
+  }
+
+  void _goToViewer(CollectionLens collection, AvesEntry entry) {
+    final selection = context.read<Selection<AvesEntry>>();
+    Navigator.maybeOf(context)?.push(
+      TransparentMaterialPageRoute(
+        settings: const RouteSettings(name: EntryViewerPage.routeName),
+        pageBuilder: (context, a, sa) {
+          final viewerCollection = collection.copyWith(
+            listenToSource: false,
+          );
+          assert(viewerCollection.sortedEntries.map((entry) => entry.id).contains(entry.id));
+          Widget child = EntryViewerPage(
+            collection: viewerCollection,
+            initialEntry: entry,
+          );
+
+          if (selection.isSelecting) {
+            child = ChangeNotifierProvider<Selection<AvesEntry>>.value(
+              value: selection,
+              child: child,
+            );
+          }
+
+          return child;
+        },
+      ),
     );
   }
 }
