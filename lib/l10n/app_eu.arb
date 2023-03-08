@@ -1420,5 +1420,13 @@
   "vaultLockTypePassword": "Pasahitza",
   "@vaultLockTypePassword": {},
   "drawerPlacePage": "Lekuak",
-  "@drawerPlacePage": {}
+  "@drawerPlacePage": {},
+  "vaultLockTypePattern": "Patroia",
+  "@vaultLockTypePattern": {},
+  "patternDialogEnter": "Sartu patroia",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Konfirmatu patroia",
+  "@patternDialogConfirm": {},
+  "settingsVideoEnablePip": "Bideoa leihotxoan",
+  "@settingsVideoEnablePip": {}
 }

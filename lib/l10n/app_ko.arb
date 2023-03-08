@@ -1262,5 +1262,13 @@
   "lengthUnitPercent": "%",
   "@lengthUnitPercent": {},
   "exportEntryDialogWriteMetadata": "메타데이터 저장",
-  "@exportEntryDialogWriteMetadata": {}
+  "@exportEntryDialogWriteMetadata": {},
+  "patternDialogConfirm": "패턴을 확인하세요",
+  "@patternDialogConfirm": {},
+  "patternDialogEnter": "패턴을 입력하세요",
+  "@patternDialogEnter": {},
+  "vaultLockTypePattern": "패턴",
+  "@vaultLockTypePattern": {},
+  "settingsVideoEnablePip": "PIP 모드",
+  "@settingsVideoEnablePip": {}
 }

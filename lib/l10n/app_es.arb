@@ -1262,5 +1262,13 @@
   "lengthUnitPercent": "%",
   "@lengthUnitPercent": {},
   "exportEntryDialogWriteMetadata": "Escribir metadatos",
-  "@exportEntryDialogWriteMetadata": {}
+  "@exportEntryDialogWriteMetadata": {},
+  "vaultLockTypePattern": "Patrón",
+  "@vaultLockTypePattern": {},
+  "patternDialogEnter": "Introduzca el patrón",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Confirme el patrón",
+  "@patternDialogConfirm": {},
+  "settingsVideoEnablePip": "Imagen-en-imagen",
+  "@settingsVideoEnablePip": {}
 }
