@@ -8,12 +8,12 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/viewer/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
+import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/video_action_delegate.dart';
@@ -37,13 +37,14 @@ class WallpaperPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AvesScaffold(
       body: entry != null
-          ? ViewStateConductorProvider(
-              child: VideoConductorProvider(
-                child: MultiPageConductorProvider(
-                  child: EntryEditor(
-                    entry: entry!,
-                  ),
-                ),
+          ? MultiProvider(
+              providers: [
+                ViewStateConductorProvider(),
+                VideoConductorProvider(),
+                MultiPageConductorProvider(),
+              ],
+              child: EntryEditor(
+                entry: entry!,
               ),
             )
           : const SizedBox(),

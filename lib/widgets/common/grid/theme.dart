@@ -30,10 +30,12 @@ class GridTheme extends StatelessWidget {
         final fontSize = (iconSize * .7).floorToDouble();
         iconSize *= mq.textScaleFactor;
         final highlightBorderWidth = extent * .1;
+        final interactiveDimension = min(iconSize * 2, kMinInteractiveDimension);
         return GridThemeData(
           iconSize: iconSize,
           fontSize: fontSize,
           highlightBorderWidth: highlightBorderWidth,
+          interactiveDimension: interactiveDimension,
           showFavourite: settings.showThumbnailFavourite,
           locationIcon: showLocation ? settings.thumbnailLocationIcon : ThumbnailOverlayLocationIcon.none,
           tagIcon: settings.thumbnailTagIcon,
@@ -52,7 +54,7 @@ class GridTheme extends StatelessWidget {
 typedef GridThemeIconBuilder = List<Widget> Function(BuildContext context, AvesEntry entry);
 
 class GridThemeData {
-  final double iconSize, fontSize, highlightBorderWidth;
+  final double iconSize, fontSize, highlightBorderWidth, interactiveDimension;
   final bool showFavourite, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
   final bool showLocated, showUnlocated, showTagged, showUntagged;
   late final GridThemeIconBuilder iconBuilder;
@@ -61,6 +63,7 @@ class GridThemeData {
     required this.iconSize,
     required this.fontSize,
     required this.highlightBorderWidth,
+    required this.interactiveDimension,
     required this.showFavourite,
     required ThumbnailOverlayLocationIcon locationIcon,
     required ThumbnailOverlayTagIcon tagIcon,

@@ -1,9 +1,9 @@
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/subtitle_position.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/basic/color_list_tile.dart';
+import 'package:aves/widgets/common/basic/list_tiles/color.dart';
+import 'package:aves/widgets/common/basic/list_tiles/slider.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
-import 'package:aves/widgets/common/basic/slider_list_tile.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/video/subtitle_sample.dart';

@@ -22,44 +22,38 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelecting = context.select<Selection<T>, bool>((selection) => selection.isSelecting);
-    final child = isSelecting
-        ? Selector<Selection<T>, bool>(
-            selector: (context, selection) => selection.isSelected([item]),
-            builder: (context, isSelected, child) {
-              var child = isSelecting
-                  ? OverlayIcon(
+    return AnimatedSwitcher(
+      duration: duration,
+      child: isSelecting
+          ? Selector<Selection<T>, bool>(
+              selector: (context, selection) => selection.isSelected([item]),
+              builder: (context, isSelected, child) {
+                return AnimatedContainer(
+                  alignment: AlignmentDirectional.topEnd,
+                  padding: padding,
+                  decoration: BoxDecoration(
+                    color: isSelected ? Theme.of(context).colorScheme.secondary.withOpacity(.6) : Colors.transparent,
+                    borderRadius: borderRadius,
+                  ),
+                  duration: duration,
+                  child: AnimatedSwitcher(
+                    duration: duration,
+                    switchInCurve: Curves.easeOutBack,
+                    switchOutCurve: Curves.easeOutBack,
+                    transitionBuilder: (child, animation) => ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    ),
+                    child: OverlayIcon(
                       key: ValueKey(isSelected),
                       icon: isSelected ? AIcons.selected : AIcons.unselected,
                       margin: EdgeInsets.zero,
-                    )
-                  : const SizedBox();
-              child = AnimatedSwitcher(
-                duration: duration,
-                switchInCurve: Curves.easeOutBack,
-                switchOutCurve: Curves.easeOutBack,
-                transitionBuilder: (child, animation) => ScaleTransition(
-                  scale: animation,
-                  child: child,
-                ),
-                child: child,
-              );
-              child = AnimatedContainer(
-                alignment: AlignmentDirectional.topEnd,
-                padding: padding,
-                decoration: BoxDecoration(
-                  color: isSelected ? Theme.of(context).colorScheme.secondary.withOpacity(.6) : Colors.transparent,
-                  borderRadius: borderRadius,
-                ),
-                duration: duration,
-                child: child,
-              );
-              return child;
-            },
-          )
-        : const SizedBox();
-    return AnimatedSwitcher(
-      duration: duration,
-      child: child,
+                    ),
+                  ),
+                );
+              },
+            )
+          : const SizedBox(),
     );
   }
 }
