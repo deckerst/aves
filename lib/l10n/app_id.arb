@@ -1262,5 +1262,13 @@
   "lengthUnitPixel": "px",
   "@lengthUnitPixel": {},
   "lengthUnitPercent": "%",
-  "@lengthUnitPercent": {}
+  "@lengthUnitPercent": {},
+  "vaultLockTypePattern": "Pola",
+  "@vaultLockTypePattern": {},
+  "patternDialogConfirm": "Konfirmasi pola",
+  "@patternDialogConfirm": {},
+  "patternDialogEnter": "Masukkan pola",
+  "@patternDialogEnter": {},
+  "settingsVideoEnablePip": "Gambar dalam gambar",
+  "@settingsVideoEnablePip": {}
 }
