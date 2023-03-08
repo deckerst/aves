@@ -73,8 +73,8 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
             children: _diffs.map((diff) {
               final oldText = diff.item1;
               final newText = diff.item2;
-              final oldWidth = diff.item3;
-              final newWidth = diff.item4;
+              final oldSize = diff.item3;
+              final newSize = diff.item4;
               final text = (_animation.value == 0 ? oldText : newText) ?? '';
               return WidgetSpan(
                 child: AnimatedSize(
@@ -91,9 +91,10 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
                         children: [
                           ...previousChildren.map(
                             (child) => ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth: min(oldWidth, newWidth),
-                              ),
+                              constraints: BoxConstraints.tight(Size(
+                                min(oldSize.width, newSize.width),
+                                min(oldSize.height, newSize.height),
+                              )),
                               child: child,
                             ),
                           ),
@@ -116,14 +117,16 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
     );
   }
 
-  double textWidth(String text) {
+  Size textSize(String text) {
     final para = RenderParagraph(
       TextSpan(text: text, style: widget.textStyle),
       textDirection: Directionality.of(context),
       textScaleFactor: MediaQuery.textScaleFactorOf(context),
       strutStyle: widget.strutStyle,
     )..layout(const BoxConstraints(), parentUsesSize: true);
-    return para.getMaxIntrinsicWidth(double.infinity);
+    final width = para.getMaxIntrinsicWidth(double.infinity);
+    final height = para.getMaxIntrinsicHeight(double.infinity);
+    return Size(width, height);
   }
 
   // use an adaptation of Google's `Diff Match and Patch`
@@ -140,15 +143,15 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
       ..clear()
       ..addAll(d.map((diff) {
         final text = diff.text;
+        final size = textSize(text);
         switch (diff.operation) {
           case Operation.delete:
-            return Tuple4(text, null, textWidth(text), .0);
+            return Tuple4(text, null, size, Size.zero);
           case Operation.insert:
-            return Tuple4(null, text, .0, textWidth(text));
+            return Tuple4(null, text, Size.zero, size);
           case Operation.equal:
           default:
-            final width = textWidth(text);
-            return Tuple4(text, text, width, width);
+            return Tuple4(text, text, size, size);
         }
       }).fold<List<_TextDiff>>([], (prev, v) {
         if (prev.isNotEmpty) {
@@ -168,109 +171,6 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
         return [...prev, v];
       }));
   }
-
-// void _computeDiff(String oldText, String newText) {
-//   final oldCharacters = oldText.characters.toList();
-//   final newCharacters = newText.characters.toList();
-//   final diffResult = calculateListDiff<String>(oldCharacters, newCharacters, detectMoves: false);
-//   final updates = diffResult.getUpdatesWithData().toList();
-//   List<TextDiff> diffs = [];
-//   DataDiffUpdate<String>? pendingUpdate;
-//   int lastPos = oldCharacters.length;
-//   void addKeep(int pos) {
-//     if (pos < lastPos) {
-//       final text = oldCharacters.sublist(pos, lastPos).join();
-//       final width = textWidth(text);
-//       diffs.insert(0, Tuple4(text, text, width, width));
-//       lastPos = pos;
-//     }
-//   }
-//
-//   void commit(DataDiffUpdate<String>? update) {
-//     update?.when(
-//       insert: (pos, data) {
-//         addKeep(pos);
-//         diffs.insert(0, Tuple4(null, data, 0, textWidth(data)));
-//         lastPos = pos;
-//       },
-//       remove: (pos, data) {
-//         addKeep(pos + data.length);
-//         diffs.insert(0, Tuple4(data, null, textWidth(data), 0));
-//         lastPos = pos;
-//       },
-//       change: (pos, oldData, newData) {
-//         addKeep(pos + oldData.length);
-//         diffs.insert(0, Tuple4(oldData, newData, textWidth(oldData), textWidth(newData)));
-//         lastPos = pos;
-//       },
-//       move: (from, to, data) {
-//         assert(false, '`move` update: from=$from, to=$from, data=$data');
-//       },
-//     );
-//   }
-//
-//   for (var update in updates) {
-//     update.when(
-//       insert: (pos, data) {
-//         if (pendingUpdate == null) {
-//           pendingUpdate = update;
-//           return;
-//         }
-//         if (pendingUpdate is DataInsert) {
-//           final pendingInsert = pendingUpdate as DataInsert;
-//           if (pendingInsert.position == pos) {
-//             // merge insertions
-//             pendingUpdate = DataInsert(position: pos, data: data + pendingInsert.data);
-//             return;
-//           }
-//         } else if (pendingUpdate is DataRemove) {
-//           final pendingRemove = pendingUpdate as DataRemove;
-//           if (pendingRemove.position == pos) {
-//             // convert to change
-//             pendingUpdate = DataChange(position: pos, oldData: pendingRemove.data, newData: data);
-//             return;
-//           }
-//         } else if (pendingUpdate is DataChange) {
-//           final pendingChange = pendingUpdate as DataChange;
-//           if (pendingChange.position == pos) {
-//             // merge changes
-//             pendingUpdate = DataChange(position: pos, oldData: pendingChange.oldData, newData: data + pendingChange.newData);
-//             return;
-//           }
-//         }
-//         commit(pendingUpdate);
-//         pendingUpdate = update;
-//       },
-//       remove: (pos, data) {
-//         if (pendingUpdate == null) {
-//           pendingUpdate = update;
-//           return;
-//         }
-//         if (pendingUpdate is DataRemove) {
-//           final pendingRemove = pendingUpdate as DataRemove;
-//           if (pendingRemove.position == pos + data.length) {
-//             // merge removals
-//             pendingUpdate = DataRemove(position: pos, data: data + pendingRemove.data);
-//             return;
-//           }
-//         }
-//         commit(pendingUpdate);
-//         pendingUpdate = update;
-//       },
-//       change: (pos, oldData, newData) {
-//         assert(false, '`change` update: from=$pos, oldData=$oldData, newData=$newData');
-//       },
-//       move: (from, to, data) {
-//         assert(false, '`move` update: from=$from, to=$from, data=$data');
-//       },
-//     );
-//   }
-//   commit(pendingUpdate);
-//   addKeep(0);
-//   _diffs
-//     ..clear()
-//     ..addAll(diffs);
-// }
 }
 
-typedef _TextDiff = Tuple4<String?, String?, double, double>;
+typedef _TextDiff = Tuple4<String?, String?, Size, Size>;

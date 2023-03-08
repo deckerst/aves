@@ -1,3 +1,4 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -61,6 +62,12 @@ class ViewerButtons extends StatelessWidget {
       );
     }
 
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
+    bool isVisible(EntryAction action) => actionDelegate.isVisible(
+          appMode: appMode,
+          action: action,
+        );
+
     final trashed = mainEntry.trashed;
     return SafeArea(
       top: false,
@@ -72,9 +79,9 @@ class ViewerButtons extends StatelessWidget {
           return Selector<Settings, bool>(
             selector: (context, s) => s.isRotationLocked,
             builder: (context, s, child) {
-              final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(actionDelegate.isVisible).where(actionDelegate.canApply).take(availableCount - 1).toList();
+              final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(isVisible).where(actionDelegate.canApply).take(availableCount - 1).toList();
               List<EntryAction> getMenuActions(List<EntryAction> categoryActions) {
-                return categoryActions.where((action) => !quickActions.contains(action)).where(actionDelegate.isVisible).toList();
+                return categoryActions.where((action) => !quickActions.contains(action)).where(isVisible).toList();
               }
 
               return ViewerButtonRowContent(
@@ -109,6 +116,7 @@ class _TvButtonRowContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     return Selector<VideoConductor, AvesVideoController?>(
       selector: (context, vc) => vc.getController(pageEntry),
       builder: (context, videoController, child) {
@@ -120,7 +128,12 @@ class _TvButtonRowContent extends StatelessWidget {
             ...EntryActions.export,
             ...EntryActions.videoPlayback,
             ...EntryActions.video,
-          ].where(actionDelegate.isVisible).map((action) {
+          ]
+              .where((action) => actionDelegate.isVisible(
+                    appMode: appMode,
+                    action: action,
+                  ))
+              .map((action) {
             final enabled = actionDelegate.canApply(action);
             return CaptionedButton(
               scale: scale,

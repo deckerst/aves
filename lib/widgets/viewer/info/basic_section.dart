@@ -150,11 +150,20 @@ class _BasicSectionState extends State<BasicSection> {
   }
 
   Widget _buildEditButtons(BuildContext context) {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final entry = widget.entry;
     final children = [
       EntryAction.editRating,
       EntryAction.editTags,
-    ].where((v) => actionDelegate.canApply(entry, v)).map((v) => _buildEditMetadataButton(context, v)).toList();
+    ]
+        .where((v) => actionDelegate.isVisible(
+              appMode: appMode,
+              targetEntry: entry,
+              action: v,
+            ))
+        .where((v) => actionDelegate.canApply(entry, v))
+        .map((v) => _buildEditMetadataButton(context, v))
+        .toList();
 
     return children.isEmpty
         ? const SizedBox()

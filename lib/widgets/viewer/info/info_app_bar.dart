@@ -1,3 +1,4 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -14,6 +15,7 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class InfoAppBar extends StatelessWidget {
   final AvesEntry entry;
@@ -33,8 +35,14 @@ class InfoAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final commonActions = EntryActions.commonMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
-    final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where((v) => actionDelegate.isVisible(entry, v));
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
+    bool isVisible(EntryAction action) => actionDelegate.isVisible(
+          appMode: appMode,
+          targetEntry: entry,
+          action: action,
+        );
+    final commonActions = EntryActions.commonMetadataActions.where(isVisible);
+    final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where(isVisible);
     final useTvLayout = settings.useTvLayout;
     return SliverAppBar(
       leading: useTvLayout

@@ -26,7 +26,7 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
       duration: duration,
       child: isSelecting
           ? Selector<Selection<T>, bool>(
-              selector: (context, selection) => selection.isSelected([item]),
+              selector: (context, selection) => selection.isSelected({item}),
               builder: (context, isSelected, child) {
                 return AnimatedContainer(
                   alignment: AlignmentDirectional.topEnd,
