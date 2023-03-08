@@ -1250,20 +1250,6 @@
     "settingsVideoEnablePip"
   ],
 
-  "es": [
-    "vaultLockTypePattern",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "settingsVideoEnablePip"
-  ],
-
-  "eu": [
-    "vaultLockTypePattern",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "settingsVideoEnablePip"
-  ],
-
   "fa": [
     "clearTooltip",
     "chipActionGoToPlacePage",
@@ -1734,13 +1720,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "vaultLockTypePattern",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "settingsVideoEnablePip"
   ],
 
   "gl": [
@@ -2880,13 +2859,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "vaultLockTypePattern",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "settingsVideoEnablePip"
-  ],
-
   "it": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
@@ -2952,13 +2924,6 @@
     "settingsWidgetDisplayedItem"
   ],
 
-  "ko": [
-    "vaultLockTypePattern",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "settingsVideoEnablePip"
-  ],
-
   "lt": [
     "columnCount",
     "chipActionGoToPlacePage",
@@ -3004,37 +2969,10 @@
   ],
 
   "nb": [
-    "chipActionGoToPlacePage",
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "lengthUnitPixel",
-    "lengthUnitPercent",
     "vaultLockTypePattern",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
     "patternDialogEnter",
     "patternDialogConfirm",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "exportEntryDialogWriteMetadata",
-    "drawerPlacePage",
-    "placePageTitle",
-    "placeEmpty",
-    "settingsConfirmationVaultDataLoss",
-    "settingsVideoEnablePip",
-    "settingsDisablingBinWarningDialogMessage"
+    "settingsVideoEnablePip"
   ],
 
   "nl": [
@@ -3414,41 +3352,6 @@
     "wallpaperUseScrollEffect"
   ],
 
-  "pl": [
-    "vaultLockTypePattern",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "settingsVideoEnablePip"
-  ],
-
-  "pt": [
-    "columnCount",
-    "chipActionGoToPlacePage",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "vaultLockTypePattern",
-    "vaultLockTypePin",
-    "newVaultWarningDialogMessage",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "exportEntryDialogWriteMetadata",
-    "tooManyItemsErrorDialogMessage",
-    "drawerPlacePage",
-    "placePageTitle",
-    "placeEmpty",
-    "settingsConfirmationVaultDataLoss",
-    "settingsVideoEnablePip",
-    "settingsVideoGestureVerticalDragBrightnessVolume",
-    "settingsDisablingBinWarningDialogMessage"
-  ],
-
   "ro": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
@@ -3464,11 +3367,7 @@
   ],
 
   "ru": [
-    "chipActionGoToPlacePage",
     "chipActionLock",
-    "filterLocatedLabel",
-    "filterTaggedLabel",
-    "lengthUnitPixel",
     "vaultLockTypePattern",
     "patternDialogEnter",
     "patternDialogConfirm",
@@ -3477,13 +3376,10 @@
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
     "drawerPlacePage",
-    "placePageTitle",
     "placeEmpty",
-    "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsVideoEnablePip",
-    "settingsVideoGestureVerticalDragBrightnessVolume",
-    "settingsDisablingBinWarningDialogMessage"
+    "settingsVideoGestureVerticalDragBrightnessVolume"
   ],
 
   "sk": [
@@ -4295,13 +4191,6 @@
     "settingsConfirmationVaultDataLoss",
     "settingsVideoEnablePip",
     "settingsDisablingBinWarningDialogMessage"
-  ],
-
-  "uk": [
-    "vaultLockTypePattern",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "settingsVideoEnablePip"
   ],
 
   "zh": [
