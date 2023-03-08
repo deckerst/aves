@@ -562,12 +562,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
-    if (page == transitionPage) {
-      dismissFeedback(context);
-      _popVisual();
-    } else if (page == infoPage) {
-      // prevent hero when viewer is offscreen
-      _heroInfoNotifier.value = null;
+    switch (page) {
+      case transitionPage:
+        dismissFeedback(context);
+        _popVisual();
+        break;
+      case imagePage:
+        reportService.log('Nav move to Image page');
+        break;
+      case infoPage:
+        reportService.log('Nav move to Info page');
+        // prevent hero when viewer is offscreen
+        _heroInfoNotifier.value = null;
+        break;
     }
   }
 

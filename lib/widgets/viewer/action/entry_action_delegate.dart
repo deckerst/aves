@@ -47,7 +47,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   EntryActionDelegate(this.mainEntry, this.pageEntry, this.collection);
 
-  bool isVisible(EntryAction action) {
+  bool isVisible({
+    required AppMode appMode,
+    required EntryAction action,
+  }) {
     if (mainEntry.trashed) {
       switch (action) {
         case EntryAction.delete:
@@ -60,7 +63,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       }
     } else {
       final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
-      final canWrite = !settings.isReadOnly;
+      final canWrite = appMode.canEditEntry && !settings.isReadOnly;
       switch (action) {
         case EntryAction.toggleFavourite:
           return collection != null;
@@ -120,7 +123,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.showGeoTiffOnMap:
         case EntryAction.convertMotionPhotoToStillImage:
         case EntryAction.viewMotionPhotoVideo:
-          return _metadataActionDelegate.isVisible(targetEntry, action);
+          return _metadataActionDelegate.isVisible(
+            appMode: appMode,
+            targetEntry: targetEntry,
+            action: action,
+          );
         case EntryAction.debug:
           return kDebugMode;
       }

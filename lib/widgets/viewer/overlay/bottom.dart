@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -9,6 +10,7 @@ import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/multipage.dart';
+import 'package:aves/widgets/viewer/overlay/selection_button.dart';
 import 'package:aves/widgets/viewer/overlay/thumbnail_preview.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/wallpaper_buttons.dart';
@@ -183,30 +185,36 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
       ]),
       builder: (context, child) {
         final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
-        final viewerButtonRow = FocusableActionDetector(
-          focusNode: _buttonRowFocusScopeNode,
-          shortcuts: settings.useTvLayout ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
-          actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
-          child: SafeArea(
-            top: false,
-            bottom: false,
-            minimum: EdgeInsets.only(
-              left: viewInsetsPadding.left,
-              right: viewInsetsPadding.right,
-            ),
-            child: isWallpaperMode
-                ? WallpaperButtons(
-                    entry: pageEntry,
-                    scale: _buttonScale,
-                  )
-                : ViewerButtons(
-                    mainEntry: mainEntry,
-                    pageEntry: pageEntry,
-                    collection: widget.collection,
-                    scale: _buttonScale,
+        final selection = context.read<Selection<AvesEntry>?>();
+        final viewerButtonRow = (selection?.isSelecting ?? false)
+            ? SelectionButton(
+                mainEntry: mainEntry,
+                scale: _buttonScale,
+              )
+            : FocusableActionDetector(
+                focusNode: _buttonRowFocusScopeNode,
+                shortcuts: settings.useTvLayout ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
+                actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
+                child: SafeArea(
+                  top: false,
+                  bottom: false,
+                  minimum: EdgeInsets.only(
+                    left: viewInsetsPadding.left,
+                    right: viewInsetsPadding.right,
                   ),
-          ),
-        );
+                  child: isWallpaperMode
+                      ? WallpaperButtons(
+                          entry: pageEntry,
+                          scale: _buttonScale,
+                        )
+                      : ViewerButtons(
+                          mainEntry: mainEntry,
+                          pageEntry: pageEntry,
+                          collection: widget.collection,
+                          scale: _buttonScale,
+                        ),
+                ),
+              );
 
         final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
         final collapsedPageScroller = mainEntry.isMotionPhoto;
