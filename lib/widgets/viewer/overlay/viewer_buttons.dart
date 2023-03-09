@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
@@ -79,7 +81,7 @@ class ViewerButtons extends StatelessWidget {
           return Selector<Settings, bool>(
             selector: (context, s) => s.isRotationLocked,
             builder: (context, s, child) {
-              final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(isVisible).where(actionDelegate.canApply).take(availableCount - 1).toList();
+              final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(isVisible).where(actionDelegate.canApply).take(max(0, availableCount - 1)).toList();
               List<EntryAction> getMenuActions(List<EntryAction> categoryActions) {
                 return categoryActions.where((action) => !quickActions.contains(action)).where(isVisible).toList();
               }
