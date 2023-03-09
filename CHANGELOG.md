@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- upgraded Flutter to stable v3.7.6
+- upgraded Flutter to stable v3.7.7
 
 ### Fixed
 
