@@ -483,6 +483,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       }
     } else if (notification is ToggleOverlayNotification) {
       _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
+    } else if (notification is VideoActionNotification) {
+      final controller = notification.controller;
+      final action = notification.action;
+      _onVideoAction(context, controller, action);
     } else if (notification is TvShowLessInfoNotification) {
       if (_overlayVisible.value) {
         _overlayVisible.value = false;
@@ -503,10 +507,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       _goToHorizontalPageByDelta(delta: 1, animate: notification.animate);
     } else if (notification is ShowEntryNotification) {
       _goToHorizontalPageByIndex(page: notification.index, animate: notification.animate);
-    } else if (notification is VideoActionNotification) {
-      final controller = notification.controller;
-      final action = notification.action;
-      _onVideoAction(context, controller, action);
     } else {
       return false;
     }
