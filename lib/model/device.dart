@@ -1,6 +1,7 @@
 import 'package:aves/services/common/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:floating/floating.dart';
+import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -57,7 +58,12 @@ class Device {
     _canAuthenticateUser = await auth.canCheckBiometrics || await auth.isDeviceSupported();
 
     final floating = Floating();
-    _supportPictureInPicture = await floating.isPipAvailable;
+    try {
+      _supportPictureInPicture = await floating.isPipAvailable;
+    } on PlatformException catch (_) {
+      // as of floating v2.0.0, plugin assumes activity and fails when bound via service
+      _supportPictureInPicture = false;
+    }
     floating.dispose();
 
     final capabilities = await deviceService.getCapabilities();

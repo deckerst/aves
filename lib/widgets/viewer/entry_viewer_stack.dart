@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
@@ -241,7 +242,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
               );
               return StreamBuilder<PiPStatus>(
-                stream: _floating.pipStatus$,
+                // as of floating v2.0.0, plugin assumes activity and fails when bound via service
+                // so we do not access status stream directly, but check for support first
+                stream: device.supportPictureInPicture ? _floating.pipStatus$ : Stream.value(PiPStatus.disabled),
                 builder: (context, snapshot) {
                   var pipEnabled = snapshot.data == PiPStatus.enabled;
                   return Stack(
