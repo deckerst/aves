@@ -1269,6 +1269,6 @@
   "@patternDialogConfirm": {},
   "vaultLockTypePattern": "Padrão",
   "@vaultLockTypePattern": {},
-  "settingsVideoEnablePip": "Picture-in-picture",
-  "@settingsVideoEnablePip": {}
+  "videoBackgroundModePip": "Picture-in-picture",
+  "@videoBackgroundModePip": {}
 }

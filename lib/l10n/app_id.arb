@@ -1269,6 +1269,6 @@
   "@patternDialogConfirm": {},
   "patternDialogEnter": "Masukkan pola",
   "@patternDialogEnter": {},
-  "settingsVideoEnablePip": "Gambar dalam gambar",
-  "@settingsVideoEnablePip": {}
+  "videoBackgroundModePip": "Gambar dalam gambar",
+  "@videoBackgroundModePip": {}
 }

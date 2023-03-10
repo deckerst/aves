@@ -230,6 +230,8 @@
   "vaultLockTypePin": "PIN",
   "vaultLockTypePassword": "Password",
 
+  "videoBackgroundModePip": "Picture-in-picture",
+
   "videoControlsPlay": "Play",
   "videoControlsPlaySeek": "Play & seek backward/forward",
   "videoControlsPlayOutside": "Open with other player",
@@ -793,10 +795,11 @@
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Show videos",
   "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
-  "settingsVideoEnablePip": "Picture-in-picture",
   "settingsVideoAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeDialogTitle": "Loop Mode",
+  "settingsVideoBackgroundMode": "Background mode",
+  "settingsVideoBackgroundModeDialogTitle": "Background Mode",
 
   "settingsSubtitleThemeTile": "Subtitles",
   "settingsSubtitleThemePageTitle": "Subtitles",
