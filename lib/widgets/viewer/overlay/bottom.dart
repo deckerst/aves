@@ -6,9 +6,9 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
+import 'package:aves/widgets/viewer/controls/intents.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/selection_button.dart';
 import 'package:aves/widgets/viewer/overlay/thumbnail_preview.dart';
@@ -193,8 +193,14 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
               )
             : FocusableActionDetector(
                 focusNode: _buttonRowFocusScopeNode,
-                shortcuts: settings.useTvLayout ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
-                actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
+                shortcuts: settings.useTvLayout
+                    ? const {
+                        SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent(),
+                      }
+                    : null,
+                actions: {
+                  TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
+                },
                 child: SafeArea(
                   top: false,
                   bottom: false,

@@ -18,11 +18,12 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/viewer/controller.dart';
+import 'package:aves/widgets/viewer/action/video_action_delegate.dart';
+import 'package:aves/widgets/viewer/controls/controller.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/slideshow_buttons.dart';
@@ -31,7 +32,6 @@ import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
-import 'package:aves/widgets/viewer/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:collection/collection.dart';
@@ -786,6 +786,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
+    if (!mounted) return;
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
       AvesApp.setSystemUIStyle(context);

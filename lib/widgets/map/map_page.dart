@@ -32,7 +32,7 @@ import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/map/map_info_row.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

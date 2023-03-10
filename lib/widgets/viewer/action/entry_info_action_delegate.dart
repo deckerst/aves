@@ -21,7 +21,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
-import 'package:aves/widgets/viewer/embedded/notifications.dart';
+import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

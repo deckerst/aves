@@ -2,8 +2,8 @@ import 'package:aves/model/actions/slideshow_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
-import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/controls/intents.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:collection/collection.dart';
@@ -70,8 +70,14 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
   Widget build(BuildContext context) {
     return FocusableActionDetector(
       focusNode: _buttonRowFocusScopeNode,
-      shortcuts: settings.useTvLayout ? const {SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent()} : null,
-      actions: {TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context))},
+      shortcuts: settings.useTvLayout
+          ? const {
+              SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent(),
+            }
+          : null,
+      actions: {
+        TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
+      },
       child: settings.useTvLayout
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
