@@ -230,7 +230,7 @@
   "vaultLockTypePin": "PIN",
   "vaultLockTypePassword": "Password",
 
-  "videoBackgroundModePip": "Picture-in-picture",
+  "settingsVideoEnablePip": "Picture-in-picture",
 
   "videoControlsPlay": "Play",
   "videoControlsPlaySeek": "Play & seek backward/forward",

@@ -9,7 +9,7 @@ extension ExtraVideoBackgroundMode on VideoBackgroundMode {
       case VideoBackgroundMode.disabled:
         return context.l10n.settingsDisabled;
       case VideoBackgroundMode.pip:
-        return context.l10n.videoBackgroundModePip;
+        return context.l10n.settingsVideoEnablePip;
     }
   }
 }

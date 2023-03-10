@@ -1427,6 +1427,6 @@
   "@patternDialogEnter": {},
   "patternDialogConfirm": "Konfirmatu patroia",
   "@patternDialogConfirm": {},
-  "videoBackgroundModePip": "Bideoa leihotxoan",
-  "@videoBackgroundModePip": {}
+  "settingsVideoEnablePip": "Bideoa leihotxoan",
+  "@settingsVideoEnablePip": {}
 }
