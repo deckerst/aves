@@ -1,5 +1,5 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/viewer/controller.dart';
+import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:flutter/widgets.dart';
 
 import 'enums.dart';

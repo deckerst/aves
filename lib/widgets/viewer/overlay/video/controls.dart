@@ -1,8 +1,8 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/action_controls/togglers/play.dart';
+import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

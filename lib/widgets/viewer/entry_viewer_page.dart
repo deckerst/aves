@@ -1,7 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
-import 'package:aves/widgets/viewer/controller.dart';
+import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/providers.dart';

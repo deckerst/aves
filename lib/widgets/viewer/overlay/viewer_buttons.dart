@@ -22,7 +22,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
@@ -87,7 +87,7 @@ class ViewerButtons extends StatelessWidget {
               }
 
               return ViewerButtonRowContent(
-                actionDelegate: EntryActionDelegate(mainEntry, pageEntry, collection),
+                actionDelegate: actionDelegate,
                 quickActions: quickActions,
                 topLevelActions: getMenuActions(EntryActions.topLevel),
                 exportActions: getMenuActions(EntryActions.export),

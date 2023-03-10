@@ -247,7 +247,6 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
           final viewerCollection = collection.copyWith(
             listenToSource: false,
           );
-          assert(viewerCollection.sortedEntries.map((entry) => entry.id).contains(entry.id));
           Widget child = EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,

@@ -13,7 +13,7 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/settings/viewer/slideshow.dart';
-import 'package:aves/widgets/viewer/controller.dart';
+import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';

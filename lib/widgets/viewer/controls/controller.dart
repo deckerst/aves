@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/viewer/controls/events.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:flutter/widgets.dart';
 
@@ -101,16 +102,6 @@ class ViewerController {
     _autopilotAnimationControllers[vsync] = animationController;
     Future.delayed(Durations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimationControllers[vsync]?.forward());
   }
-}
-
-@immutable
-class ViewerShowNextEvent {}
-
-@immutable
-class ViewerOverlayToggleEvent {
-  final bool? visible;
-
-  const ViewerOverlayToggleEvent({required this.visible});
 }
 
 class PageTransitionEffects {
