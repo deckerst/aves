@@ -12,11 +12,13 @@ import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/material.dart';
 
 class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
+  final bool enabled;
   final AvesEntry entry;
   final Widget child;
 
   const EmbeddedDataOpener({
     super.key,
+    required this.enabled,
     required this.entry,
     required this.child,
   });
@@ -25,8 +27,11 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
   Widget build(BuildContext context) {
     return NotificationListener<OpenEmbeddedDataNotification>(
       onNotification: (notification) {
-        _openEmbeddedData(context, notification);
-        return true;
+        if (enabled) {
+          _openEmbeddedData(context, notification);
+          return true;
+        }
+        return false;
       },
       child: child,
     );

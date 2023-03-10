@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 class InfoSearchDelegate extends SearchDelegate {
   final AvesEntry entry;
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
+  final bool isSelecting;
 
   Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
 
@@ -19,6 +20,7 @@ class InfoSearchDelegate extends SearchDelegate {
     required String searchFieldLabel,
     required this.entry,
     required this.metadataNotifier,
+    required this.isSelecting,
   }) : super(
           searchFieldLabel: searchFieldLabel,
         );
@@ -113,6 +115,7 @@ class InfoSearchDelegate extends SearchDelegate {
                 text: context.l10n.viewerInfoSearchEmpty,
               )
             : EmbeddedDataOpener(
+                enabled: !isSelecting,
                 entry: entry,
                 child: ListView.builder(
                   padding: const EdgeInsets.all(8),

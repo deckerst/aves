@@ -1,6 +1,7 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
@@ -104,12 +105,14 @@ class InfoAppBar extends StatelessWidget {
   }
 
   void _goToSearch(BuildContext context) {
+    final isSelecting = context.read<Selection<AvesEntry>?>()?.isSelecting ?? false;
     showSearch(
       context: context,
       delegate: InfoSearchDelegate(
         searchFieldLabel: context.l10n.viewerInfoSearchFieldLabel,
         entry: entry,
         metadataNotifier: metadataNotifier,
+        isSelecting: isSelecting,
       ),
     );
   }
