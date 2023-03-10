@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Vaults: custom pattern lock
 - Video: picture-in-picture
 - Video: handle skip next/previous media buttons
+- TV: more media controls
 
 ### Changed
 

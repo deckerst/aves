@@ -184,15 +184,33 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   Widget _buildImagePage() {
     final useTvLayout = settings.useTvLayout;
 
-    Widget? child;
+    // cf https://developer.android.com/training/tv/start/controllers#media-events
     Map<ShortcutActivator, Intent>? shortcuts = {
       const SingleActivator(LogicalKeyboardKey.arrowUp): useTvLayout ? const TvShowLessInfoIntent() : const _LeaveIntent(),
       const SingleActivator(LogicalKeyboardKey.arrowDown): useTvLayout ? const _TvShowMoreInfoIntent() : const _ShowInfoIntent(),
-      const SingleActivator(LogicalKeyboardKey.mediaPause): const _PlayPauseIntent.pause(),
-      const SingleActivator(LogicalKeyboardKey.mediaPlay): const _PlayPauseIntent.play(),
+      // KEYCODE_MEDIA_PLAY_PAUSE / 85 / play/pause
       const SingleActivator(LogicalKeyboardKey.mediaPlayPause): const _PlayPauseIntent.toggle(),
+      // KEYCODE_MEDIA_STOP / 86 / stop
+      const SingleActivator(LogicalKeyboardKey.mediaStop): const _PlayPauseIntent.pause(),
+      // KEYCODE_MEDIA_NEXT / 87 / skip to next
+      const SingleActivator(LogicalKeyboardKey.mediaTrackNext): const _ShowNextIntent(),
+      // KEYCODE_MEDIA_PREVIOUS / 88 / skip to previous
+      const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious): const _ShowPreviousIntent(),
+      // KEYCODE_MEDIA_PLAY / 126 / play
+      const SingleActivator(LogicalKeyboardKey.mediaPlay): const _PlayPauseIntent.play(),
+      // KEYCODE_MEDIA_PAUSE / 127 / pause
+      const SingleActivator(LogicalKeyboardKey.mediaPause): const _PlayPauseIntent.pause(),
+      // KEYCODE_BUTTON_L1 / 102 / skip to previous
+      const SingleActivator(LogicalKeyboardKey.gameButtonLeft1): const _ShowPreviousIntent(),
+      // KEYCODE_BUTTON_R1 / 103 / skip to next
+      const SingleActivator(LogicalKeyboardKey.gameButtonRight1): const _ShowNextIntent(),
+      // KEYCODE_BUTTON_START / 108 / pause
+      const SingleActivator(LogicalKeyboardKey.gameButtonStart): const _PlayPauseIntent.pause(),
+      // KEYCODE_BUTTON_SELECT / 109 / play/pause
+      const SingleActivator(LogicalKeyboardKey.gameButtonSelect): const _PlayPauseIntent.toggle(),
     };
 
+    Widget? child;
     if (hasCollection) {
       shortcuts.addAll(const {
         SingleActivator(LogicalKeyboardKey.arrowLeft): _ShowPreviousIntent(),

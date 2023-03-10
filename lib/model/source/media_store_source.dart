@@ -11,7 +11,6 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/file_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
