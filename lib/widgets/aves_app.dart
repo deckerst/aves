@@ -244,7 +244,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                     final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
                     return Shortcuts(
                       shortcuts: {
-                        // handle Android TV remote `select` button
+                        // handle Android TV remote `select` button (KEYCODE_DPAD_CENTER)
+                        // the following keys are already handled by default:
+                        // KEYCODE_ENTER, KEYCODE_BUTTON_A, KEYCODE_NUMPAD_ENTER
                         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
                       },
                       child: MediaQuery.fromWindow(

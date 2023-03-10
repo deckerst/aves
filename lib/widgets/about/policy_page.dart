@@ -1,7 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
-import 'package:aves/widgets/common/behaviour/intents.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +16,6 @@ class PolicyPage extends StatefulWidget {
 
 class _PolicyPageState extends State<PolicyPage> {
   late Future<String> _termsLoader;
-  final ScrollController _scrollController = ScrollController();
 
   static const termsPath = 'assets/terms.md';
   static const termsDirection = TextDirection.ltr;
@@ -39,11 +37,8 @@ class _PolicyPageState extends State<PolicyPage> {
         child: FocusableActionDetector(
           autofocus: true,
           shortcuts: const {
-            SingleActivator(LogicalKeyboardKey.arrowUp): VerticalScrollIntent.up(),
-            SingleActivator(LogicalKeyboardKey.arrowDown): VerticalScrollIntent.down(),
-          },
-          actions: {
-            VerticalScrollIntent: VerticalScrollIntentAction(scrollController: _scrollController),
+            SingleActivator(LogicalKeyboardKey.arrowUp): ScrollIntent(direction: AxisDirection.up, type: ScrollIncrementType.page),
+            SingleActivator(LogicalKeyboardKey.arrowDown): ScrollIntent(direction: AxisDirection.down, type: ScrollIncrementType.page),
           },
           child: Center(
             child: FutureBuilder<String>(
@@ -54,7 +49,7 @@ class _PolicyPageState extends State<PolicyPage> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: MarkdownContainer(
-                    scrollController: _scrollController,
+                    scrollController: PrimaryScrollController.of(context),
                     data: terms,
                     textDirection: termsDirection,
                   ),
