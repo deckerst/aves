@@ -4,6 +4,7 @@ import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -67,9 +68,11 @@ class _InfoPageState extends State<InfoPage> {
                   builder: (context, mainEntry, child) {
                     if (mainEntry == null) return const SizedBox();
 
+                    final isSelecting = context.select<Selection<AvesEntry>?, bool>((v) => v?.isSelecting ?? false);
                     Widget _buildContent({AvesEntry? pageEntry}) {
                       final targetEntry = pageEntry ?? mainEntry;
                       return EmbeddedDataOpener(
+                        enabled: !isSelecting,
                         entry: targetEntry,
                         child: _InfoPageContent(
                           collection: widget.collection,
