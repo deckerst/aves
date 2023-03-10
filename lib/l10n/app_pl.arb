@@ -1427,6 +1427,6 @@
   "@patternDialogEnter": {},
   "patternDialogConfirm": "Potwierdź wzór",
   "@patternDialogConfirm": {},
-  "videoBackgroundModePip": "Obraz w obrazie",
-  "@videoBackgroundModePip": {}
+  "settingsVideoEnablePip": "Obraz w obrazie",
+  "@settingsVideoEnablePip": {}
 }
