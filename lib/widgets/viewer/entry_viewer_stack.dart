@@ -202,7 +202,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   Future<void> _onAppInactive() async {
     viewerController.autopilot = false;
     bool enabledPip = false;
-    if (settings.enableVideoPip) {
+    if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
       enabledPip |= await _enablePictureInPicture();
     }
     if (!enabledPip) {

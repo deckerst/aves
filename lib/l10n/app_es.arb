@@ -1269,6 +1269,6 @@
   "@patternDialogEnter": {},
   "patternDialogConfirm": "Confirme el patrón",
   "@patternDialogConfirm": {},
-  "settingsVideoEnablePip": "Imagen-en-imagen",
-  "@settingsVideoEnablePip": {}
+  "videoBackgroundModePip": "Imagen-en-imagen",
+  "@videoBackgroundModePip": {}
 }

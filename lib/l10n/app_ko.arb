@@ -1269,6 +1269,6 @@
   "@patternDialogEnter": {},
   "vaultLockTypePattern": "패턴",
   "@vaultLockTypePattern": {},
-  "settingsVideoEnablePip": "PIP 모드",
-  "@settingsVideoEnablePip": {}
+  "videoBackgroundModePip": "PIP 모드",
+  "@videoBackgroundModePip": {}
 }

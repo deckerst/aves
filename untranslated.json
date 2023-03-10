@@ -139,6 +139,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "videoControlsPlay",
     "videoControlsPlaySeek",
     "videoControlsPlayOutside",
@@ -479,10 +480,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -695,6 +697,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "videoControlsPlay",
     "videoControlsPlaySeek",
     "videoControlsPlayOutside",
@@ -1035,10 +1038,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -1181,6 +1185,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -1200,7 +1205,8 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsDisablingBinWarningDialogMessage"
   ],
 
@@ -1215,6 +1221,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -1234,20 +1241,33 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsDisablingBinWarningDialogMessage"
   ],
 
   "el": [
     "chipActionGoToPlacePage",
     "vaultLockTypePattern",
+    "videoBackgroundModePip",
     "patternDialogEnter",
     "patternDialogConfirm",
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
-    "settingsVideoEnablePip"
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
+  ],
+
+  "es": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
+  ],
+
+  "eu": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "fa": [
@@ -1292,6 +1312,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "videoControlsNone",
     "videoPlaybackSkip",
     "viewerTransitionSlide",
@@ -1589,10 +1610,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -1722,6 +1744,11 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
+  ],
+
   "gl": [
     "columnCount",
     "chipActionGoToPlacePage",
@@ -1758,6 +1785,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "videoPlaybackSkip",
     "videoPlaybackMuted",
     "videoPlaybackWithSound",
@@ -2091,10 +2119,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -2384,6 +2413,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "videoControlsPlay",
     "videoControlsPlaySeek",
     "videoControlsPlayOutside",
@@ -2724,10 +2754,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -2859,18 +2890,25 @@
     "filePickerUseThisFolder"
   ],
 
+  "id": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
+  ],
+
   "it": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
     "lengthUnitPercent",
     "vaultLockTypePattern",
+    "videoBackgroundModePip",
     "patternDialogEnter",
     "patternDialogConfirm",
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
-    "settingsVideoEnablePip"
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "ja": [
@@ -2894,6 +2932,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -2916,12 +2955,18 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ko": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "lt": [
@@ -2939,6 +2984,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -2961,7 +3007,8 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -2970,9 +3017,11 @@
 
   "nb": [
     "vaultLockTypePattern",
+    "videoBackgroundModePip",
     "patternDialogEnter",
     "patternDialogConfirm",
-    "settingsVideoEnablePip"
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "nl": [
@@ -2999,6 +3048,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "widgetDisplayedItemRandom",
     "widgetDisplayedItemMostRecent",
     "newVaultWarningDialogMessage",
@@ -3024,7 +3074,8 @@
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowRatingTags",
     "settingsViewerShowDescription",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTextPositionTile",
     "settingsSubtitleThemeTextPositionDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
@@ -3054,6 +3105,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "wallpaperTargetHome",
     "wallpaperTargetHomeLock",
     "setCoverDialogCustom",
@@ -3281,10 +3333,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -3352,23 +3405,36 @@
     "wallpaperUseScrollEffect"
   ],
 
+  "pl": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
+  ],
+
+  "pt": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
+  ],
+
   "ro": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
     "lengthUnitPercent",
     "vaultLockTypePattern",
+    "videoBackgroundModePip",
     "patternDialogEnter",
     "patternDialogConfirm",
     "exportEntryDialogWriteMetadata",
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
-    "settingsVideoEnablePip"
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "ru": [
     "chipActionLock",
     "vaultLockTypePattern",
+    "videoBackgroundModePip",
     "patternDialogEnter",
     "patternDialogConfirm",
     "authenticateToConfigureVault",
@@ -3378,7 +3444,8 @@
     "drawerPlacePage",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume"
   ],
 
@@ -3399,6 +3466,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "otherDirectoryDescription",
     "storageAccessDialogMessage",
     "restrictedAccessDialogMessage",
@@ -3668,10 +3736,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -3821,6 +3890,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -4024,10 +4094,11 @@
     "settingsVideoSectionTitle",
     "settingsVideoShowVideos",
     "settingsVideoEnableHardwareAcceleration",
-    "settingsVideoEnablePip",
     "settingsVideoAutoPlay",
     "settingsVideoLoopModeTile",
     "settingsVideoLoopModeDialogTitle",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsSubtitleThemeTile",
     "settingsSubtitleThemePageTitle",
     "settingsSubtitleThemeSample",
@@ -4170,6 +4241,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -4189,8 +4261,14 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsDisablingBinWarningDialogMessage"
+  ],
+
+  "uk": [
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "zh": [
@@ -4206,6 +4284,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -4228,7 +4307,8 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
@@ -4249,6 +4329,7 @@
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
+    "videoBackgroundModePip",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -4271,7 +4352,8 @@
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
     "settingsViewerShowDescription",
-    "settingsVideoEnablePip",
+    "settingsVideoBackgroundMode",
+    "settingsVideoBackgroundModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",

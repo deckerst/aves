@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'enums.dart';
 
-extension ExtraSlideshowVideoPlayback on VideoAutoPlayMode {
+extension ExtraVideoAutoPlayMode on VideoAutoPlayMode {
   String getName(BuildContext context) {
     switch (this) {
       case VideoAutoPlayMode.disabled:
