@@ -222,6 +222,7 @@ class _CollectionPageState extends State<CollectionPage> {
     final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
     await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
 
+    if (!mounted) return;
     final animate = context.read<Settings>().accessibilityAnimations.animate;
     context.read<HighlightInfo>().trackItem(item, animate: animate, highlightItem: item);
   }
