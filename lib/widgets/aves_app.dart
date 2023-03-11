@@ -556,6 +556,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       'locales': WidgetsBinding.instance.window.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
+    await reportService.log('Launch');
     setState(() => _navigatorObservers = [
           AvesApp.pageRouteObserver,
           ReportingRouteTracker(),
@@ -566,7 +567,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('$runtimeType onNewIntent with intentData=$intentData');
 
     // do not reset when relaunching the app
-    if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
+    if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) {
+      reportService.log('Relaunch');
+      return;
+    }
 
     reportService.log('New intent data=$intentData');
     AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(

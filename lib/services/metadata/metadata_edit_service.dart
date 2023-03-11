@@ -77,6 +77,11 @@ class PlatformMetadataEditService implements MetadataEditService {
     Map<MetadataType, dynamic> metadata, {
     bool autoCorrectTrailerOffset = true,
   }) async {
+    // TODO TLAD remove log when OOMs are inspected
+    if ((entry.sizeBytes ?? 0) > 20000000) {
+      await reportService.log('edit metadata of large entry=$entry size=${entry.sizeBytes}');
+    }
+
     try {
       final result = await _platform.invokeMethod('editMetadata', <String, dynamic>{
         'entry': entry.toPlatformEntryMap(),
