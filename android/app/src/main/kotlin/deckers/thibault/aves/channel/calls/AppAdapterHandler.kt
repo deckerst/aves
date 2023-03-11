@@ -285,7 +285,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val uriList = ArrayList(urisByMimeType.values.flatten().mapNotNull { Uri.parse(it) })
+        val uriList = ArrayList(urisByMimeType.values.flatten().mapNotNull { getShareableUri(context, Uri.parse(it)) })
         val mimeTypes = urisByMimeType.keys.toTypedArray()
 
         // simplify share intent for a single item, as some apps can handle one item but not more
@@ -296,7 +296,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             Intent(Intent.ACTION_SEND)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .setType(mimeType)
-                .putExtra(Intent.EXTRA_STREAM, getShareableUri(context, uri))
+                .putExtra(Intent.EXTRA_STREAM, uri)
         } else {
             var mimeType = "*/*"
             if (mimeTypes.size == 1) {

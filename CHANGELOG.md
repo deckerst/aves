@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - Accessibility: using accessibility services keeping snack bar beyond countdown
 - Accessibility: navigation with TalkBack
 - Vaults: crash when using fingerprint on older Android versions
+- Vaults: sharing multiple items
 
 ## <a id="v1.8.2"></a>[v1.8.2] - 2023-02-28
 
