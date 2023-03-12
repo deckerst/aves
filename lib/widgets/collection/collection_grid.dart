@@ -45,6 +45,7 @@ import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -500,6 +501,8 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                 return Selector<SectionedListLayout<AvesEntry>, List<SectionLayout>>(
                   selector: (context, layout) => layout.sectionLayouts,
                   builder: (context, sectionLayouts, child) {
+                    final scrollController = widget.scrollController;
+                    final offsetIncrementSnapThreshold = context.select<TileExtentController, double>((v) => (v.extentNotifier.value + v.spacing) / 4);
                     return DraggableScrollbar(
                       backgroundColor: Colors.white,
                       scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
@@ -507,7 +510,23 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                         height: avesScrollThumbHeight,
                         backgroundColor: Colors.white,
                       ),
-                      controller: widget.scrollController,
+                      controller: scrollController,
+                      dragOffsetSnapper: (scrollOffset, offsetIncrement) {
+                        if (offsetIncrement > offsetIncrementSnapThreshold && scrollOffset < scrollController.position.maxScrollExtent) {
+                          final section = sectionLayouts.firstWhereOrNull((section) => section.hasChildAtOffset(scrollOffset));
+                          if (section != null) {
+                            if (section.maxOffset - section.minOffset < scrollController.position.viewportDimension) {
+                              // snap to section header
+                              return section.minOffset;
+                            } else {
+                              // snap to content row
+                              final index = section.getMinChildIndexForScrollOffset(scrollOffset);
+                              return section.indexToLayoutOffset(index);
+                            }
+                          }
+                        }
+                        return scrollOffset;
+                      },
                       crumbsBuilder: () => _getCrumbs(sectionLayouts),
                       padding: EdgeInsets.only(
                         // padding to keep scroll thumb between app bar above and nav bar below

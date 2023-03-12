@@ -59,6 +59,8 @@ class DraggableScrollbar extends StatefulWidget {
   /// The ScrollController for the BoxScrollView
   final ScrollController controller;
 
+  final double Function(double scrollOffset, double offsetIncrement)? dragOffsetSnapper;
+
   /// The view that will be scrolled with the scroll thumb
   final ScrollView child;
 
@@ -68,6 +70,7 @@ class DraggableScrollbar extends StatefulWidget {
     required this.scrollThumbSize,
     required this.scrollThumbBuilder,
     required this.controller,
+    this.dragOffsetSnapper,
     this.crumbsBuilder,
     this.padding = EdgeInsets.zero,
     this.scrollbarAnimationDuration = const Duration(milliseconds: 300),
@@ -114,6 +117,7 @@ class DraggableScrollbar extends StatefulWidget {
 class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProviderStateMixin {
   final ValueNotifier<double> _thumbOffsetNotifier = ValueNotifier(0), _viewOffsetNotifier = ValueNotifier(0);
   bool _isDragInProcess = false;
+  double _boundlessThumbOffset = 0, _offsetIncrement = 0;
   late Offset _longPressLastGlobalPosition;
 
   late AnimationController _thumbAnimationController;
@@ -281,6 +285,8 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
 
   void _onVerticalDragStart() {
     const DraggableScrollbarNotification(DraggableScrollbarEvent.dragStart).dispatch(context);
+    _boundlessThumbOffset = _thumbOffsetNotifier.value;
+    _offsetIncrement = 1 / thumbMaxScrollExtent * controller.position.maxScrollExtent;
     _labelAnimationController.forward();
     _fadeoutTimer?.cancel();
     _showThumb();
@@ -292,12 +298,14 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     _showThumb();
     if (_isDragInProcess) {
       // thumb offset
-      _thumbOffsetNotifier.value = (_thumbOffsetNotifier.value + deltaY).clamp(thumbMinScrollExtent, thumbMaxScrollExtent);
+      _boundlessThumbOffset += deltaY;
+      _thumbOffsetNotifier.value = _boundlessThumbOffset.clamp(thumbMinScrollExtent, thumbMaxScrollExtent);
 
       // scroll offset
       final min = controller.position.minScrollExtent;
       final max = controller.position.maxScrollExtent;
-      controller.jumpTo((_thumbOffsetNotifier.value / thumbMaxScrollExtent * max).clamp(min, max));
+      final scrollOffset = _thumbOffsetNotifier.value / thumbMaxScrollExtent * max;
+      controller.jumpTo((widget.dragOffsetSnapper?.call(scrollOffset, _offsetIncrement) ?? scrollOffset).clamp(min, max));
     }
   }
 
