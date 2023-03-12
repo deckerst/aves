@@ -1270,5 +1270,9 @@
   "patternDialogEnter": "Masukkan pola",
   "@patternDialogEnter": {},
   "settingsVideoEnablePip": "Gambar dalam gambar",
-  "@settingsVideoEnablePip": {}
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Mode latar belakang",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Mode Latar Belakang",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }

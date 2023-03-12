@@ -1428,5 +1428,9 @@
   "patternDialogEnter": "Введіть шаблон",
   "@patternDialogEnter": {},
   "patternDialogConfirm": "Підтвердіть шаблон",
-  "@patternDialogConfirm": {}
+  "@patternDialogConfirm": {},
+  "settingsVideoBackgroundMode": "Фоновий режим",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Фоновий режим",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }

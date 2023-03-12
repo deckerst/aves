@@ -1270,5 +1270,9 @@
   "vaultLockTypePattern": "Modèle",
   "@vaultLockTypePattern": {},
   "settingsVideoEnablePip": "Picture-in-picture",
-  "@settingsVideoEnablePip": {}
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Lecture en arrière-plan",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Arrière-plan",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }
