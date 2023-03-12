@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- scroll to show item when navigating from Info page
 - upgraded Flutter to stable v3.7.7
 
 ### Fixed
