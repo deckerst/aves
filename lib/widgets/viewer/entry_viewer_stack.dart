@@ -537,12 +537,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (baseCollection == null) return;
 
     _onLeave();
+    final uri = entryNotifier.value?.uri;
     Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
           source: baseCollection.source,
           filters: {...baseCollection.filters, filter},
+          highlightTest: uri != null ? (entry) => entry.uri == uri : null,
         ),
       ),
       (route) => false,
