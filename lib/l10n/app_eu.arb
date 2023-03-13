@@ -1428,5 +1428,9 @@
   "patternDialogConfirm": "Konfirmatu patroia",
   "@patternDialogConfirm": {},
   "settingsVideoEnablePip": "Bideoa leihotxoan",
-  "@settingsVideoEnablePip": {}
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Erreprodukzioa atzeko planoan",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Atzeko planoko modua",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }
