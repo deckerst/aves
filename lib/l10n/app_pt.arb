@@ -1270,5 +1270,7 @@
   "vaultLockTypePattern": "Padrão",
   "@vaultLockTypePattern": {},
   "settingsVideoEnablePip": "Picture-in-picture",
-  "@settingsVideoEnablePip": {}
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Modo background",
+  "@settingsVideoBackgroundMode": {}
 }

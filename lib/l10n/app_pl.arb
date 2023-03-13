@@ -1428,5 +1428,9 @@
   "patternDialogConfirm": "Potwierdź wzór",
   "@patternDialogConfirm": {},
   "settingsVideoEnablePip": "Obraz w obrazie",
-  "@settingsVideoEnablePip": {}
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Tryb tła",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Tryb tła",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }

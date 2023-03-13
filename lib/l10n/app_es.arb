@@ -1270,5 +1270,9 @@
   "patternDialogConfirm": "Confirme el patrón",
   "@patternDialogConfirm": {},
   "settingsVideoEnablePip": "Imagen-en-imagen",
-  "@settingsVideoEnablePip": {}
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Reproducción de fondo",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Background mode",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }
