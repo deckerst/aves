@@ -28,11 +28,13 @@ enum ThumbnailOverlayTagIcon { tagged, untagged, none }
 
 enum UnitSystem { metric, imperial }
 
+enum VideoAutoPlayMode { disabled, playMuted, playWithSound }
+
+enum VideoBackgroundMode { disabled, pip }
+
 enum VideoControls { play, playSeek, playOutside, none }
 
 enum VideoLoopMode { never, shortOnly, always }
-
-enum VideoAutoPlayMode { disabled, playMuted, playWithSound }
 
 enum ViewerTransition { slide, parallax, fade, zoomIn, none }
 

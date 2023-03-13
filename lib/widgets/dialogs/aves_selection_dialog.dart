@@ -1,5 +1,5 @@
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/basic/reselectable_radio_list_tile.dart';
+import 'package:aves/widgets/common/basic/list_tiles/reselectable_radio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 

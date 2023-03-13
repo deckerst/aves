@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 abstract class AvesVideoController {
-  final List<StreamSubscription> _subscriptions = [];
   final AvesEntry _entry;
   final bool persistPlayback;
 
@@ -22,14 +21,10 @@ abstract class AvesVideoController {
 
   AvesVideoController(AvesEntry entry, {required this.persistPlayback}) : _entry = entry {
     entry.visualChangeNotifier.addListener(onVisualChanged);
-    _subscriptions.add(statusStream.listen((event) => mediaSessionService.update(this)));
   }
 
   @mustCallSuper
   Future<void> dispose() async {
-    _subscriptions
-      ..forEach((sub) => sub.cancel())
-      ..clear();
     entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
@@ -20,7 +21,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
-import 'package:aves/widgets/viewer/embedded/notifications.dart';
+import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -29,8 +30,12 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
 
   Stream<ActionEvent<EntryAction>> get eventStream => _eventStreamController.stream;
 
-  bool isVisible(AvesEntry targetEntry, EntryAction action) {
-    final canWrite = !settings.isReadOnly;
+  bool isVisible({
+    required AppMode appMode,
+    required AvesEntry targetEntry,
+    required EntryAction action,
+  }) {
+    final canWrite = appMode.canEditEntry && !settings.isReadOnly;
     switch (action) {
       // general
       case EntryAction.editDate:
@@ -39,16 +44,17 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryAction.editRating:
       case EntryAction.editTags:
       case EntryAction.removeMetadata:
-      case EntryAction.exportMetadata:
         return canWrite;
+      case EntryAction.exportMetadata:
+        return true;
       // GeoTIFF
       case EntryAction.showGeoTiffOnMap:
-        return targetEntry.isGeotiff;
+        return appMode.canNavigate && targetEntry.isGeotiff;
       // motion photo
       case EntryAction.convertMotionPhotoToStillImage:
         return canWrite && targetEntry.isMotionPhoto;
       case EntryAction.viewMotionPhotoVideo:
-        return targetEntry.isMotionPhoto;
+        return appMode.canNavigate && targetEntry.isMotionPhoto;
       default:
         return false;
     }

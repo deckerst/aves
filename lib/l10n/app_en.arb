@@ -226,8 +226,11 @@
   "unitSystemMetric": "Metric",
   "unitSystemImperial": "Imperial",
 
-  "vaultLockTypePin": "Pin",
+  "vaultLockTypePattern": "Pattern",
+  "vaultLockTypePin": "PIN",
   "vaultLockTypePassword": "Password",
+
+  "settingsVideoEnablePip": "Picture-in-picture",
 
   "videoControlsPlay": "Play",
   "videoControlsPlaySeek": "Play & seek backward/forward",
@@ -384,8 +387,11 @@
   "vaultDialogLockModeWhenScreenOff": "Lock when screen turns off",
   "vaultDialogLockTypeLabel": "Lock type",
 
-  "pinDialogEnter": "Enter pin",
-  "pinDialogConfirm": "Confirm pin",
+  "patternDialogEnter": "Enter pattern",
+  "patternDialogConfirm": "Confirm pattern",
+
+  "pinDialogEnter": "Enter PIN",
+  "pinDialogConfirm": "Confirm PIN",
 
   "passwordDialogEnter": "Enter password",
   "passwordDialogConfirm": "Confirm password",
@@ -792,6 +798,8 @@
   "settingsVideoAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeDialogTitle": "Loop Mode",
+  "settingsVideoBackgroundMode": "Background mode",
+  "settingsVideoBackgroundModeDialogTitle": "Background Mode",
 
   "settingsSubtitleThemeTile": "Subtitles",
   "settingsSubtitleThemePageTitle": "Subtitles",

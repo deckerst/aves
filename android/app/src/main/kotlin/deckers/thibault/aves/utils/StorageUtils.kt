@@ -44,8 +44,14 @@ object StorageUtils {
 
     const val TRASH_PATH_PLACEHOLDER = "#trash"
 
+    // whether the provided path is on one of this app specific directories:
+    // - /storage/{volume}/Android/data/{package_name}/files
+    // - /data/user/0/{package_name}/files
     private fun isAppFile(context: Context, path: String): Boolean {
-        val dirs = context.getExternalFilesDirs(null).filterNotNull()
+        val dirs = listOf(
+            *context.getExternalFilesDirs(null).filterNotNull().toTypedArray(),
+            context.filesDir,
+        )
         return dirs.any { path.startsWith(it.path) }
     }
 

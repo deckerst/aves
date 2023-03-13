@@ -5,6 +5,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -19,8 +20,9 @@ import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/tile.dart';
-import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -39,8 +41,11 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
+import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -152,58 +157,64 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                           tileAnimationDelay = Duration.zero;
                         }
 
-                        return StreamBuilder(
-                          stream: source.eventBus.on<AspectRatioChangedEvent>(),
-                          builder: (context, snapshot) => SectionedEntryListLayoutProvider(
-                            collection: collection,
-                            selectable: selectable,
-                            scrollableWidth: scrollableWidth,
-                            tileLayout: tileLayout,
-                            columnCount: columnCount,
-                            spacing: tileSpacing,
-                            horizontalPadding: horizontalPadding,
-                            tileExtent: thumbnailExtent,
-                            tileBuilder: (entry, tileSize) {
-                              final extent = tileSize.shortestSide;
-                              return AnimatedBuilder(
-                                animation: favourites,
-                                builder: (context, child) {
-                                  Widget tile = InteractiveTile(
-                                    key: ValueKey(entry.id),
-                                    collection: collection,
-                                    entry: entry,
-                                    thumbnailExtent: extent,
-                                    tileLayout: tileLayout,
-                                    isScrollingNotifier: _isScrollingNotifier,
-                                  );
-                                  if (!settings.useTvLayout) return tile;
+                        return NotificationListener<OpenViewerNotification>(
+                          onNotification: (notification) {
+                            _goToViewer(collection, notification.entry);
+                            return true;
+                          },
+                          child: StreamBuilder(
+                            stream: source.eventBus.on<AspectRatioChangedEvent>(),
+                            builder: (context, snapshot) => SectionedEntryListLayoutProvider(
+                              collection: collection,
+                              selectable: selectable,
+                              scrollableWidth: scrollableWidth,
+                              tileLayout: tileLayout,
+                              columnCount: columnCount,
+                              spacing: tileSpacing,
+                              horizontalPadding: horizontalPadding,
+                              tileExtent: thumbnailExtent,
+                              tileBuilder: (entry, tileSize) {
+                                final extent = tileSize.shortestSide;
+                                return AnimatedBuilder(
+                                  animation: favourites,
+                                  builder: (context, child) {
+                                    Widget tile = InteractiveTile(
+                                      key: ValueKey(entry.id),
+                                      collection: collection,
+                                      entry: entry,
+                                      thumbnailExtent: extent,
+                                      tileLayout: tileLayout,
+                                      isScrollingNotifier: _isScrollingNotifier,
+                                    );
+                                    if (!settings.useTvLayout) return tile;
 
-                                  return Focus(
-                                    onFocusChange: (focused) {
-                                      if (focused) {
-                                        _focusedItemNotifier.value = entry;
-                                      } else if (_focusedItemNotifier.value == entry) {
-                                        _focusedItemNotifier.value = null;
-                                      }
-                                    },
-                                    child: ValueListenableBuilder<AvesEntry?>(
-                                      valueListenable: _focusedItemNotifier,
-                                      builder: (context, focusedItem, child) {
-                                        return AnimatedScale(
-                                          scale: focusedItem == entry ? 1 : .9,
-                                          curve: Curves.fastOutSlowIn,
-                                          duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
-                                          child: child!,
-                                        );
+                                    return Focus(
+                                      onFocusChange: (focused) {
+                                        if (focused) {
+                                          _focusedItemNotifier.value = entry;
+                                        } else if (_focusedItemNotifier.value == entry) {
+                                          _focusedItemNotifier.value = null;
+                                        }
                                       },
-                                      child: tile,
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            tileAnimationDelay: tileAnimationDelay,
-                            child: child!,
+                                      child: ValueListenableBuilder<AvesEntry?>(
+                                        valueListenable: _focusedItemNotifier,
+                                        builder: (context, focusedItem, child) {
+                                          return AnimatedScale(
+                                            scale: focusedItem == entry ? 1 : .9,
+                                            curve: Curves.fastOutSlowIn,
+                                            duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+                                            child: child!,
+                                          );
+                                        },
+                                        child: tile,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              tileAnimationDelay: tileAnimationDelay,
+                              child: child!,
+                            ),
                           ),
                         );
                       },
@@ -225,6 +236,36 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
         );
         return sectionedListLayoutProvider;
       },
+    );
+  }
+
+  void _goToViewer(CollectionLens collection, AvesEntry entry) {
+    final selection = context.read<Selection<AvesEntry>>();
+    Navigator.maybeOf(context)?.push(
+      TransparentMaterialPageRoute(
+        settings: const RouteSettings(name: EntryViewerPage.routeName),
+        pageBuilder: (context, a, sa) {
+          final viewerCollection = collection.copyWith(
+            listenToSource: false,
+          );
+          Widget child = EntryViewerPage(
+            collection: viewerCollection,
+            initialEntry: entry,
+          );
+
+          if (selection.isSelecting) {
+            child = MultiProvider(
+              providers: [
+                ListenableProvider<ValueNotifier<AppMode>>.value(value: ValueNotifier(AppMode.pickMediaInternal)),
+                ChangeNotifierProvider<Selection<AvesEntry>>.value(value: selection),
+              ],
+              child: child,
+            );
+          }
+
+          return child;
+        },
+      ),
     );
   }
 }
@@ -460,6 +501,8 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                 return Selector<SectionedListLayout<AvesEntry>, List<SectionLayout>>(
                   selector: (context, layout) => layout.sectionLayouts,
                   builder: (context, sectionLayouts, child) {
+                    final scrollController = widget.scrollController;
+                    final offsetIncrementSnapThreshold = context.select<TileExtentController, double>((v) => (v.extentNotifier.value + v.spacing) / 4);
                     return DraggableScrollbar(
                       backgroundColor: Colors.white,
                       scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
@@ -467,7 +510,23 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                         height: avesScrollThumbHeight,
                         backgroundColor: Colors.white,
                       ),
-                      controller: widget.scrollController,
+                      controller: scrollController,
+                      dragOffsetSnapper: (scrollOffset, offsetIncrement) {
+                        if (offsetIncrement > offsetIncrementSnapThreshold && scrollOffset < scrollController.position.maxScrollExtent) {
+                          final section = sectionLayouts.firstWhereOrNull((section) => section.hasChildAtOffset(scrollOffset));
+                          if (section != null) {
+                            if (section.maxOffset - section.minOffset < scrollController.position.viewportDimension) {
+                              // snap to section header
+                              return section.minOffset;
+                            } else {
+                              // snap to content row
+                              final index = section.getMinChildIndexForScrollOffset(scrollOffset);
+                              return section.indexToLayoutOffset(index);
+                            }
+                          }
+                        }
+                        return scrollOffset;
+                      },
                       crumbsBuilder: () => _getCrumbs(sectionLayouts),
                       padding: EdgeInsets.only(
                         // padding to keep scroll thumb between app bar above and nav bar below

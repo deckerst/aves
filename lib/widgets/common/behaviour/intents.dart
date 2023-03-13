@@ -1,37 +1,22 @@
 import 'package:flutter/widgets.dart';
 
-class VerticalScrollIntent extends Intent {
-  const VerticalScrollIntent({
-    required this.type,
-  });
-
-  const VerticalScrollIntent.up() : type = VerticalScrollDirection.up;
-
-  const VerticalScrollIntent.down() : type = VerticalScrollDirection.down;
-
-  final VerticalScrollDirection type;
-}
-
-enum VerticalScrollDirection {
-  up,
-  down,
-}
-
-class VerticalScrollIntentAction extends CallbackAction<VerticalScrollIntent> {
-  VerticalScrollIntentAction({
+class ScrollControllerAction extends CallbackAction<ScrollIntent> {
+  ScrollControllerAction({
     required ScrollController scrollController,
   }) : super(onInvoke: (intent) => _onScrollIntent(intent, scrollController));
 
   static void _onScrollIntent(
-    VerticalScrollIntent intent,
+    ScrollIntent intent,
     ScrollController scrollController,
   ) {
     late int factor;
-    switch (intent.type) {
-      case VerticalScrollDirection.up:
+    switch (intent.direction) {
+      case AxisDirection.up:
+      case AxisDirection.left:
         factor = -1;
         break;
-      case VerticalScrollDirection.down:
+      case AxisDirection.down:
+      case AxisDirection.right:
         factor = 1;
         break;
     }

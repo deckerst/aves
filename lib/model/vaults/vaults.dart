@@ -7,6 +7,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/password_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/pattern_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/pin_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -160,6 +161,16 @@ class Vaults extends ChangeNotifier {
           }
         }
         break;
+      case VaultLockType.pattern:
+        final pattern = await showDialog<String>(
+          context: context,
+          builder: (context) => const PatternDialog(needConfirmation: false),
+          routeSettings: const RouteSettings(name: PatternDialog.routeName),
+        );
+        if (pattern != null) {
+          confirmed = pattern == await securityService.readValue(details.passKey);
+        }
+        break;
       case VaultLockType.pin:
         final pin = await showDialog<String>(
           context: context,
@@ -209,6 +220,16 @@ class Vaults extends ChangeNotifier {
           if (e.code != auth_error.notAvailable) {
             await reportService.recordError(e, stack);
           }
+        }
+        break;
+      case VaultLockType.pattern:
+        final pattern = await showDialog<String>(
+          context: context,
+          builder: (context) => const PatternDialog(needConfirmation: true),
+          routeSettings: const RouteSettings(name: PatternDialog.routeName),
+        );
+        if (pattern != null) {
+          return await securityService.writeValue(details.passKey, pattern);
         }
         break;
       case VaultLockType.pin:

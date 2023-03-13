@@ -65,11 +65,13 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
         val stateString = call.argument<String>("state")
         val positionMillis = call.argument<Number>("positionMillis")?.toLong()
         val playbackSpeed = call.argument<Number>("playbackSpeed")?.toFloat()
+        val canSkipToNext = call.argument<Boolean>("canSkipToNext")
+        val canSkipToPrevious = call.argument<Boolean>("canSkipToPrevious")
 
-        if (uri == null || title == null || durationMillis == null || stateString == null || positionMillis == null || playbackSpeed == null) {
+        if (uri == null || title == null || durationMillis == null || stateString == null || positionMillis == null || playbackSpeed == null || canSkipToNext == null || canSkipToPrevious == null) {
             result.error(
                 "updateSession-args", "missing arguments: uri=$uri, title=$title, durationMillis=$durationMillis" +
-                        ", stateString=$stateString, positionMillis=$positionMillis, playbackSpeed=$playbackSpeed", null
+                        ", stateString=$stateString, positionMillis=$positionMillis, playbackSpeed=$playbackSpeed, canSkipToNext=$canSkipToNext, canSkipToPrevious=$canSkipToPrevious", null
             )
             return
         }
@@ -89,6 +91,12 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
             actions or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_STOP
         } else {
             actions or PlaybackStateCompat.ACTION_PLAY
+        }
+        if (canSkipToNext) {
+            actions = actions or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+        }
+        if (canSkipToPrevious) {
+            actions = actions or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
         }
 
         val playbackState = PlaybackStateCompat.Builder()

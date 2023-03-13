@@ -1230,5 +1230,19 @@
   "albumTierVaults": "Хранилища",
   "@albumTierVaults": {},
   "newVaultWarningDialogMessage": "Элементы внутри хранилищ доступны только для этого приложения, и никакого другого.\n\nЕсли вы удалите приложение или очистите его данные, то вы потеряете все содержимое внутри хранилищ.",
-  "@newVaultWarningDialogMessage": {}
+  "@newVaultWarningDialogMessage": {},
+  "filterLocatedLabel": "С местоположением",
+  "@filterLocatedLabel": {},
+  "filterTaggedLabel": "С тэгами",
+  "@filterTaggedLabel": {},
+  "chipActionGoToPlacePage": "Показать в местах",
+  "@chipActionGoToPlacePage": {},
+  "settingsModificationWarningDialogMessage": "Другие настройки будут изменены.",
+  "@settingsModificationWarningDialogMessage": {},
+  "placePageTitle": "Локации",
+  "@placePageTitle": {},
+  "settingsDisablingBinWarningDialogMessage": "Элементы в корзине будут удалены навсегда.",
+  "@settingsDisablingBinWarningDialogMessage": {},
+  "lengthUnitPixel": "пикс.",
+  "@lengthUnitPixel": {}
 }

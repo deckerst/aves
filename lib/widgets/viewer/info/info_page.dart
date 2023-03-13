@@ -4,6 +4,7 @@ import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -11,14 +12,14 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
-import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
+import 'package:aves/widgets/viewer/info/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,9 +68,11 @@ class _InfoPageState extends State<InfoPage> {
                   builder: (context, mainEntry, child) {
                     if (mainEntry == null) return const SizedBox();
 
+                    final isSelecting = context.select<Selection<AvesEntry>?, bool>((v) => v?.isSelecting ?? false);
                     Widget _buildContent({AvesEntry? pageEntry}) {
                       final targetEntry = pageEntry ?? mainEntry;
                       return EmbeddedDataOpener(
+                        enabled: !isSelecting,
                         entry: targetEntry,
                         child: _InfoPageContent(
                           collection: widget.collection,

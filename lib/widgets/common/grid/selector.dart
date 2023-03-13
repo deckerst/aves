@@ -206,30 +206,34 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   void _toggleSelectionToIndex(int toIndex) {
     if (toIndex == -1) return;
 
+    Iterable<T> getRange(int start, int end) => items.getRange(start, end);
     final selection = context.read<Selection<T>>();
+    void addRange(int start, int end) => selection.addToSelection(getRange(start, end));
+    void removeRange(int start, int end) => selection.removeFromSelection(getRange(start, end));
+
     if (_selecting) {
       if (toIndex <= _fromIndex) {
         if (toIndex < _lastToIndex) {
-          selection.addToSelection(items.getRange(toIndex, min(_fromIndex, _lastToIndex)));
+          addRange(toIndex, min(_fromIndex, _lastToIndex));
           if (_fromIndex < _lastToIndex) {
-            selection.removeFromSelection(items.getRange(_fromIndex + 1, _lastToIndex + 1));
+            removeRange(_fromIndex + 1, _lastToIndex + 1);
           }
         } else if (_lastToIndex < toIndex) {
-          selection.removeFromSelection(items.getRange(_lastToIndex, toIndex));
+          removeRange(_lastToIndex, toIndex);
         }
       } else if (_fromIndex < toIndex) {
         if (_lastToIndex < toIndex) {
-          selection.addToSelection(items.getRange(max(_fromIndex, _lastToIndex), toIndex + 1));
+          addRange(max(_fromIndex, _lastToIndex), toIndex + 1);
           if (_lastToIndex < _fromIndex) {
-            selection.removeFromSelection(items.getRange(_lastToIndex, _fromIndex));
+            removeRange(_lastToIndex, _fromIndex);
           }
         } else if (toIndex < _lastToIndex) {
-          selection.removeFromSelection(items.getRange(toIndex + 1, _lastToIndex + 1));
+          removeRange(toIndex + 1, _lastToIndex + 1);
         }
       }
       _lastToIndex = toIndex;
     } else {
-      selection.removeFromSelection(items.getRange(min(_fromIndex, toIndex), max(_fromIndex, toIndex) + 1));
+      removeRange(min(_fromIndex, toIndex), max(_fromIndex, toIndex) + 1);
     }
   }
 }

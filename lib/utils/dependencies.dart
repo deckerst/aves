@@ -76,6 +76,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/deckerst/fijkplayer',
     ),
     Dependency(
+      name: 'Floating',
+      license: mit,
+      sourceUrl: 'https://github.com/wrbl606/floating',
+    ),
+    Dependency(
       name: 'Flutter Display Mode',
       license: mit,
       sourceUrl: 'https://github.com/ajinasokan/flutter_displaymode',
@@ -259,6 +264,11 @@ class Dependencies {
       name: 'Panorama (Aves fork)',
       license: apache2,
       sourceUrl: 'https://github.com/zesage/panorama',
+    ),
+    Dependency(
+      name: 'Pattern Lock',
+      license: apache2,
+      sourceUrl: 'https://github.com/qwert2603/pattern_lock',
     ),
     Dependency(
       name: 'Percent Indicator',

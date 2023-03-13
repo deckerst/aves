@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
@@ -142,7 +141,6 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   }
 
   Future<String> _getInfo(BuildContext context) async {
-    final accessibility = window.accessibilityFeatures;
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
@@ -161,7 +159,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
       'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
       'Installer: ${packageInfo.installerStore}',
-      'Accessibility: accessibleNavigation=${accessibility.accessibleNavigation}, disableAnimations=${accessibility.disableAnimations}',
+      'Error reporting: ${settings.isErrorReportingAllowed}',
     ].join('\n');
   }
 

@@ -13,17 +13,20 @@ import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
+import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class WallpaperActivity : FlutterFragmentActivity() {
     private lateinit var intentDataMap: MutableMap<String, Any?>
+    private lateinit var mediaSessionHandler: MediaSessionHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (FlutterUtils.isSoftwareRenderingRequired()) {
@@ -42,12 +45,19 @@ class WallpaperActivity : FlutterFragmentActivity() {
         super.configureFlutterEngine(flutterEngine)
         val messenger = flutterEngine.dartExecutor
 
+        // notification: platform -> dart
+        val mediaCommandStreamHandler = MediaCommandStreamHandler().apply {
+            EventChannel(messenger, MediaCommandStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+
         // dart -> platform -> dart
         // - need Context
+        mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
+        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
         // - need ContextWrapper
@@ -77,6 +87,11 @@ class WallpaperActivity : FlutterFragmentActivity() {
                 window.decorView.requestApplyInsets()
             }, 100)
         }
+    }
+
+    override fun onDestroy() {
+        mediaSessionHandler.dispose()
+        super.onDestroy()
     }
 
     private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {

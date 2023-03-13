@@ -1420,5 +1420,17 @@
   "lengthUnitPixel": "px",
   "@lengthUnitPixel": {},
   "lengthUnitPercent": "%",
-  "@lengthUnitPercent": {}
+  "@lengthUnitPercent": {},
+  "settingsVideoEnablePip": "Картинка в картинці",
+  "@settingsVideoEnablePip": {},
+  "vaultLockTypePattern": "Шаблон",
+  "@vaultLockTypePattern": {},
+  "patternDialogEnter": "Введіть шаблон",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Підтвердіть шаблон",
+  "@patternDialogConfirm": {},
+  "settingsVideoBackgroundMode": "Фоновий режим",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Фоновий режим",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }

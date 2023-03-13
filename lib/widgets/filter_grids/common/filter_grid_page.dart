@@ -12,7 +12,8 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
@@ -61,7 +62,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
-  final StreamController<DraggableScrollBarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
+  final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
   FilterGridPage({
     super.key,
@@ -145,7 +146,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
           final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
           final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
 
-          return NotificationListener<DraggableScrollBarNotification>(
+          return NotificationListener<DraggableScrollbarNotification>(
             onNotification: (notification) {
               _draggableScrollBarEventStreamController.add(notification.event);
               return false;

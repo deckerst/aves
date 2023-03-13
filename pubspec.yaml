@@ -7,13 +7,13 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
-version: 1.8.2+93
+version: 1.8.3+94
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.7.5
+  flutter: 3.7.7
   sdk: ">=2.19.0 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
@@ -60,6 +60,7 @@ dependencies:
       url: https://github.com/deckerst/fijkplayer.git
       ref: aves
   flex_color_picker:
+  floating:
   fluster:
   flutter_displaymode:
   flutter_highlight:
@@ -80,6 +81,7 @@ dependencies:
       url: https://github.com/deckerst/aves_panorama.git
       ref: aves
   path:
+  pattern_lock:
   pdf:
   percent_indicator:
   permission_handler:

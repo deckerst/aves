@@ -229,9 +229,12 @@ class _HomePageState extends State<HomePage> {
           }
         }
         break;
+      case AppMode.setWallpaper:
+        // for video playback storage
+        await metadataDb.init();
+        break;
       case AppMode.pickMediaInternal:
       case AppMode.pickFilterInternal:
-      case AppMode.setWallpaper:
       case AppMode.slideshow:
         break;
     }

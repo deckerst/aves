@@ -2,7 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:flutter/material.dart';
 
 class ViewerThumbnailPreview extends StatefulWidget {

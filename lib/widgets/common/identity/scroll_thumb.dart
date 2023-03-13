@@ -1,4 +1,5 @@
-import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/arrow_clipper.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:flutter/material.dart';
 
 const double avesScrollThumbHeight = 48;

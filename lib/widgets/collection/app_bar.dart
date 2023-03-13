@@ -23,7 +23,9 @@ import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/basic/menu.dart';
+import 'package:aves/widgets/common/basic/popup/container.dart';
+import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
+import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
@@ -405,19 +407,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 },
               ),
               if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash)
-                PopupMenuItem<EntrySetAction>(
+                PopupMenuExpansionPanel<EntrySetAction>(
                   enabled: hasSelection,
-                  padding: EdgeInsets.zero,
-                  child: PopupMenuItemExpansionPanel<EntrySetAction>(
-                    enabled: hasSelection,
-                    value: 'edit',
-                    icon: AIcons.edit,
-                    title: context.l10n.collectionActionEdit,
-                    items: [
-                      _buildRotateAndFlipMenuItems(context, canApply: canApply),
-                      ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
-                    ],
-                  ),
+                  value: 'edit',
+                  icon: AIcons.edit,
+                  title: context.l10n.collectionActionEdit,
+                  items: [
+                    _buildRotateAndFlipMenuItems(context, canApply: canApply),
+                    ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
+                  ],
                 ),
             ];
 
@@ -529,7 +527,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  PopupMenuItem<EntrySetAction> _buildRotateAndFlipMenuItems(
+  PopupMenuEntry<EntrySetAction> _buildRotateAndFlipMenuItems(
     BuildContext context, {
     required bool Function(EntrySetAction action) canApply,
   }) {
@@ -558,22 +556,17 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           ),
         );
 
-    return PopupMenuItem(
-      child: TooltipTheme(
-        data: TooltipTheme.of(context).copyWith(
-          preferBelow: false,
-        ),
-        child: Row(
-          children: [
-            buildDivider(),
-            buildItem(EntrySetAction.rotateCCW),
-            buildDivider(),
-            buildItem(EntrySetAction.rotateCW),
-            buildDivider(),
-            buildItem(EntrySetAction.flip),
-            buildDivider(),
-          ],
-        ),
+    return PopupMenuItemContainer(
+      child: Row(
+        children: [
+          buildDivider(),
+          buildItem(EntrySetAction.rotateCCW),
+          buildDivider(),
+          buildItem(EntrySetAction.rotateCW),
+          buildDivider(),
+          buildItem(EntrySetAction.flip),
+          buildDivider(),
+        ],
       ),
     );
   }

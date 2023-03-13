@@ -133,6 +133,7 @@ class Settings extends ChangeNotifier {
 
   // video
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
+  static const videoBackgroundModeKey = 'video_background_mode';
   static const videoAutoPlayModeKey = 'video_auto_play_mode';
   static const videoLoopModeKey = 'video_loop';
   static const videoControlsKey = 'video_controls';
@@ -284,6 +285,7 @@ class Settings extends ChangeNotifier {
     viewerGestureSideTapNext = false;
     viewerUseCutout = true;
     viewerMaxBrightness = false;
+    videoBackgroundMode = VideoBackgroundMode.disabled;
     videoControls = VideoControls.none;
     videoGestureDoubleTapTogglePlay = false;
     videoGestureSideDoubleTapSeek = false;
@@ -297,6 +299,9 @@ class Settings extends ChangeNotifier {
     }
     if (viewerUseCutout != SettingsDefaults.viewerUseCutout && !await windowService.isCutoutAware()) {
       _set(viewerUseCutoutKey, null);
+    }
+    if (videoBackgroundMode == VideoBackgroundMode.pip && !device.supportPictureInPicture) {
+      _set(videoBackgroundModeKey, null);
     }
   }
 
@@ -658,6 +663,10 @@ class Settings extends ChangeNotifier {
   VideoAutoPlayMode get videoAutoPlayMode => getEnumOrDefault(videoAutoPlayModeKey, SettingsDefaults.videoAutoPlayMode, VideoAutoPlayMode.values);
 
   set videoAutoPlayMode(VideoAutoPlayMode newValue) => _set(videoAutoPlayModeKey, newValue.toString());
+
+  VideoBackgroundMode get videoBackgroundMode => getEnumOrDefault(videoBackgroundModeKey, SettingsDefaults.videoBackgroundMode, VideoBackgroundMode.values);
+
+  set videoBackgroundMode(VideoBackgroundMode newValue) => _set(videoBackgroundModeKey, newValue.toString());
 
   VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, SettingsDefaults.videoLoopMode, VideoLoopMode.values);
 
@@ -1117,6 +1126,7 @@ class Settings extends ChangeNotifier {
             case tagSortFactorKey:
             case imageBackgroundKey:
             case videoAutoPlayModeKey:
+            case videoBackgroundModeKey:
             case videoLoopModeKey:
             case videoControlsKey:
             case subtitleTextAlignmentKey:

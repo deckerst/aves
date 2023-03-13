@@ -14,7 +14,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
-import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
@@ -52,7 +52,7 @@ class CollectionPage extends StatefulWidget {
 class _CollectionPageState extends State<CollectionPage> {
   final List<StreamSubscription> _subscriptions = [];
   late CollectionLens _collection;
-  final StreamController<DraggableScrollBarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
+  final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
   final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
@@ -146,7 +146,7 @@ class _CollectionPageState extends State<CollectionPage> {
                 final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
                 final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
 
-                return NotificationListener<DraggableScrollBarNotification>(
+                return NotificationListener<DraggableScrollbarNotification>(
                   onNotification: (notification) {
                     _draggableScrollBarEventStreamController.add(notification.event);
                     return false;
@@ -222,6 +222,7 @@ class _CollectionPageState extends State<CollectionPage> {
     final delayDuration = context.read<DurationsData>().staggeredAnimationPageTarget;
     await Future.delayed(delayDuration + Durations.highlightScrollInitDelay);
 
+    if (!mounted) return;
     final animate = context.read<Settings>().accessibilityAnimations.animate;
     context.read<HighlightInfo>().trackItem(item, animate: animate, highlightItem: item);
   }
