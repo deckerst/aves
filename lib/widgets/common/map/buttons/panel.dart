@@ -51,6 +51,8 @@ class MapButtonPanel extends StatelessWidget {
           );
         }
         break;
+      case MapNavigationButton.none:
+        break;
     }
 
     final showCoordinateFilter = context.select<MapThemeData, bool>((v) => v.showCoordinateFilter);

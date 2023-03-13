@@ -118,6 +118,11 @@ class PlatformMediaEditService implements MediaEditService {
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   }) {
+    // TODO TLAD remove log when OOMs are inspected
+    entries.where((v) => (v.sizeBytes ?? 0) > 20000000).forEach((entry) {
+      reportService.log('convert large entry=$entry size=${entry.sizeBytes}');
+    });
+
     try {
       return _opStream
           .receiveBroadcastStream(<String, dynamic>{

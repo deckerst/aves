@@ -6,10 +6,9 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/widgets/collection/grid/list_details.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +39,7 @@ class InteractiveTile extends StatelessWidget {
             if (selection.isSelecting) {
               selection.toggleSelection(entry);
             } else {
-              _goToViewer(context);
+              OpenViewerNotification(entry).dispatch(context);
             }
             break;
           case AppMode.pickSingleMediaExternal:
@@ -76,24 +75,6 @@ class InteractiveTile extends StatelessWidget {
           // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
           heroTagger: () => Object.hashAll([collection.id, entry.id]),
         ),
-      ),
-    );
-  }
-
-  void _goToViewer(BuildContext context) {
-    Navigator.maybeOf(context)?.push(
-      TransparentMaterialPageRoute(
-        settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (context, a, sa) {
-          final viewerCollection = collection.copyWith(
-            listenToSource: false,
-          );
-          assert(viewerCollection.sortedEntries.map((entry) => entry.id).contains(entry.id));
-          return EntryViewerPage(
-            collection: viewerCollection,
-            initialEntry: entry,
-          );
-        },
       ),
     );
   }

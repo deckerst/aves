@@ -201,7 +201,8 @@ class MediaStoreSource extends CollectionSource {
         // so we manually notify change for potential home screen filters
         notifyAlbumsChanged();
 
-        debugPrint('$runtimeType refresh ${stopwatch.elapsed} done for ${knownEntries.length} known, ${allNewEntries.length} new, ${removedEntries.length} removed');
+        debugPrint('$runtimeType refresh ${stopwatch.elapsed} done');
+        unawaited(reportService.log('Source refresh complete in ${stopwatch.elapsed.inSeconds}s for ${knownEntries.length} known, ${allNewEntries.length} new, ${removedEntries.length} removed'));
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );

@@ -91,6 +91,7 @@ class SettingsDefaults {
   // video
   static const enableVideoHardwareAcceleration = true;
   static const videoAutoPlayMode = VideoAutoPlayMode.disabled;
+  static const videoBackgroundMode = VideoBackgroundMode.disabled;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoShowRawTimedText = false;
   static const videoControls = VideoControls.play;

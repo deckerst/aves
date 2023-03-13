@@ -38,30 +38,7 @@ class _PinDialogState extends State<PinDialog> {
               controller: _controller,
               obscureText: true,
               onChanged: (v) {},
-              onCompleted: (pin) {
-                if (widget.needConfirmation) {
-                  if (_confirming) {
-                    final match = _firstPin == pin;
-                    Navigator.maybeOf(context)?.pop<String>(match ? pin : null);
-                    if (!match) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AvesDialog(
-                          content: Text(context.l10n.genericFailureFeedback),
-                          actions: const [OkButton()],
-                        ),
-                        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-                      );
-                    }
-                  } else {
-                    _firstPin = pin;
-                    _controller.clear();
-                    setState(() => _confirming = true);
-                  }
-                } else {
-                  Navigator.maybeOf(context)?.pop<String>(pin);
-                }
-              },
+              onCompleted: _submit,
               animationType: AnimationType.scale,
               keyboardType: TextInputType.number,
               autoFocus: true,
@@ -79,5 +56,30 @@ class _PinDialogState extends State<PinDialog> {
         ],
       ),
     );
+  }
+
+  void _submit(String pin) {
+    if (widget.needConfirmation) {
+      if (_confirming) {
+        final match = _firstPin == pin;
+        Navigator.maybeOf(context)?.pop<String>(match ? pin : null);
+        if (!match) {
+          showDialog(
+            context: context,
+            builder: (context) => AvesDialog(
+              content: Text(context.l10n.genericFailureFeedback),
+              actions: const [OkButton()],
+            ),
+            routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+          );
+        }
+      } else {
+        _firstPin = pin;
+        _controller.clear();
+        setState(() => _confirming = true);
+      }
+    } else {
+      Navigator.maybeOf(context)?.pop<String>(pin);
+    }
   }
 }

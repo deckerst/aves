@@ -41,6 +41,12 @@ class ShowEntryNotification extends Notification {
 }
 
 @immutable
+class ShowPreviousVideoNotification extends Notification {}
+
+@immutable
+class ShowNextVideoNotification extends Notification {}
+
+@immutable
 class ToggleOverlayNotification extends Notification {
   final bool? visible;
 

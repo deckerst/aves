@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
@@ -17,11 +18,12 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/viewer/controller.dart';
+import 'package:aves/widgets/viewer/action/video_action_delegate.dart';
+import 'package:aves/widgets/viewer/controls/controller.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/slideshow_buttons.dart';
@@ -30,10 +32,10 @@ import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
-import 'package:aves/widgets/viewer/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:collection/collection.dart';
+import 'package:floating/floating.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -58,6 +60,7 @@ class EntryViewerStack extends StatefulWidget {
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  final Floating _floating = Floating();
   late int _currentEntryIndex;
   late ValueNotifier<int> _currentVerticalPage;
   late PageController _horizontalPager, _verticalPager;
@@ -159,6 +162,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   @override
   void dispose() {
+    _floating.dispose();
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
@@ -183,14 +187,26 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.inactive:
+        _onAppInactive();
+        break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        viewerController.autopilot = false;
         pauseVideoControllers();
         break;
       case AppLifecycleState.resumed:
         availability.onResume();
         break;
+    }
+  }
+
+  Future<void> _onAppInactive() async {
+    viewerController.autopilot = false;
+    bool enabledPip = false;
+    if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
+      enabledPip |= await _enablePictureInPicture();
+    }
+    if (!enabledPip) {
+      await pauseVideoControllers();
     }
   }
 
@@ -209,29 +225,40 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
           child: LayoutBuilder(
             builder: (context, constraints) {
               final availableSize = Size(constraints.maxWidth, constraints.maxHeight);
-              return Stack(
-                children: [
-                  ViewerVerticalPageView(
-                    collection: collection,
-                    entryNotifier: entryNotifier,
-                    viewerController: viewerController,
-                    overlayOpacity: _overlayInitialized
-                        ? _overlayOpacity
-                        : settings.showOverlayOnOpening
-                            ? kAlwaysCompleteAnimation
-                            : kAlwaysDismissedAnimation,
-                    verticalPager: _verticalPager,
-                    horizontalPager: _horizontalPager,
-                    onVerticalPageChanged: _onVerticalPageChanged,
-                    onHorizontalPageChanged: _onHorizontalPageChanged,
-                    onImagePageRequested: () => _goToVerticalPage(imagePage),
-                    onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
-                  ),
-                  ..._buildOverlays(availableSize).map(_decorateOverlay),
-                  const TopGestureAreaProtector(),
-                  const SideGestureAreaProtector(),
-                  const BottomGestureAreaProtector(),
-                ],
+              final viewer = ViewerVerticalPageView(
+                collection: collection,
+                entryNotifier: entryNotifier,
+                viewerController: viewerController,
+                overlayOpacity: _overlayInitialized
+                    ? _overlayOpacity
+                    : settings.showOverlayOnOpening
+                        ? kAlwaysCompleteAnimation
+                        : kAlwaysDismissedAnimation,
+                verticalPager: _verticalPager,
+                horizontalPager: _horizontalPager,
+                onVerticalPageChanged: _onVerticalPageChanged,
+                onHorizontalPageChanged: _onHorizontalPageChanged,
+                onImagePageRequested: () => _goToVerticalPage(imagePage),
+                onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
+              );
+              return StreamBuilder<PiPStatus>(
+                // as of floating v2.0.0, plugin assumes activity and fails when bound via service
+                // so we do not access status stream directly, but check for support first
+                stream: device.supportPictureInPicture ? _floating.pipStatus$ : Stream.value(PiPStatus.disabled),
+                builder: (context, snapshot) {
+                  var pipEnabled = snapshot.data == PiPStatus.enabled;
+                  return Stack(
+                    children: [
+                      viewer,
+                      if (!pipEnabled) ...[
+                        ..._buildOverlays(availableSize).map(_decorateOverlay),
+                        const TopGestureAreaProtector(),
+                        const SideGestureAreaProtector(),
+                        const BottomGestureAreaProtector(),
+                      ],
+                    ],
+                  );
+                },
               );
             },
           ),
@@ -456,6 +483,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       }
     } else if (notification is ToggleOverlayNotification) {
       _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
+    } else if (notification is VideoActionNotification) {
+      final controller = notification.controller;
+      final action = notification.action;
+      _onVideoAction(context, controller, action);
     } else if (notification is TvShowLessInfoNotification) {
       if (_overlayVisible.value) {
         _overlayVisible.value = false;
@@ -476,10 +507,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       _goToHorizontalPageByDelta(delta: 1, animate: notification.animate);
     } else if (notification is ShowEntryNotification) {
       _goToHorizontalPageByIndex(page: notification.index, animate: notification.animate);
-    } else if (notification is VideoActionNotification) {
-      final controller = notification.controller;
-      final action = notification.action;
-      _onVideoAction(context, controller, action);
     } else {
       return false;
     }
@@ -510,12 +537,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (baseCollection == null) return;
 
     _onLeave();
+    final uri = entryNotifier.value?.uri;
     Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
           source: baseCollection.source,
           filters: {...baseCollection.filters, filter},
+          highlightTest: uri != null ? (entry) => entry.uri == uri : null,
         ),
       ),
       (route) => false,
@@ -538,12 +567,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
-    if (page == transitionPage) {
-      dismissFeedback(context);
-      _popVisual();
-    } else if (page == infoPage) {
-      // prevent hero when viewer is offscreen
-      _heroInfoNotifier.value = null;
+    switch (page) {
+      case transitionPage:
+        dismissFeedback(context);
+        _popVisual();
+        break;
+      case imagePage:
+        reportService.log('Nav move to Image page');
+        break;
+      case infoPage:
+        reportService.log('Nav move to Info page');
+        // prevent hero when viewer is offscreen
+        _heroInfoNotifier.value = null;
+        break;
     }
   }
 
@@ -708,6 +744,39 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     }
   }
 
+  Future<bool> _enablePictureInPicture() async {
+    final videoController = context.read<VideoConductor>().getPlayingController();
+    if (videoController != null) {
+      final targetEntry = videoController.entry;
+      final entrySize = targetEntry.displaySize;
+      final aspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
+
+      final mq = context.read<MediaQueryData>();
+      final viewSize = mq.size * mq.devicePixelRatio;
+      final fittedSize = applyBoxFit(BoxFit.contain, entrySize, viewSize).destination;
+      final sourceRectHint = Rectangle<int>(
+        ((viewSize.width - fittedSize.width) / 2).round(),
+        ((viewSize.height - fittedSize.height) / 2).round(),
+        fittedSize.width.round(),
+        fittedSize.height.round(),
+      );
+
+      try {
+        final status = await _floating.enable(
+          aspectRatio: aspectRatio,
+          sourceRectHint: sourceRectHint,
+        );
+        await reportService.log('Enabled picture-in-picture with status=$status');
+        return status == PiPStatus.enabled;
+      } on PlatformException catch (e, stack) {
+        if (e.message != 'Activity must be resumed to enter picture-in-picture') {
+          await reportService.recordError(e, stack);
+        }
+      }
+    }
+    return false;
+  }
+
   // overlay
 
   Future<void> _initOverlay() async {
@@ -719,6 +788,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
+    if (!mounted) return;
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
       AvesApp.setSystemUIStyle(context);

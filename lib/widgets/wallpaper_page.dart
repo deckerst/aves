@@ -1,3 +1,4 @@
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -6,17 +7,17 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
-import 'package:aves/widgets/viewer/controller.dart';
+import 'package:aves/widgets/viewer/action/video_action_delegate.dart';
+import 'package:aves/widgets/viewer/controls/controller.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
+import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
-import 'package:aves/widgets/viewer/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:flutter/material.dart';
@@ -37,13 +38,14 @@ class WallpaperPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AvesScaffold(
       body: entry != null
-          ? ViewStateConductorProvider(
-              child: VideoConductorProvider(
-                child: MultiPageConductorProvider(
-                  child: EntryEditor(
-                    entry: entry!,
-                  ),
-                ),
+          ? MultiProvider(
+              providers: [
+                ViewStateConductorProvider(),
+                VideoConductorProvider(),
+                MultiPageConductorProvider(),
+              ],
+              child: EntryEditor(
+                entry: entry!,
               ),
             )
           : const SizedBox(),
@@ -129,6 +131,10 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
       onNotification: (dynamic notification) {
         if (notification is ToggleOverlayNotification) {
           _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
+        } else if (notification is VideoActionNotification) {
+          final controller = notification.controller;
+          final action = notification.action;
+          _onVideoAction(context, controller, action);
         }
         return true;
       },
@@ -170,11 +176,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
             entry: targetEntry,
             controller: videoController,
             scale: _overlayVideoControlScale,
-            onActionSelected: (action) {
-              if (videoController != null) {
-                _videoActionDelegate.onActionSelected(context, videoController, action);
-              }
-            },
+            onActionSelected: (action) => _onVideoAction(context, videoController, action),
             onActionMenuOpened: () {
               // if the menu is opened while overlay is hiding,
               // the popup menu button is disposed and menu items are ineffective,
@@ -232,6 +234,12 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
       },
       child: child,
     );
+  }
+
+  void _onVideoAction(BuildContext context, AvesVideoController? videoController, EntryAction action) {
+    if (videoController != null) {
+      _videoActionDelegate.onActionSelected(context, videoController, action);
+    }
   }
 
   // overlay

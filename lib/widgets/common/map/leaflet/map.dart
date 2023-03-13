@@ -256,7 +256,10 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   }
 
   Future<void> _resetRotation() async {
-    final rotationTween = Tween<double>(begin: _leafletMapController.rotation, end: 0);
+    final rotation = _leafletMapController.rotation;
+    // prevent multiple turns
+    final begin = (rotation.abs() % 360) * rotation.sign;
+    final rotationTween = Tween<double>(begin: begin, end: 0);
     await _animateCamera((animation) => _leafletMapController.rotate(rotationTween.evaluate(animation)));
   }
 

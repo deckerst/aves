@@ -7,11 +7,12 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/viewer/controller.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
+import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ScreenSaverPage extends StatefulWidget {
   static const routeName = '/screen_saver';
@@ -80,15 +81,16 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingOb
           alignment: Alignment.center,
         );
       } else {
-        child = ViewStateConductorProvider(
-          child: VideoConductorProvider(
-            child: MultiPageConductorProvider(
-              child: EntryViewerStack(
-                collection: collection,
-                initialEntry: entries.first,
-                viewerController: _viewerController,
-              ),
-            ),
+        child = MultiProvider(
+          providers: [
+            ViewStateConductorProvider(),
+            VideoConductorProvider(),
+            MultiPageConductorProvider(),
+          ],
+          child: EntryViewerStack(
+            collection: collection,
+            initialEntry: entries.first,
+            viewerController: _viewerController,
           ),
         );
       }

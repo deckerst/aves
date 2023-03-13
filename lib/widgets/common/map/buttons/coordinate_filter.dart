@@ -5,7 +5,7 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/viewer/notifications.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

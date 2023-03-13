@@ -5,7 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppBottomNavBar extends StatefulWidget {
-  final Stream<DraggableScrollBarEvent> events;
+  final Stream<DraggableScrollbarEvent> events;
 
   // collection loaded in the `CollectionPage`, if any
   final CollectionLens? currentCollection;

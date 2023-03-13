@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/grid/overlay.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
+import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/thumbnail/overlay.dart';
 import 'package:flutter/material.dart';
 
@@ -44,11 +45,15 @@ class DecoratedThumbnail extends StatelessWidget {
       children: [
         child,
         ThumbnailEntryOverlay(entry: entry),
-        if (selectable)
+        if (selectable) ...[
           GridItemSelectionOverlay<AvesEntry>(
             item: entry,
             padding: const EdgeInsets.all(2),
           ),
+          ThumbnailZoomOverlay(
+            onZoom: () => OpenViewerNotification(entry).dispatch(context),
+          ),
+        ],
         if (highlightable) ThumbnailHighlightOverlay(entry: entry),
       ],
     );

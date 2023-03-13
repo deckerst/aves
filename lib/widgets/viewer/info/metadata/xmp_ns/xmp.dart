@@ -1,8 +1,8 @@
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 class XmpBasicNamespace extends XmpNamespace {

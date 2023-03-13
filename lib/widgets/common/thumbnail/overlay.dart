@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/selection.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +70,46 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
       startAngle: startAngle,
       centerSweep: false,
       onSweepEnd: highlightInfo.clear,
+    );
+  }
+}
+
+class ThumbnailZoomOverlay extends StatelessWidget {
+  final VoidCallback? onZoom;
+
+  const ThumbnailZoomOverlay({
+    super.key,
+    this.onZoom,
+  });
+
+  static const alignment = AlignmentDirectional.bottomEnd;
+  static const duration = Durations.thumbnailOverlayAnimation;
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelecting = context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting);
+    final interactiveDimension = context.select<GridThemeData, double>((t) => t.interactiveDimension);
+    return AnimatedSwitcher(
+      duration: duration,
+      child: isSelecting
+          ? Align(
+              alignment: alignment,
+              child: GestureDetector(
+                onTap: onZoom,
+                child: Container(
+                  alignment: alignment,
+                  padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+                  width: interactiveDimension,
+                  height: interactiveDimension,
+                  child: Icon(
+                    AIcons.showFullscreen,
+                    size: context.select<GridThemeData, double>((t) => t.iconSize),
+                    color: Colors.white70,
+                  ),
+                ),
+              ),
+            )
+          : const SizedBox(),
     );
   }
 }

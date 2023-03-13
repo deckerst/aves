@@ -1420,5 +1420,17 @@
   "vaultLockTypePassword": "Pasahitza",
   "@vaultLockTypePassword": {},
   "drawerPlacePage": "Lekuak",
-  "@drawerPlacePage": {}
+  "@drawerPlacePage": {},
+  "vaultLockTypePattern": "Patroia",
+  "@vaultLockTypePattern": {},
+  "patternDialogEnter": "Sartu patroia",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Konfirmatu patroia",
+  "@patternDialogConfirm": {},
+  "settingsVideoEnablePip": "Bideoa leihotxoan",
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Erreprodukzioa atzeko planoan",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Atzeko planoko modua",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }

@@ -19,6 +19,11 @@ extension ExtraAppMode on AppMode {
         AppMode.pickMultipleMediaExternal,
       }.contains(this);
 
+  bool get canEditEntry => {
+        AppMode.main,
+        AppMode.view,
+      }.contains(this);
+
   bool get canSelectMedia => {
         AppMode.main,
         AppMode.pickMultipleMediaExternal,

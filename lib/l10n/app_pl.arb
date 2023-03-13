@@ -1420,5 +1420,17 @@
   "lengthUnitPercent": "%",
   "@lengthUnitPercent": {},
   "placePageTitle": "Miejsca",
-  "@placePageTitle": {}
+  "@placePageTitle": {},
+  "vaultLockTypePattern": "Wzór",
+  "@vaultLockTypePattern": {},
+  "patternDialogEnter": "Ustaw wzór",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Potwierdź wzór",
+  "@patternDialogConfirm": {},
+  "settingsVideoEnablePip": "Obraz w obrazie",
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Tryb tła",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Tryb tła",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }

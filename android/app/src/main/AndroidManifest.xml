@@ -67,6 +67,16 @@ This change eventually prevents building the app with Flutter v3.3.3.
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
+        <!-- necessary to resolve image editor apps that are not visible in the launcher -->
+        <intent>
+            <action android:name="android.intent.action.EDIT" />
+            <data android:mimeType="image/*" />
+        </intent>
+        <!-- necessary to resolve video editor apps that are not visible in the launcher -->
+        <intent>
+            <action android:name="android.intent.action.EDIT" />
+            <data android:mimeType="video/*" />
+        </intent>
         <!--
         from Android 11, `url_launcher` method `canLaunchUrl()` will return false,
         if appropriate intents are not declared, cf https://pub.dev/packages/url_launcher#configuration=
@@ -96,6 +106,7 @@ This change eventually prevents building the app with Flutter v3.3.3.
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
+            android:supportsPictureInPicture="true"
             android:theme="@style/NormalTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -283,7 +294,7 @@ This change eventually prevents building the app with Flutter v3.3.3.
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- as of Flutter v3.3.0, background blur & icon shading fail with Impeller -->
+        <!-- as of Flutter v3.7.7, background blur yields black screen with Impeller -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.3"></a>[v1.8.3] - 2023-03-13
+
+### Added
+
+- Collection: preview button when selecting items
+- Collection: item size in list layout
+- Vaults: custom pattern lock
+- Video: picture-in-picture
+- Video: handle skip next/previous media buttons
+- TV: more media controls
+
+### Changed
+
+- scroll to show item when navigating from Info page
+- upgraded Flutter to stable v3.7.7
+
+### Fixed
+
+- Accessibility: using accessibility services keeping snack bar beyond countdown
+- Accessibility: navigation with TalkBack
+- Vaults: crash when using fingerprint on older Android versions
+- Vaults: sharing multiple items
+
 ## <a id="v1.8.2"></a>[v1.8.2] - 2023-02-28
 
 ### Added

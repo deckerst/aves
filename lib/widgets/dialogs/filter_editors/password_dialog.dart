@@ -41,36 +41,38 @@ class _PasswordDialogState extends State<PasswordDialog> {
               controller: _controller,
               focusNode: _focusNode,
               obscureText: true,
-              onSubmitted: (password) {
-                if (widget.needConfirmation) {
-                  if (_confirming) {
-                    final match = _firstPassword == password;
-                    Navigator.maybeOf(context)?.pop<String>(match ? password : null);
-                    if (!match) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AvesDialog(
-                          content: Text(context.l10n.genericFailureFeedback),
-                          actions: const [OkButton()],
-                        ),
-                        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-                      );
-                    }
-                  } else {
-                    _firstPassword = password;
-                    _controller.clear();
-                    setState(() => _confirming = true);
-                    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
-                  }
-                } else {
-                  Navigator.maybeOf(context)?.pop<String>(password);
-                }
-              },
+              onSubmitted: _submit,
               autofillHints: const [AutofillHints.password],
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _submit(String password) {
+    if (widget.needConfirmation) {
+      if (_confirming) {
+        final match = _firstPassword == password;
+        Navigator.maybeOf(context)?.pop<String>(match ? password : null);
+        if (!match) {
+          showDialog(
+            context: context,
+            builder: (context) => AvesDialog(
+              content: Text(context.l10n.genericFailureFeedback),
+              actions: const [OkButton()],
+            ),
+            routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+          );
+        }
+      } else {
+        _firstPassword = password;
+        _controller.clear();
+        setState(() => _confirming = true);
+        WidgetsBinding.instance.addPostFrameCallback((_) => _focusNode.requestFocus());
+      }
+    } else {
+      Navigator.maybeOf(context)?.pop<String>(password);
+    }
   }
 }

@@ -46,6 +46,16 @@ class MediaCommandStreamHandler : EventChannel.StreamHandler, MediaSessionCompat
         success(hashMapOf(KEY_COMMAND to COMMAND_PAUSE))
     }
 
+    override fun onSkipToNext() {
+        super.onSkipToNext()
+        success(hashMapOf(KEY_COMMAND to COMMAND_SKIP_TO_NEXT))
+    }
+
+    override fun onSkipToPrevious() {
+        super.onSkipToPrevious()
+        success(hashMapOf(KEY_COMMAND to COMMAND_SKIP_TO_PREVIOUS))
+    }
+
     override fun onStop() {
         super.onStop()
         success(hashMapOf(KEY_COMMAND to COMMAND_STOP))
@@ -70,6 +80,8 @@ class MediaCommandStreamHandler : EventChannel.StreamHandler, MediaSessionCompat
 
         const val COMMAND_PLAY = "play"
         const val COMMAND_PAUSE = "pause"
+        const val COMMAND_SKIP_TO_NEXT = "skip_to_next"
+        const val COMMAND_SKIP_TO_PREVIOUS = "skip_to_previous"
         const val COMMAND_STOP = "stop"
         const val COMMAND_SEEK = "seek"
     }

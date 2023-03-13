@@ -1262,5 +1262,17 @@
   "lengthUnitPercent": "%",
   "@lengthUnitPercent": {},
   "exportEntryDialogWriteMetadata": "Écrire les métadonnées",
-  "@exportEntryDialogWriteMetadata": {}
+  "@exportEntryDialogWriteMetadata": {},
+  "patternDialogEnter": "Entrez votre modèle",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Confirmez votre modèle",
+  "@patternDialogConfirm": {},
+  "vaultLockTypePattern": "Modèle",
+  "@vaultLockTypePattern": {},
+  "settingsVideoEnablePip": "Picture-in-picture",
+  "@settingsVideoEnablePip": {},
+  "settingsVideoBackgroundMode": "Lecture en arrière-plan",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Arrière-plan",
+  "@settingsVideoBackgroundModeDialogTitle": {}
 }

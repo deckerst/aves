@@ -39,6 +39,7 @@ class _EditVaultDialogState extends State<EditVaultDialog> {
   final List<VaultLockType> _lockTypeOptions = [
     if (device.canAuthenticateUser) VaultLockType.system,
     if (device.canUseCrypto) ...[
+      VaultLockType.pattern,
       VaultLockType.pin,
       VaultLockType.password,
     ],
