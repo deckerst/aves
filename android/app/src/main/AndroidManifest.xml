@@ -67,6 +67,16 @@ This change eventually prevents building the app with Flutter v3.3.3.
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
+        <!-- necessary to resolve image editor apps that are not visible in the launcher -->
+        <intent>
+            <action android:name="android.intent.action.EDIT" />
+            <data android:mimeType="image/*" />
+        </intent>
+        <!-- necessary to resolve video editor apps that are not visible in the launcher -->
+        <intent>
+            <action android:name="android.intent.action.EDIT" />
+            <data android:mimeType="video/*" />
+        </intent>
         <!--
         from Android 11, `url_launcher` method `canLaunchUrl()` will return false,
         if appropriate intents are not declared, cf https://pub.dev/packages/url_launcher#configuration=
