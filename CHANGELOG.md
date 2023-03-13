@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: preview button when selecting items
+- Collection: item size in list layout
 - Vaults: custom pattern lock
 - Video: picture-in-picture
 - Video: handle skip next/previous media buttons
