@@ -1175,39 +1175,9 @@
   ],
 
   "cs": [
-    "chipActionGoToPlacePage",
-    "chipActionLock",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "albumTierVaults",
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "vaultLockTypePattern",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
     "settingsVideoEnablePip",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "exportEntryDialogWriteMetadata",
-    "drawerPlacePage",
-    "placePageTitle",
-    "placeEmpty",
-    "settingsConfirmationVaultDataLoss",
     "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle",
-    "settingsDisablingBinWarningDialogMessage"
+    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "de": [
@@ -1256,16 +1226,6 @@
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
-  ],
-
-  "es": [
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
-  ],
-
-  "eu": [
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle"
   ],
@@ -1742,11 +1702,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "gl": [
@@ -2890,11 +2845,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
-  ],
-
   "it": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
@@ -2962,11 +2912,6 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
-  ],
-
-  "ko": [
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "lt": [
@@ -3405,13 +3350,7 @@
     "wallpaperUseScrollEffect"
   ],
 
-  "pl": [
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
-  ],
-
   "pt": [
-    "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle"
   ],
 
@@ -4264,11 +4203,6 @@
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
     "settingsDisablingBinWarningDialogMessage"
-  ],
-
-  "uk": [
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
   ],
 
   "zh": [
