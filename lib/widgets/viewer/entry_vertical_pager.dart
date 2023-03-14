@@ -243,7 +243,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoPageNotification().dispatch(context)),
           TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
           TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
-          PlayPauseIntent: CallbackAction<PlayPauseIntent>(onInvoke: (intent) => _onPlayPauseIntent(intent)),
+          PlayPauseIntent: CallbackAction<PlayPauseIntent>(onInvoke: _onPlayPauseIntent),
           EntryActionIntent: CallbackAction<EntryActionIntent>(onInvoke: (intent) => _onEntryActionIntent(intent.action)),
           ActivateIntent: CallbackAction<Intent>(onInvoke: (intent) {
             if (useTvLayout) {

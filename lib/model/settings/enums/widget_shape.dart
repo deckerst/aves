@@ -1,5 +1,4 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:flutter/material.dart';
 
