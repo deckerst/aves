@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/enums/thumbnail_overlay_location_icon.dart';
 import 'package:aves/model/settings/enums/thumbnail_overlay_tag_icon.dart';
 import 'package:aves/model/settings/settings.dart';

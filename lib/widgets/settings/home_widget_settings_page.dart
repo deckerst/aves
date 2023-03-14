@@ -1,7 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/widget_displayed_item.dart';
-import 'package:aves/model/settings/enums/widget_open_action.dart';
+import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/widget_service.dart';

@@ -1,8 +1,7 @@
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
-
-import 'enums.dart';
 
 extension ExtraEntrySortFactor on EntrySortFactor {
   String getName(BuildContext context) {

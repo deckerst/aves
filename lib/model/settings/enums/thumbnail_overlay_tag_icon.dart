@@ -1,21 +1,8 @@
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
-
-import 'enums.dart';
+import 'package:flutter/widgets.dart';
 
 extension ExtraThumbnailOverlayTagIcon on ThumbnailOverlayTagIcon {
-  String getName(BuildContext context) {
-    switch (this) {
-      case ThumbnailOverlayTagIcon.tagged:
-        return context.l10n.filterTaggedLabel;
-      case ThumbnailOverlayTagIcon.untagged:
-        return context.l10n.filterNoTagLabel;
-      case ThumbnailOverlayTagIcon.none:
-        return context.l10n.settingsDisabled;
-    }
-  }
-
   IconData getIcon(BuildContext context) {
     switch (this) {
       case ThumbnailOverlayTagIcon.tagged:
