@@ -1,4 +1,6 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/fields.dart';

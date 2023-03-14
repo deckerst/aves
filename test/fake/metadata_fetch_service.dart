@@ -1,4 +1,4 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/services/metadata/metadata_fetch_service.dart';
 import 'package:flutter/foundation.dart';

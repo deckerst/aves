@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/location.dart';
+import 'package:aves/model/entry/extensions/images.dart';
+import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
@@ -343,7 +345,7 @@ class _GeoMapState extends State<GeoMap> {
 
   ZoomedBounds? _initBoundsForEntries({required List<AvesEntry> entries, int? recentCount}) {
     if (recentCount != null) {
-      entries = List.of(entries)..sort(AvesEntry.compareByDate);
+      entries = List.of(entries)..sort(AvesEntrySort.compareByDate);
       entries = entries.take(recentCount).toList();
     }
 

@@ -63,6 +63,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  aves_model:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_model"
+      relative: true
+    source: path
+    version: "0.0.1"
   aves_report:
     dependency: "direct main"
     description:
@@ -95,6 +102,13 @@ packages:
     dependency: "direct main"
     description:
       path: "plugins/aves_ui"
+      relative: true
+    source: path
+    version: "0.0.1"
+  aves_video:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_video"
       relative: true
     source: path
     version: "0.0.1"

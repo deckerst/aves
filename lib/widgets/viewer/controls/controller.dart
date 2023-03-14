@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/viewer/controls/events.dart';

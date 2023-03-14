@@ -3,7 +3,7 @@
 //
 // import 'package:aves/model/entry.dart';
 // import 'package:aves/utils/change_notifier.dart';
-// import 'package:aves/widgets/viewer/video/controller.dart';
+// import 'package:aves_video/aves_video.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/src/foundation/change_notifier.dart';
 // import 'package:flutter/src/widgets/framework.dart';

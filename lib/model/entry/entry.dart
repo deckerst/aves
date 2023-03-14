@@ -2,51 +2,42 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:aves/geo/countries.dart';
-import 'package:aves/model/entry_cache.dart';
-import 'package:aves/model/entry_dirs.dart';
-import 'package:aves/model/favourites.dart';
-import 'package:aves/model/geotiff.dart';
+import 'package:aves/model/entry/cache.dart';
+import 'package:aves/model/entry/dirs.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
-import 'package:aves/model/multipage.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/trash.dart';
-import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/services/geocoding_service.dart';
-import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
-import 'package:latlong2/latlong.dart';
 
 enum EntryDataType { basic, aspectRatio, catalog, address, references }
 
-class EntryOrigins {
-  static const int mediaStoreContent = 0;
-  static const int unknownContent = 1;
-  static const int file = 2;
-  static const int vault = 3;
-}
-
-class AvesEntry {
-  // `sizeBytes`, `dateModifiedSecs` can be missing in viewer mode
+class AvesEntry with AvesEntryBase {
+  @override
   int id;
+
+  @override
   String uri;
+
+  @override
+  int? pageId;
+
+  @override
+  int? sizeBytes;
+
   String? _path, _filename, _extension, _sourceTitle;
   EntryDir? _directory;
-  int? pageId, contentId;
+  int? contentId;
   final String sourceMimeType;
   int width, height, sourceRotationDegrees;
-  int? sizeBytes, dateAddedSecs, _dateModifiedSecs, sourceDateTakenMillis, _durationMillis;
+  int? dateAddedSecs, _dateModifiedSecs, sourceDateTakenMillis, _durationMillis;
   bool trashed;
   int origin;
 
@@ -57,7 +48,11 @@ class AvesEntry {
 
   List<AvesEntry>? burstEntries;
 
-  final AChangeNotifier visualChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
+  @override
+  final AChangeNotifier visualChangeNotifier = AChangeNotifier();
+
+  final AChangeNotifier metadataChangeNotifier = AChangeNotifier();
+  final AChangeNotifier addressChangeNotifier = AChangeNotifier();
 
   AvesEntry({
     required int? id,
@@ -243,139 +238,7 @@ class AvesEntry {
   // so we use the one found during cataloguing if possible
   String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
 
-  String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
-
-  bool get isFavourite => favourites.isFavourite(this);
-
-  bool get isSvg => mimeType == MimeTypes.svg;
-
-  // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
-  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(mimeType) || isRaw;
-
-  // Android's `BitmapRegionDecoder` documentation states that "only the JPEG and PNG formats are supported"
-  // but in practice (tested on API 25, 27, 29), it successfully decodes the formats listed below,
-  // and it actually fails to decode GIF, DNG and animated WEBP. Other formats were not tested.
-  bool get _supportedByBitmapRegionDecoder =>
-      [
-        MimeTypes.heic,
-        MimeTypes.heif,
-        MimeTypes.jpeg,
-        MimeTypes.png,
-        MimeTypes.webp,
-        MimeTypes.arw,
-        MimeTypes.cr2,
-        MimeTypes.nef,
-        MimeTypes.nrw,
-        MimeTypes.orf,
-        MimeTypes.pef,
-        MimeTypes.raf,
-        MimeTypes.rw2,
-        MimeTypes.srw,
-      ].contains(mimeType) &&
-      !isAnimated;
-
-  bool get supportTiling => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
-
-  bool get useTiles => supportTiling && (width > 4096 || height > 4096);
-
-  bool get isRaw => MimeTypes.rawImages.contains(mimeType);
-
-  bool get isImage => MimeTypes.isImage(mimeType);
-
-  bool get isVideo => MimeTypes.isVideo(mimeType);
-
   bool get isCatalogued => _catalogMetadata != null;
-
-  bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
-
-  bool get isGeotiff => _catalogMetadata?.isGeotiff ?? false;
-
-  bool get is360 => _catalogMetadata?.is360 ?? false;
-
-  bool get isMediaStoreContent => uri.startsWith('content://media/');
-
-  bool get isMediaStoreMediaContent => isMediaStoreContent && {'/external/images/', '/external/video/'}.any(uri.contains);
-
-  bool get isVaultContent => path?.startsWith(androidFileUtils.vaultRoot) ?? false;
-
-  bool get canEdit => !settings.isReadOnly && path != null && !trashed && (isMediaStoreContent || isVaultContent);
-
-  bool get canEditDate => canEdit && (canEditExif || canEditXmp);
-
-  bool get canEditLocation => canEdit && (canEditExif || mimeType == MimeTypes.mp4);
-
-  bool get canEditTitleDescription => canEdit && canEditXmp;
-
-  bool get canEditRating => canEdit && canEditXmp;
-
-  bool get canEditTags => canEdit && canEditXmp;
-
-  bool get canRotate => canEdit && (canEditExif || mimeType == MimeTypes.mp4);
-
-  bool get canFlip => canEdit && canEditExif;
-
-  bool get canEditExif => MimeTypes.canEditExif(mimeType);
-
-  bool get canEditIptc => MimeTypes.canEditIptc(mimeType);
-
-  bool get canEditXmp => MimeTypes.canEditXmp(mimeType);
-
-  bool get canRemoveMetadata => MimeTypes.canRemoveMetadata(mimeType);
-
-  // Media Store size/rotation is inaccurate, e.g. a portrait FHD video is rotated according to its metadata,
-  // so it should be registered as width=1920, height=1080, orientation=90,
-  // but is incorrectly registered as width=1080, height=1920, orientation=0.
-  // Double-checking the width/height during loading or cataloguing is the proper solution, but it would take space and time.
-  // Comparing width and height can help with the portrait FHD video example,
-  // but it fails for a portrait screenshot rotated, which is landscape with width=1080, height=1920, orientation=90
-  bool get isRotated => rotationDegrees % 180 == 90;
-
-  static const ratioSeparator = '\u2236';
-  static const resolutionSeparator = ' \u00D7 ';
-
-  bool get isSized => width > 0 && height > 0;
-
-  String get resolutionText {
-    final ws = width;
-    final hs = height;
-    return isRotated ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
-  }
-
-  String get aspectRatioText {
-    if (width > 0 && height > 0) {
-      final gcd = width.gcd(height);
-      final w = width ~/ gcd;
-      final h = height ~/ gcd;
-      return isRotated ? '$h$ratioSeparator$w' : '$w$ratioSeparator$h';
-    } else {
-      return '?$ratioSeparator?';
-    }
-  }
-
-  double get displayAspectRatio {
-    if (width == 0 || height == 0) return 1;
-    return isRotated ? height / width : width / height;
-  }
-
-  Size get displaySize {
-    final w = width.toDouble();
-    final h = height.toDouble();
-    return isRotated ? Size(h, w) : Size(w, h);
-  }
-
-  Size videoDisplaySize(double sar) {
-    final size = displaySize;
-    if (sar != 1) {
-      final dar = displayAspectRatio * sar;
-      final w = size.width;
-      final h = size.height;
-      if (w >= h) return Size(w, w / dar);
-      if (h > w) return Size(h * dar, h);
-    }
-    return size;
-  }
-
-  int get megaPixels => (width * height / 1000000).round();
 
   DateTime? _bestDate;
 
@@ -386,6 +249,7 @@ class AvesEntry {
 
   int get rating => _catalogMetadata?.rating ?? 0;
 
+  @override
   int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
 
   set rotationDegrees(int rotationDegrees) {
@@ -396,6 +260,27 @@ class AvesEntry {
   bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
 
   set isFlipped(bool isFlipped) => _catalogMetadata?.isFlipped = isFlipped;
+
+  // Media Store size/rotation is inaccurate, e.g. a portrait FHD video is rotated according to its metadata,
+  // so it should be registered as width=1920, height=1080, orientation=90,
+  // but is incorrectly registered as width=1080, height=1920, orientation=0.
+  // Double-checking the width/height during loading or cataloguing is the proper solution, but it would take space and time.
+  // Comparing width and height can help with the portrait FHD video example,
+  // but it fails for a portrait screenshot rotated, which is landscape with width=1080, height=1920, orientation=90
+  bool get isRotated => rotationDegrees % 180 == 90;
+
+  @override
+  double get displayAspectRatio {
+    if (width == 0 || height == 0) return 1;
+    return isRotated ? height / width : width / height;
+  }
+
+  @override
+  Size get displaySize {
+    final w = width.toDouble();
+    final h = height.toDouble();
+    return isRotated ? Size(h, w) : Size(w, h);
+  }
 
   String? get sourceTitle => _sourceTitle;
 
@@ -423,6 +308,7 @@ class AvesEntry {
     return d == null ? null : DateTime(d.year, d.month, d.day);
   }
 
+  @override
   int? get durationMillis => _durationMillis;
 
   set durationMillis(int? durationMillis) {
@@ -458,8 +344,6 @@ class AvesEntry {
   // has a place, or at least the full country name
   // derived from Google reverse geocoding addresses
   bool get hasFineAddress => _addressDetails?.place?.isNotEmpty == true || (_addressDetails?.countryName?.length ?? 0) > 3;
-
-  LatLng? get latLng => hasGps ? LatLng(_catalogMetadata!.latitude!, _catalogMetadata!.longitude!) : null;
 
   Set<String>? _tags;
 
@@ -504,131 +388,11 @@ class AvesEntry {
     addressDetails = null;
   }
 
-  Future<void> catalog({required bool background, required bool force, required bool persist}) async {
-    if (isCatalogued && !force) return;
-    if (isSvg) {
-      // vector image sizing is not essential, so we should not spend time for it during loading
-      // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
-      final size = await SvgMetadataService.getSize(this);
-      if (size != null) {
-        final fields = {
-          'width': size.width.ceil(),
-          'height': size.height.ceil(),
-        };
-        await applyNewFields(fields, persist: persist);
-      }
-      catalogMetadata = CatalogMetadata(id: id);
-    } else {
-      // pre-processing
-      if (isVideo && (!isSized || durationMillis == 0)) {
-        // exotic video that is not sized during loading
-        final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
-        await applyNewFields(fields, persist: persist);
-      }
-
-      // cataloguing on platform
-      catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
-
-      // post-processing
-      if (isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) {
-        catalogMetadata = await VideoMetadataFormatter.getCatalogMetadata(this);
-      }
-      if (isGeotiff && !hasGps) {
-        final info = await metadataFetchService.getGeoTiffInfo(this);
-        if (info != null) {
-          final center = MappedGeoTiff(
-            info: info,
-            entry: this,
-          ).center;
-          if (center != null) {
-            catalogMetadata = catalogMetadata?.copyWith(
-              latitude: center.latitude,
-              longitude: center.longitude,
-            );
-          }
-        }
-      }
-    }
-  }
-
   AddressDetails? get addressDetails => _addressDetails;
 
   set addressDetails(AddressDetails? newAddress) {
     _addressDetails = newAddress;
     addressChangeNotifier.notify();
-  }
-
-  Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
-    if (hasGps) {
-      await _locateCountry(force: force);
-      if (await availability.canLocatePlaces) {
-        await locatePlace(background: background, force: force, geocoderLocale: geocoderLocale);
-      }
-    } else {
-      addressDetails = null;
-    }
-  }
-
-  // quick reverse geocoding to find the country, using an offline asset
-  Future<void> _locateCountry({required bool force}) async {
-    if (!hasGps || (hasAddress && !force)) return;
-    final countryCode = await countryTopology.countryCode(latLng!);
-    setCountry(countryCode);
-  }
-
-  void setCountry(CountryCode? countryCode) {
-    if (hasFineAddress || countryCode == null) return;
-    addressDetails = AddressDetails(
-      id: id,
-      countryCode: countryCode.alpha2,
-      countryName: countryCode.alpha3,
-    );
-  }
-
-  // full reverse geocoding, requiring Play Services and some connectivity
-  Future<void> locatePlace({required bool background, required bool force, required Locale geocoderLocale}) async {
-    if (!hasGps || (hasFineAddress && !force)) return;
-    try {
-      Future<List<Address>> call() => GeocodingService.getAddress(latLng!, geocoderLocale);
-      final addresses = await (background
-          ? servicePolicy.call(
-              call,
-              priority: ServiceCallPriority.getLocation,
-            )
-          : call());
-      if (addresses.isNotEmpty) {
-        final address = addresses.first;
-        final cc = address.countryCode?.toUpperCase();
-        final cn = address.countryName;
-        final aa = address.adminArea;
-        addressDetails = AddressDetails(
-          id: id,
-          countryCode: cc,
-          countryName: cn,
-          adminArea: aa,
-          // if country & admin fields are null, it is likely the ocean,
-          // which is identified by `featureName` but we default to the address line anyway
-          locality: address.locality ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
-        );
-      }
-    } catch (error, stack) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$latLng error=$error\n$stack');
-    }
-  }
-
-  Future<String?> findAddressLine({required Locale geocoderLocale}) async {
-    if (!hasGps) return null;
-
-    try {
-      final addresses = await GeocodingService.getAddress(latLng!, geocoderLocale);
-      if (addresses.isNotEmpty) {
-        final address = addresses.first;
-        return address.addressLine;
-      }
-    } catch (error, stack) {
-      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$latLng error=$error\n$stack');
-    }
-    return null;
   }
 
   String get shortAddress {
@@ -731,108 +495,5 @@ class AvesEntry {
       await EntryCache.evict(uri, oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       visualChangeNotifier.notify();
     }
-  }
-
-  // favourites
-
-  Future<void> toggleFavourite() async {
-    if (isFavourite) {
-      await removeFromFavourites();
-    } else {
-      await addToFavourites();
-    }
-  }
-
-  Future<void> addToFavourites() async {
-    if (!isFavourite) {
-      await favourites.add({this});
-    }
-  }
-
-  Future<void> removeFromFavourites() async {
-    if (isFavourite) {
-      await favourites.removeEntries({this});
-    }
-  }
-
-  // multipage
-
-  static final _burstFilenamePattern = RegExp(r'^(\d{8}_\d{6})_(\d+)$');
-
-  bool get isMultiPage => (_catalogMetadata?.isMultiPage ?? false) || isBurst;
-
-  bool get isBurst => burstEntries?.isNotEmpty == true;
-
-  // for backward compatibility
-  bool get _isMotionPhotoLegacy => isMultiPage && !isBurst && mimeType == MimeTypes.jpeg;
-
-  bool get isMotionPhoto => (_catalogMetadata?.isMotionPhoto ?? false) || _isMotionPhotoLegacy;
-
-  String? get burstKey {
-    if (filenameWithoutExtension != null) {
-      final match = _burstFilenamePattern.firstMatch(filenameWithoutExtension!);
-      if (match != null) {
-        return '$directory/${match.group(1)}';
-      }
-    }
-    return null;
-  }
-
-  Future<MultiPageInfo?> getMultiPageInfo() async {
-    if (isBurst) {
-      return MultiPageInfo(
-        mainEntry: this,
-        pages: burstEntries!
-            .mapIndexed((index, entry) => SinglePageInfo(
-                  index: index,
-                  pageId: entry.id,
-                  isDefault: index == 0,
-                  uri: entry.uri,
-                  mimeType: entry.mimeType,
-                  width: entry.width,
-                  height: entry.height,
-                  rotationDegrees: entry.rotationDegrees,
-                  durationMillis: entry.durationMillis,
-                ))
-            .toList(),
-      );
-    } else {
-      return await metadataFetchService.getMultiPageInfo(this);
-    }
-  }
-
-  // sort
-
-  // compare by:
-  // 1) title ascending
-  // 2) extension ascending
-  static int compareByName(AvesEntry a, AvesEntry b) {
-    final c = compareAsciiUpperCaseNatural(a.bestTitle ?? '', b.bestTitle ?? '');
-    return c != 0 ? c : compareAsciiUpperCase(a.extension ?? '', b.extension ?? '');
-  }
-
-  // compare by:
-  // 1) date descending
-  // 2) name descending
-  static int compareByDate(AvesEntry a, AvesEntry b) {
-    var c = (b.bestDate ?? epoch).compareTo(a.bestDate ?? epoch);
-    if (c != 0) return c;
-    return compareByName(b, a);
-  }
-
-  // compare by:
-  // 1) rating descending
-  // 2) date descending
-  static int compareByRating(AvesEntry a, AvesEntry b) {
-    final c = b.rating.compareTo(a.rating);
-    return c != 0 ? c : compareByDate(a, b);
-  }
-
-  // compare by:
-  // 1) size descending
-  // 2) date descending
-  static int compareBySize(AvesEntry a, AvesEntry b) {
-    final c = (b.sizeBytes ?? 0).compareTo(a.sizeBytes ?? 0);
-    return c != 0 ? c : compareByDate(a, b);
   }
 }
