@@ -1,5 +1,4 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/grid/overlay.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';

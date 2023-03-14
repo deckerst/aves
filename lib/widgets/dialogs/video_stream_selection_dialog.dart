@@ -1,4 +1,3 @@
-import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/theme/icons.dart';

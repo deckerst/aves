@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/keys.dart';
