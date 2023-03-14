@@ -29,6 +29,8 @@ dependencies:
     path: plugins/aves_magnifier
   aves_map:
     path: plugins/aves_map
+  aves_model:
+    path: plugins/aves_model
   aves_report:
     path: plugins/aves_report
   aves_report_platform:
@@ -37,6 +39,8 @@ dependencies:
     path: plugins/aves_services
   aves_services_platform:
     path: plugins/aves_services_google
+  aves_video:
+    path: plugins/aves_video
   aves_ui:
     path: plugins/aves_ui
   charts_flutter:

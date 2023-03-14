@@ -1,5 +1,6 @@
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/metadata_edition.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/tag.dart';

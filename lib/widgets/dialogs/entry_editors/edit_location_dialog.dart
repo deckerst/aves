@@ -1,5 +1,6 @@
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/location.dart';
+import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/location_edit_action.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';

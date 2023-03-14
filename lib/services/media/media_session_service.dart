@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ abstract class MediaSessionService {
   Stream<MediaCommandEvent> get mediaCommands;
 
   Future<void> update({
+    required AvesEntry entry,
     required AvesVideoController controller,
     required bool canSkipToNext,
     required bool canSkipToPrevious,
@@ -43,11 +45,11 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
 
   @override
   Future<void> update({
+    required AvesEntry entry,
     required AvesVideoController controller,
     required bool canSkipToNext,
     required bool canSkipToPrevious,
   }) async {
-    final entry = controller.entry;
     try {
       await _platformObject.invokeMethod('update', <String, dynamic>{
         'uri': entry.uri,

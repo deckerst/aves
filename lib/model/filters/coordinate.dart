@@ -1,4 +1,5 @@
 import 'package:aves/l10n/l10n.dart';
+import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/enums/enums.dart';

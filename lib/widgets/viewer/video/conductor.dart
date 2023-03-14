@@ -1,11 +1,13 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
+import 'package:aves/widgets/viewer/video/db_playback_state_handler.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:collection/collection.dart';
 
@@ -13,6 +15,7 @@ class VideoConductor {
   final CollectionLens? _collection;
   final List<AvesVideoController> _controllers = [];
   final List<StreamSubscription> _subscriptions = [];
+  final PlaybackStateHandler playbackStateHandler = DatabasePlaybackStateHandler();
 
   static const _defaultMaxControllerCount = 3;
 
@@ -34,8 +37,8 @@ class VideoConductor {
     if (controller != null) {
       _controllers.remove(controller);
     } else {
-      controller = IjkPlayerAvesVideoController(entry, persistPlayback: true);
-      _subscriptions.add(controller.statusStream.listen((event) => _onControllerStatusChanged(controller!, event)));
+      controller = IjkPlayerAvesVideoController(entry, playbackStateHandler: playbackStateHandler);
+      _subscriptions.add(controller.statusStream.listen((event) => _onControllerStatusChanged(entry, controller!, event)));
     }
     _controllers.insert(0, controller);
     while (_controllers.length > (maxControllerCount ?? _defaultMaxControllerCount)) {
@@ -50,11 +53,11 @@ class VideoConductor {
     return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
 
-  Future<void> _onControllerStatusChanged(AvesVideoController controller, VideoStatus status) async {
+  Future<void> _onControllerStatusChanged(AvesEntry entry, AvesVideoController controller, VideoStatus status) async {
     bool canSkipToNext = false, canSkipToPrevious = false;
     final entries = _collection?.sortedEntries;
     if (entries != null) {
-      final currentIndex = entries.indexOf(controller.entry);
+      final currentIndex = entries.indexOf(entry);
       if (currentIndex != -1) {
         bool isVideo(AvesEntry entry) => entry.isVideo;
         canSkipToPrevious = entries.take(currentIndex).lastWhereOrNull(isVideo) != null;
@@ -63,6 +66,7 @@ class VideoConductor {
     }
 
     await mediaSessionService.update(
+      entry: entry,
       controller: controller,
       canSkipToNext: canSkipToNext,
       canSkipToPrevious: canSkipToPrevious,

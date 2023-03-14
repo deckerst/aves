@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/ref/geotiff.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves_map/aves_map.dart';

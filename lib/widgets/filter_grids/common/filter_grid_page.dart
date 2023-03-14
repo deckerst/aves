@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
@@ -12,8 +13,8 @@ import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';

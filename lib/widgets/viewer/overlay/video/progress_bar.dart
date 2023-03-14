@@ -7,7 +7,7 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

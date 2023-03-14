@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/video/channel_layouts.dart';
 import 'package:aves/model/video/codecs.dart';

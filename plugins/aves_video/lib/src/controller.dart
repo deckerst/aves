@@ -1,84 +1,33 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/video_playback.dart';
-import 'package:aves/services/common/services.dart';
-import 'package:aves/theme/format.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 abstract class AvesVideoController {
-  final AvesEntry _entry;
-  final bool persistPlayback;
+  final AvesEntryBase _entry;
+  final PlaybackStateHandler playbackStateHandler;
 
-  AvesEntry get entry => _entry;
+  AvesEntryBase get entry => _entry;
 
-  static const resumeTimeSaveMinProgress = .05;
-  static const resumeTimeSaveMaxProgress = .95;
   static const resumeTimeSaveMinDuration = Duration(minutes: 2);
 
-  AvesVideoController(AvesEntry entry, {required this.persistPlayback}) : _entry = entry {
+  AvesVideoController(AvesEntryBase entry, {required this.playbackStateHandler}) : _entry = entry {
     entry.visualChangeNotifier.addListener(onVisualChanged);
   }
 
   @mustCallSuper
   Future<void> dispose() async {
-    entry.visualChangeNotifier.removeListener(onVisualChanged);
+    _entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }
 
   Future<void> _savePlaybackState() async {
-    final id = entry.id;
     if (!isReady || duration < resumeTimeSaveMinDuration.inMilliseconds) return;
-
-    if (persistPlayback) {
-      final _progress = progress;
-      if (resumeTimeSaveMinProgress < _progress && _progress < resumeTimeSaveMaxProgress) {
-        await metadataDb.addVideoPlayback({
-          VideoPlaybackRow(
-            entryId: id,
-            resumeTimeMillis: currentPosition,
-          )
-        });
-      } else {
-        await metadataDb.removeVideoPlayback({id});
-      }
-    }
+    await playbackStateHandler.saveResumeTime(entryId: _entry.id, position: currentPosition, progress: progress);
   }
 
-  Future<int?> getResumeTime(BuildContext context) async {
-    if (!persistPlayback) return null;
-
-    final id = entry.id;
-    final playback = await metadataDb.loadVideoPlayback(id);
-    final resumeTime = playback?.resumeTimeMillis ?? 0;
-    if (resumeTime == 0) return null;
-
-    // clear on retrieval
-    await metadataDb.removeVideoPlayback({id});
-
-    final resume = await showDialog<bool>(
-      context: context,
-      builder: (context) => AvesDialog(
-        content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(false),
-            child: Text(context.l10n.videoStartOverButtonLabel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(context.l10n.videoResumeButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
-    );
-    if (resume == null || !resume) return 0;
-    return resumeTime;
-  }
+  Future<int?> getResumeTime(BuildContext context) => playbackStateHandler.getResumeTime(entryId: _entry.id, context: context);
 
   void onVisualChanged();
 
@@ -178,4 +127,10 @@ class StreamSummary {
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{type: type, index: $index, codecName: $codecName, language: $language, title: $title, width: $width, height: $height}';
+}
+
+abstract class PlaybackStateHandler {
+  Future<int?> getResumeTime({required int entryId, required BuildContext context});
+
+  Future<void> saveResumeTime({required int entryId, required int position, required double progress});
 }

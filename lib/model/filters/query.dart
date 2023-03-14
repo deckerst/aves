@@ -1,4 +1,5 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';

@@ -1,8 +1,9 @@
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/images.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

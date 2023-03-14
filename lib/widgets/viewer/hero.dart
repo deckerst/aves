@@ -1,4 +1,4 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 

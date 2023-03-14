@@ -4,7 +4,9 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
@@ -31,7 +33,7 @@ import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:collection/collection.dart';
@@ -373,7 +375,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 scale: _overlayVideoControlScale,
                 onActionSelected: (action) {
                   if (videoController != null) {
-                    _onVideoAction(context, videoController, action);
+                    _onVideoAction(
+                      context: context,
+                      entry: targetEntry,
+                      controller: videoController,
+                      action: action,
+                    );
                   }
                 },
                 onActionMenuOpened: () {
@@ -484,9 +491,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     } else if (notification is ToggleOverlayNotification) {
       _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
     } else if (notification is VideoActionNotification) {
-      final controller = notification.controller;
-      final action = notification.action;
-      _onVideoAction(context, controller, action);
+      _onVideoAction(
+        context: context,
+        entry: notification.entry,
+        controller: notification.controller,
+        action: notification.action,
+      );
     } else if (notification is TvShowLessInfoNotification) {
       if (_overlayVisible.value) {
         _overlayVisible.value = false;
@@ -513,8 +523,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     return true;
   }
 
-  Future<void> _onVideoAction(BuildContext context, AvesVideoController controller, EntryAction action) async {
-    await _videoActionDelegate.onActionSelected(context, controller, action);
+  Future<void> _onVideoAction({
+    required BuildContext context,
+    required AvesEntry entry,
+    required AvesVideoController controller,
+    required EntryAction action,
+  }) async {
+    await _videoActionDelegate.onActionSelected(context, entry, controller, action);
     if (action == EntryAction.videoToggleMute) {
       final override = controller.isMuted;
       videoMutedOverride = override;
@@ -747,8 +762,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   Future<bool> _enablePictureInPicture() async {
     final videoController = context.read<VideoConductor>().getPlayingController();
     if (videoController != null) {
-      final targetEntry = videoController.entry;
-      final entrySize = targetEntry.displaySize;
+      final entrySize = videoController.entry.displaySize;
       final aspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
 
       final mq = context.read<MediaQueryData>();

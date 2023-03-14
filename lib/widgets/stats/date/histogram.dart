@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -50,7 +51,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
   void initState() {
     super.initState();
 
-    final entriesByDateDescending = List.of(widget.entries)..sort(AvesEntry.compareByDate);
+    final entriesByDateDescending = List.of(widget.entries)..sort(AvesEntrySort.compareByDate);
     var lastDate = entriesByDateDescending.firstWhereOrNull((entry) => entry.bestDate != null)?.bestDate;
     var firstDate = entriesByDateDescending.lastWhereOrNull((entry) => entry.bestDate != null)?.bestDate;
 

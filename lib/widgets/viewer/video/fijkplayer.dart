@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/services/common/optional_event_channel.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
@@ -62,12 +62,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const captureFrameEnabled = true;
 
   IjkPlayerAvesVideoController(
-    AvesEntry entry, {
-    required bool persistPlayback,
-  }) : super(
-          entry,
-          persistPlayback: persistPlayback,
-        ) {
+    super.entry, {
+    required super.playbackStateHandler,
+  }) {
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
       (started) {
@@ -168,7 +165,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       _macroBlockCrop = Offset(s.width, s.height);
     }
 
-    final loopEnabled = settings.videoLoopMode.shouldLoop(entry);
+    final loopEnabled = settings.videoLoopMode.shouldLoop(entry.durationMillis);
 
     // `fastseek`: enable fast, but inaccurate seeks for some formats
     // in practice the flag seems ineffective, but harmless too

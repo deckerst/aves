@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/utils/constants.dart';

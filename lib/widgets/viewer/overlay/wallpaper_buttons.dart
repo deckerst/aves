@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/images.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/wallpaper_target.dart';
 import 'package:aves/services/wallpaper_service.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';

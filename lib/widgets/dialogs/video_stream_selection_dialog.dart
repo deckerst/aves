@@ -1,10 +1,11 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -117,7 +118,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
       final w = stream.width;
       final h = stream.height;
       if (w != null && h != null) {
-        return '$common • $w${AvesEntry.resolutionSeparator}$h';
+        return '$common • $w${ExtraAvesEntryProps.resolutionSeparator}$h';
       }
     }
     return common;
