@@ -19,7 +19,7 @@ import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/utils/change_notifier.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';

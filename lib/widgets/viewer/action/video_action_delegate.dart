@@ -144,10 +144,10 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   Future<void> _showStreamSelectionDialog(BuildContext context, AvesVideoController controller) async {
     final streams = controller.streams;
-    final currentSelectedStreams = await Future.wait(StreamType.values.map(controller.getSelectedStream));
+    final currentSelectedStreams = await Future.wait(MediaStreamType.values.map(controller.getSelectedStream));
     final currentSelectedIndices = currentSelectedStreams.whereNotNull().map((v) => v.index).toSet();
 
-    final userSelectedStreams = await showDialog<Map<StreamType, StreamSummary?>>(
+    final userSelectedStreams = await showDialog<Map<MediaStreamType, MediaStreamSummary?>>(
       context: context,
       builder: (context) => VideoStreamSelectionDialog(
         streams: Map.fromEntries(streams.map((stream) => MapEntry(stream, currentSelectedIndices.contains(stream.index)))),
@@ -156,7 +156,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     if (userSelectedStreams == null || userSelectedStreams.isEmpty) return;
 
-    await Future.forEach<MapEntry<StreamType, StreamSummary?>>(
+    await Future.forEach<MapEntry<MediaStreamType, MediaStreamSummary?>>(
       userSelectedStreams.entries,
       (kv) => controller.selectStream(kv.key, kv.value),
     );

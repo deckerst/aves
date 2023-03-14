@@ -1,0 +1,15 @@
+name: aves_utils
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: '>=2.19.4 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:

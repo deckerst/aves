@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_video/src/stream.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -86,11 +87,11 @@ abstract class AvesVideoController {
 
   set speed(double speed);
 
-  Future<void> selectStream(StreamType type, StreamSummary? selected);
+  Future<void> selectStream(MediaStreamType type, MediaStreamSummary? selected);
 
-  Future<StreamSummary?> getSelectedStream(StreamType type);
+  Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type);
 
-  List<StreamSummary> get streams;
+  List<MediaStreamSummary> get streams;
 
   Future<Uint8List> captureFrame();
 
@@ -106,27 +107,6 @@ enum VideoStatus {
   playing,
   completed,
   error,
-}
-
-enum StreamType { video, audio, text }
-
-class StreamSummary {
-  final StreamType type;
-  final int? index, width, height;
-  final String? codecName, language, title;
-
-  const StreamSummary({
-    required this.type,
-    required this.index,
-    required this.codecName,
-    required this.language,
-    required this.title,
-    required this.width,
-    required this.height,
-  });
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{type: type, index: $index, codecName: $codecName, language: $language, title: $title, width: $width, height: $height}';
 }
 
 abstract class PlaybackStateHandler {

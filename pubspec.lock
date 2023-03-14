@@ -105,6 +105,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  aves_utils:
+    dependency: "direct main"
+    description:
+      path: "plugins/aves_utils"
+      relative: true
+    source: path
+    version: "0.0.1"
   aves_video:
     dependency: "direct main"
     description:

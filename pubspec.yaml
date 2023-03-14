@@ -43,6 +43,8 @@ dependencies:
     path: plugins/aves_video
   aves_ui:
     path: plugins/aves_ui
+  aves_utils:
+    path: plugins/aves_utils
   charts_flutter:
     git:
       url: https://github.com/fzyzcjy/charts.git
