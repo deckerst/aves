@@ -11,7 +11,7 @@ import 'package:aves/model/source/trash.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/utils/change_notifier.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';

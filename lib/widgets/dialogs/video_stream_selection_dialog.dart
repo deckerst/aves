@@ -13,7 +13,7 @@ import 'aves_dialog.dart';
 class VideoStreamSelectionDialog extends StatefulWidget {
   static const routeName = '/dialog/select_video_stream';
 
-  final Map<StreamSummary, bool> streams;
+  final Map<MediaStreamSummary, bool> streams;
 
   const VideoStreamSelectionDialog({
     super.key,
@@ -25,23 +25,23 @@ class VideoStreamSelectionDialog extends StatefulWidget {
 }
 
 class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog> {
-  late List<StreamSummary?> _videoStreams, _audioStreams, _textStreams;
-  StreamSummary? _currentVideo, _currentAudio, _currentText;
+  late List<MediaStreamSummary?> _videoStreams, _audioStreams, _textStreams;
+  MediaStreamSummary? _currentVideo, _currentAudio, _currentText;
 
   @override
   void initState() {
     super.initState();
 
-    final byType = groupBy<StreamSummary, StreamType>(widget.streams.keys, (v) => v.type);
+    final byType = groupBy<MediaStreamSummary, MediaStreamType>(widget.streams.keys, (v) => v.type);
     // check width/height to exclude image streams (that are included among video streams)
-    _videoStreams = (byType[StreamType.video] ?? []).where((v) => v.width != null && v.height != null).toList();
-    _audioStreams = (byType[StreamType.audio] ?? []);
-    _textStreams = [null, ...byType[StreamType.text] ?? []];
+    _videoStreams = (byType[MediaStreamType.video] ?? []).where((v) => v.width != null && v.height != null).toList();
+    _audioStreams = (byType[MediaStreamType.audio] ?? []);
+    _textStreams = [null, ...byType[MediaStreamType.text] ?? []];
 
     final streamEntries = widget.streams.entries;
-    _currentVideo = streamEntries.firstWhereOrNull((kv) => kv.key.type == StreamType.video && kv.value)?.key;
-    _currentAudio = streamEntries.firstWhereOrNull((kv) => kv.key.type == StreamType.audio && kv.value)?.key;
-    _currentText = streamEntries.firstWhereOrNull((kv) => kv.key.type == StreamType.text && kv.value)?.key;
+    _currentVideo = streamEntries.firstWhereOrNull((kv) => kv.key.type == MediaStreamType.video && kv.value)?.key;
+    _currentAudio = streamEntries.firstWhereOrNull((kv) => kv.key.type == MediaStreamType.audio && kv.value)?.key;
+    _currentText = streamEntries.firstWhereOrNull((kv) => kv.key.type == MediaStreamType.text && kv.value)?.key;
   }
 
   @override
@@ -97,7 +97,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     return language?.native ?? value;
   }
 
-  String _commonStreamName(StreamSummary? stream) {
+  String _commonStreamName(MediaStreamSummary? stream) {
     if (stream == null) return context.l10n.videoStreamSelectionDialogOff;
     final title = stream.title;
     final language = stream.language;
@@ -111,9 +111,9 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     }
   }
 
-  String _streamName(StreamSummary? stream) {
+  String _streamName(MediaStreamSummary? stream) {
     final common = _commonStreamName(stream);
-    if (stream != null && stream.type == StreamType.video) {
+    if (stream != null && stream.type == MediaStreamType.video) {
       final w = stream.width;
       final h = stream.height;
       if (w != null && h != null) {
@@ -126,9 +126,9 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
   List<Widget> _buildSection({
     required IconData icon,
     required String title,
-    required List<StreamSummary?> streams,
-    required StreamSummary? current,
-    required ValueSetter<StreamSummary?> setter,
+    required List<MediaStreamSummary?> streams,
+    required MediaStreamSummary? current,
+    required ValueSetter<MediaStreamSummary?> setter,
   }) {
     return [
       Padding(
@@ -143,7 +143,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: TextDropdownButton<StreamSummary>(
+        child: TextDropdownButton<MediaStreamSummary>(
           values: streams.whereNotNull().toList(),
           valueText: _streamName,
           value: current,
@@ -156,8 +156,8 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
   }
 
   void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop({
-        StreamType.video: _currentVideo,
-        StreamType.audio: _currentAudio,
-        StreamType.text: _currentText,
+        MediaStreamType.video: _currentVideo,
+        MediaStreamType.audio: _currentAudio,
+        MediaStreamType.text: _currentText,
       });
 }

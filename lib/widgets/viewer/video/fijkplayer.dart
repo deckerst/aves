@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:aves/model/settings/enums/video_loop_mode.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/video/keys.dart';
-import 'package:aves/model/video/metadata.dart';
-import 'package:aves/services/common/optional_event_channel.dart';
-import 'package:aves/utils/change_notifier.dart';
+import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:fijkplayer/fijkplayer.dart';
@@ -23,7 +21,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final StreamController<double> _speedStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
-  final List<StreamSummary> _streams = [];
+  final List<MediaStreamSummary> _streams = [];
   Timer? _initialPlayTimer;
   double _speed = 1;
   double _volume = 1;
@@ -257,7 +255,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       if (type != null) {
         final width = stream[Keys.width] as int?;
         final height = stream[Keys.height] as int?;
-        _streams.add(StreamSummary(
+        _streams.add(MediaStreamSummary(
           type: type,
           index: stream[Keys.index],
           codecName: stream[Keys.codecName],
@@ -267,16 +265,16 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
           height: height,
         ));
         switch (type) {
-          case StreamType.video:
+          case MediaStreamType.video:
             // check width/height to exclude image streams (that are included among video streams)
             if (width != null && height != null) {
               videoStreamCount++;
             }
             break;
-          case StreamType.audio:
+          case MediaStreamType.audio:
             audioStreamCount++;
             break;
-          case StreamType.text:
+          case MediaStreamType.text:
             textStreamCount++;
             break;
         }
@@ -285,7 +283,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     canSelectStreamNotifier.value = videoStreamCount > 1 || audioStreamCount > 1 || textStreamCount > 0;
 
-    final selectedVideo = await getSelectedStream(StreamType.video);
+    final selectedVideo = await getSelectedStream(MediaStreamType.video);
     if (selectedVideo != null) {
       final streamIndex = selectedVideo.index;
       final streamInfo = allStreams.firstWhereOrNull((stream) => stream[Keys.index] == streamIndex);
@@ -435,7 +433,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   // 1) prevent video stream acceleration to catch up with audio
   // 2) apply timed text stream
   @override
-  Future<void> selectStream(StreamType type, StreamSummary? selected) async {
+  Future<void> selectStream(MediaStreamType type, MediaStreamSummary? selected) async {
     final current = await getSelectedStream(type);
     if (current != selected) {
       if (selected != null) {
@@ -446,7 +444,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       } else if (current != null) {
         await _instance.deselectTrack(current.index!);
       }
-      if (type == StreamType.text) {
+      if (type == MediaStreamType.text) {
         _timedTextStreamController.add(null);
       }
       await seekTo(currentPosition);
@@ -454,13 +452,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   @override
-  Future<StreamSummary?> getSelectedStream(StreamType type) async {
+  Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type) async {
     final currentIndex = await _instance.getSelectedTrack(type.code);
     return currentIndex != -1 ? _streams.firstWhereOrNull((v) => v.index == currentIndex) : null;
   }
 
   @override
-  List<StreamSummary> get streams => _streams;
+  List<MediaStreamSummary> get streams => _streams;
 
   @override
   Future<Uint8List> captureFrame() {
@@ -556,16 +554,16 @@ extension ExtraFijkPlayer on FijkPlayer {
   }
 }
 
-extension ExtraStreamType on StreamType {
-  static StreamType? fromTypeString(String? type) {
+extension ExtraStreamType on MediaStreamType {
+  static MediaStreamType? fromTypeString(String? type) {
     switch (type) {
-      case StreamTypes.video:
-        return StreamType.video;
-      case StreamTypes.audio:
-        return StreamType.audio;
-      case StreamTypes.subtitle:
-      case StreamTypes.timedText:
-        return StreamType.text;
+      case MediaStreamTypes.video:
+        return MediaStreamType.video;
+      case MediaStreamTypes.audio:
+        return MediaStreamType.audio;
+      case MediaStreamTypes.subtitle:
+      case MediaStreamTypes.timedText:
+        return MediaStreamType.text;
       default:
         return null;
     }
@@ -574,11 +572,11 @@ extension ExtraStreamType on StreamType {
   int get code {
     // codes from ijkplayer ITrackInfo.java
     switch (this) {
-      case StreamType.video:
+      case MediaStreamType.video:
         return 1;
-      case StreamType.audio:
+      case MediaStreamType.audio:
         return 2;
-      case StreamType.text:
+      case MediaStreamType.text:
         // TIMEDTEXT = 3, SUBTITLE = 4
         return 3;
       default:

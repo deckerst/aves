@@ -6,7 +6,6 @@ import 'package:aves/model/video/metadata.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 
-// TODO TLAD [split] need props
 extension ExtraAvesEntryCatalog on AvesEntry {
   Future<void> catalog({required bool background, required bool force, required bool persist}) async {
     if (isCatalogued && !force) return;

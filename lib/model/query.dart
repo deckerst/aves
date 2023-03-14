@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/utils/change_notifier.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 
 class Query extends ChangeNotifier {

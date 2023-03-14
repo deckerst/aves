@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/change_notifier.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

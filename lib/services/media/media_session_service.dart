@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/services/common/optional_event_channel.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:equatable/equatable.dart';

@@ -4,7 +4,6 @@ import 'dart:collection';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -12,11 +11,11 @@ import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// TODO TLAD [split] need props/multipage
 extension ExtraAvesEntryInfo on AvesEntry {
   // directory names may contain the name of their parent directory (as prefix + '/')
   // directory names may contain an index (as suffix in '[]')
@@ -82,27 +81,27 @@ extension ExtraAvesEntryInfo on AvesEntry {
 
     if (mediaInfo.containsKey(Keys.streams)) {
       String getTypeText(Map stream) {
-        final type = stream[Keys.streamType] ?? StreamTypes.unknown;
+        final type = stream[Keys.streamType] ?? MediaStreamTypes.unknown;
         switch (type) {
-          case StreamTypes.attachment:
+          case MediaStreamTypes.attachment:
             return 'Attachment';
-          case StreamTypes.audio:
+          case MediaStreamTypes.audio:
             return 'Audio';
-          case StreamTypes.metadata:
+          case MediaStreamTypes.metadata:
             return 'Metadata';
-          case StreamTypes.subtitle:
-          case StreamTypes.timedText:
+          case MediaStreamTypes.subtitle:
+          case MediaStreamTypes.timedText:
             return 'Text';
-          case StreamTypes.video:
+          case MediaStreamTypes.video:
             return stream.containsKey(Keys.fpsDen) ? 'Video' : 'Image';
-          case StreamTypes.unknown:
+          case MediaStreamTypes.unknown:
           default:
             return 'Unknown';
         }
       }
 
       final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
-      final attachmentStreams = allStreams.where((stream) => stream[Keys.streamType] == StreamTypes.attachment).toList();
+      final attachmentStreams = allStreams.where((stream) => stream[Keys.streamType] == MediaStreamTypes.attachment).toList();
       final knownStreams = allStreams.whereNot(attachmentStreams.contains);
 
       // display known streams as separate directories (e.g. video, audio, subs)

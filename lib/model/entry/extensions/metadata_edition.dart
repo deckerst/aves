@@ -21,7 +21,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:xml/xml.dart';
 
-// TODO TLAD [split] need props/catalog
 extension ExtraAvesEntryMetadataEdition on AvesEntry {
   Future<Set<EntryDataType>> editDate(DateModifier userModifier) async {
     final dataTypes = <EntryDataType>{};

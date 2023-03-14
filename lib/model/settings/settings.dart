@@ -14,7 +14,7 @@ import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
-import 'package:aves/services/common/optional_event_channel.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/search/page.dart';
