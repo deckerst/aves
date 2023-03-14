@@ -1,6 +1,5 @@
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:flutter/material.dart';
-
-import 'enums.dart';
 
 extension ExtraEntryBackground on EntryBackground {
   bool get isColor {

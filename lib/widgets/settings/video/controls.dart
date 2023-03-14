@@ -1,5 +1,5 @@
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/video_controls.dart';
+import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

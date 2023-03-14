@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/model/device.dart';
-import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/theme_brightness.dart';
+import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
