@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- Viewer: playing video from app content provider
+
 ## <a id="v1.8.3"></a>[v1.8.3] - 2023-03-13
 
 ### Added
