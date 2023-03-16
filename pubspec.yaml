@@ -163,6 +163,10 @@ flutter:
 #  `OutputBuffer` in `/services/common/output_buffer.dart`
 #  adapts from Flutter v3.3.3 `_OutputBuffer` in `/foundation/consolidate_response.dart`
 #
+#  `TvLicensePage` in `/widgets/about/tv_license_page.dart`
+#  adapts from Flutter v3.7.7 `_LicenseData` in `/material/about.dart`
+#  and `_PackageLicensePage` in `/material/about.dart`
+#
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
 #  adapts from Flutter v3.3.3 `SnackBar` in `/material/snack_bar.dart`
 #
