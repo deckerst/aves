@@ -4,6 +4,7 @@ import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/dependencies.dart';
 import 'package:aves/widgets/about/title.dart';
+import 'package:aves/widgets/about/tv_license_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -87,7 +88,7 @@ class _LicensesState extends State<Licenses> {
                         // as of Flutter v1.22.4, `cardColor` is used as a background color by `LicensePage`
                         cardColor: Theme.of(context).scaffoldBackgroundColor,
                       ),
-                      child: const LicensePage(),
+                      child: settings.useTvLayout ? const TvLicensePage() : const LicensePage(),
                     ),
                   ),
                 ),

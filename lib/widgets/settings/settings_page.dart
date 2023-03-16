@@ -97,8 +97,15 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
                         primary: false,
                       ),
                     ),
-                    const Expanded(
-                      child: _TvRail(),
+                    Expanded(
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeLeft: true,
+                        removeTop: true,
+                        removeRight: true,
+                        removeBottom: true,
+                        child: const _TvRail(),
+                      ),
                     ),
                   ],
                 ),

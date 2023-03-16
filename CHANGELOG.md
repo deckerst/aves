@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- TV: improved support for Licenses
+
 ### Fixed
 
 - Viewer: playing video from app content provider
