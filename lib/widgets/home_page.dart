@@ -228,11 +228,12 @@ class _HomePageState extends State<HomePage> {
               canAnalyze: false,
             );
           }
+        } else {
+          await _initViewerEssentials();
         }
         break;
       case AppMode.setWallpaper:
-        // for video playback storage
-        await metadataDb.init();
+        await _initViewerEssentials();
         break;
       case AppMode.pickMediaInternal:
       case AppMode.pickFilterInternal:
@@ -246,6 +247,11 @@ class _HomePageState extends State<HomePage> {
       await _getRedirectRoute(appMode),
       (route) => false,
     ));
+  }
+
+  Future<void> _initViewerEssentials() async {
+    // for video playback storage
+    await metadataDb.init();
   }
 
   bool _isViewerSourceable(AvesEntry? viewerEntry) {
