@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - Viewer: playing video from app content provider
+- Search: using the query bar yields a black screen
 
 ## <a id="v1.8.3"></a>[v1.8.3] - 2023-03-13
 
