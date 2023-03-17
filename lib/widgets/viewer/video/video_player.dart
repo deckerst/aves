@@ -1,8 +1,8 @@
 // import 'dart:async';
 //
 // import 'package:aves/model/entry.dart';
-// import 'package:aves/utils/change_notifier.dart';
-// import 'package:aves/widgets/viewer/video/controller.dart';
+// import 'package:aves_utils/aves_utils.dart';
+// import 'package:aves_video/aves_video.dart';
 // import 'package:flutter/src/foundation/change_notifier.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 // import 'package:video_player/video_player.dart';

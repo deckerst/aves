@@ -272,14 +272,20 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
+  var _selectingFromQuery = false;
+
   @override
   Widget buildResults(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // `buildResults` is called in the build phase,
-      // so we post the call that will filter the collection
-      // and possibly trigger a rebuild here
-      _select(context, _buildQueryFilter(true));
-    });
+    // guard against multiple build calls
+    if (!_selectingFromQuery) {
+      _selectingFromQuery = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // `buildResults` is called in the build phase,
+        // so we post the call that will filter the collection
+        // and possibly trigger a rebuild here
+        _select(context, _buildQueryFilter(true));
+      });
+    }
     return const SizedBox();
   }
 

@@ -6,8 +6,12 @@ import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/actions/share_actions.dart';
 import 'package:aves/model/device.dart';
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/favourites.dart';
+import 'package:aves/model/entry/extensions/location.dart';
+import 'package:aves/model/entry/extensions/metadata_edition.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -243,7 +247,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.openVideo:
         final controller = context.read<VideoConductor>().getController(targetEntry);
         if (controller != null) {
-          VideoActionNotification(controller: controller, action: action).dispatch(context);
+          VideoActionNotification(
+            controller: controller,
+            entry: targetEntry,
+            action: action,
+          ).dispatch(context);
         }
         break;
       case EntryAction.edit:

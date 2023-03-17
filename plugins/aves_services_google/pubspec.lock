@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: async
-      sha256: bfe67ef28df125b7dddcea62755991f807aa39a2492a23e1550161692950bbe0
+      sha256: "947bfcf187f74dbc5e146c9eb9c0f10c9f8b30743e341481c1e2ed3ecc18c20c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.0"
+    version: "2.11.0"
   aves_map:
     dependency: "direct main"
     description:
@@ -406,5 +406,5 @@ packages:
     source: hosted
     version: "2.0.0"
 sdks:
-  dart: ">=2.19.0 <3.0.0"
+  dart: ">=2.19.4 <3.0.0"
   flutter: ">=3.3.0"

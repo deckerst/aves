@@ -1,5 +1,5 @@
 import 'package:aves/model/actions/map_actions.dart';
-import 'package:aves/model/settings/enums/map_style.dart';
+import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

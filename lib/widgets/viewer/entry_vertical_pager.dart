@@ -4,7 +4,10 @@ import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/catalog.dart';
+import 'package:aves/model/entry/extensions/location.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
@@ -240,7 +243,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           ShowInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => ShowInfoPageNotification().dispatch(context)),
           TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
           TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
-          PlayPauseIntent: CallbackAction<PlayPauseIntent>(onInvoke: (intent) => _onPlayPauseIntent(intent, entry)),
+          PlayPauseIntent: CallbackAction<PlayPauseIntent>(onInvoke: _onPlayPauseIntent),
           EntryActionIntent: CallbackAction<EntryActionIntent>(onInvoke: (intent) => _onEntryActionIntent(intent.action)),
           ActivateIntent: CallbackAction<Intent>(onInvoke: (intent) {
             if (useTvLayout) {
@@ -249,7 +252,11 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
                 // address `TV-PC` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
                 final controller = context.read<VideoConductor>().getController(_entry);
                 if (controller != null) {
-                  VideoActionNotification(controller: controller, action: EntryAction.videoTogglePlay).dispatch(context);
+                  VideoActionNotification(
+                    controller: controller,
+                    entry: _entry,
+                    action: EntryAction.videoTogglePlay,
+                  ).dispatch(context);
                 }
               } else {
                 const ToggleOverlayNotification().dispatch(context);
@@ -357,7 +364,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     }
   }
 
-  void _onPlayPauseIntent(PlayPauseIntent intent, entry) {
+  void _onPlayPauseIntent(PlayPauseIntent intent) {
     // address `TV-PP` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
     final _entry = entry;
     if (_entry != null && _entry.isVideo) {
@@ -376,7 +383,11 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
             break;
         }
         if (toggle) {
-          VideoActionNotification(controller: controller, action: EntryAction.videoTogglePlay).dispatch(context);
+          VideoActionNotification(
+            controller: controller,
+            entry: _entry,
+            action: EntryAction.videoTogglePlay,
+          ).dispatch(context);
         }
       }
     }

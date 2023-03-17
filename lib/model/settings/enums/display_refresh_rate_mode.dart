@@ -1,23 +1,10 @@
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 
-import 'enums.dart';
-
 extension ExtraDisplayRefreshRateMode on DisplayRefreshRateMode {
-  String getName(BuildContext context) {
-    switch (this) {
-      case DisplayRefreshRateMode.auto:
-        return context.l10n.settingsSystemDefault;
-      case DisplayRefreshRateMode.highest:
-        return context.l10n.displayRefreshRatePreferHighest;
-      case DisplayRefreshRateMode.lowest:
-        return context.l10n.displayRefreshRatePreferLowest;
-    }
-  }
-
   Future<void> apply() async {
     if (!await windowService.isActivity()) return;
 

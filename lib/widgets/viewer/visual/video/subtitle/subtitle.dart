@@ -1,8 +1,10 @@
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/subtitle_position.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/text/background_painter.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/ass_parser.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/span.dart';
@@ -14,6 +16,7 @@ import 'package:latlong2/latlong.dart' as angles;
 import 'package:provider/provider.dart';
 
 class VideoSubtitles extends StatelessWidget {
+  final AvesEntry entry;
   final AvesVideoController controller;
   final ValueNotifier<ViewState> viewStateNotifier;
   final bool debugMode;
@@ -22,6 +25,7 @@ class VideoSubtitles extends StatelessWidget {
 
   const VideoSubtitles({
     super.key,
+    required this.entry,
     required this.controller,
     required this.viewStateNotifier,
     this.debugMode = false,
@@ -29,7 +33,7 @@ class VideoSubtitles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final videoDisplaySize = controller.entry.videoDisplaySize(controller.sarNotifier.value);
+    final videoDisplaySize = entry.videoDisplaySize(controller.sarNotifier.value);
     return IgnorePointer(
       child: Consumer<Settings>(
         builder: (context, settings, child) {

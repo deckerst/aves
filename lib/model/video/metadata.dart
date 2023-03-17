@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/video/channel_layouts.dart';
 import 'package:aves/model/video/codecs.dart';
-import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/profiles/aac.dart';
 import 'package:aves/model/video/profiles/h264.dart';
 import 'package:aves/model/video/profiles/hevc.dart';
@@ -17,6 +16,7 @@ import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
@@ -230,7 +230,7 @@ class VideoMetadataFormatter {
               }
               break;
             case Keys.codecPixelFormat:
-              if (streamType == StreamTypes.video) {
+              if (streamType == MediaStreamTypes.video) {
                 // this is just a short name used by FFmpeg
                 // user-friendly descriptions for related enums are defined in libavutil/pixfmt.h
                 save('Pixel Format', (value as String).toUpperCase());
@@ -424,14 +424,4 @@ class VideoMetadataFormatter {
     if (size < divider * divider) return '${(size / divider).toStringAsFixed(round)} K$unit';
     return '${(size / divider / divider).toStringAsFixed(round)} M$unit';
   }
-}
-
-class StreamTypes {
-  static const attachment = 'attachment';
-  static const audio = 'audio';
-  static const metadata = 'metadata';
-  static const subtitle = 'subtitle';
-  static const timedText = 'timedtext';
-  static const unknown = 'unknown';
-  static const video = 'video';
 }

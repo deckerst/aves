@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/unit_system.dart';
+import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';

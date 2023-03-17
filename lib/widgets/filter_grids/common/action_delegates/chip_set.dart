@@ -1,7 +1,7 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/query.dart';

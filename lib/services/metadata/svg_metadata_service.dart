@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:collection/collection.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/foundation.dart';

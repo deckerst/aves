@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';

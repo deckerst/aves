@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/app_flavor.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -80,7 +81,7 @@ Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
       entries.shuffle();
       break;
     case WidgetDisplayedItem.mostRecent:
-      entries.sort(AvesEntry.compareByDate);
+      entries.sort(AvesEntrySort.compareByDate);
       break;
   }
   final entry = entries.firstOrNull;

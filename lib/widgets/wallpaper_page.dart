@@ -1,5 +1,7 @@
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
@@ -17,9 +19,9 @@ import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -132,9 +134,12 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
         if (notification is ToggleOverlayNotification) {
           _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
         } else if (notification is VideoActionNotification) {
-          final controller = notification.controller;
-          final action = notification.action;
-          _onVideoAction(context, controller, action);
+          _onVideoAction(
+            context: context,
+            entry: notification.entry,
+            controller: notification.controller,
+            action: notification.action,
+          );
         }
         return true;
       },
@@ -176,7 +181,12 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
             entry: targetEntry,
             controller: videoController,
             scale: _overlayVideoControlScale,
-            onActionSelected: (action) => _onVideoAction(context, videoController, action),
+            onActionSelected: (action) => _onVideoAction(
+              context: context,
+              entry: targetEntry,
+              controller: videoController,
+              action: action,
+            ),
             onActionMenuOpened: () {
               // if the menu is opened while overlay is hiding,
               // the popup menu button is disposed and menu items are ineffective,
@@ -236,9 +246,14 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
     );
   }
 
-  void _onVideoAction(BuildContext context, AvesVideoController? videoController, EntryAction action) {
-    if (videoController != null) {
-      _videoActionDelegate.onActionSelected(context, videoController, action);
+  void _onVideoAction({
+    required BuildContext context,
+    required AvesEntry entry,
+    required AvesVideoController? controller,
+    required EntryAction action,
+  }) {
+    if (controller != null) {
+      _videoActionDelegate.onActionSelected(context, entry, controller, action);
     }
   }
 

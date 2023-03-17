@@ -1,4 +1,5 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/length_unit.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -148,7 +149,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text(AvesEntry.resolutionSeparator),
+              const Text(ExtraAvesEntryProps.resolutionSeparator),
               const SizedBox(width: 8),
               Expanded(
                 child: TextField(

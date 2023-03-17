@@ -1,4 +1,4 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:collection/collection.dart';
 

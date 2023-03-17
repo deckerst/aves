@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/known_extent_scroll_physics.dart';
 import 'package:aves/widgets/common/grid/theme.dart';

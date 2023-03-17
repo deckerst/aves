@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: cb3a948a1eebbf8efd987c43f95418269930e912a88bc7b6a5a7658423133635
+      sha256: "330d7fcbb72624f5b6d374af8b059b0ef4ba96ba5b8987f874964a1287eb617d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.17"
+    version: "1.0.18"
   async:
     dependency: transitive
     description:
@@ -68,10 +68,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_core
-      sha256: "1c121a478af23755b0b93fd4aa70d3bd32a587dd51ef0a3979091ac0d2317d32"
+      sha256: "75f747cafd7cbd6c00b908e3a7aa59fc31593d46ba8165d9ee8a79e69464a394"
       url: "https://pub.dev"
     source: hosted
-    version: "2.7.1"
+    version: "2.8.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -92,18 +92,18 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_crashlytics
-      sha256: d4190479611f42a34a04630d9188f30b592b65013d0f19c408d5249998429864
+      sha256: "5410b6ab2009fc6c181ca82e16525fdcb324c5851933bfbb49246543b1005ebc"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.16"
+    version: "3.0.17"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
-      sha256: "667955b348b7729ed3d987956021a97fcdd05957df7c27b2d855e6b3f70e9521"
+      sha256: bf3d3791c51a8448413b5ebd8388fa7db239a3e165db6bbd8ab58ef0e8f61906
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.16"
+    version: "3.3.17"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -245,5 +245,5 @@ packages:
     source: hosted
     version: "2.1.4"
 sdks:
-  dart: ">=2.19.0 <3.0.0"
+  dart: ">=2.19.4 <3.0.0"
   flutter: ">=1.20.0"

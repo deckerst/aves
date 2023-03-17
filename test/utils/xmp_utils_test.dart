@@ -1,4 +1,4 @@
-import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:test/test.dart';
 import 'package:xml/xml.dart';

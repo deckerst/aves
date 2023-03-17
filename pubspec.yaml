@@ -7,14 +7,14 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
-version: 1.8.3+94
+version: 1.8.4+95
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
   flutter: 3.7.7
-  sdk: ">=2.19.0 <3.0.0"
+  sdk: ">=2.19.4 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
 # dependency GitHub repos should be referenced via `https://`, not `git://`
@@ -29,6 +29,8 @@ dependencies:
     path: plugins/aves_magnifier
   aves_map:
     path: plugins/aves_map
+  aves_model:
+    path: plugins/aves_model
   aves_report:
     path: plugins/aves_report
   aves_report_platform:
@@ -37,8 +39,12 @@ dependencies:
     path: plugins/aves_services
   aves_services_platform:
     path: plugins/aves_services_google
+  aves_video:
+    path: plugins/aves_video
   aves_ui:
     path: plugins/aves_ui
+  aves_utils:
+    path: plugins/aves_utils
   charts_flutter:
     git:
       url: https://github.com/fzyzcjy/charts.git
@@ -156,6 +162,10 @@ flutter:
 #
 #  `OutputBuffer` in `/services/common/output_buffer.dart`
 #  adapts from Flutter v3.3.3 `_OutputBuffer` in `/foundation/consolidate_response.dart`
+#
+#  `TvLicensePage` in `/widgets/about/tv_license_page.dart`
+#  adapts from Flutter v3.7.7 `_LicenseData` in `/material/about.dart`
+#  and `_PackageLicensePage` in `/material/about.dart`
 #
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
 #  adapts from Flutter v3.3.3 `SnackBar` in `/material/snack_bar.dart`

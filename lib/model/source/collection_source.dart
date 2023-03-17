@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/catalog.dart';
+import 'package:aves/model/entry/extensions/location.dart';
+import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -105,7 +108,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   @override
   List<AvesEntry> get sortedEntriesByDate {
-    _sortedEntriesByDate ??= List.unmodifiable(visibleEntries.toList()..sort(AvesEntry.compareByDate));
+    _sortedEntriesByDate ??= List.unmodifiable(visibleEntries.toList()..sort(AvesEntrySort.compareByDate));
     return _sortedEntriesByDate!;
   }
 

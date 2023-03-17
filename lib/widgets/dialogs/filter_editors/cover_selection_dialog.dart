@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/image_providers/app_icon_image_provider.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
