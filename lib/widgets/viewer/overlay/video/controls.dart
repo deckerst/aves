@@ -1,13 +1,15 @@
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/action_controls/togglers/play.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class VideoControlRow extends StatelessWidget {
+  final AvesEntry entry;
   final AvesVideoController? controller;
   final Animation<double> scale;
   final Function(EntryAction value) onActionSelected;
@@ -17,6 +19,7 @@ class VideoControlRow extends StatelessWidget {
 
   const VideoControlRow({
     super.key,
+    required this.entry,
     required this.controller,
     required this.scale,
     required this.onActionSelected,
@@ -63,10 +66,9 @@ class VideoControlRow extends StatelessWidget {
               ],
             );
           case VideoControls.playOutside:
-            final trashed = controller?.entry.trashed ?? false;
             return Padding(
               padding: const EdgeInsetsDirectional.only(start: padding),
-              child: _buildIconButton(context, EntryAction.openVideo, enabled: !trashed),
+              child: _buildIconButton(context, EntryAction.openVideo, enabled: !entry.trashed),
             );
           case VideoControls.none:
             return const SizedBox();

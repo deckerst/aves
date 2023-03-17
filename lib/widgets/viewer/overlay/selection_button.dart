@@ -1,4 +1,4 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';

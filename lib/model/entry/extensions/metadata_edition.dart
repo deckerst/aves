@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/catalog.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/metadata/enums/date_field_source.dart';
 import 'package:aves/model/metadata/enums/enums.dart';

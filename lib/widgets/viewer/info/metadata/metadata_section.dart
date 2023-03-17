@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_info.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/info.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';

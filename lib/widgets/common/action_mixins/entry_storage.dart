@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';

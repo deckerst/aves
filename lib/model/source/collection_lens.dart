@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -13,16 +15,15 @@ import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/collection_utils.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-
-import 'enums/enums.dart';
 
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
@@ -190,7 +191,7 @@ class CollectionLens with ChangeNotifier {
     final byBurstKey = groupBy<AvesEntry, String?>(_filteredSortedEntries, (entry) => entry.burstKey).whereNotNullKey();
     byBurstKey.forEach((burstKey, entries) {
       if (entries.length > 1) {
-        entries.sort(AvesEntry.compareByName);
+        entries.sort(AvesEntrySort.compareByName);
         final mainEntry = entries.first;
         final burstEntry = mainEntry.copyWith(burstEntries: entries);
 
@@ -209,16 +210,16 @@ class CollectionLens with ChangeNotifier {
 
     switch (sortFactor) {
       case EntrySortFactor.date:
-        _filteredSortedEntries.sort(AvesEntry.compareByDate);
+        _filteredSortedEntries.sort(AvesEntrySort.compareByDate);
         break;
       case EntrySortFactor.name:
-        _filteredSortedEntries.sort(AvesEntry.compareByName);
+        _filteredSortedEntries.sort(AvesEntrySort.compareByName);
         break;
       case EntrySortFactor.rating:
-        _filteredSortedEntries.sort(AvesEntry.compareByRating);
+        _filteredSortedEntries.sort(AvesEntrySort.compareByRating);
         break;
       case EntrySortFactor.size:
-        _filteredSortedEntries.sort(AvesEntry.compareBySize);
+        _filteredSortedEntries.sort(AvesEntrySort.compareBySize);
         break;
     }
     if (sortReverse) {

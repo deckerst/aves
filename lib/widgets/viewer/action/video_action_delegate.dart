@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/location.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
@@ -18,7 +21,7 @@ import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
 import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
 import 'package:aves/widgets/settings/video/video_settings_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,14 +38,14 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     stopOverlayHidingTimer();
   }
 
-  Future<void> onActionSelected(BuildContext context, AvesVideoController controller, EntryAction action) async {
+  Future<void> onActionSelected(BuildContext context, AvesEntry entry, AvesVideoController controller, EntryAction action) async {
     // make sure overlay is not disappearing when selecting an action
     stopOverlayHidingTimer();
     const ToggleOverlayNotification(visible: true).dispatch(context);
 
     switch (action) {
       case EntryAction.videoCaptureFrame:
-        await _captureFrame(context, controller);
+        await _captureFrame(context, entry, controller);
         break;
       case EntryAction.videoToggleMute:
         await controller.mute(!controller.isMuted);
@@ -66,7 +69,6 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await controller.seekTo(controller.currentPosition + 10000);
         break;
       case EntryAction.openVideo:
-        final entry = controller.entry;
         await androidAppService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
@@ -76,7 +78,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  Future<void> _captureFrame(BuildContext context, AvesVideoController controller) async {
+  Future<void> _captureFrame(BuildContext context, AvesEntry entry, AvesVideoController controller) async {
     final positionMillis = controller.currentPosition;
     final bytes = await controller.captureFrame();
 
@@ -85,7 +87,6 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkFreeSpace(context, bytes.length, destinationAlbum)) return;
 
-    final entry = controller.entry;
     final rotationDegrees = entry.rotationDegrees;
     final dateTimeMillis = entry.catalogMetadata?.dateMillis;
     final latLng = entry.latLng;
@@ -143,10 +144,10 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   Future<void> _showStreamSelectionDialog(BuildContext context, AvesVideoController controller) async {
     final streams = controller.streams;
-    final currentSelectedStreams = await Future.wait(StreamType.values.map(controller.getSelectedStream));
+    final currentSelectedStreams = await Future.wait(MediaStreamType.values.map(controller.getSelectedStream));
     final currentSelectedIndices = currentSelectedStreams.whereNotNull().map((v) => v.index).toSet();
 
-    final userSelectedStreams = await showDialog<Map<StreamType, StreamSummary?>>(
+    final userSelectedStreams = await showDialog<Map<MediaStreamType, MediaStreamSummary?>>(
       context: context,
       builder: (context) => VideoStreamSelectionDialog(
         streams: Map.fromEntries(streams.map((stream) => MapEntry(stream, currentSelectedIndices.contains(stream.index)))),
@@ -155,7 +156,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     if (userSelectedStreams == null || userSelectedStreams.isEmpty) return;
 
-    await Future.forEach<MapEntry<StreamType, StreamSummary?>>(
+    await Future.forEach<MapEntry<MediaStreamType, MediaStreamSummary?>>(
       userSelectedStreams.entries,
       (kv) => controller.selectStream(kv.key, kv.value),
     );

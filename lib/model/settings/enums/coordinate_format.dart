@@ -1,21 +1,9 @@
 import 'package:aves/l10n/l10n.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/widgets.dart';
+import 'package:aves/model/settings/enums/enums.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
-import 'enums.dart';
-
 extension ExtraCoordinateFormat on CoordinateFormat {
-  String getName(BuildContext context) {
-    switch (this) {
-      case CoordinateFormat.dms:
-        return context.l10n.coordinateFormatDms;
-      case CoordinateFormat.decimal:
-        return context.l10n.coordinateFormatDecimal;
-    }
-  }
-
   static const _separator = ', ';
 
   String format(AppLocalizations l10n, LatLng latLng, {bool minuteSecondPadding = false, int dmsSecondDecimals = 2}) {

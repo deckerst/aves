@@ -1,4 +1,5 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/origins.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/media/media_store_service.dart';

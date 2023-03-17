@@ -1,8 +1,8 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
@@ -62,10 +62,12 @@ class TvShowMoreInfoNotification extends Notification {}
 @immutable
 class VideoActionNotification extends Notification {
   final AvesVideoController controller;
+  final AvesEntry entry;
   final EntryAction action;
 
   const VideoActionNotification({
     required this.controller,
+    required this.entry,
     required this.action,
   });
 }

@@ -1,4 +1,4 @@
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/intents.dart';

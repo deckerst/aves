@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/events.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';

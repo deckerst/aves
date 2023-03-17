@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/theme/durations.dart';

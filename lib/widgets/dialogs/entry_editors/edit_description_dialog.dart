@@ -1,4 +1,4 @@
-import 'package:aves/model/entry_metadata_edition.dart';
+import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';

@@ -1,5 +1,5 @@
 import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable

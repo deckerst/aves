@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.4"></a>[v1.8.4] - 2023-03-17
+
+### Added
+
+- TV: improved support for Licenses
+
+### Fixed
+
+- Viewer: playing video from app content provider
+- Search: using the query bar yields a black screen
+
 ## <a id="v1.8.3"></a>[v1.8.3] - 2023-03-13
 
 ### Added

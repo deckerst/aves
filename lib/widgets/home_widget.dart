@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/utils/constants.dart';

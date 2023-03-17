@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';

@@ -1,5 +1,5 @@
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/icons.dart';

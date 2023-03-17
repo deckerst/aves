@@ -4,6 +4,7 @@ import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db_metadata.dart';
+import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/tag.dart';

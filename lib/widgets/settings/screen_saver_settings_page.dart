@@ -1,7 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/slideshow_video_playback.dart';
-import 'package:aves/model/settings/enums/viewer_transition.dart';
+import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

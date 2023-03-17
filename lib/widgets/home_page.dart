@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/enums.dart';
@@ -227,11 +228,12 @@ class _HomePageState extends State<HomePage> {
               canAnalyze: false,
             );
           }
+        } else {
+          await _initViewerEssentials();
         }
         break;
       case AppMode.setWallpaper:
-        // for video playback storage
-        await metadataDb.init();
+        await _initViewerEssentials();
         break;
       case AppMode.pickMediaInternal:
       case AppMode.pickFilterInternal:
@@ -245,6 +247,11 @@ class _HomePageState extends State<HomePage> {
       await _getRedirectRoute(appMode),
       (route) => false,
     ));
+  }
+
+  Future<void> _initViewerEssentials() async {
+    // for video playback storage
+    await metadataDb.init();
   }
 
   bool _isViewerSourceable(AvesEntry? viewerEntry) {
