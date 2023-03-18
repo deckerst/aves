@@ -348,7 +348,17 @@ object StorageUtils {
 
         // fallback when UUID does not appear in the SD card volume path
         val primaryVolumePath = getPrimaryVolumePath(context)
-        getVolumePaths(context).firstOrNull { it != primaryVolumePath }?.let { return it }
+        getVolumePaths(context).firstOrNull { volumePath ->
+            if (volumePath == primaryVolumePath) {
+                false
+            } else {
+                // exclude volumes that use regular naming scheme with UUID in them
+                // to prevent returning path with the UUID of a new volume
+                // when the argument is the UUID of an obsolete volume
+                val volumeUuid = volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }
+                !(volumeUuid == null || volumeUuid.matches(UUID_PATTERN))
+            }
+        }?.let { return it }
 
         Log.e(LOG_TAG, "failed to find volume path for UUID=$uuid")
         return null

@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="v1.8.4"></a>[v1.8.4] - 2023-03-17
 
+### Fixed
+
+- permission confusion when removable volume changes
+
 ### Added
 
 - TV: improved support for Licenses
