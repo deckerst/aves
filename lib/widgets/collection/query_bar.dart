@@ -10,8 +10,6 @@ class EntryQueryBar extends StatefulWidget {
   final ValueNotifier<String> queryNotifier;
   final FocusNode focusNode;
 
-  static const preferredHeight = kToolbarHeight;
-
   const EntryQueryBar({
     super.key,
     required this.queryNotifier,
@@ -20,6 +18,8 @@ class EntryQueryBar extends StatefulWidget {
 
   @override
   State<EntryQueryBar> createState() => _EntryQueryBarState();
+
+  static double getPreferredHeight(double textScaleFactor) => QueryBar.getPreferredHeight(textScaleFactor);
 }
 
 class _EntryQueryBarState extends State<EntryQueryBar> {
@@ -52,8 +52,9 @@ class _EntryQueryBarState extends State<EntryQueryBar> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
     return Container(
-      height: EntryQueryBar.preferredHeight,
+      height: EntryQueryBar.getPreferredHeight(textScaleFactor),
       alignment: Alignment.topCenter,
       child: Selector<Selection<AvesEntry>, bool>(
         selector: (context, selection) => !selection.isSelecting,

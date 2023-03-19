@@ -9,8 +9,6 @@ class FilterQueryBar<T extends CollectionFilter> extends StatelessWidget {
   final ValueNotifier<String> queryNotifier;
   final FocusNode focusNode;
 
-  static const preferredHeight = kToolbarHeight;
-
   const FilterQueryBar({
     super.key,
     required this.queryNotifier,
@@ -19,8 +17,9 @@ class FilterQueryBar<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
     return Container(
-      height: FilterQueryBar.preferredHeight,
+      height: getPreferredHeight(textScaleFactor),
       alignment: Alignment.topCenter,
       child: Selector<Selection<FilterGridItem<T>>, bool>(
         selector: (context, selection) => !selection.isSelecting,
@@ -33,4 +32,6 @@ class FilterQueryBar<T extends CollectionFilter> extends StatelessWidget {
       ),
     );
   }
+
+  static double getPreferredHeight(double textScaleFactor) => QueryBar.getPreferredHeight(textScaleFactor);
 }
