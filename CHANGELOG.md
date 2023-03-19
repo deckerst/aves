@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.8.4"></a>[v1.8.4] - 2023-03-17
-
 ### Fixed
 
 - permission confusion when removable volume changes
+- Viewer: flickering on first scale animation in some cases
+
+## <a id="v1.8.4"></a>[v1.8.4] - 2023-03-17
 
 ### Added
 
