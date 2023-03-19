@@ -55,7 +55,7 @@ class AvesAppBar extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                height: kToolbarHeight,
+                height: kToolbarHeight * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor),
                 child: Row(
                   children: [
                     leading != null

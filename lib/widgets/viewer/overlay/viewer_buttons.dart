@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.da
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/mute.dart';
 import 'package:aves/widgets/common/action_controls/togglers/play.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_button.dart';
@@ -240,7 +241,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: padding / 2),
                   child: OverlayButton(
                     scale: scale,
-                    child: MenuIconTheme(
+                    child: FontSizeIconTheme(
                       child: AvesPopupMenuButton<EntryAction>(
                         key: const Key('entry-menu-button'),
                         itemBuilder: (context) {

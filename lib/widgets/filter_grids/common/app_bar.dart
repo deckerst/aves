@@ -11,6 +11,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
@@ -171,12 +172,13 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   double get appBarContentHeight {
-    double height = kToolbarHeight;
+    final textScaleFactor = context.read<MediaQueryData>().textScaleFactor;
+    double height = kToolbarHeight * textScaleFactor;
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (context.read<Query>().enabled) {
-      height += FilterQueryBar.preferredHeight;
+      height += FilterQueryBar.getPreferredHeight(textScaleFactor);
     }
     return height;
   }
@@ -226,7 +228,12 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       return InteractiveAppBarTitle(
         onTap: appMode.canNavigate ? _goToSearch : null,
         child: SourceStateAwareAppBarTitle(
-          title: Text(widget.title),
+          title: Text(
+            widget.title,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+          ),
           source: source,
         ),
       );
@@ -313,12 +320,14 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     final isSelecting = selection.isSelecting;
 
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
-          (action) => _buildButtonIcon(context, actionDelegate, action, enabled: canApply(action)),
+          (action) => FontSizeIconTheme(
+            child: _buildButtonIcon(context, actionDelegate, action, enabled: canApply(action)),
+          ),
         );
 
     return [
       ...quickActionButtons,
-      MenuIconTheme(
+      FontSizeIconTheme(
         child: PopupMenuButton<ChipSetAction>(
           itemBuilder: (context) {
             final generalMenuItems = ChipSetActions.general.where(isVisible).map(

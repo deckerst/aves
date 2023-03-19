@@ -9,6 +9,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/app_bar/sliver_app_bar_title.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
@@ -72,7 +73,7 @@ class InfoAppBar extends StatelessWidget {
                 tooltip: MaterialLocalizations.of(context).searchFieldLabel,
               ),
               if (entry.canEdit)
-                MenuIconTheme(
+                FontSizeIconTheme(
                   child: PopupMenuButton<EntryAction>(
                     itemBuilder: (context) => [
                       ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),

@@ -6,6 +6,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -69,7 +70,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
         appBar: AppBar(
           title: Text(_getTitle(context)),
           actions: [
-            MenuIconTheme(
+            FontSizeIconTheme(
               child: PopupMenuButton<_PickerAction>(
                 itemBuilder: (context) {
                   return [

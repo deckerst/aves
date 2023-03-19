@@ -18,6 +18,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -567,7 +568,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   PopupMenuItem<MapClusterAction> _buildMenuItem(MapClusterAction action) {
     return PopupMenuItem(
       value: action,
-      child: MenuIconTheme(
+      child: FontSizeIconTheme(
         child: MenuRow(
           text: action.getText(context),
           icon: action.getIcon(),

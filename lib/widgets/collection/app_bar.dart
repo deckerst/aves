@@ -23,6 +23,7 @@ import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -220,7 +221,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   double get appBarContentHeight {
-    double height = kToolbarHeight;
+    final textScaleFactor = context.read<MediaQueryData>().textScaleFactor;
+    double height = kToolbarHeight * textScaleFactor;
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
@@ -228,7 +230,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       height += FilterBar.preferredHeight;
     }
     if (context.read<Query>().enabled) {
-      height += EntryQueryBar.preferredHeight;
+      height += EntryQueryBar.getPreferredHeight(textScaleFactor);
     }
     return height;
   }
@@ -375,12 +377,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
-          (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
+          (action) => FontSizeIconTheme(
+            child: _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
+          ),
         );
 
     return [
       ...quickActionButtons,
-      MenuIconTheme(
+      FontSizeIconTheme(
         child: PopupMenuButton<EntrySetAction>(
           // key is expected by test driver
           key: const Key('appbar-menu-button'),

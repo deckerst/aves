@@ -11,6 +11,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -127,7 +128,7 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
               onPressed: () => _goToSearch(context),
               tooltip: MaterialLocalizations.of(context).searchFieldLabel,
             ),
-            MenuIconTheme(
+            FontSizeIconTheme(
               child: PopupMenuButton<SettingsAction>(
                 itemBuilder: (context) {
                   return [

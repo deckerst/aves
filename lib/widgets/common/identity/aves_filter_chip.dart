@@ -14,6 +14,7 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -127,7 +128,7 @@ class AvesFilterChip extends StatefulWidget {
             }
             return PopupMenuItem(
               value: action,
-              child: MenuIconTheme(
+              child: FontSizeIconTheme(
                 child: MenuRow(text: text, icon: action.getIcon()),
               ),
             );
