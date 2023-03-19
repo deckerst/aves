@@ -50,12 +50,14 @@ class InfoAppBar extends StatelessWidget {
     return SliverAppBar(
       leading: useTvLayout
           ? null
-          : IconButton(
-              // key is expected by test driver
-              key: const Key('back-button'),
-              icon: const Icon(AIcons.goUp),
-              onPressed: onBackPressed,
-              tooltip: context.l10n.viewerInfoBackToViewerTooltip,
+          : FontSizeIconTheme(
+              child: IconButton(
+                // key is expected by test driver
+                key: const Key('back-button'),
+                icon: const Icon(AIcons.goUp),
+                onPressed: onBackPressed,
+                tooltip: context.l10n.viewerInfoBackToViewerTooltip,
+              ),
             ),
       automaticallyImplyLeading: false,
       title: SliverAppBarTitleWrapper(
@@ -73,27 +75,25 @@ class InfoAppBar extends StatelessWidget {
                 tooltip: MaterialLocalizations.of(context).searchFieldLabel,
               ),
               if (entry.canEdit)
-                FontSizeIconTheme(
-                  child: PopupMenuButton<EntryAction>(
-                    itemBuilder: (context) => [
-                      ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
-                      if (formatSpecificActions.isNotEmpty) ...[
-                        const PopupMenuDivider(),
-                        ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
-                      ],
-                      if (!kReleaseMode) ...[
-                        const PopupMenuDivider(),
-                        _toMenuItem(context, EntryAction.debug, enabled: true),
-                      ]
+                PopupMenuButton<EntryAction>(
+                  itemBuilder: (context) => [
+                    ...commonActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
+                    if (formatSpecificActions.isNotEmpty) ...[
+                      const PopupMenuDivider(),
+                      ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
                     ],
-                    onSelected: (action) async {
-                      // wait for the popup menu to hide before proceeding with the action
-                      await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                      actionDelegate.onActionSelected(context, entry, collection, action);
-                    },
-                  ),
+                    if (!kReleaseMode) ...[
+                      const PopupMenuDivider(),
+                      _toMenuItem(context, EntryAction.debug, enabled: true),
+                    ]
+                  ],
+                  onSelected: (action) async {
+                    // wait for the popup menu to hide before proceeding with the action
+                    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                    actionDelegate.onActionSelected(context, entry, collection, action);
+                  },
                 ),
-            ],
+            ].map((v) => FontSizeIconTheme(child: v)).toList(),
       floating: true,
     );
   }

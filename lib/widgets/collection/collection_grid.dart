@@ -300,6 +300,18 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
   ScrollController get scrollController => widget.scrollController;
 
   @override
+  void initState() {
+    super.initState();
+    _appBarHeightNotifier.addListener(_onAppBarHeightChanged);
+  }
+
+  @override
+  void dispose() {
+    _appBarHeightNotifier.removeListener(_onAppBarHeightChanged);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final scrollView = AnimationLimiter(
       child: _CollectionScrollView(
@@ -339,6 +351,8 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       child: selector,
     );
   }
+
+  void _onAppBarHeightChanged() => setState(() {});
 }
 
 class _CollectionScaler extends StatelessWidget {
@@ -485,7 +499,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     return settings.useTvLayout ? scrollView : _buildDraggableScrollView(scrollView, widget.collection);
   }
 
-  Widget _buildDraggableScrollView(ScrollView scrollView, CollectionLens collection) {
+  Widget _buildDraggableScrollView(Widget scrollView, CollectionLens collection) {
     return ValueListenableBuilder<double>(
       valueListenable: widget.appBarHeightNotifier,
       builder: (context, appBarHeight, child) {
@@ -550,7 +564,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     );
   }
 
-  ScrollView _buildScrollView(Widget appBar, CollectionLens collection) {
+  Widget _buildScrollView(Widget appBar, CollectionLens collection) {
     return CustomScrollView(
       key: widget.scrollableKey,
       primary: true,

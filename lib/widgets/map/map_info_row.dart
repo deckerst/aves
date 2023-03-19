@@ -16,7 +16,6 @@ class MapInfoRow extends StatelessWidget {
   final ValueNotifier<AvesEntry?> entryNotifier;
 
   static const double iconPadding = 8.0;
-  static const double iconSize = 16.0;
   static const double _interRowPadding = 2.0;
 
   const MapInfoRow({
@@ -66,6 +65,8 @@ class MapInfoRow extends StatelessWidget {
       },
     );
   }
+
+  static double getIconSize(BuildContext context) => 16.0 * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
 }
 
 class _AddressRow extends StatefulWidget {
@@ -103,7 +104,7 @@ class _AddressRowState extends State<_AddressRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const Icon(AIcons.location, size: MapInfoRow.iconSize),
+        Icon(AIcons.location, size: MapInfoRow.getIconSize(context)),
         const SizedBox(width: MapInfoRow.iconPadding),
         Expanded(
           child: Container(
@@ -173,7 +174,7 @@ class _DateRow extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
-        const Icon(AIcons.date, size: MapInfoRow.iconSize),
+        Icon(AIcons.date, size: MapInfoRow.getIconSize(context)),
         const SizedBox(width: MapInfoRow.iconPadding),
         Text(
           dateText,

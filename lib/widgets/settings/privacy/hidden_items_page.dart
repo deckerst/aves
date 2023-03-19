@@ -3,6 +3,7 @@ import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -176,7 +177,7 @@ class _Banner extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          const Icon(AIcons.info),
+          const FontSizeIconTheme(child: Icon(AIcons.info)),
           const SizedBox(width: 16),
           Expanded(child: Text(bannerText)),
         ],

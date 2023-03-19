@@ -97,7 +97,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
     // compute the size of keys and space in order to align values
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: key, style: _keyStyle), textScaleFactor))));
+    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: _buildTextValue(key), style: _keyStyle), textScaleFactor))));
 
     final lastKey = keyValues.keys.last;
     return LayoutBuilder(
@@ -115,15 +115,11 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                 final spanBuilder = spanBuilders[key] ?? _buildTextValueSpans;
                 final thisSpaceSize = max(0.0, (baseValueX - keySizes[key]!)) + InfoRowGroup.keyValuePadding;
 
-                // each text span embeds and pops a Bidi isolate,
-                // so that layout of the spans follows the directionality of the locale
-                // (e.g. keys on the right for RTL locale, whatever the key intrinsic directionality)
-                // and each span respects the directionality of its inner text only
                 return [
-                  TextSpan(text: '${Constants.fsi}$key${Constants.pdi}', style: _keyStyle),
+                  TextSpan(text: _buildTextValue(key), style: _keyStyle),
                   WidgetSpan(
                     child: SizedBox(
-                      width: thisSpaceSize,
+                      width: thisSpaceSize / textScaleFactor,
                       // as of Flutter v3.0.0, the underline decoration from the following `TextSpan`
                       // is applied to the `WidgetSpan` too, so we add a dummy `Text` as a workaround
                       child: const Text(''),
@@ -161,8 +157,14 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
       recognizer = TapGestureRecognizer()..onTap = () => setState(() => _expandedKeys.add(key));
     }
 
-    return [TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', recognizer: recognizer)];
+    return [TextSpan(text: _buildTextValue(value), recognizer: recognizer)];
   }
+
+  // each text span embeds and pops a Bidi isolate,
+  // so that layout of the spans follows the directionality of the locale
+  // (e.g. keys on the right for RTL locale, whatever the key intrinsic directionality)
+  // and each span respects the directionality of its inner text only
+  String _buildTextValue(String value) => '${Constants.fsi}$value${Constants.pdi}';
 }
 
 typedef InfoValueSpanBuilder = List<InlineSpan> Function(BuildContext context, String key, String value);
