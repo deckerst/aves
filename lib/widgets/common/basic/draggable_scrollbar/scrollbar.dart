@@ -62,9 +62,9 @@ class DraggableScrollbar extends StatefulWidget {
   final double Function(double scrollOffset, double offsetIncrement)? dragOffsetSnapper;
 
   /// The view that will be scrolled with the scroll thumb
-  final ScrollView child;
+  final Widget child;
 
-  DraggableScrollbar({
+  const DraggableScrollbar({
     super.key,
     required this.backgroundColor,
     required this.scrollThumbSize,
@@ -78,7 +78,7 @@ class DraggableScrollbar extends StatefulWidget {
     required this.labelTextBuilder,
     required this.crumbTextBuilder,
     required this.child,
-  }) : assert(child.scrollDirection == Axis.vertical);
+  });
 
   @override
   State<DraggableScrollbar> createState() => _DraggableScrollbarState();

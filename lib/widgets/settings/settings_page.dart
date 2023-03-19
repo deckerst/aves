@@ -128,28 +128,26 @@ class _SettingsPageState extends State<SettingsPage> with FeedbackMixin {
               onPressed: () => _goToSearch(context),
               tooltip: MaterialLocalizations.of(context).searchFieldLabel,
             ),
-            FontSizeIconTheme(
-              child: PopupMenuButton<SettingsAction>(
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      value: SettingsAction.export,
-                      child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
-                    ),
-                    PopupMenuItem(
-                      value: SettingsAction.import,
-                      child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
-                    ),
-                  ];
-                },
-                onSelected: (action) async {
-                  // wait for the popup menu to hide before proceeding with the action
-                  await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-                  _onActionSelected(action);
-                },
-              ),
+            PopupMenuButton<SettingsAction>(
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(
+                    value: SettingsAction.export,
+                    child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
+                  ),
+                  PopupMenuItem(
+                    value: SettingsAction.import,
+                    child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
+                  ),
+                ];
+              },
+              onSelected: (action) async {
+                // wait for the popup menu to hide before proceeding with the action
+                await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                _onActionSelected(action);
+              },
             ),
-          ],
+          ].map((v) => FontSizeIconTheme(child: v)).toList(),
         ),
         body: GestureAreaProtectorStack(
           child: SafeArea(

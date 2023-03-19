@@ -25,8 +25,6 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
   late final FixedExtentScrollController _controller;
   final ValueNotifier<bool> _focusedNotifier = ValueNotifier(false);
 
-  static const itemSize = Size(40, 40);
-
   ValueNotifier<T> get valueNotifier => widget.valueNotifier;
 
   List<T> get values => widget.values;
@@ -51,6 +49,7 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
     const background = Colors.transparent;
     final foreground = DefaultTextStyle.of(context).style.color!;
     final transitionDuration = context.select<DurationsData, Duration>((v) => v.formTransition);
+    final itemSize = Size.square(40 * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor));
 
     return FocusableActionDetector(
       shortcuts: const {

@@ -130,7 +130,7 @@ class SectionHeader<T> extends StatelessWidget {
     final para = RenderParagraph(
       TextSpan(
         children: [
-          // as of Flutter v2.8.1, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
+          // as of Flutter v3.7.7, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
           // so we use a hair space times a magic number to match width
           TextSpan(
             // 23 hair spaces match a width of 40.0

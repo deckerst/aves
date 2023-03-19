@@ -23,7 +23,6 @@ import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -145,7 +144,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   @override
-  void didChangeMetrics() => _updateStatusBarHeight();
+  void didChangeMetrics() {
+    // when top padding changes
+    _updateStatusBarHeight();
+    // when text scale factor changes
+    _updateAppBarHeight();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -377,66 +381,62 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
     final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
-          (action) => FontSizeIconTheme(
-            child: _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
-          ),
+          (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
     return [
       ...quickActionButtons,
-      FontSizeIconTheme(
-        child: PopupMenuButton<EntrySetAction>(
-          // key is expected by test driver
-          key: const Key('appbar-menu-button'),
-          itemBuilder: (context) {
-            final generalMenuItems = EntrySetActions.general.where(isVisible).map(
-                  (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
-                );
+      PopupMenuButton<EntrySetAction>(
+        // key is expected by test driver
+        key: const Key('appbar-menu-button'),
+        itemBuilder: (context) {
+          final generalMenuItems = EntrySetActions.general.where(isVisible).map(
+                (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
+              );
 
-            final browsingMenuActions = EntrySetActions.pageBrowsing.where((v) => !browsingQuickActions.contains(v));
-            final selectionMenuActions = EntrySetActions.pageSelection.where((v) => !selectionQuickActions.contains(v));
-            final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<EntrySetAction?>[], (prev, v) {
-              if (v == null && (prev.isEmpty || prev.last == null)) return prev;
-              return [...prev, v];
-            });
-            if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
-              contextualMenuActions.removeLast();
-            }
+          final browsingMenuActions = EntrySetActions.pageBrowsing.where((v) => !browsingQuickActions.contains(v));
+          final selectionMenuActions = EntrySetActions.pageSelection.where((v) => !selectionQuickActions.contains(v));
+          final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<EntrySetAction?>[], (prev, v) {
+            if (v == null && (prev.isEmpty || prev.last == null)) return prev;
+            return [...prev, v];
+          });
+          if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
+            contextualMenuActions.removeLast();
+          }
 
-            final contextualMenuItems = <PopupMenuEntry<EntrySetAction>>[
-              ...contextualMenuActions.map(
-                (action) {
-                  if (action == null) return const PopupMenuDivider();
-                  return _toMenuItem(action, enabled: canApply(action), selection: selection);
-                },
+          final contextualMenuItems = <PopupMenuEntry<EntrySetAction>>[
+            ...contextualMenuActions.map(
+              (action) {
+                if (action == null) return const PopupMenuDivider();
+                return _toMenuItem(action, enabled: canApply(action), selection: selection);
+              },
+            ),
+            if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash)
+              PopupMenuExpansionPanel<EntrySetAction>(
+                enabled: hasSelection,
+                value: 'edit',
+                icon: AIcons.edit,
+                title: context.l10n.collectionActionEdit,
+                items: [
+                  _buildRotateAndFlipMenuItems(context, canApply: canApply),
+                  ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
+                ],
               ),
-              if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash)
-                PopupMenuExpansionPanel<EntrySetAction>(
-                  enabled: hasSelection,
-                  value: 'edit',
-                  icon: AIcons.edit,
-                  title: context.l10n.collectionActionEdit,
-                  items: [
-                    _buildRotateAndFlipMenuItems(context, canApply: canApply),
-                    ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
-                  ],
-                ),
-            ];
+          ];
 
-            return [
-              ...generalMenuItems,
-              if (contextualMenuItems.isNotEmpty) ...[
-                const PopupMenuDivider(),
-                ...contextualMenuItems,
-              ],
-            ];
-          },
-          onSelected: (action) async {
-            // wait for the popup menu to hide before proceeding with the action
-            await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-            await _onActionSelected(action);
-          },
-        ),
+          return [
+            ...generalMenuItems,
+            if (contextualMenuItems.isNotEmpty) ...[
+              const PopupMenuDivider(),
+              ...contextualMenuItems,
+            ],
+          ];
+        },
+        onSelected: (action) async {
+          // wait for the popup menu to hide before proceeding with the action
+          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          await _onActionSelected(action);
+        },
       ),
     ];
   }
