@@ -72,6 +72,9 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       ..addStatusListener(onAnimationStatus);
     _positionAnimationController = AnimationController(vsync: this)..addListener(handlePositionAnimate);
     _registerWidget(widget);
+    // force delegate scale computing on initialization
+    // so that it does not happen lazily at the beginning of a scale animation
+    recalcScale();
   }
 
   @override

@@ -80,15 +80,20 @@ mixin AvesMagnifierControllerDelegate on State<MagnifierCore> {
 
   Offset get position => controller.position;
 
+  double? recalcScale() {
+    final scaleState = controller.scaleState.state;
+    final newScale = controller.getScaleForScaleState(scaleState);
+    markNeedsScaleRecalc = false;
+    setScale(newScale, ChangeSource.internal);
+    return newScale;
+  }
+
   double? get scale {
     final scaleState = controller.scaleState.state;
     final needsRecalc = markNeedsScaleRecalc && !(scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut);
     final scaleExistsOnController = controller.scale != null;
     if (needsRecalc || !scaleExistsOnController) {
-      final newScale = controller.getScaleForScaleState(scaleState);
-      markNeedsScaleRecalc = false;
-      setScale(newScale, ChangeSource.internal);
-      return newScale;
+      return recalcScale();
     }
     return controller.scale;
   }
