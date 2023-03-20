@@ -73,59 +73,64 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                 border: AvesBorder.border(context),
                 borderRadius: const BorderRadius.all(Radius.circular(radius)),
               ),
-              child: Column(
-                key: _progressBarKey,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      StreamBuilder<int>(
-                          stream: positionStream,
-                          builder: (context, snapshot) {
-                            // do not use stream snapshot because it is obsolete when switching between videos
-                            final position = controller?.currentPosition.floor() ?? 0;
-                            return Text(
-                              formatFriendlyDuration(Duration(milliseconds: position)),
-                              style: textStyle,
-                            );
-                          }),
-                      const Spacer(),
-                      Text(
-                        formatFriendlyDuration(Duration(milliseconds: controller?.duration ?? 0)),
-                        style: textStyle,
-                      ),
-                    ],
-                  ),
-                  ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    child: Directionality(
-                      // force directionality for `LinearProgressIndicator`
-                      textDirection: TextDirection.ltr,
-                      child: StreamBuilder<int>(
-                          stream: positionStream,
-                          builder: (context, snapshot) {
-                            // do not use stream snapshot because it is obsolete when switching between videos
-                            var progress = controller?.progress ?? 0.0;
-                            if (!progress.isFinite) progress = 0.0;
-                            return LinearProgressIndicator(
-                              value: progress,
-                              backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
-                            );
-                          }),
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaleFactor: 1,
+                ),
+                child: Column(
+                  key: _progressBarKey,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        StreamBuilder<int>(
+                            stream: positionStream,
+                            builder: (context, snapshot) {
+                              // do not use stream snapshot because it is obsolete when switching between videos
+                              final position = controller?.currentPosition.floor() ?? 0;
+                              return Text(
+                                formatFriendlyDuration(Duration(milliseconds: position)),
+                                style: textStyle,
+                              );
+                            }),
+                        const Spacer(),
+                        Text(
+                          formatFriendlyDuration(Duration(milliseconds: controller?.duration ?? 0)),
+                          style: textStyle,
+                        ),
+                      ],
                     ),
-                  ),
-                  Row(
-                    children: [
-                      _buildSpeedIndicator(),
-                      _buildMuteIndicator(),
-                      Text(
-                        // fake text below to match the height of the text above and center the whole thing
-                        '',
-                        style: textStyle,
+                    ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
+                      child: Directionality(
+                        // force directionality for `LinearProgressIndicator`
+                        textDirection: TextDirection.ltr,
+                        child: StreamBuilder<int>(
+                            stream: positionStream,
+                            builder: (context, snapshot) {
+                              // do not use stream snapshot because it is obsolete when switching between videos
+                              var progress = controller?.progress ?? 0.0;
+                              if (!progress.isFinite) progress = 0.0;
+                              return LinearProgressIndicator(
+                                value: progress,
+                                backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
+                              );
+                            }),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    Row(
+                      children: [
+                        _buildSpeedIndicator(),
+                        _buildMuteIndicator(),
+                        Text(
+                          // fake text below to match the height of the text above and center the whole thing
+                          '',
+                          style: textStyle,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
