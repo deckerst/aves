@@ -286,6 +286,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                         onCanceled: () {
                           _popupExpandedNotifier.value = null;
                         },
+                        iconSize: IconTheme.of(context).size,
                         onMenuOpened: () {
                           // if the menu is opened while overlay is hiding,
                           // the popup menu button is disposed and menu items are ineffective,

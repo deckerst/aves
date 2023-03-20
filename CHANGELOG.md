@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- improved support for system font scale
+
 ### Fixed
 
 - permission confusion when removable volume changes

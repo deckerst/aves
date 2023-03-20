@@ -31,6 +31,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
         break;
     }
 
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final hasTags = tags.isNotEmpty;
 
@@ -46,7 +47,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
                 padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
                 child: DecoratedIcon(
                   AIcons.tag,
-                  size: ViewerDetailOverlayContent.iconSize,
+                  size: ViewerDetailOverlayContent.iconSize / textScaleFactor,
                   shadows: ViewerDetailOverlayContent.shadows(context),
                 ),
               ),

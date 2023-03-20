@@ -176,9 +176,14 @@ class _DateRow extends StatelessWidget {
         const SizedBox(width: MapInfoRow.iconPadding),
         Icon(AIcons.date, size: MapInfoRow.getIconSize(context)),
         const SizedBox(width: MapInfoRow.iconPadding),
-        Text(
-          dateText,
-          strutStyle: Constants.overflowStrutStyle,
+        Expanded(
+          child: Text(
+            dateText,
+            strutStyle: Constants.overflowStrutStyle,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+          ),
         ),
       ],
     );
