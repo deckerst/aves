@@ -102,3 +102,12 @@ class XmpMMNamespace extends XmpNamespace {
     ),
   ];
 }
+
+class XmpXperiaCameraNamespace extends XmpNamespace {
+  XmpXperiaCameraNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.xperiaCamera);
+
+  @override
+  late final List<XmpCardData> cards = [
+    XmpCardData(RegExp(nsPrefix + r'Face\[(\d+)\]/(.*)')),
+  ];
+}

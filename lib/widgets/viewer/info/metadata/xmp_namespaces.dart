@@ -78,6 +78,8 @@ class XmpNamespace extends Equatable {
         return XmpBasicNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case Namespaces.xmpMM:
         return XmpMMNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
+      case Namespaces.xperiaCamera:
+        return XmpXperiaCameraNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       default:
         return XmpNamespace(nsUri: nsUri, schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
     }

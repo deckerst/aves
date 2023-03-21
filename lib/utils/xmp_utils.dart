@@ -23,6 +23,7 @@ class Namespaces {
   static const exif = 'http://ns.adobe.com/exif/1.0/';
   static const exifAux = 'http://ns.adobe.com/exif/1.0/aux/';
   static const exifEx = 'http://cipa.jp/exif/1.0/';
+  static const fstop = 'http://www.fstopapp.com/xmp/';
   static const gAudio = 'http://ns.google.com/photos/1.0/audio/';
   static const gCamera = 'http://ns.google.com/photos/1.0/camera/';
   static const gContainer = 'http://ns.google.com/photos/1.0/container/';
@@ -77,6 +78,7 @@ class Namespaces {
   static const xmpNote = 'http://ns.adobe.com/xmp/note/';
   static const xmpRights = 'http://ns.adobe.com/xap/1.0/rights/';
   static const xmpTPg = 'http://ns.adobe.com/xap/1.0/t/pg/';
+  static const xperiaCamera = 'http://xmlns.sony.net/xperia/camera/1.0/';
 
   // cf https://exiftool.org/TagNames/XMP.html
   static const Map<String, String> nsTitles = {
@@ -97,6 +99,7 @@ class Namespaces {
     dwc: 'Darwin Core',
     exif: 'Exif',
     exifEx: 'Exif Ex',
+    fstop: 'F-Stop',
     gAudio: 'Google Audio',
     gCamera: 'Google Camera',
     gContainer: 'Google Container',
@@ -138,6 +141,7 @@ class Namespaces {
     xmpNote: 'Note',
     xmpRights: 'Rights Management',
     xmpTPg: 'Paged-Text',
+    xperiaCamera: 'Xperia Camera',
   };
 
   static final defaultPrefixes = {
