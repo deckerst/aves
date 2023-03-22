@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "98d1d33ed129b372846e862de23a0fc365745f4d7b5e786ce667fcbbb7ac5c07"
+      sha256: d74f051467a841ce893a50ebeb420b7a5695f985d2781e22b3927fbc849aea45
       url: "https://pub.dev"
     source: hosted
-    version: "55.0.0"
+    version: "57.0.0"
   _flutterfire_internals:
     dependency: transitive
     description:
@@ -21,10 +21,10 @@ packages:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "881348aed9b0b425882c97732629a6a31093c8ff20fc4b3b03fb9d3d50a3a126"
+      sha256: b665679cdccab0c754e65021f01087c6fab07a0b13659dd58827f765739b40f8
       url: "https://pub.dev"
     source: hosted
-    version: "5.7.1"
+    version: "5.9.0"
   archive:
     dependency: transitive
     description:
@@ -390,10 +390,10 @@ packages:
     dependency: transitive
     description:
       name: flex_seed_scheme
-      sha256: e61950ccadfb8d43ce5cdef382e8f689edc053ce6b837e277539410ecfb3b3e5
+      sha256: "7058288ef97d348657ac95cea25d65a9aac181ca08387ede891fd7230ad7600f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.2"
+    version: "1.2.3"
   floating:
     dependency: "direct main"
     description:
@@ -548,10 +548,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_android
-      sha256: a8ee18649a67750cbd477a6867a1bf9c4154c5e9f69d722c8b53a627a6d58303
+      sha256: ee3c1a63983b8ba17a9a7c1233c3542fbfbc0ebf540d3aa9b8fd5162681e0219
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.9"
+    version: "2.4.10"
   google_maps_flutter_ios:
     dependency: transitive
     description:
@@ -1110,10 +1110,10 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: ee6257848f822b8481691f20c3e6d2bfee2e9eccb2a3d249907fcfb198c55b41
+      sha256: "78528fd87d0d08ffd3e69551173c026e8eacc7b7079c82eb6a77413957b7e394"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.18"
+    version: "2.0.20"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -1380,18 +1380,18 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "845530e5e05db5500c1a4c1446785d60cbd8f9bd45e21e7dd643a3273bb4bbd1"
+      sha256: dd729390aa936bf1bdf5cd1bc7468ff340263f80a2c4f569416507667de8e3c8
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.25"
+    version: "6.0.26"
   url_launcher_ios:
     dependency: transitive
     description:
       name: url_launcher_ios
-      sha256: "7ab1e5b646623d6a2537aa59d5d039f90eebef75a7c25e105f6f75de1f7750c3"
+      sha256: "3dedc66ca3c0bef9e6a93c0999aee102556a450afcc1b7bcfeace7a424927d92"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.2"
+    version: "6.1.3"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -1530,4 +1530,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.19.4 <3.0.0"
-  flutter: ">=3.7.7"
+  flutter: ">=3.7.8"

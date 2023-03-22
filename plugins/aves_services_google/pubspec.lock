@@ -164,10 +164,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_maps_flutter_android
-      sha256: a8ee18649a67750cbd477a6867a1bf9c4154c5e9f69d722c8b53a627a6d58303
+      sha256: ee3c1a63983b8ba17a9a7c1233c3542fbfbc0ebf540d3aa9b8fd5162681e0219
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.9"
+    version: "2.4.10"
   google_maps_flutter_ios:
     dependency: transitive
     description:
