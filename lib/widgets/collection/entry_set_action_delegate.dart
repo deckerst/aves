@@ -417,6 +417,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
     Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
+    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).whereNotNull().toSet();
 
     final dataTypes = <EntryDataType>{};
     final source = context.read<CollectionSource>();
@@ -446,6 +447,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           // otherwise filter chips may eagerly rebuild in between with the old state
           if (obsoleteCountryCodes.isNotEmpty) {
             source.invalidateCountryFilterSummary(countryCodes: obsoleteCountryCodes);
+          }
+          if (obsoleteStateCodes.isNotEmpty) {
+            source.invalidateStateFilterSummary(stateCodes: obsoleteStateCodes);
           }
           if (obsoleteTags.isNotEmpty) {
             source.invalidateTagFilterSummary(tags: obsoleteTags);

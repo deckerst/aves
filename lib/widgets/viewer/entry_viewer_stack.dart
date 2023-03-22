@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
@@ -15,7 +16,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -33,9 +33,10 @@ import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves_video/aves_video.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
+import 'package:aves_utils/aves_utils.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:floating/floating.dart';
 import 'package:flutter/foundation.dart';
@@ -544,16 +545,16 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _verticalScrollNotifier.notify();
   }
 
-  void _goToCollection(CollectionFilter filter) {
+  Future<void> _goToCollection(CollectionFilter filter) async {
     final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
     if (!isMainMode) return;
 
     final baseCollection = collection;
     if (baseCollection == null) return;
 
-    _onLeave();
+    unawaited(_onLeave());
     final uri = entryNotifier.value?.uri;
-    Navigator.maybeOf(context)?.pushAndRemoveUntil(
+    unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
@@ -563,7 +564,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         ),
       ),
       (route) => false,
-    );
+    ));
   }
 
   Future<void> _goToVerticalPage(int page) async {
@@ -704,8 +705,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   void _popVisual() {
     if (Navigator.canPop(context)) {
-      void pop() {
-        _onLeave();
+      Future<void> pop() async {
+        unawaited(_onLeave());
         Navigator.maybeOf(context)?.pop();
       }
 
@@ -747,13 +748,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _onLeave() async {
+    // get the theme first, as the context is likely
+    // to be unmounted after the other async steps
+    final theme = Theme.of(context);
+
     await ScreenBrightness().resetScreenBrightness();
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);
     }
     await mediaSessionService.release();
     await AvesApp.showSystemUI();
-    AvesApp.setSystemUIStyle(context);
+    AvesApp.setSystemUIStyle(theme);
     if (!settings.useTvLayout) {
       await windowService.requestOrientation();
     }
@@ -805,7 +810,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (!mounted) return;
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
-      AvesApp.setSystemUIStyle(context);
+      AvesApp.setSystemUIStyle(Theme.of(context));
       if (animate) {
         await _overlayAnimationController.forward();
       } else {

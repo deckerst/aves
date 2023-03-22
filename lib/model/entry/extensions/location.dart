@@ -57,6 +57,9 @@ extension ExtraAvesEntryLocation on AvesEntry {
         final cc = address.countryCode?.toUpperCase();
         final cn = address.countryName;
         final aa = address.adminArea;
+        final l = address.locality;
+        final sl = address.subLocality;
+        final saa = address.subAdminArea;
         addressDetails = AddressDetails(
           id: id,
           countryCode: cc,
@@ -64,7 +67,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
           adminArea: aa,
           // if country & admin fields are null, it is likely the ocean,
           // which is identified by `featureName` but we default to the address line anyway
-          locality: address.locality ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
+          locality: l ?? sl ?? saa ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
         );
       }
     } catch (error, stack) {

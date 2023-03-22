@@ -21,6 +21,7 @@ import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/location/place.dart';
+import 'package:aves/model/source/location/state.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/model/source/trash.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -59,7 +60,7 @@ mixin SourceBase {
   void invalidateEntries();
 }
 
-abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, LocationMixin, TagMixin, TrashMixin {
+abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
   CollectionSource() {
     settings.updateStream.where((event) => event.key == Settings.localeKey).listen((_) => invalidateAlbumDisplayNames());
     settings.updateStream.where((event) => event.key == Settings.hiddenFiltersKey).listen((event) {
@@ -142,6 +143,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     invalidateAlbumFilterSummary(entries: entries, notify: notify);
     invalidateCountryFilterSummary(entries: entries, notify: notify);
     invalidatePlaceFilterSummary(entries: entries, notify: notify);
+    invalidateStateFilterSummary(entries: entries, notify: notify);
     invalidateTagFilterSummary(entries: entries, notify: notify);
   }
 
@@ -511,6 +513,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       switch (filter.level) {
         case LocationLevel.country:
           return countryEntryCount(filter);
+        case LocationLevel.state:
+          return stateEntryCount(filter);
         case LocationLevel.place:
           return placeEntryCount(filter);
       }
@@ -525,6 +529,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       switch (filter.level) {
         case LocationLevel.country:
           return countrySize(filter);
+        case LocationLevel.state:
+          return stateSize(filter);
         case LocationLevel.place:
           return placeSize(filter);
       }
@@ -539,6 +545,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       switch (filter.level) {
         case LocationLevel.country:
           return countryRecentEntry(filter);
+        case LocationLevel.state:
+          return stateRecentEntry(filter);
         case LocationLevel.place:
           return placeRecentEntry(filter);
       }

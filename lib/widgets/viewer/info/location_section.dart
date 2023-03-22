@@ -103,6 +103,8 @@ class _LocationSectionState extends State<LocationSection> {
               final address = entry.addressDetails!;
               final country = address.countryName;
               if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
+              final state = address.stateName;
+              if (state != null && state.isNotEmpty) filters.add(LocationFilter(LocationLevel.state, '$state${LocationFilter.locationSeparator}${address.stateCode}'));
               final place = address.place;
               if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
             }

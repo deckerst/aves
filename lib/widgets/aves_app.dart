@@ -18,7 +18,6 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
-import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
@@ -40,6 +39,7 @@ import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/welcome_page.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
@@ -74,8 +74,7 @@ class AvesApp extends StatefulWidget {
   @override
   State<AvesApp> createState() => _AvesAppState();
 
-  static void setSystemUIStyle(BuildContext context) {
-    final theme = Theme.of(context);
+  static void setSystemUIStyle(ThemeData theme) {
     final style = systemUIStyleForBrightness(theme.brightness, theme.scaffoldBackgroundColor);
     SystemChrome.setSystemUIOverlayStyle(style);
   }
@@ -300,7 +299,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     required Widget? child,
   }) {
     if (initialized) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
+      WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(Theme.of(context)));
     }
     return Selector<Settings, bool>(
       selector: (context, s) => s.initialized ? s.accessibilityAnimations.animate : true,

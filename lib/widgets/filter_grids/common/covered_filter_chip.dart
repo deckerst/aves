@@ -78,7 +78,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
               }
             case LocationFilter:
               {
-                final countryCode = (filter as LocationFilter).countryCode;
+                final countryCode = (filter as LocationFilter).code;
                 return StreamBuilder<CountrySummaryInvalidatedEvent>(
                   stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
                   builder: (context, snapshot) => _buildChip(context, source),
