@@ -9,7 +9,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -105,7 +106,7 @@ class _EditVaultDialogState extends State<EditVaultDialog> {
               _unfocus();
               showSelectionDialog<VaultLockType>(
                 context: context,
-                builder: (context) => AvesSelectionDialog<VaultLockType>(
+                builder: (context) => AvesSingleSelectionDialog<VaultLockType>(
                   initialValue: _lockType,
                   options: Map.fromEntries(_lockTypeOptions.map((v) => MapEntry(v, v.getText(context)))),
                 ),

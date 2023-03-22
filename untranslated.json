@@ -443,6 +443,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -1001,6 +1003,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -1176,6 +1180,8 @@
 
   "cs": [
     "settingsVideoEnablePip",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle"
   ],
@@ -1211,6 +1217,8 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
     "settingsDisablingBinWarningDialogMessage"
@@ -1226,8 +1234,20 @@
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle"
+  ],
+
+  "es": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone"
+  ],
+
+  "eu": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone"
   ],
 
   "fa": [
@@ -1533,6 +1553,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -1702,6 +1724,11 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "fr": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone"
   ],
 
   "gl": [
@@ -2037,6 +2064,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -2672,6 +2701,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -2845,6 +2876,11 @@
     "filePickerUseThisFolder"
   ],
 
+  "id": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone"
+  ],
+
   "it": [
     "chipActionGoToPlacePage",
     "lengthUnitPixel",
@@ -2857,6 +2893,8 @@
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle"
   ],
@@ -2904,6 +2942,8 @@
     "placeEmpty",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerShowDescription",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
@@ -2912,6 +2952,11 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem"
+  ],
+
+  "ko": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone"
   ],
 
   "lt": [
@@ -2951,6 +2996,8 @@
     "placeEmpty",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerShowDescription",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
@@ -2965,6 +3012,8 @@
     "settingsVideoEnablePip",
     "patternDialogEnter",
     "patternDialogConfirm",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle"
   ],
@@ -3017,6 +3066,8 @@
     "placeEmpty",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerShowRatingTags",
     "settingsViewerShowDescription",
     "settingsVideoBackgroundMode",
@@ -3241,6 +3292,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -3350,7 +3403,14 @@
     "wallpaperUseScrollEffect"
   ],
 
+  "pl": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone"
+  ],
+
   "pt": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundModeDialogTitle"
   ],
 
@@ -3366,6 +3426,8 @@
     "drawerPlacePage",
     "placePageTitle",
     "placeEmpty",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle"
   ],
@@ -3383,6 +3445,8 @@
     "drawerPlacePage",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume"
@@ -3638,6 +3702,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -3996,6 +4062,8 @@
     "settingsCollectionQuickActionTabSelecting",
     "settingsCollectionBrowsingQuickActionEditorBanner",
     "settingsCollectionSelectionQuickActionEditorBanner",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerSectionTitle",
     "settingsViewerGestureSideTapNext",
     "settingsViewerUseCutout",
@@ -4200,9 +4268,16 @@
     "placePageTitle",
     "placeEmpty",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
     "settingsDisablingBinWarningDialogMessage"
+  ],
+
+  "uk": [
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone"
   ],
 
   "zh": [
@@ -4240,6 +4315,8 @@
     "placeEmpty",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerShowDescription",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
@@ -4285,6 +4362,8 @@
     "placeEmpty",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsCollectionBurstPatternsTile",
+    "settingsCollectionBurstPatternsNone",
     "settingsViewerShowDescription",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",

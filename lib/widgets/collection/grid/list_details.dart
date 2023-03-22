@@ -4,6 +4,7 @@ import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
@@ -80,7 +81,7 @@ class EntryListDetails extends StatelessWidget {
     final date = entry.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
 
-    final size = entry.sizeBytes;
+    final size = entry.burstEntries?.map((v) => v.sizeBytes).sum ?? entry.sizeBytes;
     final sizeText = size != null ? formatFileSize(locale, size) : Constants.overlayUnknown;
 
     return _buildRow(

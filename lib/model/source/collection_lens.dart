@@ -28,6 +28,7 @@ import 'package:flutter/foundation.dart';
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
+  List<String> burstPatterns;
   EntryGroupFactor sectionFactor;
   EntrySortFactor sortFactor;
   bool sortReverse;
@@ -50,6 +51,7 @@ class CollectionLens with ChangeNotifier {
     this.fixedSort = false,
     this.fixedSelection,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
+        burstPatterns = settings.collectionBurstPatterns,
         sectionFactor = settings.collectionSectionFactor,
         sortFactor = settings.collectionSortFactor,
         sortReverse = settings.collectionSortReverse {
@@ -85,6 +87,7 @@ class CollectionLens with ChangeNotifier {
     }
     _subscriptions.add(settings.updateStream
         .where((event) => [
+              Settings.collectionBurstPatternsKey,
               Settings.collectionSortFactorKey,
               Settings.collectionGroupFactorKey,
               Settings.collectionSortReverseKey,
@@ -188,7 +191,7 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _groupBursts() {
-    final byBurstKey = groupBy<AvesEntry, String?>(_filteredSortedEntries, (entry) => entry.burstKey).whereNotNullKey();
+    final byBurstKey = groupBy<AvesEntry, String?>(_filteredSortedEntries, (entry) => entry.getBurstKey(burstPatterns)).whereNotNullKey();
     byBurstKey.forEach((burstKey, entries) {
       if (entries.length > 1) {
         entries.sort(AvesEntrySort.compareByName);
@@ -287,13 +290,19 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _onSettingsChanged() {
+    final newBurstPatterns = settings.collectionBurstPatterns;
     final newSortFactor = settings.collectionSortFactor;
     final newSectionFactor = settings.collectionSectionFactor;
     final newSortReverse = settings.collectionSortReverse;
 
-    final needSort = sortFactor != newSortFactor || sortReverse != newSortReverse;
+    final needFilter = burstPatterns != newBurstPatterns;
+    final needSort = needFilter || sortFactor != newSortFactor || sortReverse != newSortReverse;
     final needSection = needSort || sectionFactor != newSectionFactor;
 
+    if (needFilter) {
+      burstPatterns = newBurstPatterns;
+      _applyFilters();
+    }
     if (needSort) {
       sortFactor = newSortFactor;
       sortReverse = newSortReverse;
@@ -302,6 +311,10 @@ class CollectionLens with ChangeNotifier {
     if (needSection) {
       sectionFactor = newSectionFactor;
       _applySection();
+    }
+
+    if (needFilter) {
+      filterChangeNotifier.notifyListeners();
     }
     if (needSort || needSection) {
       sortSectionChangeNotifier.notifyListeners();
@@ -316,9 +329,9 @@ class CollectionLens with ChangeNotifier {
     if (groupBursts) {
       // find impacted burst groups
       final obsoleteBurstEntries = <AvesEntry>{};
-      final burstKeys = entries.map((entry) => entry.burstKey).whereNotNull().toSet();
+      final burstKeys = entries.map((entry) => entry.getBurstKey(burstPatterns)).whereNotNull().toSet();
       if (burstKeys.isNotEmpty) {
-        _filteredSortedEntries.where((entry) => entry.isBurst && burstKeys.contains(entry.burstKey)).forEach((mainEntry) {
+        _filteredSortedEntries.where((entry) => entry.isBurst && burstKeys.contains(entry.getBurstKey(burstPatterns))).forEach((mainEntry) {
           final subEntries = mainEntry.burstEntries!;
           // remove the deleted sub-entries
           subEntries.removeWhere(entries.contains);

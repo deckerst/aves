@@ -13,8 +13,8 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/ref/bursts.dart';
 import 'package:aves/services/accessibility_service.dart';
-import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/search/page.dart';
@@ -23,7 +23,9 @@ import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
@@ -90,6 +92,7 @@ class Settings extends ChangeNotifier {
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
 
   // collection
+  static const collectionBurstPatternsKey = 'collection_burst_patterns';
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionSortReverseKey = 'collection_sort_reverse';
@@ -244,6 +247,10 @@ class Settings extends ChangeNotifier {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
     enableBlurEffect = performanceClass >= 29;
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final pattern = BurstPatterns.byManufacturer[androidInfo.manufacturer];
+    collectionBurstPatterns = pattern != null ? [pattern] : [];
 
     // availability
     if (flavor.hasMapStyleDefault) {
@@ -494,6 +501,10 @@ class Settings extends ChangeNotifier {
   set drawerPageBookmarks(List<String> newValue) => _set(drawerPageBookmarksKey, newValue);
 
   // collection
+
+  List<String> get collectionBurstPatterns => getStringList(collectionBurstPatternsKey) ?? [];
+
+  set collectionBurstPatterns(List<String> newValue) => _set(collectionBurstPatternsKey, newValue);
 
   EntryGroupFactor get collectionSectionFactor => getEnumOrDefault(collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntryGroupFactor.values);
 
@@ -1152,6 +1163,7 @@ class Settings extends ChangeNotifier {
             case drawerTypeBookmarksKey:
             case drawerAlbumBookmarksKey:
             case drawerPageBookmarksKey:
+            case collectionBurstPatternsKey:
             case pinnedFiltersKey:
             case hiddenFiltersKey:
             case collectionBrowsingQuickActionsKey:
