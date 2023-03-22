@@ -53,21 +53,13 @@ extension ExtraAvesEntryLocation on AvesEntry {
             )
           : call());
       if (addresses.isNotEmpty) {
-        final address = addresses.first;
-        final cc = address.countryCode?.toUpperCase();
-        final cn = address.countryName;
-        final aa = address.adminArea;
-        final l = address.locality;
-        final sl = address.subLocality;
-        final saa = address.subAdminArea;
+        final v = addresses.first;
         addressDetails = AddressDetails(
           id: id,
-          countryCode: cc,
-          countryName: cn,
-          adminArea: aa,
-          // if country & admin fields are null, it is likely the ocean,
-          // which is identified by `featureName` but we default to the address line anyway
-          locality: l ?? sl ?? saa ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
+          countryCode: v.countryCode?.toUpperCase(),
+          countryName: v.countryName,
+          adminArea: v.adminArea,
+          locality: v.locality ?? v.subLocality ?? v.featureName ?? v.subAdminArea ?? v.addressLine,
         );
       }
     } catch (error, stack) {
