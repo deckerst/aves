@@ -59,6 +59,7 @@ class AboutTranslators extends StatelessWidget {
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('Martin Frandel', 'martinko.fr@gmail.com'), // Slovak
     // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
+    // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
   };
 
   @override
