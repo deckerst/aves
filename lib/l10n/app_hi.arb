@@ -1,0 +1,77 @@
+{
+  "welcomeOptional": "वैकल्पिक",
+  "@welcomeOptional": {},
+  "welcomeTermsToggle": "मैं नियमों और शर्तों पर सहमत हुं",
+  "@welcomeTermsToggle": {},
+  "columnCount": "{count, plural, =1{१ कॉलम} other{{count} कॉलम}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "timeSeconds": "{seconds, plural, =1{ १ सेकंड} other{{seconds} सेकंडस}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "timeDays": "{days, plural, =1{ १ दिन} other{{days} दिन}}",
+  "@timeDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "applyButtonLabel": "लगाऐ",
+  "@applyButtonLabel": {},
+  "nextButtonLabel": "आगे",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "देखे",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "छिपाए",
+  "@hideButtonLabel": {},
+  "continueButtonLabel": "जारी रखे",
+  "@continueButtonLabel": {},
+  "clearTooltip": "मिटाएं",
+  "@clearTooltip": {},
+  "actionRemove": "हटाएं",
+  "@actionRemove": {},
+  "itemCount": "{count, plural, =1{१ चीज} other{{count} चीजे}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "deleteButtonLabel": "डिलीट",
+  "@deleteButtonLabel": {},
+  "timeMinutes": "{minutes, plural, =1{ १ मिनट} other{{minutes} मिनट}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "focalLength": "{length} एम एम",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "nextTooltip": "आगे",
+  "@nextTooltip": {},
+  "appName": "ऐवीज",
+  "@appName": {},
+  "welcomeMessage": "ऐवीज मे आपका स्वागत है",
+  "@welcomeMessage": {},
+  "previousTooltip": "पिछे",
+  "@previousTooltip": {},
+  "hideTooltip": "छिपाए",
+  "@hideTooltip": {},
+  "cancelTooltip": "कैंसिल",
+  "@cancelTooltip": {},
+  "changeTooltip": "बदलें",
+  "@changeTooltip": {},
+  "showTooltip": "देखें",
+  "@showTooltip": {}
+}
