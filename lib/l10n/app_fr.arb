@@ -1274,5 +1274,9 @@
   "settingsVideoBackgroundMode": "Lecture en arrière-plan",
   "@settingsVideoBackgroundMode": {},
   "settingsVideoBackgroundModeDialogTitle": "Arrière-plan",
-  "@settingsVideoBackgroundModeDialogTitle": {}
+  "@settingsVideoBackgroundModeDialogTitle": {},
+  "settingsCollectionBurstPatternsNone": "Aucun",
+  "@settingsCollectionBurstPatternsNone": {},
+  "settingsCollectionBurstPatternsTile": "Modèles de rafale",
+  "@settingsCollectionBurstPatternsTile": {}
 }
