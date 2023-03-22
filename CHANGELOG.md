@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - Info: improved state/place display (requires rescan, limited to AU/GB/EN)
 - improved support for system font scale
 
+### Changed
+
+- upgraded Flutter to stable v3.7.8
+
 ### Fixed
 
 - permission confusion when removable volume changes
