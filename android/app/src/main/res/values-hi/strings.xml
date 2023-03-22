@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="analysis_notification_default_title">मीडिया जाँचा जा राहा है</string>
+    <string name="analysis_notification_action_stop">रोके</string>
+    <string name="app_widget_label">फोटो फ्रेम</string>
+    <string name="wallpaper">वॉलपेपर</string>
+    <string name="search_shortcut_short_label">खोजें</string>
+    <string name="analysis_channel_name">मीडिया जाँचे</string>
+    <string name="app_name">ऐवीज</string>
+    <string name="videos_shortcut_short_label">वीडियो</string>
+    <string name="analysis_service_description">छवि &amp; वीडियो जाँचे</string>
+</resources>
