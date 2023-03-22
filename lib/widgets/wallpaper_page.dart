@@ -262,7 +262,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
-      AvesApp.setSystemUIStyle(context);
+      AvesApp.setSystemUIStyle(Theme.of(context));
       if (animate) {
         await _overlayAnimationController.forward();
       } else {

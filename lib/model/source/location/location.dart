@@ -10,16 +10,18 @@ import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
+import 'package:aves/model/source/location/state.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
 
-mixin LocationMixin on CountryMixin, PlaceMixin {
+mixin LocationMixin on CountryMixin, StateMixin {
   static const commitCountThreshold = 200;
   static const _stopCheckCountThreshold = 50;
 
   List<String> sortedCountries = List.unmodifiable([]);
+  List<String> sortedStates = List.unmodifiable([]);
   List<String> sortedPlaces = List.unmodifiable([]);
 
   Future<void> loadAddresses({Set<int>? ids}) async {
@@ -152,31 +154,55 @@ mixin LocationMixin on CountryMixin, PlaceMixin {
 
   void updateLocations() {
     final locations = visibleEntries.map((entry) => entry.addressDetails).whereNotNull().toList();
+
     final updatedPlaces = locations.map((address) => address.place).whereNotNull().where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedPlaces, sortedPlaces)) {
       sortedPlaces = List.unmodifiable(updatedPlaces);
       eventBus.fire(PlacesChangedEvent());
     }
 
-    // the same country code could be found with different country names
-    // e.g. if the locale changed between geocoding calls
-    // so we merge countries by code, keeping only one name for each code
-    final countriesByCode = Map.fromEntries(locations.map((address) {
-      final code = address.countryCode;
-      if (code == null || code.isEmpty) return null;
-      return MapEntry(code, address.countryName);
-    }).whereNotNull());
-    final updatedCountries = countriesByCode.entries.map((kv) {
-      final code = kv.key;
-      final name = kv.value;
-      return '${name != null && name.isNotEmpty ? name : code}${LocationFilter.locationSeparator}$code';
-    }).toList()
-      ..sort(compareAsciiUpperCase);
+    final updatedStates = _getAreaByCode(
+      locations: locations,
+      getCode: (v) => v.stateCode,
+      getName: (v) => v.stateName,
+    );
+    if (!listEquals(updatedStates, sortedStates)) {
+      sortedStates = List.unmodifiable(updatedStates);
+      invalidateStateFilterSummary();
+      eventBus.fire(StatesChangedEvent());
+    }
+
+    final updatedCountries = _getAreaByCode(
+      locations: locations,
+      getCode: (v) => v.countryCode,
+      getName: (v) => v.countryName,
+    );
     if (!listEquals(updatedCountries, sortedCountries)) {
       sortedCountries = List.unmodifiable(updatedCountries);
       invalidateCountryFilterSummary();
       eventBus.fire(CountriesChangedEvent());
     }
+  }
+
+  // the same country/state code could be found with different country/state names
+  // e.g. if the locale changed between geocoding calls
+  // so we merge countries/states by code, keeping only one name for each code
+  List<String> _getAreaByCode({
+    required List<AddressDetails> locations,
+    required String? Function(AddressDetails address) getCode,
+    required String? Function(AddressDetails address) getName,
+  }) {
+    final namesByCode = Map.fromEntries(locations.map((address) {
+      final code = getCode(address);
+      if (code == null || code.isEmpty) return null;
+      return MapEntry(code, getName(address));
+    }).whereNotNull());
+    return namesByCode.entries.map((kv) {
+      final code = kv.key;
+      final name = kv.value;
+      return '${name != null && name.isNotEmpty ? name : code}${LocationFilter.locationSeparator}$code';
+    }).toList()
+      ..sort(compareAsciiUpperCase);
   }
 }
 

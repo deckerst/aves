@@ -5,8 +5,6 @@ import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 
 mixin CountryMixin on SourceBase {
-  // filter summary
-
   // by country code
   final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
@@ -39,19 +37,19 @@ mixin CountryMixin on SourceBase {
   }
 
   int countryEntryCount(LocationFilter filter) {
-    final countryCode = filter.countryCode;
+    final countryCode = filter.code;
     if (countryCode == null) return 0;
     return _filterEntryCountMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).length);
   }
 
   int countrySize(LocationFilter filter) {
-    final countryCode = filter.countryCode;
+    final countryCode = filter.code;
     if (countryCode == null) return 0;
     return _filterSizeMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
   }
 
   AvesEntry? countryRecentEntry(LocationFilter filter) {
-    final countryCode = filter.countryCode;
+    final countryCode = filter.code;
     if (countryCode == null) return null;
     return _filterRecentEntryMap.putIfAbsent(countryCode, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }

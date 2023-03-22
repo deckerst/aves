@@ -5,8 +5,6 @@ import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 
 mixin PlaceMixin on SourceBase {
-  // filter summary
-
   // by place
   final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};

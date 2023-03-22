@@ -230,7 +230,10 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchPlacesSectionTitle,
-          filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)).toList(),
+          filters: [
+            ...source.sortedStates.where(containQuery).map((s) => LocationFilter(LocationLevel.state, s)),
+            ...source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)),
+          ].toList(),
         );
       },
     );
