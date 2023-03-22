@@ -1,11 +1,10 @@
 import 'package:aves/model/device.dart';
 import 'package:aves/model/wallpaper_target.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/radio_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
-
-import 'aves_dialog.dart';
 
 class WallpaperSettingsDialog extends StatefulWidget {
   static const routeName = '/dialog/wallpaper_settings';

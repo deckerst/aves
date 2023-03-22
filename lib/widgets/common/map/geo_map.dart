@@ -21,7 +21,8 @@ import 'package:aves/widgets/common/map/buttons/panel.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
@@ -212,7 +213,7 @@ class _GeoMapState extends State<GeoMap> {
             child: OverlayTextButton(
               onPressed: () => showSelectionDialog<EntryMapStyle>(
                 context: context,
-                builder: (context) => AvesSelectionDialog<EntryMapStyle?>(
+                builder: (context) => AvesSingleSelectionDialog<EntryMapStyle?>(
                   initialValue: settings.mapStyle,
                   options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
                   title: context.l10n.mapStyleDialogTitle,
