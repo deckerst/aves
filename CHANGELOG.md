@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Info: improved state/place display (requires rescan, limited to AU/GB/EN)
 - improved support for system font scale
 
 ### Fixed

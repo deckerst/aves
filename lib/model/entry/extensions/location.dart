@@ -54,12 +54,16 @@ extension ExtraAvesEntryLocation on AvesEntry {
           : call());
       if (addresses.isNotEmpty) {
         final v = addresses.first;
+        var locality = v.locality ?? v.subLocality ?? v.featureName;
+        if (locality == null || locality == v.subThoroughfare) {
+          locality = v.subAdminArea ?? v.addressLine;
+        }
         addressDetails = AddressDetails(
           id: id,
           countryCode: v.countryCode?.toUpperCase(),
           countryName: v.countryName,
           adminArea: v.adminArea,
-          locality: v.locality ?? v.subLocality ?? v.featureName ?? v.subAdminArea ?? v.addressLine,
+          locality: locality,
         );
       }
     } catch (error, stack) {
