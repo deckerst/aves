@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.7.20'
+        kotlin_version = '1.8.0'
         abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
         useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
         useHms = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("huawei") }
