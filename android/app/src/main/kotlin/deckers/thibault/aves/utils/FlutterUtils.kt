@@ -17,7 +17,12 @@ import kotlin.coroutines.suspendCoroutine
 object FlutterUtils {
     private val LOG_TAG = LogUtils.createTag<FlutterUtils>()
 
-    suspend fun initFlutterEngine(context: Context, sharedPreferencesKey: String, callbackHandleKey: String, engineSetter: (engine: FlutterEngine) -> Unit) {
+    suspend fun initFlutterEngine(
+        context: Context,
+        sharedPreferencesKey: String,
+        callbackHandleKey: String,
+        engineSetter: (engine: FlutterEngine) -> Unit,
+    ) {
         val callbackHandle = context.getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE).getLong(callbackHandleKey, 0)
         if (callbackHandle == 0L) {
             Log.e(LOG_TAG, "failed to retrieve registered callback handle for sharedPreferencesKey=$sharedPreferencesKey callbackHandleKey=$callbackHandleKey")
