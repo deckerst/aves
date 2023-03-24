@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -68,7 +68,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await controller.seekTo(controller.currentPosition + 10000);
         break;
       case EntryAction.openVideo:
-        await androidAppService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
+        await appService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;

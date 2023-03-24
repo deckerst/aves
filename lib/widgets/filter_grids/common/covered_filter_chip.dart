@@ -13,6 +13,7 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -108,7 +109,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     if (_filter is AlbumFilter) {
       // when we asynchronously fetch installed app names,
       // album filters themselves do not change, but decoration derived from it does
-      chipKey = ValueKey(androidFileUtils.areAppNamesReadyNotifier.value);
+      chipKey = ValueKey(appInventory.areAppNamesReadyNotifier.value);
     }
     return AvesFilterChip(
       key: chipKey,

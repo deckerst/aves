@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/actions/entry_set.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

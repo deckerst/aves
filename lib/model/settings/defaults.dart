@@ -1,5 +1,5 @@
-import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/actions/entry.dart';
+import 'package:aves/model/actions/entry_set.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/settings/enums/enums.dart';

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/map_actions.dart';
-import 'package:aves/model/actions/map_cluster_actions.dart';
+import 'package:aves/model/actions/map.dart';
+import 'package:aves/model/actions/map_cluster.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/filters/coordinate.dart';

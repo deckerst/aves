@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/actions/chip.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';

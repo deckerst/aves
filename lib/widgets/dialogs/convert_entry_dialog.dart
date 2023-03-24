@@ -1,3 +1,4 @@
+import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/length_unit.dart';
@@ -205,7 +206,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
           valueListenable: _mimeTypeNotifier,
           builder: (context, mimeType, child) {
             Widget child;
-            if (MimeTypes.canEditExif(mimeType) || MimeTypes.canEditIptc(mimeType) || MimeTypes.canEditXmp(mimeType)) {
+            if (AppSupport.canEditExif(mimeType) || AppSupport.canEditIptc(mimeType) || AppSupport.canEditXmp(mimeType)) {
               child = SwitchListTile(
                 value: _writeMetadata,
                 onChanged: (v) => setState(() => _writeMetadata = v),

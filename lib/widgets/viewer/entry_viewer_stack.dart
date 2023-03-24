@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';

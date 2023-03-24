@@ -1,5 +1,5 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/slideshow_actions.dart';
+import 'package:aves/model/actions/slideshow.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/mime.dart';

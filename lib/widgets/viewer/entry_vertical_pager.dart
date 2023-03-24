@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/entry/extensions/location.dart';

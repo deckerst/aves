@@ -1,6 +1,6 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -23,7 +23,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
   @override
   void initState() {
     super.initState();
-    _loader = androidAppService.getPackages();
+    _loader = appService.getPackages();
   }
 
   @override

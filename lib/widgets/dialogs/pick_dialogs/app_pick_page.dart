@@ -1,7 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/basic/list_tiles/reselectable_radio.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -34,7 +34,7 @@ class _AppPickPageState extends State<AppPickPage> {
   void initState() {
     super.initState();
     _selectedValue = widget.initialValue;
-    _loader = androidAppService.getPackages();
+    _loader = appService.getPackages();
   }
 
   @override

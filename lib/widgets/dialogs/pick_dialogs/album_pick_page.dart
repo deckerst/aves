@@ -1,5 +1,5 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set_actions.dart';
+import 'package:aves/model/actions/chip_set.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';

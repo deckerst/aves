@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/actions/entry_set.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -20,7 +20,7 @@ import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -264,7 +264,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _share(BuildContext context) async {
     final entries = _getTargetItems(context);
     try {
-      if (!await androidAppService.shareEntries(entries)) {
+      if (!await appService.shareEntries(entries)) {
         await showNoMatchingAppDialog(context);
       }
     } on TooManyItemsException catch (_) {
@@ -741,7 +741,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final name = result.item2;
     if (name.isEmpty) return;
 
-    await androidAppService.pinToHomeScreen(name, coverEntry, filters: filters);
+    await appService.pinToHomeScreen(name, coverEntry, filters: filters);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
     }

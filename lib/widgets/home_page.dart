@@ -17,6 +17,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/services/widget_service.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
 
     await androidFileUtils.init();
     if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction) && settings.isInstalledAppAccessAllowed) {
-      unawaited(androidFileUtils.initAppNames());
+      unawaited(appInventory.initAppNames());
     }
 
     if (intentData.isNotEmpty) {
