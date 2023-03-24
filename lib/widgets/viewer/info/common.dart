@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -75,7 +75,7 @@ class InfoRowGroup extends StatefulWidget {
       final linkColor = Theme.of(context).colorScheme.primary;
       final style = InfoRowGroup.valueStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
 
-      return [TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', style: style, recognizer: recognizer)];
+      return [TextSpan(text: '${Unicode.FSI}$value${Unicode.PDI}', style: style, recognizer: recognizer)];
     };
   }
 }
@@ -164,7 +164,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
   // so that layout of the spans follows the directionality of the locale
   // (e.g. keys on the right for RTL locale, whatever the key intrinsic directionality)
   // and each span respects the directionality of its inner text only
-  String _buildTextValue(String value) => '${Constants.fsi}$value${Constants.pdi}';
+  String _buildTextValue(String value) => '${Unicode.FSI}$value${Unicode.PDI}';
 }
 
 typedef InfoValueSpanBuilder = List<InlineSpan> Function(BuildContext context, String key, String value);

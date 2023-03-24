@@ -1,6 +1,6 @@
-import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -117,7 +117,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
       final w = stream.width;
       final h = stream.height;
       if (w != null && h != null) {
-        return '$common • $w${ExtraAvesEntryProps.resolutionSeparator}$h';
+        return '$common • $w${AText.resolutionSeparator}$h';
       }
     }
     return common;

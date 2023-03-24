@@ -5,7 +5,6 @@ import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +60,7 @@ class CoordinateFilter extends CollectionFilter {
   bool get exclusiveProp => false;
 
   @override
-  String get universalLabel => _formatBounds(lookupAppLocalizations(AvesApp.supportedLocales.first), CoordinateFormat.decimal);
+  String get universalLabel => _formatBounds(lookupAppLocalizations(AppLocalizations.supportedLocales.first), CoordinateFormat.decimal);
 
   @override
   String getLabel(BuildContext context) => _formatBounds(context.l10n, context.read<Settings>().coordinateFormat);

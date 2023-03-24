@@ -33,6 +33,10 @@ class AvesColorsProvider extends StatelessWidget {
 }
 
 abstract class AvesColorsData {
+  static const defaultAccent = Colors.indigoAccent;
+  static const _neutralOnDark = Colors.white;
+  static const _neutralOnLight = Color(0xAA000000);
+
   Color get neutral;
 
   Color fromHue(double hue);
@@ -70,9 +74,6 @@ abstract class AvesColorsData {
   }
 
   void clearAppColor(String album) => _appColors.remove(album);
-
-  static const Color _neutralOnDark = Colors.white;
-  static const Color _neutralOnLight = Color(0xAA000000);
 
   // mime
   Color get image => fromHue(243);

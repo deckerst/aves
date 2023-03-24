@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/ref/unicode.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
@@ -67,7 +68,7 @@ class RatingFilter extends CollectionFilter {
       case 0:
         return context.l10n.filterNoRatingLabel;
       default:
-        return '\u2B50' * rating;
+        return Unicode.whiteMediumStar * rating;
     }
   }
 }

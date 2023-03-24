@@ -1,11 +1,11 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/length_unit.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
@@ -149,7 +149,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text(ExtraAvesEntryProps.resolutionSeparator),
+              const Text(AText.resolutionSeparator),
               const SizedBox(width: 8),
               Expanded(
                 child: TextField(

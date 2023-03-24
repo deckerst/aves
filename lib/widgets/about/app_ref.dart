@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/about/policy_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -10,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppReference extends StatefulWidget {
+  static const avesGithub = 'https://github.com/deckerst/aves';
+
   const AppReference({super.key});
 
   @override
@@ -79,7 +80,7 @@ class _AppReferenceState extends State<AppReference> {
             size: 24,
           ),
           text: 'GitHub',
-          urlString: Constants.avesGithub,
+          urlString: AppReference.avesGithub,
         ),
         LinkChip(
           leading: const Icon(
@@ -87,7 +88,7 @@ class _AppReferenceState extends State<AppReference> {
             size: 22,
           ),
           text: l10n.aboutLinkLicense,
-          urlString: '${Constants.avesGithub}/blob/main/LICENSE',
+          urlString: '${AppReference.avesGithub}/blob/main/LICENSE',
         ),
         LinkChip(
           leading: const Icon(

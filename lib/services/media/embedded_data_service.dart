@@ -1,6 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/text.dart';
 import 'package:flutter/services.dart';
 
 abstract class EmbeddedDataService {
@@ -42,7 +42,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': ['${entry.bestTitle}', dataUri].join(Constants.separator),
+        'displayName': ['${entry.bestTitle}', dataUri].join(AText.separator),
         'dataUri': dataUri,
       });
       if (result != null) return result as Map;
@@ -59,7 +59,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': ['${entry.bestTitle}', 'Image'].join(Constants.separator),
+        'displayName': ['${entry.bestTitle}', 'Image'].join(AText.separator),
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
@@ -75,7 +75,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': ['${entry.bestTitle}', 'Video'].join(Constants.separator),
+        'displayName': ['${entry.bestTitle}', 'Video'].join(AText.separator),
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
@@ -89,7 +89,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
     try {
       final result = await _platform.invokeMethod('extractVideoEmbeddedPicture', <String, dynamic>{
         'uri': entry.uri,
-        'displayName': ['${entry.bestTitle}', 'Cover'].join(Constants.separator),
+        'displayName': ['${entry.bestTitle}', 'Cover'].join(AText.separator),
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
@@ -105,7 +105,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': ['${entry.bestTitle}', '$props'].join(Constants.separator),
+        'displayName': ['${entry.bestTitle}', '$props'].join(AText.separator),
         'propPath': props,
         'propMimeType': propMimeType,
       });

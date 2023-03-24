@@ -2,7 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +34,7 @@ class TitledExpandableFilterRow extends StatelessWidget {
 
     Widget header = Text(
       title,
-      style: Constants.knownTitleTextStyle,
+      style: AStyles.knownTitleText,
     );
     void toggle() => expandedNotifier.value = isExpanded ? null : title;
     if (settings.useTvLayout) {

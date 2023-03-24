@@ -10,7 +10,8 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -34,7 +35,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   late Future<String> _infoLoader;
   bool _showInstructions = false;
 
-  static const bugReportUrl = '${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
+  static const bugReportUrl = '${AppReference.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutBugSectionTitle, style: Constants.knownTitleTextStyle),
+              child: Text(l10n.aboutBugSectionTitle, style: AStyles.knownTitleText),
             ),
           ),
           body: Padding(

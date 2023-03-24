@@ -1,5 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:flutter/material.dart';
 
 class AboutSectionTitle extends StatelessWidget {
@@ -15,7 +15,7 @@ class AboutSectionTitle extends StatelessWidget {
     Widget child = Container(
       alignment: AlignmentDirectional.centerStart,
       constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-      child: Text(text, style: Constants.knownTitleTextStyle),
+      child: Text(text, style: AStyles.knownTitleText),
     );
 
     if (settings.useTvLayout) {

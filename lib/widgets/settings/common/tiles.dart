@@ -1,6 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
@@ -179,7 +179,7 @@ class SettingsMultiSelectionListTile<T> extends StatelessWidget {
         }
         return ListTile(
           title: titleWidget,
-          subtitle: AvesCaption(current.isEmpty ? noneSubtitle : current.map((v) => getName(context, v)).join(Constants.separator)),
+          subtitle: AvesCaption(current.isEmpty ? noneSubtitle : current.map((v) => getName(context, v)).join(AText.separator)),
           onTap: () => showSelectionDialog<List<T>>(
             context: context,
             builder: (context) => AvesMultiSelectionDialog<T>(

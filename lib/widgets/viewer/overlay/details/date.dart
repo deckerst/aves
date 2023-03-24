@@ -2,7 +2,8 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
@@ -26,7 +27,7 @@ class OverlayDateRow extends StatelessWidget {
     final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
     final date = entry.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
+    final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;
     final resolutionText = entry.isSvg
         ? entry.aspectRatioText
         : entry.isSized
@@ -37,8 +38,8 @@ class OverlayDateRow extends StatelessWidget {
       children: [
         DecoratedIcon(AIcons.date, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
         const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
-        Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(flex: 3, child: Text(dateText, strutStyle: AStyles.overflowStrut)),
+        Expanded(flex: 2, child: Text(resolutionText, strutStyle: AStyles.overflowStrut)),
       ],
     );
   }

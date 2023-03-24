@@ -3,7 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +85,7 @@ class SectionHeader<T> extends StatelessWidget {
               ),
               TextSpan(
                 text: title,
-                style: Constants.unknownTitleTextStyle,
+                style: AStyles.unknownTitleText,
               ),
               if (trailing != null)
                 WidgetSpan(
@@ -141,7 +141,7 @@ class SectionHeader<T> extends StatelessWidget {
           if (hasTrailing) TextSpan(text: '\u200A' * 17),
           TextSpan(
             text: title,
-            style: Constants.unknownTitleTextStyle,
+            style: AStyles.unknownTitleText,
           ),
         ],
       ),

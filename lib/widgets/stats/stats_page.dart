@@ -12,7 +12,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
@@ -285,7 +285,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
         : null;
     Widget header = Text(
       title,
-      style: Constants.knownTitleTextStyle,
+      style: AStyles.knownTitleText,
     );
     if (settings.useTvLayout) {
       header = Container(

@@ -22,9 +22,9 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -224,12 +224,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                 final themeBrightness = s.item2;
                 final enableDynamicColor = s.item3;
 
-                Constants.updateStylesForLocale(settings.appliedLocale);
+                AStyles.updateStylesForLocale(settings.appliedLocale);
 
                 return FutureBuilder<CorePalette?>(
                   future: _dynamicColorPaletteLoader,
                   builder: (context, snapshot) {
-                    const defaultAccent = Themes.defaultAccent;
+                    const defaultAccent = AvesColorsData.defaultAccent;
                     Color lightAccent = defaultAccent, darkAccent = defaultAccent;
                     if (enableDynamicColor) {
                       // `DynamicColorBuilder` from package `dynamic_color` provides light/dark

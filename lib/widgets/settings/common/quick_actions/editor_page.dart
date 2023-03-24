@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
-import 'package:aves_utils/aves_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
@@ -13,6 +12,7 @@ import 'package:aves/widgets/settings/common/quick_actions/action_panel.dart';
 import 'package:aves/widgets/settings/common/quick_actions/available_actions.dart';
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:aves/widgets/settings/common/quick_actions/quick_actions.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -163,7 +163,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
             padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
             child: Text(
               context.l10n.settingsViewerQuickActionEditorDisplayedButtonsSectionTitle,
-              style: Constants.knownTitleTextStyle,
+              style: AStyles.knownTitleText,
             ),
           ),
           ValueListenableBuilder<bool>(
@@ -240,7 +240,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               context.l10n.settingsViewerQuickActionEditorAvailableButtonsSectionTitle,
-              style: Constants.knownTitleTextStyle,
+              style: AStyles.knownTitleText,
             ),
           ),
           ValueListenableBuilder<bool>(

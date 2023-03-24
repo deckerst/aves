@@ -9,10 +9,10 @@ import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/poi.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
@@ -331,7 +331,7 @@ class _GeoMapState extends State<GeoMap> {
       // fallback to default center
       var center = settings.mapDefaultCenter;
       if (center == null) {
-        center = Constants.wonders[Random().nextInt(Constants.wonders.length)];
+        center = PointsOfInterest.wonders[Random().nextInt(PointsOfInterest.wonders.length)];
         WidgetsBinding.instance.addPostFrameCallback((_) => settings.mapDefaultCenter = center);
       }
       bounds = ZoomedBounds.fromPoints(

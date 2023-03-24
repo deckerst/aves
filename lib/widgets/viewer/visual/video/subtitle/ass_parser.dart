@@ -1,3 +1,4 @@
+import 'package:aves/ref/unicode.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/line.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/span.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/style.dart';
@@ -38,8 +39,6 @@ class AssParser {
 
   // e.g. m 937.5 472.67 b 937.5 472.67 937.25 501.25 960 501.5 960 501.5 937.5 500.33 937.5 529.83
   static final pathPattern = RegExp(r'([mnlbspc])([.\s\d]+)');
-
-  static const noBreakSpace = '\u00A0';
 
   // Parse text with ASS style overrides
   // cf https://aegi.vmoe.info/docs/3.0/ASS_Tags/
@@ -389,7 +388,7 @@ class AssParser {
     );
   }
 
-  static String _replaceChars(String text) => text.replaceAll(r'\h', noBreakSpace).replaceAll(r'\N', '\n').trim();
+  static String _replaceChars(String text) => text.replaceAll(r'\h', Unicode.noBreakSpace).replaceAll(r'\N', '\n').trim();
 
   static int? _parseAlpha(String param) {
     final match = alphaPattern.firstMatch(param);

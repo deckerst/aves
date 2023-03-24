@@ -1,6 +1,6 @@
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/colors.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
@@ -123,12 +123,12 @@ class _OverlayBackgroundState extends State<_OverlayBackground> {
             gradient: RadialGradient(
               colors: isDark
                   ? const [
-                      Constants.transparentBlack,
-                      Constants.transparentBlack,
+                      ColorUtils.transparentBlack,
+                      ColorUtils.transparentBlack,
                     ]
                   : const [
-                      Constants.transparentWhite,
-                      Constants.transparentWhite,
+                      ColorUtils.transparentWhite,
+                      ColorUtils.transparentWhite,
                     ],
             ),
           );
