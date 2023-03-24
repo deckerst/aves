@@ -5,7 +5,7 @@ import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -117,7 +117,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 l10n.renameEntrySetPagePreviewSectionTitle,
-                style: Constants.knownTitleTextStyle,
+                style: AStyles.knownTitleText,
               ),
             ),
             Expanded(

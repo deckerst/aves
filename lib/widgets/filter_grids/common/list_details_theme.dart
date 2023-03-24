@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/theme/format.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class FilterListDetailsTheme extends StatelessWidget {
           TextSpan(text: formatDateTime(DateTime.now(), locale, use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
           textScaleFactor: textScaleFactor,
-          strutStyle: Constants.overflowStrutStyle,
+          strutStyle: AStyles.overflowStrut,
         )..layout(const BoxConstraints(), parentUsesSize: true))
             .getMaxIntrinsicHeight(double.infinity);
 

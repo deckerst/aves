@@ -1,6 +1,7 @@
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
@@ -20,22 +21,22 @@ class OverlayShootingRow extends StatelessWidget {
     final locale = context.l10n.localeName;
 
     final aperture = details.aperture;
-    final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', locale).format(aperture)}' : Constants.overlayUnknown;
+    final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', locale).format(aperture)}' : AText.valueNotAvailable;
 
     final focalLength = details.focalLength;
-    final focalLengthText = focalLength != null ? context.l10n.focalLength(NumberFormat('0.#', locale).format(focalLength)) : Constants.overlayUnknown;
+    final focalLengthText = focalLength != null ? context.l10n.focalLength(NumberFormat('0.#', locale).format(focalLength)) : AText.valueNotAvailable;
 
     final iso = details.iso;
-    final isoText = iso != null ? 'ISO$iso' : Constants.overlayUnknown;
+    final isoText = iso != null ? 'ISO$iso' : AText.valueNotAvailable;
 
     return Row(
       children: [
         DecoratedIcon(AIcons.shooting, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
         const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
-        Expanded(child: Text(apertureText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(focalLengthText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(isoText, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(apertureText, strutStyle: AStyles.overflowStrut)),
+        Expanded(child: Text(details.exposureTime ?? AText.valueNotAvailable, strutStyle: AStyles.overflowStrut)),
+        Expanded(child: Text(focalLengthText, strutStyle: AStyles.overflowStrut)),
+        Expanded(child: Text(isoText, strutStyle: AStyles.overflowStrut)),
       ],
     );
   }

@@ -1,5 +1,5 @@
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/colors.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_grid.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +110,7 @@ class _OverlayBackgroundState extends State<_OverlayBackground> {
             color: isDark ? Colors.black87 : const Color(0xDDFFFFFF),
           )
         : BoxDecoration(
-            color: isDark ? Constants.transparentBlack : Constants.transparentWhite,
+            color: isDark ? ColorUtils.transparentBlack : ColorUtils.transparentWhite,
           );
   }
 }

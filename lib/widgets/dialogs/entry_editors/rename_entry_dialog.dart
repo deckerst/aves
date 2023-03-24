@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RenameEntryDialog extends StatefulWidget {
@@ -43,7 +43,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
   @override
   Widget build(BuildContext context) {
     final isRtl = context.isRtl;
-    final extensionSuffixText = '${Constants.fsi}${entry.extension}${Constants.pdi}';
+    final extensionSuffixText = '${Unicode.FSI}${entry.extension}${Unicode.PDI}';
     return AvesDialog(
       content: TextField(
         controller: _nameController,

@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
 import 'package:collection/collection.dart';
@@ -40,7 +41,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
         children: [
           TextSpan(text: ratingString),
           if (hasTags) ...[
-            if (ratingString.isNotEmpty) const TextSpan(text: Constants.separator),
+            if (ratingString.isNotEmpty) const TextSpan(text: AText.separator),
             WidgetSpan(
               alignment: PlaceholderAlignment.middle,
               child: Padding(
@@ -52,11 +53,11 @@ class OverlayRatingTagsRow extends AnimatedWidget {
                 ),
               ),
             ),
-            TextSpan(text: tags.join(Constants.separator)),
+            TextSpan(text: tags.join(AText.separator)),
           ]
         ],
       ),
-      strutStyle: Constants.overflowStrutStyle,
+      strutStyle: AStyles.overflowStrut,
     );
   }
 }

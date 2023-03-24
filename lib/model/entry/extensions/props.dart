@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/ref/unicode.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
 
 extension ExtraAvesEntryProps on AvesEntry {
@@ -81,15 +83,12 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get canRemoveMetadata => MimeTypes.canRemoveMetadata(mimeType);
 
-  static const ratioSeparator = '\u2236';
-  static const resolutionSeparator = ' \u00D7 ';
-
   bool get isSized => width > 0 && height > 0;
 
   String get resolutionText {
     final ws = width;
     final hs = height;
-    return isRotated ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
+    return isRotated ? '$hs${AText.resolutionSeparator}$ws' : '$ws${AText.resolutionSeparator}$hs';
   }
 
   String get aspectRatioText {
@@ -97,9 +96,9 @@ extension ExtraAvesEntryProps on AvesEntry {
       final gcd = width.gcd(height);
       final w = width ~/ gcd;
       final h = height ~/ gcd;
-      return isRotated ? '$h$ratioSeparator$w' : '$w$ratioSeparator$h';
+      return isRotated ? '$h${Unicode.ratio}$w' : '$w${Unicode.ratio}$h';
     } else {
-      return '?$ratioSeparator?';
+      return '?${Unicode.ratio}?';
     }
   }
 

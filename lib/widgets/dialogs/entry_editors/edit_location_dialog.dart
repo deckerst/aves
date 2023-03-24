@@ -6,10 +6,10 @@ import 'package:aves/model/metadata/enums/location_edit_action.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/ref/poi.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
@@ -250,7 +250,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                   controller: _latitudeController,
                   decoration: InputDecoration(
                     labelText: l10n.editEntryLocationDialogLatitude,
-                    hintText: coordinateFormatter.format(Constants.pointNemo.latitude),
+                    hintText: coordinateFormatter.format(PointsOfInterest.pointNemo.latitude),
                   ),
                   onChanged: (_) => _validate(),
                 ),
@@ -258,7 +258,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
                   controller: _longitudeController,
                   decoration: InputDecoration(
                     labelText: l10n.editEntryLocationDialogLongitude,
-                    hintText: coordinateFormatter.format(Constants.pointNemo.longitude),
+                    hintText: coordinateFormatter.format(PointsOfInterest.pointNemo.longitude),
                   ),
                   onChanged: (_) => _validate(),
                 ),

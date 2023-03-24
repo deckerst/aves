@@ -8,7 +8,8 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -267,8 +268,8 @@ class _AddressRowState extends State<_AddressRow> {
               valueListenable: _addressLineNotifier,
               builder: (context, addressLine, child) {
                 return Text(
-                  addressLine ?? Constants.overlayUnknown,
-                  strutStyle: Constants.overflowStrutStyle,
+                  addressLine ?? AText.valueNotAvailable,
+                  strutStyle: AStyles.overflowStrut,
                   softWrap: false,
                   overflow: TextOverflow.fade,
                   maxLines: 1,
@@ -317,8 +318,8 @@ class _CoordinateRow extends StatelessWidget {
         const SizedBox(width: _LocationInfo.iconPadding),
         Expanded(
           child: Text(
-            location != null ? settings.coordinateFormat.format(context.l10n, location!) : Constants.overlayUnknown,
-            strutStyle: Constants.overflowStrutStyle,
+            location != null ? settings.coordinateFormat.format(context.l10n, location!) : AText.valueNotAvailable,
+            strutStyle: AStyles.overflowStrut,
             softWrap: false,
             overflow: TextOverflow.fade,
             maxLines: 1,

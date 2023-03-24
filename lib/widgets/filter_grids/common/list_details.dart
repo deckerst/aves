@@ -4,8 +4,9 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -87,7 +88,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
     final locale = context.l10n.localeName;
     final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
     final date = entry?.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
+    final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;
 
     Widget leading = const Icon(AIcons.date);
     if (hasTitleLeading) {
@@ -106,7 +107,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
             child: Text(
               dateText,
               style: detailsTheme.captionStyle,
-              strutStyle: Constants.overflowStrutStyle,
+              strutStyle: AStyles.overflowStrut,
               softWrap: false,
               overflow: TextOverflow.fade,
             ),
@@ -157,7 +158,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
           Text(
             '${l10n.itemCount(source.count(filter))} • ${formatFileSize(locale, source.size(filter))}',
             style: detailsTheme.captionStyle,
-            strutStyle: Constants.overflowStrutStyle,
+            strutStyle: AStyles.overflowStrut,
             softWrap: false,
             overflow: TextOverflow.fade,
           ),

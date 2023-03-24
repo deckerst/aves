@@ -12,8 +12,8 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
@@ -214,7 +214,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             ),
           ),
         Text(
-          locked ? Constants.overlayUnknown : numberFormat.format(source.count(filter)),
+          locked ? AText.valueNotAvailable : numberFormat.format(source.count(filter)),
           style: TextStyle(
             color: _detailColor(context),
             fontSize: fontSize,

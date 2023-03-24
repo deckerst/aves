@@ -2,7 +2,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/utils/dependencies.dart';
+import 'package:aves/model/dependencies.dart';
 import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/about/tv_license_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';

@@ -1,4 +1,4 @@
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/text.dart';
 import 'package:intl/intl.dart';
 
 String formatDay(DateTime date, String locale) => DateFormat.yMMMd(locale).format(date);
@@ -8,7 +8,7 @@ String formatTime(DateTime date, String locale, bool use24hour) => (use24hour ? 
 String formatDateTime(DateTime date, String locale, bool use24hour) => [
       formatDay(date, locale),
       formatTime(date, locale, use24hour),
-    ].join(Constants.separator);
+    ].join(AText.separator);
 
 String formatFriendlyDuration(Duration d) {
   final seconds = (d.inSeconds.remainder(Duration.secondsPerMinute)).toString().padLeft(2, '0');

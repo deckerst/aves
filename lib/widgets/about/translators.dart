@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -154,7 +154,7 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
       TextSpan(
         children: [
           ...widget.spans.expandIndexed((i, v) => [
-                if (i != 0) const TextSpan(text: Constants.separator),
+                if (i != 0) const TextSpan(text: AText.separator),
                 TextSpan(text: v, style: i == _highlightedIndex ? _animatedStyle.value : _baseStyle),
               ])
         ],

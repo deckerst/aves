@@ -6,7 +6,8 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
@@ -118,13 +119,13 @@ class _AddressRowState extends State<_AddressRow> {
               builder: (context, addressLine, child) {
                 final location = addressLine ??
                     (entry == null
-                        ? Constants.overlayUnknown
+                        ? AText.valueNotAvailable
                         : entry.hasAddress
                             ? entry.shortAddress
                             : settings.coordinateFormat.format(context.l10n, entry.latLng!));
                 return Text(
                   location,
-                  strutStyle: Constants.overflowStrutStyle,
+                  strutStyle: AStyles.overflowStrut,
                   softWrap: false,
                   overflow: TextOverflow.fade,
                   maxLines: 1,
@@ -170,7 +171,7 @@ class _DateRow extends StatelessWidget {
     final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
 
     final date = entry?.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
+    final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;
     return Row(
       children: [
         const SizedBox(width: MapInfoRow.iconPadding),
@@ -179,7 +180,7 @@ class _DateRow extends StatelessWidget {
         Expanded(
           child: Text(
             dateText,
-            strutStyle: Constants.overflowStrutStyle,
+            strutStyle: AStyles.overflowStrut,
             softWrap: false,
             overflow: TextOverflow.fade,
             maxLines: 1,
