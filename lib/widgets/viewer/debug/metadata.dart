@@ -7,7 +7,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/services/geocoding_service.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
@@ -101,10 +100,7 @@ class _MetadataTabState extends State<MetadataTab> {
           if (data.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-              child: InfoRowGroup(
-                info: data,
-                maxValueLength: Constants.infoGroupMaxValueLength,
-              ),
+              child: InfoRowGroup(info: data),
             )
         ],
       );

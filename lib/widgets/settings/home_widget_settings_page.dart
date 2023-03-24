@@ -6,10 +6,9 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/widget_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/home_widget.dart';
 import 'package:aves/widgets/settings/common/collection_tile.dart';
@@ -218,7 +217,6 @@ class HomeWidgetOutlineSelector extends StatefulWidget {
 }
 
 class _HomeWidgetOutlineSelectorState extends State<HomeWidgetOutlineSelector> {
-  static const radius = Constants.colorPickerRadius;
   static const List<Color?> options = [
     null,
     Colors.black,
@@ -243,14 +241,8 @@ class _HomeWidgetOutlineSelectorState extends State<HomeWidgetOutlineSelector> {
     return options.map((selected) {
       return DropdownMenuItem<Color?>(
         value: selected,
-        child: Container(
-          height: radius * 2,
-          width: radius * 2,
-          decoration: BoxDecoration(
-            color: selected,
-            border: AvesBorder.border(context),
-            shape: BoxShape.circle,
-          ),
+        child: ColorIndicator(
+          value: selected,
           child: selected == null ? const Icon(AIcons.clear) : null,
         ),
       );

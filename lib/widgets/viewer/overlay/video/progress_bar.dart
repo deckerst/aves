@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_video/aves_video.dart';
@@ -42,7 +42,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
     final blurred = settings.enableBlurEffect;
     final brightness = Theme.of(context).brightness;
     final textStyle = TextStyle(
-      shadows: brightness == Brightness.dark ? Constants.embossShadows : null,
+      shadows: brightness == Brightness.dark ? AStyles.embossShadows : null,
     );
     return SizeTransition(
       sizeFactor: widget.scale,

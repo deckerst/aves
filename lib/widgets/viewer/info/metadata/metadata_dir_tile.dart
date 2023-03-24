@@ -4,7 +4,6 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -117,7 +116,6 @@ class MetadataDirTileBody extends StatelessWidget {
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(
             info: tags,
-            maxValueLength: Constants.infoGroupMaxValueLength,
             spanBuilders: linkHandlers,
           ),
         ),

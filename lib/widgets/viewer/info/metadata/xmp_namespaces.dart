@@ -1,6 +1,5 @@
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
@@ -103,7 +102,6 @@ class XmpNamespace extends Equatable {
       if (props.isNotEmpty)
         InfoRowGroup(
           info: Map.fromEntries(props.map((v) => MapEntry(v.displayKey, formatValue(v)))),
-          maxValueLength: Constants.infoGroupMaxValueLength,
           spanBuilders: linkifyValues(props),
         ),
       ...cards.where((v) => !v.isEmpty).map((card) {

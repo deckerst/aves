@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -14,7 +15,6 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
@@ -716,5 +716,5 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     return crumbs;
   }
 
-  Future<bool> get _isStoragePermissionGranted => Future.wait(Constants.storagePermissions.map((v) => v.status)).then((v) => v.any((status) => status.isGranted));
+  Future<bool> get _isStoragePermissionGranted => Future.wait(Permissions.storage.map((v) => v.status)).then((v) => v.any((status) => status.isGranted));
 }

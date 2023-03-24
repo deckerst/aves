@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/multi_cross_fader.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
@@ -127,7 +126,6 @@ class _XmpCardState extends State<XmpCard> {
                   padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                   child: InfoRowGroup(
                     info: Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, widget.formatValue(prop)))),
-                    maxValueLength: Constants.infoGroupMaxValueLength,
                     spanBuilders: widget.spanBuilders?.call(_isIndexed ? index + 1 : null),
                   ),
                 ),

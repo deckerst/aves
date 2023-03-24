@@ -96,9 +96,9 @@ extension ExtraAvesEntryProps on AvesEntry {
       final gcd = width.gcd(height);
       final w = width ~/ gcd;
       final h = height ~/ gcd;
-      return isRotated ? '$h${Unicode.ratio}$w' : '$w${Unicode.ratio}$h';
+      return isRotated ? '$h${UniChars.ratio}$w' : '$w${UniChars.ratio}$h';
     } else {
-      return '?${Unicode.ratio}?';
+      return '?${UniChars.ratio}?';
     }
   }
 

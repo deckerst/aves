@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_chooser.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
                   padding: const EdgeInsets.all(4),
                   child: Icon(
                     _rating < thisRating ? AIcons.rating : AIcons.ratingFull,
-                    color: _rating < thisRating ? Colors.grey : Colors.amber,
+                    color: _rating < thisRating ? AColors.starDisabled : AColors.starEnabled,
                   ),
                 );
               }).toList(),

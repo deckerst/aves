@@ -6,7 +6,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class HomeWidgetPainter {
   static const backgroundGradient = LinearGradient(
     begin: Alignment.bottomLeft,
     end: Alignment.topRight,
-    colors: Constants.boraBoraGradientColors,
+    colors: AColors.boraBoraGradient,
   );
 
   HomeWidgetPainter({

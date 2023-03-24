@@ -1,6 +1,6 @@
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/basic/text/background_painter.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -35,7 +35,7 @@ class SubtitleSample extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.bottomLeft,
               end: Alignment.topRight,
-              colors: Constants.boraBoraGradientColors,
+              colors: AColors.boraBoraGradient,
             ),
             border: AvesBorder.border(context),
             borderRadius: const BorderRadius.all(Radius.circular(24)),

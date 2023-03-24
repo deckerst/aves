@@ -1,7 +1,6 @@
 import 'package:aves/model/settings/enums/entry_background.dart';
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/fx/borders.dart';
+import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +19,6 @@ class EntryBackgroundSelector extends StatefulWidget {
 }
 
 class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
-  static const radius = Constants.colorPickerRadius;
-
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
@@ -46,19 +43,13 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
     ].map((selected) {
       return DropdownMenuItem<EntryBackground>(
         value: selected,
-        child: Container(
-          height: radius * 2,
-          width: radius * 2,
-          decoration: BoxDecoration(
-            color: selected.isColor ? selected.color : null,
-            border: AvesBorder.border(context),
-            shape: BoxShape.circle,
-          ),
+        child: ColorIndicator(
+          value: selected.isColor ? selected.color : null,
           child: selected == EntryBackground.checkered
               ? ClipOval(
                   child: CustomPaint(
                     painter: CheckeredPainter(
-                      checkSize: radius,
+                      checkSize: ColorIndicator.radius,
                     ),
                   ),
                 )
