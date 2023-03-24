@@ -60,7 +60,6 @@ class AvesApp extends StatefulWidget {
   static final _unsupportedLocales = {'ar', 'ckb', 'fa', 'gl', 'he', 'hi', 'nn', 'sk', 'th'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   // do not monitor all `ModalRoute`s, which would include popup menus,
   // so that we can react to fullscreen `PageRoute`s only
@@ -156,6 +155,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
   // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
   static const defaultPageTransitionsBuilder = FadeUpwardsPageTransitionsBuilder();
+  static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   @override
   void initState() {
@@ -259,7 +259,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 accessibleNavigation: false,
                               ),
                               child: MaterialApp(
-                                navigatorKey: AvesApp.navigatorKey,
+                                navigatorKey: _navigatorKey,
                                 home: home,
                                 navigatorObservers: _navigatorObservers,
                                 builder: (context, child) => _decorateAppChild(
@@ -510,7 +510,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     void applyForceTvLayout() {
       _onTvLayoutChanged();
-      unawaited(AvesApp.navigatorKey.currentState!.pushAndRemoveUntil(
+      unawaited(_navigatorKey.currentState!.pushAndRemoveUntil(
         MaterialPageRoute(
           settings: const RouteSettings(name: HomePage.routeName),
           builder: (_) => _getFirstPage(),
@@ -572,7 +572,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     }
 
     reportService.log('New intent data=$intentData');
-    AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
+    _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => _getFirstPage(intentData: intentData),
     ));

@@ -21,7 +21,6 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -91,14 +90,15 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         unawaited(source.refreshUris(newUris));
 
         final l10n = context.l10n;
+        // get navigator beforehand because
+        // local context may be deactivated when action is triggered after navigation
+        final navigator = Navigator.maybeOf(context);
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
                 label: l10n.showButtonLabel,
                 onPressed: () {
-                  // local context may be deactivated when action is triggered after navigation
-                  final context = AvesApp.navigatorKey.currentContext;
-                  if (context != null) {
-                    Navigator.maybeOf(context)?.pushAndRemoveUntil(
+                  if (navigator != null) {
+                    navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
                         settings: const RouteSettings(name: CollectionPage.routeName),
                         builder: (context) => CollectionPage(
@@ -235,17 +235,18 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
           SnackBarAction? action;
           if (count > 0 && appMode == AppMode.main) {
+            // get navigator beforehand because
+            // local context may be deactivated when action is triggered after navigation
+            final navigator = Navigator.maybeOf(context);
             if (toBin) {
               if (movedEntries.isNotEmpty) {
                 action = SnackBarAction(
                   // TODO TLAD [l10n] key for "RESTORE"
                   label: l10n.entryActionRestore.toUpperCase(),
                   onPressed: () {
-                    // local context may be deactivated when action is triggered after navigation
-                    final context = AvesApp.navigatorKey.currentContext;
-                    if (context != null) {
+                    if (navigator != null) {
                       doMove(
-                        context,
+                        navigator.context,
                         moveType: MoveType.fromBin,
                         entries: movedEntries,
                         hideShowAction: true,
@@ -258,10 +259,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
               action = SnackBarAction(
                 label: l10n.showButtonLabel,
                 onPressed: () {
-                  // local context may be deactivated when action is triggered after navigation
-                  final context = AvesApp.navigatorKey.currentContext;
-                  if (context != null) {
-                    _showMovedItems(context, destinationAlbums, movedOps);
+                  if (navigator != null) {
+                    _showMovedItems(navigator.context, destinationAlbums, movedOps);
                   }
                 },
               );
