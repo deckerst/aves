@@ -68,7 +68,7 @@ class RatingFilter extends CollectionFilter {
       case 0:
         return context.l10n.filterNoRatingLabel;
       default:
-        return Unicode.whiteMediumStar * rating;
+        return UniChars.whiteMediumStar * rating;
     }
   }
 }

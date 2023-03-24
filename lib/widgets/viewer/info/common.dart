@@ -45,8 +45,9 @@ class InfoRowGroup extends StatefulWidget {
   final int maxValueLength;
   final Map<String, InfoValueSpanBuilder> spanBuilders;
 
-  static const keyValuePadding = 16;
-  static const fontSize = 13.0;
+  static const int defaultMaxValueLength = 140;
+  static const double keyValuePadding = 16;
+  static const double fontSize = 13;
   static const valueStyle = TextStyle(fontSize: fontSize);
   static final _keyStyle = valueStyle.copyWith(height: 2.0);
 
@@ -55,7 +56,7 @@ class InfoRowGroup extends StatefulWidget {
   const InfoRowGroup({
     super.key,
     required this.info,
-    this.maxValueLength = 0,
+    this.maxValueLength = defaultMaxValueLength,
     Map<String, InfoValueSpanBuilder>? spanBuilders,
   }) : spanBuilders = spanBuilders ?? const {};
 

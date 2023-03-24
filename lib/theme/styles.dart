@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class AStyles {
   // as of Flutter v2.8.0, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
@@ -19,4 +19,11 @@ class AStyles {
     final smcp = locale.languageCode != 'el';
     unknownTitleText = smcp ? knownTitleText : knownTitleText.copyWith(fontFeatures: []);
   }
+
+  static const embossShadows = [
+    Shadow(
+      color: Colors.black,
+      offset: Offset(0.5, 1.0),
+    )
+  ];
 }

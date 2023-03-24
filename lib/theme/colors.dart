@@ -7,6 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
 
+class AColors {
+  static const starEnabled = Colors.amber;
+  static const starDisabled = Colors.grey;
+
+  static const boraBoraGradient = [
+    Color(0xff2bc0e4),
+    Color(0xffeaecc6),
+  ];
+}
+
 class AvesColorsProvider extends StatelessWidget {
   final Widget child;
 

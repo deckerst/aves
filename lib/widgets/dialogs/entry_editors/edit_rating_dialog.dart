@@ -1,4 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -73,7 +74,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
                           padding: const EdgeInsets.all(4),
                           child: Icon(
                             _rating < thisRating ? AIcons.rating : AIcons.ratingFull,
-                            color: _rating < thisRating ? Colors.grey : Colors.amber,
+                            color: _rating < thisRating ? AColors.starDisabled : AColors.starEnabled,
                           ),
                         ),
                       );
