@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/actions/chip.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';

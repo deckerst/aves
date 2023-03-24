@@ -6,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';

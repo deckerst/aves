@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:aves/model/apps.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
@@ -121,7 +123,7 @@ class Covers {
 
   String? effectiveAlbumPackage(String albumPath) {
     final filterPackage = of(AlbumFilter(albumPath, null))?.item2;
-    return filterPackage ?? androidFileUtils.getAlbumAppPackageName(albumPath);
+    return filterPackage ?? appInventory.getAlbumAppPackageName(albumPath);
   }
 
   // import/export

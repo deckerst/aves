@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/app_flavor.dart';
-import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
+import 'package:aves/model/actions/entry.dart';
+import 'package:aves/model/actions/entry_set.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';

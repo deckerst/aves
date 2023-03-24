@@ -7,6 +7,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -35,7 +36,7 @@ class AlbumListPage extends StatelessWidget {
       },
       builder: (context, s, child) {
         return ValueListenableBuilder<bool>(
-          valueListenable: androidFileUtils.areAppNamesReadyNotifier,
+          valueListenable: appInventory.areAppNamesReadyNotifier,
           builder: (context, areAppNamesReady, child) {
             return StreamBuilder(
               stream: source.eventBus.on<AlbumsChangedEvent>(),

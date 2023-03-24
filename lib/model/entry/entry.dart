@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:aves/model/entry/cache.dart';
@@ -7,13 +6,12 @@ import 'package:aves/model/entry/dirs.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
-import 'package:aves/model/source/trash.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -79,10 +77,6 @@ class AvesEntry with AvesEntryBase {
     this.dateModifiedSecs = dateModifiedSecs;
     this.durationMillis = durationMillis;
   }
-
-  bool get canDecode => !MimeTypes.undecodableImages.contains(mimeType);
-
-  bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
   AvesEntry copyWith({
     int? id,
@@ -225,15 +219,6 @@ class AvesEntry with AvesEntryBase {
     return _extension;
   }
 
-  String? get storagePath => trashed ? trashDetails?.path : path;
-
-  String? get storageDirectory => trashed ? pContext.dirname(trashDetails!.path) : directory;
-
-  bool get isMissingAtPath {
-    final _storagePath = storagePath;
-    return _storagePath != null && !File(_storagePath).existsSync();
-  }
-
   // the MIME type reported by the Media Store is unreliable
   // so we use the one found during cataloguing if possible
   String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
@@ -321,18 +306,6 @@ class AvesEntry with AvesEntryBase {
   String get durationText {
     _durationText ??= formatFriendlyDuration(Duration(milliseconds: durationMillis ?? 0));
     return _durationText!;
-  }
-
-  bool get isExpiredTrash {
-    final dateMillis = trashDetails?.dateMillis;
-    if (dateMillis == null) return false;
-    return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).isBefore(DateTime.now());
-  }
-
-  int? get trashDaysLeft {
-    final dateMillis = trashDetails?.dateMillis;
-    if (dateMillis == null) return null;
-    return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).difference(DateTime.now()).inDays;
   }
 
   // returns whether this entry has GPS coordinates

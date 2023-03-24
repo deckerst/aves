@@ -1,8 +1,8 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
-import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/images.dart';
+import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/theme/icons.dart';
@@ -130,7 +130,6 @@ class ViewerDebugPage extends StatelessWidget {
             'sizeBytes': '${entry.sizeBytes}',
             'isFavourite': '${entry.isFavourite}',
             'isSvg': '${entry.isSvg}',
-            'isPhoto': '${entry.isPhoto}',
             'isVideo': '${entry.isVideo}',
             'isCatalogued': '${entry.isCatalogued}',
             'isAnimated': '${entry.isAnimated}',

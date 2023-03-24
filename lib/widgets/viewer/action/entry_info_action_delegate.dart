@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/actions/events.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/info.dart';

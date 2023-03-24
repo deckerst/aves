@@ -9,3 +9,14 @@ enum EntrySortFactor { date, name, rating, size }
 enum EntryGroupFactor { none, album, month, day }
 
 enum TileLayout { mosaic, grid, list }
+
+enum AlbumType {
+  regular,
+  vault,
+  app,
+  camera,
+  download,
+  screenRecordings,
+  screenshots,
+  videoCaptures,
+}

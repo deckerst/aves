@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/map_actions.dart';
+import 'package:aves/model/actions/map.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';

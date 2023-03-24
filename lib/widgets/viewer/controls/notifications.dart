@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/filters.dart';

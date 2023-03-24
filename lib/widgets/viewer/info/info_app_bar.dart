@@ -1,5 +1,5 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/selection.dart';

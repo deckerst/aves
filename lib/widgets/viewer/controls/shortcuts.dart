@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/entry.dart';
 import 'package:aves/widgets/viewer/controls/intents.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';

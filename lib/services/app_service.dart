@@ -1,14 +1,14 @@
+import 'package:aves/model/apps.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
-abstract class AndroidAppService {
+abstract class AppService {
   Future<Set<Package>> getPackages();
 
   Future<Uint8List> getAppIcon(String packageName, double size);
@@ -30,7 +30,7 @@ abstract class AndroidAppService {
   Future<void> pinToHomeScreen(String label, AvesEntry? coverEntry, {Set<CollectionFilter>? filters, String? uri});
 }
 
-class PlatformAndroidAppService implements AndroidAppService {
+class PlatformAppService implements AppService {
   static const _platform = MethodChannel('deckers.thibault/aves/app');
 
   static final _knownAppDirs = {

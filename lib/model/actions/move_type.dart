@@ -1,1 +1,7 @@
-enum MoveType { copy, move, export, toBin, fromBin }
+enum MoveType {
+  copy,
+  move,
+  export,
+  toBin,
+  fromBin,
+}

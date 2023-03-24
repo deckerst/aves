@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/map_actions.dart';
+import 'package:aves/model/actions/map.dart';
 import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
