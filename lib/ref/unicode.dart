@@ -40,6 +40,44 @@ class EmojiStateCodes {
   static const gbScotland = 'gbsct';
   static const gbWales = 'gbwls';
 
+  // IN
+  static const inAndamanAndNicobarIslands = 'inan';
+  static const inAndhraPradesh = 'inap';
+  static const inArunachalPradesh = 'inar';
+  static const inAssam = 'inas';
+  static const inBihar = 'inbr';
+  static const inChandigarh = 'inch';
+  static const inChhattisgarh = 'inct';
+  static const inDamanAndDiu = 'indd';
+  static const inDelhi = 'indl';
+  static const inDadraAndNagarHaveli = 'indn';
+  static const inGoa = 'inga';
+  static const inGujarat = 'ingj';
+  static const inHimachalPradesh = 'inhp';
+  static const inHaryana = 'inhr';
+  static const inJharkhand = 'injh';
+  static const inJammuAndKashmir = 'injk';
+  static const inKarnataka = 'inka';
+  static const inKerala = 'inkl';
+  static const inLakshadweep = 'inld';
+  static const inMaharashtra = 'inmh';
+  static const inMeghalaya = 'inml';
+  static const inManipur = 'inmn';
+  static const inMadhyaPradesh = 'inmp';
+  static const inMizoram = 'inmz';
+  static const inNagaland = 'innl';
+  static const inOdisha = 'inor';
+  static const inPunjab = 'inpb';
+  static const inPuducherry = 'inpy';
+  static const inRajasthan = 'inrj';
+  static const inSikkim = 'insk';
+  static const inTelangana = 'intg';
+  static const inTamilNadu = 'intn';
+  static const inTripura = 'intr';
+  static const inUttarPradesh = 'inup';
+  static const inUttarakhand = 'inut';
+  static const inWestBengal = 'inwb';
+
   // US
   static const usAlabama = 'usal';
   static const usAlaska = 'usak';
