@@ -28,7 +28,7 @@ abstract class StorageService {
   // returns whether user granted access to a directory of his choosing
   Future<bool> requestDirectoryAccess(String path);
 
-  Future<bool> canRequestMediaFileAccess();
+  Future<bool> canRequestMediaFileBulkAccess();
 
   Future<bool> canInsertMedia(Set<VolumeRelativeDirectory> directories);
 
@@ -146,7 +146,7 @@ class PlatformStorageService implements StorageService {
   }
 
   @override
-  Future<bool> canRequestMediaFileAccess() async {
+  Future<bool> canRequestMediaFileBulkAccess() async {
     try {
       final result = await _platform.invokeMethod('canRequestMediaFileBulkAccess');
       if (result != null) return result as bool;

@@ -20,7 +20,7 @@ mixin PermissionAwareMixin {
 
       final restrictedInaccessibleDirs = dirs.where(restrictedDirs.contains).toSet();
       if (restrictedInaccessibleDirs.isNotEmpty) {
-        if (entries != null && await storageService.canRequestMediaFileAccess()) {
+        if (entries != null && await storageService.canRequestMediaFileBulkAccess()) {
           // request media file access for items in restricted directories
           final uris = <String>[], mimeTypes = <String>[];
           entries.where((entry) {
