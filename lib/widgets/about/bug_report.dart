@@ -142,24 +142,24 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   }
 
   Future<String> _getInfo(BuildContext context) async {
+    final flavor = context.read<AppFlavor>().toString().split('.')[1];
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    final flavor = context.read<AppFlavor>().toString().split('.')[1];
+    final storageVolumes = await storageService.getStorageVolumes();
+    final storageGrants = await storageService.getGrantedDirectories();
     return [
       'Package: ${packageInfo.packageName}',
-      'Aves version: ${packageInfo.version}-$flavor',
-      'Aves build: ${packageInfo.buildNumber}',
-      'Flutter version: ${version['frameworkVersion']}',
-      'Flutter channel: ${version['channel']}',
-      'Android version: ${androidInfo.version.release}',
-      'Android API: ${androidInfo.version.sdkInt}',
+      'Installer: ${packageInfo.installerStore}',
+      'Aves version: ${packageInfo.version}-$flavor, build ${packageInfo.buildNumber}',
+      'Flutter: ${version['channel']} ${version['frameworkVersion']}',
+      'Android version: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Geocoder: ${device.hasGeocoder ? 'ready' : 'not available'}',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
       'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
-      'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
-      'Installer: ${packageInfo.installerStore}',
+      'Storage volumes: ${storageVolumes.map((v) => v.path).join(', ')}',
+      'Storage grants: ${storageGrants.join(', ')}',
       'Error reporting: ${settings.isErrorReportingAllowed}',
     ].join('\n');
   }
