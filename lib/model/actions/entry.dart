@@ -23,6 +23,7 @@ enum EntryAction {
   // vector
   viewSource,
   // video
+  lockViewer,
   videoCaptureFrame,
   videoSelectStreams,
   videoSetSpeed,
@@ -88,7 +89,7 @@ class EntryActions {
     EntryAction.setAs,
   ];
 
-  static const pageActions = [
+  static const pageActions = {
     EntryAction.videoCaptureFrame,
     EntryAction.videoSelectStreams,
     EntryAction.videoSetSpeed,
@@ -100,7 +101,7 @@ class EntryActions {
     EntryAction.rotateCCW,
     EntryAction.rotateCW,
     EntryAction.flip,
-  ];
+  };
 
   static const trashed = [
     EntryAction.delete,
@@ -114,6 +115,7 @@ class EntryActions {
     EntryAction.videoSetSpeed,
     EntryAction.videoSelectStreams,
     EntryAction.videoSettings,
+    EntryAction.lockViewer,
   ];
 
   static const videoPlayback = [
@@ -178,6 +180,8 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.viewSource:
         return context.l10n.entryActionViewSource;
       // video
+      case EntryAction.lockViewer:
+        return context.l10n.viewerActionLock;
       case EntryAction.videoCaptureFrame:
         return context.l10n.videoActionCaptureFrame;
       case EntryAction.videoToggleMute:
@@ -290,6 +294,8 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.viewSource:
         return AIcons.vector;
       // video
+      case EntryAction.lockViewer:
+        return AIcons.viewerLock;
       case EntryAction.videoCaptureFrame:
         return AIcons.captureFrame;
       case EntryAction.videoToggleMute:

@@ -125,6 +125,8 @@
   "videoActionSetSpeed": "Playback speed",
 
   "viewerActionSettings": "Settings",
+  "viewerActionLock": "Lock viewer",
+  "viewerActionUnlock": "Unlock viewer",
 
   "slideshowActionResume": "Resume",
   "slideshowActionShowInCollection": "Show in Collection",

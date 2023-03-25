@@ -92,6 +92,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
           return canWrite && targetEntry.isVideo;
+        case EntryAction.lockViewer:
         case EntryAction.videoToggleMute:
           return !settings.useTvLayout && targetEntry.isVideo;
         case EntryAction.videoSelectStreams:
@@ -234,6 +235,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       // vector
       case EntryAction.viewSource:
         _goToSourceViewer(context, targetEntry);
+        break;
+      case EntryAction.lockViewer:
+        const LockViewNotification(locked: true).dispatch(context);
         break;
       // video
       case EntryAction.videoCaptureFrame:

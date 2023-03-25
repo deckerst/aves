@@ -2,6 +2,7 @@ import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class ViewerActionEditorPage extends StatelessWidget {
@@ -9,7 +10,7 @@ class ViewerActionEditorPage extends StatelessWidget {
 
   const ViewerActionEditorPage({super.key});
 
-  static const allAvailableActions = [
+  static final allAvailableActions = [
     [
       EntryAction.share,
       EntryAction.edit,
@@ -26,10 +27,7 @@ class ViewerActionEditorPage extends StatelessWidget {
     ],
     [
       ...EntryActions.exportInternal,
-      EntryAction.videoCaptureFrame,
-      EntryAction.videoToggleMute,
-      EntryAction.videoSetSpeed,
-      EntryAction.videoSelectStreams,
+      ...EntryActions.video.whereNot((v) => v == EntryAction.videoSettings),
     ],
     EntryActions.commonMetadataActions,
   ];

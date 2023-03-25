@@ -62,6 +62,8 @@
     "videoActionSelectStreams",
     "videoActionSetSpeed",
     "viewerActionSettings",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "slideshowActionResume",
     "slideshowActionShowInCollection",
     "entryInfoActionEditDate",
@@ -623,6 +625,8 @@
     "videoActionSelectStreams",
     "videoActionSetSpeed",
     "viewerActionSettings",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "slideshowActionResume",
     "slideshowActionShowInCollection",
     "entryInfoActionEditDate",
@@ -1181,6 +1185,8 @@
   ],
 
   "cs": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsVideoEnablePip",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
@@ -1194,6 +1200,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
@@ -1230,6 +1238,8 @@
 
   "el": [
     "chipActionGoToPlacePage",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "vaultLockTypePattern",
     "settingsVideoEnablePip",
     "patternDialogEnter",
@@ -1246,12 +1256,16 @@
   ],
 
   "es": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "tagPlaceholderState"
   ],
 
   "eu": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "tagPlaceholderState"
@@ -1266,6 +1280,8 @@
     "videoActionPause",
     "videoActionPlay",
     "videoActionSelectStreams",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "slideshowActionResume",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
@@ -1735,6 +1751,8 @@
   ],
 
   "fr": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "tagPlaceholderState"
   ],
 
@@ -1746,6 +1764,8 @@
     "chipActionConfigureVault",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -2328,6 +2348,8 @@
     "videoActionSelectStreams",
     "videoActionSetSpeed",
     "viewerActionSettings",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "slideshowActionResume",
     "slideshowActionShowInCollection",
     "entryInfoActionEditDate",
@@ -2946,6 +2968,8 @@
     "videoActionSelectStreams",
     "videoActionSetSpeed",
     "viewerActionSettings",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "slideshowActionResume",
     "slideshowActionShowInCollection",
     "entryInfoActionEditDate",
@@ -3504,12 +3528,16 @@
   ],
 
   "id": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "tagPlaceholderState"
   ],
 
   "it": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "tagPlaceholderState"
@@ -3522,6 +3550,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "filterAspectRatioLandscapeLabel",
     "filterAspectRatioPortraitLabel",
     "filterNoAddressLabel",
@@ -3572,6 +3602,8 @@
   ],
 
   "ko": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "tagPlaceholderState"
   ],
 
@@ -3581,6 +3613,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "filterLocatedLabel",
     "filterTaggedLabel",
     "albumTierVaults",
@@ -3625,6 +3659,8 @@
   ],
 
   "nb": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "vaultLockTypePattern",
     "settingsVideoEnablePip",
     "patternDialogEnter",
@@ -3644,6 +3680,8 @@
     "chipActionConfigureVault",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "entryInfoActionExportMetadata",
     "entryInfoActionRemoveLocation",
     "filterAspectRatioLandscapeLabel",
@@ -3707,6 +3745,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "entryInfoActionRemoveLocation",
     "filterLocatedLabel",
     "filterNoLocationLabel",
@@ -4024,12 +4064,16 @@
   ],
 
   "pl": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "tagPlaceholderState"
   ],
 
   "pt": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundModeDialogTitle",
@@ -4037,6 +4081,8 @@
   ],
 
   "ro": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "tagPlaceholderState"
@@ -4044,6 +4090,8 @@
 
   "ru": [
     "chipActionLock",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "vaultLockTypePattern",
     "settingsVideoEnablePip",
     "patternDialogEnter",
@@ -4071,6 +4119,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "filterLocatedLabel",
     "filterNoLocationLabel",
     "albumTierVaults",
@@ -4501,6 +4551,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
@@ -4855,6 +4907,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "albumTierVaults",
     "lengthUnitPixel",
     "lengthUnitPercent",
@@ -4890,6 +4944,8 @@
   ],
 
   "uk": [
+    "viewerActionLock",
+    "viewerActionUnlock",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "tagPlaceholderState"
@@ -4900,6 +4956,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "filterLocatedLabel",
     "filterTaggedLabel",
     "albumTierVaults",
@@ -4948,6 +5006,8 @@
     "chipActionLock",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "viewerActionLock",
+    "viewerActionUnlock",
     "filterLocatedLabel",
     "filterTaggedLabel",
     "albumTierVaults",
