@@ -7,7 +7,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';

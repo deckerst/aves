@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 
 class AStyles {
   // as of Flutter v2.8.0, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
@@ -22,7 +22,7 @@ class AStyles {
 
   static const embossShadows = [
     Shadow(
-      color: Colors.black,
+      color: Color(0xFF000000),
       offset: Offset(0.5, 1.0),
     )
   ];

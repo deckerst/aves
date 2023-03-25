@@ -26,8 +26,8 @@ import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();

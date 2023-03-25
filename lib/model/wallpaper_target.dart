@@ -1,5 +1,5 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 enum WallpaperTarget { home, lock, homeLock }
 
