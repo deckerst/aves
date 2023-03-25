@@ -1,5 +1,6 @@
+import 'dart:ui';
+
 import 'package:aves/model/settings/enums/enums.dart';
-import 'package:flutter/material.dart';
 
 extension ExtraEntryBackground on EntryBackground {
   bool get isColor {
@@ -15,10 +16,10 @@ extension ExtraEntryBackground on EntryBackground {
   Color get color {
     switch (this) {
       case EntryBackground.white:
-        return Colors.white;
+        return const Color(0xFFFFFFFF);
       case EntryBackground.black:
       default:
-        return Colors.black;
+        return const Color(0xFF000000);
     }
   }
 }
