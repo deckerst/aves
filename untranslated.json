@@ -602,7 +602,8 @@
     "viewerInfoSearchSuggestionRights",
     "wallpaperUseScrollEffect",
     "tagEditorPageTitle",
-    "tagEditorPageNewTagFieldLabel"
+    "tagEditorPageNewTagFieldLabel",
+    "tagPlaceholderState"
   ],
 
   "ckb": [
@@ -1167,6 +1168,7 @@
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
+    "tagPlaceholderState",
     "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
@@ -1183,7 +1185,8 @@
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
+    "settingsVideoBackgroundModeDialogTitle",
+    "tagPlaceholderState"
   ],
 
   "de": [
@@ -1221,7 +1224,8 @@
     "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
-    "settingsDisablingBinWarningDialogMessage"
+    "settingsDisablingBinWarningDialogMessage",
+    "tagPlaceholderState"
   ],
 
   "el": [
@@ -1237,17 +1241,20 @@
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
+    "settingsVideoBackgroundModeDialogTitle",
+    "tagPlaceholderState"
   ],
 
   "es": [
     "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone"
+    "settingsCollectionBurstPatternsNone",
+    "tagPlaceholderState"
   ],
 
   "eu": [
     "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone"
+    "settingsCollectionBurstPatternsNone",
+    "tagPlaceholderState"
   ],
 
   "fa": [
@@ -1715,6 +1722,7 @@
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
+    "tagPlaceholderState",
     "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
@@ -1724,6 +1732,10 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "fr": [
+    "tagPlaceholderState"
   ],
 
   "gl": [
@@ -2223,6 +2235,7 @@
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
+    "tagPlaceholderState",
     "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
@@ -2860,6 +2873,7 @@
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
+    "tagPlaceholderState",
     "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
@@ -3477,6 +3491,7 @@
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
+    "tagPlaceholderState",
     "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
@@ -3490,12 +3505,14 @@
 
   "id": [
     "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone"
+    "settingsCollectionBurstPatternsNone",
+    "tagPlaceholderState"
   ],
 
   "it": [
     "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone"
+    "settingsCollectionBurstPatternsNone",
+    "tagPlaceholderState"
   ],
 
   "ja": [
@@ -3550,7 +3567,12 @@
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
-    "settingsWidgetDisplayedItem"
+    "settingsWidgetDisplayedItem",
+    "tagPlaceholderState"
+  ],
+
+  "ko": [
+    "tagPlaceholderState"
   ],
 
   "lt": [
@@ -3598,7 +3620,8 @@
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
-    "settingsDisplayUseTvInterface"
+    "settingsDisplayUseTvInterface",
+    "tagPlaceholderState"
   ],
 
   "nb": [
@@ -3609,7 +3632,8 @@
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle"
+    "settingsVideoBackgroundModeDialogTitle",
+    "tagPlaceholderState"
   ],
 
   "nl": [
@@ -3672,7 +3696,8 @@
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
-    "settingsWidgetDisplayedItem"
+    "settingsWidgetDisplayedItem",
+    "tagPlaceholderState"
   ],
 
   "nn": [
@@ -3994,23 +4019,27 @@
     "mapAttributionStamen",
     "mapEmptyRegion",
     "viewerInfoSearchSuggestionDimensions",
-    "wallpaperUseScrollEffect"
+    "wallpaperUseScrollEffect",
+    "tagPlaceholderState"
   ],
 
   "pl": [
     "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone"
+    "settingsCollectionBurstPatternsNone",
+    "tagPlaceholderState"
   ],
 
   "pt": [
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
-    "settingsVideoBackgroundModeDialogTitle"
+    "settingsVideoBackgroundModeDialogTitle",
+    "tagPlaceholderState"
   ],
 
   "ro": [
     "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone"
+    "settingsCollectionBurstPatternsNone",
+    "tagPlaceholderState"
   ],
 
   "ru": [
@@ -4030,7 +4059,8 @@
     "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
-    "settingsVideoGestureVerticalDragBrightnessVolume"
+    "settingsVideoGestureVerticalDragBrightnessVolume",
+    "tagPlaceholderState"
   ],
 
   "sk": [
@@ -4447,6 +4477,7 @@
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
+    "tagPlaceholderState",
     "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
@@ -4807,6 +4838,7 @@
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
     "tagPlaceholderCountry",
+    "tagPlaceholderState",
     "tagPlaceholderPlace",
     "panoramaEnableSensorControl",
     "panoramaDisableSensorControl",
@@ -4853,12 +4885,14 @@
     "settingsCollectionBurstPatternsNone",
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
-    "settingsDisablingBinWarningDialogMessage"
+    "settingsDisablingBinWarningDialogMessage",
+    "tagPlaceholderState"
   ],
 
   "uk": [
     "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone"
+    "settingsCollectionBurstPatternsNone",
+    "tagPlaceholderState"
   ],
 
   "zh": [
@@ -4904,7 +4938,8 @@
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
-    "settingsDisplayUseTvInterface"
+    "settingsDisplayUseTvInterface",
+    "tagPlaceholderState"
   ],
 
   "zh_Hant": [
@@ -4951,6 +4986,7 @@
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
-    "settingsDisplayUseTvInterface"
+    "settingsDisplayUseTvInterface",
+    "tagPlaceholderState"
   ]
 }

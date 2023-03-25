@@ -5,11 +5,13 @@ class GeoStates {
   static final Set<String> stateCountryCodes = {
     CountryCode.AU,
     CountryCode.GB,
+    CountryCode.IN,
     CountryCode.US,
   }.map((v) => v.alpha2).toSet();
 
   static const stateCodeByName = {
     ..._australiaEnglish,
+    ..._indiaEnglish,
     ..._unitedKingdomEnglish,
     ..._unitedStatesEnglish,
   };
@@ -23,6 +25,45 @@ class GeoStates {
     'Tasmania': EmojiStateCodes.auTasmania,
     'Victoria': EmojiStateCodes.auVictoria,
     'Western Australia': EmojiStateCodes.auWesternAustralia,
+  };
+
+  static const _indiaEnglish = {
+    'Andaman and Nicobar Islands': EmojiStateCodes.inAndamanAndNicobarIslands,
+    'Andhra Pradesh': EmojiStateCodes.inAndhraPradesh,
+    'Arunachal Pradesh': EmojiStateCodes.inArunachalPradesh,
+    'Assam': EmojiStateCodes.inAssam,
+    'Bihar': EmojiStateCodes.inBihar,
+    'Chandigarh': EmojiStateCodes.inChandigarh,
+    'Chhattisgarh': EmojiStateCodes.inChhattisgarh,
+    'Daman and Diu': EmojiStateCodes.inDamanAndDiu,
+    'Delhi': EmojiStateCodes.inDelhi,
+    'Dadra and Nagar Haveli': EmojiStateCodes.inDadraAndNagarHaveli,
+    'Goa': EmojiStateCodes.inGoa,
+    'Gujarat': EmojiStateCodes.inGujarat,
+    'Himachal Pradesh': EmojiStateCodes.inHimachalPradesh,
+    'Haryana': EmojiStateCodes.inHaryana,
+    'Jharkhand': EmojiStateCodes.inJharkhand,
+    'Jammu and Kashmir': EmojiStateCodes.inJammuAndKashmir,
+    'Karnataka': EmojiStateCodes.inKarnataka,
+    'Kerala': EmojiStateCodes.inKerala,
+    'Lakshadweep': EmojiStateCodes.inLakshadweep,
+    'Maharashtra': EmojiStateCodes.inMaharashtra,
+    'Meghalaya': EmojiStateCodes.inMeghalaya,
+    'Manipur': EmojiStateCodes.inManipur,
+    'Madhya Pradesh': EmojiStateCodes.inMadhyaPradesh,
+    'Mizoram': EmojiStateCodes.inMizoram,
+    'Nagaland': EmojiStateCodes.inNagaland,
+    'Odisha': EmojiStateCodes.inOdisha,
+    'Punjab': EmojiStateCodes.inPunjab,
+    'Puducherry': EmojiStateCodes.inPuducherry,
+    'Rajasthan': EmojiStateCodes.inRajasthan,
+    'Sikkim': EmojiStateCodes.inSikkim,
+    'Telangana': EmojiStateCodes.inTelangana,
+    'Tamil Nadu': EmojiStateCodes.inTamilNadu,
+    'Tripura': EmojiStateCodes.inTripura,
+    'Uttar Pradesh': EmojiStateCodes.inUttarPradesh,
+    'Uttarakhand': EmojiStateCodes.inUttarakhand,
+    'West Bengal': EmojiStateCodes.inWestBengal,
   };
 
   static const _unitedKingdomEnglish = {

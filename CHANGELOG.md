@@ -7,7 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: optional support for Samsung and Sony burst patterns
-- Info: improved state/place display (requires rescan, limited to AU/GB/EN)
+- Info: improved state/place display (requires rescan, limited to AU/GB/IN/US)
+- Info: edit tags with state placeholder
 - improved support for system font scale
 
 ### Changed

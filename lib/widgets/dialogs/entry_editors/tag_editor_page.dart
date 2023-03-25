@@ -32,10 +32,14 @@ class _TagEditorPageState extends State<TagEditorPage> {
   final FocusNode _newTagTextFocusNode = FocusNode();
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
   late final List<CollectionFilter> _topTags;
-  late final List<PlaceholderFilter> _placeholders = [PlaceholderFilter.country, PlaceholderFilter.place];
   final List<CollectionFilter> _userAddedFilters = [];
 
   static const Color untaggedColor = Colors.blueGrey;
+  static final List<PlaceholderFilter> _placeholders = [
+    PlaceholderFilter.country,
+    PlaceholderFilter.state,
+    PlaceholderFilter.place,
+  ];
 
   Map<AvesEntry, Set<CollectionFilter>> get tagsByEntry => widget.filtersByEntry;
 

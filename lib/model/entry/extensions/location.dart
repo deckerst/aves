@@ -56,7 +56,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
         final v = addresses.first;
         var locality = v.locality ?? v.subLocality ?? v.featureName;
         if (locality == null || locality == v.subThoroughfare) {
-          locality = v.subAdminArea ?? v.addressLine;
+          locality = v.subAdminArea;
         }
         addressDetails = AddressDetails(
           id: id,

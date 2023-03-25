@@ -951,6 +951,7 @@
   "tagEditorSectionPlaceholders": "Placeholders",
 
   "tagPlaceholderCountry": "Country",
+  "tagPlaceholderState": "State",
   "tagPlaceholderPlace": "Place",
 
   "panoramaEnableSensorControl": "Enable sensor control",
