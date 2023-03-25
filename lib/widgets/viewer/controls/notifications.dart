@@ -7,6 +7,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
+class LockViewNotification extends Notification {
+  final bool locked;
+
+  const LockViewNotification({required this.locked});
+}
+
+@immutable
 class PopVisualNotification extends Notification {}
 
 @immutable

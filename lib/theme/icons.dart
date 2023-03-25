@@ -139,6 +139,8 @@ class AIcons {
   static const IconData vaultConfigure = MdiIcons.shieldLockOutline;
   static const IconData videoSettings = Icons.video_settings_outlined;
   static const IconData view = Icons.grid_view_outlined;
+  static const IconData viewerLock = Icons.lock_outline;
+  static const IconData viewerUnlock = Icons.lock_open_outlined;
   static const IconData zoomIn = Icons.add_outlined;
   static const IconData zoomOut = Icons.remove_outlined;
   static const IconData collapse = Icons.expand_less_outlined;

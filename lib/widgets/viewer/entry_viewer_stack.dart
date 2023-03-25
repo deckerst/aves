@@ -11,6 +11,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/settings/enums/accessibility_timeout.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -27,6 +28,7 @@ import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
+import 'package:aves/widgets/viewer/overlay/locked.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/slideshow_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
@@ -70,6 +72,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   final AChangeNotifier _verticalScrollNotifier = AChangeNotifier();
   bool _overlayInitialized = false;
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
+  final ValueNotifier<bool> _viewLocked = ValueNotifier(false);
   final ValueNotifier<bool> _overlayExpandedNotifier = ValueNotifier(false);
   late AnimationController _overlayAnimationController;
   late Animation<double> _overlayButtonScale, _overlayVideoControlScale, _overlayOpacity;
@@ -78,6 +81,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late VideoActionDelegate _videoActionDelegate;
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
+  Timer? _overlayHidingTimer;
 
   @override
   bool get isViewingImage => _currentVerticalPage.value == imagePage;
@@ -147,6 +151,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     ));
     _overlayVisible.value = settings.showOverlayOnOpening && !viewerController.autopilot;
     _overlayVisible.addListener(_onOverlayVisibleChanged);
+    _viewLocked.addListener(_onViewLockedChanged);
     _videoActionDelegate = VideoActionDelegate(
       collection: collection,
     );
@@ -170,9 +175,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
     _overlayVisible.dispose();
+    _viewLocked.dispose();
     _overlayExpandedNotifier.dispose();
     _verticalPager.dispose();
     _heroInfoNotifier.dispose();
+    _stopOverlayHidingTimer();
     WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
     super.dispose();
@@ -250,16 +257,33 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 stream: device.supportPictureInPicture ? _floating.pipStatus$ : Stream.value(PiPStatus.disabled),
                 builder: (context, snapshot) {
                   var pipEnabled = snapshot.data == PiPStatus.enabled;
-                  return Stack(
-                    children: [
-                      viewer,
-                      if (!pipEnabled) ...[
-                        ..._buildOverlays(availableSize).map(_decorateOverlay),
-                        const TopGestureAreaProtector(),
-                        const SideGestureAreaProtector(),
-                        const BottomGestureAreaProtector(),
-                      ],
-                    ],
+                  return ValueListenableBuilder<bool>(
+                    valueListenable: _viewLocked,
+                    builder: (context, locked, child) {
+                      return Stack(
+                        children: [
+                          child!,
+                          if (!pipEnabled) ...[
+                            if (locked) ...[
+                              const Positioned.fill(
+                                child: AbsorbPointer(),
+                              ),
+                              Positioned.fill(
+                                child: GestureDetector(
+                                  onTap: () => _overlayVisible.value = !_overlayVisible.value,
+                                ),
+                              ),
+                              _buildViewerLockedBottomOverlay(),
+                            ] else
+                              ..._buildOverlays(availableSize).map(_decorateOverlay),
+                            const TopGestureAreaProtector(),
+                            const SideGestureAreaProtector(),
+                            const BottomGestureAreaProtector(),
+                          ],
+                        ],
+                      );
+                    },
+                    child: viewer,
                   );
                 },
               );
@@ -299,6 +323,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
           _buildViewerBottomOverlay(availableSize),
         ];
     }
+  }
+
+  Widget _buildViewerLockedBottomOverlay() {
+    return TooltipTheme(
+      data: TooltipTheme.of(context).copyWith(
+        preferBelow: false,
+      ),
+      child: ViewerLockedOverlay(
+        animationController: _overlayAnimationController,
+      ),
+    );
   }
 
   Widget _buildSlideshowBottomOverlay(Size availableSize) {
@@ -491,6 +526,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       }
     } else if (notification is ToggleOverlayNotification) {
       _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
+    } else if (notification is LockViewNotification) {
+      _viewLocked.value = notification.locked;
     } else if (notification is VideoActionNotification) {
       _onVideoAction(
         context: context,
@@ -809,8 +846,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
     if (!mounted) return;
     if (_overlayVisible.value) {
-      await AvesApp.showSystemUI();
-      AvesApp.setSystemUIStyle(Theme.of(context));
+      if (_viewLocked.value) {
+        await _startOverlayHidingTimer();
+      } else {
+        await AvesApp.showSystemUI();
+        AvesApp.setSystemUIStyle(Theme.of(context));
+      }
       if (animate) {
         await _overlayAnimationController.forward();
       } else {
@@ -835,4 +876,24 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       });
     }
   }
+
+  Future<void> _onViewLockedChanged() async {
+    if (_viewLocked.value) {
+      await AvesApp.hideSystemUI();
+      await _startOverlayHidingTimer();
+    } else {
+      await AvesApp.showSystemUI();
+      AvesApp.setSystemUIStyle(Theme.of(context));
+      _stopOverlayHidingTimer();
+      _overlayVisible.value = true;
+    }
+  }
+
+  Future<void> _startOverlayHidingTimer() async {
+    _stopOverlayHidingTimer();
+    final duration = await settings.timeToTakeAction.getSnackBarDuration(true);
+    _overlayHidingTimer = Timer(duration, () => _overlayVisible.value = false);
+  }
+
+  void _stopOverlayHidingTimer() => _overlayHidingTimer?.cancel();
 }
