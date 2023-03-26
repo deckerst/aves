@@ -1274,5 +1274,9 @@
   "settingsVideoBackgroundMode": "Mode latar belakang",
   "@settingsVideoBackgroundMode": {},
   "settingsVideoBackgroundModeDialogTitle": "Mode Latar Belakang",
-  "@settingsVideoBackgroundModeDialogTitle": {}
+  "@settingsVideoBackgroundModeDialogTitle": {},
+  "settingsCollectionBurstPatternsTile": "Pola semburan",
+  "@settingsCollectionBurstPatternsTile": {},
+  "settingsCollectionBurstPatternsNone": "Tidak ada",
+  "@settingsCollectionBurstPatternsNone": {}
 }

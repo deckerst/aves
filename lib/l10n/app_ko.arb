@@ -1278,5 +1278,21 @@
   "settingsCollectionBurstPatternsNone": "없음",
   "@settingsCollectionBurstPatternsNone": {},
   "settingsCollectionBurstPatternsTile": "연속 촬영 양식",
-  "@settingsCollectionBurstPatternsTile": {}
+  "@settingsCollectionBurstPatternsTile": {},
+  "tagPlaceholderState": "주",
+  "@tagPlaceholderState": {},
+  "chipActionShowCountryStates": "주 보기",
+  "@chipActionShowCountryStates": {},
+  "stateEmpty": "주가 없습니다",
+  "@stateEmpty": {},
+  "searchStatesSectionTitle": "주",
+  "@searchStatesSectionTitle": {},
+  "statsTopStatesSectionTitle": "주 랭킹",
+  "@statsTopStatesSectionTitle": {},
+  "statePageTitle": "주",
+  "@statePageTitle": {},
+  "viewerActionLock": "뷰어 잠금",
+  "@viewerActionLock": {},
+  "viewerActionUnlock": "뷰어 잠금 해제",
+  "@viewerActionUnlock": {}
 }
