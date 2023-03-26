@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
 
-  static final RegExp exactRegex = RegExp('^"(.*)"\$');
+  static final exactRegex = RegExp('^"(.*)"\$');
 
   final String query;
   final bool colorful, live;

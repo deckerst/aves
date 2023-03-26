@@ -29,7 +29,6 @@ import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/stats/mime_donut.dart';
 import 'package:aves/widgets/stats/percent_text.dart';
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -55,8 +54,8 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMixin {
-  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerTag = {}, _entryCountPerAlbum = {};
-  final Map<_PlaceFilterKey, int> _entryCountPerPlace = {};
+  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerState = {}, _entryCountPerPlace = {};
+  final Map<String, int> _entryCountPerTag = {}, _entryCountPerAlbum = {};
   final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
 
@@ -83,13 +82,11 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
         var state = address.stateName;
         if (state != null && state.isNotEmpty) {
           state += '${LocationFilter.locationSeparator}${address.stateCode}';
-          final key = _PlaceFilterKey(LocationLevel.state, state);
-          _entryCountPerPlace[key] = (_entryCountPerPlace[key] ?? 0) + 1;
+          _entryCountPerState[state] = (_entryCountPerState[state] ?? 0) + 1;
         }
         final place = address.place;
         if (place != null && place.isNotEmpty) {
-          final key = _PlaceFilterKey(LocationLevel.place, place);
-          _entryCountPerPlace[key] = (_entryCountPerPlace[key] ?? 0) + 1;
+          _entryCountPerPlace[place] = (_entryCountPerPlace[place] ?? 0) + 1;
         }
       }
 
@@ -219,7 +216,8 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
                       ),
                       locationIndicator,
                       ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
-                      ..._buildFilterSection<_PlaceFilterKey>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(v.level, v.location)),
+                      ..._buildFilterSection<String>(context, l10n.statsTopStatesSectionTitle, _entryCountPerState, (v) => LocationFilter(LocationLevel.state, v)),
+                      ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
                       ..._buildFilterSection<String>(context, l10n.statsTopTagsSectionTitle, _entryCountPerTag, TagFilter.new),
                       ..._buildFilterSection<String>(context, l10n.statsTopAlbumsSectionTitle, _entryCountPerAlbum, (v) => AlbumFilter(v, source.getAlbumDisplayName(context, v))),
                       if (showRatings) ..._buildFilterSection<int>(context, l10n.searchRatingSectionTitle, _entryCountPerRating, RatingFilter.new, sortByCount: false, maxRowCount: null),
@@ -406,29 +404,5 @@ class StatsTopPage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-@immutable
-class _PlaceFilterKey extends Comparable<_PlaceFilterKey> with EquatableMixin {
-  final LocationLevel level;
-  final String location;
-
-  @override
-  List<Object?> get props => [level, location];
-
-  _PlaceFilterKey(this.level, this.location);
-
-  static const _levelOrder = [
-    LocationLevel.country,
-    LocationLevel.state,
-    LocationLevel.place,
-  ];
-
-  @override
-  int compareTo(_PlaceFilterKey other) {
-    final c = _levelOrder.indexOf(level).compareTo(_levelOrder.indexOf(other.level));
-    if (c != 0) return c;
-    return location.compareTo(other.location);
   }
 }
