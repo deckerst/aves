@@ -1278,5 +1278,21 @@
   "settingsCollectionBurstPatternsNone": "Aucun",
   "@settingsCollectionBurstPatternsNone": {},
   "settingsCollectionBurstPatternsTile": "Modèles de rafale",
-  "@settingsCollectionBurstPatternsTile": {}
+  "@settingsCollectionBurstPatternsTile": {},
+  "tagPlaceholderState": "État",
+  "@tagPlaceholderState": {},
+  "chipActionShowCountryStates": "Afficher les États",
+  "@chipActionShowCountryStates": {},
+  "stateEmpty": "Aucun État",
+  "@stateEmpty": {},
+  "searchStatesSectionTitle": "États",
+  "@searchStatesSectionTitle": {},
+  "statePageTitle": "États",
+  "@statePageTitle": {},
+  "statsTopStatesSectionTitle": "Top États",
+  "@statsTopStatesSectionTitle": {},
+  "viewerActionLock": "Verrouiller la visionneuse",
+  "@viewerActionLock": {},
+  "viewerActionUnlock": "Déverrouiller la visionneuse",
+  "@viewerActionUnlock": {}
 }

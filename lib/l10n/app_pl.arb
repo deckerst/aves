@@ -1432,5 +1432,9 @@
   "settingsVideoBackgroundMode": "Tryb tła",
   "@settingsVideoBackgroundMode": {},
   "settingsVideoBackgroundModeDialogTitle": "Tryb tła",
-  "@settingsVideoBackgroundModeDialogTitle": {}
+  "@settingsVideoBackgroundModeDialogTitle": {},
+  "settingsCollectionBurstPatternsNone": "Brak",
+  "@settingsCollectionBurstPatternsNone": {},
+  "settingsCollectionBurstPatternsTile": "Wzory wybuchowe",
+  "@settingsCollectionBurstPatternsTile": {}
 }
