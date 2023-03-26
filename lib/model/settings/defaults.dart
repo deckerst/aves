@@ -66,10 +66,7 @@ class SettingsDefaults {
 
   // filter grids
   static const albumGroupFactor = AlbumChipGroupFactor.importance;
-  static const albumSortFactor = ChipSortFactor.name;
-  static const countrySortFactor = ChipSortFactor.name;
-  static const placeSortFactor = ChipSortFactor.name;
-  static const tagSortFactor = ChipSortFactor.name;
+  static const chipListSortFactor = ChipSortFactor.name;
 
   // viewer
   static const viewerQuickActions = [

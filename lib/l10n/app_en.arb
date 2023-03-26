@@ -84,6 +84,7 @@
   "chipActionUnpin": "Unpin from top",
   "chipActionRename": "Rename",
   "chipActionSetCover": "Set cover",
+  "chipActionShowCountryStates": "Show states",
   "chipActionCreateAlbum": "Create album",
   "chipActionCreateVault": "Create vault",
   "chipActionConfigureVault": "Configure vault",
@@ -678,6 +679,9 @@
 
   "countryPageTitle": "Countries",
   "countryEmpty": "No countries",
+
+  "statePageTitle": "States",
+  "stateEmpty": "No states",
 
   "placePageTitle": "Places",
   "placeEmpty": "No places",

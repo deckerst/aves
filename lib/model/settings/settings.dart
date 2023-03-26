@@ -110,10 +110,12 @@ class Settings extends ChangeNotifier {
   static const albumGroupFactorKey = 'album_group_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
+  static const stateSortFactorKey = 'state_sort_factor';
   static const placeSortFactorKey = 'place_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
   static const albumSortReverseKey = 'album_sort_reverse';
   static const countrySortReverseKey = 'country_sort_reverse';
+  static const stateSortReverseKey = 'state_sort_reverse';
   static const placeSortReverseKey = 'place_sort_reverse';
   static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
@@ -560,19 +562,23 @@ class Settings extends ChangeNotifier {
 
   set albumGroupFactor(AlbumChipGroupFactor newValue) => _set(albumGroupFactorKey, newValue.toString());
 
-  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, SettingsDefaults.albumSortFactor, ChipSortFactor.values);
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set albumSortFactor(ChipSortFactor newValue) => _set(albumSortFactorKey, newValue.toString());
 
-  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, SettingsDefaults.countrySortFactor, ChipSortFactor.values);
+  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set countrySortFactor(ChipSortFactor newValue) => _set(countrySortFactorKey, newValue.toString());
 
-  ChipSortFactor get placeSortFactor => getEnumOrDefault(placeSortFactorKey, SettingsDefaults.placeSortFactor, ChipSortFactor.values);
+  ChipSortFactor get stateSortFactor => getEnumOrDefault(stateSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
+
+  set stateSortFactor(ChipSortFactor newValue) => _set(stateSortFactorKey, newValue.toString());
+
+  ChipSortFactor get placeSortFactor => getEnumOrDefault(placeSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set placeSortFactor(ChipSortFactor newValue) => _set(placeSortFactorKey, newValue.toString());
 
-  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
+  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => _set(tagSortFactorKey, newValue.toString());
 
@@ -583,6 +589,10 @@ class Settings extends ChangeNotifier {
   bool get countrySortReverse => getBool(countrySortReverseKey) ?? false;
 
   set countrySortReverse(bool newValue) => _set(countrySortReverseKey, newValue);
+
+  bool get stateSortReverse => getBool(stateSortReverseKey) ?? false;
+
+  set stateSortReverse(bool newValue) => _set(stateSortReverseKey, newValue);
 
   bool get placeSortReverse => getBool(placeSortReverseKey) ?? false;
 
@@ -1085,6 +1095,7 @@ class Settings extends ChangeNotifier {
             case showThumbnailVideoDurationKey:
             case albumSortReverseKey:
             case countrySortReverseKey:
+            case stateSortReverseKey:
             case placeSortReverseKey:
             case tagSortReverseKey:
             case showOverlayOnOpeningKey:
@@ -1133,6 +1144,7 @@ class Settings extends ChangeNotifier {
             case albumGroupFactorKey:
             case albumSortFactorKey:
             case countrySortFactorKey:
+            case stateSortFactorKey:
             case placeSortFactorKey:
             case tagSortFactorKey:
             case imageBackgroundKey:

@@ -2,12 +2,24 @@ import 'package:aves/ref/unicode.dart';
 import 'package:country_code/country_code.dart';
 
 class GeoStates {
+  static final aus = CountryCode.AU.alpha2;
+  static final gbr = CountryCode.GB.alpha2;
+  static final ind = CountryCode.IN.alpha2;
+  static final usa = CountryCode.US.alpha2;
+
   static final Set<String> stateCountryCodes = {
-    CountryCode.AU,
-    CountryCode.GB,
-    CountryCode.IN,
-    CountryCode.US,
-  }.map((v) => v.alpha2).toSet();
+    aus,
+    gbr,
+    ind,
+    usa,
+  };
+
+  static final stateCodesByCountryCode = {
+    aus: EmojiStateCodes.aus,
+    gbr: EmojiStateCodes.gbr,
+    ind: EmojiStateCodes.ind,
+    usa: EmojiStateCodes.usa,
+  };
 
   static const stateCodeByName = {
     ..._australiaEnglish,
