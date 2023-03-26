@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Video: action to lock viewer
 - Info: improved state/place display (requires rescan, limited to AU/GB/IN/US)
 - Info: edit tags with state placeholder
+- Countries: show states for selected countries
 - improved support for system font scale
 
 ### Changed

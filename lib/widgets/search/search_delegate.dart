@@ -136,6 +136,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                     _buildDateFilters(context, containQuery),
                     _buildAlbumFilters(containQuery),
                     _buildCountryFilters(containQuery),
+                    _buildStateFilters(containQuery),
                     _buildPlaceFilters(containQuery),
                     _buildTagFilters(containQuery),
                     _buildRatingFilters(context, containQuery),
@@ -223,6 +224,19 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
+  Widget _buildStateFilters(_ContainQuery containQuery) {
+    return StreamBuilder(
+      stream: source.eventBus.on<PlacesChangedEvent>(),
+      builder: (context, snapshot) {
+        return _buildFilterRow(
+          context: context,
+          title: context.l10n.searchStatesSectionTitle,
+          filters: source.sortedStates.where(containQuery).map((s) => LocationFilter(LocationLevel.state, s)).toList(),
+        );
+      },
+    );
+  }
+
   Widget _buildPlaceFilters(_ContainQuery containQuery) {
     return StreamBuilder(
       stream: source.eventBus.on<PlacesChangedEvent>(),
@@ -230,10 +244,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchPlacesSectionTitle,
-          filters: [
-            ...source.sortedStates.where(containQuery).map((s) => LocationFilter(LocationLevel.state, s)),
-            ...source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)),
-          ].toList(),
+          filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)).toList(),
         );
       },
     );

@@ -133,6 +133,8 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   }
 
   Future<void> _initMultiPageController(AvesEntry entry) async {
+    if (!mounted) return;
+
     final multiPageController = context.read<MultiPageConductor>().getOrCreateController(entry);
     setState(() {});
 

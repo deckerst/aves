@@ -696,6 +696,7 @@
   "searchDateSectionTitle": "Date",
   "searchAlbumsSectionTitle": "Albums",
   "searchCountriesSectionTitle": "Countries",
+  "searchStatesSectionTitle": "States",
   "searchPlacesSectionTitle": "Places",
   "searchTagsSectionTitle": "Tags",
   "searchRatingSectionTitle": "Ratings",
@@ -901,6 +902,7 @@
     }
   },
   "statsTopCountriesSectionTitle": "Top Countries",
+  "statsTopStatesSectionTitle": "Top States",
   "statsTopPlacesSectionTitle": "Top Places",
   "statsTopTagsSectionTitle": "Top Tags",
   "statsTopAlbumsSectionTitle": "Top Albums",

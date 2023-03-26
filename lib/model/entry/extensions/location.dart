@@ -12,6 +12,8 @@ import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 extension ExtraAvesEntryLocation on AvesEntry {
+  static final _invalidLocalityPattern = RegExp(r'^[-+\dA-Z]+$');
+
   LatLng? get latLng => hasGps ? LatLng(catalogMetadata!.latitude!, catalogMetadata!.longitude!) : null;
 
   Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
@@ -55,7 +57,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
       if (addresses.isNotEmpty) {
         final v = addresses.first;
         var locality = v.locality ?? v.subLocality ?? v.featureName;
-        if (locality == null || locality == v.subThoroughfare) {
+        if (locality == null || _invalidLocalityPattern.hasMatch(locality) || {v.subThoroughfare, v.countryName}.contains(locality)) {
           locality = v.subAdminArea;
         }
         addressDetails = AddressDetails(
