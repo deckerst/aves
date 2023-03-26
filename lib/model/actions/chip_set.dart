@@ -23,6 +23,7 @@ enum ChipSetAction {
   pin,
   unpin,
   lockVault,
+  showCountryStates,
   // selecting (single filter)
   rename,
   setCover,
@@ -57,6 +58,7 @@ class ChipSetActions {
     ChipSetAction.unpin,
     ChipSetAction.delete,
     ChipSetAction.rename,
+    ChipSetAction.showCountryStates,
     ChipSetAction.hide,
     null,
     ChipSetAction.map,
@@ -108,6 +110,8 @@ extension ExtraChipSetAction on ChipSetAction {
         return context.l10n.chipActionUnpin;
       case ChipSetAction.lockVault:
         return context.l10n.chipActionLock;
+      case ChipSetAction.showCountryStates:
+        return context.l10n.chipActionShowCountryStates;
       // selecting (single filter)
       case ChipSetAction.rename:
         return context.l10n.chipActionRename;
@@ -159,6 +163,8 @@ extension ExtraChipSetAction on ChipSetAction {
         return AIcons.unpin;
       case ChipSetAction.lockVault:
         return AIcons.vaultLock;
+      case ChipSetAction.showCountryStates:
+        return AIcons.state;
       // selecting (single filter)
       case ChipSetAction.rename:
         return AIcons.name;

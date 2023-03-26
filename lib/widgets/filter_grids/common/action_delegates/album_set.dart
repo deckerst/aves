@@ -8,7 +8,6 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -162,7 +161,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         break;
       case ChipSetAction.lockVault:
         lockFilters(filters);
-        _browse(context);
+        browse(context);
         break;
       // single filter
       case ChipSetAction.rename:
@@ -176,8 +175,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     }
     super.onActionSelected(context, filters, action);
   }
-
-  void _browse(BuildContext context) => context.read<Selection<FilterGridItem<AlbumFilter>>>().browse();
 
   @override
   Future<void> configureView(BuildContext context) async {
@@ -284,7 +281,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
               filters: kv.value.toSet(),
               enableBin: kv.key,
             ));
-    _browse(context);
+    browse(context);
   }
 
   Future<void> _doDelete({
@@ -308,7 +305,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         onSuccess: () {
           source.forgetNewAlbums(todoAlbums);
           source.cleanEmptyAlbums(emptyAlbums);
-          _browse(context);
+          browse(context);
         },
       );
       return;
@@ -370,7 +367,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
         final deletedUris = deletedOps.map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris, includeTrash: true);
-        _browse(context);
+        browse(context);
         source.resumeMonitoring();
 
         final successCount = successOps.length;
@@ -449,7 +446,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final successOps = processed.where((e) => e.success).toSet();
         final movedOps = successOps.where((e) => !e.skipped).toSet();
         await source.renameAlbum(album, destinationAlbum, todoEntries, movedOps);
-        _browse(context);
+        browse(context);
         source.resumeMonitoring();
 
         final successCount = successOps.length;
@@ -495,7 +492,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       await _doRename(context, filter, newName);
     } else {
       await vaults.update(newDetails);
-      _browse(context);
+      browse(context);
     }
   }
 }

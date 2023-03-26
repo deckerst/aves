@@ -105,6 +105,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return hasSelection && settings.pinnedFilters.containsAll(selectedFilters);
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
+      case ChipSetAction.showCountryStates:
         return false;
       // selecting (single filter)
       case ChipSetAction.setCover:
@@ -148,6 +149,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
       case ChipSetAction.lockVault:
+      case ChipSetAction.showCountryStates:
         return hasSelection;
       // selecting (single filter)
       case ChipSetAction.rename:
@@ -199,14 +201,15 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         break;
       case ChipSetAction.pin:
         settings.pinnedFilters = settings.pinnedFilters..addAll(filters);
-        _browse(context);
+        browse(context);
         break;
       case ChipSetAction.unpin:
         settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
-        _browse(context);
+        browse(context);
         break;
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
+      case ChipSetAction.showCountryStates:
         break;
       // selecting (single filter)
       case ChipSetAction.setCover:
@@ -218,9 +221,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  void _browse(BuildContext context) {
-    context.read<Selection<FilterGridItem<T>>?>()?.browse();
-  }
+  void browse(BuildContext context) => context.read<Selection<FilterGridItem<T>>?>()?.browse();
 
   Iterable<AvesEntry> _selectedEntries(BuildContext context, Set<dynamic> filters) {
     final source = context.read<CollectionSource>();
@@ -332,7 +333,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     settings.changeFilterVisibility(filters, false);
 
-    _browse(context);
+    browse(context);
   }
 
   void _setCover(BuildContext context, T filter) async {
@@ -367,6 +368,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       color: selectedColor,
     );
 
-    _browse(context);
+    browse(context);
   }
 }

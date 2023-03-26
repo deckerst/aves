@@ -34,11 +34,29 @@ class EmojiStateCodes {
   static const auVictoria = 'auvic';
   static const auWesternAustralia = 'auwa';
 
+  static const aus = {
+    auAustralianCapitalTerritory,
+    auNewSouthWales,
+    auNorthernTerritory,
+    auQueensland,
+    auSouthAustralia,
+    auTasmania,
+    auVictoria,
+    auWesternAustralia,
+  };
+
   // GB
   static const gbEngland = 'gbeng';
   static const gbNorthernIreland = 'gbnir';
   static const gbScotland = 'gbsct';
   static const gbWales = 'gbwls';
+
+  static const gbr = {
+    gbEngland,
+    gbNorthernIreland,
+    gbScotland,
+    gbWales,
+  };
 
   // IN
   static const inAndamanAndNicobarIslands = 'inan';
@@ -77,6 +95,45 @@ class EmojiStateCodes {
   static const inUttarPradesh = 'inup';
   static const inUttarakhand = 'inut';
   static const inWestBengal = 'inwb';
+
+  static const ind = {
+    inAndamanAndNicobarIslands,
+    inAndhraPradesh,
+    inArunachalPradesh,
+    inAssam,
+    inBihar,
+    inChandigarh,
+    inChhattisgarh,
+    inDamanAndDiu,
+    inDelhi,
+    inDadraAndNagarHaveli,
+    inGoa,
+    inGujarat,
+    inHimachalPradesh,
+    inHaryana,
+    inJharkhand,
+    inJammuAndKashmir,
+    inKarnataka,
+    inKerala,
+    inLakshadweep,
+    inMaharashtra,
+    inMeghalaya,
+    inManipur,
+    inMadhyaPradesh,
+    inMizoram,
+    inNagaland,
+    inOdisha,
+    inPunjab,
+    inPuducherry,
+    inRajasthan,
+    inSikkim,
+    inTelangana,
+    inTamilNadu,
+    inTripura,
+    inUttarPradesh,
+    inUttarakhand,
+    inWestBengal,
+  };
 
   // US
   static const usAlabama = 'usal';
@@ -129,4 +186,57 @@ class EmojiStateCodes {
   static const usWestVirginia = 'uswv';
   static const usWisconsin = 'uswi';
   static const usWyoming = 'uswy';
+
+  static const usa = {
+    usAlabama,
+    usAlaska,
+    usArizona,
+    usArkansas,
+    usCalifornia,
+    usColorado,
+    usConnecticut,
+    usDelaware,
+    usFlorida,
+    usGeorgia,
+    usHawaii,
+    usIdaho,
+    usIllinois,
+    usIndiana,
+    usIowa,
+    usKansas,
+    usKentucky,
+    usLouisiana,
+    usMaine,
+    usMaryland,
+    usMassachusetts,
+    usMichigan,
+    usMinnesota,
+    usMississippi,
+    usMissouri,
+    usMontana,
+    usNebraska,
+    usNevada,
+    usNewHampshire,
+    usNewJersey,
+    usNewMexico,
+    usNewYork,
+    usNorthCarolina,
+    usNorthDakota,
+    usOhio,
+    usOklahoma,
+    usOregon,
+    usPennsylvania,
+    usRhodeIsland,
+    usSouthCarolina,
+    usSouthDakota,
+    usTennessee,
+    usUtah,
+    usVermont,
+    usVirginia,
+    usWashington,
+    usWashingtonDC,
+    usWestVirginia,
+    usWisconsin,
+    usWyoming,
+  };
 }
