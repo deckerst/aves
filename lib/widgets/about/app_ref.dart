@@ -15,6 +15,45 @@ class AppReference extends StatefulWidget {
 
   @override
   State<AppReference> createState() => _AppReferenceState();
+
+  static List<Widget> buildLinks(BuildContext context) {
+    final l10n = context.l10n;
+    return [
+      const LinkChip(
+        leading: Icon(
+          AIcons.github,
+          size: 24,
+        ),
+        text: 'GitHub',
+        urlString: AppReference.avesGithub,
+      ),
+      LinkChip(
+        leading: const Icon(
+          AIcons.legal,
+          size: 22,
+        ),
+        text: l10n.aboutLinkLicense,
+        urlString: '${AppReference.avesGithub}/blob/main/LICENSE',
+      ),
+      LinkChip(
+        leading: const Icon(
+          AIcons.privacy,
+          size: 22,
+        ),
+        text: l10n.aboutLinkPolicy,
+        onTap: () => _goToPolicyPage(context),
+      ),
+    ];
+  }
+
+  static void _goToPolicyPage(BuildContext context) {
+    Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: PolicyPage.routeName),
+        builder: (context) => const PolicyPage(),
+      ),
+    );
+  }
 }
 
 class _AppReferenceState extends State<AppReference> {
@@ -40,7 +79,12 @@ class _AppReferenceState extends State<AppReference> {
         children: [
           _buildAvesLine(),
           const SizedBox(height: 16),
-          _buildLinks(),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 16,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: AppReference.buildLinks(context),
+          ),
         ],
       ),
     );
@@ -64,50 +108,6 @@ class _AppReferenceState extends State<AppReference> {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildLinks() {
-    final l10n = context.l10n;
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 16,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        const LinkChip(
-          leading: Icon(
-            AIcons.github,
-            size: 24,
-          ),
-          text: 'GitHub',
-          urlString: AppReference.avesGithub,
-        ),
-        LinkChip(
-          leading: const Icon(
-            AIcons.legal,
-            size: 22,
-          ),
-          text: l10n.aboutLinkLicense,
-          urlString: '${AppReference.avesGithub}/blob/main/LICENSE',
-        ),
-        LinkChip(
-          leading: const Icon(
-            AIcons.privacy,
-            size: 22,
-          ),
-          text: l10n.aboutLinkPolicy,
-          onTap: _goToPolicyPage,
-        ),
-      ],
-    );
-  }
-
-  void _goToPolicyPage() {
-    Navigator.maybeOf(context)?.push(
-      MaterialPageRoute(
-        settings: const RouteSettings(name: PolicyPage.routeName),
-        builder: (context) => const PolicyPage(),
-      ),
     );
   }
 }

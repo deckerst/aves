@@ -1280,30 +1280,9 @@
     "tagPlaceholderState"
   ],
 
-  "es": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
-    "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
-  ],
-
   "eu": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
     "searchStatesSectionTitle",
-    "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
+    "statsTopStatesSectionTitle"
   ],
 
   "fa": [
@@ -1788,17 +1767,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
   ],
 
   "gl": [
@@ -3594,8 +3562,6 @@
     "statePageTitle",
     "stateEmpty",
     "searchStatesSectionTitle",
-    "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone",
     "statsTopStatesSectionTitle",
     "tagPlaceholderState"
   ],
@@ -3672,17 +3638,6 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
-  ],
-
-  "ko": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
     "statsTopStatesSectionTitle",
     "tagPlaceholderState"
   ],
@@ -4170,8 +4125,6 @@
     "statePageTitle",
     "stateEmpty",
     "searchStatesSectionTitle",
-    "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone",
     "statsTopStatesSectionTitle",
     "tagPlaceholderState"
   ],

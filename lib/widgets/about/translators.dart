@@ -20,13 +20,17 @@ class AboutTranslators extends StatelessWidget {
         children: [
           AboutSectionTitle(text: context.l10n.aboutTranslatorsSectionTitle),
           const SizedBox(height: 8),
-          _RandomTextSpanHighlighter(
-            spans: Contributors.translators.map((v) => v.name).toList(),
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
+          buildBody(context),
           const SizedBox(height: 16),
         ],
       ),
+    );
+  }
+
+  static Widget buildBody(BuildContext context) {
+    return _RandomTextSpanHighlighter(
+      spans: Contributors.translators.map((v) => v.name).toList(),
+      color: Theme.of(context).colorScheme.onPrimary,
     );
   }
 }
