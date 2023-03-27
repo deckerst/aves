@@ -1,10 +1,8 @@
 import 'package:aves/app_flavor.dart';
-import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/app/dependencies.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/model/app/dependencies.dart';
 import 'package:aves/widgets/about/title.dart';
-import 'package:aves/widgets/about/tv_license_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -52,32 +50,30 @@ class _LicensesState extends State<Licenses> {
           [
             _buildHeader(),
             const SizedBox(height: 16),
-            if (!settings.useTvLayout) ...[
-              AvesExpansionTile(
-                title: context.l10n.aboutLicensesAndroidLibrariesSectionTitle,
-                highlightColor: colors.fromBrandColor(BrandColors.android),
-                expandedNotifier: _expandedNotifier,
-                children: _platform.map((package) => LicenseRow(package: package)).toList(),
-              ),
-              AvesExpansionTile(
-                title: context.l10n.aboutLicensesFlutterPluginsSectionTitle,
-                highlightColor: colors.fromBrandColor(BrandColors.flutter),
-                expandedNotifier: _expandedNotifier,
-                children: _flutterPlugins.map((package) => LicenseRow(package: package)).toList(),
-              ),
-              AvesExpansionTile(
-                title: context.l10n.aboutLicensesFlutterPackagesSectionTitle,
-                highlightColor: colors.fromBrandColor(BrandColors.flutter),
-                expandedNotifier: _expandedNotifier,
-                children: _flutterPackages.map((package) => LicenseRow(package: package)).toList(),
-              ),
-              AvesExpansionTile(
-                title: context.l10n.aboutLicensesDartPackagesSectionTitle,
-                highlightColor: colors.fromBrandColor(BrandColors.flutter),
-                expandedNotifier: _expandedNotifier,
-                children: _dartPackages.map((package) => LicenseRow(package: package)).toList(),
-              ),
-            ],
+            AvesExpansionTile(
+              title: context.l10n.aboutLicensesAndroidLibrariesSectionTitle,
+              highlightColor: colors.fromBrandColor(BrandColors.android),
+              expandedNotifier: _expandedNotifier,
+              children: _platform.map((package) => _LicenseRow(package: package)).toList(),
+            ),
+            AvesExpansionTile(
+              title: context.l10n.aboutLicensesFlutterPluginsSectionTitle,
+              highlightColor: colors.fromBrandColor(BrandColors.flutter),
+              expandedNotifier: _expandedNotifier,
+              children: _flutterPlugins.map((package) => _LicenseRow(package: package)).toList(),
+            ),
+            AvesExpansionTile(
+              title: context.l10n.aboutLicensesFlutterPackagesSectionTitle,
+              highlightColor: colors.fromBrandColor(BrandColors.flutter),
+              expandedNotifier: _expandedNotifier,
+              children: _flutterPackages.map((package) => _LicenseRow(package: package)).toList(),
+            ),
+            AvesExpansionTile(
+              title: context.l10n.aboutLicensesDartPackagesSectionTitle,
+              highlightColor: colors.fromBrandColor(BrandColors.flutter),
+              expandedNotifier: _expandedNotifier,
+              children: _dartPackages.map((package) => _LicenseRow(package: package)).toList(),
+            ),
             Center(
               child: AvesOutlinedButton(
                 label: context.l10n.aboutLicensesShowAllButtonLabel,
@@ -85,10 +81,10 @@ class _LicensesState extends State<Licenses> {
                   MaterialPageRoute(
                     builder: (context) => Theme(
                       data: Theme.of(context).copyWith(
-                        // as of Flutter v1.22.4, `cardColor` is used as a background color by `LicensePage`
+                        // as of Flutter v3.7.8, `cardColor` is used as a background color by `LicensePage`
                         cardColor: Theme.of(context).scaffoldBackgroundColor,
                       ),
-                      child: settings.useTvLayout ? const TvLicensePage() : const LicensePage(),
+                      child: const LicensePage(),
                     ),
                   ),
                 ),
@@ -116,11 +112,10 @@ class _LicensesState extends State<Licenses> {
   }
 }
 
-class LicenseRow extends StatelessWidget {
+class _LicenseRow extends StatelessWidget {
   final Dependency package;
 
-  const LicenseRow({
-    super.key,
+  const _LicenseRow({
     required this.package,
   });
 
