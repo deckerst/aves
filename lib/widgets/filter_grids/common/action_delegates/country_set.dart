@@ -1,6 +1,5 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/geo/states.dart';
-import 'package:aves/model/actions/chip_set.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -9,6 +8,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/states_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 

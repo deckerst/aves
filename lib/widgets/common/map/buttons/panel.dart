@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/map/buttons/coordinate_filter.dart';
 import 'package:aves/widgets/common/map/compass.dart';
 import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';

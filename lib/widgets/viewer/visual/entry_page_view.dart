@@ -25,6 +25,7 @@ import 'package:aves/widgets/viewer/visual/video/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/video/swipe_action.dart';
 import 'package:aves/widgets/viewer/visual/video/video_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

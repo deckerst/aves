@@ -1,5 +1,4 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
@@ -28,6 +27,7 @@ import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

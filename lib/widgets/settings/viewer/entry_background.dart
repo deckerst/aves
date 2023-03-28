@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/enums/entry_background.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class EntryBackgroundSelector extends StatefulWidget {

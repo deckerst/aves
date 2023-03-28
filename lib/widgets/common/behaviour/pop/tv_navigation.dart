@@ -1,4 +1,3 @@
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -6,6 +5,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

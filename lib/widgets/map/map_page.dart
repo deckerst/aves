@@ -33,6 +33,7 @@ import 'package:aves/widgets/map/scroller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

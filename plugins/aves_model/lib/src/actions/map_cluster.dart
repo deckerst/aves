@@ -1,0 +1,4 @@
+enum MapClusterAction {
+  editLocation,
+  removeLocation,
+}

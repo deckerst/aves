@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/metadata_type.dart';
 import 'package:aves/model/metadata/fields.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 

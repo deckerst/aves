@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -11,6 +10,7 @@ import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

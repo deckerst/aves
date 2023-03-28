@@ -1,7 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
-import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/location_edit_action.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -18,6 +17,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';

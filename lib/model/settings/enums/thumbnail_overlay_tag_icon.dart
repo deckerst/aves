@@ -1,5 +1,5 @@
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraThumbnailOverlayTagIcon on ThumbnailOverlayTagIcon {

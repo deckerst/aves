@@ -3,6 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 

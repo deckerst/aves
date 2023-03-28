@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/common/button
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

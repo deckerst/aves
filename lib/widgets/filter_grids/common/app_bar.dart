@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

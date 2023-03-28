@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -13,6 +12,7 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/home_widget.dart';
 import 'package:aves/widgets/settings/common/collection_tile.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -1,5 +1,5 @@
 import 'package:aves/l10n/l10n.dart';
-import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 

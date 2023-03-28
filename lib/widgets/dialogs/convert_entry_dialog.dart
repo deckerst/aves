@@ -1,6 +1,5 @@
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/metadata/enums/length_unit.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -12,6 +11,7 @@ import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

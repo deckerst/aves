@@ -7,7 +7,6 @@ import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/entry_background.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -15,6 +14,7 @@ import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/error.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
@@ -13,6 +12,7 @@ import 'package:aves/widgets/settings/viewer/entry_background.dart';
 import 'package:aves/widgets/settings/viewer/overlay.dart';
 import 'package:aves/widgets/settings/viewer/slideshow.dart';
 import 'package:aves/widgets/settings/viewer/viewer_actions_editor.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
