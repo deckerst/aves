@@ -15,7 +15,6 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
@@ -25,14 +24,12 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
-import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
-import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
-import 'package:aves/widgets/map/map_info_row.dart';
+import 'package:aves/widgets/map/scroller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_map/aves_map.dart';
@@ -101,9 +98,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   final ValueNotifier<int?> _selectedIndexNotifier = ValueNotifier(0);
   final ValueNotifier<CollectionLens?> _regionCollectionNotifier = ValueNotifier(null);
   final ValueNotifier<LatLng?> _dotLocationNotifier = ValueNotifier(null);
-  final ValueNotifier<AvesEntry?> _dotEntryNotifier = ValueNotifier(null), _infoEntryNotifier = ValueNotifier(null);
+  final ValueNotifier<AvesEntry?> _dotEntryNotifier = ValueNotifier(null);
   final ValueNotifier<double> _overlayOpacityNotifier = ValueNotifier(1);
-  final Debouncer _infoDebouncer = Debouncer(delay: Durations.mapInfoDebounceDelay);
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   late AnimationController _overlayAnimationController;
   late Animation<double> _overlayScale, _scrollerSize;
@@ -124,8 +120,6 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         _isPageAnimatingNotifier.value = false;
       });
     }
-
-    _dotEntryNotifier.addListener(_onSelectedEntryChanged);
 
     _overlayAnimationController = AnimationController(
       duration: context.read<DurationsData>().viewerOverlayAnimation,
@@ -166,7 +160,6 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       ..forEach((sub) => sub.cancel())
       ..clear();
     _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
-    _dotEntryNotifier.removeListener(_onSelectedEntryChanged);
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChanged);
     _mapController.dispose();
@@ -229,8 +222,13 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           children: [
             const SizedBox(height: 8),
             const Divider(height: 0),
-            _buildOverlayController(),
-            _buildScroller(),
+            _buildOverlayControls(),
+            MapEntryScroller(
+              regionCollectionNotifier: _regionCollectionNotifier,
+              dotEntryNotifier: _dotEntryNotifier,
+              selectedIndexNotifier: _selectedIndexNotifier,
+              onTap: (index) => _goToViewer(_getRegionEntry(index)),
+            ),
           ],
         ),
       ),
@@ -300,7 +298,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     return child;
   }
 
-  Widget _buildOverlayController() {
+  Widget _buildOverlayControls() {
     if (widget.overlayEntry == null) return const SizedBox();
 
     return Padding(
@@ -323,63 +321,6 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           );
         },
       ),
-    );
-  }
-
-  Widget _buildScroller() {
-    return Stack(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SafeArea(
-              top: false,
-              bottom: false,
-              child: MapInfoRow(entryNotifier: _infoEntryNotifier),
-            ),
-            const SizedBox(height: 8),
-            Selector<MediaQueryData, double>(
-              selector: (context, mq) => mq.size.width,
-              builder: (context, mqWidth, child) => ValueListenableBuilder<CollectionLens?>(
-                valueListenable: _regionCollectionNotifier,
-                builder: (context, regionCollection, child) {
-                  return AnimatedBuilder(
-                    // update when entries are added/removed
-                    animation: regionCollection ?? ChangeNotifier(),
-                    builder: (context, child) {
-                      final regionEntries = regionCollection?.sortedEntries ?? [];
-                      return ThumbnailScroller(
-                        availableWidth: mqWidth,
-                        entryCount: regionEntries.length,
-                        entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
-                        indexNotifier: _selectedIndexNotifier,
-                        onTap: _onThumbnailTap,
-                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
-                        highlightable: true,
-                        showLocation: false,
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        Positioned.fill(
-          child: ValueListenableBuilder<CollectionLens?>(
-            valueListenable: _regionCollectionNotifier,
-            builder: (context, regionCollection, child) {
-              return regionCollection != null && regionCollection.isEmpty
-                  ? EmptyContent(
-                      text: context.l10n.mapEmptyRegion,
-                      alignment: Alignment.center,
-                      fontSize: 18,
-                    )
-                  : const SizedBox();
-            },
-          ),
-        ),
-      ],
     );
   }
 
@@ -432,8 +373,6 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     return null;
   }
 
-  void _onThumbnailTap(int index) => _goToViewer(_getRegionEntry(index));
-
   void _onThumbnailIndexChanged() => _onEntrySelected(_getRegionEntry(_selectedIndexNotifier.value));
 
   void _onEntrySelected(AvesEntry? selectedEntry) {
@@ -445,15 +384,6 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
   void _onMarkerEntryMetadataChanged() {
     _dotLocationNotifier.value = _dotEntryNotifier.value?.latLng;
-  }
-
-  void _onSelectedEntryChanged() {
-    final selectedEntry = _dotEntryNotifier.value;
-    if (_infoEntryNotifier.value == null || selectedEntry == null) {
-      _infoEntryNotifier.value = selectedEntry;
-    } else {
-      _infoDebouncer(() => _infoEntryNotifier.value = selectedEntry);
-    }
   }
 
   void _goToViewer(AvesEntry? initialEntry) {
