@@ -1,0 +1,4 @@
+enum ShareAction {
+  imageOnly,
+  videoOnly,
+}

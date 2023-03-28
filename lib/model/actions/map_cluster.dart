@@ -1,11 +1,7 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
-
-enum MapClusterAction {
-  editLocation,
-  removeLocation,
-}
 
 extension ExtraMapClusterAction on MapClusterAction {
   String getText(BuildContext context) {

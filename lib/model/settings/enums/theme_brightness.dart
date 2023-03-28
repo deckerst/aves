@@ -1,4 +1,4 @@
-import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 extension ExtraAvesThemeBrightness on AvesThemeBrightness {

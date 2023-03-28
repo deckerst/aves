@@ -1,5 +1,5 @@
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';

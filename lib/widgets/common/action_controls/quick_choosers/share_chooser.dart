@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/actions/share.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class ShareQuickChooser extends StatelessWidget {

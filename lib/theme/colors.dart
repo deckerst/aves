@@ -1,7 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';

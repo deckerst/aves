@@ -1,6 +1,6 @@
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves_model/aves_model.dart';
 
 extension ExtraAccessibilityTimeout on AccessibilityTimeout {
   Future<Duration> getSnackBarDuration(bool hasAction) async {

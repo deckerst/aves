@@ -1,6 +1,6 @@
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraAccessibilityAnimationsName on AccessibilityAnimations {

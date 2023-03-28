@@ -1,4 +1,4 @@
-import 'package:aves/model/metadata/enums/enums.dart';
+import 'package:aves_model/aves_model.dart';
 
 enum MetadataField {
   exifDate,

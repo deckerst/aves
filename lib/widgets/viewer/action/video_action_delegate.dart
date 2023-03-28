@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -20,6 +19,7 @@ import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
 import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
 import 'package:aves/widgets/settings/video/video_settings_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

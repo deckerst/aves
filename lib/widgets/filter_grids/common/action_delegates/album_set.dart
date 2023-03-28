@@ -1,14 +1,11 @@
 import 'dart:io';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set.dart';
-import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums/enums.dart';
@@ -32,6 +29,7 @@ import 'package:aves/widgets/dialogs/filter_editors/rename_album_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
