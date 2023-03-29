@@ -1,6 +1,5 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/app_icon_image_provider.dart';
-import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/apps.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
@@ -20,6 +19,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

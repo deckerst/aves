@@ -1,10 +1,10 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/widget_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

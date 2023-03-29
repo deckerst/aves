@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/overlay/video/controls.dart';
 import 'package:aves/widgets/viewer/overlay/video/progress_bar.dart';

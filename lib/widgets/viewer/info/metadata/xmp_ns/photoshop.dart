@@ -1,9 +1,9 @@
-import 'package:aves/utils/xmp_utils.dart';
+import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/photoshop.md
 class XmpPhotoshopNamespace extends XmpNamespace {
-  XmpPhotoshopNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.photoshop);
+  XmpPhotoshopNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.photoshop);
 
   @override
   late final List<XmpCardData> cards = [

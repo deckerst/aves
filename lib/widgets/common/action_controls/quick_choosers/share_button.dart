@@ -1,6 +1,6 @@
-import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/share_chooser.dart';
 import 'package:aves_model/aves_model.dart';

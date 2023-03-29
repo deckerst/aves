@@ -46,3 +46,25 @@ enum MetadataType {
   // XMP: https://en.wikipedia.org/wiki/Extensible_Metadata_Platform
   xmp,
 }
+
+class MetadataTypes {
+  static const main = {
+    MetadataType.exif,
+    MetadataType.xmp,
+  };
+
+  static const common = {
+    MetadataType.exif,
+    MetadataType.xmp,
+    MetadataType.comment,
+    MetadataType.iccProfile,
+    MetadataType.iptc,
+    MetadataType.photoshopIrb,
+  };
+
+  static const jpeg = {
+    MetadataType.jfif,
+    MetadataType.jpegAdobe,
+    MetadataType.jpegDucky,
+  };
+}

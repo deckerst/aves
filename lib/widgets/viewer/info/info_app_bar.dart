@@ -1,5 +1,4 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/selection.dart';
@@ -7,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/app_bar/sliver_app_bar_title.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aves/model/storage/relative_dir.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
 
 final entryDirRepo = EntryDirRepo._private();
@@ -52,7 +52,7 @@ class EntryDir {
   }
 
   String? _resolve() {
-    final vrl = VolumeRelativeDirectory.fromPath(asIs!);
+    final vrl = androidFileUtils.relativeDirectoryFromPath(asIs!);
     if (vrl == null || vrl.relativeDir.isEmpty) return asIs;
 
     var resolved = vrl.volumePath;

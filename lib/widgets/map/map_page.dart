@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/map.dart';
-import 'package:aves/model/actions/map_cluster.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/filters/coordinate.dart';
@@ -15,6 +13,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';

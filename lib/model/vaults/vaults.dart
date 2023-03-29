@@ -2,18 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aves/model/vaults/details.dart';
-import 'package:aves/model/vaults/enums.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/filter_editors/password_dialog.dart';
-import 'package:aves/widgets/dialogs/filter_editors/pattern_dialog.dart';
-import 'package:aves/widgets/dialogs/filter_editors/pin_dialog.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
-import 'package:local_auth/local_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:screen_state/screen_state.dart';
 
 final Vaults vaults = Vaults._private();
@@ -44,7 +35,7 @@ class Vaults extends ChangeNotifier {
 
   Set<VaultDetails> get all => Set.unmodifiable(_rows);
 
-  VaultDetails? _detailsForPath(String dirPath) => _rows.firstWhereOrNull((v) => v.path == dirPath);
+  VaultDetails? detailsForPath(String dirPath) => _rows.firstWhereOrNull((v) => v.path == dirPath);
 
   Future<void> create(VaultDetails details) async {
     await metadataDb.addVaults({details});
@@ -56,7 +47,7 @@ class Vaults extends ChangeNotifier {
   }
 
   Future<void> remove(Set<String> dirPaths) async {
-    final details = dirPaths.map(_detailsForPath).whereNotNull().toSet();
+    final details = dirPaths.map(detailsForPath).whereNotNull().toSet();
     if (details.isEmpty) return;
 
     await metadataDb.removeVaults(details);
@@ -70,7 +61,7 @@ class Vaults extends ChangeNotifier {
   }
 
   Future<void> rename(String oldDirPath, String newDirPath) async {
-    final oldDetails = _detailsForPath(oldDirPath);
+    final oldDetails = detailsForPath(oldDirPath);
     if (oldDetails == null) return;
 
     final newName = VaultDetails.nameFromPath(newDirPath);
@@ -96,7 +87,7 @@ class Vaults extends ChangeNotifier {
 
   // update details, except name
   Future<void> update(VaultDetails newDetails) async {
-    final oldDetails = _detailsForPath(newDetails.path);
+    final oldDetails = detailsForPath(newDetails.path);
     if (oldDetails == null) return;
 
     await metadataDb.updateVault(newDetails.name, newDetails);
@@ -141,119 +132,11 @@ class Vaults extends ChangeNotifier {
     _onLockStateChanged();
   }
 
-  Future<bool> tryUnlock(String dirPath, BuildContext context) async {
-    if (!isVault(dirPath) || !isLocked(dirPath)) return true;
-
-    final details = _detailsForPath(dirPath);
-    if (details == null) return false;
-
-    bool? confirmed;
-    switch (details.lockType) {
-      case VaultLockType.system:
-        try {
-          confirmed = await LocalAuthentication().authenticate(
-            localizedReason: context.l10n.authenticateToUnlockVault,
-          );
-        } on PlatformException catch (e, stack) {
-          if (e.code != 'auth_in_progress') {
-            // `auth_in_progress`: `Authentication in progress`
-            await reportService.recordError(e, stack);
-          }
-        }
-        break;
-      case VaultLockType.pattern:
-        final pattern = await showDialog<String>(
-          context: context,
-          builder: (context) => const PatternDialog(needConfirmation: false),
-          routeSettings: const RouteSettings(name: PatternDialog.routeName),
-        );
-        if (pattern != null) {
-          confirmed = pattern == await securityService.readValue(details.passKey);
-        }
-        break;
-      case VaultLockType.pin:
-        final pin = await showDialog<String>(
-          context: context,
-          builder: (context) => const PinDialog(needConfirmation: false),
-          routeSettings: const RouteSettings(name: PinDialog.routeName),
-        );
-        if (pin != null) {
-          confirmed = pin == await securityService.readValue(details.passKey);
-        }
-        break;
-      case VaultLockType.password:
-        final password = await showDialog<String>(
-          context: context,
-          builder: (context) => const PasswordDialog(needConfirmation: false),
-          routeSettings: const RouteSettings(name: PasswordDialog.routeName),
-        );
-        if (password != null) {
-          confirmed = password == await securityService.readValue(details.passKey);
-        }
-        break;
-    }
-
-    if (confirmed == null || !confirmed) return false;
+  void unlock(String dirPath) {
+    if (!vaults.isVault(dirPath) || !vaults.isLocked(dirPath)) return;
 
     _unlockedDirPaths.add(dirPath);
     _onLockStateChanged();
-    return true;
-  }
-
-  Future<bool> setPass(BuildContext context, VaultDetails details) async {
-    switch (details.lockType) {
-      case VaultLockType.system:
-        final l10n = context.l10n;
-        try {
-          return await LocalAuthentication().authenticate(
-            localizedReason: l10n.authenticateToConfigureVault,
-          );
-        } on PlatformException catch (e, stack) {
-          await showDialog(
-            context: context,
-            builder: (context) => AvesDialog(
-              content: Text(e.message ?? l10n.genericFailureFeedback),
-              actions: const [OkButton()],
-            ),
-            routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-          );
-          if (e.code != auth_error.notAvailable) {
-            await reportService.recordError(e, stack);
-          }
-        }
-        break;
-      case VaultLockType.pattern:
-        final pattern = await showDialog<String>(
-          context: context,
-          builder: (context) => const PatternDialog(needConfirmation: true),
-          routeSettings: const RouteSettings(name: PatternDialog.routeName),
-        );
-        if (pattern != null) {
-          return await securityService.writeValue(details.passKey, pattern);
-        }
-        break;
-      case VaultLockType.pin:
-        final pin = await showDialog<String>(
-          context: context,
-          builder: (context) => const PinDialog(needConfirmation: true),
-          routeSettings: const RouteSettings(name: PinDialog.routeName),
-        );
-        if (pin != null) {
-          return await securityService.writeValue(details.passKey, pin);
-        }
-        break;
-      case VaultLockType.password:
-        final password = await showDialog<String>(
-          context: context,
-          builder: (context) => const PasswordDialog(needConfirmation: true),
-          routeSettings: const RouteSettings(name: PasswordDialog.routeName),
-        );
-        if (password != null) {
-          return await securityService.writeValue(details.passKey, password);
-        }
-        break;
-    }
-    return false;
   }
 
   void _onScreenOff() => lock(all.where((v) => v.autoLockScreenOff).map((v) => v.path).toSet());

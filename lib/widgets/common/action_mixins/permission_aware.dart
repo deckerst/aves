@@ -1,9 +1,11 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/storage/relative_dir.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +27,7 @@ mixin PermissionAwareMixin {
           final uris = <String>[], mimeTypes = <String>[];
           entries.where((entry) {
             final dir = entry.directory;
-            return dir != null && restrictedInaccessibleDirs.contains(VolumeRelativeDirectory.fromPath(dir));
+            return dir != null && restrictedInaccessibleDirs.contains(androidFileUtils.relativeDirectoryFromPath(dir));
           }).forEach((entry) {
             uris.add(entry.uri);
             mimeTypes.add(entry.mimeType);

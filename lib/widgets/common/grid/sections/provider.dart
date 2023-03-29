@@ -1,9 +1,9 @@
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/grid/sections/fixed/section_layout_builder.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';

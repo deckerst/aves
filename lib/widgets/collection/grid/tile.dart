@@ -2,13 +2,13 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/widgets/collection/grid/list_details.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

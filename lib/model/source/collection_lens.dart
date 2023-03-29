@@ -14,7 +14,6 @@ import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';

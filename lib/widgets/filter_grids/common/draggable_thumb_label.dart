@@ -1,9 +1,9 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/draggable_thumb_label.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

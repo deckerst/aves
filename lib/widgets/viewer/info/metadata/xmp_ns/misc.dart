@@ -1,8 +1,8 @@
-import 'package:aves/utils/xmp_utils.dart';
+import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 class XmpCreatorAtom extends XmpNamespace {
-  XmpCreatorAtom({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.creatorAtom);
+  XmpCreatorAtom({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.creatorAtom);
 
   @override
   late final List<XmpCardData> cards = [
@@ -11,7 +11,7 @@ class XmpCreatorAtom extends XmpNamespace {
 }
 
 class XmpDarktableNamespace extends XmpNamespace {
-  XmpDarktableNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.darktable);
+  XmpDarktableNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.darktable);
 
   @override
   late final List<XmpCardData> cards = [
@@ -20,7 +20,7 @@ class XmpDarktableNamespace extends XmpNamespace {
 }
 
 class XmpDwcNamespace extends XmpNamespace {
-  XmpDwcNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.dwc);
+  XmpDwcNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.dwc);
 
   @override
   late final List<XmpCardData> cards = [
@@ -37,7 +37,7 @@ class XmpDwcNamespace extends XmpNamespace {
 }
 
 class XmpIptcCoreNamespace extends XmpNamespace {
-  XmpIptcCoreNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.iptc4xmpCore);
+  XmpIptcCoreNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.iptc4xmpCore);
 
   @override
   late final List<XmpCardData> cards = [
@@ -46,7 +46,7 @@ class XmpIptcCoreNamespace extends XmpNamespace {
 }
 
 class XmpIptc4xmpExtNamespace extends XmpNamespace {
-  XmpIptc4xmpExtNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.iptc4xmpExt);
+  XmpIptc4xmpExtNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.iptc4xmpExt);
 
   @override
   late final List<XmpCardData> cards = [
@@ -55,7 +55,7 @@ class XmpIptc4xmpExtNamespace extends XmpNamespace {
 }
 
 class XmpMPNamespace extends XmpNamespace {
-  XmpMPNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.mp);
+  XmpMPNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.mp);
 
   @override
   late final List<XmpCardData> cards = [
@@ -65,7 +65,7 @@ class XmpMPNamespace extends XmpNamespace {
 
 // cf www.metadataworkinggroup.org/pdf/mwg_guidance.pdf (down, as of 2021/02/15)
 class XmpMgwRegionsNamespace extends XmpNamespace {
-  XmpMgwRegionsNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.mwgrs);
+  XmpMgwRegionsNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.mwgrs);
 
   @override
   late final List<XmpCardData> cards = [
@@ -75,7 +75,7 @@ class XmpMgwRegionsNamespace extends XmpNamespace {
 }
 
 class XmpPlusNamespace extends XmpNamespace {
-  XmpPlusNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.plus);
+  XmpPlusNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.plus);
 
   @override
   late final List<XmpCardData> cards = [
@@ -86,7 +86,7 @@ class XmpPlusNamespace extends XmpNamespace {
 }
 
 class XmpMMNamespace extends XmpNamespace {
-  XmpMMNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.xmpMM);
+  XmpMMNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.xmpMM);
 
   @override
   late final List<XmpCardData> cards = [
@@ -104,7 +104,7 @@ class XmpMMNamespace extends XmpNamespace {
 }
 
 class XmpXperiaCameraNamespace extends XmpNamespace {
-  XmpXperiaCameraNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.xperiaCamera);
+  XmpXperiaCameraNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.xperiaCamera);
 
   @override
   late final List<XmpCardData> cards = [

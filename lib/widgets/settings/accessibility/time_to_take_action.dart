@@ -1,6 +1,6 @@
-import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves_model/aves_model.dart';

@@ -1,10 +1,10 @@
-import 'package:aves/ref/exif.dart';
-import 'package:aves/utils/xmp_utils.dart';
+import 'package:aves/ref/metadata/exif.dart';
+import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/exif.md
 class XmpExifNamespace extends XmpNamespace {
-  XmpExifNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: Namespaces.exif);
+  XmpExifNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.exif);
 
   @override
   String formatValue(XmpProp prop) {

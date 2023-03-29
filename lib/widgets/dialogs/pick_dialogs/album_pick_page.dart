@@ -1,16 +1,15 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
