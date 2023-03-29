@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
   static const intentDataKeyMimeType = 'mimeType';
   static const intentDataKeyPage = 'page';
   static const intentDataKeyQuery = 'query';
+  static const intentDataKeySafeMode = 'safeMode';
   static const intentDataKeyUri = 'uri';
   static const intentDataKeyWidgetId = 'widgetId';
 
@@ -102,6 +103,7 @@ class _HomePageState extends State<HomePage> {
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
+    final safeMode = intentData[intentDataKeySafeMode] ?? false;
     final intentAction = intentData[intentDataKeyAction];
     _initialFilters = null;
 
@@ -205,6 +207,7 @@ class _HomePageState extends State<HomePage> {
         final source = context.read<CollectionSource>();
         await source.init(
           loadTopEntriesFirst: settings.homePage == HomePageSetting.collection,
+          canAnalyze: !safeMode,
         );
         break;
       case AppMode.screenSaver:
