@@ -1,8 +1,7 @@
 import 'package:aves/model/apps.dart';
-import 'package:aves/model/source/enums/enums.dart';
-import 'package:aves/model/storage/volume.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -80,6 +79,19 @@ class AndroidFileUtils {
     // storage volume path includes trailing '/', but argument path may or may not,
     // which is an issue when the path is at the root
     return volume != null || path.endsWith(separator) ? volume : getStorageVolume('$path$separator');
+  }
+
+  // prefer static method over a null returning factory constructor
+  VolumeRelativeDirectory? relativeDirectoryFromPath(String dirPath) {
+    final volume = getStorageVolume(dirPath);
+    if (volume == null) return null;
+
+    final root = volume.path;
+    final rootLength = root.length;
+    return VolumeRelativeDirectory(
+      volumePath: root,
+      relativeDir: dirPath.length < rootLength ? '' : dirPath.substring(rootLength),
+    );
   }
 
   bool isOnRemovableStorage(String path) => getStorageVolume(path)?.isRemovable ?? false;

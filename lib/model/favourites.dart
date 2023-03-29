@@ -1,11 +1,11 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/storage/volume.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 final Favourites favourites = Favourites._private();
 

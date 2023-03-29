@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
-import 'package:aves/ref/geotiff.dart';
+import 'package:aves/ref/metadata/geotiff.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:equatable/equatable.dart';

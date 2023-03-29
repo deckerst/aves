@@ -1,8 +1,8 @@
-import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_chooser.dart';

@@ -910,10 +910,10 @@ packages:
     dependency: "direct main"
     description:
       name: pdf
-      sha256: "6cd57e8e6d052bd1078f18e0dc7cd6701fad6288231c1ce99d66ef5034d14e61"
+      sha256: "586d3debf5432e5377044754032cfa53ab45e9abf371d4865e9ad5019570e246"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.0"
+    version: "3.10.1"
   percent_indicator:
     dependency: "direct main"
     description:
@@ -1022,10 +1022,10 @@ packages:
     dependency: "direct main"
     description:
       name: printing
-      sha256: fe654363cd0114b50a0815b24e96957c7e9a60eb4e3b7ccfe71cf3f2b7114cb2
+      sha256: c5c19dd852e95aa140141df13fa304f079a20c4a14a66de5275a0f811240aeec
       url: "https://pub.dev"
     source: hosted
-    version: "5.10.1"
+    version: "5.10.3"
   process:
     dependency: transitive
     description:

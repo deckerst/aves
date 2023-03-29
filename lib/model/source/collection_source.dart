@@ -15,7 +15,6 @@ import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/location.dart';

@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/utils/colors.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';

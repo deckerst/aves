@@ -1,9 +1,9 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves_model/aves_model.dart';
 
 class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
   final Iterable<FilterGridItem<TagFilter>> _items;

@@ -1,6 +1,6 @@
-import 'package:aves/model/vaults/enums.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/collection_utils.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 

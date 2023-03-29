@@ -9,7 +9,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/ref/bursts.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';

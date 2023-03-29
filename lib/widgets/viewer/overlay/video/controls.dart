@@ -1,6 +1,6 @@
-import 'package:aves/model/actions/entry.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/togglers/play.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves_model/aves_model.dart';

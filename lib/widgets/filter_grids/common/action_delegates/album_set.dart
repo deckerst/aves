@@ -8,17 +8,15 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
-import 'package:aves/model/source/enums/view.dart';
-import 'package:aves/model/storage/relative_dir.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
-import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
@@ -36,7 +34,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin, VaultAwareMixin {
+class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
 
   AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumFilter>> items) : _items = items;
@@ -124,7 +122,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         if (vaults.isVault(dirPath)) return true;
 
         // do not allow renaming volume root
-        final dir = VolumeRelativeDirectory.fromPath(dirPath);
+        final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
         return dir != null && dir.relativeDir.isNotEmpty;
       case ChipSetAction.hide:
         return hasSelection;
@@ -385,7 +383,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
     final album = filter.album;
     if (!vaults.isVault(album)) {
-      final dir = VolumeRelativeDirectory.fromPath(album);
+      final dir = androidFileUtils.relativeDirectoryFromPath(album);
       // do not allow renaming volume root
       if (dir == null || dir.relativeDir.isEmpty) return;
 

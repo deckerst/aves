@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/album.dart';
 import 'package:aves/widgets/collection/grid/headers/date.dart';
 import 'package:aves/widgets/collection/grid/headers/rating.dart';
 import 'package:aves/widgets/common/grid/header.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class CollectionSectionHeader extends StatelessWidget {

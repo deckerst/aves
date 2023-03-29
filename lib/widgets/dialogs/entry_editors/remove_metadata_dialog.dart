@@ -1,8 +1,8 @@
-import 'package:aves/model/metadata/enums/metadata_type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';

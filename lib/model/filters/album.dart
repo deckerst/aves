@@ -1,10 +1,10 @@
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';

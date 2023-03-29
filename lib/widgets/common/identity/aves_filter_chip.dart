@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -13,6 +12,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
