@@ -9,4 +9,5 @@
     <string name="analysis_notification_action_stop">Gelditu</string>
     <string name="analysis_notification_default_title">Media eskaneatzen</string>
     <string name="app_name">Aves</string>
+    <string name="safe_mode_shortcut_short_label">Modu segurua</string>
 </resources>

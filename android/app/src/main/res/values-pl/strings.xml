@@ -9,4 +9,5 @@
     <string name="analysis_notification_action_stop">Zatrzymaj</string>
     <string name="app_name">Aves</string>
     <string name="wallpaper">Tapeta</string>
+    <string name="safe_mode_shortcut_short_label">Tryb bezpieczny</string>
 </resources>

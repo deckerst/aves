@@ -1436,5 +1436,21 @@
   "settingsCollectionBurstPatternsNone": "Brak",
   "@settingsCollectionBurstPatternsNone": {},
   "settingsCollectionBurstPatternsTile": "Wzory wybuchowe",
-  "@settingsCollectionBurstPatternsTile": {}
+  "@settingsCollectionBurstPatternsTile": {},
+  "viewerActionUnlock": "Odblokuj przeglądarkę",
+  "@viewerActionUnlock": {},
+  "viewerActionLock": "Zablokuj przeglądarkę",
+  "@viewerActionLock": {},
+  "statePageTitle": "Stany",
+  "@statePageTitle": {},
+  "stateEmpty": "Brak stanów",
+  "@stateEmpty": {},
+  "searchStatesSectionTitle": "Stany",
+  "@searchStatesSectionTitle": {},
+  "statsTopStatesSectionTitle": "Najpopularniejsze stany",
+  "@statsTopStatesSectionTitle": {},
+  "tagPlaceholderState": "Stan",
+  "@tagPlaceholderState": {},
+  "chipActionShowCountryStates": "Pokaż stany",
+  "@chipActionShowCountryStates": {}
 }
