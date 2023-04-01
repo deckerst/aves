@@ -1280,11 +1280,6 @@
     "tagPlaceholderState"
   ],
 
-  "eu": [
-    "searchStatesSectionTitle",
-    "statsTopStatesSectionTitle"
-  ],
-
   "fa": [
     "clearTooltip",
     "chipActionGoToPlacePage",
@@ -3555,17 +3550,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
-  ],
-
   "it": [
     "chipActionShowCountryStates",
     "viewerActionLock",
@@ -4118,17 +4102,6 @@
     "tagPlaceholderState"
   ],
 
-  "pl": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
-  ],
-
   "pt": [
     "chipActionShowCountryStates",
     "viewerActionLock",
@@ -4143,33 +4116,14 @@
     "tagPlaceholderState"
   ],
 
-  "ro": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
-    "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
-  ],
-
   "ru": [
-    "chipActionLock",
     "chipActionShowCountryStates",
     "viewerActionLock",
     "viewerActionUnlock",
-    "vaultLockTypePattern",
-    "settingsVideoEnablePip",
-    "patternDialogEnter",
-    "patternDialogConfirm",
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
-    "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
     "placeEmpty",
@@ -4177,8 +4131,6 @@
     "settingsConfirmationVaultDataLoss",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "statsTopStatesSectionTitle",
     "tagPlaceholderState"
@@ -5031,25 +4983,8 @@
     "tagPlaceholderState"
   ],
 
-  "uk": [
-    "chipActionShowCountryStates",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
-    "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone",
-    "statsTopStatesSectionTitle",
-    "tagPlaceholderState"
-  ],
-
   "zh": [
     "chipActionGoToPlacePage",
-    "chipActionLock",
-    "chipActionShowCountryStates",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
     "viewerActionLock",
     "viewerActionUnlock",
     "filterLocatedLabel",
