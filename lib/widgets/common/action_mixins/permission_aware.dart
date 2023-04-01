@@ -71,17 +71,7 @@ mixin PermissionAwareMixin {
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
 
-      if (!await deviceService.isSystemFilePickerEnabled()) {
-        await showDialog(
-          context: context,
-          builder: (context) => AvesDialog(
-            content: Text(context.l10n.missingSystemFilePickerDialogMessage),
-            actions: const [OkButton()],
-          ),
-          routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-        );
-        return false;
-      }
+      if (!await _checkSystemFilePickerEnabled(context)) return false;
 
       final granted = await storageService.requestDirectoryAccess(dir.dirPath);
       if (!granted) {
@@ -104,5 +94,19 @@ mixin PermissionAwareMixin {
       },
       routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
+  }
+
+  Future<bool> _checkSystemFilePickerEnabled(BuildContext context) async {
+    if (await deviceService.isSystemFilePickerEnabled()) return true;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AvesDialog(
+        content: Text(context.l10n.missingSystemFilePickerDialogMessage),
+        actions: const [OkButton()],
+      ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+    );
+    return false;
   }
 }
