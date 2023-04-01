@@ -1278,5 +1278,21 @@
   "settingsCollectionBurstPatternsTile": "Pola semburan",
   "@settingsCollectionBurstPatternsTile": {},
   "settingsCollectionBurstPatternsNone": "Tidak ada",
-  "@settingsCollectionBurstPatternsNone": {}
+  "@settingsCollectionBurstPatternsNone": {},
+  "chipActionShowCountryStates": "Tampilkan wilayah",
+  "@chipActionShowCountryStates": {},
+  "viewerActionUnlock": "Buka kunci penampil",
+  "@viewerActionUnlock": {},
+  "statePageTitle": "Wilayah",
+  "@statePageTitle": {},
+  "stateEmpty": "Tidak ada wilayah",
+  "@stateEmpty": {},
+  "tagPlaceholderState": "Wilayah",
+  "@tagPlaceholderState": {},
+  "viewerActionLock": "Kunci penampil",
+  "@viewerActionLock": {},
+  "searchStatesSectionTitle": "Wilayah",
+  "@searchStatesSectionTitle": {},
+  "statsTopStatesSectionTitle": "Wilayah Teratas",
+  "@statsTopStatesSectionTitle": {}
 }

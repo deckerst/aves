@@ -1448,5 +1448,9 @@
   "statePageTitle": "Egoerak",
   "@statePageTitle": {},
   "viewerActionLock": "Blokeatu bisorea",
-  "@viewerActionLock": {}
+  "@viewerActionLock": {},
+  "searchStatesSectionTitle": "Egoerak",
+  "@searchStatesSectionTitle": {},
+  "statsTopStatesSectionTitle": "Egoera Nagusiak",
+  "@statsTopStatesSectionTitle": {}
 }

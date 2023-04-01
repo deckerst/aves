@@ -1192,5 +1192,13 @@
   "filterNoAddressLabel": "无地址",
   "@filterNoAddressLabel": {},
   "settingsViewerShowRatingTags": "显示评分和标签",
-  "@settingsViewerShowRatingTags": {}
+  "@settingsViewerShowRatingTags": {},
+  "chipActionLock": "锁定",
+  "@chipActionLock": {},
+  "chipActionConfigureVault": "配置保险库",
+  "@chipActionConfigureVault": {},
+  "chipActionCreateVault": "创建保险库",
+  "@chipActionCreateVault": {},
+  "chipActionShowCountryStates": "显示状态",
+  "@chipActionShowCountryStates": {}
 }

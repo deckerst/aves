@@ -1244,5 +1244,21 @@
   "settingsDisablingBinWarningDialogMessage": "Элементы в корзине будут удалены навсегда.",
   "@settingsDisablingBinWarningDialogMessage": {},
   "lengthUnitPixel": "пикс.",
-  "@lengthUnitPixel": {}
+  "@lengthUnitPixel": {},
+  "chipActionLock": "Заблокировать",
+  "@chipActionLock": {},
+  "patternDialogEnter": "Введите ключ",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Подтвердите ключ",
+  "@patternDialogConfirm": {},
+  "vaultLockTypePattern": "Графический ключ",
+  "@vaultLockTypePattern": {},
+  "drawerPlacePage": "Места",
+  "@drawerPlacePage": {},
+  "settingsVideoBackgroundMode": "Фоновый режим",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoBackgroundModeDialogTitle": "Фоновый режим",
+  "@settingsVideoBackgroundModeDialogTitle": {},
+  "settingsVideoEnablePip": "Картинка в картинке",
+  "@settingsVideoEnablePip": {}
 }
