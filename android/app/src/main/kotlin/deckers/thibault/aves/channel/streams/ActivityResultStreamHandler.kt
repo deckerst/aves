@@ -101,7 +101,17 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         endOfStream()
     }
 
-    private fun createFile() {
+    private suspend fun safeStartActivityForResult(intent: Intent, requestCode: Int, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+        if (intent.resolveActivity(activity.packageManager) != null) {
+            MainActivity.pendingStorageAccessResultHandlers[requestCode] = PendingStorageAccessResultHandler(null, onGranted, onDenied)
+            activity.startActivityForResult(intent, requestCode)
+        } else {
+            MainActivity.notifyError("failed to resolve activity for intent=$intent extras=${intent.extras}")
+            onDenied()
+        }
+    }
+
+    private suspend fun createFile() {
         @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             error("createFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
@@ -116,12 +126,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             return
         }
 
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = mimeType
-            putExtra(Intent.EXTRA_TITLE, name)
-        }
-        MainActivity.pendingStorageAccessResultHandlers[MainActivity.CREATE_FILE_REQUEST] = PendingStorageAccessResultHandler(null, { uri ->
+        fun onGranted(uri: Uri) {
             ioScope.launch {
                 try {
                     // truncate is necessary when overwriting a longer file
@@ -134,13 +139,20 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
                 }
                 endOfStream()
             }
-        }, {
+        }
+
+        fun onDenied() {
             success(null)
             endOfStream()
-        })
-        activity.startActivityForResult(intent, MainActivity.CREATE_FILE_REQUEST)
-    }
+        }
 
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = mimeType
+            putExtra(Intent.EXTRA_TITLE, name)
+        }
+        safeStartActivityForResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
+    }
 
     private suspend fun openFile() {
         @SuppressLint("ObsoleteSdkInt")
@@ -178,13 +190,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             addCategory(Intent.CATEGORY_OPENABLE)
             setTypeAndNormalize(mimeType ?: MimeTypes.ANY)
         }
-        if (intent.resolveActivity(activity.packageManager) != null) {
-            MainActivity.pendingStorageAccessResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingStorageAccessResultHandler(null, ::onGranted, ::onDenied)
-            activity.startActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST)
-        } else {
-            MainActivity.notifyError("failed to resolve activity for intent=$intent extras=${intent.extras}")
-            onDenied()
-        }
+        safeStartActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
     private fun pickCollectionFilters() {
