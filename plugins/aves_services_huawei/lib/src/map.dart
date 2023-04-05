@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
-import 'package:huawei_map/map.dart';
+import 'package:huawei_map/huawei_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
 import 'package:provider/provider.dart';
 
@@ -182,7 +182,7 @@ class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
                     ...markers,
                     if (dotLocation != null && _dotMarkerBitmap != null)
                       Marker(
-                        markerId: MarkerId('dot'),
+                        markerId: const MarkerId('dot'),
                         anchor: const Offset(.5, .5),
                         clickable: true,
                         icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),

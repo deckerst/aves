@@ -204,9 +204,9 @@ dependencies {
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
-    implementation 'com.github.bumptech.glide:glide:4.15.0'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.6'
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
@@ -221,7 +221,7 @@ dependencies {
     huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.8.0.300'
 
     kapt 'androidx.annotation:annotation:1.6.0'
-    kapt 'com.github.bumptech.glide:compiler:4.15.0'
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
     compileOnly rootProject.findProject(':streams_channel')
 }
