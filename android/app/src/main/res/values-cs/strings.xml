@@ -9,4 +9,5 @@
     <string name="analysis_notification_default_title">Prohledávání médií</string>
     <string name="analysis_notification_action_stop">Zastavit</string>
     <string name="app_widget_label">Fotorámeček</string>
+    <string name="safe_mode_shortcut_short_label">Bezpečný režim</string>
 </resources>
