@@ -6,6 +6,8 @@ import 'package:aves_services_platform/src/map.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_api_availability/google_api_availability.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:latlong2/latlong.dart' as ll;
 
 class PlatformMobileServices extends MobileServices {
@@ -20,6 +22,21 @@ class PlatformMobileServices extends MobileServices {
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     _canRenderMaps = androidInfo.version.sdkInt >= 21;
+    if (_canRenderMaps) {
+      final mapsImplementation = GoogleMapsFlutterPlatform.instance;
+      if (mapsImplementation is GoogleMapsFlutterAndroid) {
+        // as of flutter v3.7.10 / google_maps_flutter v2.2.5 / google_maps_flutter_android v2.4.10,
+        // setting `useAndroidViewSurface` to true (default):
+        // + issue #241 exists but workaround is efficient
+        // - page stack and page animation perf is bad
+        // - overlay blur is disabled
+        // setting `useAndroidViewSurface` to false:
+        // - issue #241 exists and workaround is inefficient
+        // + page stack and page animation perf is OK
+        // + overlay blur is effective
+        mapsImplementation.useAndroidViewSurface = false;
+      }
+    }
   }
 
   @override
