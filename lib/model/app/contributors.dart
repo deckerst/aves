@@ -40,6 +40,7 @@ class Contributors {
     Contributor('kaajjo', 'claymanoff@gmail.com'),
     Contributor('Eduardo Malaspina', 'vaio0@swismail.com'),
     Contributor('Evgeniy Khramov', 'thejenjagamertjg@gmail.com'),
+    Contributor('syu_pf_ssy', 'syu.pf.ssy@outlook.com'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
