@@ -83,9 +83,7 @@ mixin EntryEditorMixin {
     if (entries.isEmpty) return null;
 
     final filtersByEntry = Map.fromEntries(entries.map((v) {
-      // use `<CollectionFilter>{...}` instead of `toSet()` to circumvent an implicit typing issue, as of Dart v2.18.2
-      final filters = <CollectionFilter>{...v.tags.map(TagFilter.new)};
-      return MapEntry(v, filters);
+      return MapEntry(v, v.tags.map(TagFilter.new).toSet());
     }));
     await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
