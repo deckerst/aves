@@ -635,6 +635,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editTags(newTagsByEntry[entry]!));
   }
 
+  Future<void> removeTags(BuildContext context, {required Set<AvesEntry> entries, required Set<String> tags}) async {
+    final newTagsByEntry = Map.fromEntries(entries.map((v) {
+      return MapEntry(v, v.tags.whereNot(tags.contains).toSet());
+    }));
+
+    await _edit(context, entries, (entry) => entry.editTags(newTagsByEntry[entry]!));
+  }
+
   Future<void> _removeMetadata(BuildContext context) async {
     final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRemoveMetadata);
     if (entries == null || entries.isEmpty) return;
