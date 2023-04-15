@@ -1078,10 +1078,10 @@ packages:
     dependency: transitive
     description:
       name: screen_brightness_android
-      sha256: "4e4ba0c44b5c24be20030733ada0c844aa0e8f1963f5d7cd72f5b2fe54a61495"
+      sha256: "69231ea2cf83a627120302a82e98e739ee7e97c1077b58fd0ff0ad954e95a36e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.0+1"
   screen_brightness_ios:
     dependency: transitive
     description:
@@ -1134,10 +1134,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "8304d8a1f7d21a429f91dee552792249362b68a331ac5c3c1caf370f658873f6"
+      sha256: "7fa90471a6875d26ad78c7e4a675874b2043874586891128dc5899662c97db46"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.2"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -1396,10 +1396,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: dd729390aa936bf1bdf5cd1bc7468ff340263f80a2c4f569416507667de8e3c8
+      sha256: a52628068d282d01a07cd86e6ba99e497aa45ce8c91159015b2416907d78e411
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.26"
+    version: "6.0.27"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1546,4 +1546,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.19.4 <3.0.0"
-  flutter: ">=3.7.10"
+  flutter: ">=3.7.11"
