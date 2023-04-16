@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/covers.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
@@ -22,7 +23,7 @@ abstract class StorageService {
   Future<void> revokeDirectoryAccess(String path);
 
   // returns number of deleted directories
-  Future<int> deleteEmptyDirectories(Iterable<String> dirPaths);
+  Future<int> deleteEmptyRegularDirectories(Set<String> dirPaths);
 
   // returns whether user granted access to a directory of his choosing
   Future<bool> requestDirectoryAccess(String path);
@@ -132,10 +133,10 @@ class PlatformStorageService implements StorageService {
 
   // returns number of deleted directories
   @override
-  Future<int> deleteEmptyDirectories(Iterable<String> dirPaths) async {
+  Future<int> deleteEmptyRegularDirectories(Set<String> dirPaths) async {
     try {
       final result = await _platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
-        'dirPaths': dirPaths.toList(),
+        'dirPaths': dirPaths.where((v) => covers.effectiveAlbumType(v) == AlbumType.regular).toList(),
       });
       if (result != null) return result as int;
     } on PlatformException catch (e, stack) {

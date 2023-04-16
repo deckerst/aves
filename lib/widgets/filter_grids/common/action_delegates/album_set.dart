@@ -373,7 +373,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories(filledAlbums);
+        await storageService.deleteEmptyRegularDirectories(filledAlbums);
       },
     );
   }
@@ -454,7 +454,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories({album});
+        await storageService.deleteEmptyRegularDirectories({album});
       },
     );
   }

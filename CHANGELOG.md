@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - upgraded Flutter to stable v3.7.11
+- when an album becomes empty, the folder will be deleted only if it is a non-app/common album
 
 ### Fixed
 
@@ -134,7 +135,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- editing description writes XMP `dc:description`, and clears Exif `ImageDescription` / `UserComment`
+- editing description writes XMP `dc:description`, and clears Exif `ImageDescription`
+  / `UserComment`
 - in the tag editor, tapping on applied tag applies it to all items instead of removing it
 - pin app bar when selecting items
 
