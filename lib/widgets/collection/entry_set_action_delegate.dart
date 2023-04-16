@@ -350,7 +350,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories(storageDirs);
+        await storageService.deleteEmptyRegularDirectories(storageDirs);
       },
     );
   }

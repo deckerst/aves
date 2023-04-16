@@ -220,7 +220,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
         // cleanup
         if ({MoveType.move, MoveType.toBin}.contains(moveType)) {
-          await storageService.deleteEmptyDirectories(originAlbums);
+          await storageService.deleteEmptyRegularDirectories(originAlbums);
         }
 
         final successCount = successOps.length;
