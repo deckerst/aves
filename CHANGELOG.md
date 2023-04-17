@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.7.11
 - when an album becomes empty, the folder will be deleted only if it is a non-app/common album
+- TV: section header focus/highlight
 
 ### Fixed
 

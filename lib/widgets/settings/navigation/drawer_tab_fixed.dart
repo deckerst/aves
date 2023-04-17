@@ -40,6 +40,16 @@ class _DrawerFixedListTabState<T> extends State<DrawerFixedListTab<T>> {
             itemBuilder: (context, index) {
               final filter = widget.items[index];
               final visible = visibleItems.contains(filter);
+              void onPressed() {
+                setState(() {
+                  if (visible) {
+                    visibleItems.remove(filter);
+                  } else {
+                    visibleItems.add(filter);
+                  }
+                });
+              }
+
               return Opacity(
                 key: ValueKey(filter),
                 opacity: visible ? 1 : .4,
@@ -48,17 +58,10 @@ class _DrawerFixedListTabState<T> extends State<DrawerFixedListTab<T>> {
                   title: widget.title(filter),
                   trailing: IconButton(
                     icon: Icon(visible ? AIcons.hide : AIcons.show),
-                    onPressed: () {
-                      setState(() {
-                        if (visible) {
-                          visibleItems.remove(filter);
-                        } else {
-                          visibleItems.add(filter);
-                        }
-                      });
-                    },
+                    onPressed: onPressed,
                     tooltip: visible ? context.l10n.hideTooltip : context.l10n.showTooltip,
                   ),
+                  onTap: settings.useTvLayout ? onPressed : null,
                 ),
               );
             },

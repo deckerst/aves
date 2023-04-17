@@ -286,17 +286,29 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
       style: AStyles.knownTitleText,
     );
     if (settings.useTvLayout) {
+      header = Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            header,
+            const SizedBox(width: 16),
+            Icon(AIcons.next, color: hasMore ? null : Theme.of(context).disabledColor),
+          ],
+        ),
+      );
       header = Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         alignment: AlignmentDirectional.centerStart,
-        child: InkWell(
-          onTap: onHeaderPressed,
-          borderRadius: const BorderRadius.all(Radius.circular(123)),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: header,
-          ),
-        ),
+        // prevent ink response when tapping the header does nothing,
+        // because otherwise Play Store reviewers think it is broken navigation
+        child: onHeaderPressed != null
+            ? InkWell(
+                onTap: onHeaderPressed,
+                borderRadius: const BorderRadius.all(Radius.circular(123)),
+                child: header,
+              )
+            : Focus(child: header),
       );
     } else {
       header = Padding(
