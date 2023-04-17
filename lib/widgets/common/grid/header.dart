@@ -32,27 +32,13 @@ class SectionHeader<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = _buildContent(context);
-    if (settings.useTvLayout) {
-      child = InkWell(
-        onTap: _onTap(context),
-        borderRadius: const BorderRadius.all(Radius.circular(123)),
-        child: child,
-      );
-    }
-    return Container(
-      alignment: AlignmentDirectional.centerStart,
-      margin: margin,
-      child: child,
-    );
-  }
+    final onTap = selectable ? () => _toggleSectionSelection(context) : null;
 
-  Widget _buildContent(BuildContext context) {
-    return Container(
+    Widget child = Container(
       padding: padding,
       constraints: BoxConstraints(minHeight: leadingSize.height),
       child: GestureDetector(
-        onTap: _onTap(context),
+        onTap: onTap,
         onLongPress: selectable
             ? () {
                 final selection = context.read<Selection<T>>();
@@ -80,7 +66,7 @@ class SectionHeader<T> extends StatelessWidget {
                             child: leading,
                           )
                       : null,
-                  onPressed: _onTap(context),
+                  onPressed: onTap,
                 ),
               ),
               TextSpan(
@@ -100,9 +86,23 @@ class SectionHeader<T> extends StatelessWidget {
         ),
       ),
     );
+    if (settings.useTvLayout) {
+      // prevent ink response when tapping the header does nothing,
+      // because otherwise Play Store reviewers think it is broken navigation
+      child = context.select<Selection<T>, bool>((v) => v.isSelecting)
+          ? InkWell(
+              onTap: onTap,
+              borderRadius: const BorderRadius.all(Radius.circular(123)),
+              child: child,
+            )
+          : Focus(child: child);
+    }
+    return Container(
+      alignment: AlignmentDirectional.centerStart,
+      margin: margin,
+      child: child,
+    );
   }
-
-  VoidCallback? _onTap(BuildContext context) => selectable ? () => _toggleSectionSelection(context) : null;
 
   List<T> _getSectionEntries(BuildContext context) => context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
 

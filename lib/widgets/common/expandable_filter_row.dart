@@ -49,6 +49,8 @@ class TitledExpandableFilterRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 header,
+                const SizedBox(width: 16),
+                Icon(isExpanded ? AIcons.collapse : AIcons.expand),
               ],
             ),
           ),

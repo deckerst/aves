@@ -126,17 +126,19 @@ class _HiddenPaths extends StatelessWidget {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  ...pathList.map((pathFilter) => ListTile(
-                        title: Text(pathFilter.path),
-                        dense: true,
-                        trailing: IconButton(
-                          icon: const Icon(AIcons.clear),
-                          onPressed: () {
-                            settings.changeFilterVisibility({pathFilter}, true);
-                          },
-                          tooltip: context.l10n.actionRemove,
-                        ),
-                      )),
+                  ...pathList.map((pathFilter) {
+                    void onPressed() => settings.changeFilterVisibility({pathFilter}, true);
+                    return ListTile(
+                      title: Text(pathFilter.path),
+                      dense: true,
+                      trailing: IconButton(
+                        icon: const Icon(AIcons.clear),
+                        onPressed: onPressed,
+                        tooltip: context.l10n.actionRemove,
+                      ),
+                      onTap: settings.useTvLayout ? onPressed : null,
+                    );
+                  }),
                 ],
               ),
             ),
