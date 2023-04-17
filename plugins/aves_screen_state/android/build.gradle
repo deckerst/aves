@@ -1,4 +1,4 @@
-group 'deckers.thibault.aves.aves_platform_meta'
+group 'deckers.thibault.aves.aves_screen_state'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-rootProject.allprojects {
+allprojects {
     repositories {
         google()
         mavenCentral()
