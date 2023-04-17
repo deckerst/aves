@@ -1,9 +1,9 @@
-name: aves_platform_meta
+name: aves_screen_state
 version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
+  sdk: '>=2.19.6 <3.0.0'
 
 dependencies:
   flutter:
@@ -17,5 +17,5 @@ flutter:
   plugin:
     platforms:
       android:
-        package: deckers.thibault.aves.aves_platform_meta
-        pluginClass: AvesPlatformMetaPlugin
+        package: deckers.thibault.aves.aves_screen_state
+        pluginClass: AvesScreenStatePlugin

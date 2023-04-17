@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_screen_state/aves_screen_state.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:screen_state/screen_state.dart';
 
 final Vaults vaults = Vaults._private();
 
@@ -19,9 +19,9 @@ class Vaults extends ChangeNotifier {
   Future<void> init() async {
     _rows = await metadataDb.loadAllVaults();
     _vaultDirPaths = null;
-    final screenStateStream = Platform.isAndroid ? Screen().screenStateStream : null;
+    final screenStateStream = Platform.isAndroid ? AvesScreenState().screenStateStream : null;
     if (screenStateStream != null) {
-      _subscriptions.add(screenStateStream.where((event) => event == ScreenStateEvent.SCREEN_OFF).listen((event) => _onScreenOff()));
+      _subscriptions.add(screenStateStream.where((event) => event == ScreenStateEvent.off).listen((event) => _onScreenOff()));
     }
   }
 

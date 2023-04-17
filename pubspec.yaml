@@ -14,7 +14,7 @@ environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
   flutter: 3.7.11
-  sdk: ">=2.19.4 <3.0.0"
+  sdk: ">=2.19.6 <3.0.0"
 
 # following https://github.blog/2021-09-01-improving-git-protocol-security-github/
 # dependency GitHub repos should be referenced via `https://`, not `git://`
@@ -35,6 +35,8 @@ dependencies:
     path: plugins/aves_report
   aves_report_platform:
     path: plugins/aves_report_crashlytics
+  aves_screen_state:
+    path: plugins/aves_screen_state
   aves_services:
     path: plugins/aves_services
   aves_services_platform:
@@ -96,7 +98,6 @@ dependencies:
   proj4dart:
   provider:
   screen_brightness:
-  screen_state:
 # as of `shared_preferences` v2.0.18, upgrading packages downgrades `shared_preferences` to v0.5.4+6
 # because its dependency `shared_preferences_windows` v2.1.4 gets removed
 # because its dependency `path_provider_windows` v2.1.4 gets removed

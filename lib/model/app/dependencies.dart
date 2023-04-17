@@ -113,12 +113,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/aaassseee/screen_brightness',
     ),
     Dependency(
-      name: 'Screen State',
-      license: mit,
-      licenseUrl: 'https://github.com/cph-cachet/flutter-plugins/blob/master/packages/screen_state/LICENSE',
-      sourceUrl: 'https://github.com/cph-cachet/flutter-plugins/tree/master/packages/screen_state',
-    ),
-    Dependency(
       name: 'Shared Preferences',
       license: bsd3,
       licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/shared_preferences/shared_preferences/LICENSE',
