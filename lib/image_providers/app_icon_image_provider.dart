@@ -39,7 +39,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
 
   Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderBufferCallback decode) async {
     try {
-      final bytes = await androidAppService.getAppIcon(key.packageName, key.size);
+      final bytes = await appService.getAppIcon(key.packageName, key.size);
       final buffer = await ui.ImmutableBuffer.fromUint8List(bytes.isEmpty ? kTransparentImage : bytes);
       return await decode(buffer);
     } catch (error) {

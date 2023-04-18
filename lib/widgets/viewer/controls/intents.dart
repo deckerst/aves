@@ -1,4 +1,4 @@
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 
 class ShowPreviousIntent extends Intent {

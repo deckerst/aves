@@ -21,13 +21,9 @@ import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import org.mp4parser.IsoFile
-import org.mp4parser.PropertyBoxParserImpl
 import org.mp4parser.boxes.UserBox
-import org.mp4parser.boxes.iso14496.part12.FreeBox
-import org.mp4parser.boxes.iso14496.part12.MediaDataBox
-import org.mp4parser.boxes.iso14496.part12.SampleTableBox
 import java.io.FileInputStream
-import java.util.*
+import java.util.TimeZone
 
 object XMP {
     private val LOG_TAG = LogUtils.createTag<XMP>()
@@ -156,26 +152,12 @@ object XMP {
             pfd.use {
                 FileInputStream(it.fileDescriptor).use { stream ->
                     stream.channel.use { channel ->
-                        val boxParser = PropertyBoxParserImpl().apply {
-                            val skippedTypes = listOf(
-                                // parsing `MediaDataBox` can take a long time
-                                MediaDataBox.TYPE,
-                                // parsing `SampleTableBox` or `FreeBox` may yield OOM
-                                SampleTableBox.TYPE, FreeBox.TYPE,
-                            )
-                            setBoxSkipper { type, size ->
-                                if (skippedTypes.contains(type)) return@setBoxSkipper true
-                                if (size > Mp4ParserHelper.BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
-                                false
-                            }
-                        }
-                        // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
-
                         // TODO TLAD [mp4] `IsoFile` init may fail if a skipped box has a `org.mp4parser.boxes.iso14496.part12.MetaBox` as parent,
                         // because `MetaBox.parse()` changes the argument `dataSource` to a `RewindableReadableByteChannel`,
                         // so it is no longer a seekable `FileChannel`, which is a requirement to skip boxes.
 
-                        IsoFile(channel, boxParser).use { isoFile ->
+                        // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
+                        IsoFile(channel, Mp4ParserHelper.metadataBoxParser()).use { isoFile ->
                             isoFile.processBoxes(UserBox::class.java, true) { box, _ ->
                                 val boxSize = box.size
                                 if (MemoryUtils.canAllocate(boxSize)) {
@@ -193,6 +175,8 @@ object XMP {
                     }
                 }
             }
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to parse MP4 for mimeType=$mimeType uri=$uri", e)
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get XMP by MP4 parser for mimeType=$mimeType uri=$uri", e)
         }

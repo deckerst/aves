@@ -5,7 +5,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums/enums.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -17,6 +16,7 @@ import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_rating_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/remove_metadata_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/tag_editor_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -83,9 +83,7 @@ mixin EntryEditorMixin {
     if (entries.isEmpty) return null;
 
     final filtersByEntry = Map.fromEntries(entries.map((v) {
-      // use `<CollectionFilter>{...}` instead of `toSet()` to circumvent an implicit typing issue, as of Dart v2.18.2
-      final filters = <CollectionFilter>{...v.tags.map(TagFilter.new)};
-      return MapEntry(v, filters);
+      return MapEntry(v, v.tags.map(TagFilter.new).toSet());
     }));
     await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(

@@ -2,11 +2,22 @@ package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.toByteArray
+import deckers.thibault.aves.utils.toHex
 import org.mp4parser.*
+import org.mp4parser.boxes.UnknownBox
 import org.mp4parser.boxes.UserBox
+import org.mp4parser.boxes.apple.AppleCoverBox
 import org.mp4parser.boxes.apple.AppleGPSCoordinatesBox
+import org.mp4parser.boxes.apple.AppleItemListBox
+import org.mp4parser.boxes.apple.AppleVariableSignedIntegerBox
+import org.mp4parser.boxes.apple.Utf8AppleDataBox
 import org.mp4parser.boxes.iso14496.part12.*
+import org.mp4parser.boxes.threegpp.ts26244.AuthorBox
 import org.mp4parser.support.AbstractBox
 import org.mp4parser.support.Matrix
 import org.mp4parser.tools.Path
@@ -15,8 +26,10 @@ import java.io.FileInputStream
 import java.nio.channels.Channels
 
 object Mp4ParserHelper {
+    private val LOG_TAG = LogUtils.createTag<Mp4ParserHelper>()
+
     // arbitrary size to detect boxes that may yield an OOM
-    const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
+    private const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
 
     fun computeEdits(context: Context, uri: Uri, modifier: (isoFile: IsoFile) -> Unit): List<Pair<Long, ByteArray>> {
         // we can skip uninteresting boxes with a seekable data source
@@ -214,10 +227,8 @@ object Mp4ParserHelper {
                         sb.appendLine("${"\t".repeat(indent)}[$boxType] ${box.javaClass.simpleName}")
                         box.dumpBoxes(sb, indent + 1)
                     }
-                    is UserBox -> {
-                        val userTypeHex = box.userType.joinToString("") { "%02x".format(it) }
-                        sb.appendLine("${"\t".repeat(indent)}[$boxType] userType=$userTypeHex $box")
-                    }
+
+                    is UserBox -> sb.appendLine("${"\t".repeat(indent)}[$boxType] userType=${box.userType.toHex()} $box")
                     else -> sb.appendLine("${"\t".repeat(indent)}[$boxType] $box")
                 }
             } catch (e: Exception) {
@@ -227,9 +238,126 @@ object Mp4ParserHelper {
     }
 
     fun Box.toBytes(): ByteArray {
+        if (size > BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
         val stream = ByteArrayOutputStream(size.toInt())
         Channels.newChannel(stream).use { getBox(it) }
         return stream.toByteArray()
+    }
+
+    fun metadataBoxParser() = PropertyBoxParserImpl().apply {
+        val skippedTypes = listOf(
+            // parsing `MediaDataBox` can take a long time
+            MediaDataBox.TYPE,
+            // parsing `SampleTableBox` or `FreeBox` may yield OOM
+            SampleTableBox.TYPE, FreeBox.TYPE,
+            // some files are padded with `0` but the parser does not stop, reads type "0000",
+            // then a large size from following "0000", which may yield OOM
+            "0000",
+        )
+        setBoxSkipper { type, size ->
+            if (skippedTypes.contains(type)) return@setBoxSkipper true
+            if (size > BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+            false
+        }
+    }
+
+    fun getUserData(
+        context: Context,
+        mimeType: String,
+        uri: Uri,
+    ): MutableMap<String, String> {
+        val fields = HashMap<String, String>()
+        if (mimeType != MimeTypes.MP4) return fields
+        try {
+            // we can skip uninteresting boxes with a seekable data source
+            val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
+            pfd.use {
+                FileInputStream(it.fileDescriptor).use { stream ->
+                    stream.channel.use { channel ->
+                        // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
+                        IsoFile(channel, metadataBoxParser()).use { isoFile ->
+                            val userDataBox = Path.getPath<UserDataBox>(isoFile.movieBox, UserDataBox.TYPE)
+                            fields.putAll(extractBoxFields(userDataBox))
+                        }
+                    }
+                }
+            }
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to parse MP4 for mimeType=$mimeType uri=$uri", e)
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get User Data box by MP4 parser for mimeType=$mimeType uri=$uri", e)
+        }
+        return fields
+    }
+
+    private fun extractBoxFields(container: Container): HashMap<String, String> {
+        val fields = HashMap<String, String>()
+        for (box in container.boxes) {
+            if (box is AbstractBox && !box.isParsed) {
+                box.parseDetails()
+            }
+            val type = box.type
+            val key = boxTypeMetadataKey(type)
+            when (box) {
+                is AuthorBox -> fields[key] = box.author
+                is AppleCoverBox -> fields[key] = "[${box.coverData.size} bytes]"
+                is AppleGPSCoordinatesBox -> fields[key] = box.value
+                is AppleItemListBox -> fields.putAll(extractBoxFields(box))
+                is AppleVariableSignedIntegerBox -> fields[key] = box.value.toString()
+                is Utf8AppleDataBox -> fields[key] = box.value
+
+                is HandlerBox -> {}
+                is MetaBox -> {
+                    val handlerBox = Path.getPath<HandlerBox>(box, HandlerBox.TYPE).apply { parseDetails() }
+                    when (val handlerType = handlerBox?.handlerType ?: MetaBox.TYPE) {
+                        "mdir" -> fields.putAll(extractBoxFields(box))
+                        else -> fields.putAll(extractBoxFields(box).map { Pair("$handlerType/${it.key}", it.value) }.toMap())
+                    }
+                }
+
+                is UnknownBox -> {
+                    val byteBuffer = box.data
+                    val remaining = byteBuffer.remaining()
+                    if (remaining > 512) {
+                        fields[key] = "[$remaining bytes]"
+                    } else {
+                        val bytes = byteBuffer.toByteArray()
+                        when (type) {
+                            "SDLN",
+                            "smrd" -> fields[key] = String(bytes)
+
+                            else -> fields[key] = "0x${bytes.toHex()}"
+                        }
+                    }
+                }
+
+                else -> fields[key] = box.toString()
+            }
+        }
+        return fields
+    }
+
+    // cf https://exiftool.org/TagNames/QuickTime.html
+    private fun boxTypeMetadataKey(type: String) = when (type) {
+        "auth" -> "Author"
+        "catg" -> "Category"
+        "covr" -> "Cover Art"
+        "keyw" -> "Keyword"
+        "mcvr" -> "Preview Image"
+        "pcst" -> "Podcast"
+        "SDLN" -> "Play Mode"
+        "stik" -> "Media Type"
+        "©alb" -> "Album"
+        "©ART" -> "Artist"
+        "©aut" -> "Author"
+        "©cmt" -> "Comment"
+        "©day" -> "Year"
+        "©des" -> "Description"
+        "©gen" -> "Genre"
+        "©nam" -> "Title"
+        "©too" -> "Encoder"
+        "©xyz" -> "GPS Coordinates"
+        else -> type
     }
 }
 

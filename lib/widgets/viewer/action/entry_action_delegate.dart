@@ -2,9 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/actions/share_actions.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
@@ -13,7 +10,6 @@ import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -38,6 +34,7 @@ import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -92,6 +89,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
           return canWrite && targetEntry.isVideo;
+        case EntryAction.lockViewer:
         case EntryAction.videoToggleMute:
           return !settings.useTvLayout && targetEntry.isVideo;
         case EntryAction.videoSelectStreams:
@@ -188,7 +186,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _addShortcut(context, targetEntry);
         break;
       case EntryAction.copyToClipboard:
-        androidAppService.copyToClipboard(targetEntry.uri, targetEntry.bestTitle).then((success) {
+        appService.copyToClipboard(targetEntry.uri, targetEntry.bestTitle).then((success) {
           showFeedback(context, success ? context.l10n.genericSuccessFeedback : context.l10n.genericFailureFeedback);
         });
         break;
@@ -214,7 +212,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _move(context, targetEntry, moveType: MoveType.move);
         break;
       case EntryAction.share:
-        androidAppService.shareEntries({targetEntry}).then((success) {
+        appService.shareEntries({targetEntry}).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -234,6 +232,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       // vector
       case EntryAction.viewSource:
         _goToSourceViewer(context, targetEntry);
+        break;
+      case EntryAction.lockViewer:
+        const LockViewNotification(locked: true).dispatch(context);
         break;
       // video
       case EntryAction.videoCaptureFrame:
@@ -255,22 +256,22 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         }
         break;
       case EntryAction.edit:
-        androidAppService.edit(targetEntry.uri, targetEntry.mimeType).then((success) {
+        appService.edit(targetEntry.uri, targetEntry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.open:
-        androidAppService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {
+        appService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.openMap:
-        androidAppService.openMap(targetEntry.latLng!).then((success) {
+        appService.openMap(targetEntry.latLng!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
       case EntryAction.setAs:
-        androidAppService.setAs(targetEntry.uri, targetEntry.mimeType).then((success) {
+        appService.setAs(targetEntry.uri, targetEntry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -334,7 +335,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final uri = fields['uri'] as String?;
     final mimeType = fields['mimeType'] as String?;
     if (uri != null && mimeType != null) {
-      await androidAppService.shareSingle(uri, mimeType).then((success) {
+      await appService.shareSingle(uri, mimeType).then((success) {
         if (!success) showNoMatchingAppDialog(context);
       });
     }
@@ -363,7 +364,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final name = result.item2;
     if (name.isEmpty) return;
 
-    await androidAppService.pinToHomeScreen(name, targetEntry, uri: targetEntry.uri);
+    await appService.pinToHomeScreen(name, targetEntry, uri: targetEntry.uri);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
     }

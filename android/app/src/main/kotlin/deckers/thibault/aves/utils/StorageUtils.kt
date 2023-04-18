@@ -33,11 +33,23 @@ import java.util.regex.Pattern
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
 
-    // from `DocumentsContract`
+    private const val SCHEME_CONTENT = ContentResolver.SCHEME_CONTENT
+
+    // cf DocumentsContract.EXTERNAL_STORAGE_PROVIDER_AUTHORITY
     private const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents"
+
+    // cf DocumentsContract.EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
     private const val EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID = "primary"
 
-    private const val TREE_URI_ROOT = "content://$EXTERNAL_STORAGE_PROVIDER_AUTHORITY/tree/"
+    private const val TREE_URI_ROOT = "$SCHEME_CONTENT://$EXTERNAL_STORAGE_PROVIDER_AUTHORITY/tree/"
+
+    private val MEDIA_STORE_VOLUME_EXTERNAL = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.VOLUME_EXTERNAL else "external"
+
+    // TODO TLAD get it from `MediaStore.Images.Media.EXTERNAL_CONTENT_URI`?
+    private val IMAGE_PATH_ROOT = "/$MEDIA_STORE_VOLUME_EXTERNAL/images/"
+
+    // TODO TLAD get it from `MediaStore.Video.Media.EXTERNAL_CONTENT_URI`?
+    private val VIDEO_PATH_ROOT = "/$MEDIA_STORE_VOLUME_EXTERNAL/video/"
 
     private val UUID_PATTERN = Regex("[A-Fa-f\\d-]+")
     private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
@@ -348,7 +360,17 @@ object StorageUtils {
 
         // fallback when UUID does not appear in the SD card volume path
         val primaryVolumePath = getPrimaryVolumePath(context)
-        getVolumePaths(context).firstOrNull { it != primaryVolumePath }?.let { return it }
+        getVolumePaths(context).firstOrNull { volumePath ->
+            if (volumePath == primaryVolumePath) {
+                false
+            } else {
+                // exclude volumes that use regular naming scheme with UUID in them
+                // to prevent returning path with the UUID of a new volume
+                // when the argument is the UUID of an obsolete volume
+                val volumeUuid = volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }
+                !(volumeUuid == null || volumeUuid.matches(UUID_PATTERN))
+            }
+        }?.let { return it }
 
         Log.e(LOG_TAG, "failed to find volume path for UUID=$uuid")
         return null
@@ -535,7 +557,7 @@ object StorageUtils {
         uri ?: return false
         // a URI's authority is [userinfo@]host[:port]
         // but we only want the host when comparing to Media Store's "authority"
-        return ContentResolver.SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
+        return SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
     }
 
     fun getOriginalUri(context: Context, uri: Uri): Uri {
@@ -544,7 +566,7 @@ object StorageUtils {
             val path = uri.path
             path ?: return uri
             // from Android 11, accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
-            if (path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
+            if (path.startsWith(IMAGE_PATH_ROOT) || path.startsWith(VIDEO_PATH_ROOT)) {
                 // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
                 if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     return MediaStore.setRequireOriginal(uri)
@@ -601,7 +623,7 @@ object StorageUtils {
         return uri
     }
 
-    // Build a typical `images` or `videos` content URI from the original content ID.
+    // Build a typical `images` or `video` content URI from the original content ID.
     // We cannot safely apply this to a `file` content URI, as it may point to a file not indexed
     // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI.
     private fun getMediaUriImageVideoUri(uri: Uri, mimeType: String): Uri? {

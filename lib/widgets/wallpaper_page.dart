@@ -1,8 +1,6 @@
-import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -21,6 +19,7 @@ import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -262,7 +261,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   Future<void> _onOverlayVisibleChanged({bool animate = true}) async {
     if (_overlayVisible.value) {
       await AvesApp.showSystemUI();
-      AvesApp.setSystemUIStyle(context);
+      AvesApp.setSystemUIStyle(Theme.of(context));
       if (animate) {
         await _overlayAnimationController.forward();
       } else {

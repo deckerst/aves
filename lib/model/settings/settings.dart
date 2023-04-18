@@ -3,18 +3,14 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/app_flavor.dart';
-import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
-import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves/ref/bursts.dart';
 import 'package:aves/services/accessibility_service.dart';
-import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/search/page.dart';
@@ -23,9 +19,12 @@ import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
@@ -90,6 +89,7 @@ class Settings extends ChangeNotifier {
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
 
   // collection
+  static const collectionBurstPatternsKey = 'collection_burst_patterns';
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionSortReverseKey = 'collection_sort_reverse';
@@ -107,10 +107,12 @@ class Settings extends ChangeNotifier {
   static const albumGroupFactorKey = 'album_group_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
+  static const stateSortFactorKey = 'state_sort_factor';
   static const placeSortFactorKey = 'place_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
   static const albumSortReverseKey = 'album_sort_reverse';
   static const countrySortReverseKey = 'country_sort_reverse';
+  static const stateSortReverseKey = 'state_sort_reverse';
   static const placeSortReverseKey = 'place_sort_reverse';
   static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
@@ -244,6 +246,10 @@ class Settings extends ChangeNotifier {
     // performance
     final performanceClass = await deviceService.getPerformanceClass();
     enableBlurEffect = performanceClass >= 29;
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final pattern = BurstPatterns.byManufacturer[androidInfo.manufacturer];
+    collectionBurstPatterns = pattern != null ? [pattern] : [];
 
     // availability
     if (flavor.hasMapStyleDefault) {
@@ -495,6 +501,10 @@ class Settings extends ChangeNotifier {
 
   // collection
 
+  List<String> get collectionBurstPatterns => getStringList(collectionBurstPatternsKey) ?? [];
+
+  set collectionBurstPatterns(List<String> newValue) => _set(collectionBurstPatternsKey, newValue);
+
   EntryGroupFactor get collectionSectionFactor => getEnumOrDefault(collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntryGroupFactor.values);
 
   set collectionSectionFactor(EntryGroupFactor newValue) => _set(collectionGroupFactorKey, newValue.toString());
@@ -549,19 +559,23 @@ class Settings extends ChangeNotifier {
 
   set albumGroupFactor(AlbumChipGroupFactor newValue) => _set(albumGroupFactorKey, newValue.toString());
 
-  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, SettingsDefaults.albumSortFactor, ChipSortFactor.values);
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set albumSortFactor(ChipSortFactor newValue) => _set(albumSortFactorKey, newValue.toString());
 
-  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, SettingsDefaults.countrySortFactor, ChipSortFactor.values);
+  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set countrySortFactor(ChipSortFactor newValue) => _set(countrySortFactorKey, newValue.toString());
 
-  ChipSortFactor get placeSortFactor => getEnumOrDefault(placeSortFactorKey, SettingsDefaults.placeSortFactor, ChipSortFactor.values);
+  ChipSortFactor get stateSortFactor => getEnumOrDefault(stateSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
+
+  set stateSortFactor(ChipSortFactor newValue) => _set(stateSortFactorKey, newValue.toString());
+
+  ChipSortFactor get placeSortFactor => getEnumOrDefault(placeSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set placeSortFactor(ChipSortFactor newValue) => _set(placeSortFactorKey, newValue.toString());
 
-  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.tagSortFactor, ChipSortFactor.values);
+  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => _set(tagSortFactorKey, newValue.toString());
 
@@ -572,6 +586,10 @@ class Settings extends ChangeNotifier {
   bool get countrySortReverse => getBool(countrySortReverseKey) ?? false;
 
   set countrySortReverse(bool newValue) => _set(countrySortReverseKey, newValue);
+
+  bool get stateSortReverse => getBool(stateSortReverseKey) ?? false;
+
+  set stateSortReverse(bool newValue) => _set(stateSortReverseKey, newValue);
 
   bool get placeSortReverse => getBool(placeSortReverseKey) ?? false;
 
@@ -1074,6 +1092,7 @@ class Settings extends ChangeNotifier {
             case showThumbnailVideoDurationKey:
             case albumSortReverseKey:
             case countrySortReverseKey:
+            case stateSortReverseKey:
             case placeSortReverseKey:
             case tagSortReverseKey:
             case showOverlayOnOpeningKey:
@@ -1122,6 +1141,7 @@ class Settings extends ChangeNotifier {
             case albumGroupFactorKey:
             case albumSortFactorKey:
             case countrySortFactorKey:
+            case stateSortFactorKey:
             case placeSortFactorKey:
             case tagSortFactorKey:
             case imageBackgroundKey:
@@ -1152,6 +1172,7 @@ class Settings extends ChangeNotifier {
             case drawerTypeBookmarksKey:
             case drawerAlbumBookmarksKey:
             case drawerPageBookmarksKey:
+            case collectionBurstPatternsKey:
             case pinnedFiltersKey:
             case hiddenFiltersKey:
             case collectionBrowsingQuickActionsKey:

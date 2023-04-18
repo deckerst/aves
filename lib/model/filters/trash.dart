@@ -2,7 +2,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class TrashFilter extends CollectionFilter {
   static const type = 'trash';

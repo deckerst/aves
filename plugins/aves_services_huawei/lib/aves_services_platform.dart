@@ -6,7 +6,7 @@ import 'package:aves_services/aves_services.dart';
 import 'package:aves_services_platform/src/map.dart';
 import 'package:flutter/widgets.dart';
 import 'package:huawei_hmsavailability/huawei_hmsavailability.dart';
-import 'package:huawei_map/map.dart' as hmap;
+import 'package:huawei_map/huawei_map.dart' as hmap;
 import 'package:latlong2/latlong.dart';
 
 class PlatformMobileServices extends MobileServices {

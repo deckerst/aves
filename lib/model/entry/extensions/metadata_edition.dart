@@ -1,20 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:aves/convert/convert.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums/date_field_source.dart';
-import 'package:aves/model/metadata/enums/enums.dart';
-import 'package:aves/model/metadata/fields.dart';
-import 'package:aves/ref/exif.dart';
-import 'package:aves/ref/iptc.dart';
+import 'package:aves/ref/metadata/exif.dart';
+import 'package:aves/ref/metadata/iptc.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
@@ -27,7 +27,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
-      if (!isMissingAtPath && userModifier.action != DateEditAction.copyField) {
+      if (isValid && userModifier.action != DateEditAction.copyField) {
         await reportService.recordError('failed to get date for modifier=$userModifier, entry=$this', null);
       }
       return {};
@@ -54,7 +54,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
               editCreateDateXmp(descriptions, appliedModifier.setDateTime);
               break;
             case DateEditAction.shift:
-              final xmpDate = XMP.getString(descriptions, XMP.xmpCreateDate, namespace: Namespaces.xmp);
+              final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespace: XmpNamespaces.xmp);
               if (xmpDate != null) {
                 final date = DateTime.tryParse(xmpDate);
                 if (date != null) {
@@ -262,18 +262,18 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
         if (editTitle) {
           modified |= XMP.setAttribute(
             descriptions,
-            XMP.dcTitle,
+            XmpElements.dcTitle,
             title,
-            namespace: Namespaces.dc,
+            namespace: XmpNamespaces.dc,
             strat: XmpEditStrategy.always,
           );
         }
         if (editDescription) {
           modified |= XMP.setAttribute(
             descriptions,
-            XMP.dcDescription,
+            XmpElements.dcDescription,
             description,
-            namespace: Namespaces.dc,
+            namespace: XmpNamespaces.dc,
             strat: XmpEditStrategy.always,
           );
         }
@@ -417,9 +417,9 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   static bool editCreateDateXmp(List<XmlNode> descriptions, DateTime? date) {
     return XMP.setAttribute(
       descriptions,
-      XMP.xmpCreateDate,
+      XmpAttributes.xmpCreateDate,
       date != null ? XMP.toXmpDate(date) : null,
-      namespace: Namespaces.xmp,
+      namespace: XmpNamespaces.xmp,
       strat: XmpEditStrategy.always,
     );
   }
@@ -428,9 +428,9 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   static bool editTagsXmp(List<XmlNode> descriptions, Set<String> tags) {
     return XMP.setStringBag(
       descriptions,
-      XMP.dcSubject,
+      XmpElements.dcSubject,
       tags,
-      namespace: Namespaces.dc,
+      namespace: XmpNamespaces.dc,
       strat: XmpEditStrategy.always,
     );
   }
@@ -441,17 +441,17 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     modified |= XMP.setAttribute(
       descriptions,
-      XMP.xmpRating,
+      XmpElements.xmpRating,
       (rating ?? 0) == 0 ? null : '$rating',
-      namespace: Namespaces.xmp,
+      namespace: XmpNamespaces.xmp,
       strat: XmpEditStrategy.always,
     );
 
     modified |= XMP.setAttribute(
       descriptions,
-      XMP.msPhotoRating,
+      XmpElements.msPhotoRating,
       XMP.toMsPhotoRating(rating),
-      namespace: Namespaces.microsoftPhoto,
+      namespace: XmpNamespaces.microsoftPhoto,
       strat: XmpEditStrategy.updateIfPresent,
     );
 
@@ -464,23 +464,23 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     modified |= XMP.removeElements(
       descriptions,
-      XMP.containerDirectory,
-      Namespaces.gContainer,
+      XmpElements.containerDirectory,
+      XmpNamespaces.gContainer,
     );
 
     modified |= [
-      XMP.gCameraMicroVideo,
-      XMP.gCameraMicroVideoVersion,
-      XMP.gCameraMicroVideoOffset,
-      XMP.gCameraMicroVideoPresentationTimestampUs,
-      XMP.gCameraMotionPhoto,
-      XMP.gCameraMotionPhotoVersion,
-      XMP.gCameraMotionPhotoPresentationTimestampUs,
+      XmpAttributes.gCameraMicroVideo,
+      XmpAttributes.gCameraMicroVideoVersion,
+      XmpAttributes.gCameraMicroVideoOffset,
+      XmpAttributes.gCameraMicroVideoPresentationTimestampUs,
+      XmpAttributes.gCameraMotionPhoto,
+      XmpAttributes.gCameraMotionPhotoVersion,
+      XmpAttributes.gCameraMotionPhotoPresentationTimestampUs,
     ].fold<bool>(modified, (prev, name) {
       return prev |= XMP.removeElements(
         descriptions,
         name,
-        Namespaces.gCamera,
+        XmpNamespaces.gCamera,
       );
     });
 

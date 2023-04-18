@@ -1,16 +1,20 @@
+import 'package:aves/geo/states.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 @immutable
 class AddressDetails extends Equatable {
   final int id;
   final String? countryCode, countryName, adminArea, locality;
 
-  String? get place => locality != null && locality!.isNotEmpty ? locality : adminArea;
-
   @override
   List<Object?> get props => [id, countryCode, countryName, adminArea, locality];
+
+  String? get place => locality != null && locality!.isNotEmpty ? locality : adminArea;
+
+  String? get stateCode => GeoStates.stateCodeByName[stateName];
+
+  String? get stateName => GeoStates.stateCountryCodes.contains(countryCode) ? adminArea : null;
 
   const AddressDetails({
     required this.id,

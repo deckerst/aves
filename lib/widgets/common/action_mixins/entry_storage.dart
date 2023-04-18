@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -10,8 +9,6 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/metadata/enums/enums.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -21,7 +18,6 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -29,10 +25,11 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -91,14 +88,15 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         unawaited(source.refreshUris(newUris));
 
         final l10n = context.l10n;
+        // get navigator beforehand because
+        // local context may be deactivated when action is triggered after navigation
+        final navigator = Navigator.maybeOf(context);
         final showAction = isMainMode && newUris.isNotEmpty
             ? SnackBarAction(
                 label: l10n.showButtonLabel,
                 onPressed: () {
-                  // local context may be deactivated when action is triggered after navigation
-                  final context = AvesApp.navigatorKey.currentContext;
-                  if (context != null) {
-                    Navigator.maybeOf(context)?.pushAndRemoveUntil(
+                  if (navigator != null) {
+                    navigator.pushAndRemoveUntil(
                       MaterialPageRoute(
                         settings: const RouteSettings(name: CollectionPage.routeName),
                         builder: (context) => CollectionPage(
@@ -172,13 +170,13 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       if (uniqueNames.length < names.length) {
         final value = await showDialog<NameConflictStrategy>(
           context: context,
-          builder: (context) => AvesSelectionDialog<NameConflictStrategy>(
+          builder: (context) => AvesSingleSelectionDialog<NameConflictStrategy>(
             initialValue: nameConflictStrategy,
             options: Map.fromEntries(NameConflictStrategy.values.map((v) => MapEntry(v, v.getName(context)))),
             message: originAlbums.length == 1 ? l10n.nameConflictDialogSingleSourceMessage : l10n.nameConflictDialogMultipleSourceMessage,
             confirmationButtonLabel: l10n.continueButtonLabel,
           ),
-          routeSettings: const RouteSettings(name: AvesSelectionDialog.routeName),
+          routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
         );
         if (value == null) return;
         nameConflictStrategy = value;
@@ -222,7 +220,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
         // cleanup
         if ({MoveType.move, MoveType.toBin}.contains(moveType)) {
-          await storageService.deleteEmptyDirectories(originAlbums);
+          await storageService.deleteEmptyRegularDirectories(originAlbums);
         }
 
         final successCount = successOps.length;
@@ -235,17 +233,18 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
           SnackBarAction? action;
           if (count > 0 && appMode == AppMode.main) {
+            // get navigator beforehand because
+            // local context may be deactivated when action is triggered after navigation
+            final navigator = Navigator.maybeOf(context);
             if (toBin) {
               if (movedEntries.isNotEmpty) {
                 action = SnackBarAction(
                   // TODO TLAD [l10n] key for "RESTORE"
                   label: l10n.entryActionRestore.toUpperCase(),
                   onPressed: () {
-                    // local context may be deactivated when action is triggered after navigation
-                    final context = AvesApp.navigatorKey.currentContext;
-                    if (context != null) {
+                    if (navigator != null) {
                       doMove(
-                        context,
+                        navigator.context,
                         moveType: MoveType.fromBin,
                         entries: movedEntries,
                         hideShowAction: true,
@@ -258,10 +257,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
               action = SnackBarAction(
                 label: l10n.showButtonLabel,
                 onPressed: () {
-                  // local context may be deactivated when action is triggered after navigation
-                  final context = AvesApp.navigatorKey.currentContext;
-                  if (context != null) {
-                    _showMovedItems(context, destinationAlbums, movedOps);
+                  if (navigator != null) {
+                    _showMovedItems(navigator.context, destinationAlbums, movedOps);
                   }
                 },
               );

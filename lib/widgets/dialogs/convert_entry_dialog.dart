@@ -1,16 +1,17 @@
+import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/metadata/enums/enums.dart';
-import 'package:aves/model/metadata/enums/length_unit.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -149,7 +150,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                 ),
               ),
               const SizedBox(width: 8),
-              const Text(ExtraAvesEntryProps.resolutionSeparator),
+              const Text(AText.resolutionSeparator),
               const SizedBox(width: 8),
               Expanded(
                 child: TextField(
@@ -205,7 +206,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
           valueListenable: _mimeTypeNotifier,
           builder: (context, mimeType, child) {
             Widget child;
-            if (MimeTypes.canEditExif(mimeType) || MimeTypes.canEditIptc(mimeType) || MimeTypes.canEditXmp(mimeType)) {
+            if (AppSupport.canEditExif(mimeType) || AppSupport.canEditIptc(mimeType) || AppSupport.canEditXmp(mimeType)) {
               child = SwitchListTile(
                 value: _writeMetadata,
                 onChanged: (v) => setState(() => _writeMetadata = v),

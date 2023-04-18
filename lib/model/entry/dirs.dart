@@ -52,7 +52,7 @@ class EntryDir {
   }
 
   String? _resolve() {
-    final vrl = VolumeRelativeDirectory.fromPath(asIs!);
+    final vrl = androidFileUtils.relativeDirectoryFromPath(asIs!);
     if (vrl == null || vrl.relativeDir.isEmpty) return asIs;
 
     var resolved = vrl.volumePath;

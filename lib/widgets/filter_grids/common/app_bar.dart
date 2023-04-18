@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -74,7 +75,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   }
 }
 
-class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterGridAppBar<T, CSAD>> with SingleTickerProviderStateMixin {
+class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterGridAppBar<T, CSAD>> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<StreamSubscription> _subscriptions = [];
   late AnimationController _browseToSelectAnimation;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
@@ -104,6 +105,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       vsync: this,
     );
     _isSelectingNotifier.addListener(_onActivityChanged);
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _updateAppBarHeight());
   }
 
@@ -117,7 +119,14 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    // when text scale factor changes
+    _updateAppBarHeight();
   }
 
   @override
@@ -171,12 +180,13 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   double get appBarContentHeight {
-    double height = kToolbarHeight;
+    final textScaleFactor = context.read<MediaQueryData>().textScaleFactor;
+    double height = kToolbarHeight * textScaleFactor;
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (context.read<Query>().enabled) {
-      height += FilterQueryBar.preferredHeight;
+      height += FilterQueryBar.getPreferredHeight(textScaleFactor);
     }
     return height;
   }
@@ -226,7 +236,12 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       return InteractiveAppBarTitle(
         onTap: appMode.canNavigate ? _goToSearch : null,
         child: SourceStateAwareAppBarTitle(
-          title: Text(widget.title),
+          title: Text(
+            widget.title,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+          ),
           source: source,
         ),
       );
@@ -318,46 +333,44 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
     return [
       ...quickActionButtons,
-      MenuIconTheme(
-        child: PopupMenuButton<ChipSetAction>(
-          itemBuilder: (context) {
-            final generalMenuItems = ChipSetActions.general.where(isVisible).map(
-                  (action) => FilterGridAppBar.toMenuItem(context, action, enabled: canApply(action)),
-                );
+      PopupMenuButton<ChipSetAction>(
+        itemBuilder: (context) {
+          final generalMenuItems = ChipSetActions.general.where(isVisible).map(
+                (action) => FilterGridAppBar.toMenuItem(context, action, enabled: canApply(action)),
+              );
 
-            final browsingMenuActions = ChipSetActions.browsing.where((v) => !browsingQuickActions.contains(v));
-            final selectionMenuActions = ChipSetActions.selection.where((v) => !selectionQuickActions.contains(v));
-            final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<ChipSetAction?>[], (prev, v) {
-              if (v == null && (prev.isEmpty || prev.last == null)) return prev;
-              return [...prev, v];
-            });
-            if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
-              contextualMenuActions.removeLast();
-            }
+          final browsingMenuActions = ChipSetActions.browsing.where((v) => !browsingQuickActions.contains(v));
+          final selectionMenuActions = ChipSetActions.selection.where((v) => !selectionQuickActions.contains(v));
+          final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<ChipSetAction?>[], (prev, v) {
+            if (v == null && (prev.isEmpty || prev.last == null)) return prev;
+            return [...prev, v];
+          });
+          if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
+            contextualMenuActions.removeLast();
+          }
 
-            return [
-              ...generalMenuItems,
-              if (contextualMenuActions.isNotEmpty) ...[
-                const PopupMenuDivider(),
-                ...contextualMenuActions.map(
-                  (action) {
-                    if (action == null) return const PopupMenuDivider();
-                    return FilterGridAppBar.toMenuItem(context, action, enabled: canApply(action));
-                  },
-                ),
-              ],
-            ];
-          },
-          onSelected: (action) async {
-            // remove focus, if any, to prevent the keyboard from showing up
-            // after the user is done with the popup menu
-            FocusManager.instance.primaryFocus?.unfocus();
+          return [
+            ...generalMenuItems,
+            if (contextualMenuActions.isNotEmpty) ...[
+              const PopupMenuDivider(),
+              ...contextualMenuActions.map(
+                (action) {
+                  if (action == null) return const PopupMenuDivider();
+                  return FilterGridAppBar.toMenuItem(context, action, enabled: canApply(action));
+                },
+              ),
+            ],
+          ];
+        },
+        onSelected: (action) async {
+          // remove focus, if any, to prevent the keyboard from showing up
+          // after the user is done with the popup menu
+          FocusManager.instance.primaryFocus?.unfocus();
 
-            // wait for the popup menu to hide before proceeding with the action
-            await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-            _onActionSelected(context, action, actionDelegate);
-          },
-        ),
+          // wait for the popup menu to hide before proceeding with the action
+          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          _onActionSelected(context, action, actionDelegate);
+        },
       ),
     ];
   }

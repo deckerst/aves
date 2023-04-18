@@ -4,7 +4,9 @@ import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -58,7 +60,7 @@ class EntryListDetails extends StatelessWidget {
         children: spans,
       ),
       style: style,
-      strutStyle: Constants.overflowStrutStyle,
+      strutStyle: AStyles.overflowStrut,
       softWrap: false,
       overflow: TextOverflow.fade,
     );
@@ -78,10 +80,10 @@ class EntryListDetails extends StatelessWidget {
     final locale = context.l10n.localeName;
     final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
     final date = entry.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale, use24hour) : Constants.overlayUnknown;
+    final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;
 
-    final size = entry.sizeBytes;
-    final sizeText = size != null ? formatFileSize(locale, size) : Constants.overlayUnknown;
+    final size = entry.burstEntries?.map((v) => v.sizeBytes).sum ?? entry.sizeBytes;
+    final sizeText = size != null ? formatFileSize(locale, size) : AText.valueNotAvailable;
 
     return _buildRow(
       [

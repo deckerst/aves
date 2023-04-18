@@ -9,4 +9,5 @@
     <string name="analysis_service_description">Analyse des images &amp; vidéos</string>
     <string name="analysis_notification_default_title">Analyse des images</string>
     <string name="analysis_notification_action_stop">Annuler</string>
+    <string name="safe_mode_shortcut_short_label">Mode sans échec</string>
 </resources>

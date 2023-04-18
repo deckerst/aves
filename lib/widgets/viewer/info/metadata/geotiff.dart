@@ -1,4 +1,4 @@
-import 'package:aves/ref/geotiff.dart';
+import 'package:aves/ref/metadata/geotiff.dart';
 
 class GeoTiffDirectory {
   // TODO TLAD [geotiff] avoid string-based match

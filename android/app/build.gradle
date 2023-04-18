@@ -46,6 +46,16 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdkVersion 33
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -148,6 +158,7 @@ android {
                     // which lead to: UnsatisfiedLinkError...couldn't find "libflutter.so"
                     // cf https://github.com/flutter/flutter/issues/37566#issuecomment-640879500
                     ndk {
+                        //noinspection ChromeOsAbiSupport
                         abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
                     }
                 }
@@ -183,9 +194,10 @@ repositories {
 dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.exifinterface:exifinterface:1.3.6'
-    implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
     implementation 'androidx.media:media:1.6.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-alpha05'
@@ -193,9 +205,9 @@ dependencies {
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
-    implementation 'com.github.bumptech.glide:glide:4.15.0'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.6'
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
@@ -210,7 +222,7 @@ dependencies {
     huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.8.0.300'
 
     kapt 'androidx.annotation:annotation:1.6.0'
-    kapt 'com.github.bumptech.glide:compiler:4.15.0'
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
     compileOnly rootProject.findProject(':streams_channel')
 }

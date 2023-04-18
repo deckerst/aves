@@ -1,6 +1,7 @@
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/view/view.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class CrumbLine extends StatefulWidget {

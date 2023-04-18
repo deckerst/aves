@@ -5,12 +5,12 @@ import 'dart:ui';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/enums/theme_brightness.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -18,14 +18,12 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
-import 'package:aves_utils/aves_utils.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -40,6 +38,8 @@ import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/welcome_page.dart';
+import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fijkplayer/fijkplayer.dart';
@@ -57,10 +57,9 @@ class AvesApp extends StatefulWidget {
 
   // temporary exclude locales not ready yet for prime time
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
-  static final _unsupportedLocales = {'ar', 'ckb', 'fa', 'gl', 'he', 'nn', 'sk', 'th'}.map(Locale.new).toSet();
+  static final _unsupportedLocales = {'ar', 'ckb', 'fa', 'gl', 'he', 'hi', 'nn', 'sk', 'th'}.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   // do not monitor all `ModalRoute`s, which would include popup menus,
   // so that we can react to fullscreen `PageRoute`s only
@@ -74,8 +73,7 @@ class AvesApp extends StatefulWidget {
   @override
   State<AvesApp> createState() => _AvesAppState();
 
-  static void setSystemUIStyle(BuildContext context) {
-    final theme = Theme.of(context);
+  static void setSystemUIStyle(ThemeData theme) {
     final style = systemUIStyleForBrightness(theme.brightness, theme.scaffoldBackgroundColor);
     SystemChrome.setSystemUIOverlayStyle(style);
   }
@@ -157,6 +155,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
   // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
   static const defaultPageTransitionsBuilder = FadeUpwardsPageTransitionsBuilder();
+  static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   @override
   void initState() {
@@ -225,12 +224,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                 final themeBrightness = s.item2;
                 final enableDynamicColor = s.item3;
 
-                Constants.updateStylesForLocale(settings.appliedLocale);
+                AStyles.updateStylesForLocale(settings.appliedLocale);
 
                 return FutureBuilder<CorePalette?>(
                   future: _dynamicColorPaletteLoader,
                   builder: (context, snapshot) {
-                    const defaultAccent = Themes.defaultAccent;
+                    const defaultAccent = AvesColorsData.defaultAccent;
                     Color lightAccent = defaultAccent, darkAccent = defaultAccent;
                     if (enableDynamicColor) {
                       // `DynamicColorBuilder` from package `dynamic_color` provides light/dark
@@ -260,7 +259,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 accessibleNavigation: false,
                               ),
                               child: MaterialApp(
-                                navigatorKey: AvesApp.navigatorKey,
+                                navigatorKey: _navigatorKey,
                                 home: home,
                                 navigatorObservers: _navigatorObservers,
                                 builder: (context, child) => _decorateAppChild(
@@ -300,7 +299,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     required Widget? child,
   }) {
     if (initialized) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(context));
+      WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(Theme.of(context)));
     }
     return Selector<Settings, bool>(
       selector: (context, s) => s.initialized ? s.accessibilityAnimations.animate : true,
@@ -494,9 +493,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   void _monitorSettings() {
     void applyIsInstalledAppAccessAllowed() {
       if (settings.isInstalledAppAccessAllowed) {
-        androidFileUtils.initAppNames();
+        appInventory.initAppNames();
       } else {
-        androidFileUtils.resetAppNames();
+        appInventory.resetAppNames();
       }
     }
 
@@ -511,7 +510,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     void applyForceTvLayout() {
       _onTvLayoutChanged();
-      unawaited(AvesApp.navigatorKey.currentState!.pushAndRemoveUntil(
+      unawaited(_navigatorKey.currentState!.pushAndRemoveUntil(
         MaterialPageRoute(
           settings: const RouteSettings(name: HomePage.routeName),
           builder: (_) => _getFirstPage(),
@@ -573,7 +572,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     }
 
     reportService.log('New intent data=$intentData');
-    AvesApp.navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
+    _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => _getFirstPage(intentData: intentData),
     ));

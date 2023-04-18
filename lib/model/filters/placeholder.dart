@@ -11,12 +11,14 @@ class PlaceholderFilter extends CollectionFilter {
   static const type = 'placeholder';
 
   static const _country = 'country';
+  static const _state = 'state';
   static const _place = 'place';
 
   final String placeholder;
   late final IconData _icon;
 
   static final country = PlaceholderFilter._private(_country);
+  static final state = PlaceholderFilter._private(_state);
   static final place = PlaceholderFilter._private(_place);
 
   @override
@@ -26,6 +28,9 @@ class PlaceholderFilter extends CollectionFilter {
     switch (placeholder) {
       case _country:
         _icon = AIcons.country;
+        break;
+      case _state:
+        _icon = AIcons.state;
         break;
       case _place:
         _icon = AIcons.place;
@@ -48,6 +53,7 @@ class PlaceholderFilter extends CollectionFilter {
   Future<String?> toTag(AvesEntry entry) async {
     switch (placeholder) {
       case _country:
+      case _state:
       case _place:
         if (!entry.isCatalogued) {
           await entry.catalog(background: false, force: false, persist: true);
@@ -60,8 +66,14 @@ class PlaceholderFilter extends CollectionFilter {
         final address = entry.addressDetails;
         if (address == null) return null;
 
-        if (placeholder == _country) return address.countryName;
-        if (placeholder == _place) return address.place;
+        switch (placeholder) {
+          case _country:
+            return address.countryName;
+          case _state:
+            return address.stateName;
+          case _place:
+            return address.place;
+        }
         break;
     }
     return null;
@@ -81,6 +93,8 @@ class PlaceholderFilter extends CollectionFilter {
     switch (placeholder) {
       case _country:
         return context.l10n.tagPlaceholderCountry;
+      case _state:
+        return context.l10n.tagPlaceholderState;
       case _place:
         return context.l10n.tagPlaceholderPlace;
       default:

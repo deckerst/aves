@@ -1,5 +1,5 @@
-import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/widgets/viewer/controls/intents.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 

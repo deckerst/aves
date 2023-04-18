@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.5"></a>[v1.8.5] - 2023-04-18
+
+### Added
+
+- Collection: optional support for Samsung and Sony burst patterns
+- Video: action to lock viewer
+- Info: improved state/place display (requires rescan, limited to AU/GB/IN/US)
+- Info: edit tags with state placeholder
+- Info: show metadata from MP4 user data box
+- Countries: show states for selected countries
+- Tags: delete selected tags from all media in collection
+- improved support for system font scale
+
+### Changed
+
+- upgraded Flutter to stable v3.7.11
+- when an album becomes empty, the folder will be deleted only if it is a non-app/common album
+- TV: section header focus/highlight
+
+### Fixed
+
+- permission confusion when removable volume changes
+- Viewer: flickering on first scale animation in some cases
+
 ## <a id="v1.8.4"></a>[v1.8.4] - 2023-03-17
 
 ### Added
@@ -115,7 +139,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- editing description writes XMP `dc:description`, and clears Exif `ImageDescription` / `UserComment`
+- editing description writes XMP `dc:description`, and clears Exif `ImageDescription`
+  / `UserComment`
 - in the tag editor, tapping on applied tag applies it to all items instead of removing it
 - pin app bar when selecting items
 

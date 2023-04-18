@@ -2,7 +2,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/basic/text/animated_diff.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
@@ -50,7 +50,7 @@ class SelectionButton extends StatelessWidget {
                       ),
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(Constants.separator),
+                        child: Text(AText.separator),
                       ),
                       Selector<Selection<AvesEntry>, bool>(
                         selector: (context, selection) => selection.isSelected({mainEntry}),

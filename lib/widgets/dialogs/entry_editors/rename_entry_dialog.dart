@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RenameEntryDialog extends StatefulWidget {
@@ -42,21 +42,30 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = context.isRtl;
-    final extensionSuffixText = '${Constants.fsi}${entry.extension}${Constants.pdi}';
     return AvesDialog(
-      content: TextField(
-        controller: _nameController,
-        decoration: InputDecoration(
-          labelText: context.l10n.renameEntryDialogLabel,
-          // decoration prefix and suffix follow directionality
-          // but the file extension should always be on the right
-          prefixText: isRtl ? extensionSuffixText : null,
-          suffixText: isRtl ? null : extensionSuffixText,
-        ),
-        autofocus: true,
-        onChanged: (_) => _validate(),
-        onSubmitted: (_) => _submit(context),
+      content: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: context.l10n.renameEntryDialogLabel,
+              ),
+              autofocus: true,
+              maxLines: null,
+              onChanged: (_) => _validate(),
+              onSubmitted: (_) => _submit(context),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 4, bottom: 12),
+            child: Text(
+              '${Unicode.FSI}${entry.extension}${Unicode.PDI}',
+              style: TextStyle(color: Theme.of(context).hintColor),
+            ),
+          ),
+        ],
       ),
       actions: [
         const CancelButton(),
@@ -78,7 +87,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
     return pContext.join(entry.directory!, '$name${entry.extension}');
   }
 
-  String get newName => _nameController.text.trimLeft();
+  String get newName => _nameController.text.trimLeft().replaceAll('\n', '');
 
   Future<void> _validate() async {
     final _newName = newName;

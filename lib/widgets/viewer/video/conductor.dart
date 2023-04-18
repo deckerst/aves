@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves_video/aves_video.dart';
 import 'package:aves/widgets/viewer/video/db_playback_state_handler.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
+import 'package:aves_model/aves_model.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 
 class VideoConductor {

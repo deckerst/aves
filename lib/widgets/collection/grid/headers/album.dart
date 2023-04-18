@@ -7,6 +7,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class AlbumSectionHeader extends StatelessWidget {

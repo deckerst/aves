@@ -1,17 +1,14 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:flex_color_picker/flex_color_picker.dart' show ColorPicker, ColorPickerType;
 import 'package:flutter/material.dart';
 
 class ColorListTile extends StatelessWidget {
   final String title;
   final Color value;
   final ValueSetter<Color> onChanged;
-
-  static const radius = Constants.colorPickerRadius;
 
   const ColorListTile({
     super.key,
@@ -24,16 +21,10 @@ class ColorListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(title),
-      trailing: Container(
-        height: radius * 2,
-        width: radius * 2,
-        decoration: BoxDecoration(
-          color: value,
-          border: AvesBorder.border(context),
-          shape: BoxShape.circle,
-        ),
+      trailing: ColorIndicator(
+        value: value,
       ),
-      contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 36 - radius),
+      contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 36 - ColorIndicator.radius),
       onTap: () async {
         final color = await showDialog<Color>(
           context: context,

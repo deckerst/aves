@@ -9,11 +9,11 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 extension ExtraAvesEntryInfo on AvesEntry {
@@ -115,7 +115,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
           final dirName = [
             'Stream ${index.toString().padLeft(indexDigits, '0')}',
             typeText,
-          ].join(Constants.separator);
+          ].join(AText.separator);
           final formattedStreamTags = VideoMetadataFormatter.formatInfo(stream);
           if (formattedStreamTags.isNotEmpty) {
             final color = colors.fromString(typeText);

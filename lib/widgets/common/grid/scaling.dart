@@ -1,11 +1,11 @@
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/common/behaviour/eager_scale_gesture_recognizer.dart';
 import 'package:aves/widgets/common/grid/sections/fixed/scale_overlay.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_overlay.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

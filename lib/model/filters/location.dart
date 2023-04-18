@@ -1,6 +1,7 @@
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/emoji_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
@@ -11,23 +12,31 @@ class LocationFilter extends CoveredCollectionFilter {
 
   final LocationLevel level;
   late final String _location;
-  late final String? _countryCode;
+  late final String? _code;
   late final EntryFilter _test;
 
   @override
-  List<Object?> get props => [level, _location, _countryCode, reversed];
+  List<Object?> get props => [level, _location, _code, reversed];
 
   LocationFilter(this.level, String location, {super.reversed = false}) {
     final split = location.split(locationSeparator);
     _location = split.isNotEmpty ? split[0] : location;
-    _countryCode = split.length > 1 ? split[1] : null;
+    _code = split.length > 1 ? split[1] : null;
 
     if (_location.isEmpty) {
       _test = (entry) => !entry.hasGps;
-    } else if (level == LocationLevel.country) {
-      _test = (entry) => entry.addressDetails?.countryCode == _countryCode;
-    } else if (level == LocationLevel.place) {
-      _test = (entry) => entry.addressDetails?.place == _location;
+    } else {
+      switch (level) {
+        case LocationLevel.country:
+          _test = (entry) => entry.addressDetails?.countryCode == _code;
+          break;
+        case LocationLevel.state:
+          _test = (entry) => entry.addressDetails?.stateCode == _code;
+          break;
+        case LocationLevel.place:
+          _test = (entry) => entry.addressDetails?.place == _location;
+          break;
+      }
     }
   }
 
@@ -40,16 +49,29 @@ class LocationFilter extends CoveredCollectionFilter {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
-        'type': type,
-        'level': level.toString(),
-        'location': _countryCode != null ? countryNameAndCode : _location,
-        'reversed': reversed,
-      };
+  Map<String, dynamic> toMap() {
+    String location = _location;
+    switch (level) {
+      case LocationLevel.country:
+      case LocationLevel.state:
+        if (_code != null) {
+          location = _nameAndCode;
+        }
+        break;
+      case LocationLevel.place:
+        break;
+    }
+    return {
+      'type': type,
+      'level': level.toString(),
+      'location': location,
+      'reversed': reversed,
+    };
+  }
 
-  String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
+  String get _nameAndCode => '$_location$locationSeparator$_code';
 
-  String? get countryCode => _countryCode;
+  String? get code => _code;
 
   String get place => _location;
 
@@ -71,11 +93,9 @@ class LocationFilter extends CoveredCollectionFilter {
       return Icon(AIcons.locationUnlocated, size: size);
     }
     switch (level) {
-      case LocationLevel.place:
-        return Icon(AIcons.place, size: size);
       case LocationLevel.country:
-        if (_countryCode != null && device.canRenderFlagEmojis) {
-          final flag = countryCodeToFlag(_countryCode);
+        if (_code != null && device.canRenderFlagEmojis) {
+          final flag = EmojiUtils.countryCodeToFlag(_code);
           if (flag != null) {
             return Text(
               flag,
@@ -85,6 +105,20 @@ class LocationFilter extends CoveredCollectionFilter {
           }
         }
         return Icon(AIcons.country, size: size);
+      case LocationLevel.state:
+        if (_code != null && device.canRenderSubdivisionFlagEmojis) {
+          final flag = EmojiUtils.stateCodeToFlag(_code);
+          if (flag != null) {
+            return Text(
+              flag,
+              style: TextStyle(fontSize: size),
+              textScaleFactor: 1.0,
+            );
+          }
+        }
+        return Icon(AIcons.state, size: size);
+      case LocationLevel.place:
+        return Icon(AIcons.place, size: size);
     }
   }
 
@@ -92,16 +126,7 @@ class LocationFilter extends CoveredCollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$level-$_location';
-
-  // U+0041 Latin Capital letter A
-  // U+1F1E6 🇦 REGIONAL INDICATOR SYMBOL LETTER A
-  static const _countryCodeToFlagDiff = 0x1F1E6 - 0x0041;
-
-  static String? countryCodeToFlag(String? code) {
-    if (code == null || code.length != 2) return null;
-    return String.fromCharCodes(code.toUpperCase().codeUnits.map((letter) => letter += _countryCodeToFlagDiff));
-  }
+  String get key => '$type-$reversed-$level-$code-$place';
 }
 
-enum LocationLevel { place, country }
+enum LocationLevel { place, state, country }

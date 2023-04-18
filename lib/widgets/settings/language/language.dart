@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:aves/model/settings/enums/coordinate_format.dart';
-import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/poi.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/language/locale_tile.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,7 +56,7 @@ class SettingsTileLanguageCoordinateFormat extends SettingsTile {
         onSelection: (v) => settings.coordinateFormat = v,
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsCoordinateFormatDialogTitle,
-        optionSubtitleBuilder: (value) => value.format(context.l10n, Constants.pointNemo),
+        optionSubtitleBuilder: (value) => value.format(context.l10n, PointsOfInterest.pointNemo),
       );
 }
 

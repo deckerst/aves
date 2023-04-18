@@ -1,10 +1,16 @@
-import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
+
+@immutable
+class LockViewNotification extends Notification {
+  final bool locked;
+
+  const LockViewNotification({required this.locked});
+}
 
 @immutable
 class PopVisualNotification extends Notification {}

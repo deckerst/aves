@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -9,12 +10,10 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
@@ -45,6 +44,7 @@ import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -300,6 +300,18 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
   ScrollController get scrollController => widget.scrollController;
 
   @override
+  void initState() {
+    super.initState();
+    _appBarHeightNotifier.addListener(_onAppBarHeightChanged);
+  }
+
+  @override
+  void dispose() {
+    _appBarHeightNotifier.removeListener(_onAppBarHeightChanged);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final scrollView = AnimationLimiter(
       child: _CollectionScrollView(
@@ -339,6 +351,8 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       child: selector,
     );
   }
+
+  void _onAppBarHeightChanged() => setState(() {});
 }
 
 class _CollectionScaler extends StatelessWidget {
@@ -485,7 +499,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     return settings.useTvLayout ? scrollView : _buildDraggableScrollView(scrollView, widget.collection);
   }
 
-  Widget _buildDraggableScrollView(ScrollView scrollView, CollectionLens collection) {
+  Widget _buildDraggableScrollView(Widget scrollView, CollectionLens collection) {
     return ValueListenableBuilder<double>(
       valueListenable: widget.appBarHeightNotifier,
       builder: (context, appBarHeight, child) {
@@ -550,7 +564,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     );
   }
 
-  ScrollView _buildScrollView(Widget appBar, CollectionLens collection) {
+  Widget _buildScrollView(Widget appBar, CollectionLens collection) {
     return CustomScrollView(
       key: widget.scrollableKey,
       primary: true,
@@ -702,5 +716,5 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     return crumbs;
   }
 
-  Future<bool> get _isStoragePermissionGranted => Future.wait(Constants.storagePermissions.map((v) => v.status)).then((v) => v.any((status) => status.isGranted));
+  Future<bool> get _isStoragePermissionGranted => Future.wait(Permissions.storage.map((v) => v.status)).then((v) => v.any((status) => status.isGranted));
 }

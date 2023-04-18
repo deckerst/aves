@@ -8,6 +8,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
@@ -49,7 +50,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
         appBar: AppBar(
           title: const Text('Debug'),
           actions: [
-            MenuIconTheme(
+            FontSizeIconTheme(
               child: PopupMenuButton<AppDebugAction>(
                 // key is expected by test driver
                 key: const Key('appbar-menu-button'),

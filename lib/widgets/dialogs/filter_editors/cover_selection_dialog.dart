@@ -4,12 +4,11 @@ import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/basic/list_tiles/color.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -17,6 +16,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/app_pick_page.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +56,6 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
 
   static const double itemPickerExtent = 46;
   static const double appPickerExtent = 32;
-  static const double colorPickerRadius = Constants.colorPickerRadius;
 
   double tabBarHeight(BuildContext context) => 64 * max(1, MediaQuery.textScaleFactorOf(context));
 
@@ -323,14 +322,8 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                     if (_customColor != null)
                       GestureDetector(
                         onTap: _pickColor,
-                        child: Container(
-                          height: colorPickerRadius * 2,
-                          width: colorPickerRadius * 2,
-                          decoration: BoxDecoration(
-                            color: _customColor,
-                            border: AvesBorder.border(context),
-                            shape: BoxShape.circle,
-                          ),
+                        child: ColorIndicator(
+                          value: _customColor,
                         ),
                       ),
                   ],

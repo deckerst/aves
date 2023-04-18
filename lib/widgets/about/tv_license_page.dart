@@ -24,6 +24,8 @@ class _TvLicensePageState extends State<TvLicensePage> {
   final ScrollController _detailsScrollController = ScrollController();
   final ValueNotifier<int> _railIndexNotifier = ValueNotifier(0);
 
+  static const double railWidth = 256;
+
   final Future<_LicenseData> licenses = LicenseRegistry.licenses
       .fold<_LicenseData>(
         _LicenseData(),
@@ -65,14 +67,15 @@ class _TvLicensePageState extends State<TvLicensePage> {
                 skipTraversal: true,
                 canRequestFocus: false,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints.loose(const Size.fromWidth(300)),
+                  constraints: BoxConstraints.loose(const Size.fromWidth(railWidth)),
                   child: ListView.builder(
                     itemBuilder: (context, index) {
                       final packageName = packages[index];
                       final bindings = data.packageLicenseBindings[packageName]!;
                       final isSelected = index == selectedIndex;
+                      final theme = Theme.of(context);
                       return Ink(
-                        color: isSelected ? Theme.of(context).highlightColor : Theme.of(context).cardColor,
+                        color: isSelected ? theme.highlightColor : theme.cardColor,
                         child: ListTile(
                           title: Text(packageName),
                           subtitle: Text(MaterialLocalizations.of(context).licensesPackageDetailText(bindings.length)),

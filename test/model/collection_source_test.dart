@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db_metadata.dart';
@@ -13,7 +12,7 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/media_fetch_service.dart';
@@ -22,6 +21,7 @@ import 'package:aves/services/metadata/metadata_fetch_service.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/window_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -59,7 +59,7 @@ void main() {
     getIt.registerLazySingleton<AvesAvailability>(FakeAvesAvailability.new);
     getIt.registerLazySingleton<MetadataDb>(FakeMetadataDb.new);
 
-    getIt.registerLazySingleton<AndroidAppService>(FakeAndroidAppService.new);
+    getIt.registerLazySingleton<AppService>(FakeAppService.new);
     getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);
     getIt.registerLazySingleton<MediaFetchService>(FakeMediaFetchService.new);
     getIt.registerLazySingleton<MediaStoreService>(FakeMediaStoreService.new);

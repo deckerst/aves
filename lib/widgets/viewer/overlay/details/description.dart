@@ -1,5 +1,5 @@
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +31,7 @@ class OverlayDescriptionRow extends StatelessWidget {
           TextSpan(text: description),
         ],
       ),
-      strutStyle: Constants.overflowStrutStyle,
+      strutStyle: AStyles.overflowStrut,
     );
   }
 }

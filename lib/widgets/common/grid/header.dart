@@ -3,7 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
@@ -32,27 +32,13 @@ class SectionHeader<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = _buildContent(context);
-    if (settings.useTvLayout) {
-      child = InkWell(
-        onTap: _onTap(context),
-        borderRadius: const BorderRadius.all(Radius.circular(123)),
-        child: child,
-      );
-    }
-    return Container(
-      alignment: AlignmentDirectional.centerStart,
-      margin: margin,
-      child: child,
-    );
-  }
+    final onTap = selectable ? () => _toggleSectionSelection(context) : null;
 
-  Widget _buildContent(BuildContext context) {
-    return Container(
+    Widget child = Container(
       padding: padding,
       constraints: BoxConstraints(minHeight: leadingSize.height),
       child: GestureDetector(
-        onTap: _onTap(context),
+        onTap: onTap,
         onLongPress: selectable
             ? () {
                 final selection = context.read<Selection<T>>();
@@ -80,12 +66,12 @@ class SectionHeader<T> extends StatelessWidget {
                             child: leading,
                           )
                       : null,
-                  onPressed: _onTap(context),
+                  onPressed: onTap,
                 ),
               ),
               TextSpan(
                 text: title,
-                style: Constants.unknownTitleTextStyle,
+                style: AStyles.unknownTitleText,
               ),
               if (trailing != null)
                 WidgetSpan(
@@ -100,9 +86,23 @@ class SectionHeader<T> extends StatelessWidget {
         ),
       ),
     );
+    if (settings.useTvLayout) {
+      // prevent ink response when tapping the header does nothing,
+      // because otherwise Play Store reviewers think it is broken navigation
+      child = context.select<Selection<T>, bool>((v) => v.isSelecting)
+          ? InkWell(
+              onTap: onTap,
+              borderRadius: const BorderRadius.all(Radius.circular(123)),
+              child: child,
+            )
+          : Focus(child: child);
+    }
+    return Container(
+      alignment: AlignmentDirectional.centerStart,
+      margin: margin,
+      child: child,
+    );
   }
-
-  VoidCallback? _onTap(BuildContext context) => selectable ? () => _toggleSectionSelection(context) : null;
 
   List<T> _getSectionEntries(BuildContext context) => context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
 
@@ -130,7 +130,7 @@ class SectionHeader<T> extends StatelessWidget {
     final para = RenderParagraph(
       TextSpan(
         children: [
-          // as of Flutter v2.8.1, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
+          // as of Flutter v3.7.7, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
           // so we use a hair space times a magic number to match width
           TextSpan(
             // 23 hair spaces match a width of 40.0
@@ -141,7 +141,7 @@ class SectionHeader<T> extends StatelessWidget {
           if (hasTrailing) TextSpan(text: '\u200A' * 17),
           TextSpan(
             text: title,
-            style: Constants.unknownTitleTextStyle,
+            style: AStyles.unknownTitleText,
           ),
         ],
       ),

@@ -6,7 +6,8 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/collection_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/view/view.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
@@ -173,27 +174,13 @@ mixin AlbumMixin on SourceBase {
 
     final type = androidFileUtils.getAlbumType(dirPath);
     if (context != null) {
-      switch (type) {
-        case AlbumType.camera:
-          return context.l10n.albumCamera;
-        case AlbumType.download:
-          return context.l10n.albumDownload;
-        case AlbumType.screenshots:
-          return context.l10n.albumScreenshots;
-        case AlbumType.screenRecordings:
-          return context.l10n.albumScreenRecordings;
-        case AlbumType.videoCaptures:
-          return context.l10n.albumVideoCaptures;
-        case AlbumType.regular:
-        case AlbumType.vault:
-        case AlbumType.app:
-          break;
-      }
+      final name = type.getName(context);
+      if (name != null) return name;
     }
 
     if (type == AlbumType.vault) return pContext.basename(dirPath);
 
-    final dir = VolumeRelativeDirectory.fromPath(dirPath);
+    final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
     if (dir == null) return dirPath;
 
     final relativeDir = dir.relativeDir;

@@ -1,6 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/settings/enums/enums.dart';
-import 'package:flutter/widgets.dart';
+import 'package:aves_model/aves_model.dart';
+import 'package:flutter/painting.dart';
 
 extension ExtraWidgetShape on WidgetShape {
   Path path(Size widgetSize, double devicePixelRatio) {

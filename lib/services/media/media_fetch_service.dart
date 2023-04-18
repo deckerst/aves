@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/output_buffer.dart';
@@ -152,7 +153,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       // `await` here, so that `completeError` will be caught below
       return await completer.future;
     } on PlatformException catch (e, stack) {
-      if (!MimeTypes.knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType)) {
+      if (_isUnknownVisual(mimeType)) {
         await reportService.recordError(e, stack);
       }
     }
@@ -191,7 +192,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
-          if (!MimeTypes.knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType)) {
+          if (_isUnknownVisual(mimeType)) {
             await reportService.recordError(e, stack);
           }
         }
@@ -231,7 +232,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           });
           if (result != null) return result as Uint8List;
         } on PlatformException catch (e, stack) {
-          if (!MimeTypes.knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType)) {
+          if (_isUnknownVisual(mimeType)) {
             await reportService.recordError(e, stack);
           }
         }
@@ -259,4 +260,47 @@ class PlatformMediaFetchService implements MediaFetchService {
 
   @override
   Future<T>? resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
+
+  // convenience methods
+
+  bool _isUnknownVisual(String mimeType) => !_knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType);
+
+  static const Set<String> _knownOpaqueImages = {
+    MimeTypes.jpeg,
+  };
+
+  static const Set<String> _knownVideos = {
+    MimeTypes.v3gpp,
+    MimeTypes.asf,
+    MimeTypes.avi,
+    MimeTypes.aviMSVideo,
+    MimeTypes.aviVnd,
+    MimeTypes.aviXMSVideo,
+    MimeTypes.dvd,
+    MimeTypes.flv,
+    MimeTypes.flvX,
+    MimeTypes.mkv,
+    MimeTypes.mkvX,
+    MimeTypes.mov,
+    MimeTypes.movX,
+    MimeTypes.mp2p,
+    MimeTypes.mp2t,
+    MimeTypes.mp2ts,
+    MimeTypes.mp4,
+    MimeTypes.mpeg,
+    MimeTypes.ogv,
+    MimeTypes.realVideo,
+    MimeTypes.webm,
+    MimeTypes.wmv,
+  };
+
+  static final Set<String> _knownMediaTypes = {
+    MimeTypes.anyImage,
+    ..._knownOpaqueImages,
+    ...MimeTypes.alphaImages,
+    ...MimeTypes.rawImages,
+    ...AppSupport.undecodableImages,
+    MimeTypes.anyVideo,
+    ..._knownVideos,
+  };
 }

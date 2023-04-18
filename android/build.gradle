@@ -1,7 +1,6 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        kotlin_version = '1.7.20'
+        kotlin_version = '1.8.0'
         abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
         useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
         useHms = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("huawei") }
@@ -18,8 +17,7 @@ buildscript {
     }
 
     dependencies {
-        // TODO TLAD upgrade Android Gradle plugin >=7.3 when this is fixed: https://github.com/flutter/flutter/issues/115100
-        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         if (useCrashlytics) {

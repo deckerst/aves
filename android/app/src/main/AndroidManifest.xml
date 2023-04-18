@@ -4,7 +4,7 @@
 Gradle v7.4 / Android Gradle Plugin v7.3.0 recommend:
 - removing "package" from AndroidManifest.xml
 - adding it as "namespace" in app/build.gradle
-This change eventually prevents building the app with Flutter v3.3.3.
+This change eventually prevents building the app with Flutter v3.7.11.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

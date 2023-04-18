@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';

@@ -1,6 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/app_icon_image_provider.dart';
-import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
@@ -14,17 +14,19 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -273,9 +275,12 @@ class _BasicInfoState extends State<_BasicInfo> {
 
   AvesEntry get entry => widget.entry;
 
-  int get megaPixels => entry.megaPixels;
+  int get megaPixels => (entry.width * entry.height / 1000000).round();
 
-  bool get showMegaPixels => entry.isPhoto && megaPixels > 0;
+  // guess whether this is a photo, according to file type
+  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(entry.mimeType) || entry.isRaw;
+
+  bool get showMegaPixels => isPhoto && megaPixels > 0;
 
   String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' • $megaPixels MP' : ''}';
 
@@ -291,7 +296,7 @@ class _BasicInfoState extends State<_BasicInfo> {
       });
       final isViewerMode = context.read<ValueNotifier<AppMode>>().value == AppMode.view;
       if (isViewerMode && settings.isInstalledAppAccessAllowed) {
-        _appNameLoader = androidFileUtils.initAppNames();
+        _appNameLoader = appInventory.initAppNames();
       }
     }
   }
@@ -349,7 +354,7 @@ class _BasicInfoState extends State<_BasicInfo> {
   InfoValueSpanBuilder _ownerHandler(String? ownerPackage) {
     if (ownerPackage == null) return (context, key, value) => [];
 
-    final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
+    final appName = appInventory.getCurrentAppName(ownerPackage) ?? ownerPackage;
     return (context, key, value) => [
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,

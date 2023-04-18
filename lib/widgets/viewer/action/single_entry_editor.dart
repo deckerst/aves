@@ -34,6 +34,7 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
         if (isMainMode && source != null) {
           Set<String> obsoleteTags = targetEntry.tags;
           String? obsoleteCountryCode = targetEntry.addressDetails?.countryCode;
+          String? obsoleteStateCode = targetEntry.addressDetails?.stateCode;
 
           await source.refreshEntries({targetEntry}, dataTypes);
 
@@ -42,6 +43,9 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
           // otherwise filter chips may eagerly rebuild in between with the old state
           if (obsoleteCountryCode != null) {
             source.invalidateCountryFilterSummary(countryCodes: {obsoleteCountryCode});
+          }
+          if (obsoleteStateCode != null) {
+            source.invalidateStateFilterSummary(stateCodes: {obsoleteStateCode});
           }
           if (obsoleteTags.isNotEmpty) {
             source.invalidateTagFilterSummary(tags: obsoleteTags);

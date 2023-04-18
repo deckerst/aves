@@ -7,8 +7,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 
 extension ExtraAvesEntryMultipage on AvesEntry {
-  static final _burstFilenamePattern = RegExp(r'^(\d{8}_\d{6})_(\d+)$');
-
   bool get isMultiPage => (catalogMetadata?.isMultiPage ?? false) || isBurst;
 
   bool get isBurst => burstEntries?.isNotEmpty == true;
@@ -18,11 +16,13 @@ extension ExtraAvesEntryMultipage on AvesEntry {
 
   bool get isMotionPhoto => (catalogMetadata?.isMotionPhoto ?? false) || _isMotionPhotoLegacy;
 
-  String? get burstKey {
+  String? getBurstKey(List<String> patterns) {
     if (filenameWithoutExtension != null) {
-      final match = _burstFilenamePattern.firstMatch(filenameWithoutExtension!);
-      if (match != null) {
-        return '$directory/${match.group(1)}';
+      for (final pattern in patterns) {
+        final match = RegExp(pattern).firstMatch(filenameWithoutExtension!);
+        if (match != null) {
+          return '$directory/${match.group(1)}';
+        }
       }
     }
     return null;

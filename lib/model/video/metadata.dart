@@ -211,6 +211,12 @@ class VideoMetadataFormatter {
               final captureFps = double.parse(value);
               save('Capture Frame Rate', '${roundToPrecision(captureFps, decimals: 3).toString()} FPS');
               break;
+            case Keys.androidManufacturer:
+              save('Android Manufacturer', value);
+              break;
+            case Keys.androidModel:
+              save('Android Model', value);
+              break;
             case Keys.androidVersion:
               save('Android Version', value);
               break;
@@ -316,6 +322,16 @@ class VideoMetadataFormatter {
             case Keys.minorVersion:
               if (value != '0') save('Minor Version', value);
               break;
+            case Keys.quicktimeLocationAccuracyHorizontal:
+              save('QuickTime Location Horizontal Accuracy', value);
+              break;
+            case Keys.quicktimeCreationDate:
+            case Keys.quicktimeLocationIso6709:
+            case Keys.quicktimeMake:
+            case Keys.quicktimeModel:
+            case Keys.quicktimeSoftware:
+              // redundant with `QuickTime Metadata` directory
+              break;
             case Keys.rotate:
               save('Rotation', '$value°');
               break;
@@ -345,6 +361,9 @@ class VideoMetadataFormatter {
               break;
             case Keys.width:
               save('Width', '$value pixels');
+              break;
+            case Keys.xiaomiSlowMoment:
+              save('Xiaomi Slow Moment', value);
               break;
             default:
               save(key.toSentenceCase(), value.toString());

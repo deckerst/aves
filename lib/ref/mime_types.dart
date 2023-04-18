@@ -86,22 +86,9 @@ class MimeTypes {
 
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, dngX, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
-  // TODO TLAD [codec] make it dynamic if it depends on OS/lib versions
-  static const Set<String> undecodableImages = {art, cdr, crw, djvu, jpeg2000, jxl, pat, pcx, pnm, psdVnd, psdX, octetStream, zip};
+  static bool canHaveAlpha(String mimeType) => MimeTypes.alphaImages.contains(mimeType);
 
-  static const Set<String> _knownOpaqueImages = {jpeg};
-
-  static const Set<String> _knownVideos = {v3gpp, asf, avi, aviMSVideo, aviVnd, aviXMSVideo, dvd, flv, flvX, mkv, mkvX, mov, movX, mp2p, mp2t, mp2ts, mp4, mpeg, ogv, realVideo, webm, wmv};
-
-  static final Set<String> knownMediaTypes = {
-    anyImage,
-    ..._knownOpaqueImages,
-    ...alphaImages,
-    ...rawImages,
-    ...undecodableImages,
-    anyVideo,
-    ..._knownVideos,
-  };
+  static bool isRaw(String mimeType) => MimeTypes.rawImages.contains(mimeType);
 
   static bool isImage(String mimeType) => mimeType.startsWith('image');
 
@@ -146,57 +133,5 @@ class MimeTypes {
         return svg;
     }
     return null;
-  }
-
-  // `exifinterface` v1.3.3 declared support for DNG, but it strips non-standard Exif tags when saving attributes,
-  // and DNG requires DNG-specific tags saved along standard Exif. So it was actually breaking DNG files.
-  static bool canEditExif(String mimeType) {
-    switch (mimeType.toLowerCase()) {
-      // as of androidx.exifinterface:exifinterface:1.3.4
-      case jpeg:
-      case png:
-      case webp:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  static bool canEditIptc(String mimeType) {
-    switch (mimeType.toLowerCase()) {
-      // as of latest PixyMeta
-      case jpeg:
-      case tiff:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  static bool canEditXmp(String mimeType) {
-    switch (mimeType.toLowerCase()) {
-      // as of latest PixyMeta
-      case gif:
-      case jpeg:
-      case png:
-      case tiff:
-        return true;
-      // using `mp4parser`
-      case mp4:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  static bool canRemoveMetadata(String mimeType) {
-    switch (mimeType.toLowerCase()) {
-      // as of latest PixyMeta
-      case jpeg:
-      case tiff:
-        return true;
-      default:
-        return false;
-    }
   }
 }

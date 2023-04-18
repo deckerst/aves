@@ -39,17 +39,17 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
             itemBuilder: (context, index) {
               final album = items[index];
               final filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
+              void onPressed() => setState(() => items.remove(album));
               return ListTile(
                 key: ValueKey(album),
                 leading: DrawerFilterIcon(filter: filter),
                 title: DrawerFilterTitle(filter: filter),
                 trailing: IconButton(
                   icon: const Icon(AIcons.clear),
-                  onPressed: () {
-                    setState(() => items.remove(album));
-                  },
+                  onPressed: onPressed,
                   tooltip: context.l10n.actionRemove,
                 ),
+                onTap: settings.useTvLayout ? onPressed : null,
               );
             },
             itemCount: items.length,

@@ -4,18 +4,19 @@ import 'dart:io';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
 import 'package:aves/model/device.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +35,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   late Future<String> _infoLoader;
   bool _showInstructions = false;
 
-  static const bugReportUrl = '${Constants.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
+  static const bugReportUrl = '${AppReference.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutBugSectionTitle, style: Constants.knownTitleTextStyle),
+              child: Text(l10n.aboutBugSectionTitle, style: AStyles.knownTitleText),
             ),
           ),
           body: Padding(
@@ -141,24 +142,24 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   }
 
   Future<String> _getInfo(BuildContext context) async {
+    final flavor = context.read<AppFlavor>().toString().split('.')[1];
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    final flavor = context.read<AppFlavor>().toString().split('.')[1];
+    final storageVolumes = await storageService.getStorageVolumes();
+    final storageGrants = await storageService.getGrantedDirectories();
     return [
       'Package: ${packageInfo.packageName}',
-      'Aves version: ${packageInfo.version}-$flavor',
-      'Aves build: ${packageInfo.buildNumber}',
-      'Flutter version: ${version['frameworkVersion']}',
-      'Flutter channel: ${version['channel']}',
-      'Android version: ${androidInfo.version.release}',
-      'Android API: ${androidInfo.version.sdkInt}',
+      'Installer: ${packageInfo.installerStore}',
+      'Aves version: ${packageInfo.version}-$flavor, build ${packageInfo.buildNumber}',
+      'Flutter: ${version['channel']} ${version['frameworkVersion']}',
+      'Android version: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Geocoder: ${device.hasGeocoder ? 'ready' : 'not available'}',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
       'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
-      'Aves locale: ${settings.locale ?? 'system'} -> ${settings.appliedLocale}',
-      'Installer: ${packageInfo.installerStore}',
+      'Storage volumes: ${storageVolumes.map((v) => v.path).join(', ')}',
+      'Storage grants: ${storageGrants.join(', ')}',
       'Error reporting: ${settings.isErrorReportingAllowed}',
     ].join('\n');
   }
