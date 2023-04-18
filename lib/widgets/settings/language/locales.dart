@@ -10,6 +10,7 @@ class SupportedLocales {
     'es': 'Español (México)',
     'eu': 'Euskara',
     'fr': 'Français',
+    'hu': 'Magyar',
     'id': 'Bahasa Indonesia',
     'it': 'Italiano',
     'ja': '日本語',
