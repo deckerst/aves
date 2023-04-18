@@ -1235,7 +1235,7 @@
   "@filterLocatedLabel": {},
   "filterTaggedLabel": "С тэгами",
   "@filterTaggedLabel": {},
-  "chipActionGoToPlacePage": "Показать в местах",
+  "chipActionGoToPlacePage": "Показать в локациях",
   "@chipActionGoToPlacePage": {},
   "settingsModificationWarningDialogMessage": "Другие настройки будут изменены.",
   "@settingsModificationWarningDialogMessage": {},
@@ -1253,12 +1253,14 @@
   "@patternDialogConfirm": {},
   "vaultLockTypePattern": "Графический ключ",
   "@vaultLockTypePattern": {},
-  "drawerPlacePage": "Места",
+  "drawerPlacePage": "Локации",
   "@drawerPlacePage": {},
   "settingsVideoBackgroundMode": "Фоновый режим",
   "@settingsVideoBackgroundMode": {},
   "settingsVideoBackgroundModeDialogTitle": "Фоновый режим",
   "@settingsVideoBackgroundModeDialogTitle": {},
   "settingsVideoEnablePip": "Картинка в картинке",
-  "@settingsVideoEnablePip": {}
+  "@settingsVideoEnablePip": {},
+  "placeEmpty": "Нет локаций",
+  "@placeEmpty": {}
 }
