@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.5"></a>[v1.8.5] - 2023-04-18
+
 ### Added
 
 - Collection: optional support for Samsung and Sony burst patterns
