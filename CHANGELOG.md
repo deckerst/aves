@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Video: action to lock viewer
 - Info: improved state/place display (requires rescan, limited to AU/GB/IN/US)
 - Info: edit tags with state placeholder
+- Info: show metadata from MP4 user data box
 - Countries: show states for selected countries
 - Tags: delete selected tags from all media in collection
 - improved support for system font scale

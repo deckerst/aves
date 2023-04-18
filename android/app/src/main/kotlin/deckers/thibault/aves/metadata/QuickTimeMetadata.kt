@@ -1,5 +1,6 @@
 package deckers.thibault.aves.metadata
 
+import deckers.thibault.aves.utils.toHex
 import java.math.BigInteger
 import java.nio.charset.Charset
 import java.util.*
@@ -51,7 +52,7 @@ object QuickTimeMetadata {
                 // 0x01: string
                 0x01 -> String(payload, Charset.forName("UTF-16BE")).trim()
                 // 0x101: artwork/icon
-                else -> "0x${payload.joinToString("") { "%02x".format(it) }}"
+                else -> "0x${payload.toHex()}"
             }
 
             val blockTypeString = when (blockType) {
@@ -61,7 +62,7 @@ object QuickTimeMetadata {
                 0x0A -> "Track property"
                 0x0B -> "Time zone"
                 0x0C -> "Modification Time"
-                else -> "0x${"%02x".format(blockType)}"
+                else -> "0x${blockType.toByte().toHex()}"
             }
 
             blocks.add(
