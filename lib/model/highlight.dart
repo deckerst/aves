@@ -1,6 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/painting.dart';
 
 class HighlightInfo extends ChangeNotifier {
   final EventBus eventBus = EventBus();

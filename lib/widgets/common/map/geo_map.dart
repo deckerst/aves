@@ -6,14 +6,14 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
-import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/poi.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/math_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
@@ -21,7 +21,8 @@ import 'package:aves/widgets/common/map/buttons/panel.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
@@ -212,7 +213,7 @@ class _GeoMapState extends State<GeoMap> {
             child: OverlayTextButton(
               onPressed: () => showSelectionDialog<EntryMapStyle>(
                 context: context,
-                builder: (context) => AvesSelectionDialog<EntryMapStyle?>(
+                builder: (context) => AvesSingleSelectionDialog<EntryMapStyle?>(
                   initialValue: settings.mapStyle,
                   options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
                   title: context.l10n.mapStyleDialogTitle,
@@ -330,7 +331,7 @@ class _GeoMapState extends State<GeoMap> {
       // fallback to default center
       var center = settings.mapDefaultCenter;
       if (center == null) {
-        center = Constants.wonders[Random().nextInt(Constants.wonders.length)];
+        center = PointsOfInterest.wonders[Random().nextInt(PointsOfInterest.wonders.length)];
         WidgetsBinding.instance.addPostFrameCallback((_) => settings.mapDefaultCenter = center);
       }
       bounds = ZoomedBounds.fromPoints(

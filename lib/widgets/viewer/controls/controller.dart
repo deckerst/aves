@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/viewer/controls/events.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 
 class ViewerController {

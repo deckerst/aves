@@ -1,5 +1,24 @@
 library aves_model;
 
+export 'src/actions/chip.dart';
+export 'src/actions/chip_set.dart';
+export 'src/actions/entry.dart';
+export 'src/actions/entry_set.dart';
+export 'src/actions/map.dart';
+export 'src/actions/map_cluster.dart';
+export 'src/actions/move_type.dart';
+export 'src/actions/settings.dart';
+export 'src/actions/share.dart';
+export 'src/actions/slideshow.dart';
 export 'src/entry/base.dart';
+export 'src/metadata/enums.dart';
+export 'src/metadata/fields.dart';
+export 'src/settings/enums.dart';
+export 'src/source/album.dart';
+export 'src/source/enums.dart';
+export 'src/source/vault.dart';
+export 'src/storage/relative_dir.dart';
+export 'src/storage/volume.dart';
 export 'src/video/keys.dart';
 export 'src/video/stream_types.dart';
+export 'src/wallpaper_target.dart';

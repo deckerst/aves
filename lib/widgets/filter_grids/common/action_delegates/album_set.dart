@@ -1,19 +1,13 @@
 import 'dart:io';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set_actions.dart';
-import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/selection.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
-import 'package:aves/model/source/enums/view.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -21,9 +15,8 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
-import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
@@ -34,13 +27,14 @@ import 'package:aves/widgets/dialogs/filter_editors/rename_album_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin, VaultAwareMixin {
+class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
 
   AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumFilter>> items) : _items = items;
@@ -128,7 +122,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         if (vaults.isVault(dirPath)) return true;
 
         // do not allow renaming volume root
-        final dir = VolumeRelativeDirectory.fromPath(dirPath);
+        final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
         return dir != null && dir.relativeDir.isNotEmpty;
       case ChipSetAction.hide:
         return hasSelection;
@@ -163,7 +157,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         break;
       case ChipSetAction.lockVault:
         lockFilters(filters);
-        _browse(context);
+        browse(context);
         break;
       // single filter
       case ChipSetAction.rename:
@@ -177,8 +171,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     }
     super.onActionSelected(context, filters, action);
   }
-
-  void _browse(BuildContext context) => context.read<Selection<FilterGridItem<AlbumFilter>>>().browse();
 
   @override
   Future<void> configureView(BuildContext context) async {
@@ -245,18 +237,21 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     source.createAlbum(directory);
 
     final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
+    // get navigator beforehand because
+    // local context may be deactivated when action is triggered after navigation
+    final navigator = Navigator.maybeOf(context);
     final showAction = SnackBarAction(
       label: l10n.showButtonLabel,
       onPressed: () async {
         // local context may be deactivated when action is triggered after navigation
-        final context = AvesApp.navigatorKey.currentContext;
-        if (context != null) {
+        if (navigator != null) {
+          final context = navigator.context;
           final highlightInfo = context.read<HighlightInfo>();
           if (context.currentRouteName == AlbumListPage.routeName) {
             highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
           } else {
             highlightInfo.set(filter);
-            await Navigator.maybeOf(context)?.pushAndRemoveUntil(
+            await navigator.pushAndRemoveUntil(
               MaterialPageRoute(
                 settings: const RouteSettings(name: AlbumListPage.routeName),
                 builder: (_) => const AlbumListPage(),
@@ -282,7 +277,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
               filters: kv.value.toSet(),
               enableBin: kv.key,
             ));
-    _browse(context);
+    browse(context);
   }
 
   Future<void> _doDelete({
@@ -306,7 +301,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         onSuccess: () {
           source.forgetNewAlbums(todoAlbums);
           source.cleanEmptyAlbums(emptyAlbums);
-          _browse(context);
+          browse(context);
         },
       );
       return;
@@ -368,7 +363,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
         final deletedUris = deletedOps.map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris, includeTrash: true);
-        _browse(context);
+        browse(context);
         source.resumeMonitoring();
 
         final successCount = successOps.length;
@@ -378,7 +373,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories(filledAlbums);
+        await storageService.deleteEmptyRegularDirectories(filledAlbums);
       },
     );
   }
@@ -388,7 +383,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
     final album = filter.album;
     if (!vaults.isVault(album)) {
-      final dir = VolumeRelativeDirectory.fromPath(album);
+      final dir = androidFileUtils.relativeDirectoryFromPath(album);
       // do not allow renaming volume root
       if (dir == null || dir.relativeDir.isEmpty) return;
 
@@ -447,7 +442,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final successOps = processed.where((e) => e.success).toSet();
         final movedOps = successOps.where((e) => !e.skipped).toSet();
         await source.renameAlbum(album, destinationAlbum, todoEntries, movedOps);
-        _browse(context);
+        browse(context);
         source.resumeMonitoring();
 
         final successCount = successOps.length;
@@ -459,7 +454,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories({album});
+        await storageService.deleteEmptyRegularDirectories({album});
       },
     );
   }
@@ -493,7 +488,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       await _doRename(context, filter, newName);
     } else {
       await vaults.update(newDetails);
-      _browse(context);
+      browse(context);
     }
   }
 }

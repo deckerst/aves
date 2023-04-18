@@ -1,16 +1,14 @@
-import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/settings/enums/l10n.dart';
-import 'package:aves/model/settings/enums/thumbnail_overlay_location_icon.dart';
-import 'package:aves/model/settings/enums/thumbnail_overlay_tag_icon.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

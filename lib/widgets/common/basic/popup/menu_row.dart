@@ -32,24 +32,3 @@ class MenuRow extends StatelessWidget {
     );
   }
 }
-
-// scale icons according to text scale
-class MenuIconTheme extends StatelessWidget {
-  final Widget child;
-
-  const MenuIconTheme({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final iconTheme = IconTheme.of(context);
-    return IconTheme(
-      data: iconTheme.copyWith(
-        size: iconTheme.size! * MediaQuery.textScaleFactorOf(context),
-      ),
-      child: child,
-    );
-  }
-}

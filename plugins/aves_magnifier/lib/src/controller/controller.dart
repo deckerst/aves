@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:aves_magnifier/src/controller/state.dart';
 import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
@@ -20,17 +19,13 @@ class AvesMagnifierController {
   AvesMagnifierController({
     MagnifierState? initialState,
   }) : super() {
-    initial = initialState ??
-        const MagnifierState(
-          position: Offset.zero,
-          scale: null,
-          source: ChangeSource.internal,
-        );
+    const source = ChangeSource.internal;
+    initial = initialState ?? const MagnifierState(position: Offset.zero, scale: null, source: source);
     previousState = initial;
     _currentState = initial;
     _setState(initial);
 
-    const _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: ChangeSource.internal);
+    const _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: source);
     previousScaleState = _initialScaleState;
     _currentScaleState = _initialScaleState;
     _setScaleState(_initialScaleState);

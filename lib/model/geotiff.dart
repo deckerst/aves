@@ -4,11 +4,12 @@ import 'dart:ui' as ui;
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
-import 'package:aves/ref/geotiff.dart';
+import 'package:aves/ref/metadata/geotiff.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 
@@ -49,7 +50,7 @@ class MappedGeoTiff with MapOverlay {
   static final tileImagePaint = Paint();
   static final tileMissingPaint = Paint()
     ..style = PaintingStyle.fill
-    ..color = Colors.black;
+    ..color = const Color(0xFF000000);
 
   MappedGeoTiff({
     required GeoTiffInfo info,

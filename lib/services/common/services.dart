@@ -3,7 +3,7 @@ import 'package:aves/model/db/db_metadata.dart';
 import 'package:aves/model/db/db_metadata_sqflite.dart';
 import 'package:aves/model/settings/store/store.dart';
 import 'package:aves/model/settings/store/store_shared_pref.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/embedded_data_service.dart';
 import 'package:aves/services/media/media_edit_service.dart';
@@ -31,7 +31,7 @@ final p.Context pContext = getIt<p.Context>();
 final AvesAvailability availability = getIt<AvesAvailability>();
 final MetadataDb metadataDb = getIt<MetadataDb>();
 
-final AndroidAppService androidAppService = getIt<AndroidAppService>();
+final AppService appService = getIt<AppService>();
 final DeviceService deviceService = getIt<DeviceService>();
 final EmbeddedDataService embeddedDataService = getIt<EmbeddedDataService>();
 final MediaEditService mediaEditService = getIt<MediaEditService>();
@@ -51,7 +51,7 @@ void initPlatformServices() {
   getIt.registerLazySingleton<AvesAvailability>(LiveAvesAvailability.new);
   getIt.registerLazySingleton<MetadataDb>(SqfliteMetadataDb.new);
 
-  getIt.registerLazySingleton<AndroidAppService>(PlatformAndroidAppService.new);
+  getIt.registerLazySingleton<AppService>(PlatformAppService.new);
   getIt.registerLazySingleton<DeviceService>(PlatformDeviceService.new);
   getIt.registerLazySingleton<EmbeddedDataService>(PlatformEmbeddedDataService.new);
   getIt.registerLazySingleton<MediaEditService>(PlatformMediaEditService.new);

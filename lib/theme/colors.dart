@@ -1,11 +1,21 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
+
+class AColors {
+  static const starEnabled = Colors.amber;
+  static const starDisabled = Colors.grey;
+
+  static const boraBoraGradient = [
+    Color(0xff2bc0e4),
+    Color(0xffeaecc6),
+  ];
+}
 
 class AvesColorsProvider extends StatelessWidget {
   final Widget child;
@@ -33,6 +43,10 @@ class AvesColorsProvider extends StatelessWidget {
 }
 
 abstract class AvesColorsData {
+  static const defaultAccent = Colors.indigoAccent;
+  static const _neutralOnDark = Colors.white;
+  static const _neutralOnLight = Color(0xAA000000);
+
   Color get neutral;
 
   Color fromHue(double hue);
@@ -70,9 +84,6 @@ abstract class AvesColorsData {
   }
 
   void clearAppColor(String album) => _appColors.remove(album);
-
-  static const Color _neutralOnDark = Colors.white;
-  static const Color _neutralOnLight = Color(0xAA000000);
 
   // mime
   Color get image => fromHue(243);

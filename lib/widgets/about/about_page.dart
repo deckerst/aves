@@ -1,18 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/about/app_ref.dart';
-import 'package:aves/widgets/about/bug_report.dart';
-import 'package:aves/widgets/about/credits.dart';
-import 'package:aves/widgets/about/licenses.dart';
-import 'package:aves/widgets/about/translators.dart';
-import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/basic/scaffold.dart';
-import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
-import 'package:aves/widgets/common/behaviour/pop/scope.dart';
-import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/navigation/tv_rail.dart';
+import 'package:aves/widgets/about/about_mobile_page.dart';
+import 'package:aves/widgets/about/about_tv_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AboutPage extends StatelessWidget {
   static const routeName = '/about';
@@ -21,66 +10,10 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBarTitle = Text(context.l10n.aboutPageTitle);
-    final useTvLayout = settings.useTvLayout;
-    final body = CustomScrollView(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.only(top: 16),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                const TvEdgeFocus(),
-                const AppReference(),
-                if (!settings.useTvLayout) ...[
-                  const Divider(),
-                  const BugReport(),
-                ],
-                const Divider(),
-                const AboutCredits(),
-                const Divider(),
-                const AboutTranslators(),
-                const Divider(),
-              ],
-            ),
-          ),
-        ),
-        const Licenses(),
-        const BottomPaddingSliver(),
-      ],
-    );
-
-    if (useTvLayout) {
-      return AvesScaffold(
-        body: AvesPopScope(
-          handlers: const [TvNavigationPopHandler.pop],
-          child: Row(
-            children: [
-              TvRail(
-                controller: context.read<TvRailController>(),
-              ),
-              Expanded(
-                child: DirectionalSafeArea(
-                  start: false,
-                  child: body,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+    if (settings.useTvLayout) {
+      return const AboutTvPage();
     } else {
-      return AvesScaffold(
-        appBar: AppBar(
-          title: appBarTitle,
-        ),
-        body: GestureAreaProtectorStack(
-          child: SafeArea(
-            bottom: false,
-            child: body,
-          ),
-        ),
-      );
+      return const AboutMobilePage();
     }
   }
 }

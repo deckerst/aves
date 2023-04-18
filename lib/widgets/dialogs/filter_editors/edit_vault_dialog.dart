@@ -3,13 +3,17 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/details.dart';
-import 'package:aves/model/vaults/enums.dart';
 import 'package:aves/model/vaults/vaults.dart';
+import 'package:aves/view/view.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +31,7 @@ class EditVaultDialog extends StatefulWidget {
   State<EditVaultDialog> createState() => _EditVaultDialogState();
 }
 
-class _EditVaultDialogState extends State<EditVaultDialog> {
+class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, VaultAwareMixin {
   final TextEditingController _nameController = TextEditingController();
   late bool _useBin;
   late bool _autoLockScreenOff;
@@ -105,7 +109,7 @@ class _EditVaultDialogState extends State<EditVaultDialog> {
               _unfocus();
               showSelectionDialog<VaultLockType>(
                 context: context,
-                builder: (context) => AvesSelectionDialog<VaultLockType>(
+                builder: (context) => AvesSingleSelectionDialog<VaultLockType>(
                   initialValue: _lockType,
                   options: Map.fromEntries(_lockTypeOptions.map((v) => MapEntry(v, v.getText(context)))),
                 ),
@@ -178,7 +182,7 @@ class _EditVaultDialogState extends State<EditVaultDialog> {
       useBin: _useBin,
       lockType: _lockType,
     );
-    if (!await vaults.setPass(context, details)) return;
+    if (!await setVaultPass(context, details)) return;
 
     Navigator.maybeOf(context)?.pop(details);
   }

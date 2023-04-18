@@ -28,14 +28,14 @@ class FixedExtentSectionLayout extends SectionLayout {
   @override
   int getMinChildIndexForScrollOffset(double scrollOffset) {
     scrollOffset -= bodyMinOffset;
-    if (scrollOffset < 0 || mainAxisStride == 0) return firstIndex;
+    if (mainAxisStride == 0 || !scrollOffset.isFinite || scrollOffset < 0) return firstIndex;
     return bodyFirstIndex + scrollOffset ~/ mainAxisStride;
   }
 
   @override
   int getMaxChildIndexForScrollOffset(double scrollOffset) {
     scrollOffset -= bodyMinOffset;
-    if (scrollOffset < 0 || mainAxisStride == 0) return firstIndex;
+    if (mainAxisStride == 0 || !scrollOffset.isFinite || scrollOffset < 0) return firstIndex;
     return bodyFirstIndex + (scrollOffset / mainAxisStride).ceil() - 1;
   }
 }

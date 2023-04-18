@@ -1,23 +1,22 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/app/permissions.dart';
+import 'package:aves/model/apps.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/services/widget_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -31,6 +30,7 @@ import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/screen_saver_page.dart';
 import 'package:aves/widgets/wallpaper_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
   static const intentDataKeyMimeType = 'mimeType';
   static const intentDataKeyPage = 'page';
   static const intentDataKeyQuery = 'query';
+  static const intentDataKeySafeMode = 'safeMode';
   static const intentDataKeyUri = 'uri';
   static const intentDataKeyWidgetId = 'widgetId';
 
@@ -97,21 +98,18 @@ class _HomePageState extends State<HomePage> {
     if (await windowService.isActivity()) {
       // do not check whether permission was granted, because some app stores
       // hide in some countries apps that force quit on permission denial
-      await [
-        ...Constants.storagePermissions,
-        // to access media with unredacted metadata with scoped storage (Android >=10)
-        Permission.accessMediaLocation,
-      ].request();
+      await Permissions.mediaAccess.request();
     }
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
+    final safeMode = intentData[intentDataKeySafeMode] ?? false;
     final intentAction = intentData[intentDataKeyAction];
     _initialFilters = null;
 
     await androidFileUtils.init();
     if (!{actionScreenSaver, actionSetWallpaper}.contains(intentAction) && settings.isInstalledAppAccessAllowed) {
-      unawaited(androidFileUtils.initAppNames());
+      unawaited(appInventory.initAppNames());
     }
 
     if (intentData.isNotEmpty) {
@@ -209,6 +207,7 @@ class _HomePageState extends State<HomePage> {
         final source = context.read<CollectionSource>();
         await source.init(
           loadTopEntriesFirst: settings.homePage == HomePageSetting.collection,
+          canAnalyze: !safeMode,
         );
         break;
       case AppMode.screenSaver:

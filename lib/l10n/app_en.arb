@@ -84,6 +84,7 @@
   "chipActionUnpin": "Unpin from top",
   "chipActionRename": "Rename",
   "chipActionSetCover": "Set cover",
+  "chipActionShowCountryStates": "Show states",
   "chipActionCreateAlbum": "Create album",
   "chipActionCreateVault": "Create vault",
   "chipActionConfigureVault": "Configure vault",
@@ -125,6 +126,8 @@
   "videoActionSetSpeed": "Playback speed",
 
   "viewerActionSettings": "Settings",
+  "viewerActionLock": "Lock viewer",
+  "viewerActionUnlock": "Unlock viewer",
 
   "slideshowActionResume": "Resume",
   "slideshowActionShowInCollection": "Show in Collection",
@@ -677,6 +680,9 @@
   "countryPageTitle": "Countries",
   "countryEmpty": "No countries",
 
+  "statePageTitle": "States",
+  "stateEmpty": "No states",
+
   "placePageTitle": "Places",
   "placeEmpty": "No places",
 
@@ -690,6 +696,7 @@
   "searchDateSectionTitle": "Date",
   "searchAlbumsSectionTitle": "Albums",
   "searchCountriesSectionTitle": "Countries",
+  "searchStatesSectionTitle": "States",
   "searchPlacesSectionTitle": "Places",
   "searchTagsSectionTitle": "Tags",
   "searchRatingSectionTitle": "Ratings",
@@ -753,6 +760,9 @@
   "settingsCollectionQuickActionTabSelecting": "Selecting",
   "settingsCollectionBrowsingQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when browsing items.",
   "settingsCollectionSelectionQuickActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed when selecting items.",
+
+  "settingsCollectionBurstPatternsTile": "Burst patterns",
+  "settingsCollectionBurstPatternsNone": "None",
 
   "settingsViewerSectionTitle": "Viewer",
   "settingsViewerGestureSideTapNext": "Tap on screen edges to show previous/next item",
@@ -892,6 +902,7 @@
     }
   },
   "statsTopCountriesSectionTitle": "Top Countries",
+  "statsTopStatesSectionTitle": "Top States",
   "statsTopPlacesSectionTitle": "Top Places",
   "statsTopTagsSectionTitle": "Top Tags",
   "statsTopAlbumsSectionTitle": "Top Albums",
@@ -948,6 +959,7 @@
   "tagEditorSectionPlaceholders": "Placeholders",
 
   "tagPlaceholderCountry": "Country",
+  "tagPlaceholderState": "State",
   "tagPlaceholderPlace": "Place",
 
   "panoramaEnableSensorControl": "Enable sensor control",

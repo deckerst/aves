@@ -251,6 +251,11 @@ open class MainActivity : FlutterFragmentActivity() {
     open fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
         when (val action = intent?.action) {
             Intent.ACTION_MAIN -> {
+                if (intent.getBooleanExtra(EXTRA_KEY_SAFE_MODE, false)) {
+                    return hashMapOf(
+                        INTENT_DATA_KEY_SAFE_MODE to true,
+                    )
+                }
                 intent.getStringExtra(EXTRA_KEY_PAGE)?.let { page ->
                     val filters = extractFiltersFromIntent(intent)
                     return hashMapOf(
@@ -393,7 +398,16 @@ open class MainActivity : FlutterFragmentActivity() {
             )
             .build()
 
-        ShortcutManagerCompat.setDynamicShortcuts(this, listOf(videos, search))
+        val safeMode = ShortcutInfoCompat.Builder(this, "safeMode")
+            .setShortLabel(getString(R.string.safe_mode_shortcut_short_label))
+            .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_safe_mode else R.drawable.ic_shortcut_safe_mode))
+            .setIntent(
+                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                    .putExtra(EXTRA_KEY_SAFE_MODE, true)
+            )
+            .build()
+
+        ShortcutManagerCompat.setDynamicShortcuts(this, listOf(videos, search, safeMode))
     }
 
     private fun onAnalysisCompleted() {
@@ -428,12 +442,14 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_QUERY = "query"
+        const val INTENT_DATA_KEY_SAFE_MODE = "safeMode"
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
 
         const val EXTRA_KEY_PAGE = "page"
         const val EXTRA_KEY_FILTERS_ARRAY = "filters"
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
+        const val EXTRA_KEY_SAFE_MODE = "safeMode"
         const val EXTRA_KEY_WIDGET_ID = "widgetId"
 
         // request code to pending runnable

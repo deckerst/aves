@@ -1,19 +1,15 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set_actions.dart';
-import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
@@ -26,6 +22,7 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
 import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -209,29 +206,29 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   }) {
     return [
       if (widget.moveType != null)
-        ..._quickActions.where(isVisible).map((action) => IconButton(
-              icon: action.getIcon(),
-              onPressed: () => onActionSelected(action),
-              tooltip: action.getText(context),
-            )),
-      MenuIconTheme(
-        child: PopupMenuButton<ChipSetAction>(
-          itemBuilder: (context) {
-            return _menuActions.where((v) => v == null || isVisible(v)).map((action) {
-              if (action == null) return const PopupMenuDivider();
-              return FilterGridAppBar.toMenuItem(context, action, enabled: true);
-            }).toList();
-          },
-          onSelected: (action) async {
-            // remove focus, if any, to prevent the keyboard from showing up
-            // after the user is done with the popup menu
-            FocusManager.instance.primaryFocus?.unfocus();
+        ..._quickActions.where(isVisible).map(
+              (action) => IconButton(
+                icon: action.getIcon(),
+                onPressed: () => onActionSelected(action),
+                tooltip: action.getText(context),
+              ),
+            ),
+      PopupMenuButton<ChipSetAction>(
+        itemBuilder: (context) {
+          return _menuActions.where((v) => v == null || isVisible(v)).map((action) {
+            if (action == null) return const PopupMenuDivider();
+            return FilterGridAppBar.toMenuItem(context, action, enabled: true);
+          }).toList();
+        },
+        onSelected: (action) async {
+          // remove focus, if any, to prevent the keyboard from showing up
+          // after the user is done with the popup menu
+          FocusManager.instance.primaryFocus?.unfocus();
 
-            // wait for the popup menu to hide before proceeding with the action
-            await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-            onActionSelected(action);
-          },
-        ),
+          // wait for the popup menu to hide before proceeding with the action
+          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          onActionSelected(action);
+        },
       ),
     ];
   }

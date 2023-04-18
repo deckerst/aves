@@ -12,6 +12,8 @@ import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 extension ExtraAvesEntryLocation on AvesEntry {
+  static final _invalidLocalityPattern = RegExp(r'^[-+\dA-Z]+$');
+
   LatLng? get latLng => hasGps ? LatLng(catalogMetadata!.latitude!, catalogMetadata!.longitude!) : null;
 
   Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
@@ -53,18 +55,17 @@ extension ExtraAvesEntryLocation on AvesEntry {
             )
           : call());
       if (addresses.isNotEmpty) {
-        final address = addresses.first;
-        final cc = address.countryCode?.toUpperCase();
-        final cn = address.countryName;
-        final aa = address.adminArea;
+        final v = addresses.first;
+        var locality = v.locality ?? v.subLocality ?? v.featureName;
+        if (locality == null || _invalidLocalityPattern.hasMatch(locality) || {v.subThoroughfare, v.countryName}.contains(locality)) {
+          locality = v.subAdminArea;
+        }
         addressDetails = AddressDetails(
           id: id,
-          countryCode: cc,
-          countryName: cn,
-          adminArea: aa,
-          // if country & admin fields are null, it is likely the ocean,
-          // which is identified by `featureName` but we default to the address line anyway
-          locality: address.locality ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
+          countryCode: v.countryCode?.toUpperCase(),
+          countryName: v.countryName,
+          adminArea: v.adminArea,
+          locality: locality,
         );
       }
     } catch (error, stack) {

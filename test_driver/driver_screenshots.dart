@@ -1,12 +1,11 @@
 import 'package:aves/main_play.dart' as app;
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_test/flutter_test.dart';
 

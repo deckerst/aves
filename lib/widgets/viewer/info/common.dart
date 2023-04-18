@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -45,8 +45,9 @@ class InfoRowGroup extends StatefulWidget {
   final int maxValueLength;
   final Map<String, InfoValueSpanBuilder> spanBuilders;
 
-  static const keyValuePadding = 16;
-  static const fontSize = 13.0;
+  static const int defaultMaxValueLength = 140;
+  static const double keyValuePadding = 16;
+  static const double fontSize = 13;
   static const valueStyle = TextStyle(fontSize: fontSize);
   static final _keyStyle = valueStyle.copyWith(height: 2.0);
 
@@ -55,7 +56,7 @@ class InfoRowGroup extends StatefulWidget {
   const InfoRowGroup({
     super.key,
     required this.info,
-    this.maxValueLength = 0,
+    this.maxValueLength = defaultMaxValueLength,
     Map<String, InfoValueSpanBuilder>? spanBuilders,
   }) : spanBuilders = spanBuilders ?? const {};
 
@@ -75,7 +76,7 @@ class InfoRowGroup extends StatefulWidget {
       final linkColor = Theme.of(context).colorScheme.primary;
       final style = InfoRowGroup.valueStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
 
-      return [TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', style: style, recognizer: recognizer)];
+      return [TextSpan(text: '${Unicode.FSI}$value${Unicode.PDI}', style: style, recognizer: recognizer)];
     };
   }
 }
@@ -97,7 +98,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
     // compute the size of keys and space in order to align values
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: key, style: _keyStyle), textScaleFactor))));
+    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: _buildTextValue(key), style: _keyStyle), textScaleFactor))));
 
     final lastKey = keyValues.keys.last;
     return LayoutBuilder(
@@ -115,15 +116,11 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                 final spanBuilder = spanBuilders[key] ?? _buildTextValueSpans;
                 final thisSpaceSize = max(0.0, (baseValueX - keySizes[key]!)) + InfoRowGroup.keyValuePadding;
 
-                // each text span embeds and pops a Bidi isolate,
-                // so that layout of the spans follows the directionality of the locale
-                // (e.g. keys on the right for RTL locale, whatever the key intrinsic directionality)
-                // and each span respects the directionality of its inner text only
                 return [
-                  TextSpan(text: '${Constants.fsi}$key${Constants.pdi}', style: _keyStyle),
+                  TextSpan(text: _buildTextValue(key), style: _keyStyle),
                   WidgetSpan(
                     child: SizedBox(
-                      width: thisSpaceSize,
+                      width: thisSpaceSize / textScaleFactor,
                       // as of Flutter v3.0.0, the underline decoration from the following `TextSpan`
                       // is applied to the `WidgetSpan` too, so we add a dummy `Text` as a workaround
                       child: const Text(''),
@@ -161,8 +158,14 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
       recognizer = TapGestureRecognizer()..onTap = () => setState(() => _expandedKeys.add(key));
     }
 
-    return [TextSpan(text: '${Constants.fsi}$value${Constants.pdi}', recognizer: recognizer)];
+    return [TextSpan(text: _buildTextValue(value), recognizer: recognizer)];
   }
+
+  // each text span embeds and pops a Bidi isolate,
+  // so that layout of the spans follows the directionality of the locale
+  // (e.g. keys on the right for RTL locale, whatever the key intrinsic directionality)
+  // and each span respects the directionality of its inner text only
+  String _buildTextValue(String value) => '${Unicode.FSI}$value${Unicode.PDI}';
 }
 
 typedef InfoValueSpanBuilder = List<InlineSpan> Function(BuildContext context, String key, String value);

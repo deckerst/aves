@@ -1,4 +1,4 @@
-import 'package:aves/model/settings/enums/enums.dart';
+import 'package:aves_model/aves_model.dart';
 
 extension ExtraVideoLoopMode on VideoLoopMode {
   static const shortVideoThreshold = Duration(seconds: 30);

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -9,6 +8,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/share_button.dart';
@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.da
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/mute.dart';
 import 'package:aves/widgets/common/action_controls/togglers/play.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_button.dart';
@@ -26,6 +27,7 @@ import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -240,7 +242,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: padding / 2),
                   child: OverlayButton(
                     scale: scale,
-                    child: MenuIconTheme(
+                    child: FontSizeIconTheme(
                       child: AvesPopupMenuButton<EntryAction>(
                         key: const Key('entry-menu-button'),
                         itemBuilder: (context) {
@@ -285,6 +287,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                         onCanceled: () {
                           _popupExpandedNotifier.value = null;
                         },
+                        iconSize: IconTheme.of(context).size,
                         onMenuOpened: () {
                           // if the menu is opened while overlay is hiding,
                           // the popup menu button is disposed and menu items are ineffective,

@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:aves/model/entry/sort.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -53,7 +55,11 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
     debugPrint('getSuggestions query=$query, locale=$locale use24hour=$use24hour');
 
     if (query is String && locale is String) {
-      final entries = await metadataDb.searchLiveEntries(query, limit: 9);
+      final entries = (await metadataDb.searchLiveEntries(query, limit: 9)).toList();
+      final catalogMetadata = await metadataDb.loadCatalogMetadataById(entries.map((entry) => entry.id).toSet());
+      catalogMetadata.forEach((metadata) => entries.firstWhereOrNull((entry) => entry.id == metadata.id)?.catalogMetadata = metadata);
+      entries.sort(AvesEntrySort.compareByDate);
+
       suggestions.addAll(entries.map((entry) {
         final date = entry.bestDate;
         return {

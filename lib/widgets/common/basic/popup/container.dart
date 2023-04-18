@@ -16,10 +16,10 @@ class PopupMenuItemContainer<T> extends PopupMenuEntry<T> {
   bool represents(void value) => false;
 
   @override
-  State<PopupMenuItemContainer> createState() => _TransitionPopupMenuItemState();
+  State<PopupMenuItemContainer> createState() => _PopupMenuItemContainerState();
 }
 
-class _TransitionPopupMenuItemState extends State<PopupMenuItemContainer> {
+class _PopupMenuItemContainerState extends State<PopupMenuItemContainer> {
   @override
   Widget build(BuildContext context) {
     return TooltipTheme(

@@ -1,6 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class AvesAppBar extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                height: kToolbarHeight,
+                height: kToolbarHeight * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor),
                 child: Row(
                   children: [
                     leading != null
@@ -65,7 +66,9 @@ class AvesAppBar extends StatelessWidget {
                               tag: leadingHeroTag,
                               flightShuttleBuilder: _flightShuttleBuilder,
                               transitionOnUserGestures: true,
-                              child: leading!,
+                              child: FontSizeIconTheme(
+                                child: leading!,
+                              ),
                             ),
                           )
                         : const SizedBox(width: 16),
@@ -78,12 +81,14 @@ class AvesAppBar extends StatelessWidget {
                           transitionOnUserGestures: true,
                           child: AnimatedSwitcher(
                             duration: context.read<DurationsData>().iconAnimation,
-                            child: Row(
-                              key: ValueKey(transitionKey),
-                              children: [
-                                Expanded(child: title),
-                                ...actions,
-                              ],
+                            child: FontSizeIconTheme(
+                              child: Row(
+                                key: ValueKey(transitionKey),
+                                children: [
+                                  Expanded(child: title),
+                                  ...actions,
+                                ],
+                              ),
                             ),
                           ),
                         ),

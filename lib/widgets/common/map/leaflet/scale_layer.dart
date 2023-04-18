@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';

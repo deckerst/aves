@@ -1,5 +1,4 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
@@ -9,11 +8,10 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
-import 'package:aves/model/source/enums/view.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -28,6 +26,7 @@ import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -105,6 +104,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return hasSelection && settings.pinnedFilters.containsAll(selectedFilters);
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
+      case ChipSetAction.showCountryStates:
         return false;
       // selecting (single filter)
       case ChipSetAction.setCover:
@@ -148,6 +148,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
       case ChipSetAction.lockVault:
+      case ChipSetAction.showCountryStates:
         return hasSelection;
       // selecting (single filter)
       case ChipSetAction.rename:
@@ -199,14 +200,15 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         break;
       case ChipSetAction.pin:
         settings.pinnedFilters = settings.pinnedFilters..addAll(filters);
-        _browse(context);
+        browse(context);
         break;
       case ChipSetAction.unpin:
         settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
-        _browse(context);
+        browse(context);
         break;
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
+      case ChipSetAction.showCountryStates:
         break;
       // selecting (single filter)
       case ChipSetAction.setCover:
@@ -218,9 +220,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  void _browse(BuildContext context) {
-    context.read<Selection<FilterGridItem<T>>?>()?.browse();
-  }
+  void browse(BuildContext context) => context.read<Selection<FilterGridItem<T>>?>()?.browse();
 
   Iterable<AvesEntry> _selectedEntries(BuildContext context, Set<dynamic> filters) {
     final source = context.read<CollectionSource>();
@@ -332,7 +332,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     settings.changeFilterVisibility(filters, false);
 
-    _browse(context);
+    browse(context);
   }
 
   void _setCover(BuildContext context, T filter) async {
@@ -367,6 +367,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       color: selectedColor,
     );
 
-    _browse(context);
+    browse(context);
   }
 }

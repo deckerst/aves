@@ -1,14 +1,13 @@
-import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
+import 'dart:ui';
+
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
-import 'package:aves/model/settings/enums/enums.dart';
-import 'package:aves/model/source/enums/enums.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/utils/colors.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
-import 'package:flutter/material.dart';
+import 'package:aves_model/aves_model.dart';
 
 class SettingsDefaults {
   // app
@@ -64,10 +63,7 @@ class SettingsDefaults {
 
   // filter grids
   static const albumGroupFactor = AlbumChipGroupFactor.importance;
-  static const albumSortFactor = ChipSortFactor.name;
-  static const countrySortFactor = ChipSortFactor.name;
-  static const placeSortFactor = ChipSortFactor.name;
-  static const tagSortFactor = ChipSortFactor.name;
+  static const chipListSortFactor = ChipSortFactor.name;
 
   // viewer
   static const viewerQuickActions = [
@@ -104,8 +100,8 @@ class SettingsDefaults {
   static const subtitleTextAlignment = TextAlign.center;
   static const subtitleTextPosition = SubtitlePosition.bottom;
   static const subtitleShowOutline = true;
-  static const subtitleTextColor = Colors.white;
-  static const subtitleBackgroundColor = Colors.transparent;
+  static const subtitleTextColor = Color(0xFFFFFFFF);
+  static const subtitleBackgroundColor = ColorUtils.transparentBlack;
 
   // info
   static const infoMapZoom = 12.0;

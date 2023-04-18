@@ -5,13 +5,15 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/view/view.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/settings/privacy/file_picker/crumb_line.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +71,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
         appBar: AppBar(
           title: Text(_getTitle(context)),
           actions: [
-            MenuIconTheme(
+            FontSizeIconTheme(
               child: PopupMenuButton<_PickerAction>(
                 itemBuilder: (context) {
                   return [
@@ -182,7 +184,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
   Widget _buildContentLine(BuildContext context, FileSystemEntity content) {
     return ListTile(
       leading: const Icon(AIcons.folder),
-      title: Text('${Constants.fsi}${pContext.split(content.path).last}${Constants.pdi}'),
+      title: Text('${Unicode.FSI}${pContext.split(content.path).last}${Unicode.PDI}'),
       onTap: () {
         _goTo(content.path);
         setState(() {});
@@ -191,7 +193,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
   }
 
   void _goTo(String path) {
-    _directory = VolumeRelativeDirectory.fromPath(path)!;
+    _directory = androidFileUtils.relativeDirectoryFromPath(path)!;
     _contents = null;
     final contents = <Directory>[];
     Directory(currentDirectoryPath).list().listen((event) {

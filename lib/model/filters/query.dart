@@ -4,14 +4,13 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
 
-  static final RegExp exactRegex = RegExp('^"(.*)"\$');
+  static final exactRegex = RegExp('^"(.*)"\$');
 
   final String query;
   final bool colorful, live;

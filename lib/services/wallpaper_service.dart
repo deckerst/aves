@@ -1,5 +1,5 @@
-import 'package:aves/model/wallpaper_target.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/services.dart';
 
 class WallpaperService {

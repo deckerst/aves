@@ -1,8 +1,6 @@
-import 'package:aves/model/metadata/enums/enums.dart';
-import 'package:aves/model/metadata/fields.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 @immutable
 class DateModifier extends Equatable {

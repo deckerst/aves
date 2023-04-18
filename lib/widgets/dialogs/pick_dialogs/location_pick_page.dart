@@ -8,7 +8,8 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -168,7 +169,6 @@ class _LocationInfo extends StatelessWidget {
   final ValueNotifier<LatLng?> locationNotifier;
 
   static const double iconPadding = 8.0;
-  static const double iconSize = 16.0;
   static const double _interRowPadding = 2.0;
 
   const _LocationInfo({
@@ -217,6 +217,8 @@ class _LocationInfo extends StatelessWidget {
       },
     );
   }
+
+  static double getIconSize(BuildContext context) => 16.0 * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
 }
 
 class _AddressRow extends StatefulWidget {
@@ -253,7 +255,7 @@ class _AddressRowState extends State<_AddressRow> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(width: _LocationInfo.iconPadding),
-        const Icon(AIcons.location, size: _LocationInfo.iconSize),
+        Icon(AIcons.location, size: _LocationInfo.getIconSize(context)),
         const SizedBox(width: _LocationInfo.iconPadding),
         Expanded(
           child: Container(
@@ -266,8 +268,8 @@ class _AddressRowState extends State<_AddressRow> {
               valueListenable: _addressLineNotifier,
               builder: (context, addressLine, child) {
                 return Text(
-                  addressLine ?? Constants.overlayUnknown,
-                  strutStyle: Constants.overflowStrutStyle,
+                  addressLine ?? AText.valueNotAvailable,
+                  strutStyle: AStyles.overflowStrut,
                   softWrap: false,
                   overflow: TextOverflow.fade,
                   maxLines: 1,
@@ -312,11 +314,16 @@ class _CoordinateRow extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(width: _LocationInfo.iconPadding),
-        const Icon(AIcons.geoBounds, size: _LocationInfo.iconSize),
+        Icon(AIcons.geoBounds, size: _LocationInfo.getIconSize(context)),
         const SizedBox(width: _LocationInfo.iconPadding),
-        Text(
-          location != null ? settings.coordinateFormat.format(context.l10n, location!) : Constants.overlayUnknown,
-          strutStyle: Constants.overflowStrutStyle,
+        Expanded(
+          child: Text(
+            location != null ? settings.coordinateFormat.format(context.l10n, location!) : AText.valueNotAvailable,
+            strutStyle: AStyles.overflowStrut,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+          ),
         ),
       ],
     );

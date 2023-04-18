@@ -12,7 +12,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
@@ -54,7 +54,8 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMixin {
-  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerPlace = {}, _entryCountPerTag = {}, _entryCountPerAlbum = {};
+  final Map<String, int> _entryCountPerCountry = {}, _entryCountPerState = {}, _entryCountPerPlace = {};
+  final Map<String, int> _entryCountPerTag = {}, _entryCountPerAlbum = {};
   final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
 
@@ -77,6 +78,11 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
         if (country != null && country.isNotEmpty) {
           country += '${LocationFilter.locationSeparator}${address.countryCode}';
           _entryCountPerCountry[country] = (_entryCountPerCountry[country] ?? 0) + 1;
+        }
+        var state = address.stateName;
+        if (state != null && state.isNotEmpty) {
+          state += '${LocationFilter.locationSeparator}${address.stateCode}';
+          _entryCountPerState[state] = (_entryCountPerState[state] ?? 0) + 1;
         }
         final place = address.place;
         if (place != null && place.isNotEmpty) {
@@ -210,6 +216,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
                       ),
                       locationIndicator,
                       ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
+                      ..._buildFilterSection<String>(context, l10n.statsTopStatesSectionTitle, _entryCountPerState, (v) => LocationFilter(LocationLevel.state, v)),
                       ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
                       ..._buildFilterSection<String>(context, l10n.statsTopTagsSectionTitle, _entryCountPerTag, TagFilter.new),
                       ..._buildFilterSection<String>(context, l10n.statsTopAlbumsSectionTitle, _entryCountPerAlbum, (v) => AlbumFilter(v, source.getAlbumDisplayName(context, v))),
@@ -276,20 +283,32 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
         : null;
     Widget header = Text(
       title,
-      style: Constants.knownTitleTextStyle,
+      style: AStyles.knownTitleText,
     );
     if (settings.useTvLayout) {
+      header = Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            header,
+            const SizedBox(width: 16),
+            Icon(AIcons.next, color: hasMore ? null : Theme.of(context).disabledColor),
+          ],
+        ),
+      );
       header = Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         alignment: AlignmentDirectional.centerStart,
-        child: InkWell(
-          onTap: onHeaderPressed,
-          borderRadius: const BorderRadius.all(Radius.circular(123)),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: header,
-          ),
-        ),
+        // prevent ink response when tapping the header does nothing,
+        // because otherwise Play Store reviewers think it is broken navigation
+        child: onHeaderPressed != null
+            ? InkWell(
+                onTap: onHeaderPressed,
+                borderRadius: const BorderRadius.all(Radius.circular(123)),
+                child: header,
+              )
+            : Focus(child: header),
       );
     } else {
       header = Padding(

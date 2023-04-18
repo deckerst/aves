@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 
-import 'package:aves/model/source/enums/enums.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class FixedExtentGridPainter extends CustomPainter {

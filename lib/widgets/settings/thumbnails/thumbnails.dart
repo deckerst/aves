@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/bursts.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -27,6 +28,7 @@ class ThumbnailsSection extends SettingsSection {
   List<SettingsTile> tiles(BuildContext context) => [
         if (!settings.useTvLayout) SettingsTileCollectionQuickActions(),
         SettingsTileThumbnailOverlay(),
+        SettingsTileBurstPatterns(),
       ];
 }
 
@@ -51,5 +53,21 @@ class SettingsTileThumbnailOverlay extends SettingsTile {
         title: title(context),
         routeName: ThumbnailOverlayPage.routeName,
         builder: (context) => const ThumbnailOverlayPage(),
+      );
+}
+
+class SettingsTileBurstPatterns extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsCollectionBurstPatternsTile;
+
+  @override
+  Widget build(BuildContext context) => SettingsMultiSelectionListTile<String>(
+        values: BurstPatterns.options,
+        getName: (context, v) => BurstPatterns.getName(v),
+        selector: (context, s) => s.collectionBurstPatterns,
+        onSelection: (v) => settings.collectionBurstPatterns = v,
+        tileTitle: title(context),
+        noneSubtitle: context.l10n.settingsCollectionBurstPatternsNone,
+        optionSubtitleBuilder: BurstPatterns.getExample,
       );
 }

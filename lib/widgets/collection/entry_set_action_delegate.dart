@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
-import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
@@ -14,13 +12,12 @@ import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
-import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -42,6 +39,7 @@ import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -264,7 +262,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _share(BuildContext context) async {
     final entries = _getTargetItems(context);
     try {
-      if (!await androidAppService.shareEntries(entries)) {
+      if (!await appService.shareEntries(entries)) {
         await showNoMatchingAppDialog(context);
       }
     } on TooManyItemsException catch (_) {
@@ -352,7 +350,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories(storageDirs);
+        await storageService.deleteEmptyRegularDirectories(storageDirs);
       },
     );
   }
@@ -417,6 +415,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
     Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
+    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).whereNotNull().toSet();
 
     final dataTypes = <EntryDataType>{};
     final source = context.read<CollectionSource>();
@@ -446,6 +445,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           // otherwise filter chips may eagerly rebuild in between with the old state
           if (obsoleteCountryCodes.isNotEmpty) {
             source.invalidateCountryFilterSummary(countryCodes: obsoleteCountryCodes);
+          }
+          if (obsoleteStateCodes.isNotEmpty) {
+            source.invalidateStateFilterSummary(stateCodes: obsoleteStateCodes);
           }
           if (obsoleteTags.isNotEmpty) {
             source.invalidateTagFilterSummary(tags: obsoleteTags);
@@ -633,6 +635,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editTags(newTagsByEntry[entry]!));
   }
 
+  Future<void> removeTags(BuildContext context, {required Set<AvesEntry> entries, required Set<String> tags}) async {
+    final newTagsByEntry = Map.fromEntries(entries.map((v) {
+      return MapEntry(v, v.tags.whereNot(tags.contains).toSet());
+    }));
+
+    await _edit(context, entries, (entry) => entry.editTags(newTagsByEntry[entry]!));
+  }
+
   Future<void> _removeMetadata(BuildContext context) async {
     final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRemoveMetadata);
     if (entries == null || entries.isEmpty) return;
@@ -737,7 +747,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final name = result.item2;
     if (name.isEmpty) return;
 
-    await androidAppService.pinToHomeScreen(name, coverEntry, filters: filters);
+    await appService.pinToHomeScreen(name, coverEntry, filters: filters);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
     }

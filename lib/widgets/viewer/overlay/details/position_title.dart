@@ -1,7 +1,9 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class OverlayPositionTitleRow extends StatelessWidget {
@@ -26,9 +28,9 @@ class OverlayPositionTitleRow extends StatelessWidget {
         [
           if (collectionPosition != null) collectionPosition,
           if (pagePosition != null) pagePosition,
-          if (title != null) '${Constants.fsi}$title${Constants.pdi}',
-        ].join(Constants.separator),
-        strutStyle: Constants.overflowStrutStyle);
+          if (title != null) '${Unicode.FSI}$title${Unicode.PDI}',
+        ].join(AText.separator),
+        strutStyle: AStyles.overflowStrut);
 
     if (multiPageController == null) return toText();
 

@@ -20,23 +20,20 @@ class PlatformMobileServices extends MobileServices {
     _isAvailable = result == GooglePlayServicesAvailability.success;
     debugPrint('Device has Google Play Services=$_isAvailable');
 
-    // as of google_maps_flutter v2.1.1, minSDK is 20 because of default PlatformView usage,
-    // but using hybrid composition would make it usable on API 19 too,
-    // cf https://github.com/flutter/flutter/issues/23728
-    // as of google_maps_flutter v2.1.5, Flutter v3.0.1 makes the map hide overlay widgets on API <=22
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     _canRenderMaps = androidInfo.version.sdkInt >= 21;
     if (_canRenderMaps) {
       final mapsImplementation = GoogleMapsFlutterPlatform.instance;
       if (mapsImplementation is GoogleMapsFlutterAndroid) {
-        // as of google_maps_flutter_android v2.2.0,
-        // setting `useAndroidViewSurface` to true:
+        // as of flutter v3.7.10 / google_maps_flutter v2.2.5 / google_maps_flutter_android v2.4.10,
+        // setting `useAndroidViewSurface` to true (default):
         // + issue #241 exists but workaround is efficient
-        // + pan perf is OK when overlay is disabled
-        // - pan perf is bad when overlay is enabled
+        // - page stack and page animation perf is bad
+        // - overlay blur is disabled
         // setting `useAndroidViewSurface` to false:
         // - issue #241 exists and workaround is inefficient
-        // + pan perf is OK when overlay is disabled or enabled
+        // + page stack and page animation perf is OK
+        // + overlay blur is effective
         mapsImplementation.useAndroidViewSurface = false;
       }
     }

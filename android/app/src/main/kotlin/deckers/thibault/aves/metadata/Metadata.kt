@@ -33,6 +33,7 @@ object Metadata {
     const val DIR_DNG = "DNG" // custom
     const val DIR_EXIF_GEOTIFF = "GeoTIFF" // custom
     const val DIR_PNG_TEXTUAL_DATA = "PNG Textual Data" // custom
+    const val DIR_MP4_USER_DATA = "User Data" // custom
 
     // types of metadata
     const val TYPE_COMMENT = "comment"

@@ -1,10 +1,11 @@
-import 'package:aves/model/actions/map_actions.dart';
-import 'package:aves/model/settings/enums/l10n.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
+import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,7 +19,7 @@ class MapActionDelegate {
       case MapAction.selectStyle:
         showSelectionDialog<EntryMapStyle>(
           context: context,
-          builder: (context) => AvesSelectionDialog<EntryMapStyle?>(
+          builder: (context) => AvesSingleSelectionDialog<EntryMapStyle?>(
             initialValue: settings.mapStyle,
             options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
             title: context.l10n.mapStyleDialogTitle,

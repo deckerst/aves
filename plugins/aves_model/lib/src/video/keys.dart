@@ -3,6 +3,8 @@
 // that write additional metadata to media files
 class Keys {
   static const androidCaptureFramerate = 'com.android.capture.fps';
+  static const androidManufacturer = 'com.android.manufacturer';
+  static const androidModel = 'com.android.model';
   static const androidVersion = 'com.android.version';
   static const bps = 'bps';
   static const bitrate = 'bitrate';
@@ -31,6 +33,12 @@ class Keys {
   static const mediaFormat = 'format';
   static const mediaType = 'media_type';
   static const minorVersion = 'minor_version';
+  static const quicktimeCreationDate = 'com.apple.quicktime.creationdate';
+  static const quicktimeLocationAccuracyHorizontal = 'com.apple.quicktime.location.accuracy.horizontal';
+  static const quicktimeLocationIso6709 = 'com.apple.quicktime.location.iso6709';
+  static const quicktimeMake = 'com.apple.quicktime.make';
+  static const quicktimeModel = 'com.apple.quicktime.model';
+  static const quicktimeSoftware = 'com.apple.quicktime.software';
   static const rotate = 'rotate';
   static const sampleRate = 'sample_rate';
   static const sarDen = 'sar_den';
@@ -50,4 +58,5 @@ class Keys {
   static const title = 'title';
   static const track = 'track';
   static const width = 'width';
+  static const xiaomiSlowMoment = 'com.xiaomi.slow_moment';
 }

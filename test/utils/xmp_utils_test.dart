@@ -1,4 +1,5 @@
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
+import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:test/test.dart';
 import 'package:xml/xml.dart';
@@ -16,9 +17,9 @@ void main() {
   List<XmlNode> _getDescriptions(String xmpString) {
     final xmpDoc = XmlDocument.parse(xmpString);
     final root = xmpDoc.rootElement;
-    final rdf = root.getElement(XMP.rdfRoot, namespace: Namespaces.rdf);
+    final rdf = root.getElement(XmpElements.rdfRoot, namespace: XmpNamespaces.rdf);
     return rdf!.children.where((node) {
-      return node is XmlElement && node.name.local == XMP.rdfDescription && node.name.namespaceUri == Namespaces.rdf;
+      return node is XmlElement && node.name.local == XmpElements.rdfDescription && node.name.namespaceUri == XmpNamespaces.rdf;
     }).toList();
   }
 
@@ -133,9 +134,9 @@ void main() {
 ''';
 
   test('Get string', () async {
-    expect(XMP.getString(_getDescriptions(inRatingAttribute), XMP.xmpRating, namespace: Namespaces.xmp), '5');
-    expect(XMP.getString(_getDescriptions(inRatingElement), XMP.xmpRating, namespace: Namespaces.xmp), '5');
-    expect(XMP.getString(_getDescriptions(inSubjects), XMP.xmpRating, namespace: Namespaces.xmp), null);
+    expect(XMP.getString(_getDescriptions(inRatingAttribute), XmpElements.xmpRating, namespace: XmpNamespaces.xmp), '5');
+    expect(XMP.getString(_getDescriptions(inRatingElement), XmpElements.xmpRating, namespace: XmpNamespaces.xmp), '5');
+    expect(XMP.getString(_getDescriptions(inSubjects), XmpElements.xmpRating, namespace: XmpNamespaces.xmp), null);
   });
 
   test('Set tags without existing XMP', () async {

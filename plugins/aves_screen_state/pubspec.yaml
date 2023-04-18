@@ -1,0 +1,21 @@
+name: aves_screen_state
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface:
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: deckers.thibault.aves.aves_screen_state
+        pluginClass: AvesScreenStatePlugin

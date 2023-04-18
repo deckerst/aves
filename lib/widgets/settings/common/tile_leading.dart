@@ -1,5 +1,5 @@
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class SettingsTileLeading extends StatelessWidget {
         icon,
         size: 18,
         color: DefaultTextStyle.of(context).style.color,
-        shadows: Theme.of(context).brightness == Brightness.dark ? Constants.embossShadows : null,
+        shadows: Theme.of(context).brightness == Brightness.dark ? AStyles.embossShadows : null,
       ),
     );
   }

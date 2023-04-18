@@ -2,6 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
@@ -168,18 +169,20 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
 
     final label = ConstrainedBox(
       constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-      child: Row(
-        children: [
-          Icon(icon),
-          const SizedBox(width: 16),
-          Expanded(
-            child: HighlightTitle(
-              title: title,
-              showHighlight: false,
+      child: FontSizeIconTheme(
+        child: Row(
+          children: [
+            Icon(icon),
+            const SizedBox(width: 16),
+            Expanded(
+              child: HighlightTitle(
+                title: title,
+                showHighlight: false,
+              ),
             ),
-          ),
-          if (trailing != null) trailing,
-        ],
+            if (trailing != null) trailing,
+          ],
+        ),
       ),
     );
     final selector = TextDropdownButton<T>(

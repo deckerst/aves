@@ -1,8 +1,9 @@
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 

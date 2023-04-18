@@ -1,8 +1,11 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -19,12 +22,12 @@ mixin PermissionAwareMixin {
 
       final restrictedInaccessibleDirs = dirs.where(restrictedDirs.contains).toSet();
       if (restrictedInaccessibleDirs.isNotEmpty) {
-        if (entries != null && await storageService.canRequestMediaFileAccess()) {
+        if (entries != null && await storageService.canRequestMediaFileBulkAccess()) {
           // request media file access for items in restricted directories
           final uris = <String>[], mimeTypes = <String>[];
           entries.where((entry) {
             final dir = entry.directory;
-            return dir != null && restrictedInaccessibleDirs.contains(VolumeRelativeDirectory.fromPath(dir));
+            return dir != null && restrictedInaccessibleDirs.contains(androidFileUtils.relativeDirectoryFromPath(dir));
           }).forEach((entry) {
             uris.add(entry.uri);
             mimeTypes.add(entry.mimeType);
@@ -68,17 +71,7 @@ mixin PermissionAwareMixin {
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
 
-      if (!await deviceService.isSystemFilePickerEnabled()) {
-        await showDialog(
-          context: context,
-          builder: (context) => AvesDialog(
-            content: Text(context.l10n.missingSystemFilePickerDialogMessage),
-            actions: const [OkButton()],
-          ),
-          routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-        );
-        return false;
-      }
+      if (!await _checkSystemFilePickerEnabled(context)) return false;
 
       final granted = await storageService.requestDirectoryAccess(dir.dirPath);
       if (!granted) {
@@ -101,5 +94,19 @@ mixin PermissionAwareMixin {
       },
       routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
     );
+  }
+
+  Future<bool> _checkSystemFilePickerEnabled(BuildContext context) async {
+    if (await deviceService.isSystemFilePickerEnabled()) return true;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AvesDialog(
+        content: Text(context.l10n.missingSystemFilePickerDialogMessage),
+        actions: const [OkButton()],
+      ),
+      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+    );
+    return false;
   }
 }

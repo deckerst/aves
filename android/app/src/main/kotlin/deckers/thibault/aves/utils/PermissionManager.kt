@@ -195,11 +195,8 @@ object PermissionManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
             dirs.add(Environment.DIRECTORY_DOWNLOADS)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // by observation, no documentation
-                dirs.add("Android")
-            }
+            // depends on device, no documentation
+            dirs.add("Android")
         }
         return dirs
     }

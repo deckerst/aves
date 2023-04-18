@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/entry_set_actions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
@@ -11,10 +10,9 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums/enums.dart';
-import 'package:aves/model/source/enums/view.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
@@ -34,6 +32,7 @@ import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -144,7 +143,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   @override
-  void didChangeMetrics() => _updateStatusBarHeight();
+  void didChangeMetrics() {
+    // when top padding changes
+    _updateStatusBarHeight();
+    // when text scale factor changes
+    _updateAppBarHeight();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +224,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   double get appBarContentHeight {
-    double height = kToolbarHeight;
+    final textScaleFactor = context.read<MediaQueryData>().textScaleFactor;
+    double height = kToolbarHeight * textScaleFactor;
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
@@ -228,7 +233,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       height += FilterBar.preferredHeight;
     }
     if (context.read<Query>().enabled) {
-      height += EntryQueryBar.preferredHeight;
+      height += EntryQueryBar.getPreferredHeight(textScaleFactor);
     }
     return height;
   }
@@ -380,59 +385,57 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
     return [
       ...quickActionButtons,
-      MenuIconTheme(
-        child: PopupMenuButton<EntrySetAction>(
-          // key is expected by test driver
-          key: const Key('appbar-menu-button'),
-          itemBuilder: (context) {
-            final generalMenuItems = EntrySetActions.general.where(isVisible).map(
-                  (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
-                );
+      PopupMenuButton<EntrySetAction>(
+        // key is expected by test driver
+        key: const Key('appbar-menu-button'),
+        itemBuilder: (context) {
+          final generalMenuItems = EntrySetActions.general.where(isVisible).map(
+                (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
+              );
 
-            final browsingMenuActions = EntrySetActions.pageBrowsing.where((v) => !browsingQuickActions.contains(v));
-            final selectionMenuActions = EntrySetActions.pageSelection.where((v) => !selectionQuickActions.contains(v));
-            final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<EntrySetAction?>[], (prev, v) {
-              if (v == null && (prev.isEmpty || prev.last == null)) return prev;
-              return [...prev, v];
-            });
-            if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
-              contextualMenuActions.removeLast();
-            }
+          final browsingMenuActions = EntrySetActions.pageBrowsing.where((v) => !browsingQuickActions.contains(v));
+          final selectionMenuActions = EntrySetActions.pageSelection.where((v) => !selectionQuickActions.contains(v));
+          final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<EntrySetAction?>[], (prev, v) {
+            if (v == null && (prev.isEmpty || prev.last == null)) return prev;
+            return [...prev, v];
+          });
+          if (contextualMenuActions.isNotEmpty && contextualMenuActions.last == null) {
+            contextualMenuActions.removeLast();
+          }
 
-            final contextualMenuItems = <PopupMenuEntry<EntrySetAction>>[
-              ...contextualMenuActions.map(
-                (action) {
-                  if (action == null) return const PopupMenuDivider();
-                  return _toMenuItem(action, enabled: canApply(action), selection: selection);
-                },
+          final contextualMenuItems = <PopupMenuEntry<EntrySetAction>>[
+            ...contextualMenuActions.map(
+              (action) {
+                if (action == null) return const PopupMenuDivider();
+                return _toMenuItem(action, enabled: canApply(action), selection: selection);
+              },
+            ),
+            if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash)
+              PopupMenuExpansionPanel<EntrySetAction>(
+                enabled: hasSelection,
+                value: 'edit',
+                icon: AIcons.edit,
+                title: context.l10n.collectionActionEdit,
+                items: [
+                  _buildRotateAndFlipMenuItems(context, canApply: canApply),
+                  ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
+                ],
               ),
-              if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash)
-                PopupMenuExpansionPanel<EntrySetAction>(
-                  enabled: hasSelection,
-                  value: 'edit',
-                  icon: AIcons.edit,
-                  title: context.l10n.collectionActionEdit,
-                  items: [
-                    _buildRotateAndFlipMenuItems(context, canApply: canApply),
-                    ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
-                  ],
-                ),
-            ];
+          ];
 
-            return [
-              ...generalMenuItems,
-              if (contextualMenuItems.isNotEmpty) ...[
-                const PopupMenuDivider(),
-                ...contextualMenuItems,
-              ],
-            ];
-          },
-          onSelected: (action) async {
-            // wait for the popup menu to hide before proceeding with the action
-            await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-            await _onActionSelected(action);
-          },
-        ),
+          return [
+            ...generalMenuItems,
+            if (contextualMenuItems.isNotEmpty) ...[
+              const PopupMenuDivider(),
+              ...contextualMenuItems,
+            ],
+          ];
+        },
+        onSelected: (action) async {
+          // wait for the popup menu to hide before proceeding with the action
+          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          await _onActionSelected(action);
+        },
       ),
     ];
   }

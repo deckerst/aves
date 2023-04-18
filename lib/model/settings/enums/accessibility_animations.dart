@@ -1,5 +1,5 @@
-import 'package:aves/model/settings/enums/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves_model/aves_model.dart';
 
 extension ExtraAccessibilityAnimations on AccessibilityAnimations {
   bool get animate {

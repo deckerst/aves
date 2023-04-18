@@ -1,5 +1,6 @@
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -96,7 +97,7 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Row(
         children: [
-          const Icon(AIcons.info),
+          const FontSizeIconTheme(child: Icon(AIcons.info)),
           const SizedBox(width: 16),
           Expanded(child: Text(context.l10n.settingsStorageAccessBanner)),
         ],
