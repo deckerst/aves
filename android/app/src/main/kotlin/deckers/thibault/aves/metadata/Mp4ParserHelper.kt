@@ -238,6 +238,7 @@ object Mp4ParserHelper {
     }
 
     fun Box.toBytes(): ByteArray {
+        if (size > BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
         val stream = ByteArrayOutputStream(size.toInt())
         Channels.newChannel(stream).use { getBox(it) }
         return stream.toByteArray()
