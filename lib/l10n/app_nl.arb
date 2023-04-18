@@ -517,7 +517,7 @@
   "@aboutCreditsWorldAtlas1": {},
   "aboutCreditsWorldAtlas2": "Gebruik makend van de ISC License.",
   "@aboutCreditsWorldAtlas2": {},
-  "aboutTranslatorsSectionTitle": "Vdertalers",
+  "aboutTranslatorsSectionTitle": "Vertalers",
   "@aboutTranslatorsSectionTitle": {},
   "aboutLicensesSectionTitle": "Open-Source Licenties",
   "@aboutLicensesSectionTitle": {},
@@ -1154,5 +1154,11 @@
   "settingsAllowMediaManagement": "Mediabeheer toestaan",
   "@settingsAllowMediaManagement": {},
   "editEntryLocationDialogSetCustom": "Aangepaste locatie instellen",
-  "@editEntryLocationDialogSetCustom": {}
+  "@editEntryLocationDialogSetCustom": {},
+  "entryInfoActionExportMetadata": "Metagegevens exporteren",
+  "@entryInfoActionExportMetadata": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {},
+  "vaultLockTypePin": "PIN",
+  "@vaultLockTypePin": {}
 }
