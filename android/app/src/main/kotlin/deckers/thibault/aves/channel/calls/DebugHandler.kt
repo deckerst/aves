@@ -38,10 +38,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import org.mp4parser.IsoFile
-import org.mp4parser.PropertyBoxParserImpl
-import org.mp4parser.boxes.iso14496.part12.FreeBox
-import org.mp4parser.boxes.iso14496.part12.MediaDataBox
-import org.mp4parser.boxes.iso14496.part12.SampleTableBox
 import java.io.FileInputStream
 import java.io.IOException
 
@@ -341,23 +337,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 pfd.use {
                     FileInputStream(it.fileDescriptor).use { stream ->
                         stream.channel.use { channel ->
-                            val boxParser = PropertyBoxParserImpl().apply {
-                                val skippedTypes = listOf(
-                                    // parsing `MediaDataBox` can take a long time
-                                    MediaDataBox.TYPE,
-                                    // parsing `SampleTableBox` or `FreeBox` may yield OOM
-                                    SampleTableBox.TYPE, FreeBox.TYPE,
-                                    // some files are padded with `0` but the parser does not stop, reads type "0000",
-                                    // then a large size from following "0000", which may yield OOM
-                                    "0000",
-                                )
-                                setBoxSkipper { type, size ->
-                                    if (skippedTypes.contains(type)) return@setBoxSkipper true
-                                    if (size > Mp4ParserHelper.BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
-                                    false
-                                }
-                            }
-                            IsoFile(channel, boxParser).use { isoFile ->
+                            IsoFile(channel, Mp4ParserHelper.metadataBoxParser()).use { isoFile ->
                                 isoFile.dumpBoxes(sb)
                             }
                         }

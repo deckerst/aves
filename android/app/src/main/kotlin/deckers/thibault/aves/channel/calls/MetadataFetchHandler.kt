@@ -160,9 +160,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     thisDirName = "Spherical Video"
                     metadataMap[thisDirName] = HashMap(GSpherical(bytes).describe())
                 }
+
                 QuickTimeMetadata.PROF_UUID -> {
                     // redundant with info derived on the Dart side
                 }
+
                 QuickTimeMetadata.USMT_UUID -> {
                     val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
                     val blocks = QuickTimeMetadata.parseUuidUsmt(bytes)
@@ -187,6 +189,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
+
                 else -> {
                     val uuidPart = uuid.substringBefore('-')
                     thisDirName = "${dir.name} $uuidPart"
@@ -268,11 +271,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                                         // skip `Geo double/ascii params`, as their content is split and presented through various GeoTIFF keys
                                                         ExifGeoTiffTags.TAG_GEO_DOUBLE_PARAMS,
                                                         ExifGeoTiffTags.TAG_GEO_ASCII_PARAMS -> ArrayList()
+
                                                         else -> listOf(exifTagMapper(tag))
                                                     }
                                                 }?.let { geoTiffDirMap.putAll(it) }
                                                 byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
                                             }
+
                                             mimeType == MimeTypes.DNG -> {
                                                 // split DNG tags in their own directory
                                                 val dngDirMap = metadataMap[DIR_DNG] ?: HashMap()
@@ -281,9 +286,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                                 byDng[true]?.map { exifTagMapper(it) }?.let { dngDirMap.putAll(it) }
                                                 byDng[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
                                             }
+
                                             else -> dirMap.putAll(tags.map { exifTagMapper(it) })
                                         }
                                     }
+
                                     dir.isPngTextDir() -> {
                                         metadataMap.remove(thisDirName)
                                         dirMap = metadataMap[DIR_PNG_TEXTUAL_DATA] ?: HashMap()
@@ -332,6 +339,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                             }
                                         }
                                     }
+
                                     else -> dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
                                 }
                             }
@@ -406,6 +414,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (isVideo(mimeType)) {
+            // `metadata-extractor` do not extract custom tags in user data box
+            val userDataDir = Mp4ParserHelper.getUserData(context, mimeType, uri)
+            if (userDataDir.isNotEmpty()) {
+                metadataMap[Metadata.DIR_MP4_USER_DATA] = userDataDir
+            }
+
             // this is used as fallback when the video metadata cannot be found on the Dart side
             // and to identify whether there is an accessible cover image
             // do not include HEIC here
@@ -641,12 +655,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 }
                             }
                         }
+
                         MimeTypes.GIF -> {
                             // identification of animated GIF
                             if (metadata.containsDirectoryOfType(GifAnimationDirectory::class.java)) {
                                 flags = flags or MASK_IS_ANIMATED
                             }
                         }
+
                         MimeTypes.WEBP -> {
                             // identification of animated WEBP
                             for (dir in metadata.getDirectoriesOfType(WebpDirectory::class.java)) {
@@ -655,6 +671,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 }
                             }
                         }
+
                         MimeTypes.TIFF -> {
                             // identification of GeoTIFF
                             for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
@@ -1119,16 +1136,19 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 }
                             }
                         }
+
                         ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED -> {
                             for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                                 dir.getDateDigitizedMillis { dateMillis = it }
                             }
                         }
+
                         ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL -> {
                             for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                                 dir.getDateOriginalMillis { dateMillis = it }
                             }
                         }
+
                         GpsDirectory.TAG_DATE_STAMP -> {
                             for (dir in metadata.getDirectoriesOfType(GpsDirectory::class.java)) {
                                 dir.gpsDate?.let { dateMillis = it.time }
