@@ -123,7 +123,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   Future<void> _processPlatformException(AvesEntry entry, PlatformException e, StackTrace stack) async {
-    if (!entry.isMissingAtPath) {
+    if (entry.isValid) {
       final code = e.code;
       if (code.endsWith('mp4largemoov')) {
         await reportService.recordError(_Mp4LargeMoovException(code: e.code, message: e.message, details: e.details, stacktrace: e.stacktrace), stack);
