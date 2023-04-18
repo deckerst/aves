@@ -12,6 +12,8 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
 
 extension ExtraAvesEntryProps on AvesEntry {
+  bool get isValid => !isMissingAtPath && sizeBytes != 0 && width > 0 && height > 0;
+
   // type
 
   String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');

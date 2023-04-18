@@ -58,7 +58,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -96,7 +96,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         result['id'] = entry.id;
         return CatalogMetadata.fromMap(result);
       } on PlatformException catch (e, stack) {
-        if (!entry.isMissingAtPath) {
+        if (entry.isValid) {
           await reportService.recordError(e, stack);
         }
       }
@@ -124,7 +124,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }) as Map;
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -141,7 +141,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }) as Map;
       return GeoTiffInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -166,7 +166,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }
       return MultiPageInfo.fromPageMaps(entry, pageMaps);
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -186,7 +186,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }) as Map;
       return PanoramaInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -202,7 +202,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       });
       if (result != null) return (result as List).cast<Map>().map((fields) => fields.cast<String, dynamic>()).toList();
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -219,7 +219,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       });
       if (result != null) return AvesXmp.fromList((result as List).cast<String>());
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -254,7 +254,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'prop': prop,
       });
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -274,7 +274,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         return dateTimeFromMillis(result, isUtc: false);
       }
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
@@ -290,7 +290,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'sizeBytes': entry.sizeBytes,
       });
     } on PlatformException catch (e, stack) {
-      if (!entry.isMissingAtPath) {
+      if (entry.isValid) {
         await reportService.recordError(e, stack);
       }
     }
