@@ -281,6 +281,8 @@ object Mp4ParserHelper {
                     }
                 }
             }
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to parse MP4 for mimeType=$mimeType uri=$uri", e)
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get User Data box by MP4 parser for mimeType=$mimeType uri=$uri", e)
         }
