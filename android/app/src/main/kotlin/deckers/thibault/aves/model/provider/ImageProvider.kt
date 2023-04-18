@@ -815,6 +815,8 @@ abstract class ImageProvider {
                     }
                 }
             }
+        } catch (e: NoClassDefFoundError) {
+            callback.onFailure(e)
         } catch (e: Exception) {
             callback.onFailure(e)
             return false
