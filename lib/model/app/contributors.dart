@@ -41,6 +41,7 @@ class Contributors {
     Contributor('Eduardo Malaspina', 'vaio0@swismail.com'),
     Contributor('Evgeniy Khramov', 'thejenjagamertjg@gmail.com'),
     Contributor('syu_pf_ssy', 'syu.pf.ssy@outlook.com'),
+    Contributor('Dick Pluim', 'github@dickpluim.com'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
@@ -51,6 +52,7 @@ class Contributors {
     // Contributor('Martin Frandel', 'martinko.fr@gmail.com'), // Slovak
     // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
     // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
+    // Contributor('György Viktor', 'wickdj@gmail.com'), // Hungarian
   };
 }
 
