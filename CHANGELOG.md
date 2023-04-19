@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Collection: support for Sony predictive capture as burst
+
 ## <a id="v1.8.5"></a>[v1.8.5] - 2023-04-18
 
 ### Added
