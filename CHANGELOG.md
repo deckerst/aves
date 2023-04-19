@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Collection: support for Sony predictive capture as burst
 
+### Fixed
+
+- Viewer: multi-page context update when removing burst entries
+
 ## <a id="v1.8.5"></a>[v1.8.5] - 2023-04-18
 
 ### Added
