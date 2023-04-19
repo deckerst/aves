@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: f175bc1414e4edf8c5b83372c98eeabecf8353f39c9da423c2cfdf1f1f508788
+      sha256: "6a0ad72b2bcdb461749e40c01c478212a78db848dfcb2f10f2a461988bc5fb29"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   analyzer:
     dependency: transitive
     description:
@@ -349,10 +349,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_core
-      sha256: ed611fb8e67e43ecc7956f242cecca383d87cf71aace27287aa5dd4bdba4ac07
+      sha256: "239e4ac688674a7e7b5476fd16b0d8e2b5a453d464f32091af3ce1df4ebb7316"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.0"
+    version: "2.10.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -373,34 +373,34 @@ packages:
     dependency: transitive
     description:
       name: firebase_crashlytics
-      sha256: "42cf6a137eaae7e485e6cc9794336e8e518c506b691aa6e19ff918206c535bec"
+      sha256: bfc662a87df622e7d95c360536a4999f06474f53eda5a219af9e29193d498529
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "3.1.1"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
-      sha256: baa4c3d4af426d29800f0d80d165f31df4548985db151fd761346e07ed433d31
+      sha256: b9c7b8498c877a2901ad323fc92c10f672be1597bc82d08f121f6228f321a7e0
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.0"
+    version: "3.4.1"
   flex_color_picker:
     dependency: "direct main"
     description:
       name: flex_color_picker
-      sha256: f0e0db8e3e47435cfbe9aa15c71b898fa218be0fc4ae409e1e42d5d5266b2c90
+      sha256: fc035dbef0975dd2650f9db1335c552e3b0ce87da4900b00f6b98cd6c78cbe42
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "3.2.1"
   flex_seed_scheme:
     dependency: transitive
     description:
       name: flex_seed_scheme
-      sha256: "7058288ef97d348657ac95cea25d65a9aac181ca08387ede891fd7230ad7600f"
+      sha256: b3678d82403c13dec2ee2721e078b26f14577712411b6aa981b0f4269df3fabb
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.3"
+    version: "1.2.4"
   floating:
     dependency: "direct main"
     description:
@@ -691,10 +691,10 @@ packages:
     dependency: transitive
     description:
       name: local_auth_android
-      sha256: "2ccfadbb6fbc63e6674ad58a350b06188829e62669d67a0c752c4e43cb88272a"
+      sha256: "17ca331f0563be12609221391157cbceafc58f12887e41d0baf4b4fc1bf8f015"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.21"
+    version: "1.0.23"
   local_auth_ios:
     dependency: transitive
     description:
@@ -1218,10 +1218,10 @@ packages:
     dependency: "direct main"
     description:
       name: smooth_page_indicator
-      sha256: "8c301bc686892306cd41672c1880167f140c16be305d5ede8201fefd9fcda829"
+      sha256: "725bc638d5e79df0c84658e1291449996943f93bacbc2cec49963dbbab48d8ae"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.0"
   source_map_stack_trace:
     dependency: transitive
     description:
