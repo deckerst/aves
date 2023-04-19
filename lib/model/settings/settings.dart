@@ -309,6 +309,7 @@ class Settings extends ChangeNotifier {
     if (videoBackgroundMode == VideoBackgroundMode.pip && !device.supportPictureInPicture) {
       _set(videoBackgroundModeKey, null);
     }
+    collectionBurstPatterns = collectionBurstPatterns.where(BurstPatterns.options.contains).toList();
   }
 
   // app
