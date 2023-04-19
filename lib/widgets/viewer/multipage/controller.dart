@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
@@ -23,13 +24,20 @@ class MultiPageController {
   set page(int? page) => pageNotifier.value = page;
 
   MultiPageController(this.entry) {
-    entry.getMultiPageInfo().then((value) {
-      if (value == null || _disposed) return;
-      pageNotifier.value = value.defaultPage?.index ?? 0;
-      _info = value;
-      _infoStreamController.add(_info);
-    });
+    reset();
   }
+
+  void reset() => entry.getMultiPageInfo().then((info) {
+        if (info == null || _disposed) return;
+        final currentPage = pageNotifier.value;
+        if (currentPage == null) {
+          pageNotifier.value = info.defaultPage?.index ?? 0;
+        } else {
+          pageNotifier.value = min(currentPage, info.pageCount - 1);
+        }
+        _info = info;
+        _infoStreamController.add(_info);
+      });
 
   void dispose() {
     _disposed = true;
