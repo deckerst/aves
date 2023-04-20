@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Collection: support for Sony predictive capture as burst
 
+### Changed
+
+- upgraded Flutter to stable v3.7.12
+
 ### Fixed
 
 - Viewer: multi-page context update when removing burst entries

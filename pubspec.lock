@@ -333,7 +333,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "1ff8e6d82466939997c0e04a8e28b04f40641728"
+      resolved-ref: c12d794ff60c7309358955d69c5ed55f9028b052
       url: "https://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.10.0"
@@ -788,7 +788,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "0bf47932242dea4f93f51be0f6bfa3d9e5616c31"
+      resolved-ref: "0e02b0521beadd2be13e9a589b9a45d5cb2a06ff"
       url: "https://github.com/deckerst/aves_panorama_motion_sensors.git"
     source: git
     version: "0.1.0"
@@ -861,7 +861,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "89fbc3f1ecfd9be56cf9b4b674aa0aec15cae61e"
+      resolved-ref: "7ed465f893c3998b38230cbbcd7b2f3f8b873845"
       url: "https://github.com/deckerst/aves_panorama.git"
     source: git
     version: "0.4.1"
@@ -1291,7 +1291,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "7e1082771fd271a63ed41cbd72530f90f83a651a"
+      resolved-ref: "89630a4f5a54121a784ea67cf3a40b89873db939"
       url: "https://github.com/deckerst/aves_streams_channel.git"
     source: git
     version: "0.3.0"
