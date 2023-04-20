@@ -1,6 +1,8 @@
 class BurstPatterns {
-  static const samsung = r'^(\d{8}_\d{6})_(\d+)$';
-  static const sony = r'^DSC_\d+_BURST(\d{17})(_COVER)?$';
+  static const _keyGroupName = 'key';
+
+  static const samsung = r'^(?<key>\d{8}_\d{6})_(\d+)$';
+  static const sony = r'^DSC(PDC)?_\d+_BURST(?<key>\d{17})(_COVER)?$';
 
   static final options = [
     BurstPatterns.samsung,
@@ -33,6 +35,22 @@ class BurstPatterns {
     _Manufacturers.samsung: samsung,
     _Manufacturers.sony: sony,
   };
+
+  static String? getKeyForName(String? filename, List<String> patterns) {
+    if (filename != null) {
+      for (final pattern in patterns) {
+        final match = RegExp(pattern).firstMatch(filename);
+        if (match != null) {
+          if (match.groupNames.contains(_keyGroupName)) {
+            return match.namedGroup(_keyGroupName);
+          }
+          // fallback to fetching group by index for backward compatibility
+          return match.group(1);
+        }
+      }
+    }
+    return null;
+  }
 }
 
 // values as returned by `DeviceInfoPlugin().androidInfo`

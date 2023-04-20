@@ -697,7 +697,20 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
     if (hasCollection) {
       final collectionEntries = collection!.sortedEntries;
-      removedEntries.forEach(collectionEntries.remove);
+      removedEntries.forEach((removedEntry) {
+        // remove from collection
+        if (collectionEntries.remove(removedEntry)) return;
+
+        // remove from burst
+        final mainEntry = collectionEntries.firstWhereOrNull((entry) => entry.burstEntries?.contains(removedEntry) == true);
+        if (mainEntry != null) {
+          final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
+          if (multiPageController != null) {
+            mainEntry.burstEntries!.remove(removedEntry);
+            multiPageController.reset();
+          }
+        }
+      });
       if (collectionEntries.isNotEmpty) {
         _onCollectionChanged();
         return;
