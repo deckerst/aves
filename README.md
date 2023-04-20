@@ -110,7 +110,7 @@ Some users have expressed the wish to financially support the project. Thanks! â
 
 [<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/paypal-badge-cropped.png"
       alt='Donate with PayPal'
-      height="40">](https://paypal.me/ThibaultDeckersFr)
+      height="40">](https://www.paypal.com/donate/?hosted_button_id=RWKQ4J7D8USX6)
 [<img src="https://liberapay.com/assets/widgets/donate.svg"
       alt='Donate using Liberapay'
       height="40">](https://liberapay.com/deckerst/donate)
