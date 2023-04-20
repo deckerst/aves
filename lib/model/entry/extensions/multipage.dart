@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/multipage.dart';
+import 'package:aves/ref/bursts.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
@@ -17,15 +18,8 @@ extension ExtraAvesEntryMultipage on AvesEntry {
   bool get isMotionPhoto => (catalogMetadata?.isMotionPhoto ?? false) || _isMotionPhotoLegacy;
 
   String? getBurstKey(List<String> patterns) {
-    if (filenameWithoutExtension != null) {
-      for (final pattern in patterns) {
-        final match = RegExp(pattern).firstMatch(filenameWithoutExtension!);
-        if (match != null) {
-          return '$directory/${match.group(1)}';
-        }
-      }
-    }
-    return null;
+    final key = BurstPatterns.getKeyForName(filenameWithoutExtension, patterns);
+    return key != null ? '$directory/$key' : null;
   }
 
   Future<MultiPageInfo?> getMultiPageInfo() async {
