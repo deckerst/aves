@@ -2,7 +2,7 @@ group 'deckers.thibault.aves.aves_screen_state'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.7.20'
+    ext.kotlin_version = '1.8.0'
     repositories {
         google()
         mavenCentral()
