@@ -25,6 +25,7 @@ import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -588,6 +589,7 @@ object StorageUtils {
                     // e.g. `content://media/external_primary/downloads/...`
                     getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
                 }
+
                 uriPath?.contains("/file/") == true -> {
                     // e.g. `content://media/external/file/...`
                     // create an ad-hoc temporary file for decoding only
@@ -601,6 +603,7 @@ object StorageUtils {
                         }
                     }
                 }
+
                 uri.userInfo != null -> return stripMediaUriUserInfo(uri)
             }
         }
@@ -617,6 +620,7 @@ object StorageUtils {
                     // e.g. `content://media/external_primary/downloads/...`
                     getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
                 }
+
                 uri.userInfo != null -> return stripMediaUriUserInfo(uri)
             }
         }
@@ -643,7 +647,10 @@ object StorageUtils {
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         val effectiveUri = getOriginalUri(context, uri)
         return try {
-            context.contentResolver.openInputStream(effectiveUri)
+            return when (uri.scheme) {
+                ContentResolver.SCHEME_FILE -> FileInputStream(uri.path)
+                else -> context.contentResolver.openInputStream(effectiveUri)
+            }
         } catch (e: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`

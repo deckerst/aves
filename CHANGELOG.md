@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - Viewer: multi-page context update when removing burst entries
+- prevent editing item when Exif editing changes mime type
 
 ## <a id="v1.8.5"></a>[v1.8.5] - 2023-04-18
 

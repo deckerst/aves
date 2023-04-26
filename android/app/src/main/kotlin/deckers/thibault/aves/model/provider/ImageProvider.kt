@@ -31,6 +31,7 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper.updateRotation
 import deckers.thibault.aves.metadata.Mp4ParserHelper.updateXmp
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
+import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.*
 import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.FileUtils.transferFrom
@@ -330,6 +331,7 @@ abstract class ImageProvider {
                                 @Suppress("deprecation")
                                 Bitmap.CompressFormat.WEBP
                             }
+
                             else -> throw Exception("unsupported export MIME type=$exportMimeType")
                         }
                         bitmap.compress(format, quality, output)
@@ -592,12 +594,14 @@ abstract class ImageProvider {
                 }
                 nameWithoutExtension
             }
+
             NameConflictStrategy.REPLACE -> {
                 if (targetFile.exists()) {
                     deletePath(contextWrapper, targetFile.path, mimeType)
                 }
                 desiredNameWithoutExtension
             }
+
             NameConflictStrategy.SKIP -> {
                 if (targetFile.exists()) {
                     null
@@ -606,6 +610,25 @@ abstract class ImageProvider {
                 }
             }
         }
+    }
+
+    // cf `MetadataFetchHandler.getCatalogMetadataByMetadataExtractor()` for a more thorough check
+    private fun detectMimeType(context: Context, uri: Uri, mimeType: String): String? {
+        var detectedMimeType: String? = null
+        if (MimeTypes.canReadWithMetadataExtractor(mimeType)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    detectedMimeType = Helper.readMimeType(input)
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+        return detectedMimeType
     }
 
     private fun editExif(
@@ -656,6 +679,11 @@ abstract class ImageProvider {
 
         try {
             edit(ExifInterface(editableFile))
+
+            val editedMimeType = detectMimeType(context, Uri.fromFile(editableFile), mimeType)
+            if (editedMimeType != mimeType) {
+                throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for uri=$uri path=$path")
+            }
 
             if (videoBytes != null) {
                 // append trailer video, if any
@@ -730,8 +758,10 @@ abstract class ImageProvider {
                     when {
                         iptc != null ->
                             PixyMetaHelper.setIptc(input, output, iptc)
+
                         canRemoveMetadata(mimeType) ->
                             PixyMetaHelper.removeMetadata(input, output, setOf(TYPE_IPTC))
+
                         else -> {
                             Log.w(LOG_TAG, "setting empty IPTC for mimeType=$mimeType")
                             PixyMetaHelper.setIptc(input, output, null)
@@ -787,6 +817,7 @@ abstract class ImageProvider {
                                 newFields["rotationDegrees"] = degrees
                             }
                         }
+
                         "xmp" -> isoFile.updateXmp(value)
                     }
                 }
@@ -1039,6 +1070,7 @@ abstract class ImageProvider {
                         exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, ExifInterfaceHelper.GPS_TIME_FORMAT.format(date))
                     }
                 }
+
                 shiftMinutes != null -> {
                     // shift
                     val shiftMillis = shiftMinutes * 60000
@@ -1067,6 +1099,7 @@ abstract class ImageProvider {
                         }
                     }
                 }
+
                 else -> {
                     // clear
                     if (fields.contains(ExifInterface.TAG_DATETIME)) {
@@ -1135,6 +1168,7 @@ abstract class ImageProvider {
                                         ExifInterface.TAG_GPS_LONGITUDE_REF -> {
                                             setLocation = true
                                         }
+
                                         else -> {
                                             if (value is String) {
                                                 exif.setAttribute(tag, value)
