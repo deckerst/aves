@@ -53,6 +53,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    lintOptions {
+        checkAllWarnings true
+        warningsAsErrors true
+        disable 'InvalidPackage'
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -165,10 +171,6 @@ android {
             }
         }
     }
-
-    lint {
-        disable 'InvalidPackage'
-    }
 }
 
 flutter {
@@ -200,7 +202,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
     implementation 'androidx.media:media:1.6.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.security:security-crypto:1.1.0-alpha05'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
 
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'

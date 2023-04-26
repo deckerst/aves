@@ -333,7 +333,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: c12d794ff60c7309358955d69c5ed55f9028b052
+      resolved-ref: "1f4da7b300eb0d3532330eb86edd4e99621ed4bb"
       url: "https://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.10.0"
@@ -571,10 +571,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_android
-      sha256: ee3c1a63983b8ba17a9a7c1233c3542fbfbc0ebf540d3aa9b8fd5162681e0219
+      sha256: e2415bdf73f8453461fe4c3ba9e93608f03f26492a96c39e4d51158ba53f758d
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.10"
+    version: "2.4.12"
   google_maps_flutter_ios:
     dependency: transitive
     description:
