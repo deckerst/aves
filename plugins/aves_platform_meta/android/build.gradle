@@ -32,6 +32,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    lintOptions {
+        checkAllWarnings true
+        warningsAsErrors true
+        disable 'InvalidPackage'
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
