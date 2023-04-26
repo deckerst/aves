@@ -336,7 +336,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     private fun submitPickedItems(call: MethodCall) {
         val pickedUris = call.argument<List<String>>("uris")
-        if (pickedUris != null && pickedUris.isNotEmpty()) {
+        if (!pickedUris.isNullOrEmpty()) {
             val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
             val intent = Intent().apply {
                 val firstUri = toUri(pickedUris.first())
