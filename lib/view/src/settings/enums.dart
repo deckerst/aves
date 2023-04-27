@@ -123,6 +123,19 @@ extension ExtraKeepScreenOnView on KeepScreenOn {
   }
 }
 
+extension ExtraMaxBrightnessView on MaxBrightness {
+  String getName(BuildContext context) {
+    switch (this) {
+      case MaxBrightness.never:
+        return context.l10n.keepScreenOnNever;
+      case MaxBrightness.viewerOnly:
+        return context.l10n.keepScreenOnViewerOnly;
+      case MaxBrightness.always:
+        return context.l10n.keepScreenOnAlways;
+    }
+  }
+}
+
 extension ExtraSlideshowVideoPlaybackView on SlideshowVideoPlayback {
   String getName(BuildContext context) {
     switch (this) {

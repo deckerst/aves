@@ -49,6 +49,7 @@ import 'package:flutter/services.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
 
@@ -506,6 +507,19 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     }
 
     void applyDisplayRefreshRateMode() => settings.displayRefreshRateMode.apply();
+
+    void applyMaxBrightness() {
+      switch (settings.maxBrightness) {
+        case MaxBrightness.never:
+        case MaxBrightness.viewerOnly:
+          ScreenBrightness().resetScreenBrightness();
+          break;
+        case MaxBrightness.always:
+          ScreenBrightness().setScreenBrightness(1);
+          break;
+      }
+    }
+
     void applyKeepScreenOn() => settings.keepScreenOn.apply();
 
     void applyIsRotationLocked() {
@@ -530,6 +544,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settingStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
     // display
     settingStream.where((event) => event.key == Settings.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
+    settingStream.where((event) => event.key == Settings.maxBrightnessKey).listen((_) => applyMaxBrightness());
     settingStream.where((event) => event.key == Settings.forceTvLayoutKey).listen((_) => applyForceTvLayout());
     // navigation
     settingStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
@@ -537,6 +552,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settingStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
 
     applyDisplayRefreshRateMode();
+    applyMaxBrightness();
     applyKeepScreenOn();
     applyIsRotationLocked();
   }

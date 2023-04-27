@@ -71,6 +71,7 @@ class Settings extends ChangeNotifier {
   static const themeColorModeKey = 'theme_color_mode';
   static const enableDynamicColorKey = 'dynamic_color';
   static const enableBlurEffectKey = 'enable_overlay_blur_effect';
+  static const maxBrightnessKey = 'max_brightness';
   static const forceTvLayoutKey = 'force_tv_layout';
 
   // navigation
@@ -129,7 +130,6 @@ class Settings extends ChangeNotifier {
   static const showOverlayThumbnailPreviewKey = 'show_overlay_thumbnail_preview';
   static const viewerGestureSideTapNextKey = 'viewer_gesture_side_tap_next';
   static const viewerUseCutoutKey = 'viewer_use_cutout';
-  static const viewerMaxBrightnessKey = 'viewer_max_brightness';
   static const enableMotionPhotoAutoPlayKey = 'motion_photo_auto_play';
   static const imageBackgroundKey = 'image_background';
 
@@ -269,6 +269,7 @@ class Settings extends ChangeNotifier {
 
   void applyTvSettings() {
     themeBrightness = AvesThemeBrightness.dark;
+    maxBrightness = MaxBrightness.never;
     mustBackTwiceToExit = false;
     // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
     keepScreenOn = KeepScreenOn.videoPlayback;
@@ -290,7 +291,6 @@ class Settings extends ChangeNotifier {
     showOverlayThumbnailPreview = false;
     viewerGestureSideTapNext = false;
     viewerUseCutout = true;
-    viewerMaxBrightness = false;
     videoBackgroundMode = VideoBackgroundMode.disabled;
     videoControls = VideoControls.none;
     videoGestureDoubleTapTogglePlay = false;
@@ -432,6 +432,10 @@ class Settings extends ChangeNotifier {
   bool get enableBlurEffect => getBool(enableBlurEffectKey) ?? SettingsDefaults.enableBlurEffect;
 
   set enableBlurEffect(bool newValue) => _set(enableBlurEffectKey, newValue);
+
+  MaxBrightness get maxBrightness => getEnumOrDefault(maxBrightnessKey, SettingsDefaults.maxBrightness, MaxBrightness.values);
+
+  set maxBrightness(MaxBrightness newValue) => _set(maxBrightnessKey, newValue.toString());
 
   bool get forceTvLayout => getBool(forceTvLayoutKey) ?? SettingsDefaults.forceTvLayout;
 
@@ -660,10 +664,6 @@ class Settings extends ChangeNotifier {
   bool get viewerUseCutout => getBool(viewerUseCutoutKey) ?? SettingsDefaults.viewerUseCutout;
 
   set viewerUseCutout(bool newValue) => _set(viewerUseCutoutKey, newValue);
-
-  bool get viewerMaxBrightness => getBool(viewerMaxBrightnessKey) ?? SettingsDefaults.viewerMaxBrightness;
-
-  set viewerMaxBrightness(bool newValue) => _set(viewerMaxBrightnessKey, newValue);
 
   bool get enableMotionPhotoAutoPlay => getBool(enableMotionPhotoAutoPlayKey) ?? SettingsDefaults.enableMotionPhotoAutoPlay;
 
@@ -1105,7 +1105,6 @@ class Settings extends ChangeNotifier {
             case showOverlayThumbnailPreviewKey:
             case viewerGestureSideTapNextKey:
             case viewerUseCutoutKey:
-            case viewerMaxBrightnessKey:
             case enableMotionPhotoAutoPlayKey:
             case enableVideoHardwareAccelerationKey:
             case videoGestureDoubleTapTogglePlayKey:
@@ -1133,6 +1132,7 @@ class Settings extends ChangeNotifier {
             case displayRefreshRateModeKey:
             case themeBrightnessKey:
             case themeColorModeKey:
+            case maxBrightnessKey:
             case keepScreenOnKey:
             case homePageKey:
             case collectionGroupFactorKey:
