@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -186,6 +187,11 @@ class _AppDebugPageState extends State<AppDebugPage> {
         settings.changeFilterVisibility(settings.hiddenFilters, true);
         settings.changeFilterVisibility({
           PathFilter('/storage/emulated/0/Pictures/Dev'),
+        }, false);
+        break;
+      case AppDebugAction.prepScreenshotCountries:
+        settings.changeFilterVisibility({
+          LocationFilter(LocationLevel.country, 'Belgium;BE'),
         }, false);
         break;
       case AppDebugAction.mediaStoreScanDir:

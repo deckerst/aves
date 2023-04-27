@@ -55,6 +55,7 @@ void main() {
       viewer();
       info();
       stats();
+      configureCollectionVisibility(AppDebugAction.prepScreenshotCountries);
       countries();
       map();
     });
@@ -218,7 +219,7 @@ void map() {
     await driver.tapKeyAndWait('drawer-type-null');
 
     await _search('animals', 'tag-false-animals');
-    await _search('Singapore', 'location-false-LocationLevel.country-Singapore');
+    await _search('Singapore', 'location-false-LocationLevel.country-SG-Singapore');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-map');
