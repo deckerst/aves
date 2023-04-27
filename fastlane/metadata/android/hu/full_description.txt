@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+Az <i>Aves</i> mindenféle képet és videót képes kezelni, beleértve a tipikus JPEG és MP4 fájlokat, de egzotikusabb dolgokat is, mint például a <b>többoldalas TIFF, SVG, régi AVI és még sok minden mást</b>! Beolvassa a médiagyűjteményed, hogy azonosítsa a <b>mozgóképeket</b>, <b>panorámaképeket</b> (más néven fotógömbök), <b> 360 °-os videókat</b>, valamint <b>GeoTIFF</b> fájlokat.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+A <b>navigáció és a keresés</b> fontos része az <i>Aves</i>-nek. A cél, hogy a felhasználók egyszerűen tudjanak váltani az albumokról a fotókra, címkézni vagy helyadatokkal ellátni az elemeket, stb.
 
-<i>Aves</i> integrates with Android (from KitKat to Android 13, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+Az <i>Aves </i> beépül az Android-ba (a KitKat-tól az Android 13-ig, beleértve az Android TV-t) olyan funkciókkal, mint a <b>widgetek</b>, <b> alkalmazás parancsikonok</b>, <b>képernyővédő</b> és <b>globális keresés</b> kezelése. <b> Média fájlok megnyitására és kezelésére</b> is használható.
