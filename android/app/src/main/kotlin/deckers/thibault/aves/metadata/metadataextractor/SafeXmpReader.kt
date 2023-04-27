@@ -26,6 +26,7 @@ class SafeXmpReader : XmpReader() {
         val extensionPreambleLength = XMP_EXTENSION_JPEG_PREAMBLE.length
         var extendedXMPGUID: String? = null
         var extendedXMPBuffer: ByteArray? = null
+        var loggedDanger = false
 
         for (segmentBytes in segments) {
             if (segmentBytes.size >= preambleLength) {
@@ -42,7 +43,12 @@ class SafeXmpReader : XmpReader() {
             if (extendedXMPGUID != null && segmentBytes.size >= extensionPreambleLength &&
                 XMP_EXTENSION_JPEG_PREAMBLE.equals(String(segmentBytes, 0, extensionPreambleLength), ignoreCase = true)
             ) {
-                extendedXMPBuffer = processExtendedXMPChunk(metadata, segmentBytes, extendedXMPGUID, extendedXMPBuffer)
+                extendedXMPBuffer = processExtendedXMPChunk(metadata, segmentBytes, extendedXMPGUID, extendedXMPBuffer) { fullLength ->
+                    if (!loggedDanger) {
+                        logError(metadata, fullLength)
+                        loggedDanger = true
+                    }
+                }
             }
         }
 
@@ -96,7 +102,7 @@ class SafeXmpReader : XmpReader() {
     }
 
     // adapted from `XmpReader` to prevent large allocation
-    private fun processExtendedXMPChunk(metadata: Metadata, segmentBytes: ByteArray, extendedXMPGUID: String, extendedXMPBufferIn: ByteArray?): ByteArray? {
+    private fun processExtendedXMPChunk(metadata: Metadata, segmentBytes: ByteArray, extendedXMPGUID: String, extendedXMPBufferIn: ByteArray?, onDangerSize: (fullLength: Int) -> Unit): ByteArray? {
         var extendedXMPBuffer: ByteArray? = extendedXMPBufferIn
         val extensionPreambleLength = XMP_EXTENSION_JPEG_PREAMBLE.length
         val segmentLength = segmentBytes.size
@@ -112,7 +118,7 @@ class SafeXmpReader : XmpReader() {
                     if (extendedXMPBuffer == null) {
                         // TLAD insert start
                         if (fullLength > SEGMENT_TYPE_SIZE_DANGER_THRESHOLD) {
-                            logError(metadata, fullLength)
+                            onDangerSize(fullLength)
                             return null
                         }
                         // TLAD insert end
