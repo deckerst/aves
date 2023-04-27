@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- Video: switching to PiP when going home with gesture navigation
 - Viewer: multi-page context update when removing burst entries
 - prevent editing item when Exif editing changes mime type
 - parsing videos with skippable boxes in `meta` box

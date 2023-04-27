@@ -61,6 +61,11 @@ class AvesApp extends StatefulWidget {
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
 
+  // children widgets registering as `WidgetsBinding` observers and implementing `didChangeAppLifecycleState`
+  // do not receive events fast enough for time sensitive actions (like PiP when leaving by gesture to home)
+  // so we use this notifier to propagate events as soon as received by the top widget `AvesApp`
+  static final ValueNotifier<AppLifecycleState> lifecycleStateNotifier = ValueNotifier(AppLifecycleState.detached);
+
   // do not monitor all `ModalRoute`s, which would include popup menus,
   // so that we can react to fullscreen `PageRoute`s only
   static final RouteObserver<PageRoute> pageRouteObserver = RouteObserver<PageRoute>();
@@ -364,6 +369,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     reportService.log('Lifecycle ${state.name}');
+    AvesApp.lifecycleStateNotifier.value = state;
     switch (state) {
       case AppLifecycleState.inactive:
         switch (_appModeNotifier.value) {

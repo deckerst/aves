@@ -62,7 +62,7 @@ class EntryViewerStack extends StatefulWidget {
   State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
 
-class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, SingleTickerProviderStateMixin, WidgetsBindingObserver {
+class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, SingleTickerProviderStateMixin {
   final Floating _floating = Floating();
   late int _currentEntryIndex;
   late ValueNotifier<int> _currentVerticalPage;
@@ -155,7 +155,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     );
     initEntryControllers(entry);
     _registerWidget(widget);
-    WidgetsBinding.instance.addObserver(this);
+    AvesApp.lifecycleStateNotifier.addListener(_onAppLifecycleStateChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
@@ -178,7 +178,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _verticalPager.dispose();
     _heroInfoNotifier.dispose();
     _stopOverlayHidingTimer();
-    WidgetsBinding.instance.removeObserver(this);
+    AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);
     _unregisterWidget(widget);
     super.dispose();
   }
@@ -189,33 +189,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   void _unregisterWidget(EntryViewerStack widget) {
     widget.collection?.removeListener(_onCollectionChanged);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-        _onAppInactive();
-        break;
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        pauseVideoControllers();
-        break;
-      case AppLifecycleState.resumed:
-        availability.onResume();
-        break;
-    }
-  }
-
-  Future<void> _onAppInactive() async {
-    viewerController.autopilot = false;
-    bool enabledPip = false;
-    if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
-      enabledPip |= await _enablePictureInPicture();
-    }
-    if (!enabledPip) {
-      await pauseVideoControllers();
-    }
   }
 
   @override
@@ -290,6 +263,36 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         ),
       ),
     );
+  }
+
+  void _onAppLifecycleStateChanged() {
+    switch (AvesApp.lifecycleStateNotifier.value) {
+      case AppLifecycleState.inactive:
+        _onAppInactive();
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        pauseVideoControllers();
+        break;
+      case AppLifecycleState.resumed:
+        availability.onResume();
+        break;
+    }
+  }
+
+  Future<void> _onAppInactive() async {
+    final playingController = context.read<VideoConductor>().getPlayingController();
+    viewerController.autopilot = false;
+    bool enabledPip = false;
+    if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
+      enabledPip |= await _enablePictureInPicture();
+    }
+    if (enabledPip) {
+      // ensure playback, in case lifecycle paused/resumed events happened when switching to PiP
+      await playingController?.play();
+    } else {
+      await pauseVideoControllers();
+    }
   }
 
   Widget _decorateOverlay(Widget overlay) {
