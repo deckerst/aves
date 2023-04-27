@@ -5,4 +5,9 @@
     <string name="search_shortcut_short_label">Keresés</string>
     <string name="videos_shortcut_short_label">Videók</string>
     <string name="analysis_notification_action_stop">Állj</string>
+    <string name="app_widget_label">Fotó keret</string>
+    <string name="safe_mode_shortcut_short_label">Biztonsági üzemmód</string>
+    <string name="analysis_channel_name">Tartalom keresése</string>
+    <string name="analysis_service_description">Képek és videók keresése</string>
+    <string name="analysis_notification_default_title">Média beolvasása</string>
 </resources>
