@@ -45,6 +45,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    namespace 'deckers.thibault.aves'
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
