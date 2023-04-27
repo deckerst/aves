@@ -38,7 +38,6 @@ class ViewerSection extends SettingsSection {
       SettingsTileViewerSlideshow(),
       if (!settings.useTvLayout) SettingsTileViewerGestureSideTapNext(),
       if (!settings.useTvLayout && isCutoutAware) SettingsTileViewerUseCutout(),
-      if (!settings.useTvLayout) SettingsTileViewerMaxBrightness(),
       SettingsTileViewerMotionPhotoAutoPlay(),
       SettingsTileViewerImageBackground(),
     ];
@@ -101,18 +100,6 @@ class SettingsTileViewerUseCutout extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
         selector: (context, s) => s.viewerUseCutout,
         onChanged: (v) => settings.viewerUseCutout = v,
-        title: title(context),
-      );
-}
-
-class SettingsTileViewerMaxBrightness extends SettingsTile {
-  @override
-  String title(BuildContext context) => context.l10n.settingsViewerMaximumBrightness;
-
-  @override
-  Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.viewerMaxBrightness,
-        onChanged: (v) => settings.viewerMaxBrightness = v,
         title: title(context),
       );
 }

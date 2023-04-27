@@ -34,6 +34,7 @@ class DisplaySection extends SettingsSection {
         SettingsTileDisplayThemeColorMode(),
         if (device.isDynamicColorAvailable) SettingsTileDisplayEnableDynamicColor(),
         SettingsTileDisplayEnableBlurEffect(),
+        if (!settings.useTvLayout) SettingsTileDisplayMaxBrightness(),
         if (!settings.useTvLayout) SettingsTileDisplayRefreshRateMode(),
         if (!device.isTelevision) SettingsTileDisplayForceTvLayout(),
       ];
@@ -87,6 +88,20 @@ class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
         selector: (context, s) => s.enableBlurEffect,
         onChanged: (v) => settings.enableBlurEffect = v,
         title: title(context),
+      );
+}
+
+class SettingsTileDisplayMaxBrightness extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsViewerMaximumBrightness;
+
+  @override
+  Widget build(BuildContext context) => SettingsSelectionListTile<MaxBrightness>(
+        values: MaxBrightness.values,
+        getName: (context, v) => v.getName(context),
+        selector: (context, s) => s.maxBrightness,
+        onSelection: (v) => settings.maxBrightness = v,
+        tileTitle: title(context),
       );
 }
 

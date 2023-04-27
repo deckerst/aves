@@ -87,7 +87,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   @override
   void initState() {
     super.initState();
-    if (settings.viewerMaxBrightness) {
+    if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       ScreenBrightness().setScreenBrightness(1);
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {

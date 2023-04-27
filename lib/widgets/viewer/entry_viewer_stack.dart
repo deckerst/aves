@@ -104,7 +104,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void initState() {
     super.initState();
-    if (settings.viewerMaxBrightness) {
+    if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       ScreenBrightness().setScreenBrightness(1);
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
@@ -803,7 +803,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     // to be unmounted after the other async steps
     final theme = Theme.of(context);
 
-    await ScreenBrightness().resetScreenBrightness();
+    switch (settings.maxBrightness) {
+      case MaxBrightness.never:
+      case MaxBrightness.viewerOnly:
+        await ScreenBrightness().resetScreenBrightness();
+        break;
+      case MaxBrightness.always:
+        await ScreenBrightness().setScreenBrightness(1);
+        break;
+    }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);
     }

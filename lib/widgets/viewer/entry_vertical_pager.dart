@@ -77,7 +77,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     super.initState();
     _registerWidget(widget);
 
-    if (settings.viewerMaxBrightness) {
+    if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       _systemBrightness = ScreenBrightness().system;
     }
   }
@@ -315,7 +315,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     final opacity = min(1.0, page);
     _backgroundOpacityNotifier.value = opacity * opacity;
 
-    if (settings.viewerMaxBrightness) {
+    if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       _systemBrightness?.then((system) {
         final value = lerpDouble(maximumBrightness, system, ((1 - page).abs() * 2).clamp(0, 1))!;
         ScreenBrightness().setScreenBrightness(value);

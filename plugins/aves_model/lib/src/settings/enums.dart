@@ -18,6 +18,8 @@ enum HomePageSetting { collection, albums }
 
 enum KeepScreenOn { never, videoPlayback, viewerOnly, always }
 
+enum MaxBrightness { never, viewerOnly, always }
+
 enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 
 enum SubtitlePosition { top, bottom }

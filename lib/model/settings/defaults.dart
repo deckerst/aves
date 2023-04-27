@@ -24,6 +24,7 @@ class SettingsDefaults {
   static const themeColorMode = AvesThemeColorMode.polychrome;
   static const enableDynamicColor = false;
   static const enableBlurEffect = true; // `enableBlurEffect` has a contextual default value
+  static const maxBrightness = MaxBrightness.never;
   static const forceTvLayout = false;
 
   // navigation
@@ -81,7 +82,6 @@ class SettingsDefaults {
   static const showOverlayThumbnailPreview = false;
   static const viewerGestureSideTapNext = false;
   static const viewerUseCutout = true;
-  static const viewerMaxBrightness = false;
   static const enableMotionPhotoAutoPlay = false;
 
   // video
