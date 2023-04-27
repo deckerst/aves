@@ -152,10 +152,6 @@ object XMP {
             pfd.use {
                 FileInputStream(it.fileDescriptor).use { stream ->
                     stream.channel.use { channel ->
-                        // TODO TLAD [mp4] `IsoFile` init may fail if a skipped box has a `org.mp4parser.boxes.iso14496.part12.MetaBox` as parent,
-                        // because `MetaBox.parse()` changes the argument `dataSource` to a `RewindableReadableByteChannel`,
-                        // so it is no longer a seekable `FileChannel`, which is a requirement to skip boxes.
-
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                         IsoFile(channel, Mp4ParserHelper.metadataBoxParser()).use { isoFile ->
                             isoFile.processBoxes(UserBox::class.java, true) { box, _ ->

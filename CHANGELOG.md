@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: multi-page context update when removing burst entries
 - prevent editing item when Exif editing changes mime type
+- parsing videos with skippable boxes in `meta` box
 
 ## <a id="v1.8.5"></a>[v1.8.5] - 2023-04-18
 
