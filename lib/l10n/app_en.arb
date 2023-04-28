@@ -198,10 +198,8 @@
   "displayRefreshRatePreferHighest": "Highest rate",
   "displayRefreshRatePreferLowest": "Lowest rate",
 
-  "keepScreenOnNever": "Never",
   "keepScreenOnVideoPlayback": "During video playback",
   "keepScreenOnViewerOnly": "Viewer page only",
-  "keepScreenOnAlways": "Always",
 
   "lengthUnitPixel": "px",
   "lengthUnitPercent": "%",
@@ -706,6 +704,8 @@
   "settingsSystemDefault": "System default",
   "settingsDefault": "Default",
   "settingsDisabled": "Disabled",
+  "settingsNever": "Never",
+  "settingsAlways": "Always",
   "settingsAskEverytime": "Ask everytime",
   "settingsModificationWarningDialogMessage": "Other settings will be modified.",
 
