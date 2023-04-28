@@ -215,6 +215,9 @@
   "mapStyleStamenToner": "Stamen Toner",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
 
+  "maxBrightnessNever": "Never",
+  "maxBrightnessAlways": "Always",
+
   "nameConflictStrategyRename": "Rename",
   "nameConflictStrategyReplace": "Replace",
   "nameConflictStrategySkip": "Skip",
@@ -247,6 +250,9 @@
   "videoPlaybackSkip": "Skip",
   "videoPlaybackMuted": "Play muted",
   "videoPlaybackWithSound": "Play with sound",
+
+  "videoResumptionModeNever": "Never",
+  "videoResumptionModeAlways": "Always",
 
   "viewerTransitionSlide": "Slide",
   "viewerTransitionParallax": "Parallax",
