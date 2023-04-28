@@ -1294,5 +1294,17 @@
   "searchStatesSectionTitle": "Estados",
   "@searchStatesSectionTitle": {},
   "statsTopStatesSectionTitle": "Estados principales",
-  "@statsTopStatesSectionTitle": {}
+  "@statsTopStatesSectionTitle": {},
+  "settingsVideoPlaybackTile": "Reproducción",
+  "@settingsVideoPlaybackTile": {},
+  "settingsAskEverytime": "Pregunta cuando quieras",
+  "@settingsAskEverytime": {},
+  "settingsVideoResumptionModeDialogTitle": "Reanudar la reproducción",
+  "@settingsVideoResumptionModeDialogTitle": {},
+  "settingsVideoResumptionModeTile": "Reanudar la reproducción",
+  "@settingsVideoResumptionModeTile": {},
+  "tagEditorDiscardDialogMessage": "¿Quieres descartar los cambios?",
+  "@tagEditorDiscardDialogMessage": {},
+  "settingsVideoPlaybackPageTitle": "Reproducir",
+  "@settingsVideoPlaybackPageTitle": {}
 }
