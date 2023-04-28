@@ -138,6 +138,7 @@ class Settings extends ChangeNotifier {
   static const videoBackgroundModeKey = 'video_background_mode';
   static const videoAutoPlayModeKey = 'video_auto_play_mode';
   static const videoLoopModeKey = 'video_loop';
+  static const videoResumptionModeKey = 'video_resumption_mode';
   static const videoControlsKey = 'video_controls';
   static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
   static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';
@@ -691,6 +692,10 @@ class Settings extends ChangeNotifier {
 
   set videoLoopMode(VideoLoopMode newValue) => _set(videoLoopModeKey, newValue.toString());
 
+  VideoResumptionMode get videoResumptionMode => getEnumOrDefault(videoResumptionModeKey, SettingsDefaults.videoResumptionMode, VideoResumptionMode.values);
+
+  set videoResumptionMode(VideoResumptionMode newValue) => _set(videoResumptionModeKey, newValue.toString());
+
   VideoControls get videoControls => getEnumOrDefault(videoControlsKey, SettingsDefaults.videoControls, VideoControls.values);
 
   set videoControls(VideoControls newValue) => _set(videoControlsKey, newValue.toString());
@@ -1149,6 +1154,7 @@ class Settings extends ChangeNotifier {
             case videoAutoPlayModeKey:
             case videoBackgroundModeKey:
             case videoLoopModeKey:
+            case videoResumptionModeKey:
             case videoControlsKey:
             case subtitleTextAlignmentKey:
             case subtitleTextPositionKey:

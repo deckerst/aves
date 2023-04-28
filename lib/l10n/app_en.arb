@@ -707,6 +707,7 @@
   "settingsSystemDefault": "System default",
   "settingsDefault": "Default",
   "settingsDisabled": "Disabled",
+  "settingsAskEverytime": "Ask everytime",
   "settingsModificationWarningDialogMessage": "Other settings will be modified.",
 
   "settingsSearchFieldLabel": "Search settings",
@@ -805,12 +806,24 @@
   "settingsVideoPageTitle": "Video Settings",
   "settingsVideoSectionTitle": "Video",
   "settingsVideoShowVideos": "Show videos",
+
+  "settingsVideoPlaybackTile": "Playback",
+  "settingsVideoPlaybackPageTitle": "Playback",
   "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
   "settingsVideoAutoPlay": "Auto play",
   "settingsVideoLoopModeTile": "Loop mode",
   "settingsVideoLoopModeDialogTitle": "Loop Mode",
+  "settingsVideoResumptionModeTile": "Resume playback",
+  "settingsVideoResumptionModeDialogTitle": "Resume Playback",
   "settingsVideoBackgroundMode": "Background mode",
   "settingsVideoBackgroundModeDialogTitle": "Background Mode",
+
+  "settingsVideoControlsTile": "Controls",
+  "settingsVideoControlsPageTitle": "Controls",
+  "settingsVideoButtonsTile": "Buttons",
+  "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
+  "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
+  "settingsVideoGestureVerticalDragBrightnessVolume": "Swipe up or down to adjust brightness/volume",
 
   "settingsSubtitleThemeTile": "Subtitles",
   "settingsSubtitleThemePageTitle": "Subtitles",
@@ -828,13 +841,6 @@
   "settingsSubtitleThemeTextAlignmentLeft": "Left",
   "settingsSubtitleThemeTextAlignmentCenter": "Center",
   "settingsSubtitleThemeTextAlignmentRight": "Right",
-
-  "settingsVideoControlsTile": "Controls",
-  "settingsVideoControlsPageTitle": "Controls",
-  "settingsVideoButtonsTile": "Buttons",
-  "settingsVideoGestureDoubleTapTogglePlay": "Double tap to play/pause",
-  "settingsVideoGestureSideDoubleTapSeek": "Double tap on screen edges to seek backward/forward",
-  "settingsVideoGestureVerticalDragBrightnessVolume": "Swipe up or down to adjust brightness/volume",
 
   "settingsPrivacySectionTitle": "Privacy",
   "settingsAllowInstalledAppAccess": "Allow access to app inventory",

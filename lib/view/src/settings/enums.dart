@@ -223,6 +223,19 @@ extension ExtraVideoLoopModeView on VideoLoopMode {
   }
 }
 
+extension ExtraVideoResumptionModeView on VideoResumptionMode {
+  String getName(BuildContext context) {
+    switch (this) {
+      case VideoResumptionMode.never:
+        return context.l10n.videoLoopModeNever;
+      case VideoResumptionMode.ask:
+        return context.l10n.settingsAskEverytime;
+      case VideoResumptionMode.always:
+        return context.l10n.videoLoopModeAlways;
+    }
+  }
+}
+
 extension ExtraViewerTransitionView on ViewerTransition {
   String getName(BuildContext context) {
     switch (this) {

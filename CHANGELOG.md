@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: support for Sony predictive capture as burst
+- Video: option to never/always resume playback
 - Display: option to set maximum brightness on all pages
 - Hungarian translation (thanks György Viktor, byPety)
 
