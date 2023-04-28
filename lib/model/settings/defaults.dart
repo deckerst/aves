@@ -89,6 +89,7 @@ class SettingsDefaults {
   static const videoAutoPlayMode = VideoAutoPlayMode.disabled;
   static const videoBackgroundMode = VideoBackgroundMode.disabled;
   static const videoLoopMode = VideoLoopMode.shortOnly;
+  static const videoResumptionMode = VideoResumptionMode.ask;
   static const videoShowRawTimedText = false;
   static const videoControls = VideoControls.play;
   static const videoGestureDoubleTapTogglePlay = false;

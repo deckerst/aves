@@ -38,6 +38,8 @@ enum VideoControls { play, playSeek, playOutside, none }
 
 enum VideoLoopMode { never, shortOnly, always }
 
+enum VideoResumptionMode { never, ask, always }
+
 enum ViewerTransition { slide, parallax, fade, zoomIn, none }
 
 enum WidgetDisplayedItem { random, mostRecent }
