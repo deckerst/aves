@@ -46,7 +46,6 @@
 
   "applyButtonLabel": "APPLY",
   "deleteButtonLabel": "DELETE",
-  "discardButtonLabel": "DISCARD",
   "nextButtonLabel": "NEXT",
   "showButtonLabel": "SHOW",
   "hideButtonLabel": "HIDE",
@@ -964,6 +963,7 @@
   "tagEditorPageAddTagTooltip": "Add tag",
   "tagEditorSectionRecent": "Recent",
   "tagEditorSectionPlaceholders": "Placeholders",
+  "tagEditorDiscardDialogMessage": "Do you want to discard changes?",
 
   "tagPlaceholderCountry": "Country",
   "tagPlaceholderState": "State",

@@ -76,12 +76,12 @@ class _TagEditorPageState extends State<TagEditorPage> {
         final confirmed = await showDialog<bool>(
               context: context,
               builder: (context) => AvesDialog(
-                content: Text(context.l10n.genericDangerWarningDialogMessage),
+                content: Text(context.l10n.tagEditorDiscardDialogMessage),
                 actions: [
                   const CancelButton(),
                   TextButton(
                     onPressed: () => Navigator.maybeOf(context)?.pop(true),
-                    child: Text(context.l10n.discardButtonLabel),
+                    child: Text(MaterialLocalizations.of(context).okButtonLabel.toUpperCase()),
                   ),
                 ],
               ),
