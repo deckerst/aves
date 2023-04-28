@@ -1294,5 +1294,17 @@
   "viewerActionLock": "뷰어 잠금",
   "@viewerActionLock": {},
   "viewerActionUnlock": "뷰어 잠금 해제",
-  "@viewerActionUnlock": {}
+  "@viewerActionUnlock": {},
+  "settingsVideoResumptionModeTile": "재생 재개",
+  "@settingsVideoResumptionModeTile": {},
+  "settingsAskEverytime": "매번 물어보기",
+  "@settingsAskEverytime": {},
+  "settingsVideoPlaybackPageTitle": "재생",
+  "@settingsVideoPlaybackPageTitle": {},
+  "settingsVideoPlaybackTile": "재생",
+  "@settingsVideoPlaybackTile": {},
+  "settingsVideoResumptionModeDialogTitle": "재생 재개",
+  "@settingsVideoResumptionModeDialogTitle": {},
+  "tagEditorDiscardDialogMessage": "변경 사항을 취소하시겠습니까?",
+  "@tagEditorDiscardDialogMessage": {}
 }
