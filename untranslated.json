@@ -6,7 +6,6 @@
     "timeMinutes",
     "timeDays",
     "focalLength",
-    "discardButtonLabel",
     "pickTooltip",
     "sourceStateLoading",
     "sourceStateCataloguing",
@@ -616,11 +615,11 @@
     "wallpaperUseScrollEffect",
     "tagEditorPageTitle",
     "tagEditorPageNewTagFieldLabel",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
   "ckb": [
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionShowCountryStates",
     "entryActionRotateCCW",
@@ -1193,6 +1192,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -1207,52 +1207,51 @@
   ],
 
   "cs": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "de": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "el": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "es": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "eu": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "fa": [
-    "discardButtonLabel",
     "clearTooltip",
     "chipActionGoToPlacePage",
     "chipActionLock",
@@ -1728,6 +1727,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -1742,17 +1742,16 @@
   ],
 
   "fr": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "gl": [
     "columnCount",
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -2259,6 +2258,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -2281,7 +2281,6 @@
     "focalLength",
     "applyButtonLabel",
     "deleteButtonLabel",
-    "discardButtonLabel",
     "nextButtonLabel",
     "showButtonLabel",
     "hideButtonLabel",
@@ -2910,6 +2909,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -2924,7 +2924,6 @@
   ],
 
   "hi": [
-    "discardButtonLabel",
     "resetTooltip",
     "saveTooltip",
     "pickTooltip",
@@ -3541,6 +3540,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -3555,36 +3555,35 @@
   ],
 
   "hu": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "id": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "it": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsCollectionBurstPatternsTile",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "ja": [
     "columnCount",
-    "discardButtonLabel",
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
@@ -3616,21 +3615,21 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem",
-    "statsTopStatesSectionTitle"
+    "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "ko": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "lt": [
     "columnCount",
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -3687,11 +3686,11 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
   "nb": [
-    "discardButtonLabel",
     "chipActionShowCountryStates",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -3712,12 +3711,12 @@
     "settingsVideoBackgroundMode",
     "settingsVideoBackgroundModeDialogTitle",
     "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
   "nl": [
     "columnCount",
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -3786,12 +3785,12 @@
     "settingsDisplayUseTvInterface",
     "settingsWidgetDisplayedItem",
     "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
   "nn": [
     "columnCount",
-    "discardButtonLabel",
     "sourceStateCataloguing",
     "chipActionGoToPlacePage",
     "chipActionLock",
@@ -4122,6 +4121,7 @@
     "mapEmptyRegion",
     "viewerInfoSearchSuggestionDimensions",
     "wallpaperUseScrollEffect",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
@@ -4137,7 +4137,6 @@
     "focalLength",
     "applyButtonLabel",
     "deleteButtonLabel",
-    "discardButtonLabel",
     "nextButtonLabel",
     "continueButtonLabel",
     "cancelTooltip",
@@ -4697,6 +4696,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -4711,34 +4711,33 @@
   ],
 
   "pl": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "pt": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "ro": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "ru": [
-    "discardButtonLabel",
     "chipActionShowCountryStates",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -4759,6 +4758,7 @@
     "settingsVideoResumptionModeDialogTitle",
     "settingsVideoGestureVerticalDragBrightnessVolume",
     "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
@@ -4766,7 +4766,6 @@
     "itemCount",
     "columnCount",
     "timeSeconds",
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -5188,6 +5187,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -5209,7 +5209,6 @@
     "timeDays",
     "focalLength",
     "applyButtonLabel",
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -5562,6 +5561,7 @@
     "tagEditorPageAddTagTooltip",
     "tagEditorSectionRecent",
     "tagEditorSectionPlaceholders",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderCountry",
     "tagPlaceholderState",
     "tagPlaceholderPlace",
@@ -5576,7 +5576,6 @@
   ],
 
   "tr": [
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -5624,20 +5623,20 @@
     "settingsVideoBackgroundModeDialogTitle",
     "settingsDisablingBinWarningDialogMessage",
     "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
   "uk": [
-    "discardButtonLabel",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle"
+    "settingsVideoResumptionModeDialogTitle",
+    "tagEditorDiscardDialogMessage"
   ],
 
   "zh": [
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -5689,12 +5688,12 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ],
 
   "zh_Hant": [
     "columnCount",
-    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -5750,6 +5749,7 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
     "statsTopStatesSectionTitle",
+    "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
   ]
 }
