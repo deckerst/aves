@@ -46,6 +46,7 @@
 
   "applyButtonLabel": "APPLY",
   "deleteButtonLabel": "DELETE",
+  "discardButtonLabel": "DISCARD",
   "nextButtonLabel": "NEXT",
   "showButtonLabel": "SHOW",
   "hideButtonLabel": "HIDE",

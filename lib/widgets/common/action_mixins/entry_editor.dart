@@ -82,26 +82,27 @@ mixin EntryEditorMixin {
   Future<Map<AvesEntry, Set<String>>?> selectTags(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final filtersByEntry = Map.fromEntries(entries.map((v) {
+    final oldTagsByEntry = Map.fromEntries(entries.map((v) {
       return MapEntry(v, v.tags.map(TagFilter.new).toSet());
     }));
-    await Navigator.maybeOf(context)?.push(
-      MaterialPageRoute(
-        settings: const RouteSettings(name: TagEditorPage.routeName),
-        builder: (context) => TagEditorPage(
-          filtersByEntry: filtersByEntry,
-        ),
-      ),
-    );
+    final filtersByEntry = await Navigator.maybeOf(context)?.push<Map<AvesEntry, Set<CollectionFilter>>>(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: TagEditorPage.routeName),
+            builder: (context) => TagEditorPage(
+              tagsByEntry: oldTagsByEntry,
+            ),
+          ),
+        ) ??
+        oldTagsByEntry;
 
-    final tagsByEntry = <AvesEntry, Set<String>>{};
+    final newTagsByEntry = <AvesEntry, Set<String>>{};
     await Future.forEach(filtersByEntry.entries, (kv) async {
       final entry = kv.key;
       final filters = kv.value;
-      tagsByEntry[entry] = await getTagsFromFilters(filters, entry);
+      newTagsByEntry[entry] = await getTagsFromFilters(filters, entry);
     });
 
-    return tagsByEntry;
+    return newTagsByEntry;
   }
 
   Future<Set<String>> getTagsFromFilters(Set<CollectionFilter> filters, AvesEntry entry) async {

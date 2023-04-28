@@ -6,6 +6,7 @@
     "timeMinutes",
     "timeDays",
     "focalLength",
+    "discardButtonLabel",
     "pickTooltip",
     "sourceStateLoading",
     "sourceStateCataloguing",
@@ -614,6 +615,7 @@
   ],
 
   "ckb": [
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionShowCountryStates",
     "entryActionRotateCCW",
@@ -1194,7 +1196,28 @@
     "filePickerUseThisFolder"
   ],
 
+  "cs": [
+    "discardButtonLabel"
+  ],
+
+  "de": [
+    "discardButtonLabel"
+  ],
+
+  "el": [
+    "discardButtonLabel"
+  ],
+
+  "es": [
+    "discardButtonLabel"
+  ],
+
+  "eu": [
+    "discardButtonLabel"
+  ],
+
   "fa": [
+    "discardButtonLabel",
     "clearTooltip",
     "chipActionGoToPlacePage",
     "chipActionLock",
@@ -1678,8 +1701,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "discardButtonLabel"
+  ],
+
   "gl": [
     "columnCount",
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -2203,6 +2231,7 @@
     "focalLength",
     "applyButtonLabel",
     "deleteButtonLabel",
+    "discardButtonLabel",
     "nextButtonLabel",
     "showButtonLabel",
     "hideButtonLabel",
@@ -2840,6 +2869,7 @@
   ],
 
   "hi": [
+    "discardButtonLabel",
     "resetTooltip",
     "saveTooltip",
     "pickTooltip",
@@ -3464,12 +3494,22 @@
     "filePickerUseThisFolder"
   ],
 
+  "hu": [
+    "discardButtonLabel"
+  ],
+
+  "id": [
+    "discardButtonLabel"
+  ],
+
   "it": [
+    "discardButtonLabel",
     "settingsCollectionBurstPatternsTile"
   ],
 
   "ja": [
     "columnCount",
+    "discardButtonLabel",
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
@@ -3499,8 +3539,13 @@
     "statsTopStatesSectionTitle"
   ],
 
+  "ko": [
+    "discardButtonLabel"
+  ],
+
   "lt": [
     "columnCount",
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -3556,6 +3601,7 @@
   ],
 
   "nb": [
+    "discardButtonLabel",
     "chipActionShowCountryStates",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -3576,6 +3622,7 @@
 
   "nl": [
     "columnCount",
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -3644,6 +3691,7 @@
 
   "nn": [
     "columnCount",
+    "discardButtonLabel",
     "sourceStateCataloguing",
     "chipActionGoToPlacePage",
     "chipActionLock",
@@ -3984,6 +4032,7 @@
     "focalLength",
     "applyButtonLabel",
     "deleteButtonLabel",
+    "discardButtonLabel",
     "nextButtonLabel",
     "continueButtonLabel",
     "cancelTooltip",
@@ -4551,7 +4600,20 @@
     "filePickerUseThisFolder"
   ],
 
+  "pl": [
+    "discardButtonLabel"
+  ],
+
+  "pt": [
+    "discardButtonLabel"
+  ],
+
+  "ro": [
+    "discardButtonLabel"
+  ],
+
   "ru": [
+    "discardButtonLabel",
     "chipActionShowCountryStates",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -4574,6 +4636,7 @@
     "itemCount",
     "columnCount",
     "timeSeconds",
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -5011,6 +5074,7 @@
     "timeDays",
     "focalLength",
     "applyButtonLabel",
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -5372,6 +5436,7 @@
   ],
 
   "tr": [
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -5417,7 +5482,12 @@
     "tagPlaceholderState"
   ],
 
+  "uk": [
+    "discardButtonLabel"
+  ],
+
   "zh": [
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -5469,6 +5539,7 @@
 
   "zh_Hant": [
     "columnCount",
+    "discardButtonLabel",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
