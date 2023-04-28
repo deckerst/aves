@@ -1294,5 +1294,17 @@
   "viewerActionLock": "Verrouiller la visionneuse",
   "@viewerActionLock": {},
   "viewerActionUnlock": "Déverrouiller la visionneuse",
-  "@viewerActionUnlock": {}
+  "@viewerActionUnlock": {},
+  "settingsAskEverytime": "Demander chaque fois",
+  "@settingsAskEverytime": {},
+  "settingsVideoPlaybackTile": "Lecture",
+  "@settingsVideoPlaybackTile": {},
+  "settingsVideoPlaybackPageTitle": "Lecture",
+  "@settingsVideoPlaybackPageTitle": {},
+  "settingsVideoResumptionModeDialogTitle": "Reprise de lecture",
+  "@settingsVideoResumptionModeDialogTitle": {},
+  "settingsVideoResumptionModeTile": "Reprise de lecture",
+  "@settingsVideoResumptionModeTile": {},
+  "tagEditorDiscardDialogMessage": "Voulez-vous ignorer les changements ?",
+  "@tagEditorDiscardDialogMessage": {}
 }
