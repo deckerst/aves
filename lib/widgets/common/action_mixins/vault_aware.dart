@@ -30,8 +30,9 @@ mixin VaultAwareMixin on FeedbackMixin {
             localizedReason: context.l10n.authenticateToUnlockVault,
           );
         } on PlatformException catch (e, stack) {
-          if (e.code != 'auth_in_progress') {
+          if (!{'auth_in_progress', 'NotAvailable'}.contains(e.code)) {
             // `auth_in_progress`: `Authentication in progress`
+            // `NotAvailable`: `Required security features not enabled`
             await reportService.recordError(e, stack);
           }
         }
