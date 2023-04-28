@@ -293,8 +293,8 @@
   "@nameConflictStrategyReplace": {},
   "keepScreenOnVideoPlayback": "Při přehrávání videa",
   "@keepScreenOnVideoPlayback": {},
-  "settingsAlways": "Vždy",
-  "@settingsAlways": {},
+  "keepScreenOnAlways": "Vždy",
+  "@keepScreenOnAlways": {},
   "accessibilityAnimationsRemove": "Zakázat vizuální efekty",
   "@accessibilityAnimationsRemove": {},
   "accessibilityAnimationsKeep": "Povolit vizuální efekty",
@@ -953,8 +953,8 @@
   "@displayRefreshRatePreferLowest": {},
   "nameConflictStrategySkip": "Přeskočit",
   "@nameConflictStrategySkip": {},
-  "settingsNever": "Nikdy",
-  "@settingsNever": {},
+  "keepScreenOnNever": "Nikdy",
+  "@keepScreenOnNever": {},
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Přesunout tuto položku do koše?} few{Přesunout tyto {count} položky do koše?} other{Přesunout těchto {count} položek do koše?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
