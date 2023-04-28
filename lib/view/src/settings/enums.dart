@@ -127,11 +127,11 @@ extension ExtraMaxBrightnessView on MaxBrightness {
   String getName(BuildContext context) {
     switch (this) {
       case MaxBrightness.never:
-        return context.l10n.keepScreenOnNever;
+        return context.l10n.maxBrightnessNever;
       case MaxBrightness.viewerOnly:
         return context.l10n.keepScreenOnViewerOnly;
       case MaxBrightness.always:
-        return context.l10n.keepScreenOnAlways;
+        return context.l10n.maxBrightnessAlways;
     }
   }
 }
@@ -227,11 +227,11 @@ extension ExtraVideoResumptionModeView on VideoResumptionMode {
   String getName(BuildContext context) {
     switch (this) {
       case VideoResumptionMode.never:
-        return context.l10n.videoLoopModeNever;
+        return context.l10n.videoResumptionModeNever;
       case VideoResumptionMode.ask:
         return context.l10n.settingsAskEverytime;
       case VideoResumptionMode.always:
-        return context.l10n.videoLoopModeAlways;
+        return context.l10n.videoResumptionModeAlways;
     }
   }
 }
