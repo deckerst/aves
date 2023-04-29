@@ -124,11 +124,10 @@ class _InfoPageState extends State<InfoPage> {
   }
 
   void _goToViewer() {
-    final animationDuration = context.read<DurationsData>().viewerVerticalPageScrollAnimation;
     ShowImageNotification().dispatch(context);
     _scrollController.animateTo(
       0,
-      duration: animationDuration,
+      duration: Durations.pageTransitionAnimation,
       curve: Curves.easeInOut,
     );
   }

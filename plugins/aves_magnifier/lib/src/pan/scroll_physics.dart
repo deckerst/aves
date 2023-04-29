@@ -17,8 +17,8 @@ class MagnifierScrollerPhysics extends ScrollPhysics {
   const MagnifierScrollerPhysics({
     required this.gestureSettings,
     this.touchSlopFactor = 1,
-    ScrollPhysics? parent,
-  }) : super(parent: parent);
+    super.parent,
+  });
 
   @override
   MagnifierScrollerPhysics applyTo(ScrollPhysics? ancestor) {

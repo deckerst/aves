@@ -9,6 +9,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/accessibility_timeout.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -62,7 +63,7 @@ class EntryViewerStack extends StatefulWidget {
   State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
 
-class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, SingleTickerProviderStateMixin {
+class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, TickerProviderStateMixin {
   final Floating _floating = Floating();
   late int _currentEntryIndex;
   late ValueNotifier<int> _currentVerticalPage;
@@ -72,7 +73,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   final ValueNotifier<bool> _viewLocked = ValueNotifier(false);
   final ValueNotifier<bool> _overlayExpandedNotifier = ValueNotifier(false);
-  late AnimationController _overlayAnimationController;
+  late AnimationController _verticalPageAnimationController, _overlayAnimationController;
   late Animation<double> _overlayButtonScale, _overlayVideoControlScale, _overlayOpacity;
   late Animation<Offset> _overlayTopOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
@@ -125,6 +126,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentEntryIndex);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChanged);
+    _verticalPageAnimationController = AnimationController.unbounded(vsync: this);
+    _verticalPageAnimationController.addListener(() => _verticalPager.jumpTo(_verticalPageAnimationController.value));
     _overlayAnimationController = AnimationController(
       duration: context.read<DurationsData>().viewerOverlayAnimation,
       vsync: this,
@@ -171,6 +174,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _floating.dispose();
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
+    _verticalPageAnimationController.dispose();
     _overlayAnimationController.dispose();
     _overlayVisible.dispose();
     _viewLocked.dispose();
@@ -606,14 +610,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _goToVerticalPage(int page) async {
-    final animationDuration = context.read<DurationsData>().viewerVerticalPageScrollAnimation;
-    if (animationDuration > Duration.zero) {
-      // duration & curve should feel similar to changing page by vertical fling
-      await _verticalPager.animateToPage(
-        page,
-        duration: animationDuration,
-        curve: Curves.easeOutQuart,
-      );
+    if (settings.accessibilityAnimations.animate) {
+      final start = _verticalPager.offset;
+      final end = _verticalPager.position.viewportDimension * page;
+      final simulation = ScrollSpringSimulation(ViewerVerticalPageView.spring, start, end, 0);
+      unawaited(_verticalPageAnimationController.animateWith(simulation));
     } else {
       _verticalPager.jumpToPage(page);
     }
@@ -653,13 +654,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         page = page.clamp(0, _collection.entryCount - 1);
       }
       if (_currentEntryIndex != page) {
-        final animationDuration = animate ? context.read<DurationsData>().viewerVerticalPageScrollAnimation : Duration.zero;
+        final animationDuration = animate ? context.read<DurationsData>().viewerHorizontalPageScrollAnimation : Duration.zero;
         if (animationDuration > Duration.zero) {
-          // duration & curve should feel similar to changing page by vertical fling
+          // duration & curve should feel similar to changing page by fling
           await _horizontalPager.animateToPage(
             page,
             duration: animationDuration,
-            curve: Curves.easeOutQuart,
+            curve: Curves.easeOutCubic,
           );
         } else {
           _horizontalPager.jumpToPage(page);

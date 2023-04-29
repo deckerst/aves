@@ -10,6 +10,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/behaviour/springy_scroll_physics.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/intents.dart';
@@ -36,6 +37,13 @@ class ViewerVerticalPageView extends StatefulWidget {
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
   final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
+
+  // critically damped spring a bit stiffer than `ScrollPhysics._kDefaultSpring`
+  static final spring = SpringDescription.withDampingRatio(
+    mass: 0.5,
+    stiffness: 200.0,
+    ratio: 1.0,
+  );
 
   const ViewerVerticalPageView({
     super.key,
@@ -180,7 +188,9 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         controller: widget.verticalPager,
         physics: MagnifierScrollerPhysics(
           gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
-          parent: const PageScrollPhysics(),
+          parent: SpringyScrollPhysics(
+            spring: ViewerVerticalPageView.spring,
+          ),
         ),
         onPageChanged: widget.onVerticalPageChanged,
         children: pages,

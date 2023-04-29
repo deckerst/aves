@@ -84,7 +84,7 @@ class DurationsData {
   final Duration tvImageFocusAnimation;
 
   // viewer animations
-  final Duration viewerVerticalPageScrollAnimation;
+  final Duration viewerHorizontalPageScrollAnimation;
   final Duration viewerOverlayAnimation;
   final Duration viewerOverlayChangeAnimation;
 
@@ -102,7 +102,7 @@ class DurationsData {
     this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
     this.quickChooserAnimation = const Duration(milliseconds: 100),
     this.tvImageFocusAnimation = const Duration(milliseconds: 150),
-    this.viewerVerticalPageScrollAnimation = const Duration(milliseconds: 500),
+    this.viewerHorizontalPageScrollAnimation = const Duration(milliseconds: 400),
     this.viewerOverlayAnimation = const Duration(milliseconds: 200),
     this.viewerOverlayChangeAnimation = const Duration(milliseconds: 150),
   }) : staggeredAnimationDelay = staggeredAnimation ~/ 6;
@@ -120,7 +120,7 @@ class DurationsData {
       staggeredAnimationPageTarget: Duration.zero,
       quickChooserAnimation: Duration.zero,
       tvImageFocusAnimation: Duration.zero,
-      viewerVerticalPageScrollAnimation: Duration.zero,
+      viewerHorizontalPageScrollAnimation: Duration.zero,
       viewerOverlayAnimation: Duration.zero,
       viewerOverlayChangeAnimation: Duration.zero,
     );
