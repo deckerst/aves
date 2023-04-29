@@ -1306,5 +1306,15 @@
   "tagEditorDiscardDialogMessage": "¿Quieres descartar los cambios?",
   "@tagEditorDiscardDialogMessage": {},
   "settingsVideoPlaybackPageTitle": "Reproducir",
-  "@settingsVideoPlaybackPageTitle": {}
+  "@settingsVideoPlaybackPageTitle": {},
+  "maxBrightnessAlways": "Siempre",
+  "@maxBrightnessAlways": {},
+  "videoResumptionModeAlways": "Siempre",
+  "@videoResumptionModeAlways": {},
+  "maxBrightnessNever": "Nunca",
+  "@maxBrightnessNever": {},
+  "videoResumptionModeNever": "Nunca",
+  "@videoResumptionModeNever": {},
+  "exportEntryDialogQuality": "Calidad",
+  "@exportEntryDialogQuality": {}
 }

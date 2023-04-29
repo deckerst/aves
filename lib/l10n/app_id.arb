@@ -1294,5 +1294,15 @@
   "searchStatesSectionTitle": "Wilayah",
   "@searchStatesSectionTitle": {},
   "statsTopStatesSectionTitle": "Wilayah Teratas",
-  "@statsTopStatesSectionTitle": {}
+  "@statsTopStatesSectionTitle": {},
+  "settingsAskEverytime": "Ta za",
+  "@settingsAskEverytime": {},
+  "maxBrightnessNever": "Tidak pernah",
+  "@maxBrightnessNever": {},
+  "maxBrightnessAlways": "Selalu",
+  "@maxBrightnessAlways": {},
+  "videoResumptionModeNever": "Tidak pernah",
+  "@videoResumptionModeNever": {},
+  "videoResumptionModeAlways": "Selalu",
+  "@videoResumptionModeAlways": {}
 }
