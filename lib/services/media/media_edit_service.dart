@@ -129,6 +129,7 @@ class PlatformMediaEditService implements MediaEditService {
             'op': 'convert',
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
             'mimeType': options.mimeType,
+            'quality': options.quality,
             'lengthUnit': options.lengthUnit.name,
             'width': options.width,
             'height': options.height,
@@ -195,10 +196,10 @@ class EntryConvertOptions extends Equatable {
   final String mimeType;
   final bool writeMetadata;
   final LengthUnit lengthUnit;
-  final int width, height;
+  final int width, height, quality;
 
   @override
-  List<Object?> get props => [mimeType, writeMetadata, lengthUnit, width, height];
+  List<Object?> get props => [mimeType, writeMetadata, lengthUnit, width, height, quality];
 
   const EntryConvertOptions({
     required this.mimeType,
@@ -206,5 +207,6 @@ class EntryConvertOptions extends Equatable {
     required this.lengthUnit,
     required this.width,
     required this.height,
+    required this.quality,
   });
 }

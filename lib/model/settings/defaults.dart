@@ -116,6 +116,7 @@ class SettingsDefaults {
   // converter
 
   static const convertMimeType = MimeTypes.jpeg;
+  static const convertQuality = 95;
   static const convertWriteMetadata = true;
 
   // rendering
