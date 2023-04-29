@@ -47,15 +47,16 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
   void handleEvent(PointerEvent event) {
     if (scope.axis.isNotEmpty) {
       var didChangeConfiguration = false;
+      final pointer = event.pointer;
       if (event is PointerMoveEvent) {
         if (!event.synthesized) {
-          _pointerLocations[event.pointer] = event.position;
+          _pointerLocations[pointer] = event.position;
         }
       } else if (event is PointerDownEvent) {
-        _pointerLocations[event.pointer] = event.position;
+        _pointerLocations[pointer] = event.position;
         didChangeConfiguration = true;
       } else if (event is PointerUpEvent || event is PointerCancelEvent) {
-        _pointerLocations.remove(event.pointer);
+        _pointerLocations.remove(pointer);
         didChangeConfiguration = true;
       }
 
@@ -67,7 +68,9 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
         _initialSpan = _currentSpan;
       }
 
-      _decideIfWeAcceptEvent(event);
+      if (event is PointerMoveEvent && (_areMultiPointers() || (_shouldMove() && _isOverSlop(event.kind)))) {
+        acceptGesture(pointer);
+      }
     }
     super.handleEvent(event);
   }
@@ -93,54 +96,63 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
     _currentSpan = count > 0 ? totalDeviation / count : 0.0;
   }
 
-  void _decideIfWeAcceptEvent(PointerEvent event) {
-    if (event is! PointerMoveEvent) return;
+  // when there are multiple pointers, we always accept the gesture to scale
+  // as this is not competing with single taps or other drag gestures
+  bool _areMultiPointers() => _pointerLocations.keys.length >= 2;
 
-    if (_pointerLocations.keys.length >= 2) {
-      // when there are multiple pointers, we always accept the gesture to scale
-      // as this is not competing with single taps or other drag gestures
-      acceptGesture(event.pointer);
-      return;
-    }
+  bool _shouldMove() {
+    final move = _initialFocalPoint! - _currentFocalPoint!;
+
+    // e.g. vertical drag to adjust brightness instead of panning
+    if (scope.acceptPointerEvent?.call(move) ?? false) return true;
+
+    // e.g. double tap & drag for one finger zoom
+    if (doubleTapDetails.value != null) return true;
 
     final validateAxis = scope.axis;
     final canFling = scope.escapeByFling;
-    final move = _initialFocalPoint! - _currentFocalPoint!;
-    bool shouldMove = scope.acceptPointerEvent?.call(move) ?? false;
-
-    if (!shouldMove) {
-      if (validateAxis.length == 2) {
-        // the image is the descendant of gesture detector(s) handling drag in both directions
-        final shouldMoveX = validateAxis.contains(Axis.horizontal) && hitDetector.shouldMoveX(move, canFling);
-        final shouldMoveY = validateAxis.contains(Axis.vertical) && hitDetector.shouldMoveY(move, canFling);
-        if (shouldMoveX == shouldMoveY) {
-          // consistently can/cannot pan the image in both direction the same way
-          shouldMove = shouldMoveX;
-        } else {
-          // can pan the image in one direction, but should yield to an ascendant gesture detector in the other one
-          // the gesture direction angle is in ]-pi, pi], cf `Offset` doc for details
-          shouldMove = (isXPan(move) && shouldMoveX) || (isYPan(move) && shouldMoveY);
-        }
+    if (validateAxis.length == 2) {
+      // the image is the descendant of gesture detector(s) handling drag in both directions
+      final shouldMoveX = validateAxis.contains(Axis.horizontal) && hitDetector.shouldMoveX(move, canFling);
+      final shouldMoveY = validateAxis.contains(Axis.vertical) && hitDetector.shouldMoveY(move, canFling);
+      if (shouldMoveX == shouldMoveY) {
+        // consistently can/cannot pan the image in both direction the same way
+        return shouldMoveX;
       } else {
-        // the image is the descendant of a gesture detector handling drag in one direction
-        shouldMove = validateAxis.contains(Axis.vertical) ? hitDetector.shouldMoveY(move, canFling) : hitDetector.shouldMoveX(move, canFling);
+        // can pan the image in one direction, but should yield to an ascendant gesture detector in the other one
+        // the gesture direction angle is in ]-pi, pi], cf `Offset` doc for details
+        return (isXPan(move) && shouldMoveX) || (isYPan(move) && shouldMoveY);
       }
+    } else {
+      // the image is the descendant of a gesture detector handling drag in one direction
+      return validateAxis.contains(Axis.vertical) ? hitDetector.shouldMoveY(move, canFling) : hitDetector.shouldMoveX(move, canFling);
     }
+  }
 
-    final doubleTap = doubleTapDetails.value != null;
-    if (shouldMove || doubleTap) {
-      final pointerDeviceKind = event.kind;
-      final spanDelta = (_currentSpan! - _initialSpan!).abs();
-      final focalPointDelta = (_currentFocalPoint! - _initialFocalPoint!).distance;
-      // warning: do not compare `focalPointDelta` to `kPanSlop`
-      // `ScaleGestureRecognizer` uses `kPanSlop` (or platform settings, cf gestures/events.dart `computePanSlop`),
-      // but `HorizontalDragGestureRecognizer` uses `kTouchSlop` (or platform settings, cf gestures/events.dart `computeHitSlop`)
-      // and the magnifier recognizer may compete with the `HorizontalDragGestureRecognizer` from a containing `PageView`
-      // setting `touchSlopFactor` to 2 restores default `ScaleGestureRecognizer` behaviour as `kPanSlop = kTouchSlop * 2.0`
-      // setting `touchSlopFactor` in [0, 1] will allow this recognizer to accept the gesture before the one from `PageView`
-      if (spanDelta > computeScaleSlop(pointerDeviceKind) || focalPointDelta > computeHitSlop(pointerDeviceKind, gestureSettings) * scope.touchSlopFactor) {
-        acceptGesture(event.pointer);
-      }
+  bool _isOverSlop(PointerDeviceKind kind) {
+    final spanDelta = (_currentSpan! - _initialSpan!).abs();
+    final focalPointDelta = (_currentFocalPoint! - _initialFocalPoint!).distance;
+    // warning: do not compare `focalPointDelta` to `kPanSlop`
+    // `ScaleGestureRecognizer` uses `kPanSlop` (or platform settings, cf gestures/events.dart `computePanSlop`),
+    // but `HorizontalDragGestureRecognizer` uses `kTouchSlop` (or platform settings, cf gestures/events.dart `computeHitSlop`)
+    // and the magnifier recognizer may compete with the `HorizontalDragGestureRecognizer` from a containing `PageView`
+    // setting `touchSlopFactor` to 2 restores default `ScaleGestureRecognizer` behaviour as `kPanSlop = kTouchSlop * 2.0`
+    // setting `touchSlopFactor` in [0, 1] will allow this recognizer to accept the gesture before the one from `PageView`
+    return spanDelta > computeScaleSlop(kind) || focalPointDelta > computeHitSlop(kind, gestureSettings) * scope.touchSlopFactor;
+  }
+
+  @override
+  void resolve(GestureDisposition disposition) {
+    switch (disposition) {
+      case GestureDisposition.accepted:
+        // do not let super `ScaleGestureRecognizer` accept gestures
+        // when it should yield to other recognizers
+        final canAccept = _areMultiPointers() || _shouldMove();
+        super.resolve(canAccept ? GestureDisposition.accepted : GestureDisposition.rejected);
+        break;
+      case GestureDisposition.rejected:
+        super.resolve(disposition);
+        break;
     }
   }
 
