@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - Video: switching to PiP when going home with gesture navigation
+- Viewer: swiping gestures not being handled in some cases
 - Viewer: multi-page context update when removing burst entries
 - Info: editing tags with placeholders
 - prevent editing item when Exif editing changes mime type
