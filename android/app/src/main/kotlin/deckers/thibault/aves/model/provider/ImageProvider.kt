@@ -11,6 +11,7 @@ import android.os.Binder
 import android.os.Build
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -175,10 +176,11 @@ abstract class ImageProvider {
     }
 
     suspend fun convertMultiple(
-        activity: Activity,
+        activity: FragmentActivity,
         imageExportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
+        quality: Int,
         lengthUnit: String,
         width: Int,
         height: Int,
@@ -215,6 +217,7 @@ abstract class ImageProvider {
                     sourceEntry = entry,
                     targetDir = targetDir,
                     targetDirDocFile = targetDirDocFile,
+                    quality = quality,
                     lengthUnit = lengthUnit,
                     width = width,
                     height = height,
@@ -232,10 +235,11 @@ abstract class ImageProvider {
     }
 
     private suspend fun convertSingle(
-        activity: Activity,
+        activity: FragmentActivity,
         sourceEntry: AvesEntry,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
+        quality: Int,
         lengthUnit: String,
         width: Int,
         height: Int,
@@ -273,7 +277,6 @@ abstract class ImageProvider {
                 targetMimeType = sourceMimeType
                 write = { output ->
                     val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
-                    @Suppress("BlockingMethodInNonBlockingContext")
                     sourceDocFile.copyTo(output)
                 }
             } else {
@@ -317,7 +320,6 @@ abstract class ImageProvider {
                     if (exportMimeType == MimeTypes.BMP) {
                         BmpWriter.writeRGB24(bitmap, output)
                     } else {
-                        val quality = 100
                         val format = when (exportMimeType) {
                             MimeTypes.JPEG -> Bitmap.CompressFormat.JPEG
                             MimeTypes.PNG -> Bitmap.CompressFormat.PNG

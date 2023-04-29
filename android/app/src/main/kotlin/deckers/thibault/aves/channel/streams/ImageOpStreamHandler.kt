@@ -1,10 +1,10 @@
 package deckers.thibault.aves.channel.streams
 
-import android.app.Activity
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.fragment.app.FragmentActivity
 import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
@@ -23,7 +23,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
+class ImageOpStreamHandler(private val activity: FragmentActivity, private val arguments: Any?) : EventChannel.StreamHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
@@ -129,12 +129,13 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         var destinationDir = arguments["destinationPath"] as String?
         val mimeType = arguments["mimeType"] as String?
+        val quality = (arguments["quality"] as Number?)?.toInt()
         val lengthUnit = arguments["lengthUnit"] as String?
         val width = (arguments["width"] as Number?)?.toInt()
         val height = (arguments["height"] as Number?)?.toInt()
         val writeMetadata = arguments["writeMetadata"] as Boolean?
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
-        if (destinationDir == null || mimeType == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
+        if (destinationDir == null || mimeType == null || quality == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
             error("convert-args", "missing arguments", null)
             return
         }
@@ -154,6 +155,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             imageExportMimeType = mimeType,
             targetDir = destinationDir,
             entries = entries,
+            quality = quality,
             lengthUnit = lengthUnit,
             width = width,
             height = height,

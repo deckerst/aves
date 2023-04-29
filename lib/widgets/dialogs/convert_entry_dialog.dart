@@ -8,6 +8,8 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/common/basic/list_tiles/slider.dart';
+import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
@@ -35,6 +37,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   final TextEditingController _widthController = TextEditingController(), _heightController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
   late ValueNotifier<String> _mimeTypeNotifier;
+  late int _quality;
   late bool _writeMetadata, _sameSized;
   late List<LengthUnit> _lengthUnitOptions;
   late LengthUnit _lengthUnit;
@@ -48,10 +51,16 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
     MimeTypes.webp,
   ];
 
+  static const qualityFormats = [
+    MimeTypes.jpeg,
+    MimeTypes.webp,
+  ];
+
   @override
   void initState() {
     super.initState();
     _mimeTypeNotifier = ValueNotifier(settings.convertMimeType);
+    _quality = settings.convertQuality;
     _writeMetadata = settings.convertWriteMetadata;
     _sameSized = entries.map((entry) => entry.displaySize).toSet().length == 1;
     _lengthUnitOptions = [
@@ -88,6 +97,9 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: AvesDialog.defaultHorizontalContentPadding);
+    final theme = Theme.of(context);
+    final trailingStyle = TextStyle(color: theme.textTheme.bodySmall!.color);
+    final trailingChangeShadowColor = theme.colorScheme.onPrimary;
 
     // used by the drop down to match input decoration
     final textFieldDecorationBorder = Border(
@@ -206,6 +218,51 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
           valueListenable: _mimeTypeNotifier,
           builder: (context, mimeType, child) {
             Widget child;
+            if (qualityFormats.contains(mimeType)) {
+              child = SliderListTile(
+                value: _quality.toDouble(),
+                onChanged: (v) => setState(() => _quality = v.round()),
+                min: 0,
+                max: 100,
+                title: context.l10n.exportEntryDialogQuality,
+                titlePadding: contentHorizontalPadding,
+                titleTrailing: (context, value) => ChangeHighlightText(
+                  '${value.round()}',
+                  style: trailingStyle.copyWith(
+                    shadows: [
+                      Shadow(
+                        color: trailingChangeShadowColor.withOpacity(0),
+                        blurRadius: 0,
+                      )
+                    ],
+                  ),
+                  changedStyle: trailingStyle.copyWith(
+                    shadows: [
+                      Shadow(
+                        color: trailingChangeShadowColor,
+                        blurRadius: 3,
+                      )
+                    ],
+                  ),
+                  duration: context.read<DurationsData>().formTextStyleTransition,
+                ),
+              );
+            } else {
+              child = const SizedBox();
+            }
+            return AnimatedSwitcher(
+              duration: context.read<DurationsData>().formTransition,
+              switchInCurve: Curves.easeInOutCubic,
+              switchOutCurve: Curves.easeInOutCubic,
+              transitionBuilder: AvesTransitions.formTransitionBuilder,
+              child: child,
+            );
+          },
+        ),
+        ValueListenableBuilder<String>(
+          valueListenable: _mimeTypeNotifier,
+          builder: (context, mimeType, child) {
+            Widget child;
             if (AppSupport.canEditExif(mimeType) || AppSupport.canEditIptc(mimeType) || AppSupport.canEditXmp(mimeType)) {
               child = SwitchListTile(
                 value: _writeMetadata,
@@ -246,11 +303,13 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                               lengthUnit: _lengthUnit,
                               width: width,
                               height: height,
+                              quality: _quality,
                             )
                           : null;
 
                       if (options != null) {
                         settings.convertMimeType = options.mimeType;
+                        settings.convertQuality = options.quality;
                         settings.convertWriteMetadata = options.writeMetadata;
                       }
 

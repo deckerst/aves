@@ -7,6 +7,8 @@ class SliderListTile extends StatelessWidget {
   final double min;
   final double max;
   final int? divisions;
+  final EdgeInsetsGeometry titlePadding;
+  final Widget Function(BuildContext context, double value)? titleTrailing;
 
   const SliderListTile({
     super.key,
@@ -16,6 +18,8 @@ class SliderListTile extends StatelessWidget {
     this.min = 0.0,
     this.max = 1.0,
     this.divisions,
+    this.titlePadding = const EdgeInsetsDirectional.only(start: 16),
+    this.titleTrailing,
   });
 
   @override
@@ -36,8 +40,14 @@ class SliderListTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsetsDirectional.only(start: 16),
-                child: Text(title),
+                padding: titlePadding,
+                child: Row(
+                  children: [
+                    Text(title),
+                    const Spacer(),
+                    if (titleTrailing != null) titleTrailing!(context, value),
+                  ],
+                ),
               ),
               Padding(
                 // match `SwitchListTile.contentPadding`

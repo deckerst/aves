@@ -437,6 +437,7 @@
   "exportEntryDialogFormat": "Format:",
   "exportEntryDialogWidth": "Width",
   "exportEntryDialogHeight": "Height",
+  "exportEntryDialogQuality": "Quality",
   "exportEntryDialogWriteMetadata": "Write metadata",
 
   "renameEntryDialogLabel": "New name",

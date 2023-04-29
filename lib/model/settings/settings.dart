@@ -165,6 +165,7 @@ class Settings extends ChangeNotifier {
   // converter
 
   static const convertMimeTypeKey = 'convert_mime_type';
+  static const convertQualityKey = 'convert_quality';
   static const convertWriteMetadataKey = 'convert_write_metadata';
 
   // map
@@ -768,6 +769,10 @@ class Settings extends ChangeNotifier {
 
   set convertMimeType(String newValue) => _set(convertMimeTypeKey, newValue);
 
+  int get convertQuality => getInt(convertQualityKey) ?? SettingsDefaults.convertQuality;
+
+  set convertQuality(int newValue) => _set(convertQualityKey, newValue);
+
   bool get convertWriteMetadata => getBool(convertWriteMetadataKey) ?? SettingsDefaults.convertWriteMetadata;
 
   set convertWriteMetadata(bool newValue) => _set(convertWriteMetadataKey, newValue);
@@ -1062,6 +1067,7 @@ class Settings extends ChangeNotifier {
           switch (key) {
             case subtitleTextColorKey:
             case subtitleBackgroundColorKey:
+            case convertQualityKey:
             case screenSaverIntervalKey:
             case slideshowIntervalKey:
               if (newValue is int) {
