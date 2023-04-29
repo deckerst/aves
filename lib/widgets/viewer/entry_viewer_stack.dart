@@ -127,7 +127,20 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _horizontalPager = PageController(initialPage: _currentEntryIndex);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChanged);
     _verticalPageAnimationController = AnimationController.unbounded(vsync: this);
-    _verticalPageAnimationController.addListener(() => _verticalPager.jumpTo(_verticalPageAnimationController.value));
+    _verticalPageAnimationController.addListener(() {
+      final offset = _verticalPageAnimationController.value;
+      final delta = (offset - _verticalPager.offset).abs();
+      if (delta > precisionErrorTolerance) {
+        // snap instead of animating below pixel dimension so that the vertical drag gesture recognizer
+        // can handle a new gesture as soon as the animation appears to be complete to the user
+        if (delta >= 1) {
+          _verticalPager.jumpTo(offset);
+        } else {
+          _verticalPageAnimationController.stop();
+          _verticalPager.jumpToPage(_verticalPager.page!.round());
+        }
+      }
+    });
     _overlayAnimationController = AnimationController(
       duration: context.read<DurationsData>().viewerOverlayAnimation,
       vsync: this,
