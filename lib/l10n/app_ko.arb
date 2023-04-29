@@ -1306,5 +1306,15 @@
   "settingsVideoResumptionModeDialogTitle": "재생 재개",
   "@settingsVideoResumptionModeDialogTitle": {},
   "tagEditorDiscardDialogMessage": "변경 사항을 취소하시겠습니까?",
-  "@tagEditorDiscardDialogMessage": {}
+  "@tagEditorDiscardDialogMessage": {},
+  "maxBrightnessAlways": "항상 켜짐",
+  "@maxBrightnessAlways": {},
+  "videoResumptionModeNever": "재개 안 함",
+  "@videoResumptionModeNever": {},
+  "videoResumptionModeAlways": "항상 재개",
+  "@videoResumptionModeAlways": {},
+  "maxBrightnessNever": "작동 안 함",
+  "@maxBrightnessNever": {},
+  "exportEntryDialogQuality": "품질",
+  "@exportEntryDialogQuality": {}
 }
