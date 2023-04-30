@@ -1244,20 +1244,6 @@
     "tagEditorDiscardDialogMessage"
   ],
 
-  "el": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "exportEntryDialogQuality",
-    "settingsAskEverytime",
-    "settingsVideoPlaybackTile",
-    "settingsVideoPlaybackPageTitle",
-    "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle",
-    "tagEditorDiscardDialogMessage"
-  ],
-
   "eu": [
     "maxBrightnessNever",
     "maxBrightnessAlways",
@@ -3588,21 +3574,6 @@
 
   "id": [
     "exportEntryDialogQuality",
-    "settingsVideoPlaybackTile",
-    "settingsVideoPlaybackPageTitle",
-    "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle",
-    "tagEditorDiscardDialogMessage"
-  ],
-
-  "it": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "exportEntryDialogQuality",
-    "settingsAskEverytime",
-    "settingsCollectionBurstPatternsTile",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
