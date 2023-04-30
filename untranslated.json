@@ -1258,14 +1258,6 @@
     "tagEditorDiscardDialogMessage"
   ],
 
-  "es": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "exportEntryDialogQuality"
-  ],
-
   "eu": [
     "maxBrightnessNever",
     "maxBrightnessAlways",
@@ -1773,14 +1765,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "exportEntryDialogQuality"
   ],
 
   "gl": [
@@ -3602,27 +3586,8 @@
     "filePickerUseThisFolder"
   ],
 
-  "hu": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "exportEntryDialogQuality",
-    "settingsAskEverytime",
-    "settingsVideoPlaybackTile",
-    "settingsVideoPlaybackPageTitle",
-    "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle",
-    "tagEditorDiscardDialogMessage"
-  ],
-
   "id": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
     "exportEntryDialogQuality",
-    "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
@@ -3685,14 +3650,6 @@
     "settingsWidgetDisplayedItem",
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage"
-  ],
-
-  "ko": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "exportEntryDialogQuality"
   ],
 
   "lt": [
@@ -3797,32 +3754,19 @@
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "viewerActionLock",
     "viewerActionUnlock",
-    "entryInfoActionRemoveLocation",
-    "filterAspectRatioLandscapeLabel",
-    "filterAspectRatioPortraitLabel",
-    "filterNoAddressLabel",
     "filterLocatedLabel",
-    "filterTaggedLabel",
     "albumTierVaults",
-    "keepScreenOnVideoPlayback",
-    "lengthUnitPixel",
     "maxBrightnessNever",
     "maxBrightnessAlways",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "vaultLockTypePattern",
-    "vaultLockTypePassword",
-    "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
-    "widgetDisplayedItemRandom",
-    "widgetDisplayedItemMostRecent",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -4800,20 +4744,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "pl": [
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "exportEntryDialogQuality",
-    "settingsAskEverytime",
-    "settingsVideoPlaybackTile",
-    "settingsVideoPlaybackPageTitle",
-    "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle",
-    "tagEditorDiscardDialogMessage"
   ],
 
   "pt": [
