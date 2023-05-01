@@ -24,6 +24,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
@@ -345,32 +346,23 @@ class _HomePageState extends State<HomePage> {
         filters = _initialFilters ?? {};
         break;
     }
+    Route buildRoute(WidgetBuilder builder) => DirectMaterialPageRoute(
+          settings: RouteSettings(name: routeName),
+          builder: builder,
+        );
+
     final source = context.read<CollectionSource>();
     switch (routeName) {
       case AlbumListPage.routeName:
-        return DirectMaterialPageRoute(
-          settings: RouteSettings(name: routeName),
-          builder: (context) => const AlbumListPage(),
-        );
+        return buildRoute((context) => const AlbumListPage());
+      case TagListPage.routeName:
+        return buildRoute((context) => const TagListPage());
       case ScreenSaverPage.routeName:
-        return DirectMaterialPageRoute(
-          settings: RouteSettings(name: routeName),
-          builder: (context) => ScreenSaverPage(
-            source: source,
-          ),
-        );
+        return buildRoute((context) => ScreenSaverPage(source: source));
       case ScreenSaverSettingsPage.routeName:
-        return DirectMaterialPageRoute(
-          settings: RouteSettings(name: routeName),
-          builder: (context) => const ScreenSaverSettingsPage(),
-        );
+        return buildRoute((context) => const ScreenSaverSettingsPage());
       case HomeWidgetSettingsPage.routeName:
-        return DirectMaterialPageRoute(
-          settings: RouteSettings(name: routeName),
-          builder: (context) => HomeWidgetSettingsPage(
-            widgetId: _widgetId!,
-          ),
-        );
+        return buildRoute((context) => HomeWidgetSettingsPage(widgetId: _widgetId!));
       case SearchPage.routeName:
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(
@@ -382,13 +374,7 @@ class _HomePageState extends State<HomePage> {
         );
       case CollectionPage.routeName:
       default:
-        return DirectMaterialPageRoute(
-          settings: RouteSettings(name: routeName),
-          builder: (context) => CollectionPage(
-            source: source,
-            filters: filters,
-          ),
-        );
+        return buildRoute((context) => CollectionPage(source: source, filters: filters));
     }
   }
 }

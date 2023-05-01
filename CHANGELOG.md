@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- option to set the Tags page as home
+
 ## <a id="v1.8.6"></a>[v1.8.6] - 2023-04-30
 
 ### Added
