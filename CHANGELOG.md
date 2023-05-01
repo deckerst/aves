@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - option to set the Tags page as home
 
+### Changed
+
+- remember whether to show the title filter when picking albums
+
 ## <a id="v1.8.6"></a>[v1.8.6] - 2023-04-30
 
 ### Added

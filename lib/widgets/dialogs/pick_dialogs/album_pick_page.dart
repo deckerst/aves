@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
@@ -106,28 +107,31 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
             builder: (context, snapshot) {
               final gridItems = AlbumListPage.getAlbumGridItems(context, source);
               return SelectionProvider<FilterGridItem<AlbumFilter>>(
-                child: FilterGridPage<AlbumFilter>(
-                  settingsRouteKey: AlbumListPage.routeName,
-                  appBar: FilterGridAppBar(
-                    source: source,
-                    title: title,
-                    actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                    actionsBuilder: _buildActions,
-                    isEmpty: false,
+                child: QueryProvider(
+                  enabled: settings.showAlbumPickQuery,
+                  child: FilterGridPage<AlbumFilter>(
+                    settingsRouteKey: AlbumListPage.routeName,
+                    appBar: FilterGridAppBar(
+                      source: source,
+                      title: title,
+                      actionDelegate: _AlbumChipSetPickActionDelegate(gridItems),
+                      actionsBuilder: _buildActions,
+                      isEmpty: false,
+                      appBarHeightNotifier: _appBarHeightNotifier,
+                    ),
                     appBarHeightNotifier: _appBarHeightNotifier,
+                    sections: AlbumListPage.groupToSections(context, source, gridItems),
+                    newFilters: source.getNewAlbumFilters(context),
+                    sortFactor: settings.albumSortFactor,
+                    showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+                    selectable: false,
+                    applyQuery: AlbumListPage.applyQuery,
+                    emptyBuilder: () => EmptyContent(
+                      icon: AIcons.album,
+                      text: context.l10n.albumEmpty,
+                    ),
+                    heroType: HeroType.never,
                   ),
-                  appBarHeightNotifier: _appBarHeightNotifier,
-                  sections: AlbumListPage.groupToSections(context, source, gridItems),
-                  newFilters: source.getNewAlbumFilters(context),
-                  sortFactor: settings.albumSortFactor,
-                  showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-                  selectable: false,
-                  applyQuery: AlbumListPage.applyQuery,
-                  emptyBuilder: () => EmptyContent(
-                    icon: AIcons.album,
-                    text: context.l10n.albumEmpty,
-                  ),
-                  heroType: HeroType.never,
                 ),
               );
             },
@@ -274,5 +278,17 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     source.createAlbum(directory);
     final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
     Navigator.maybeOf(context)?.pop<AlbumFilter>(filter);
+  }
+}
+
+class _AlbumChipSetPickActionDelegate extends AlbumChipSetActionDelegate {
+  _AlbumChipSetPickActionDelegate(super.items);
+
+  @override
+  void onActionSelected(BuildContext context, Set<AlbumFilter> filters, ChipSetAction action) {
+    if (action == ChipSetAction.toggleTitleSearch) {
+      settings.showAlbumPickQuery = !settings.showAlbumPickQuery;
+    }
+    super.onActionSelected(context, filters, action);
   }
 }
