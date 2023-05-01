@@ -104,6 +104,8 @@ extension ExtraHomePageSettingView on HomePageSetting {
         return context.l10n.drawerCollectionAll;
       case HomePageSetting.albums:
         return context.l10n.drawerAlbumPage;
+      case HomePageSetting.tags:
+        return context.l10n.drawerTagPage;
     }
   }
 }
