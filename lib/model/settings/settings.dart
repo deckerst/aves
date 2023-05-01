@@ -118,6 +118,7 @@ class Settings extends ChangeNotifier {
   static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
+  static const showAlbumPickQueryKey = 'show_album_pick_query';
 
   // viewer
   static const viewerQuickActionsKey = 'viewer_quick_actions';
@@ -625,6 +626,10 @@ class Settings extends ChangeNotifier {
     hiddenFilters = _hiddenFilters;
   }
 
+  bool get showAlbumPickQuery => getBool(showAlbumPickQueryKey) ?? false;
+
+  set showAlbumPickQuery(bool newValue) => _set(showAlbumPickQueryKey, newValue);
+
   // viewer
 
   List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, SettingsDefaults.viewerQuickActions, EntryAction.values);
@@ -1107,6 +1112,7 @@ class Settings extends ChangeNotifier {
             case stateSortReverseKey:
             case placeSortReverseKey:
             case tagSortReverseKey:
+            case showAlbumPickQueryKey:
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:

@@ -8,7 +8,8 @@ class Query extends ChangeNotifier {
   final ValueNotifier<String> _queryNotifier = ValueNotifier('');
   final StreamController<bool> _enabledStreamController = StreamController.broadcast();
 
-  Query({required String? initialValue}) {
+  Query({required bool enabled, required String? initialValue}) {
+    _enabled = enabled;
     if (initialValue != null && initialValue.isNotEmpty) {
       _enabled = true;
       queryNotifier.value = initialValue;

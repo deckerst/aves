@@ -29,7 +29,6 @@ import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
-import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -82,38 +81,35 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final useTvLayout = settings.useTvLayout;
-    final body = QueryProvider(
-      initialQuery: null,
-      child: GestureAreaProtectorStack(
-        child: DirectionalSafeArea(
-          start: !useTvLayout,
-          top: false,
-          bottom: false,
-          child: Selector<MediaQueryData, double>(
-            selector: (context, mq) => mq.padding.top,
-            builder: (context, mqPaddingTop, child) {
-              return ValueListenableBuilder<double>(
-                valueListenable: appBarHeightNotifier,
-                builder: (context, appBarHeight, child) {
-                  return _FilterGrid<T>(
-                    // key is expected by test driver
-                    key: const Key('filter-grid'),
-                    settingsRouteKey: settingsRouteKey,
-                    appBar: appBar,
-                    appBarHeight: mqPaddingTop + appBarHeight,
-                    sections: sections,
-                    newFilters: newFilters,
-                    sortFactor: sortFactor,
-                    showHeaders: showHeaders,
-                    selectable: selectable,
-                    applyQuery: applyQuery,
-                    emptyBuilder: emptyBuilder,
-                    heroType: heroType,
-                  );
-                },
-              );
-            },
-          ),
+    final body = GestureAreaProtectorStack(
+      child: DirectionalSafeArea(
+        start: !useTvLayout,
+        top: false,
+        bottom: false,
+        child: Selector<MediaQueryData, double>(
+          selector: (context, mq) => mq.padding.top,
+          builder: (context, mqPaddingTop, child) {
+            return ValueListenableBuilder<double>(
+              valueListenable: appBarHeightNotifier,
+              builder: (context, appBarHeight, child) {
+                return _FilterGrid<T>(
+                  // key is expected by test driver
+                  key: const Key('filter-grid'),
+                  settingsRouteKey: settingsRouteKey,
+                  appBar: appBar,
+                  appBarHeight: mqPaddingTop + appBarHeight,
+                  sections: sections,
+                  newFilters: newFilters,
+                  sortFactor: sortFactor,
+                  showHeaders: showHeaders,
+                  selectable: selectable,
+                  applyQuery: applyQuery,
+                  emptyBuilder: emptyBuilder,
+                  heroType: heroType,
+                );
+              },
+            );
+          },
         ),
       ),
     );
