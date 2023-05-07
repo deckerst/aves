@@ -58,7 +58,19 @@ class AvesApp extends StatefulWidget {
 
   // temporary exclude locales not ready yet for prime time
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
-  static final _unsupportedLocales = {'ar', 'ckb', 'fa', 'gl', 'he', 'hi', 'nn', 'or', 'sk', 'th'}.map(Locale.new).toSet();
+  static final _unsupportedLocales = {
+    'ar', // Arabic
+    'ckb', // Kurdish (Central)
+    'fa', // Persian
+    'gl', // Galician
+    'he', // Hebrew
+    'hi', // Hindi
+    'ml', // Malayalam
+    'nn', // Norwegian Nynorsk
+    'or', // Odia
+    'sk', // Slovak
+    'th', // Thai
+  }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
 
