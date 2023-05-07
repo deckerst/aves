@@ -1304,5 +1304,17 @@
   "videoResumptionModeNever": "Tidak pernah",
   "@videoResumptionModeNever": {},
   "videoResumptionModeAlways": "Selalu",
-  "@videoResumptionModeAlways": {}
+  "@videoResumptionModeAlways": {},
+  "settingsVideoResumptionModeTile": "Lanjutkan pemutaran",
+  "@settingsVideoResumptionModeTile": {},
+  "settingsVideoResumptionModeDialogTitle": "Lanjutkan Pemutaran",
+  "@settingsVideoResumptionModeDialogTitle": {},
+  "tagEditorDiscardDialogMessage": "Apakah Anda ingin membuang perubahan?",
+  "@tagEditorDiscardDialogMessage": {},
+  "exportEntryDialogQuality": "Kualitas",
+  "@exportEntryDialogQuality": {},
+  "settingsVideoPlaybackTile": "Pemutaran",
+  "@settingsVideoPlaybackTile": {},
+  "settingsVideoPlaybackPageTitle": "Pemutaran",
+  "@settingsVideoPlaybackPageTitle": {}
 }
