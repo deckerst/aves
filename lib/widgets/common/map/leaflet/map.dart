@@ -247,8 +247,8 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     final bounds = _leafletMapController.bounds;
     if (bounds != null) {
       boundsNotifier.value = ZoomedBounds(
-        sw: bounds.southWest!,
-        ne: bounds.northEast!,
+        sw: bounds.southWest,
+        ne: bounds.northEast,
         zoom: _leafletMapController.zoom,
         rotation: _leafletMapController.rotation,
       );
