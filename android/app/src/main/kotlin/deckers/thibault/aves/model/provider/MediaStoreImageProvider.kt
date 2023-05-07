@@ -328,7 +328,6 @@ class MediaStoreImageProvider : ImageProvider() {
                     Log.d(LOG_TAG, "delete [permission:doc, file exists after content delete] document at uri=$uri path=$path")
                     val df = StorageUtils.getDocumentFile(contextWrapper, path, uri)
 
-                    @Suppress("BlockingMethodInNonBlockingContext")
                     if (df != null && df.delete()) {
                         scanObsoletePath(contextWrapper, uri, path, mimeType)
                         return
@@ -726,7 +725,6 @@ class MediaStoreImageProvider : ImageProvider() {
         val df = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri)
         df ?: throw Exception("failed to get document at path=$oldPath")
 
-        @Suppress("BlockingMethodInNonBlockingContext")
         val renamed = df.renameTo(newFile.name)
         if (!renamed) {
             throw Exception("failed to rename document at path=$oldPath")
