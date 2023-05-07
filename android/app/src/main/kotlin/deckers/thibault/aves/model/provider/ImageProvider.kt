@@ -45,6 +45,8 @@ import deckers.thibault.aves.utils.MimeTypes.canReadWithPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import pixy.meta.meta.Metadata
 import pixy.meta.meta.MetadataType
 import java.io.*
@@ -308,8 +310,7 @@ abstract class ImageProvider {
                     .apply(glideOptions)
                     .load(model)
                     .submit(targetWidthPx, targetHeightPx)
-                @Suppress("BlockingMethodInNonBlockingContext")
-                var bitmap = target.get()
+                var bitmap = withContext(Dispatchers.IO) { target.get() }
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
@@ -457,7 +458,6 @@ abstract class ImageProvider {
         editableFile.delete()
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     suspend fun captureFrame(
         contextWrapper: ContextWrapper,
         desiredNameWithoutExtension: String,
@@ -512,7 +512,7 @@ abstract class ImageProvider {
                     output.write(bytes)
                 }
             } else {
-                val editableFile = File.createTempFile("aves", null).apply {
+                val editableFile = withContext(Dispatchers.IO) { File.createTempFile("aves", null) }.apply {
                     deleteOnExit()
                     transferFrom(ByteArrayInputStream(bytes), bytes.size.toLong())
                 }

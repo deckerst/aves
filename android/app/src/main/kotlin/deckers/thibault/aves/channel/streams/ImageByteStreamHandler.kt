@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 
 class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler {
@@ -144,8 +145,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             .load(model)
             .submit()
         try {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            var bitmap = target.get()
+            var bitmap = withContext(Dispatchers.IO) { target.get() }
             if (needRotationAfterGlide(mimeType)) {
                 bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }
@@ -173,8 +173,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             .load(VideoThumbnail(context, uri))
             .submit()
         try {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            val bitmap = target.get()
+            val bitmap = withContext(Dispatchers.IO) { target.get() }
             if (bitmap != null) {
                 val bytes = bitmap.getBytes(canHaveAlpha = false, recycle = false)
                 if (MemoryUtils.canAllocate(sizeBytes)) {

@@ -206,7 +206,6 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
     }
 
-    @Suppress("SameParameterValue")
     private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
         handler.post {
             try {
