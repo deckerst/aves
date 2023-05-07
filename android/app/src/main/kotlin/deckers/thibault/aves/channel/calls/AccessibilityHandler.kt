@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.calls
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
@@ -27,13 +26,10 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
 
     private fun areAnimationsRemoved(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var removed = false
-        @SuppressLint("ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            try {
-                removed = Settings.Global.getFloat(contextWrapper.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
-            }
+        try {
+            removed = Settings.Global.getFloat(contextWrapper.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
         }
         result.success(removed)
     }

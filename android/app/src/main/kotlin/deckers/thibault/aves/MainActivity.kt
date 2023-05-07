@@ -142,6 +142,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     result.success(intentDataMap)
                     intentDataMap.clear()
                 }
+
                 "submitPickedItems" -> submitPickedItems(call)
                 "submitPickedCollectionFilters" -> submitPickedCollectionFilters(call)
             }
@@ -204,8 +205,10 @@ open class MainActivity : FlutterFragmentActivity() {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(requestCode, resultCode, data)
             DELETE_SINGLE_PERMISSION_REQUEST,
             MEDIA_WRITE_BULK_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
+
             CREATE_FILE_REQUEST,
             OPEN_FILE_REQUEST -> onStorageAccessResult(requestCode, data?.data)
+
             PICK_COLLECTION_FILTERS_REQUEST -> onCollectionFiltersPickResult(resultCode, data)
         }
     }
@@ -222,19 +225,17 @@ open class MainActivity : FlutterFragmentActivity() {
             return
         }
 
-        @SuppressLint("WrongConstant", "ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val canPersist = (intent.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
-            if (canPersist) {
-                // save access permissions across reboots
-                val takeFlags = (intent.flags
-                        and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-                try {
-                    contentResolver.takePersistableUriPermission(treeUri, takeFlags)
-                } catch (e: SecurityException) {
-                    Log.w(LOG_TAG, "failed to take persistable URI permission for uri=$treeUri", e)
-                }
+        val canPersist = (intent.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
+        @SuppressLint("WrongConstant")
+        if (canPersist) {
+            // save access permissions across reboots
+            val takeFlags = (intent.flags
+                    and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+            try {
+                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+            } catch (e: SecurityException) {
+                Log.w(LOG_TAG, "failed to take persistable URI permission for uri=$treeUri", e)
             }
         }
 
@@ -264,6 +265,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     )
                 }
             }
+
             Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
                     // MIME type is optional
@@ -275,6 +277,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     )
                 }
             }
+
             Intent.ACTION_GET_CONTENT, Intent.ACTION_PICK -> {
                 return hashMapOf(
                     INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_ITEMS,
@@ -282,6 +285,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     INTENT_DATA_KEY_ALLOW_MULTIPLE to (intent.extras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE) ?: false),
                 )
             }
+
             Intent.ACTION_SEARCH -> {
                 val viewUri = intent.dataString
                 return if (viewUri != null) hashMapOf(
@@ -293,6 +297,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     INTENT_DATA_KEY_QUERY to intent.getStringExtra(SearchManager.QUERY),
                 )
             }
+
             INTENT_ACTION_PICK_COLLECTION_FILTERS -> {
                 val initialFilters = extractFiltersFromIntent(intent)
                 return hashMapOf(
@@ -300,6 +305,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     INTENT_DATA_KEY_FILTERS to initialFilters,
                 )
             }
+
             INTENT_ACTION_WIDGET_OPEN -> {
                 val widgetId = intent.getIntExtra(EXTRA_KEY_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
                 if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -309,9 +315,11 @@ open class MainActivity : FlutterFragmentActivity() {
                     )
                 }
             }
+
             Intent.ACTION_RUN -> {
                 // flutter run
             }
+
             else -> {
                 Log.w(LOG_TAG, "unhandled intent action=${intent?.action}")
             }
