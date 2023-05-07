@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.calls
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
@@ -32,7 +31,6 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
         }
     }
 
-    @SuppressLint("CommitPrefEdits")
     private fun registerCallback(call: MethodCall, result: MethodChannel.Result) {
         val callbackHandle = call.argument<Number>("callbackHandle")?.toLong()
         if (callbackHandle == null) {

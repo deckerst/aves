@@ -6,12 +6,12 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.net.Uri
-import android.os.Build
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
@@ -68,13 +68,7 @@ class RegionFetcher internal constructor(
         try {
             if (currentDecoderRef == null) {
                 val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
-                    @Suppress("BlockingMethodInNonBlockingContext")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        BitmapRegionDecoder.newInstance(input)
-                    } else {
-                        @Suppress("deprecation")
-                        BitmapRegionDecoder.newInstance(input, false)
-                    }
+                    BitmapRegionDecoderCompat.newInstance(input)
                 }
                 if (newDecoder == null) {
                     result.error("getRegion-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
