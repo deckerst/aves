@@ -16,9 +16,6 @@ environment:
   flutter: 3.7.12
   sdk: ">=2.19.6 <3.0.0"
 
-# following https://github.blog/2021-09-01-improving-git-protocol-security-github/
-# dependency GitHub repos should be referenced via `https://`, not `git://`
-
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
   flutter:
@@ -98,11 +95,7 @@ dependencies:
   proj4dart:
   provider:
   screen_brightness:
-  # as of `shared_preferences` v2.0.18, upgrading packages downgrades `shared_preferences` to v0.5.4+6
-  # because its dependency `shared_preferences_windows` v2.1.4 gets removed
-  # because its dependency `path_provider_windows` v2.1.4 gets removed
-  # so that the transitive `win32` gets upgraded to v4.x.x
-  shared_preferences: ">=2.0.0"
+  shared_preferences:
   smooth_page_indicator:
   sqflite:
   streams_channel:
