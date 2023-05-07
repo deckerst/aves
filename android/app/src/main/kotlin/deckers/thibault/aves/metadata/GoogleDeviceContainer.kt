@@ -81,4 +81,4 @@ class GoogleDeviceContainer {
     fun itemMimeType(index: Int) = item(index)?.mimeType
 }
 
-class GoogleDeviceContainerItem(val mimeType: String, val length: Long, val dataUri: String) {}
+class GoogleDeviceContainerItem(val mimeType: String, val length: Long, val dataUri: String)

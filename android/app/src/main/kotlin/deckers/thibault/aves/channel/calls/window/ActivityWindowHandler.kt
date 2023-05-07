@@ -8,7 +8,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class ActivityWindowHandler(private val activity: Activity) : WindowHandler(activity) {
-    override fun isActivity(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    override fun isActivity(call: MethodCall, result: MethodChannel.Result) {
         result.success(true)
     }
 
@@ -49,11 +49,11 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         result.success(true)
     }
 
-    override fun isCutoutAware(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    override fun isCutoutAware(call: MethodCall, result: MethodChannel.Result) {
         result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
     }
 
-    override fun getCutoutInsets(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    override fun getCutoutInsets(call: MethodCall, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             result.error("getCutoutInsets-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
             return

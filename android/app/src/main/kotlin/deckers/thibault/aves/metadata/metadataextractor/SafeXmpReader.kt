@@ -10,8 +10,6 @@ import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.drew.imaging.jpeg.JpegSegmentType
 import com.drew.lang.SequentialByteArrayReader
 import com.drew.lang.SequentialReader
-import com.drew.lang.annotations.NotNull
-import com.drew.lang.annotations.Nullable
 import com.drew.metadata.Directory
 import com.drew.metadata.Metadata
 import com.drew.metadata.xmp.XmpDirectory
@@ -63,7 +61,7 @@ class SafeXmpReader : XmpReader() {
     }
 
     // adapted from `XmpReader` to provide different parsing options
-    override fun extract(@NotNull xmpBytes: ByteArray, offset: Int, length: Int, @NotNull metadata: Metadata, @Nullable parentDirectory: Directory?) {
+    override fun extract(xmpBytes: ByteArray, offset: Int, length: Int, metadata: Metadata, parentDirectory: Directory?) {
         val directory = XmpDirectory()
         if (parentDirectory != null) directory.parent = parentDirectory
 

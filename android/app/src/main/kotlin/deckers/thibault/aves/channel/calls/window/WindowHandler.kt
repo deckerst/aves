@@ -40,7 +40,7 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
 
     abstract fun requestOrientation(call: MethodCall, result: MethodChannel.Result)
 
-    abstract fun isCutoutAware(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result)
+    abstract fun isCutoutAware(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun getCutoutInsets(call: MethodCall, result: MethodChannel.Result)
 

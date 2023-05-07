@@ -5,7 +5,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class ServiceWindowHandler(service: Service) : WindowHandler(service) {
-    override fun isActivity(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    override fun isActivity(call: MethodCall, result: MethodChannel.Result) {
         result.success(false)
     }
 
@@ -21,7 +21,7 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(false)
     }
 
-    override fun isCutoutAware(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    override fun isCutoutAware(call: MethodCall, result: MethodChannel.Result) {
         result.success(false)
     }
 
