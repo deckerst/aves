@@ -82,7 +82,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.convert:
           return canWrite && !targetEntry.isVideo;
         case EntryAction.print:
-          return device.canPrint && !targetEntry.isVideo;
+          return !targetEntry.isVideo;
         case EntryAction.openMap:
           return !settings.useTvLayout && targetEntry.hasGps;
         case EntryAction.viewSource:

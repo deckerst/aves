@@ -9,7 +9,7 @@ final Device device = Device._private();
 
 class Device {
   late final String _userAgent;
-  late final bool _canAuthenticateUser, _canGrantDirectoryAccess, _canPinShortcut, _canPrint;
+  late final bool _canAuthenticateUser, _canGrantDirectoryAccess, _canPinShortcut;
   late final bool _canRenderFlagEmojis, _canRenderSubdivisionFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper, _canUseCrypto;
   late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
 
@@ -20,8 +20,6 @@ class Device {
   bool get canGrantDirectoryAccess => _canGrantDirectoryAccess;
 
   bool get canPinShortcut => _canPinShortcut;
-
-  bool get canPrint => _canPrint;
 
   bool get canRenderFlagEmojis => _canRenderFlagEmojis;
 
@@ -71,7 +69,6 @@ class Device {
     final capabilities = await deviceService.getCapabilities();
     _canGrantDirectoryAccess = capabilities['canGrantDirectoryAccess'] ?? false;
     _canPinShortcut = capabilities['canPinShortcut'] ?? false;
-    _canPrint = capabilities['canPrint'] ?? false;
     _canRenderFlagEmojis = capabilities['canRenderFlagEmojis'] ?? false;
     _canRenderSubdivisionFlagEmojis = capabilities['canRenderSubdivisionFlagEmojis'] ?? false;
     _canRequestManageMedia = capabilities['canRequestManageMedia'] ?? false;

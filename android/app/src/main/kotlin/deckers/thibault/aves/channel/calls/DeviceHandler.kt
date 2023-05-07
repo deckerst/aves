@@ -40,7 +40,6 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             hashMapOf(
                 "canGrantDirectoryAccess" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
-                "canPrint" to (sdkInt >= Build.VERSION_CODES.KITKAT),
                 "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.M),
                 "canRenderSubdivisionFlagEmojis" to (sdkInt >= Build.VERSION_CODES.O),
                 "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),

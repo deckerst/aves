@@ -1,11 +1,12 @@
 package deckers.thibault.aves.metadata
 
-import android.annotation.SuppressLint
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 object MediaMetadataRetrieverHelper {
     val allKeys = hashMapOf(
@@ -31,11 +32,8 @@ object MediaMetadataRetrieverHelper {
         MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH to "Video Width",
         MediaMetadataRetriever.METADATA_KEY_WRITER to "Writer",
         MediaMetadataRetriever.METADATA_KEY_YEAR to "Year",
+        MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION to "Video Rotation",
     ).apply {
-        @SuppressLint("ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            put(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION, "Video Rotation")
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             put(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE, "Capture Framerate")
         }

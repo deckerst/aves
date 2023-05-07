@@ -1,12 +1,10 @@
 package deckers.thibault.aves.model
 
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifIFD0Directory
@@ -147,10 +145,7 @@ class SourceEntry {
             retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
             retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { sourceDateTakenMillis = it }
             retriever.getSafeString(MediaMetadataRetriever.METADATA_KEY_TITLE) { title = it }
-            @SuppressLint("ObsoleteSdkInt")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
-            }
+            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
         } catch (e: Exception) {
             // ignore
         } finally {

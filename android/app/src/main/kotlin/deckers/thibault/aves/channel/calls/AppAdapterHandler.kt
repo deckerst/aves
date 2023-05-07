@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.calls
 
-import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
@@ -69,13 +68,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             // apps tend to use their name in English when creating directories
             // so we get their names in English as well as the current locale
             val englishConfig = Configuration().apply {
-                @SuppressLint("ObsoleteSdkInt")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    setLocale(Locale.ENGLISH)
-                } else {
-                    @Suppress("deprecation")
-                    locale = Locale.ENGLISH
-                }
+                setLocale(Locale.ENGLISH)
             }
 
             val pm = context.packageManager
