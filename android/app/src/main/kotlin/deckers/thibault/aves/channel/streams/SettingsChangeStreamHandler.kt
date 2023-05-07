@@ -1,10 +1,8 @@
 package deckers.thibault.aves.channel.streams
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings

@@ -1,11 +1,24 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
 import android.util.Log
-import com.drew.imaging.png.*
+import com.drew.imaging.png.PngChromaticities
+import com.drew.imaging.png.PngChunk
+import com.drew.imaging.png.PngChunkReader
+import com.drew.imaging.png.PngChunkType
+import com.drew.imaging.png.PngHeader
+import com.drew.imaging.png.PngProcessingException
 import com.drew.imaging.tiff.TiffProcessingException
 import com.drew.imaging.tiff.TiffReader
-import com.drew.lang.*
-import com.drew.lang.annotations.NotNull
+import com.drew.lang.ByteArrayReader
+import com.drew.lang.ByteConvert
+import com.drew.lang.Charsets
+import com.drew.lang.DateUtil
+import com.drew.lang.KeyValuePair
+import com.drew.lang.RandomAccessStreamReader
+import com.drew.lang.SequentialByteArrayReader
+import com.drew.lang.SequentialReader
+import com.drew.lang.StreamReader
+import com.drew.lang.StreamUtil
 import com.drew.metadata.ErrorDirectory
 import com.drew.metadata.Metadata
 import com.drew.metadata.StringValue
@@ -64,7 +77,7 @@ object SafePngMetadataReader {
     }
 
     @Throws(PngProcessingException::class, IOException::class)
-    private fun processChunk(@NotNull metadata: Metadata, @NotNull chunk: PngChunk) {
+    private fun processChunk(metadata: Metadata, chunk: PngChunk) {
         val chunkType = chunk.type
         val bytes = chunk.bytes
 
