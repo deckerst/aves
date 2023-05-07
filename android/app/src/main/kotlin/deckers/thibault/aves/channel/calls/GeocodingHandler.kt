@@ -3,8 +3,8 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
-import android.os.Build
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.utils.getFromLocationCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -12,8 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.io.IOException
-import java.util.*
+import java.util.Locale
 
 // as of 2021/03/10, geocoding packages exist but:
 // - `geocoder` is unmaintained
@@ -76,26 +75,9 @@ class GeocodingHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            geocoder!!.getFromLocation(latitude, longitude, maxResults, object : Geocoder.GeocodeListener {
-                override fun onGeocode(addresses: List<Address?>) = processAddresses(addresses.filterNotNull())
-
-                override fun onError(errorMessage: String?) {
-                    result.error("getAddress-asyncerror", "failed to get address", errorMessage)
-                }
-            })
-        } else {
-            try {
-                @Suppress("deprecation")
-                val addresses = geocoder!!.getFromLocation(latitude, longitude, maxResults) ?: ArrayList()
-                processAddresses(addresses)
-            } catch (e: IOException) {
-                // `grpc failed`, etc.
-                result.error("getAddress-network", "failed to get address because of network issues", e.message)
-            } catch (e: Exception) {
-                result.error("getAddress-exception", "failed to get address", e.message)
-            }
-        }
+        geocoder!!.getFromLocationCompat(
+            latitude, longitude, maxResults, ::processAddresses,
+        ) { code, message, details -> result.error(code, message, details) }
     }
 
     companion object {
