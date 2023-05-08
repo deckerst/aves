@@ -13,13 +13,13 @@ class AvesScreenStatePlugin : FlutterPlugin, EventChannel.StreamHandler {
     private var context: Context? = null
     private var screenReceiver: ScreenReceiver? = null
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "deckers.thibault/aves_screen_state/events")
         context = flutterPluginBinding.applicationContext
         eventChannel.setStreamHandler(this)
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         eventChannel.setStreamHandler(null)
     }
 
