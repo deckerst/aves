@@ -6,7 +6,6 @@
     <string name="search_shortcut_short_label">Procurar</string>
     <string name="videos_shortcut_short_label">Vídeos</string>
     <string name="analysis_channel_name">Digitalização de mídia</string>
-    <string name="analysis_service_description">Digitalizar imagens &amp; vídeos</string>
     <string name="analysis_notification_default_title">Digitalizando mídia</string>
     <string name="analysis_notification_action_stop">Pare</string>
 </resources>

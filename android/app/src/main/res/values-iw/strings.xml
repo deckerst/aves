@@ -6,7 +6,6 @@
     <string name="search_shortcut_short_label">חיפוש</string>
     <string name="videos_shortcut_short_label">סרטים</string>
     <string name="analysis_channel_name">סריקת מדיה</string>
-    <string name="analysis_service_description">סרוק תמונות וסרטים</string>
     <string name="analysis_notification_default_title">סורק מדיה</string>
     <string name="analysis_notification_action_stop">הפסק</string>
 </resources>

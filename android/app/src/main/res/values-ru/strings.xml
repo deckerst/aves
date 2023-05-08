@@ -6,7 +6,6 @@
     <string name="search_shortcut_short_label">Поиск</string>
     <string name="videos_shortcut_short_label">Видео</string>
     <string name="analysis_channel_name">Сканировать медия</string>
-    <string name="analysis_service_description">Сканировать изображения и видео</string>
     <string name="analysis_notification_default_title">Сканирование медиа</string>
     <string name="analysis_notification_action_stop">Стоп</string>
     <string name="safe_mode_shortcut_short_label">Безопасный режим</string>

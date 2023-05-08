@@ -40,11 +40,6 @@ This change eventually prevents building the app with Flutter v3.7.11.
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <!-- to analyze media in a service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!--
-    TODO TLAD [Android 14 (API 34)] request FOREGROUND_SERVICE_DATA_SYNC permission
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-    cf https://developer.android.com/about/versions/14/changes/fgs-types-required
-    -->
     <!-- to fetch map tiles -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- from Android 12 (API 31), users can optionally grant access to the media management special permission -->
@@ -250,12 +245,6 @@ This change eventually prevents building the app with Flutter v3.7.11.
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-
-        <service
-            android:name=".AnalysisService"
-            android:description="@string/analysis_service_description"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
 
         <service
             android:name=".ScreenSaverService"

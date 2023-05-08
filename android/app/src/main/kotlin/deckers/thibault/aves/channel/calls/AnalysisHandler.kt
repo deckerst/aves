@@ -1,32 +1,30 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
-import android.os.Build
-import android.os.IBinder
-import android.util.Log
-import deckers.thibault.aves.AnalysisService
-import deckers.thibault.aves.AnalysisServiceBinder
-import deckers.thibault.aves.AnalysisServiceListener
-import deckers.thibault.aves.utils.ContextUtils.isMyServiceRunning
-import deckers.thibault.aves.utils.LogUtils
+import androidx.core.app.ComponentActivity
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import deckers.thibault.aves.AnalysisWorker
+import deckers.thibault.aves.utils.FlutterUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class AnalysisHandler(private val activity: Activity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler, AnalysisServiceListener {
+
+class AnalysisHandler(private val activity: ComponentActivity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "registerCallback" -> ioScope.launch { Coresult.safe(call, result, ::registerCallback) }
-            "startService" -> Coresult.safe(call, result, ::startAnalysis)
+            "startAnalysis" -> Coresult.safe(call, result, ::startAnalysis)
             else -> result.notImplemented()
         }
     }
@@ -38,9 +36,9 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
             return
         }
 
-        activity.getSharedPreferences(AnalysisService.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        activity.getSharedPreferences(AnalysisWorker.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
             .edit()
-            .putLong(AnalysisService.CALLBACK_HANDLE_KEY, callbackHandle)
+            .putLong(AnalysisWorker.CALLBACK_HANDLE_KEY, callbackHandle)
             .apply()
         result.success(true)
     }
@@ -55,20 +53,18 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
         // can be null or empty
         val entryIds = call.argument<List<Int>>("entryIds")
 
-        if (!activity.isMyServiceRunning(AnalysisService::class.java)) {
-            val intent = Intent(activity, AnalysisService::class.java)
-                .putExtra(AnalysisService.KEY_COMMAND, AnalysisService.COMMAND_START)
-                .putExtra(AnalysisService.KEY_ENTRY_IDS, entryIds?.toIntArray())
-                .putExtra(AnalysisService.KEY_FORCE, force)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // Foreground services cannot start from background, but the service here may start fine
-                // while the current lifecycle state (via `ProcessLifecycleOwner.get().lifecycle.currentState`)
-                // is only `INITIALIZED`, so we should not preemptively return when the state is below `STARTED`.
-                activity.startForegroundService(intent)
-            } else {
-                activity.startService(intent)
-            }
-        }
+        WorkManager.getInstance(activity).enqueueUniqueWork(
+            ANALYSIS_WORK_NAME,
+            ExistingWorkPolicy.KEEP,
+            OneTimeWorkRequestBuilder<AnalysisWorker>().apply {
+                setInputData(
+                    workDataOf(
+                        AnalysisWorker.KEY_ENTRY_IDS to entryIds?.toIntArray(),
+                        AnalysisWorker.KEY_FORCE to force,
+                    )
+                )
+            }.build()
+        )
         attachToActivity()
         result.success(null)
     }
@@ -76,44 +72,22 @@ class AnalysisHandler(private val activity: Activity, private val onAnalysisComp
     private var attached = false
 
     fun attachToActivity() {
-        if (activity.isMyServiceRunning(AnalysisService::class.java)) {
-            val intent = Intent(activity, AnalysisService::class.java)
-            activity.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        if (!attached) {
             attached = true
-        }
-    }
-
-    override fun detachFromActivity() {
-        if (attached) {
-            attached = false
-            activity.unbindService(connection)
-        }
-    }
-
-    override fun refreshApp() {
-        if (attached) {
-            onAnalysisCompleted()
-        }
-    }
-
-    private val connection = object : ServiceConnection {
-        var binder: AnalysisServiceBinder? = null
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            Log.i(LOG_TAG, "Analysis service connected")
-            binder = service as AnalysisServiceBinder
-            binder?.startListening(this@AnalysisHandler)
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            Log.i(LOG_TAG, "Analysis service disconnected")
-            binder?.stopListening(this@AnalysisHandler)
-            binder = null
+            WorkManager.getInstance(activity).getWorkInfosForUniqueWorkLiveData(ANALYSIS_WORK_NAME).observe(activity) { list ->
+                if (list.any { it.state == WorkInfo.State.SUCCEEDED }) {
+                    runBlocking {
+                        FlutterUtils.runOnUiThread {
+                            onAnalysisCompleted()
+                        }
+                    }
+                }
+            }
         }
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<AnalysisHandler>()
         const val CHANNEL = "deckers.thibault/aves/analysis"
+        private const val ANALYSIS_WORK_NAME = "analysis_work"
     }
 }

@@ -204,6 +204,7 @@ dependencies {
     implementation 'androidx.media:media:1.6.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
 
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'

@@ -6,7 +6,6 @@
     <string name="search_shortcut_short_label">Búsqueda</string>
     <string name="videos_shortcut_short_label">Vídeos</string>
     <string name="analysis_channel_name">Explorar medios</string>
-    <string name="analysis_service_description">Explorar imágenes &amp; videos</string>
     <string name="analysis_notification_default_title">Explorando medios</string>
     <string name="analysis_notification_action_stop">Anular</string>
     <string name="safe_mode_shortcut_short_label">Modo seguro</string>

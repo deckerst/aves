@@ -170,7 +170,6 @@ open class MainActivity : FlutterFragmentActivity() {
 
     override fun onStop() {
         Log.i(LOG_TAG, "onStop")
-        analysisHandler.detachFromActivity()
         super.onStop()
     }
 
