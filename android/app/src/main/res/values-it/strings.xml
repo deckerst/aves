@@ -6,7 +6,6 @@
     <string name="search_shortcut_short_label">Ricerca</string>
     <string name="videos_shortcut_short_label">Video</string>
     <string name="analysis_channel_name">Scansione media</string>
-    <string name="analysis_service_description">Scansione immagini &amp; videos</string>
     <string name="analysis_notification_default_title">Scansione in corso</string>
     <string name="analysis_notification_action_stop">Annulla</string>
     <string name="safe_mode_shortcut_short_label">Modalità provvisoria</string>

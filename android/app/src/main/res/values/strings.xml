@@ -7,7 +7,6 @@
     <string name="search_shortcut_short_label">Search</string>
     <string name="videos_shortcut_short_label">Videos</string>
     <string name="analysis_channel_name">Media scan</string>
-    <string name="analysis_service_description">Scan images &amp; videos</string>
     <string name="analysis_notification_default_title">Scanning media</string>
     <string name="analysis_notification_action_stop">Stop</string>
 </resources>

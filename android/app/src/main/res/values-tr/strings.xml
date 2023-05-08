@@ -6,7 +6,6 @@
     <string name="search_shortcut_short_label">Arama</string>
     <string name="videos_shortcut_short_label">Videolar</string>
     <string name="analysis_channel_name">Medya tarama</string>
-    <string name="analysis_service_description">Görüntüleri ve videoları tarayın</string>
     <string name="analysis_notification_default_title">Medya taranıyor</string>
     <string name="analysis_notification_action_stop">Durdur</string>
 </resources>

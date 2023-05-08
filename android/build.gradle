@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.8.0'
+        kotlin_version = '1.8.21'
         agp_version = '7.4.2'
         glide_version = '4.15.1'
         huawei_agconnect_version = '1.8.0.300'

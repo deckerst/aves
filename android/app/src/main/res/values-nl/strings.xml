@@ -6,7 +6,6 @@
     <string name="search_shortcut_short_label">Zoeken</string>
     <string name="videos_shortcut_short_label">Video’s</string>
     <string name="analysis_channel_name">Media indexeren</string>
-    <string name="analysis_service_description">Indexeren van afdbeeldingen &amp; video’s</string>
     <string name="analysis_notification_default_title">Indexeren van media</string>
     <string name="analysis_notification_action_stop">Stop</string>
 </resources>

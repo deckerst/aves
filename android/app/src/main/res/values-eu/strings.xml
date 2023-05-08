@@ -3,7 +3,6 @@
     <string name="search_shortcut_short_label">Bilatu</string>
     <string name="videos_shortcut_short_label">Bideoak</string>
     <string name="app_widget_label">Argazki-markoa</string>
-    <string name="analysis_service_description">Irudiak eta bideoak eskaneatu</string>
     <string name="wallpaper">Horma-papera</string>
     <string name="analysis_channel_name">Media eskaneatu</string>
     <string name="analysis_notification_action_stop">Gelditu</string>
