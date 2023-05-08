@@ -41,7 +41,7 @@ class ViewerVerticalPageView extends StatefulWidget {
   // critically damped spring a bit stiffer than `ScrollPhysics._kDefaultSpring`
   static final spring = SpringDescription.withDampingRatio(
     mass: 0.5,
-    stiffness: 200.0,
+    stiffness: 140.0,
     ratio: 1.0,
   );
 
