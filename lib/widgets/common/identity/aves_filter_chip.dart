@@ -31,12 +31,12 @@ enum HeroType { always, onTap, never }
 
 @immutable
 class AvesFilterDecoration {
-  final Widget widget;
   final Radius radius;
+  final Widget widget;
 
   const AvesFilterDecoration({
-    required this.widget,
     required this.radius,
+    required this.widget,
   });
 
   BorderRadius get textBorderRadius => BorderRadius.vertical(bottom: radius);
@@ -88,9 +88,9 @@ class AvesFilterChip extends StatefulWidget {
     required double chipPadding,
     required double rowPadding,
   }) {
-    return context.select<MediaQueryData, double>((mq) {
-      return (mq.size.width - mq.padding.horizontal - chipPadding * minChipPerRow - rowPadding) / minChipPerRow;
-    });
+    final mqWidth = MediaQuery.sizeOf(context).width;
+    final mqHorizontalPadding = MediaQuery.paddingOf(context).horizontal;
+    return (mqWidth - mqHorizontalPadding - chipPadding * minChipPerRow - rowPadding) / minChipPerRow;
   }
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {

@@ -224,7 +224,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   double get appBarContentHeight {
-    final textScaleFactor = context.read<MediaQueryData>().textScaleFactor;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     double height = kToolbarHeight * textScaleFactor;
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
@@ -511,16 +511,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           queryEnabled: context.read<Query>().enabled,
           isMenuItem: true,
         );
-        break;
       case EntrySetAction.toggleFavourite:
         child = FavouriteToggler(
           entries: _getExpandedSelectedItems(selection),
           isMenuItem: true,
         );
-        break;
       default:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());
-        break;
     }
     return PopupMenuItem(
       key: _getActionKey(action),
@@ -598,7 +595,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
 
   void _updateStatusBarHeight() {
-    _statusBarHeight = context.read<MediaQueryData>().padding.top;
+    _statusBarHeight = MediaQuery.paddingOf(context).top;
     _updateAppBarHeight();
   }
 
@@ -611,16 +608,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       // general
       case EntrySetAction.configureView:
         await _configureView();
-        break;
       case EntrySetAction.select:
         context.read<Selection<AvesEntry>>().select();
-        break;
       case EntrySetAction.selectAll:
         context.read<Selection<AvesEntry>>().addToSelection(collection.sortedEntries);
-        break;
       case EntrySetAction.selectNone:
         context.read<Selection<AvesEntry>>().clearSelection();
-        break;
       // browsing
       case EntrySetAction.searchCollection:
       case EntrySetAction.toggleTitleSearch:
@@ -650,7 +643,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
         _actionDelegate.onActionSelected(context, action);
-        break;
     }
   }
 

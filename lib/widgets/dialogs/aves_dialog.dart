@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AvesDialog extends StatelessWidget {
   static const confirmationRouteName = '/dialog/confirmation';
@@ -104,7 +103,7 @@ class AvesDialog extends StatelessWidget {
         // workaround because the dialog tries
         // to size itself to the content intrinsic size,
         // but the `ListView` viewport does not have one
-        width: context.select<MediaQueryData, double>((mq) => mq.size.width / 2),
+        width: MediaQuery.sizeOf(context).width / 2,
         child: DecoratedBox(
           decoration: contentDecoration(context),
           child: child,

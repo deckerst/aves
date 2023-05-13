@@ -29,13 +29,10 @@ class LocationFilter extends CoveredCollectionFilter {
       switch (level) {
         case LocationLevel.country:
           _test = (entry) => entry.addressDetails?.countryCode == _code;
-          break;
         case LocationLevel.state:
           _test = (entry) => entry.addressDetails?.stateCode == _code;
-          break;
         case LocationLevel.place:
           _test = (entry) => entry.addressDetails?.place == _location;
-          break;
       }
     }
   }
@@ -57,7 +54,6 @@ class LocationFilter extends CoveredCollectionFilter {
         if (_code != null) {
           location = _nameAndCode;
         }
-        break;
       case LocationLevel.place:
         break;
     }

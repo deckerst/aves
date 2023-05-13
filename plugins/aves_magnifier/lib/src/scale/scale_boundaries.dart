@@ -1,10 +1,9 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:aves_magnifier/src/controller/controller.dart';
 import 'package:aves_magnifier/src/scale/scale_level.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 /// Internal class to wrap custom scale boundaries (min, max and initial)
 /// Also, stores values regarding the two sizes: the container and the child.
@@ -58,7 +57,10 @@ class ScaleBoundaries extends Equatable {
     }
   }
 
-  double get originalScale => 1.0 / window.devicePixelRatio;
+  double get originalScale {
+    final view = WidgetsBinding.instance.platformDispatcher.views.firstOrNull;
+    return 1.0 / (view?.devicePixelRatio ?? 1.0);
+  }
 
   double get minScale => {
         scaleForLevel(_minScale),

@@ -54,7 +54,7 @@ class MarkdownContainer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).canvasColor,
-        border: Border.all(color: Theme.of(context).dividerColor, width: AvesBorder.curvedBorderWidth),
+        border: Border.all(color: Theme.of(context).dividerColor, width: AvesBorder.curvedBorderWidth(context)),
         borderRadius: const BorderRadius.all(Radius.circular(16)),
       ),
       constraints: BoxConstraints(maxWidth: useTvLayout ? double.infinity : mobileMaxWidth),

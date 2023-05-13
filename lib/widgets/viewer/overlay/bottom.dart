@@ -20,7 +20,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ViewerBottomOverlay extends StatefulWidget {
   final List<AvesEntry> entries;
@@ -297,19 +296,14 @@ class ExtraBottomOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mq = context.select<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
-    final mqWidth = mq.item1;
-    final mqViewInsets = mq.item2;
-    final mqViewPadding = mq.item3;
-
-    final viewInsets = this.viewInsets ?? mqViewInsets;
-    final viewPadding = this.viewPadding ?? mqViewPadding;
+    final viewInsets = this.viewInsets ?? MediaQuery.viewInsetsOf(context);
+    final viewPadding = this.viewPadding ?? MediaQuery.viewPaddingOf(context);
     final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
 
     return Padding(
       padding: safePadding,
       child: SizedBox(
-        width: mqWidth - safePadding.horizontal,
+        width: MediaQuery.sizeOf(context).width - safePadding.horizontal,
         child: child,
       ),
     );

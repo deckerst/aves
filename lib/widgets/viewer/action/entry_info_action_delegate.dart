@@ -99,40 +99,29 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       // general
       case EntryAction.editDate:
         await _editDate(context, targetEntry, collection);
-        break;
       case EntryAction.editLocation:
         await _editLocation(context, targetEntry, collection);
-        break;
       case EntryAction.editTitleDescription:
         await _editTitleDescription(context, targetEntry);
-        break;
       case EntryAction.editRating:
         await _editRating(context, targetEntry);
-        break;
       case EntryAction.editTags:
         await _editTags(context, targetEntry);
-        break;
       case EntryAction.removeMetadata:
         await _removeMetadata(context, targetEntry);
-        break;
       case EntryAction.exportMetadata:
         await _exportMetadata(context, targetEntry);
-        break;
       // GeoTIFF
       case EntryAction.showGeoTiffOnMap:
         await _showGeoTiffOnMap(context, targetEntry, collection);
-        break;
       // motion photo
       case EntryAction.convertMotionPhotoToStillImage:
         await _convertMotionPhotoToStillImage(context, targetEntry);
-        break;
       case EntryAction.viewMotionPhotoVideo:
         OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
-        break;
       // debug
       case EntryAction.debug:
         _goToDebug(context, targetEntry);
-        break;
       default:
         break;
     }
@@ -262,6 +251,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     final mappedGeoTiff = MappedGeoTiff(
       info: info,
       entry: targetEntry,
+      devicePixelRatio: View.of(context).devicePixelRatio,
     );
     if (!mappedGeoTiff.canOverlay) return;
 

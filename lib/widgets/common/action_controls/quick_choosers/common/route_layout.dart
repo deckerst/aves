@@ -33,10 +33,8 @@ class QuickChooserRouteLayout extends SingleChildLayoutDelegate {
     switch (menuPosition) {
       case PopupMenuPosition.over:
         y = triggerRect.top - childSize.height;
-        break;
       case PopupMenuPosition.under:
         y = size.height - triggerRect.bottom;
-        break;
     }
     double x = (triggerRect.left + (size.width - triggerRect.right) - childSize.width) / 2;
     final wantedPosition = Offset(x, y);

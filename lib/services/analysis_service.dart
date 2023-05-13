@@ -145,11 +145,9 @@ class Analyzer {
       case AnalyzerState.stopping:
         await _stopPlatformService();
         _serviceStateNotifier.value = AnalyzerState.stopped;
-        break;
       case AnalyzerState.stopped:
         _controller?.stopSignal.value = true;
         _stopUpdateTimer();
-        break;
     }
   }
 

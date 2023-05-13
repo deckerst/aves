@@ -21,13 +21,10 @@ class AspectRatioFilter extends CollectionFilter {
     switch (op) {
       case QueryFilter.opEqual:
         _test = (entry) => entry.displayAspectRatio == threshold;
-        break;
       case QueryFilter.opLower:
         _test = (entry) => entry.displayAspectRatio < threshold;
-        break;
       case QueryFilter.opGreater:
         _test = (entry) => entry.displayAspectRatio > threshold;
-        break;
     }
   }
 

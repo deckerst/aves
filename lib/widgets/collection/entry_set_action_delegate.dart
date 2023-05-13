@@ -173,79 +173,55 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       // browsing
       case EntrySetAction.searchCollection:
         _goToSearch(context);
-        break;
       case EntrySetAction.toggleTitleSearch:
         context.read<Query>().toggle();
-        break;
       case EntrySetAction.addShortcut:
         _addShortcut(context);
-        break;
       // browsing or selecting
       case EntrySetAction.map:
         _goToMap(context);
-        break;
       case EntrySetAction.slideshow:
         _goToSlideshow(context);
-        break;
       case EntrySetAction.stats:
         _goToStats(context);
-        break;
       case EntrySetAction.rescan:
         _rescan(context);
-        break;
       // selecting
       case EntrySetAction.share:
         _share(context);
-        break;
       case EntrySetAction.delete:
       case EntrySetAction.emptyBin:
         _delete(context);
-        break;
       case EntrySetAction.restore:
         _move(context, moveType: MoveType.fromBin);
-        break;
       case EntrySetAction.copy:
         _move(context, moveType: MoveType.copy);
-        break;
       case EntrySetAction.move:
         _move(context, moveType: MoveType.move);
-        break;
       case EntrySetAction.rename:
         _rename(context);
-        break;
       case EntrySetAction.convert:
         _convert(context);
-        break;
       case EntrySetAction.toggleFavourite:
         _toggleFavourite(context);
-        break;
       case EntrySetAction.rotateCCW:
         _rotate(context, clockwise: false);
-        break;
       case EntrySetAction.rotateCW:
         _rotate(context, clockwise: true);
-        break;
       case EntrySetAction.flip:
         _flip(context);
-        break;
       case EntrySetAction.editDate:
         editDate(context);
-        break;
       case EntrySetAction.editLocation:
         _editLocation(context);
-        break;
       case EntrySetAction.editTitleDescription:
         _editTitleDescription(context);
-        break;
       case EntrySetAction.editRating:
         _editRating(context);
-        break;
       case EntrySetAction.editTags:
         _editTags(context);
-        break;
       case EntrySetAction.removeMetadata:
         _removeMetadata(context);
-        break;
     }
   }
 

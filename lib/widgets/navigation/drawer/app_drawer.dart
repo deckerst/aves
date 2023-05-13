@@ -85,6 +85,7 @@ class _AppDrawerState extends State<AppDrawer> {
         child: Selector<MediaQueryData, double>(
           selector: (context, mq) => mq.effectiveBottomPadding,
           builder: (context, mqPaddingBottom, child) {
+            final textScaleFactor = MediaQuery.textScaleFactorOf(context);
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
               controller: _scrollController,
@@ -93,7 +94,7 @@ class _AppDrawerState extends State<AppDrawer> {
               padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: IconTheme(
                 data: iconTheme.copyWith(
-                  size: iconTheme.size! * MediaQuery.textScaleFactorOf(context),
+                  size: iconTheme.size! * textScaleFactor,
                 ),
                 child: Column(
                   children: drawerItems,
@@ -238,25 +239,21 @@ class _AppDrawerState extends State<AppDrawer> {
               stream: source.eventBus.on<AlbumsChangedEvent>(),
               builder: (context, _) => Text('${source.rawAlbums.length}'),
             );
-            break;
           case CountryListPage.routeName:
             trailing = StreamBuilder(
               stream: source.eventBus.on<CountriesChangedEvent>(),
               builder: (context, _) => Text('${source.sortedCountries.length}'),
             );
-            break;
           case PlaceListPage.routeName:
             trailing = StreamBuilder(
               stream: source.eventBus.on<PlacesChangedEvent>(),
               builder: (context, _) => Text('${source.sortedPlaces.length}'),
             );
-            break;
           case TagListPage.routeName:
             trailing = StreamBuilder(
               stream: source.eventBus.on<TagsChangedEvent>(),
               builder: (context, _) => Text('${source.sortedTags.length}'),
             );
-            break;
         }
 
         return PageNavTile(

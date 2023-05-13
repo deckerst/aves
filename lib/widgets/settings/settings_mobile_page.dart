@@ -124,7 +124,6 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             showFeedback(context, context.l10n.genericFailureFeedback);
           }
         }
-        break;
       case SettingsAction.import:
         // specifying the JSON MIME type to restrict openable files is correct in theory,
         // but older devices (e.g. SM-P580, API 27) that do not recognize JSON files as such would filter them out
@@ -172,7 +171,6 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             showFeedback(context, context.l10n.genericFailureFeedback);
           }
         }
-        break;
     }
   }
 

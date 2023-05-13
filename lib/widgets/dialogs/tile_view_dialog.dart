@@ -195,8 +195,9 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
       dropdownColor: Themes.thirdLayerColor(context),
     );
 
-    final iconSize = IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
-    final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final iconSize = IconTheme.of(context).size! * textScaleFactor;
+    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
     final child = isPortrait
         ? Column(
             mainAxisSize: MainAxisSize.min,

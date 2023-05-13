@@ -86,28 +86,23 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
         start: !useTvLayout,
         top: false,
         bottom: false,
-        child: Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.padding.top,
-          builder: (context, mqPaddingTop, child) {
-            return ValueListenableBuilder<double>(
-              valueListenable: appBarHeightNotifier,
-              builder: (context, appBarHeight, child) {
-                return _FilterGrid<T>(
-                  // key is expected by test driver
-                  key: const Key('filter-grid'),
-                  settingsRouteKey: settingsRouteKey,
-                  appBar: appBar,
-                  appBarHeight: mqPaddingTop + appBarHeight,
-                  sections: sections,
-                  newFilters: newFilters,
-                  sortFactor: sortFactor,
-                  showHeaders: showHeaders,
-                  selectable: selectable,
-                  applyQuery: applyQuery,
-                  emptyBuilder: emptyBuilder,
-                  heroType: heroType,
-                );
-              },
+        child: ValueListenableBuilder<double>(
+          valueListenable: appBarHeightNotifier,
+          builder: (context, appBarHeight, child) {
+            return _FilterGrid<T>(
+              // key is expected by test driver
+              key: const Key('filter-grid'),
+              settingsRouteKey: settingsRouteKey,
+              appBar: appBar,
+              appBarHeight: MediaQuery.paddingOf(context).top + appBarHeight,
+              sections: sections,
+              newFilters: newFilters,
+              sortFactor: sortFactor,
+              showHeaders: showHeaders,
+              selectable: selectable,
+              applyQuery: applyQuery,
+              emptyBuilder: emptyBuilder,
+              heroType: heroType,
             );
           },
         ),
@@ -332,80 +327,76 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                     // do not listen for animation delay change
                     final target = context.read<DurationsData>().staggeredAnimationPageTarget;
                     final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
-                    return Selector<MediaQueryData, double>(
-                      selector: (context, mq) => mq.textScaleFactor,
-                      builder: (context, textScaleFactor, child) {
-                        final tileHeight = CoveredFilterChip.tileHeight(
-                          extent: thumbnailExtent,
-                          textScaleFactor: textScaleFactor,
-                          showText: tileLayout != TileLayout.list,
-                        );
-                        return GridTheme(
-                          extent: thumbnailExtent,
-                          child: FilterListDetailsTheme(
-                            extent: thumbnailExtent,
-                            child: AnimatedBuilder(
-                              animation: vaults,
-                              builder: (context, child) {
-                                return SectionedFilterListLayoutProvider<T>(
-                                  sections: visibleSections,
-                                  showHeaders: widget.showHeaders,
-                                  selectable: widget.selectable,
-                                  tileLayout: tileLayout,
-                                  scrollableWidth: scrollableWidth,
-                                  columnCount: columnCount,
-                                  spacing: tileSpacing,
-                                  horizontalPadding: horizontalPadding,
-                                  tileWidth: thumbnailExtent,
-                                  tileHeight: tileHeight,
-                                  tileBuilder: (gridItem, tileSize) {
-                                    final extent = tileSize.shortestSide;
-                                    final tile = InteractiveFilterTile(
-                                      gridItem: gridItem,
-                                      chipExtent: extent,
-                                      thumbnailExtent: extent,
-                                      tileLayout: tileLayout,
-                                      banner: _getFilterBanner(context, gridItem.filter),
-                                      heroType: widget.heroType,
-                                    );
-                                    if (!settings.useTvLayout) return tile;
 
-                                    return Focus(
-                                      onFocusChange: (focused) {
-                                        if (focused) {
-                                          _focusedItemNotifier.value = gridItem;
-                                        } else if (_focusedItemNotifier.value == gridItem) {
-                                          _focusedItemNotifier.value = null;
-                                        }
-                                      },
-                                      child: ValueListenableBuilder<FilterGridItem<T>?>(
-                                        valueListenable: _focusedItemNotifier,
-                                        builder: (context, focusedItem, child) {
-                                          return AnimatedScale(
-                                            scale: focusedItem == gridItem ? 1 : .9,
-                                            curve: Curves.fastOutSlowIn,
-                                            duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
-                                            child: child!,
-                                          );
-                                        },
-                                        child: tile,
-                                      ),
-                                    );
+                    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+                    final tileHeight = CoveredFilterChip.tileHeight(
+                      extent: thumbnailExtent,
+                      textScaleFactor: textScaleFactor,
+                      showText: tileLayout != TileLayout.list,
+                    );
+                    return GridTheme(
+                      extent: thumbnailExtent,
+                      child: FilterListDetailsTheme(
+                        extent: thumbnailExtent,
+                        child: AnimatedBuilder(
+                          animation: vaults,
+                          builder: (context, child) {
+                            return SectionedFilterListLayoutProvider<T>(
+                              sections: visibleSections,
+                              showHeaders: widget.showHeaders,
+                              selectable: widget.selectable,
+                              tileLayout: tileLayout,
+                              scrollableWidth: scrollableWidth,
+                              columnCount: columnCount,
+                              spacing: tileSpacing,
+                              horizontalPadding: horizontalPadding,
+                              tileWidth: thumbnailExtent,
+                              tileHeight: tileHeight,
+                              tileBuilder: (gridItem, tileSize) {
+                                final extent = tileSize.shortestSide;
+                                final tile = InteractiveFilterTile(
+                                  gridItem: gridItem,
+                                  chipExtent: extent,
+                                  thumbnailExtent: extent,
+                                  tileLayout: tileLayout,
+                                  banner: _getFilterBanner(context, gridItem.filter),
+                                  heroType: widget.heroType,
+                                );
+                                if (!settings.useTvLayout) return tile;
+
+                                return Focus(
+                                  onFocusChange: (focused) {
+                                    if (focused) {
+                                      _focusedItemNotifier.value = gridItem;
+                                    } else if (_focusedItemNotifier.value == gridItem) {
+                                      _focusedItemNotifier.value = null;
+                                    }
                                   },
-                                  tileAnimationDelay: tileAnimationDelay,
-                                  coverRatioResolver: (item) {
-                                    final coverEntry = source.coverEntry(item.filter) ?? item.entry;
-                                    return coverEntry?.displayAspectRatio ?? 1;
-                                  },
-                                  child: child!,
+                                  child: ValueListenableBuilder<FilterGridItem<T>?>(
+                                    valueListenable: _focusedItemNotifier,
+                                    builder: (context, focusedItem, child) {
+                                      return AnimatedScale(
+                                        scale: focusedItem == gridItem ? 1 : .9,
+                                        curve: Curves.fastOutSlowIn,
+                                        duration: context.select<DurationsData, Duration>((v) => v.tvImageFocusAnimation),
+                                        child: child!,
+                                      );
+                                    },
+                                    child: tile,
+                                  ),
                                 );
                               },
-                              child: child,
-                            ),
-                          ),
-                        );
-                      },
-                      child: child,
+                              tileAnimationDelay: tileAnimationDelay,
+                              coverRatioResolver: (item) {
+                                final coverEntry = source.coverEntry(item.filter) ?? item.entry;
+                                return coverEntry?.displayAspectRatio ?? 1;
+                              },
+                              child: child!,
+                            );
+                          },
+                          child: child,
+                        ),
+                      ),
                     );
                   },
                   child: child,
@@ -579,7 +570,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final metrics = context.select<TileExtentController, Tuple2<double, double>>((v) => Tuple2(v.spacing, v.horizontalPadding));
     final tileSpacing = metrics.item1;
     final horizontalPadding = metrics.item2;

@@ -37,7 +37,7 @@ class AvesLogo extends StatelessWidget {
       radius: size / 2,
       child: CircleAvatar(
         backgroundColor: Colors.white,
-        radius: size / 2 - AvesBorder.curvedBorderWidth,
+        radius: size / 2 - AvesBorder.curvedBorderWidth(context),
         child: Padding(
           padding: EdgeInsets.only(top: size / 15),
           child: child,

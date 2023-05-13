@@ -76,22 +76,18 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     switch (sortFactor) {
       case ChipSortFactor.name:
         allMapEntries = toGridItem(source, filters)..sort(compareFiltersByName);
-        break;
       case ChipSortFactor.date:
         allMapEntries = toGridItem(source, filters)..sort(compareFiltersByDate);
-        break;
       case ChipSortFactor.count:
         final filtersWithCount = List.of(filters.map((filter) => MapEntry(filter, source.count(filter))));
         filtersWithCount.sort(compareFiltersByEntryCount);
         filters = filtersWithCount.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
-        break;
       case ChipSortFactor.size:
         final filtersWithSize = List.of(filters.map((filter) => MapEntry(filter, source.size(filter))));
         filtersWithSize.sort(compareFiltersBySize);
         filters = filtersWithSize.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
-        break;
     }
     if (reverse) {
       allMapEntries = allMapEntries.reversed.toList();

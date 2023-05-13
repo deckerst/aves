@@ -144,6 +144,7 @@ class _VideoCoverState extends State<VideoCover> {
                     child: ThumbnailImage(
                       entry: entry,
                       extent: extent,
+                      devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
                       fit: BoxFit.contain,
                       showLoadingBackground: false,
                     ),

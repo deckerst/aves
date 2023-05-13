@@ -80,7 +80,7 @@ class SvgMetadataService {
       final docDir = Map.fromEntries([
         ...root.attributes.where((a) => _attributes.contains(a.name.qualified)).map((a) => MapEntry(formatKey(a.name.qualified), a.value)),
         ..._textElements.map((name) {
-          final value = root.getElement(name)?.text;
+          final value = root.getElement(name)?.innerText;
           return value != null ? MapEntry(formatKey(name), value) : null;
         }).whereNotNull(),
       ]);

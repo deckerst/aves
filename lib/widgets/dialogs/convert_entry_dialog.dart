@@ -78,11 +78,9 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
         final displaySize = entries.first.displaySize;
         _widthController.text = '${displaySize.width.round()}';
         _heightController.text = '${displaySize.height.round()}';
-        break;
       case LengthUnit.percent:
         _widthController.text = '100';
         _heightController.text = '100';
-        break;
     }
   }
 
@@ -149,10 +147,8 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                       switch (_lengthUnit) {
                         case LengthUnit.px:
                           _heightController.text = '${(width / entries.first.displayAspectRatio).round()}';
-                          break;
                         case LengthUnit.percent:
                           _heightController.text = '$width';
-                          break;
                       }
                     } else {
                       _heightController.text = '';
@@ -175,10 +171,8 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                       switch (_lengthUnit) {
                         case LengthUnit.px:
                           _widthController.text = '${(height * entries.first.displayAspectRatio).round()}';
-                          break;
                         case LengthUnit.percent:
                           _widthController.text = '$height';
-                          break;
                       }
                     } else {
                       _widthController.text = '';

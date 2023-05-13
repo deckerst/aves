@@ -274,11 +274,9 @@ class DiffMatchPatch {
         case Operation.insert:
           count_insert++;
           text_insert.write(diffs[pointer].text);
-          break;
         case Operation.delete:
           count_delete++;
           text_delete.write(diffs[pointer].text);
-          break;
         case Operation.equal:
           // Upon reaching an equality, check for prior redundancies.
           if (count_delete >= 1 && count_insert >= 1) {
@@ -295,7 +293,6 @@ class DiffMatchPatch {
           count_delete = 0;
           text_delete.clear();
           text_insert.clear();
-          break;
       }
       pointer++;
     }
@@ -1013,12 +1010,10 @@ class DiffMatchPatch {
           count_insert++;
           text_insert += diffs[pointer].text;
           pointer++;
-          break;
         case Operation.delete:
           count_delete++;
           text_delete += diffs[pointer].text;
           pointer++;
-          break;
         case Operation.equal:
           // Upon reaching an equality, check for prior redundancies.
           if (count_delete + count_insert > 1) {
@@ -1068,7 +1063,6 @@ class DiffMatchPatch {
           count_delete = 0;
           text_delete = '';
           text_insert = '';
-          break;
       }
     }
     if (diffs.last.text.isEmpty) {
@@ -1155,17 +1149,14 @@ class DiffMatchPatch {
           html.write('<ins style="background:#e6ffe6;">');
           html.write(text);
           html.write('</ins>');
-          break;
         case Operation.delete:
           html.write('<del style="background:#ffe6e6;">');
           html.write(text);
           html.write('</del>');
-          break;
         case Operation.equal:
           html.write('<span>');
           html.write(text);
           html.write('</span>');
-          break;
       }
     }
     return html.toString();
@@ -1209,16 +1200,13 @@ class DiffMatchPatch {
       switch (aDiff.operation) {
         case Operation.insert:
           insertions += aDiff.text.length;
-          break;
         case Operation.delete:
           deletions += aDiff.text.length;
-          break;
         case Operation.equal:
           // A deletion and an insertion is one substitution.
           levenshtein += max(insertions, deletions);
           insertions = 0;
           deletions = 0;
-          break;
       }
     }
     levenshtein += max(insertions, deletions);
@@ -1239,17 +1227,14 @@ class DiffMatchPatch {
           text.write('+');
           text.write(Uri.encodeFull(aDiff.text));
           text.write('\t');
-          break;
         case Operation.delete:
           text.write('-');
           text.write(aDiff.text.length);
           text.write('\t');
-          break;
         case Operation.equal:
           text.write('=');
           text.write(aDiff.text.length);
           text.write('\t');
-          break;
       }
     }
     String delta = text.toString();
@@ -1289,7 +1274,6 @@ class DiffMatchPatch {
             throw ArgumentError('Illegal escape in diff_fromDelta: $param');
           }
           diffs.add(Diff(Operation.insert, param));
-          break;
         case '-':
         // Fall through.
         case '=':
@@ -1314,7 +1298,6 @@ class DiffMatchPatch {
           } else {
             diffs.add(Diff(Operation.delete, text));
           }
-          break;
         default:
           // Anything else is an error.
           throw ArgumentError('Invalid diff operation in diff_fromDelta: ${token[0]}');

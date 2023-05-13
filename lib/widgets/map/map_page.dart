@@ -247,6 +247,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         controller: _mapController,
         collectionListenable: openingCollection,
         entries: openingCollection.sortedEntries,
+        availableSize: MediaQuery.sizeOf(context),
         initialCenter: widget.initialEntry?.latLng ?? widget.overlayEntry?.center,
         isAnimatingNotifier: _isPageAnimatingNotifier,
         dotLocationNotifier: _dotLocationNotifier,
@@ -487,10 +488,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
             }
             _mapController.moveTo(location);
           }
-          break;
         case MapClusterAction.removeLocation:
           await delegate.removeLocation(context, clusterEntries);
-          break;
       }
     }
   }

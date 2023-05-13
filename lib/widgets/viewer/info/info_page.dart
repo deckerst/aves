@@ -61,39 +61,34 @@ class _InfoPageState extends State<InfoPage> {
           bottom: false,
           child: NotificationListener<ScrollNotification>(
             onNotification: _handleTopScroll,
-            child: Selector<MediaQueryData, double>(
-              selector: (context, mq) => mq.size.width,
-              builder: (context, mqWidth, child) {
-                return ValueListenableBuilder<AvesEntry?>(
-                  valueListenable: widget.entryNotifier,
-                  builder: (context, mainEntry, child) {
-                    if (mainEntry == null) return const SizedBox();
+            child: ValueListenableBuilder<AvesEntry?>(
+              valueListenable: widget.entryNotifier,
+              builder: (context, mainEntry, child) {
+                if (mainEntry == null) return const SizedBox();
 
-                    final isSelecting = context.select<Selection<AvesEntry>?, bool>((v) => v?.isSelecting ?? false);
-                    Widget _buildContent({AvesEntry? pageEntry}) {
-                      final targetEntry = pageEntry ?? mainEntry;
-                      return EmbeddedDataOpener(
-                        enabled: !isSelecting,
-                        entry: targetEntry,
-                        child: _InfoPageContent(
-                          collection: widget.collection,
-                          entry: targetEntry,
-                          isScrollingNotifier: widget.isScrollingNotifier,
-                          scrollController: _scrollController,
-                          split: mqWidth > splitScreenWidthThreshold,
-                          goToViewer: _goToViewer,
-                        ),
-                      );
-                    }
+                final isSelecting = context.select<Selection<AvesEntry>?, bool>((v) => v?.isSelecting ?? false);
+                Widget _buildContent({AvesEntry? pageEntry}) {
+                  final targetEntry = pageEntry ?? mainEntry;
+                  return EmbeddedDataOpener(
+                    enabled: !isSelecting,
+                    entry: targetEntry,
+                    child: _InfoPageContent(
+                      collection: widget.collection,
+                      entry: targetEntry,
+                      isScrollingNotifier: widget.isScrollingNotifier,
+                      scrollController: _scrollController,
+                      split: MediaQuery.sizeOf(context).width > splitScreenWidthThreshold,
+                      goToViewer: _goToViewer,
+                    ),
+                  );
+                }
 
-                    return mainEntry.isBurst
-                        ? PageEntryBuilder(
-                            multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
-                            builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                          )
-                        : _buildContent();
-                  },
-                );
+                return mainEntry.isBurst
+                    ? PageEntryBuilder(
+                        multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                        builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                      )
+                    : _buildContent();
               },
             ),
           ),

@@ -21,34 +21,24 @@ class MetadataDbUpgrader {
       switch (oldVersion) {
         case 1:
           await _upgradeFrom1(db);
-          break;
         case 2:
           await _upgradeFrom2(db);
-          break;
         case 3:
           await _upgradeFrom3(db);
-          break;
         case 4:
           await _upgradeFrom4(db);
-          break;
         case 5:
           await _upgradeFrom5(db);
-          break;
         case 6:
           await _upgradeFrom6(db);
-          break;
         case 7:
           await _upgradeFrom7(db);
-          break;
         case 8:
           await _upgradeFrom8(db);
-          break;
         case 9:
           await _upgradeFrom9(db);
-          break;
         case 10:
           await _upgradeFrom10(db);
-          break;
       }
       oldVersion++;
     }

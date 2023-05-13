@@ -8,7 +8,7 @@ class MosaicGridRow extends MultiChildRenderObjectWidget {
   final double spacing;
   final TextDirection textDirection;
 
-  MosaicGridRow({
+  const MosaicGridRow({
     super.key,
     required this.rowLayout,
     required this.spacing,

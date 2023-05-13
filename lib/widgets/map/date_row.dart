@@ -6,7 +6,6 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/map/info_row.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MapDateRow extends StatelessWidget {
   final AvesEntry? entry;
@@ -19,7 +18,7 @@ class MapDateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.l10n.localeName;
-    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+    final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     final date = entry?.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;

@@ -88,21 +88,18 @@ class AssParser {
                     borderColor: extraStyle.borderColor?.withAlpha(a),
                   );
                 }
-                break;
               }
             case '1a':
               {
                 // \1a: fill alpha
                 final a = _parseAlpha(param);
                 if (a != null) textStyle = textStyle.copyWith(color: textStyle.color?.withAlpha(a));
-                break;
               }
             case '3a':
               {
                 // \3a: border alpha
                 final a = _parseAlpha(param);
                 if (a != null) extraStyle = extraStyle.copyWith(borderColor: extraStyle.borderColor?.withAlpha(a));
-                break;
               }
             case '4a':
               {
@@ -118,43 +115,36 @@ class AssParser {
                               ))
                           .toList());
                 }
-                break;
               }
             case 'a':
               // \a: line alignment (legacy)
               extraStyle = _copyWithAlignment(_parseLegacyAlignment(param), extraStyle);
-              break;
             case 'an':
               // \an: line alignment
               extraStyle = _copyWithAlignment(_parseNewAlignment(param), extraStyle);
-              break;
             case 'b':
               {
                 // \b: bold
                 final weight = _parseFontWeight(param);
                 if (weight != null) textStyle = textStyle.copyWith(fontWeight: weight);
-                break;
               }
             case 'be':
               {
                 // \be: blurs the edges of the text
                 final times = int.tryParse(param);
                 if (times != null) extraStyle = extraStyle.copyWith(edgeBlur: times == 0 ? 0 : 1);
-                break;
               }
             case 'blur':
               {
                 // \blur: blurs the edges of the text (Gaussian kernel)
                 final strength = double.tryParse(param);
                 if (strength != null) extraStyle = extraStyle.copyWith(edgeBlur: strength / 2);
-                break;
               }
             case 'bord':
               {
                 // \bord: border width
                 final size = double.tryParse(param);
                 if (size != null) extraStyle = extraStyle.copyWith(borderWidth: size);
-                break;
               }
             case 'c':
             case '1c':
@@ -164,7 +154,6 @@ class AssParser {
                 if (color != null) {
                   textStyle = textStyle.copyWith(color: color.withAlpha(textStyle.color?.alpha ?? 0xFF));
                 }
-                break;
               }
             case '3c':
               {
@@ -175,7 +164,6 @@ class AssParser {
                     borderColor: color.withAlpha(extraStyle.borderColor?.alpha ?? 0xFF),
                   );
                 }
-                break;
               }
             case '4c':
               {
@@ -191,12 +179,10 @@ class AssParser {
                               ))
                           .toList());
                 }
-                break;
               }
             case 'clip':
               // \clip: clip (within rectangle or path)
               line = line.copyWith(clip: _parseClip(param));
-              break;
             case 'fax':
               {
                 final factor = double.tryParse(param);
@@ -204,7 +190,6 @@ class AssParser {
                 if (factor != null && (line.position == null || extraStyle.shearX == null)) {
                   extraStyle = extraStyle.copyWith(shearX: factor);
                 }
-                break;
               }
             case 'fay':
               {
@@ -213,28 +198,24 @@ class AssParser {
                 if (factor != null && (line.position == null || extraStyle.shearY == null)) {
                   extraStyle = extraStyle.copyWith(shearY: factor);
                 }
-                break;
               }
             case 'fn':
               {
                 final name = param;
                 // TODO TLAD [subtitles] extract fonts from attachment streams, and load these fonts in Flutter
                 if (name.isNotEmpty) textStyle = textStyle.copyWith(fontFamily: name);
-                break;
               }
             case 'frx':
               {
                 // \frx: text rotation (X axis)
                 final amount = double.tryParse(param);
                 if (amount != null) extraStyle = extraStyle.copyWith(rotationX: amount);
-                break;
               }
             case 'fry':
               {
                 // \fry: text rotation (Y axis)
                 final amount = double.tryParse(param);
                 if (amount != null) extraStyle = extraStyle.copyWith(rotationY: amount);
-                break;
               }
             case 'fr':
             case 'frz':
@@ -242,40 +223,34 @@ class AssParser {
                 // \frz: text rotation (Z axis)
                 final amount = double.tryParse(param);
                 if (amount != null) extraStyle = extraStyle.copyWith(rotationZ: amount);
-                break;
               }
             case 'fs':
               {
                 // \fs: font size
                 final size = int.tryParse(param);
                 if (size != null) textStyle = textStyle.copyWith(fontSize: size * scale);
-                break;
               }
             case 'fscx':
               {
                 // \fscx: font scale (horizontal)
                 final scale = int.tryParse(param);
                 if (scale != null) extraStyle = extraStyle.copyWith(scaleX: scale.toDouble() / 100);
-                break;
               }
             case 'fscy':
               {
                 // \fscx: font scale (vertical)
                 final scale = int.tryParse(param);
                 if (scale != null) extraStyle = extraStyle.copyWith(scaleY: scale.toDouble() / 100);
-                break;
               }
             case 'fsp':
               {
                 // \fsp: letter spacing
                 final spacing = double.tryParse(param);
                 textStyle = textStyle.copyWith(letterSpacing: spacing);
-                break;
               }
             case 'i':
               // \i: italics
               textStyle = textStyle.copyWith(fontStyle: param == '1' ? FontStyle.italic : FontStyle.normal);
-              break;
             case 'p':
               {
                 // \p drawing paths
@@ -290,7 +265,6 @@ class AssParser {
                     extraStyle = extraStyle.copyWith(drawingPaths: null);
                   }
                 }
-                break;
               }
             case 'pos':
               {
@@ -309,20 +283,16 @@ class AssParser {
                     }
                   }
                 }
-                break;
               }
             case 'r':
               // \r: reset
               textStyle = baseStyle;
-              break;
             case 's':
               // \s: strikeout
               textStyle = textStyle.copyWith(decoration: param == '1' ? TextDecoration.lineThrough : TextDecoration.none);
-              break;
             case 'u':
               // \u: underline
               textStyle = textStyle.copyWith(decoration: param == '1' ? TextDecoration.underline : TextDecoration.none);
-              break;
             // TODO TLAD [subtitles] SHOULD support the following
             case 'shad':
             case 't': // \t: animated transform
@@ -512,13 +482,11 @@ class AssParser {
                 path!.cubicTo(points[0], points[1], points[2], points[3], points[4], points[5]);
               }
             }
-            break;
           case 'c':
             if (path != null) {
               path!.close();
             }
             path = null;
-            break;
           case 'l':
             if (path != null) {
               const lParamCount = 2;
@@ -528,7 +496,6 @@ class AssParser {
                 path!.lineTo(points[0], points[1]);
               }
             }
-            break;
           case 'm':
             if (params.length == 2) {
               if (path != null) {
@@ -538,16 +505,13 @@ class AssParser {
               paths.add(path!);
               path!.moveTo(params[0], params[1]);
             }
-            break;
           case 'n':
             if (params.length == 2 && path != null) {
               path!.moveTo(params[0], params[1]);
             }
-            break;
           case 's':
           case 'p':
             debugPrint('unhandled ASS drawing command=$command');
-            break;
         }
       }
     });

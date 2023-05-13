@@ -114,13 +114,11 @@ class _SearchPageState extends State<SearchPage> {
           key: const ValueKey<SearchBody>(SearchBody.suggestions),
           child: widget.delegate.buildSuggestions(context),
         );
-        break;
       case SearchBody.results:
         body = KeyedSubtree(
           key: const ValueKey<SearchBody>(SearchBody.results),
           child: widget.delegate.buildResults(context),
         );
-        break;
       case null:
         break;
     }

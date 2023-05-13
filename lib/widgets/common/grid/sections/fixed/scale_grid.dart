@@ -49,7 +49,6 @@ class FixedExtentGridPainter extends CustomPainter {
             1,
           ],
         );
-        break;
       case TileLayout.list:
         chipSize = Size.square(tileSize.shortestSide);
         final chipCenterToEdge = chipSize.width / 2;
@@ -71,7 +70,6 @@ class FixedExtentGridPainter extends CustomPainter {
             1,
           ],
         );
-        break;
     }
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke

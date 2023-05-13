@@ -28,43 +28,30 @@ class H264 {
     switch (profileIndex) {
       case profileBaseline:
         profile = 'Baseline';
-        break;
       case profileConstrainedBaseline:
         profile = 'Constrained Baseline';
-        break;
       case profileMain:
         profile = 'Main';
-        break;
       case profileExtended:
         profile = 'Extended';
-        break;
       case profileHigh:
         profile = 'High';
-        break;
       case profileHigh10:
         profile = 'High 10';
-        break;
       case profileHigh10Intra:
         profile = 'High 10 Intra';
-        break;
       case profileHigh422:
         profile = 'High 4:2:2';
-        break;
       case profileHigh422Intra:
         profile = 'High 4:2:2 Intra';
-        break;
       case profileHigh444:
         profile = 'High 4:4:4';
-        break;
       case profileHigh444Predictive:
         profile = 'High 4:4:4 Predictive';
-        break;
       case profileHigh444Intra:
         profile = 'High 4:4:4 Intra';
-        break;
       case profileCAVLC444:
         profile = 'CAVLC 4:4:4';
-        break;
       default:
         return '$profileIndex';
     }

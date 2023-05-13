@@ -14,7 +14,8 @@ class DecoratedThumbnail extends StatelessWidget {
   final Object? Function()? heroTagger;
 
   static final Color borderColor = Colors.grey.shade700;
-  static final double borderWidth = AvesBorder.straightBorderWidth;
+
+  static double borderWidth(BuildContext context) => AvesBorder.straightBorderWidth(context);
 
   const DecoratedThumbnail({
     super.key,
@@ -35,6 +36,7 @@ class DecoratedThumbnail extends StatelessWidget {
     Widget child = ThumbnailImage(
       entry: entry,
       extent: tileExtent,
+      devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
       isMosaic: isMosaic,
       cancellableNotifier: cancellableNotifier,
       heroTag: heroTagger?.call(),
@@ -64,7 +66,7 @@ class DecoratedThumbnail extends StatelessWidget {
       foregroundDecoration: BoxDecoration(
         border: Border.fromBorderSide(BorderSide(
           color: borderColor,
-          width: borderWidth,
+          width: borderWidth(context),
         )),
       ),
       width: thumbnailWidth,

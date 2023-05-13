@@ -82,7 +82,6 @@ class ScaleLayerWidget extends StatelessWidget {
         // meters
         distanceMeters = scaleMeters[scaleLevel];
         displayDistance = distanceMeters >= metersInAKilometer ? '${(distanceMeters / metersInAKilometer).toStringAsFixed(0)} km' : '${distanceMeters.toStringAsFixed(0)} m';
-        break;
       case UnitSystem.imperial:
         if (scaleLevel < 15) {
           // miles
@@ -95,7 +94,6 @@ class ScaleLayerWidget extends StatelessWidget {
           distanceMeters = distanceFeet * metersInAFoot;
           displayDistance = '${distanceFeet.toStringAsFixed(0)} ft';
         }
-        break;
     }
 
     final start = map.project(center);

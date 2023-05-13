@@ -32,73 +32,68 @@ class AvesAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final useTvLayout = settings.useTvLayout;
-    return Selector<MediaQueryData, double>(
-      selector: (context, mq) => mq.padding.top,
-      builder: (context, mqPaddingTop, child) {
-        return SliverPersistentHeader(
-          floating: !useTvLayout,
-          pinned: pinned,
-          delegate: _SliverAppBarDelegate(
-            height: mqPaddingTop + appBarHeightForContentHeight(contentHeight),
-            child: child!,
-          ),
-        );
-      },
-      child: DirectionalSafeArea(
-        start: !useTvLayout,
-        bottom: false,
-        child: AvesFloatingBar(
-          builder: (context, backgroundColor, child) => Material(
-            color: backgroundColor,
-            child: child,
-          ),
-          child: Column(
-            children: [
-              SizedBox(
-                height: kToolbarHeight * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor),
-                child: Row(
-                  children: [
-                    leading != null
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Hero(
-                              tag: leadingHeroTag,
-                              flightShuttleBuilder: _flightShuttleBuilder,
-                              transitionOnUserGestures: true,
-                              child: FontSizeIconTheme(
-                                child: leading!,
+    return SliverPersistentHeader(
+      floating: !useTvLayout,
+      pinned: pinned,
+      delegate: _SliverAppBarDelegate(
+        height: MediaQuery.paddingOf(context).top + appBarHeightForContentHeight(contentHeight),
+        child: DirectionalSafeArea(
+          start: !useTvLayout,
+          bottom: false,
+          child: AvesFloatingBar(
+            builder: (context, backgroundColor, child) => Material(
+              color: backgroundColor,
+              child: child,
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: kToolbarHeight * textScaleFactor,
+                  child: Row(
+                    children: [
+                      leading != null
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              child: Hero(
+                                tag: leadingHeroTag,
+                                flightShuttleBuilder: _flightShuttleBuilder,
+                                transitionOnUserGestures: true,
+                                child: FontSizeIconTheme(
+                                  child: leading!,
+                                ),
                               ),
-                            ),
-                          )
-                        : const SizedBox(width: 16),
-                    Expanded(
-                      child: DefaultTextStyle(
-                        style: Theme.of(context).appBarTheme.titleTextStyle!,
-                        child: Hero(
-                          tag: titleHeroTag,
-                          flightShuttleBuilder: _flightShuttleBuilder,
-                          transitionOnUserGestures: true,
-                          child: AnimatedSwitcher(
-                            duration: context.read<DurationsData>().iconAnimation,
-                            child: FontSizeIconTheme(
-                              child: Row(
-                                key: ValueKey(transitionKey),
-                                children: [
-                                  Expanded(child: title),
-                                  ...actions,
-                                ],
+                            )
+                          : const SizedBox(width: 16),
+                      Expanded(
+                        child: DefaultTextStyle(
+                          style: Theme.of(context).appBarTheme.titleTextStyle!,
+                          child: Hero(
+                            tag: titleHeroTag,
+                            flightShuttleBuilder: _flightShuttleBuilder,
+                            transitionOnUserGestures: true,
+                            child: AnimatedSwitcher(
+                              duration: context.read<DurationsData>().iconAnimation,
+                              child: FontSizeIconTheme(
+                                child: Row(
+                                  key: ValueKey(transitionKey),
+                                  children: [
+                                    Expanded(child: title),
+                                    ...actions,
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              if (bottom != null) bottom!,
-            ],
+                if (bottom != null) bottom!,
+              ],
+            ),
           ),
         ),
       ),

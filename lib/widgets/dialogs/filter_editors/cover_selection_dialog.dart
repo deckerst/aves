@@ -57,7 +57,10 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   static const double itemPickerExtent = 46;
   static const double appPickerExtent = 32;
 
-  double tabBarHeight(BuildContext context) => 64 * max(1, MediaQuery.textScaleFactorOf(context));
+  double tabBarHeight(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    return 64 * max(1, textScaleFactor);
+  }
 
   static const double tabIndicatorWeight = 2;
 

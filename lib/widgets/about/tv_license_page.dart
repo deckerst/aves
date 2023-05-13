@@ -1,7 +1,9 @@
+import 'dart:developer' show Flow, Timeline;
+
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/intents.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -209,10 +211,21 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
   bool _loaded = false;
 
   Future<void> _initLicenses() async {
+    int debugFlowId = -1;
+    assert(() {
+      final Flow flow = Flow.begin();
+      Timeline.timeSync('_initLicenses()', () {}, flow: flow);
+      debugFlowId = flow.id;
+      return true;
+    }());
     for (final LicenseEntry license in widget.licenseEntries) {
       if (!mounted) {
         return;
       }
+      assert(() {
+        Timeline.timeSync('_initLicenses()', () {}, flow: Flow.step(debugFlowId));
+        return true;
+      }());
       final List<LicenseParagraph> paragraphs = await SchedulerBinding.instance.scheduleTask<List<LicenseParagraph>>(
         license.paragraphs.toList,
         Priority.animation,
@@ -237,6 +250,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
               ),
             ));
           } else {
+            assert(paragraph.indent >= 0);
             _licenses.add(Padding(
               padding: EdgeInsetsDirectional.only(top: 8.0, start: 16.0 * paragraph.indent),
               child: Text(paragraph.text),
@@ -248,16 +262,21 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
     setState(() {
       _loaded = true;
     });
+    assert(() {
+      Timeline.timeSync('Build scheduled', () {}, flow: Flow.end(debugFlowId));
+      return true;
+    }());
   }
 
   @override
   Widget build(BuildContext context) {
+    assert(debugCheckHasMaterialLocalizations(context));
     final MaterialLocalizations localizations = MaterialLocalizations.of(context);
     final ThemeData theme = Theme.of(context);
     final String title = widget.packageName;
     final String subtitle = localizations.licensesPackageDetailText(widget.licenseEntries.length);
-    const double pad = 24;
-    const EdgeInsets padding = EdgeInsets.only(left: pad, right: pad, bottom: pad);
+    final double pad = _getGutterSize(context);
+    final EdgeInsets padding = EdgeInsets.only(left: pad, right: pad, bottom: pad);
     final List<Widget> listWidgets = <Widget>[
       ..._licenses,
       if (!_loaded)
@@ -274,9 +293,11 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
       page = Scaffold(
         appBar: AppBar(
           title: _PackageLicensePageTitle(
-            title,
-            subtitle,
-            theme.primaryTextTheme,
+            title: title,
+            subtitle: subtitle,
+            theme: theme.useMaterial3 ? theme.textTheme : theme.primaryTextTheme,
+            titleTextStyle: theme.appBarTheme.titleTextStyle,
+            foregroundColor: theme.appBarTheme.foregroundColor,
           ),
         ),
         body: Center(
@@ -292,7 +313,11 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
                   // A Scrollbar is built-in below.
                   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                   child: Scrollbar(
-                    child: ListView(padding: padding, children: listWidgets),
+                    child: ListView(
+                      primary: true,
+                      padding: padding,
+                      children: listWidgets,
+                    ),
                   ),
                 ),
               ),
@@ -308,7 +333,12 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
             automaticallyImplyLeading: false,
             pinned: true,
             backgroundColor: theme.cardColor,
-            title: _PackageLicensePageTitle(title, subtitle, theme.textTheme),
+            title: _PackageLicensePageTitle(
+              title: title,
+              subtitle: subtitle,
+              theme: theme.textTheme,
+              titleTextStyle: theme.textTheme.titleLarge,
+            ),
           ),
           SliverPadding(
             padding: padding,
@@ -334,27 +364,36 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
 }
 
 class _PackageLicensePageTitle extends StatelessWidget {
-  const _PackageLicensePageTitle(
-    this.title,
-    this.subtitle,
-    this.theme,
-  );
+  const _PackageLicensePageTitle({
+    required this.title,
+    required this.subtitle,
+    required this.theme,
+    this.titleTextStyle,
+    this.foregroundColor,
+  });
 
   final String title;
   final String subtitle;
   final TextTheme theme;
+  final TextStyle? titleTextStyle;
+  final Color? foregroundColor;
 
   @override
   Widget build(BuildContext context) {
-    final Color? color = Theme.of(context).appBarTheme.foregroundColor;
-
+    final TextStyle? effectiveTitleTextStyle = titleTextStyle ?? theme.titleLarge;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(title, style: theme.titleLarge?.copyWith(color: color)),
-        Text(subtitle, style: theme.titleSmall?.copyWith(color: color)),
+        Text(title, style: effectiveTitleTextStyle?.copyWith(color: foregroundColor)),
+        Text(subtitle, style: theme.titleSmall?.copyWith(color: foregroundColor)),
       ],
     );
   }
 }
+
+const int _materialGutterThreshold = 720;
+const double _wideGutterSize = 24.0;
+const double _narrowGutterSize = 12.0;
+
+double _getGutterSize(BuildContext context) => MediaQuery.sizeOf(context).width >= _materialGutterThreshold ? _wideGutterSize : _narrowGutterSize;

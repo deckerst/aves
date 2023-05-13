@@ -209,14 +209,11 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
             case 90:
               canvas.translate(-imageDisplaySize.width, imageDisplaySize.height);
               canvas.rotate(degToRadian(270));
-              break;
             case 180:
               canvas.translate(0, imageDisplaySize.height);
               canvas.rotate(degToRadian(180));
-              break;
             case 270:
               canvas.rotate(degToRadian(90));
-              break;
           }
         } else {
           switch (rotationDegrees) {
@@ -224,13 +221,10 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
               canvas.translate(imageDisplaySize.width, 0);
               cropDx = -displayRegion.top.toDouble();
               cropDy = displayRegion.left.toDouble();
-              break;
             case 180:
               canvas.translate(imageDisplaySize.width, imageDisplaySize.height);
-              break;
             case 270:
               canvas.translate(0, imageDisplaySize.height);
-              break;
           }
           if (rotationDegrees != 0) {
             canvas.rotate(degToRadian(rotationDegrees.toDouble()));

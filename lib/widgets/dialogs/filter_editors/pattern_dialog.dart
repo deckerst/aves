@@ -2,7 +2,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:pattern_lock/pattern_lock.dart';
-import 'package:provider/provider.dart';
 
 class PatternDialog extends StatefulWidget {
   static const routeName = '/dialog/pattern';
@@ -33,7 +32,7 @@ class _PatternDialogState extends State<PatternDialog> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: SizedBox.square(
-              dimension: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide / 2),
+              dimension: MediaQuery.sizeOf(context).shortestSide / 2,
               child: PatternLock(
                 relativePadding: .4,
                 selectedColor: colorScheme.secondary,

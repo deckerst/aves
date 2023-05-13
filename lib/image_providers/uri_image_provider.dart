@@ -32,7 +32,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
   }
 
   @override
-  ImageStreamCompleter loadBuffer(UriImage key, DecoderBufferCallback decode) {
+  ImageStreamCompleter loadImage(UriImage key, ImageDecoderCallback decode) {
     final chunkEvents = StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
@@ -45,7 +45,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     );
   }
 
-  Future<ui.Codec> _loadAsync(UriImage key, DecoderBufferCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
+  Future<ui.Codec> _loadAsync(UriImage key, ImageDecoderCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
     assert(key == this);
 
     try {

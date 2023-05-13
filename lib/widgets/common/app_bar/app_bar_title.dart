@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class InteractiveAppBarTitle extends StatelessWidget {
   final GestureTapCallback? onTap;
@@ -13,6 +12,7 @@ class InteractiveAppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return GestureDetector(
       onTap: onTap,
       // use a `Container` with a dummy color to make it expand
@@ -20,7 +20,7 @@ class InteractiveAppBarTitle extends StatelessWidget {
       child: Container(
         alignment: AlignmentDirectional.centerStart,
         color: Colors.transparent,
-        height: kToolbarHeight * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor),
+        height: kToolbarHeight * textScaleFactor,
         child: child,
       ),
     );

@@ -118,7 +118,6 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
         // workaround for blank map when resuming app
         // cf https://github.com/flutter/flutter/issues/40284
         _serviceMapController?.setMapStyle(null);
-        break;
     }
   }
 

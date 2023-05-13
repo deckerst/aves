@@ -32,11 +32,9 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
       case -1:
         _action = _RatingAction.rejected;
         _rating = 0;
-        break;
       case 0:
         _action = _RatingAction.unrated;
         _rating = 0;
-        break;
       default:
         _action = _RatingAction.set;
         _rating = entryRating;
@@ -121,13 +119,10 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
     switch (_action) {
       case _RatingAction.set:
         entryRating = _rating;
-        break;
       case _RatingAction.rejected:
         entryRating = -1;
-        break;
       case _RatingAction.unrated:
         entryRating = 0;
-        break;
     }
     Navigator.maybeOf(context)?.pop(entryRating);
   }

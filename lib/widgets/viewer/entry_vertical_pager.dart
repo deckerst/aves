@@ -22,7 +22,6 @@ import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -187,7 +186,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
         physics: MagnifierScrollerPhysics(
-          gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+          gestureSettings: MediaQuery.gestureSettingsOf(context),
           parent: SpringyScrollPhysics(
             spring: ViewerVerticalPageView.spring,
           ),
@@ -384,13 +383,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         switch (intent.type) {
           case TvPlayPauseType.play:
             toggle = !controller.isPlaying;
-            break;
           case TvPlayPauseType.pause:
             toggle = controller.isPlaying;
-            break;
           case TvPlayPauseType.toggle:
             toggle = true;
-            break;
         }
         if (toggle) {
           VideoActionNotification(

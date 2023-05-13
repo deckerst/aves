@@ -419,16 +419,12 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     switch (direction) {
       case AxisDirection.left:
         const ShowPreviousEntryNotification(animate: true).dispatch(context);
-        break;
       case AxisDirection.right:
         const ShowNextEntryNotification(animate: true).dispatch(context);
-        break;
       case AxisDirection.up:
         PopVisualNotification().dispatch(context);
-        break;
       case AxisDirection.down:
         ShowInfoPageNotification().dispatch(context);
-        break;
     }
   }
 
@@ -456,24 +452,18 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     switch (event.command) {
       case MediaCommand.play:
         videoController.play();
-        break;
       case MediaCommand.pause:
         videoController.pause();
-        break;
       case MediaCommand.skipToNext:
         ShowNextVideoNotification().dispatch(context);
-        break;
       case MediaCommand.skipToPrevious:
         ShowPreviousVideoNotification().dispatch(context);
-        break;
       case MediaCommand.stop:
         videoController.pause();
-        break;
       case MediaCommand.seek:
         if (event is MediaSeekCommandEvent) {
           videoController.seekTo(event.position);
         }
-        break;
     }
   }
 
@@ -492,14 +482,8 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   }
 
   double? _getSideRatio() {
-    switch (context.read<MediaQueryData?>()?.orientation) {
-      case Orientation.portrait:
-        return 1 / 5;
-      case Orientation.landscape:
-        return 1 / 8;
-      case null:
-        return null;
-    }
+    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+    return isPortrait ? 1 / 5 : 1 / 8;
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {

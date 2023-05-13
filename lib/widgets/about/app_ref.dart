@@ -94,11 +94,12 @@ class _AppReferenceState extends State<AppReference> {
     return FutureBuilder<PackageInfo>(
       future: _packageInfoLoader,
       builder: (context, snapshot) {
+        final textScaleFactor = MediaQuery.textScaleFactorOf(context);
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             AvesLogo(
-              size: _appTitleStyle.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.3,
+              size: _appTitleStyle.fontSize! * textScaleFactor * 1.3,
             ),
             const SizedBox(width: 8),
             Text(

@@ -111,26 +111,22 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       // album filters themselves do not change, but decoration derived from it does
       chipKey = ValueKey(appInventory.areAppNamesReadyNotifier.value);
     }
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return AvesFilterChip(
       key: chipKey,
       filter: _filter,
       showText: showText,
       showGenericIcon: false,
       decoration: AvesFilterDecoration(
-        widget: Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.textScaleFactor,
-          builder: (context, textScaleFactor, child) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: infoHeight(
-                  extent: extent,
-                  textScaleFactor: textScaleFactor,
-                  showText: showText,
-                ),
-              ),
-              child: child,
-            );
-          },
+        radius: radius(extent),
+        widget: Padding(
+          padding: EdgeInsets.only(
+            bottom: infoHeight(
+              extent: extent,
+              textScaleFactor: textScaleFactor,
+              showText: showText,
+            ),
+          ),
           child: entry == null
               ? StreamBuilder<Set<CollectionFilter>?>(
                   stream: covers.colorChangeStream.where((event) => event == null || event.contains(_filter)),
@@ -159,9 +155,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
               : ThumbnailImage(
                   entry: entry,
                   extent: thumbnailExtent,
+                  devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
                 ),
         ),
-        radius: radius(extent),
       ),
       banner: banner,
       details: showText ? _buildDetails(context, source, _filter) : null,

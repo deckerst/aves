@@ -5,7 +5,7 @@ class FixedExtentGridRow extends MultiChildRenderObjectWidget {
   final double width, height, spacing;
   final TextDirection textDirection;
 
-  FixedExtentGridRow({
+  const FixedExtentGridRow({
     super.key,
     required this.width,
     required this.height,

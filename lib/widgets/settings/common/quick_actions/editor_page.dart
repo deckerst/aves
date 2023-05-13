@@ -317,13 +317,10 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     switch (placement) {
       case QuickActionPlacement.header:
         targetIndex = 0;
-        break;
       case QuickActionPlacement.footer:
         targetIndex = _quickActions.length - (contained ? 1 : 0);
-        break;
       case QuickActionPlacement.action:
         targetIndex = _quickActions.indexOf(overAction!);
-        break;
     }
     if (currentIndex == targetIndex) return false;
 

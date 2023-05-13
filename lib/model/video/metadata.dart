@@ -210,38 +210,29 @@ class VideoMetadataFormatter {
             case Keys.androidCaptureFramerate:
               final captureFps = double.parse(value);
               save('Capture Frame Rate', '${roundToPrecision(captureFps, decimals: 3).toString()} FPS');
-              break;
             case Keys.androidManufacturer:
               save('Android Manufacturer', value);
-              break;
             case Keys.androidModel:
               save('Android Model', value);
-              break;
             case Keys.androidVersion:
               save('Android Version', value);
-              break;
             case Keys.bitrate:
             case Keys.bps:
               save('Bit Rate', _formatMetric(value, 'b/s'));
-              break;
             case Keys.byteCount:
               save('Size', _formatFilesize(value));
-              break;
             case Keys.channelLayout:
               save('Channel Layout', _formatChannelLayout(value));
-              break;
             case Keys.codecName:
               if (value != 'none') {
                 save('Format', _formatCodecName(value));
               }
-              break;
             case Keys.codecPixelFormat:
               if (streamType == MediaStreamTypes.video) {
                 // this is just a short name used by FFmpeg
                 // user-friendly descriptions for related enums are defined in libavutil/pixfmt.h
                 save('Pixel Format', (value as String).toUpperCase());
               }
-              break;
             case Keys.codecProfileId:
               {
                 final profile = int.tryParse(value);
@@ -260,18 +251,14 @@ class VideoMetadataFormatter {
                             profileString = Hevc.formatProfile(profile, level);
                           }
                         }
-                        break;
                       }
                     case Codecs.aac:
                       profileString = AAC.formatProfile(profile);
-                      break;
                     default:
                       profileString = profile.toString();
-                      break;
                   }
                   save('Format Profile', profileString);
                 }
-                break;
               }
             case Keys.compatibleBrands:
               final formattedBrands = RegExp(r'.{4}').allMatches(value).map((m) {
@@ -279,52 +266,37 @@ class VideoMetadataFormatter {
                 return _formatBrand(brand);
               }).join(', ');
               save('Compatible Brands', formattedBrands);
-              break;
             case Keys.creationTime:
               save('Creation Time', _formatDate(value));
-              break;
             case Keys.date:
               if (value is String && value != '0') {
                 final charCount = value.length;
                 save(charCount == 4 ? 'Year' : 'Date', value);
               }
-              break;
             case Keys.duration:
               save('Duration', _formatDuration(value));
-              break;
             case Keys.durationMicros:
               if (value != 0) save('Duration', formatPreciseDuration(Duration(microseconds: value)));
-              break;
             case Keys.fpsDen:
               save('Frame Rate', '${roundToPrecision(info[Keys.fpsNum] / info[Keys.fpsDen], decimals: 3).toString()} FPS');
-              break;
             case Keys.frameCount:
               save('Frame Count', value);
-              break;
             case Keys.height:
               save('Height', '$value pixels');
-              break;
             case Keys.language:
               if (value != 'und') save('Language', _formatLanguage(value));
-              break;
             case Keys.location:
               save('Location', _formatLocation(value));
-              break;
             case Keys.majorBrand:
               save('Major Brand', _formatBrand(value));
-              break;
             case Keys.mediaFormat:
               save('Format', (value as String).splitMapJoin(',', onMatch: (s) => ', ', onNonMatch: _formatCodecName));
-              break;
             case Keys.mediaType:
               save('Media Type', value);
-              break;
             case Keys.minorVersion:
               if (value != '0') save('Minor Version', value);
-              break;
             case Keys.quicktimeLocationAccuracyHorizontal:
               save('QuickTime Location Horizontal Accuracy', value);
-              break;
             case Keys.quicktimeCreationDate:
             case Keys.quicktimeLocationIso6709:
             case Keys.quicktimeMake:
@@ -334,37 +306,27 @@ class VideoMetadataFormatter {
               break;
             case Keys.rotate:
               save('Rotation', '$value°');
-              break;
             case Keys.sampleRate:
               save('Sample Rate', _formatMetric(value, 'Hz'));
-              break;
             case Keys.sarDen:
               final sarNum = info[Keys.sarNum];
               final sarDen = info[Keys.sarDen];
               // skip common square pixels (1:1)
               if (sarNum != sarDen) save('SAR', '$sarNum:$sarDen');
-              break;
             case Keys.sourceOshash:
               save('Source OSHash', value);
-              break;
             case Keys.startMicros:
               if (value != 0) save('Start', formatPreciseDuration(Duration(microseconds: value)));
-              break;
             case Keys.statisticsWritingApp:
               save('Stats Writing App', value);
-              break;
             case Keys.statisticsWritingDateUtc:
               save('Stats Writing Date', _formatDate(value));
-              break;
             case Keys.track:
               if (value != '0') save('Track', value);
-              break;
             case Keys.width:
               save('Width', '$value pixels');
-              break;
             case Keys.xiaomiSlowMoment:
               save('Xiaomi Slow Moment', value);
-              break;
             default:
               save(key.toSentenceCase(), value.toString());
           }

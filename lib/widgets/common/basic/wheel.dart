@@ -46,10 +46,11 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     const background = Colors.transparent;
     final foreground = DefaultTextStyle.of(context).style.color!;
     final transitionDuration = context.select<DurationsData, Duration>((v) => v.formTransition);
-    final itemSize = Size.square(40 * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor));
+    final itemSize = Size.square(40 * textScaleFactor);
 
     return FocusableActionDetector(
       shortcuts: const {
@@ -138,10 +139,8 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
     switch (intent.type) {
       case _ValueAdjustmentType.up:
         delta = -1;
-        break;
       case _ValueAdjustmentType.down:
         delta = 1;
-        break;
     }
     final targetItem = _controller.selectedItem + delta;
     final duration = context.read<DurationsData>().formTransition;

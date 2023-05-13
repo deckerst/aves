@@ -28,13 +28,10 @@ class PlaceholderFilter extends CollectionFilter {
     switch (placeholder) {
       case _country:
         _icon = AIcons.country;
-        break;
       case _state:
         _icon = AIcons.state;
-        break;
       case _place:
         _icon = AIcons.place;
-        break;
     }
   }
 
@@ -74,7 +71,6 @@ class PlaceholderFilter extends CollectionFilter {
           case _place:
             return address.place;
         }
-        break;
     }
     return null;
   }

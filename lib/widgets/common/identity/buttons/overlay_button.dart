@@ -73,7 +73,7 @@ class _OverlayButtonState extends State<OverlayButton> {
         builder: (context, focused, child) {
           final border = AvesBorder.border(
             context,
-            width: AvesBorder.curvedBorderWidth * (focused ? 3 : 1),
+            width: AvesBorder.curvedBorderWidth(context) * (focused ? 3 : 1),
           );
           return borderRadius != null
               ? BlurredRRect(

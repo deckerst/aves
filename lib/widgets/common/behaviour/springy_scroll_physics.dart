@@ -16,5 +16,4 @@ class SpringyScrollPhysics extends ScrollPhysics {
       parent: buildParent(ancestor),
     );
   }
-
 }

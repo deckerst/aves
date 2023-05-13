@@ -61,10 +61,8 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
           queryEnabled: context.read<Query>().enabled,
           isMenuItem: true,
         );
-        break;
       default:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());
-        break;
     }
 
     return PopupMenuItem(
@@ -180,7 +178,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   double get appBarContentHeight {
-    final textScaleFactor = context.read<MediaQueryData>().textScaleFactor;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     double height = kToolbarHeight * textScaleFactor;
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);

@@ -26,15 +26,12 @@ class MissingFilter extends CollectionFilter {
       case _date:
         _test = (entry) => (entry.catalogMetadata?.dateMillis ?? 0) == 0;
         _icon = AIcons.dateUndated;
-        break;
       case _fineAddress:
         _test = (entry) => entry.hasGps && !entry.hasFineAddress;
         _icon = AIcons.locationUnlocated;
-        break;
       case _title:
         _test = (entry) => (entry.catalogMetadata?.xmpTitle ?? '').isEmpty;
         _icon = AIcons.descriptionUntitled;
-        break;
     }
   }
 
