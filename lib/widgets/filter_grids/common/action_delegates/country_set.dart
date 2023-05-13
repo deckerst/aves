@@ -87,7 +87,6 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
       case ChipSetAction.showCountryStates:
         _showStates(context, filters);
         browse(context);
-        break;
       default:
         break;
     }

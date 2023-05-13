@@ -8,7 +8,6 @@ This change eventually prevents building the app with Flutter v3.7.11.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="deckers.thibault.aves"
     android:installLocation="auto">
 
     <uses-feature

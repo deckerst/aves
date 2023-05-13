@@ -57,7 +57,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
   @override
   Widget build(BuildContext context) {
-    final gestureSettings = context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings);
+    final gestureSettings = MediaQuery.gestureSettingsOf(context);
 
     final child = GestureDetector(
       // Horizontal/vertical drag gestures are interpreted as scaling
@@ -116,11 +116,9 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     switch (tileLayout) {
       case TileLayout.mosaic:
         _startSize = Size.square(tileExtentController.extentNotifier.value);
-        break;
       case TileLayout.grid:
       case TileLayout.list:
         _startSize = renderMetaData.size;
-        break;
     }
     _scaledSizeNotifier = ValueNotifier(_startSize!);
 
@@ -143,7 +141,6 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
             itemBuilder: widget.mosaicItemBuilder,
           ),
         );
-        break;
       case TileLayout.grid:
       case TileLayout.list:
         final tileCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
@@ -163,7 +160,6 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
             ),
           ),
         );
-        break;
     }
     Overlay.of(scrollableContext).insert(_overlayEntry!);
   }
@@ -176,11 +172,9 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       case TileLayout.grid:
         final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
         _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
-        break;
       case TileLayout.list:
         final scaledHeight = (_startSize!.height * s).clamp(_extentMin!, _extentMax!);
         _scaledSizeNotifier!.value = Size(_startSize!.width, scaledHeight);
-        break;
     }
   }
 
@@ -200,10 +194,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       case TileLayout.mosaic:
       case TileLayout.grid:
         preferredExtent = _scaledSizeNotifier!.value.width;
-        break;
       case TileLayout.list:
         preferredExtent = _scaledSizeNotifier!.value.height;
-        break;
     }
     final newExtent = tileExtentController.setUserPreferredExtent(preferredExtent);
     _scaledSizeNotifier = null;

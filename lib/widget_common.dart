@@ -79,10 +79,8 @@ Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
   switch (settings.getWidgetDisplayedItem(widgetId)) {
     case WidgetDisplayedItem.random:
       entries.shuffle();
-      break;
     case WidgetDisplayedItem.mostRecent:
       entries.sort(AvesEntrySort.compareByDate);
-      break;
   }
   final entry = entries.firstOrNull;
   if (entry != null) {

@@ -34,13 +34,10 @@ extension ExtraAppExportItem on AppExportItem {
     switch (this) {
       case AppExportItem.covers:
         covers.import(jsonMap, source);
-        break;
       case AppExportItem.favourites:
         favourites.import(jsonMap, source);
-        break;
       case AppExportItem.settings:
         await settings.import(jsonMap);
-        break;
     }
   }
 }

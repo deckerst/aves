@@ -145,7 +145,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   Widget _buildSetCustomContent(BuildContext context) {
     final l10n = context.l10n;
     final locale = l10n.localeName;
-    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+    final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
@@ -179,7 +179,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   Widget _buildCopyItemContent(BuildContext context) {
     final l10n = context.l10n;
     final locale = l10n.localeName;
-    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+    final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
@@ -365,11 +365,9 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.copyItem:
       case DateEditAction.extractFromTitle:
         _isValidNotifier.value = true;
-        break;
       case DateEditAction.shift:
       case DateEditAction.remove:
         _isValidNotifier.value = _fields.isNotEmpty;
-        break;
     }
   }
 

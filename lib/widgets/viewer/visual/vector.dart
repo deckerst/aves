@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -103,12 +102,18 @@ class _VectorImageViewState extends State<VectorImageView> {
   Widget build(BuildContext context) {
     if (_displaySize == Size.zero) return widget.errorBuilder(context, 'Not sized', null);
 
+    final devicePixelRatio = View.of(context).devicePixelRatio;
     return ValueListenableBuilder<ViewState>(
       valueListenable: viewStateNotifier,
       builder: (context, viewState, child) {
         final viewportSize = viewState.viewportSize;
         final viewportSized = viewportSize?.isEmpty == false;
-        if (viewportSized && !_isTilingInitialized) _initTiling(viewportSize!);
+        if (viewportSized && !_isTilingInitialized) {
+          _initTiling(
+            viewportSize: viewportSize!,
+            devicePixelRatio: devicePixelRatio,
+          );
+        }
 
         return SizedBox.fromSize(
           size: _displaySize * viewState.scale!,
@@ -116,7 +121,7 @@ class _VectorImageViewState extends State<VectorImageView> {
             alignment: Alignment.center,
             children: [
               _buildLoading(),
-              ..._getTiles(),
+              ..._getTiles(devicePixelRatio),
             ],
           ),
         );
@@ -124,11 +129,14 @@ class _VectorImageViewState extends State<VectorImageView> {
     );
   }
 
-  void _initTiling(Size viewportSize) {
+  void _initTiling({
+    required Size viewportSize,
+    required double devicePixelRatio,
+  }) {
     _tileSide = _displaySize.longestSide;
     // scale for initial state `contained`
     final containedScale = min(viewportSize.width / _displaySize.width, viewportSize.height / _displaySize.height);
-    _minScale = _imageScaleForViewScale(containedScale);
+    _minScale = _imageScaleForViewScale(scale: containedScale, devicePixelRatio: devicePixelRatio);
 
     _isTilingInitialized = true;
     _registerFullImage();
@@ -154,7 +162,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     );
   }
 
-  List<Widget> _getTiles() {
+  List<Widget> _getTiles(double devicePixelRatio) {
     if (!_isTilingInitialized) return [];
 
     final displayWidth = _displaySize.width;
@@ -205,7 +213,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     );
     final tiles = <Widget>[fullImageRegionTile];
 
-    final maxSvgScale = max(_imageScaleForViewScale(viewScale), _minScale);
+    final maxSvgScale = max(_imageScaleForViewScale(scale: viewScale, devicePixelRatio: devicePixelRatio), _minScale);
     double nextScale(double scale) => scale * 2;
     // add `alpha` to the region side so that tiles do not align across layers,
     // which helps the checkered background deflation workaround
@@ -273,7 +281,11 @@ class _VectorImageViewState extends State<VectorImageView> {
     return Tuple2<Rect, Rectangle<double>>(tileRect, regionRect);
   }
 
-  double _imageScaleForViewScale(double scale) => smallestPowerOf2(scale * window.devicePixelRatio).toDouble();
+  double _imageScaleForViewScale({
+    required double scale,
+    required double devicePixelRatio,
+  }) =>
+      smallestPowerOf2(scale * devicePixelRatio).toDouble();
 }
 
 typedef _BackgroundFrameBuilder = Widget Function(Widget child, int? frame, Rect tileRect);

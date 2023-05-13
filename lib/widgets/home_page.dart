@@ -129,10 +129,8 @@ class _HomePageState extends State<HomePage> {
                 break;
               case WidgetOpenPage.collection:
                 _initialFilters = settings.getWidgetCollectionFilters(widgetId);
-                break;
               case WidgetOpenPage.viewer:
                 uri = settings.getWidgetUri(widgetId);
-                break;
             }
             unawaited(WidgetService.update(widgetId));
           } else {
@@ -148,7 +146,6 @@ class _HomePageState extends State<HomePage> {
               appMode = AppMode.view;
             }
           }
-          break;
         case actionPickItems:
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
@@ -156,32 +153,25 @@ class _HomePageState extends State<HomePage> {
           final multiple = intentData[intentDataKeyAllowMultiple] ?? false;
           debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
-          break;
         case actionPickCollectionFilters:
           appMode = AppMode.pickCollectionFiltersExternal;
-          break;
         case actionScreenSaver:
           appMode = AppMode.screenSaver;
           _initialRouteName = ScreenSaverPage.routeName;
-          break;
         case actionScreenSaverSettings:
           _initialRouteName = ScreenSaverSettingsPage.routeName;
-          break;
         case actionSearch:
           _initialRouteName = SearchPage.routeName;
           _initialSearchQuery = intentData[intentDataKeyQuery];
-          break;
         case actionSetWallpaper:
           appMode = AppMode.setWallpaper;
           _viewerEntry = await _initViewerEntry(
             uri: intentData[intentDataKeyUri],
             mimeType: intentData[intentDataKeyMimeType],
           );
-          break;
         case actionWidgetSettings:
           _initialRouteName = HomeWidgetSettingsPage.routeName;
           _widgetId = intentData[intentDataKeyWidgetId] ?? 0;
-          break;
         default:
           // do not use 'route' as extra key, as the Flutter framework acts on it
           final extraRoute = intentData[intentDataKeyPage];
@@ -210,13 +200,11 @@ class _HomePageState extends State<HomePage> {
           loadTopEntriesFirst: settings.homePage == HomePageSetting.collection,
           canAnalyze: !safeMode,
         );
-        break;
       case AppMode.screenSaver:
         final source = context.read<CollectionSource>();
         await source.init(
           canAnalyze: false,
         );
-        break;
       case AppMode.view:
         if (_isViewerSourceable(_viewerEntry)) {
           final directory = _viewerEntry?.directory;
@@ -231,10 +219,8 @@ class _HomePageState extends State<HomePage> {
         } else {
           await _initViewerEssentials();
         }
-        break;
       case AppMode.setWallpaper:
         await _initViewerEssentials();
-        break;
       case AppMode.pickMediaInternal:
       case AppMode.pickFilterInternal:
       case AppMode.slideshow:
@@ -340,11 +326,9 @@ class _HomePageState extends State<HomePage> {
       case AppMode.pickSingleMediaExternal:
       case AppMode.pickMultipleMediaExternal:
         routeName = CollectionPage.routeName;
-        break;
       default:
         routeName = _initialRouteName ?? settings.homePage.routeName;
         filters = _initialFilters ?? {};
-        break;
     }
     Route buildRoute(WidgetBuilder builder) => DirectMaterialPageRoute(
           settings: RouteSettings(name: routeName),

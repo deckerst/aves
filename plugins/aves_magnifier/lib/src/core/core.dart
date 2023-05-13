@@ -11,7 +11,6 @@ import 'package:aves_magnifier/src/scale/state.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 /// Internal widget in which controls all animations lifecycle, core responses
@@ -272,7 +271,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   bool _isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind, Axis axis) {
-    final gestureSettings = context.read<MediaQueryData>().gestureSettings;
+    final gestureSettings = MediaQuery.gestureSettingsOf(context);
     const minVelocity = kMinFlingVelocity;
     final minDistance = computeHitSlop(kind, gestureSettings);
 

@@ -78,7 +78,6 @@ class AlbumFilter extends CoveredCollectionFilter {
       case AlbumType.app:
         final appColor = colors.appColor(album);
         if (appColor != null) return appColor;
-        break;
       case AlbumType.camera:
         return SynchronousFuture(colors.albumCamera);
       case AlbumType.download:

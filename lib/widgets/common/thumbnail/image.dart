@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -20,7 +19,7 @@ import 'package:provider/provider.dart';
 
 class ThumbnailImage extends StatefulWidget {
   final AvesEntry entry;
-  final double extent;
+  final double extent, devicePixelRatio;
   final bool isMosaic, progressive;
   final BoxFit? fit;
   final bool showLoadingBackground;
@@ -31,6 +30,7 @@ class ThumbnailImage extends StatefulWidget {
     super.key,
     required this.entry,
     required this.extent,
+    required this.devicePixelRatio,
     this.progressive = true,
     this.isMosaic = false,
     this.fit,
@@ -57,7 +57,6 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   ImageInfo? _lastImageInfo;
   Object? _lastException;
   late final ImageStreamListener _streamListener;
-  late DisposableBuildContext<State<ThumbnailImage>> _scrollAwareContext;
 
   AvesEntry get entry => widget.entry;
 
@@ -69,7 +68,6 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   void initState() {
     super.initState();
     _streamListener = ImageStreamListener(_onImageLoad, onError: _onError);
-    _scrollAwareContext = DisposableBuildContext<State<ThumbnailImage>>(this);
     _registerWidget(widget);
   }
 
@@ -85,7 +83,6 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   @override
   void dispose() {
     _unregisterWidget(widget);
-    _scrollAwareContext.dispose();
     super.dispose();
   }
 
@@ -126,16 +123,10 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     _providers.addAll([
       if (lowQuality != null)
         _ConditionalImageProvider(
-          ScrollAwareImageProvider(
-            context: _scrollAwareContext,
-            imageProvider: lowQuality,
-          ),
+          lowQuality,
         ),
       _ConditionalImageProvider(
-        ScrollAwareImageProvider(
-          context: _scrollAwareContext,
-          imageProvider: highQuality,
-        ),
+        highQuality,
         _needSizedProvider,
       ),
     ]);
@@ -176,8 +167,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   bool _needSizedProvider(ImageInfo? currentImageInfo) {
     if (currentImageInfo == null) return true;
     final currentImage = currentImageInfo.image;
-    // directly uses `devicePixelRatio` as it never changes, to avoid visiting ancestors via `MediaQuery`
-    final sizedThreshold = extent * window.devicePixelRatio;
+    final sizedThreshold = extent * widget.devicePixelRatio;
     return sizedThreshold > min(currentImage.width, currentImage.height);
   }
 

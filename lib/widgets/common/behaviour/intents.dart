@@ -14,11 +14,9 @@ class ScrollControllerAction extends CallbackAction<ScrollIntent> {
       case AxisDirection.up:
       case AxisDirection.left:
         factor = -1;
-        break;
       case AxisDirection.down:
       case AxisDirection.right:
         factor = 1;
-        break;
     }
     scrollController.animateTo(
       scrollController.offset + factor * 150,

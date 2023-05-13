@@ -327,19 +327,14 @@ class ViewerButtonRowContent extends StatelessWidget {
     switch (action) {
       case EntryAction.videoCaptureFrame:
         enabled = videoController?.canCaptureFrameNotifier.value ?? false;
-        break;
       case EntryAction.videoToggleMute:
         enabled = videoController?.canMuteNotifier.value ?? false;
-        break;
       case EntryAction.videoSelectStreams:
         enabled = videoController?.canSelectStreamNotifier.value ?? false;
-        break;
       case EntryAction.videoSetSpeed:
         enabled = videoController?.canSetSpeedNotifier.value ?? false;
-        break;
       default:
         enabled = true;
-        break;
     }
 
     Widget? child;
@@ -349,22 +344,18 @@ class ViewerButtonRowContent extends StatelessWidget {
           entries: {favouriteTargetEntry},
           isMenuItem: true,
         );
-        break;
       case EntryAction.videoToggleMute:
         child = MuteToggler(
           controller: videoController,
           isMenuItem: true,
         );
-        break;
       case EntryAction.videoTogglePlay:
         child = PlayToggler(
           controller: videoController,
           isMenuItem: true,
         );
-        break;
       default:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());
-        break;
     }
     return PopupMenuItem(
       value: action,
@@ -448,7 +439,6 @@ class ViewerButtonRowContent extends StatelessWidget {
           onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: true),
           onPressed: onPressed,
         );
-        break;
       case EntryAction.move:
         child = MoveButton(
           copy: false,
@@ -456,7 +446,6 @@ class ViewerButtonRowContent extends StatelessWidget {
           onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: false),
           onPressed: onPressed,
         );
-        break;
       case EntryAction.share:
         child = ShareButton(
           blurred: blurred,
@@ -465,7 +454,6 @@ class ViewerButtonRowContent extends StatelessWidget {
           focusNode: focusNode,
           onPressed: onPressed,
         );
-        break;
       case EntryAction.toggleFavourite:
         final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
         child = FavouriteToggler(
@@ -473,30 +461,24 @@ class ViewerButtonRowContent extends StatelessWidget {
           focusNode: focusNode,
           onPressed: onPressed,
         );
-        break;
       case EntryAction.videoToggleMute:
         child = MuteToggler(
           controller: videoController,
           focusNode: focusNode,
           onPressed: onPressed,
         );
-        break;
       case EntryAction.videoTogglePlay:
         child = PlayToggler(
           controller: videoController,
           focusNode: focusNode,
           onPressed: onPressed,
         );
-        break;
       case EntryAction.videoCaptureFrame:
         child = _buildFromListenable(videoController?.canCaptureFrameNotifier);
-        break;
       case EntryAction.videoSelectStreams:
         child = _buildFromListenable(videoController?.canSelectStreamNotifier);
-        break;
       case EntryAction.videoSetSpeed:
         child = _buildFromListenable(videoController?.canSetSpeedNotifier);
-        break;
       case EntryAction.editRating:
         child = RateButton(
           blurred: blurred,
@@ -504,7 +486,6 @@ class ViewerButtonRowContent extends StatelessWidget {
           focusNode: focusNode,
           onPressed: onPressed,
         );
-        break;
       case EntryAction.editTags:
         child = TagButton(
           blurred: blurred,
@@ -512,7 +493,6 @@ class ViewerButtonRowContent extends StatelessWidget {
           focusNode: focusNode,
           onPressed: onPressed,
         );
-        break;
       default:
         child = IconButton(
           icon: action.getIcon(),
@@ -520,7 +500,6 @@ class ViewerButtonRowContent extends StatelessWidget {
           focusNode: focusNode,
           tooltip: action.getText(context),
         );
-        break;
     }
     return child;
   }

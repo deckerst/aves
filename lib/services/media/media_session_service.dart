@@ -96,25 +96,19 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
     switch (command) {
       case 'play':
         event = const MediaCommandEvent(MediaCommand.play);
-        break;
       case 'pause':
         event = const MediaCommandEvent(MediaCommand.pause);
-        break;
       case 'skip_to_next':
         event = const MediaCommandEvent(MediaCommand.skipToNext);
-        break;
       case 'skip_to_previous':
         event = const MediaCommandEvent(MediaCommand.skipToPrevious);
-        break;
       case 'stop':
         event = const MediaCommandEvent(MediaCommand.stop);
-        break;
       case 'seek':
         final position = fields['position'] as int?;
         if (position != null) {
           event = MediaSeekCommandEvent(MediaCommand.stop, position: position);
         }
-        break;
     }
     if (event != null) {
       _streamController.add(event);

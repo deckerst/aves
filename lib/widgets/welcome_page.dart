@@ -59,7 +59,7 @@ class _WelcomePageState extends State<WelcomePage> {
               if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox();
               final terms = snapshot.data!;
               final durations = context.watch<DurationsData>();
-              final isPortrait = context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait;
+              final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: _toStaggeredList(

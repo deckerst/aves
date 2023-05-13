@@ -181,61 +181,44 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     switch (action) {
       case EntryAction.info:
         ShowInfoPageNotification().dispatch(context);
-        break;
       case EntryAction.addShortcut:
         _addShortcut(context, targetEntry);
-        break;
       case EntryAction.copyToClipboard:
         appService.copyToClipboard(targetEntry.uri, targetEntry.bestTitle).then((success) {
           showFeedback(context, success ? context.l10n.genericSuccessFeedback : context.l10n.genericFailureFeedback);
         });
-        break;
       case EntryAction.delete:
         _delete(context, targetEntry);
-        break;
       case EntryAction.restore:
         _move(context, targetEntry, moveType: MoveType.fromBin);
-        break;
       case EntryAction.convert:
         convert(context, {targetEntry});
-        break;
       case EntryAction.print:
         EntryPrinter(targetEntry).print(context);
-        break;
       case EntryAction.rename:
         _rename(context, targetEntry);
-        break;
       case EntryAction.copy:
         _move(context, targetEntry, moveType: MoveType.copy);
-        break;
       case EntryAction.move:
         _move(context, targetEntry, moveType: MoveType.move);
-        break;
       case EntryAction.share:
         appService.shareEntries({targetEntry}).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-        break;
       case EntryAction.toggleFavourite:
         targetEntry.toggleFavourite();
-        break;
       // raster
       case EntryAction.rotateCCW:
         _rotate(context, targetEntry, clockwise: false);
-        break;
       case EntryAction.rotateCW:
         _rotate(context, targetEntry, clockwise: true);
-        break;
       case EntryAction.flip:
         _flip(context, targetEntry);
-        break;
       // vector
       case EntryAction.viewSource:
         _goToSourceViewer(context, targetEntry);
-        break;
       case EntryAction.lockViewer:
         const LockViewNotification(locked: true).dispatch(context);
-        break;
       // video
       case EntryAction.videoCaptureFrame:
       case EntryAction.videoToggleMute:
@@ -254,31 +237,25 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             action: action,
           ).dispatch(context);
         }
-        break;
       case EntryAction.edit:
         appService.edit(targetEntry.uri, targetEntry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-        break;
       case EntryAction.open:
         appService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-        break;
       case EntryAction.openMap:
         appService.openMap(targetEntry.latLng!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-        break;
       case EntryAction.setAs:
         appService.setAs(targetEntry.uri, targetEntry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-        break;
       // platform
       case EntryAction.rotateScreen:
         _rotateScreen(context);
-        break;
       // metadata
       case EntryAction.editDate:
       case EntryAction.editLocation:
@@ -291,11 +268,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.convertMotionPhotoToStillImage:
       case EntryAction.viewMotionPhotoVideo:
         _metadataActionDelegate.onActionSelected(context, targetEntry, collection, action);
-        break;
       // debug
       case EntryAction.debug:
         _goToDebug(context, targetEntry);
-        break;
     }
   }
 
@@ -321,13 +296,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           final fields = await embeddedDataService.extractMotionPhotoImage(mainEntry);
           await _shareMotionPhotoPart(context, fields);
         }
-        break;
       case ShareAction.videoOnly:
         if (mainEntry.isMotionPhoto) {
           final fields = await embeddedDataService.extractMotionPhotoVideo(mainEntry);
           await _shareMotionPhotoPart(context, fields);
         }
-        break;
     }
   }
 
@@ -379,14 +352,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _rotateScreen(BuildContext context) async {
-    switch (context.read<MediaQueryData>().orientation) {
-      case Orientation.landscape:
-        await windowService.requestOrientation(Orientation.portrait);
-        break;
-      case Orientation.portrait:
-        await windowService.requestOrientation(Orientation.landscape);
-        break;
-    }
+    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+    await windowService.requestOrientation(isPortrait ? Orientation.landscape : Orientation.portrait);
   }
 
   Future<void> _delete(BuildContext context, AvesEntry targetEntry) async {

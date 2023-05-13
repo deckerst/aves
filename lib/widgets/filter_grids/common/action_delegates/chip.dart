@@ -40,22 +40,16 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
     switch (action) {
       case ChipAction.goToAlbumPage:
         _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
-        break;
       case ChipAction.goToCountryPage:
         _goTo(context, filter, CountryListPage.routeName, (context) => const CountryListPage());
-        break;
       case ChipAction.goToPlacePage:
         _goTo(context, filter, PlaceListPage.routeName, (context) => const PlaceListPage());
-        break;
       case ChipAction.goToTagPage:
         _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
-        break;
       case ChipAction.reverse:
         ReverseFilterNotification(filter).dispatch(context);
-        break;
       case ChipAction.hide:
         _hide(context, filter);
-        break;
       case ChipAction.lockVault:
         if (filter is AlbumFilter) {
           lockFilters({filter});

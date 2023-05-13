@@ -156,11 +156,9 @@ class _PanoramaPageState extends State<PanoramaPage> {
     switch (_sensorControl.value) {
       case SensorControl.None:
         _sensorControl.value = SensorControl.AbsoluteOrientation;
-        break;
       case SensorControl.AbsoluteOrientation:
       case SensorControl.Orientation:
         _sensorControl.value = SensorControl.None;
-        break;
     }
   }
 

@@ -26,13 +26,10 @@ class MapActionDelegate {
           ),
           onSelection: (v) => settings.mapStyle = v,
         );
-        break;
       case MapAction.zoomIn:
         controller?.zoomBy(1);
-        break;
       case MapAction.zoomOut:
         controller?.zoomBy(-1);
-        break;
     }
   }
 }

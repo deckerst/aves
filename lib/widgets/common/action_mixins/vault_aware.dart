@@ -36,7 +36,6 @@ mixin VaultAwareMixin on FeedbackMixin {
             await reportService.recordError(e, stack);
           }
         }
-        break;
       case VaultLockType.pattern:
         final pattern = await showDialog<String>(
           context: context,
@@ -46,7 +45,6 @@ mixin VaultAwareMixin on FeedbackMixin {
         if (pattern != null) {
           confirmed = pattern == await securityService.readValue(details.passKey);
         }
-        break;
       case VaultLockType.pin:
         final pin = await showDialog<String>(
           context: context,
@@ -56,7 +54,6 @@ mixin VaultAwareMixin on FeedbackMixin {
         if (pin != null) {
           confirmed = pin == await securityService.readValue(details.passKey);
         }
-        break;
       case VaultLockType.password:
         final password = await showDialog<String>(
           context: context,
@@ -66,7 +63,6 @@ mixin VaultAwareMixin on FeedbackMixin {
         if (password != null) {
           confirmed = password == await securityService.readValue(details.passKey);
         }
-        break;
     }
 
     if (confirmed == null || !confirmed) return false;
@@ -120,7 +116,6 @@ mixin VaultAwareMixin on FeedbackMixin {
             await reportService.recordError(e, stack);
           }
         }
-        break;
       case VaultLockType.pattern:
         final pattern = await showDialog<String>(
           context: context,
@@ -130,7 +125,6 @@ mixin VaultAwareMixin on FeedbackMixin {
         if (pattern != null) {
           return await securityService.writeValue(details.passKey, pattern);
         }
-        break;
       case VaultLockType.pin:
         final pin = await showDialog<String>(
           context: context,
@@ -140,7 +134,6 @@ mixin VaultAwareMixin on FeedbackMixin {
         if (pin != null) {
           return await securityService.writeValue(details.passKey, pin);
         }
-        break;
       case VaultLockType.password:
         final password = await showDialog<String>(
           context: context,
@@ -150,7 +143,6 @@ mixin VaultAwareMixin on FeedbackMixin {
         if (password != null) {
           return await securityService.writeValue(details.passKey, password);
         }
-        break;
     }
     return false;
   }

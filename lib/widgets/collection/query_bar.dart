@@ -52,7 +52,7 @@ class _EntryQueryBarState extends State<EntryQueryBar> {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return Container(
       height: EntryQueryBar.getPreferredHeight(textScaleFactor),
       alignment: Alignment.topCenter,

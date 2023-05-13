@@ -53,7 +53,7 @@ class KnownExtentScrollPhysics extends ScrollPhysics {
     // Scenario 3:
     // If there's no velocity and we're already at where we intend to land,
     // do nothing.
-    if (velocity.abs() < tolerance.velocity && (settlingPixels - metrics.pixels).abs() < tolerance.distance) {
+    if (velocity.abs() < toleranceFor(position).velocity && (settlingPixels - metrics.pixels).abs() < toleranceFor(position).distance) {
       return null;
     }
 
@@ -66,7 +66,7 @@ class KnownExtentScrollPhysics extends ScrollPhysics {
         metrics.pixels,
         settlingPixels,
         velocity,
-        tolerance: tolerance,
+        tolerance: toleranceFor(position),
       );
     }
 
@@ -77,7 +77,7 @@ class KnownExtentScrollPhysics extends ScrollPhysics {
       metrics.pixels,
       settlingPixels,
       velocity,
-      tolerance.velocity * velocity.sign,
+      toleranceFor(position).velocity * velocity.sign,
     );
   }
 }

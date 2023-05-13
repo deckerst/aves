@@ -12,7 +12,6 @@ import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +56,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           scrollDirection: Axis.horizontal,
           controller: pageController,
           physics: MagnifierScrollerPhysics(
-            gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+            gestureSettings: MediaQuery.gestureSettingsOf(context),
             parent: const BouncingScrollPhysics(),
           ),
           onPageChanged: widget.onPageChanged,

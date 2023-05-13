@@ -309,17 +309,14 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           ..remove(destinationAlbum)
           ..insert(0, destinationAlbum);
         entriesByDestination[destinationAlbum] = entries;
-        break;
       case MoveType.toBin:
         entriesByDestination[AndroidFileUtils.trashDirPath] = entries;
-        break;
       case MoveType.fromBin:
         groupBy<AvesEntry, String?>(entries, (e) => e.directory).forEach((originAlbum, dirEntries) {
           if (originAlbum != null) {
             entriesByDestination[originAlbum] = dirEntries.toSet();
           }
         });
-        break;
     }
 
     await doQuickMove(

@@ -46,7 +46,6 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
@@ -374,6 +373,8 @@ class _CollectionScaler extends StatelessWidget {
     final tileSpacing = metrics.item1;
     final horizontalPadding = metrics.item2;
     final brightness = Theme.of(context).brightness;
+    final borderColor = DecoratedThumbnail.borderColor;
+    final borderWidth = DecoratedThumbnail.borderWidth(context);
     return GridScaleGestureDetector<AvesEntry>(
       scrollableKey: scrollableKey,
       tileLayout: tileLayout,
@@ -385,9 +386,9 @@ class _CollectionScaler extends StatelessWidget {
           tileSize: tileSize,
           spacing: tileSpacing,
           horizontalPadding: horizontalPadding,
-          borderWidth: DecoratedThumbnail.borderWidth,
+          borderWidth: borderWidth,
           borderRadius: Radius.zero,
-          color: DecoratedThumbnail.borderColor,
+          color: borderColor,
           textDirection: Directionality.of(context),
         ),
         child: child,
@@ -404,8 +405,8 @@ class _CollectionScaler extends StatelessWidget {
         decoration: BoxDecoration(
           color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withOpacity(.9),
           border: Border.all(
-            color: DecoratedThumbnail.borderColor,
-            width: DecoratedThumbnail.borderWidth,
+            color: borderColor,
+            width: borderWidth,
           ),
         ),
       ),
@@ -489,7 +490,6 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             }
           });
         }
-        break;
     }
   }
 
@@ -573,7 +573,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       physics: collection.isEmpty
           ? const NeverScrollableScrollPhysics()
           : SloppyScrollPhysics(
-              gestureSettings: context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings),
+              gestureSettings: MediaQuery.gestureSettingsOf(context),
               parent: const AlwaysScrollableScrollPhysics(),
             ),
       cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax),
@@ -677,7 +677,6 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
         switch (collection.sectionFactor) {
           case EntryGroupFactor.album:
             addAlbums(collection, sectionLayouts, crumbs);
-            break;
           case EntryGroupFactor.month:
           case EntryGroupFactor.day:
             final firstKey = sectionLayouts.first.sectionKey;
@@ -701,14 +700,11 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                 });
               }
             }
-            break;
           case EntryGroupFactor.none:
             break;
         }
-        break;
       case EntrySortFactor.name:
         addAlbums(collection, sectionLayouts, crumbs);
-        break;
       case EntrySortFactor.rating:
       case EntrySortFactor.size:
         break;

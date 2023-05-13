@@ -286,14 +286,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     switch (AvesApp.lifecycleStateNotifier.value) {
       case AppLifecycleState.inactive:
         _onAppInactive();
-        break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         pauseVideoControllers();
-        break;
       case AppLifecycleState.resumed:
         availability.onResume();
-        break;
     }
   }
 
@@ -525,19 +522,16 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       switch (notification.moveType) {
         case MoveType.move:
           _onEntryRemoved(context, entries);
-          break;
         case MoveType.toBin:
           if (!isBin) {
             _onEntryRemoved(context, entries);
           }
-          break;
         case MoveType.fromBin:
           if (isBin) {
             _onEntryRemoved(context, entries);
           } else {
             _onEntryRestored(entries);
           }
-          break;
         case MoveType.copy:
         case MoveType.export:
           break;
@@ -639,15 +633,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       case transitionPage:
         dismissFeedback(context);
         _popVisual();
-        break;
       case imagePage:
         reportService.log('Nav move to Image page');
-        break;
       case infoPage:
         reportService.log('Nav move to Info page');
         // prevent hero when viewer is offscreen
         _heroInfoNotifier.value = null;
-        break;
     }
   }
 
@@ -821,10 +812,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       case MaxBrightness.never:
       case MaxBrightness.viewerOnly:
         await ScreenBrightness().resetScreenBrightness();
-        break;
       case MaxBrightness.always:
         await ScreenBrightness().setScreenBrightness(1);
-        break;
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);
@@ -843,8 +832,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       final entrySize = videoController.entry.displaySize;
       final aspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
 
-      final mq = context.read<MediaQueryData>();
-      final viewSize = mq.size * mq.devicePixelRatio;
+      final viewSize = MediaQuery.sizeOf(context) * MediaQuery.devicePixelRatioOf(context);
       final fittedSize = applyBoxFit(BoxFit.contain, entrySize, viewSize).destination;
       final sourceRectHint = Rectangle<int>(
         ((viewSize.width - fittedSize.width) / 2).round(),

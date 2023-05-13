@@ -18,7 +18,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
   }
 
   @override
-  ImageStreamCompleter loadBuffer(RegionProviderKey key, DecoderBufferCallback decode) {
+  ImageStreamCompleter loadImage(RegionProviderKey key, ImageDecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: 1.0,
@@ -28,7 +28,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(RegionProviderKey key, DecoderBufferCallback decode) async {
+  Future<ui.Codec> _loadAsync(RegionProviderKey key, ImageDecoderCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
     final pageId = key.pageId;

@@ -89,7 +89,10 @@ class ThumbnailOverlayPage extends StatelessWidget {
     );
   }
 
-  static double _getIconSize(BuildContext context) => IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
+  static double _getIconSize(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    return IconTheme.of(context).size! * textScaleFactor;
+  }
 
   static Color _getIconColor(BuildContext context) => context.select<AvesColorsData, Color>((v) => v.neutral);
 

@@ -66,7 +66,7 @@ class DebugSettingsSection extends StatelessWidget {
                   'recentDestinationAlbums': toMultiline(settings.recentDestinationAlbums),
                   'recentTags': toMultiline(settings.recentTags),
                   'locale': '${settings.locale}',
-                  'systemLocales': '${WidgetsBinding.instance.window.locales}',
+                  'systemLocales': '${WidgetsBinding.instance.platformDispatcher.locales}',
                   'topEntryIds': '${settings.topEntryIds}',
                 },
               ),

@@ -16,7 +16,6 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:provider/provider.dart';
 
 class RenameEntrySetPage extends StatefulWidget {
   static const routeName = '/rename_entry_set';
@@ -60,6 +59,8 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final effectiveThumbnailExtent = max(thumbnailExtent, thumbnailExtent * textScaleFactor);
     return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.renameEntrySetPageTitle),
@@ -121,63 +122,58 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
               ),
             ),
             Expanded(
-              child: Selector<MediaQueryData, double>(
-                  selector: (context, mq) => mq.textScaleFactor,
-                  builder: (context, textScaleFactor, child) {
-                    final effectiveThumbnailExtent = max(thumbnailExtent, thumbnailExtent * textScaleFactor);
-                    return GridTheme(
-                      extent: effectiveThumbnailExtent,
-                      child: ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        itemBuilder: (context, index) {
-                          final entry = entries[index];
-                          final sourceName = entry.filenameWithoutExtension ?? '';
-                          return Row(
+              child: GridTheme(
+                extent: effectiveThumbnailExtent,
+                child: ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  itemBuilder: (context, index) {
+                    final entry = entries[index];
+                    final sourceName = entry.filenameWithoutExtension ?? '';
+                    return Row(
+                      children: [
+                        DecoratedThumbnail(
+                          entry: entry,
+                          tileExtent: effectiveThumbnailExtent,
+                          selectable: false,
+                          highlightable: false,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              DecoratedThumbnail(
-                                entry: entry,
-                                tileExtent: effectiveThumbnailExtent,
-                                selectable: false,
-                                highlightable: false,
+                              Text(
+                                sourceName,
+                                style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color),
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                                maxLines: 1,
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      sourceName,
-                                      style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color),
-                                      softWrap: false,
-                                      overflow: TextOverflow.fade,
-                                      maxLines: 1,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    ValueListenableBuilder<NamingPattern>(
-                                      valueListenable: _namingPatternNotifier,
-                                      builder: (context, pattern, child) {
-                                        return Text(
-                                          pattern.apply(entry, index),
-                                          softWrap: false,
-                                          overflow: TextOverflow.fade,
-                                          maxLines: 1,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
+                              const SizedBox(height: 4),
+                              ValueListenableBuilder<NamingPattern>(
+                                valueListenable: _namingPatternNotifier,
+                                builder: (context, pattern, child) {
+                                  return Text(
+                                    pattern.apply(entry, index),
+                                    softWrap: false,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                  );
+                                },
                               ),
                             ],
-                          );
-                        },
-                        separatorBuilder: (context, index) => const SizedBox(
-                          height: CollectionGrid.fixedExtentLayoutSpacing,
+                          ),
                         ),
-                        itemCount: min(entryCount, previewMax),
-                      ),
+                      ],
                     );
-                  }),
+                  },
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: CollectionGrid.fixedExtentLayoutSpacing,
+                  ),
+                  itemCount: min(entryCount, previewMax),
+                ),
+              ),
             ),
             const Divider(height: 0),
             Center(

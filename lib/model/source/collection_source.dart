@@ -221,18 +221,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       switch (key) {
         case 'contentId':
           entry.contentId = newValue as int?;
-          break;
         case 'dateModifiedSecs':
           // `dateModifiedSecs` changes when moving entries to another directory,
           // but it does not change when renaming the containing directory
           entry.dateModifiedSecs = newValue as int?;
-          break;
         case 'path':
           entry.path = newValue as String?;
-          break;
         case 'title':
           entry.sourceTitle = newValue as String?;
-          break;
         case 'trashed':
           final trashed = newValue as bool;
           entry.trashed = trashed;
@@ -243,13 +239,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
                   dateMillis: DateTime.now().millisecondsSinceEpoch,
                 )
               : null;
-          break;
         case 'uri':
           entry.uri = newValue as String;
-          break;
         case 'origin':
           entry.origin = newValue as int;
-          break;
       }
     });
     if (entry.trashed) {
@@ -371,16 +364,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     switch (moveType) {
       case MoveType.copy:
         addEntries(movedEntries);
-        break;
       case MoveType.move:
       case MoveType.export:
         cleanEmptyAlbums(fromAlbums.whereNotNull().toSet());
         addDirectories(albums: destinationAlbums);
-        break;
       case MoveType.toBin:
       case MoveType.fromBin:
         updateDerivedFilters(movedEntries);
-        break;
     }
     invalidateAlbumFilterSummary(directories: fromAlbums);
     _invalidate(entries: movedEntries);

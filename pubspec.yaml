@@ -13,8 +13,8 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.7.12
-  sdk: ">=2.19.6 <4.0.0"
+  flutter: 3.10.0
+  sdk: ">=3.0.0 <4.0.0"
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
@@ -46,8 +46,11 @@ dependencies:
     path: plugins/aves_utils
   charts_flutter:
     git:
-      url: https://github.com/fzyzcjy/charts.git
-      ref: master
+      #url: https://github.com/fzyzcjy/charts.git
+      #ref: master
+      url: https://github.com/deckerst/flutter_google_charts.git
+      # fzyzcjy's master commit de76a46 (Sep 26, 2022) is incompatible with Flutter v3.10
+      ref: aves
       path: charts_flutter
   collection:
   connectivity_plus:
@@ -66,6 +69,12 @@ dependencies:
       ref: aves
   flex_color_picker:
   floating:
+    git:
+      # url: https://github.com/wrbl606/floating.git
+      # # v2.0.0 is incompatible with AGP8
+      # ref: main
+      url: https://github.com/deckerst/floating.git
+      ref: kotlin-jvm-target
   fluster:
   flutter_displaymode:
   flutter_highlight:
@@ -116,6 +125,41 @@ dev_dependencies:
   shared_preferences_platform_interface:
   test:
 
+dependency_overrides:
+  # as of Flutter beta v3.10.0-1.5.pre, `flutter_driver`
+  # constrains `material_color_utilities` to v0.2.0, which
+  # constrains `dynamic_color` to v1.6.4, which is incompatible with AGP8
+  material_color_utilities: ^0.5.0
+  device_info_plus:
+    git:
+      url: https://github.com/fluttercommunity/plus_plugins.git
+      # v9:0:0 is incompatible with AGP8
+      ref: main
+      path: packages/device_info_plus/device_info_plus
+  package_info_plus:
+    git:
+      url: https://github.com/fluttercommunity/plus_plugins.git
+      # v4:0:0 is incompatible with AGP8
+      ref: main
+      path: packages/package_info_plus/package_info_plus
+  # cf https://github.com/Baseflow/flutter-google-api-availability/pull/43
+  google_api_availability_android:
+    git:
+      url: https://github.com/deckerst/flutter-google-api-availability.git
+      ref: agp8-compat
+      path: google_api_availability_android
+  # cf https://github.com/Baseflow/flutter-permission-handler/pull/1039
+  permission_handler_android:
+    git:
+      url: https://github.com/deckerst/flutter-permission-handler.git
+      ref: agp8-compat
+      path: permission_handler_android
+  # cf https://github.com/kurenai7968/volume_controller/pull/19
+  volume_controller:
+    git:
+      url: https://github.com/deckerst/volume_controller.git
+      ref: agp8-compat
+
 flutter:
   assets:
     - assets/
@@ -155,27 +199,27 @@ flutter:
 #  adapts from package `flutter_highlight` v0.7.0
 #
 #  `OutputBuffer` in `/services/common/output_buffer.dart`
-#  adapts from Flutter v3.3.3 `_OutputBuffer` in `/foundation/consolidate_response.dart`
+#  adapts from Flutter v3.10.0 `_OutputBuffer` in `/foundation/consolidate_response.dart`
 #
 #  `TvLicensePage` in `/widgets/about/tv_license_page.dart`
-#  adapts from Flutter v3.7.7 `_LicenseData` in `/material/about.dart`
+#  adapts from Flutter v3.10.0 `_LicenseData` in `/material/about.dart`
 #  and `_PackageLicensePage` in `/material/about.dart`
 #
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
-#  adapts from Flutter v3.3.3 `SnackBar` in `/material/snack_bar.dart`
+#  adapts from Flutter v3.10.0 `SnackBar` in `/material/snack_bar.dart`
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
-#  adapts from Flutter v3.3.3 `ScaleGestureRecognizer` in `/gestures/scale.dart`
+#  adapts from Flutter v3.10.0 `ScaleGestureRecognizer` in `/gestures/scale.dart`
 #
 #  `KnownExtentScrollPhysics` in `/widgets/common/behaviour/known_extent_scroll_physics.dart`
-#  adapts from Flutter v3.3.3 `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
+#  adapts from Flutter v3.10.0 `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
 #
 #  `TransitionImage` in `/widgets/common/fx/transition_image.dart`
-#  adapts from Flutter v3.3.3 `_ImageState` in `/widgets/image.dart`
+#  adapts from Flutter v3.10.0 `_ImageState` in `/widgets/image.dart`
 #  and `DecorationImagePainter` in `/painting/decoration_image.dart`
 #
 #  `_RenderSliverKnownExtentBoxAdaptor` in `/widgets/common/grid/sliver.dart`
-#  adapts from Flutter v3.3.3 `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
+#  adapts from Flutter v3.10.0 `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 #
 #  `CollectionSearchDelegate`, `SearchPageRoute` in `/widgets/search/search_delegate.dart`
-#  adapts from Flutter v3.3.3 `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`
+#  adapts from Flutter v3.10.0 `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
@@ -35,6 +34,7 @@ class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
   final Listenable? collectionListenable;
   final List<AvesEntry> entries;
+  final Size availableSize;
   final LatLng? initialCenter;
   final ValueNotifier<bool> isAnimatingNotifier;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
@@ -60,6 +60,7 @@ class GeoMap extends StatefulWidget {
     this.controller,
     this.collectionListenable,
     required this.entries,
+    required this.availableSize,
     this.initialCenter,
     required this.isAnimatingNotifier,
     this.dotLocationNotifier,
@@ -133,6 +134,13 @@ class _GeoMapState extends State<GeoMap> {
 
   @override
   Widget build(BuildContext context) {
+    final devicePixelRatio = View.of(context).devicePixelRatio;
+    void onMarkerLongPress(GeoEntry<AvesEntry> geoEntry, LatLng tapLocation) => _onMarkerLongPress(
+          geoEntry: geoEntry,
+          tapLocation: tapLocation,
+          devicePixelRatio: devicePixelRatio,
+        );
+
     return Selector<Settings, EntryMapStyle?>(
       selector: (context, s) => s.mapStyle,
       builder: (context, mapStyle, child) {
@@ -143,6 +151,7 @@ class _GeoMapState extends State<GeoMap> {
               buildThumbnailImage: (extent) => ThumbnailImage(
                 entry: key.entry,
                 extent: extent,
+                devicePixelRatio: devicePixelRatio,
                 progressive: !isHeavy,
               ),
             );
@@ -173,9 +182,8 @@ class _GeoMapState extends State<GeoMap> {
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
-                onMarkerLongPress: _onMarkerLongPress,
+                onMarkerLongPress: onMarkerLongPress,
               );
-              break;
             case EntryMapStyle.osmHot:
             case EntryMapStyle.stamenToner:
             case EntryMapStyle.stamenWatercolor:
@@ -204,9 +212,8 @@ class _GeoMapState extends State<GeoMap> {
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
-                onMarkerLongPress: _onMarkerLongPress,
+                onMarkerLongPress: onMarkerLongPress,
               );
-              break;
           }
         } else {
           final overlay = Center(
@@ -360,8 +367,8 @@ class _GeoMapState extends State<GeoMap> {
     );
     bounds = bounds.copyWith(zoom: max(minInitialZoom, bounds.zoom.floorToDouble()));
 
-    final availableSize = window.physicalSize / window.devicePixelRatio;
     final neededSize = bounds.toDisplaySize();
+    final availableSize = widget.availableSize;
     if (neededSize.width > availableSize.width || neededSize.height > availableSize.height) {
       return _initBoundsForEntries(entries: entries, recentCount: (recentCount ?? 10000) ~/ 10);
     }
@@ -457,7 +464,11 @@ class _GeoMapState extends State<GeoMap> {
     onTap(markerLocation, markerEntry);
   }
 
-  Future<void> _onMarkerLongPress(GeoEntry<AvesEntry> geoEntry, LatLng tapLocation) async {
+  Future<void> _onMarkerLongPress({
+    required GeoEntry<AvesEntry> geoEntry,
+    required LatLng tapLocation,
+    required double devicePixelRatio,
+  }) async {
     final onMarkerLongPress = widget.onMarkerLongPress;
     if (onMarkerLongPress == null) return;
 
@@ -478,6 +489,7 @@ class _GeoMapState extends State<GeoMap> {
           buildThumbnailImage: (extent) => ThumbnailImage(
             entry: markerEntry,
             extent: extent,
+            devicePixelRatio: devicePixelRatio,
           ),
         );
     onMarkerLongPress(

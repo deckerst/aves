@@ -43,6 +43,7 @@ class ItemPicker extends StatelessWidget {
                   ThumbnailImage(
                     entry: entry,
                     extent: extent,
+                    devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
                   ),
                   PositionedDirectional(
                     end: -1,

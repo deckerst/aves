@@ -150,81 +150,79 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: pageEntry.metadataChangeNotifier,
+      builder: (context, child) => DefaultTextStyle(
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              shadows: shadows(context),
+            ),
+        softWrap: false,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
+        child: Padding(
+          padding: padding,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildRows(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildRows(BuildContext context) {
     final infoMaxWidth = availableWidth - padding.horizontal;
     final showRatingTags = settings.showOverlayRatingTags;
     final showShootingDetails = settings.showOverlayShootingDetails;
     final showDescription = settings.showOverlayDescription;
 
-    return AnimatedBuilder(
-      animation: pageEntry.metadataChangeNotifier,
-      builder: (context, child) {
-        final positionTitle = OverlayPositionTitleRow(
-          entry: pageEntry,
-          collectionPosition: position,
-          multiPageController: multiPageController,
-        );
-        return DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                shadows: shadows(context),
-              ),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-          child: Padding(
-            padding: padding,
-            child: Selector<MediaQueryData, Orientation>(
-              selector: (context, mq) => mq.orientation,
-              builder: (context, orientation, child) {
-                final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
-                final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
-                final collapsedShooting = twoColumns && showShootingDetails;
-                final collapsedLocation = twoColumns && !showShootingDetails;
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final twoColumns = isLandscape && infoMaxWidth / 2 > _subRowMinWidth;
+    final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
+    final collapsedShooting = twoColumns && showShootingDetails;
+    final collapsedLocation = twoColumns && !showShootingDetails;
 
-                final rows = <Widget>[];
-                if (positionTitle.isNotEmpty) {
-                  rows.add(OverlayRowExpander(
-                    expandedNotifier: expandedNotifier,
-                    child: positionTitle,
-                  ));
-                  rows.add(const SizedBox(height: _interRowPadding));
-                }
-                if (twoColumns) {
-                  rows.add(
-                    Row(
-                      children: [
-                        _buildDateSubRow(subRowWidth),
-                        if (collapsedShooting) _buildShootingSubRow(context, subRowWidth),
-                        if (collapsedLocation) _buildLocationSubRow(context, subRowWidth),
-                      ],
-                    ),
-                  );
-                } else {
-                  rows.add(_buildDateSubRow(subRowWidth));
-                  if (showShootingDetails) {
-                    rows.add(_buildShootingFullRow(context, subRowWidth));
-                  }
-                }
-                if (!collapsedLocation) {
-                  rows.add(_buildLocationFullRow(context));
-                }
-                if (showRatingTags) {
-                  rows.add(_buildRatingTagsFullRow(context));
-                }
-                if (showDescription) {
-                  rows.add(_buildDescriptionFullRow(context));
-                }
-
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: rows,
-                );
-              },
-            ),
-          ),
-        );
-      },
+    final positionTitle = OverlayPositionTitleRow(
+      entry: pageEntry,
+      collectionPosition: position,
+      multiPageController: multiPageController,
     );
+
+    final rows = <Widget>[];
+    if (positionTitle.isNotEmpty) {
+      rows.add(OverlayRowExpander(
+        expandedNotifier: expandedNotifier,
+        child: positionTitle,
+      ));
+      rows.add(const SizedBox(height: _interRowPadding));
+    }
+    if (twoColumns) {
+      rows.add(
+        Row(
+          children: [
+            _buildDateSubRow(subRowWidth),
+            if (collapsedShooting) _buildShootingSubRow(context, subRowWidth),
+            if (collapsedLocation) _buildLocationSubRow(context, subRowWidth),
+          ],
+        ),
+      );
+    } else {
+      rows.add(_buildDateSubRow(subRowWidth));
+      if (showShootingDetails) {
+        rows.add(_buildShootingFullRow(context, subRowWidth));
+      }
+    }
+    if (!collapsedLocation) {
+      rows.add(_buildLocationFullRow(context));
+    }
+    if (showRatingTags) {
+      rows.add(_buildRatingTagsFullRow(context));
+    }
+    if (showDescription) {
+      rows.add(_buildDescriptionFullRow(context));
+    }
+    return rows;
   }
 
   Widget _buildDateSubRow(double subRowWidth) => SizedBox(

@@ -4,7 +4,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class FixedExtentScaleOverlay extends StatelessWidget {
   final TileLayout tileLayout;
@@ -105,7 +104,7 @@ class _OverlayBackgroundState extends State<_OverlayBackground> {
     return _initialized
         ? BoxDecoration(
             gradient: RadialGradient(
-              center: FractionalOffset.fromOffsetAndSize(gradientCenter, context.select<MediaQueryData, Size>((mq) => mq.size)),
+              center: FractionalOffset.fromOffsetAndSize(gradientCenter, MediaQuery.sizeOf(context)),
               radius: 1,
               colors: isDark
                   ? const [

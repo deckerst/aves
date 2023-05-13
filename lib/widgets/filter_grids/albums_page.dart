@@ -123,7 +123,6 @@ class AlbumListPage extends StatelessWidget {
           if (sections.containsKey(vaultKey)) vaultKey: sections[vaultKey]!,
           if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
         };
-        break;
       case AlbumChipGroupFactor.mimeType:
         final visibleEntries = source.visibleEntries;
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
@@ -134,12 +133,10 @@ class AlbumListPage extends StatelessWidget {
           if (!hasImage && hasVideo) return MimeTypeSectionKey.videos(context);
           return MimeTypeSectionKey.mixed(context);
         });
-        break;
       case AlbumChipGroupFactor.volume:
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           return StorageVolumeSectionKey(context, androidFileUtils.getStorageVolume(kv.filter.album));
         });
-        break;
       case AlbumChipGroupFactor.none:
         return {
           if (sortedMapEntries.isNotEmpty)

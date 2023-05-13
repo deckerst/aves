@@ -7,10 +7,12 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - option to set the Tags page as home
+- support for animated PNG
 
 ### Changed
 
 - remember whether to show the title filter when picking albums
+- upgraded Flutter to stable v3.10.0
 
 ## <a id="v1.8.6"></a>[v1.8.6] - 2023-04-30
 

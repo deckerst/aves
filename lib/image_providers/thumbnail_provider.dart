@@ -19,7 +19,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   }
 
   @override
-  ImageStreamCompleter loadBuffer(ThumbnailProviderKey key, DecoderBufferCallback decode) {
+  ImageStreamCompleter loadImage(ThumbnailProviderKey key, ImageDecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: 1.0,
@@ -30,7 +30,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderBufferCallback decode) async {
+  Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, ImageDecoderCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
     final pageId = key.pageId;

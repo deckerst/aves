@@ -164,13 +164,10 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
       switch (action) {
         case ChipSetAction.createAlbum:
           _createAlbum();
-          break;
         case ChipSetAction.createVault:
           _createVault();
-          break;
         default:
           actionDelegate.onActionSelected(context, {}, action);
-          break;
       }
     }
 

@@ -22,7 +22,7 @@ class BottomGestureAreaProtector extends StatelessWidget {
       left: 0,
       right: 0,
       bottom: 0,
-      height: context.select<MediaQueryData, double>((mq) => mq.systemGestureInsets.bottom),
+      height: MediaQuery.systemGestureInsetsOf(context).bottom,
       child: GestureDetector(
         // absorb vertical gestures only
         onVerticalDragDown: (details) {},
@@ -42,7 +42,7 @@ class TopGestureAreaProtector extends StatelessWidget {
       left: 0,
       top: 0,
       right: 0,
-      height: context.select<MediaQueryData, double>((mq) => mq.systemGestureInsets.top),
+      height: MediaQuery.systemGestureInsetsOf(context).top,
       child: GestureDetector(
         // absorb vertical gestures only
         onVerticalDragDown: (details) {},
@@ -64,7 +64,7 @@ class SideGestureAreaProtector extends StatelessWidget {
         textDirection: TextDirection.ltr,
         children: [
           SizedBox(
-            width: context.select<MediaQueryData, double>((mq) => mq.systemGestureInsets.left),
+            width: MediaQuery.systemGestureInsetsOf(context).left,
             child: GestureDetector(
               // absorb horizontal gestures only
               onHorizontalDragDown: (details) {},
@@ -73,7 +73,7 @@ class SideGestureAreaProtector extends StatelessWidget {
           ),
           const Spacer(),
           SizedBox(
-            width: context.select<MediaQueryData, double>((mq) => mq.systemGestureInsets.right),
+            width: MediaQuery.systemGestureInsetsOf(context).right,
             child: GestureDetector(
               // absorb horizontal gestures only
               onHorizontalDragDown: (details) {},

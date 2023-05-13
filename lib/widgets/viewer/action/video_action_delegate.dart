@@ -45,33 +45,24 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     switch (action) {
       case EntryAction.videoCaptureFrame:
         await _captureFrame(context, entry, controller);
-        break;
       case EntryAction.videoToggleMute:
         await controller.mute(!controller.isMuted);
-        break;
       case EntryAction.videoSelectStreams:
         await _showStreamSelectionDialog(context, controller);
-        break;
       case EntryAction.videoSetSpeed:
         await _showSpeedDialog(context, controller);
-        break;
       case EntryAction.videoSettings:
         await _showSettings(context, controller);
-        break;
       case EntryAction.videoTogglePlay:
         await _togglePlayPause(context, controller);
-        break;
       case EntryAction.videoReplay10:
         await controller.seekTo(controller.currentPosition - 10000);
-        break;
       case EntryAction.videoSkip10:
         await controller.seekTo(controller.currentPosition + 10000);
-        break;
       case EntryAction.openVideo:
         await appService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-        break;
       default:
         throw UnsupportedError('$action is not a video action');
     }

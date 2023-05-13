@@ -157,7 +157,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Geocoder: ${device.hasGeocoder ? 'ready' : 'not available'}',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
-      'System locales: ${WidgetsBinding.instance.window.locales.join(', ')}',
+      'System locales: ${WidgetsBinding.instance.platformDispatcher.locales.join(', ')}',
       'Storage volumes: ${storageVolumes.map((v) => v.path).join(', ')}',
       'Storage grants: ${storageGrants.join(', ')}',
       'Error reporting: ${settings.isErrorReportingAllowed}',

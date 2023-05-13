@@ -26,7 +26,7 @@ class XMP {
   static const nsXmp = XmpNamespaces.xmp;
 
   // for `rdf:Description` node only
-  static bool _hasMeaningfulChildren(XmlNode node) => node.children.any((v) => v.nodeType != XmlNodeType.TEXT || v.text.trim().isNotEmpty);
+  static bool _hasMeaningfulChildren(XmlNode node) => node.children.any((v) => v.nodeType != XmlNodeType.TEXT || v.innerText.trim().isNotEmpty);
 
   // for `rdf:Description` node only
   static bool _hasMeaningfulAttributes(XmlNode description) {

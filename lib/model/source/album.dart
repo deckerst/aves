@@ -47,13 +47,10 @@ mixin AlbumMixin on SourceBase {
       switch (androidFileUtils.getAlbumType(album)) {
         case AlbumType.regular:
           regularAlbums.add(album);
-          break;
         case AlbumType.app:
           appAlbums.add(album);
-          break;
         default:
           specialAlbums.add(album);
-          break;
       }
     }
     return Map.fromEntries([...specialAlbums, ...appAlbums, ...regularAlbums].map((album) => MapEntry(

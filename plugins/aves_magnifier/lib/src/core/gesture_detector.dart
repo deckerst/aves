@@ -3,7 +3,6 @@ import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
 import 'package:aves_magnifier/src/pan/gesture_detector_scope.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class MagnifierGestureDetector extends StatefulWidget {
   const MagnifierGestureDetector({
@@ -40,7 +39,7 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
 
   @override
   Widget build(BuildContext context) {
-    final gestureSettings = context.select<MediaQueryData, DeviceGestureSettings>((mq) => mq.gestureSettings);
+    final gestureSettings = MediaQuery.gestureSettingsOf(context);
     final gestures = <Type, GestureRecognizerFactory>{};
 
     if (widget.onTapDown != null || widget.onTapUp != null) {

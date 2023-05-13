@@ -25,13 +25,10 @@ class DateFilter extends CollectionFilter {
     switch (level) {
       case DateLevel.y:
         _test = (entry) => entry.bestDate?.isAtSameYearAs(_effectiveDate) ?? false;
-        break;
       case DateLevel.ym:
         _test = (entry) => entry.bestDate?.isAtSameMonthAs(_effectiveDate) ?? false;
-        break;
       case DateLevel.ymd:
         _test = (entry) => entry.bestDate?.isAtSameDayAs(_effectiveDate) ?? false;
-        break;
       case DateLevel.md:
         final month = _effectiveDate.month;
         final day = _effectiveDate.day;
@@ -39,15 +36,12 @@ class DateFilter extends CollectionFilter {
           final bestDate = entry.bestDate;
           return bestDate != null && bestDate.month == month && bestDate.day == day;
         };
-        break;
       case DateLevel.m:
         final month = _effectiveDate.month;
         _test = (entry) => entry.bestDate?.month == month;
-        break;
       case DateLevel.d:
         final day = _effectiveDate.day;
         _test = (entry) => entry.bestDate?.day == day;
-        break;
     }
   }
 

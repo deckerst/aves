@@ -17,7 +17,7 @@ class FilterQueryBar<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return Container(
       height: getPreferredHeight(textScaleFactor),
       alignment: Alignment.topCenter,
