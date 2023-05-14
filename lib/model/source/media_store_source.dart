@@ -5,6 +5,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/origins.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -34,6 +35,7 @@ class MediaStoreSource extends CollectionSource {
     if (_initState != SourceInitializationState.full) {
       _initState = directory != null ? SourceInitializationState.directory : SourceInitializationState.full;
     }
+    addDirectories(albums: settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).toSet());
     unawaited(_loadEntries(
       analysisController: analysisController,
       directory: directory,

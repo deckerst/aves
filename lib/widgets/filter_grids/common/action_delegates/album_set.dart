@@ -320,6 +320,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     );
     if (confirmed == null || !confirmed) return;
 
+    settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
     source.forgetNewAlbums(todoAlbums);
     source.cleanEmptyAlbums(emptyAlbums);
 

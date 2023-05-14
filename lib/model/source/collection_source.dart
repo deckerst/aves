@@ -292,7 +292,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..insert(bookmark, destinationAlbum);
     }
     if (pinned) {
-      settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
+      settings.pinnedFilters = settings.pinnedFilters
+        ..remove(oldFilter)
+        ..add(newFilter);
     }
   }
 

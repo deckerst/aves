@@ -90,7 +90,11 @@ mixin AlbumMixin on SourceBase {
   }
 
   bool _isRemovable(String album) {
-    return !(visibleEntries.any((entry) => entry.directory == album) || _newAlbums.contains(album) || vaults.isVault(album));
+    if (visibleEntries.any((entry) => entry.directory == album)) return false;
+    if (_newAlbums.contains(album)) return false;
+    if (vaults.isVault(album)) return false;
+    if (settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).contains(album)) return false;
+    return true;
   }
 
   // filter summary
