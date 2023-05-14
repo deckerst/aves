@@ -42,7 +42,7 @@ class HomeWidgetPainter {
     }
 
     final recorder = ui.PictureRecorder();
-    final rect = Rect.fromLTWH(0, 0, widgetSizePx.width, widgetSizePx.height);
+    final rect = Offset.zero & widgetSizePx;
     final canvas = Canvas(recorder, rect);
     final path = shape.path(widgetSizePx, devicePixelRatio);
     canvas.clipPath(path);

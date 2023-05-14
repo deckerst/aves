@@ -4,7 +4,7 @@ import 'package:flutter/painting.dart';
 
 extension ExtraWidgetShape on WidgetShape {
   Path path(Size widgetSize, double devicePixelRatio) {
-    final rect = Rect.fromLTWH(0, 0, widgetSize.width, widgetSize.height);
+    final rect = Offset.zero & widgetSize;
     switch (this) {
       case WidgetShape.rrect:
         return Path()..addRRect(BorderRadius.circular(24 * devicePixelRatio).toRRect(rect));

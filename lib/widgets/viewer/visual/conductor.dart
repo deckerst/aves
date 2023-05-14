@@ -1,5 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:aves/model/view_state.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -35,7 +35,7 @@ class ViewStateConductor {
             maxScale: initialScale,
             initialScale: initialScale,
             viewportSize: _viewportSize,
-            childSize: entry.displaySize,
+            contentSize: entry.displaySize,
           ).initialScale,
           viewportSize: _viewportSize,
           contentSize: entry.displaySize,

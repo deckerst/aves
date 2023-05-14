@@ -8,6 +8,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  aves_utils:
+    path: ../aves_utils
   equatable:
   provider:
   tuple:

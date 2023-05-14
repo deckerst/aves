@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:aves/utils/math_utils.dart';
 import 'package:test/test.dart';
+import 'package:tuple/tuple.dart';
 
 void main() {
   test('highest power of 2 that is smaller than or equal to the number', () {
@@ -23,5 +26,11 @@ void main() {
   test('rounding to a given precision after the decimal', () {
     expect(roundToPrecision(1.2345678, decimals: 3), 1.235);
     expect(roundToPrecision(0, decimals: 3), 0);
+  });
+
+  test('segment intersection', () {
+    const s1 = Tuple2(Offset(1, 1), Offset(3, 2));
+    const s2 = Tuple2(Offset(1, 4), Offset(2, -1));
+    expect(segmentIntersection(s1, s2), const Offset(17 / 11, 14 / 11));
   });
 }

@@ -103,7 +103,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     final center = (contentSize / 2 - viewState.position / scale) as Size;
     final regionSize = viewportSize / scale;
     final regionTopLeft = (center - regionSize / 2) as Offset;
-    return Rect.fromLTWH(regionTopLeft.dx, regionTopLeft.dy, regionSize.width, regionSize.height);
+    return regionTopLeft & regionSize;
   }
 
   Future<Uint8List?> _getBytes(BuildContext context, Rect displayRegion) async {

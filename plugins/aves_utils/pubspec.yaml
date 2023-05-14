@@ -8,6 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  vector_math:
 
 dev_dependencies:
   flutter_lints:

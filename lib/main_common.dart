@@ -5,7 +5,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/material.dart';
 
-void mainCommon(AppFlavor flavor) {
+void mainCommon(AppFlavor flavor, {Map? debugIntentData}) {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
 //  debugPrintGestureArenaDiagnostics = true;
 
@@ -35,5 +35,5 @@ void mainCommon(AppFlavor flavor) {
   // ErrorWidget.builder = (details) => ErrorWidget(details.exception);
   // cf https://docs.flutter.dev/testing/errors
 
-  runApp(AvesApp(flavor: flavor));
+  runApp(AvesApp(flavor: flavor, debugIntentData: debugIntentData));
 }

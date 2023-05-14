@@ -1,38 +1,41 @@
 import 'package:aves_magnifier/src/controller/controller_delegate.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
-  // the child width/height is not accurate for some image size & scale combos
+  // the content width/height is not accurate for some image size & scale combos
   // e.g. 3580.0 * 0.1005586592178771 yields 360.0
   // but 4764.0 * 0.07556675062972293 yields 360.00000000000006
   // so be sure to compare with `precisionErrorTolerance`
 
   EdgeHit getXEdgeHit() {
-    final boundaries = scaleBoundaries;
-    if (boundaries == null) return const EdgeHit(false, false);
+    final _boundaries = scaleBoundaries;
+    final _scale = scale;
+    if (_boundaries == null || _scale == null) return const EdgeHit(false, false);
 
-    final childWidth = boundaries.childSize.width * scale!;
-    final viewportWidth = boundaries.viewportSize.width;
-    if (viewportWidth + precisionErrorTolerance >= childWidth) {
+    final contentWidth = _boundaries.contentSize.width * _scale;
+    final viewportWidth = _boundaries.viewportSize.width;
+    if (viewportWidth + precisionErrorTolerance >= contentWidth) {
       return const EdgeHit(true, true);
     }
     final x = -position.dx;
-    final range = getXEdges();
+    final range = _boundaries.getXEdges(scale: _scale);
     return EdgeHit(x <= range.min, x >= range.max);
   }
 
   EdgeHit getYEdgeHit() {
-    final boundaries = scaleBoundaries;
-    if (boundaries == null) return const EdgeHit(false, false);
+    final _boundaries = scaleBoundaries;
+    final _scale = scale;
+    if (_boundaries == null || _scale == null) return const EdgeHit(false, false);
 
-    final childHeight = boundaries.childSize.height * scale!;
-    final viewportHeight = boundaries.viewportSize.height;
-    if (viewportHeight + precisionErrorTolerance >= childHeight) {
+    final contentHeight = _boundaries.contentSize.height * _scale;
+    final viewportHeight = _boundaries.viewportSize.height;
+    if (viewportHeight + precisionErrorTolerance >= contentHeight) {
       return const EdgeHit(true, true);
     }
     final y = -position.dy;
-    final range = getYEdges();
+    final range = _boundaries.getYEdges(scale: _scale);
     return EdgeHit(y <= range.min, y >= range.max);
   }
 
@@ -56,11 +59,15 @@ mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
   }
 }
 
-class EdgeHit {
-  const EdgeHit(this.hasHitMin, this.hasHitMax);
-
+@immutable
+class EdgeHit extends Equatable {
   final bool hasHitMin;
   final bool hasHitMax;
+
+  @override
+  List<Object?> get props => [hasHitMin, hasHitMax];
+
+  const EdgeHit(this.hasHitMin, this.hasHitMax);
 
   bool get hasHitAny => hasHitMin || hasHitMax;
 
