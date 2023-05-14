@@ -34,7 +34,7 @@ void widgetMainCommon(AppFlavor flavor) async {
   });
 }
 
-Future<Uint8List> _drawWidget(dynamic args) async {
+Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final widgetId = args['widgetId'] as int;
   final widthPx = args['widthPx'] as int;
   final heightPx = args['heightPx'] as int;
@@ -47,12 +47,16 @@ Future<Uint8List> _drawWidget(dynamic args) async {
     entry: entry,
     devicePixelRatio: devicePixelRatio,
   );
-  return painter.drawWidget(
+  final bytes = await painter.drawWidget(
     widthPx: widthPx,
     heightPx: heightPx,
     outline: settings.getWidgetOutline(widgetId),
     shape: settings.getWidgetShape(widgetId),
   );
+  return {
+    'bytes': bytes,
+    'updateOnTap': settings.getWidgetOpenPage(widgetId) == WidgetOpenPage.updateWidget,
+  };
 }
 
 Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
