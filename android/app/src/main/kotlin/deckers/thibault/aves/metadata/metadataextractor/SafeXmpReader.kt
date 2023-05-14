@@ -61,12 +61,19 @@ class SafeXmpReader : XmpReader() {
     }
 
     // adapted from `XmpReader` to provide different parsing options
+    // and to detect large XMP when extracted directly (e.g. from Photoshop reader)
     override fun extract(xmpBytes: ByteArray, offset: Int, length: Int, metadata: Metadata, parentDirectory: Directory?) {
+        val totalSize = xmpBytes.size
+        if (totalSize > SEGMENT_TYPE_SIZE_DANGER_THRESHOLD) {
+            logError(metadata, totalSize)
+            return
+        }
+
         val directory = XmpDirectory()
         if (parentDirectory != null) directory.parent = parentDirectory
 
         try {
-            val xmpMeta: XMPMeta = if (offset == 0 && length == xmpBytes.size) {
+            val xmpMeta: XMPMeta = if (offset == 0 && length == totalSize) {
                 XMPMetaFactory.parseFromBuffer(xmpBytes, PARSE_OPTIONS)
             } else {
                 val buffer = ByteBuffer(xmpBytes, offset, length)

@@ -17,6 +17,10 @@ All notable changes to this project will be documented in this file.
 - remember whether to show the title filter when picking albums
 - upgraded Flutter to stable v3.10.0
 
+### Fixed
+
+- crash when cataloguing PSD with large XMP
+
 ## <a id="v1.8.6"></a>[v1.8.6] - 2023-04-30
 
 ### Added
@@ -859,7 +863,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
-- fixed crash when cataloguing large MP4/PSD
+- crash when cataloguing large MP4/PSD
 - prevent videos playing in the background when quickly switching entries
 
 ## [v1.4.0] - 2021-04-16

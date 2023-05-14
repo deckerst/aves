@@ -67,14 +67,16 @@ object Helper {
 
         val metadata = when (fileType) {
             FileType.Jpeg -> safeReadJpeg(inputStream)
+            FileType.Mp4 -> safeReadMp4(inputStream)
             FileType.Png -> safeReadPng(inputStream)
+            FileType.Psd -> safeReadPsd(inputStream)
             FileType.Tiff,
             FileType.Arw,
             FileType.Cr2,
             FileType.Nef,
             FileType.Orf,
             FileType.Rw2 -> safeReadTiff(inputStream)
-            FileType.Mp4 -> safeReadMp4(inputStream)
+
             else -> ImageMetadataReader.readMetadata(inputStream, safeReadStreamLength, fileType)
         }
 
@@ -98,6 +100,10 @@ object Helper {
 
     private fun safeReadPng(input: InputStream): com.drew.metadata.Metadata {
         return SafePngMetadataReader.readMetadata(input)
+    }
+
+    private fun safeReadPsd(input: InputStream): com.drew.metadata.Metadata {
+        return SafePsdMetadataReader.readMetadata(input)
     }
 
     @Throws(IOException::class, TiffProcessingException::class)
@@ -262,6 +268,7 @@ object Helper {
                                 ExifReader().extract(ByteArrayReader(dataBytes), metadata, ExifReader.JPEG_SEGMENT_PREAMBLE.length)
                             }
                         }
+
                         PNG_RAW_PROFILE_IPTC -> {
                             val start = dataBytes.indexOf(Metadata.IPTC_MARKER_BYTE)
                             if (start != -1) {
