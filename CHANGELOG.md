@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - option to set the Tags page as home
 - support for animated PNG
+- Info: added day filter with item date
 
 ### Changed
 
