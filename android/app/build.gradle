@@ -232,6 +232,8 @@ dependencies {
     // huawei flavor only
     huaweiImplementation "com.huawei.agconnect:agconnect-core:$huawei_agconnect_version"
 
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.9.2"
+
     kapt 'androidx.annotation:annotation:1.6.0'
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
