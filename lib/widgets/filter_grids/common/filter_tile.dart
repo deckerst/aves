@@ -72,6 +72,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
         case AppMode.setWallpaper:
         case AppMode.slideshow:
         case AppMode.view:
+        case AppMode.edit:
         case null:
           break;
       }

@@ -4,22 +4,52 @@ import 'package:aves_magnifier/src/controller/controller.dart';
 import 'package:aves_magnifier/src/controller/controller_delegate.dart';
 import 'package:aves_magnifier/src/controller/state.dart';
 import 'package:aves_magnifier/src/core/gesture_detector.dart';
-import 'package:aves_magnifier/src/magnifier.dart';
 import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
 import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
+import 'package:aves_magnifier/src/scale/scale_level.dart';
 import 'package:aves_magnifier/src/scale/state.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tuple/tuple.dart';
 
-/// Internal widget in which controls all animations lifecycle, core responses
-/// to user gestures, updates to the controller state and mounts the entire Layout
-class MagnifierCore extends StatefulWidget {
+/*
+  adapted from package `photo_view` v0.9.2:
+  - removed image related aspects to focus on a general purpose pan/scale viewer (à la `InteractiveViewer`)
+  - removed rotation and many customization parameters
+  - removed ignorable/ignoring partial notifiers
+  - formatted, renamed and reorganized
+  - fixed gesture recognizers when used inside a scrollable widget like `PageView`
+  - fixed corner hit detection when in containers scrollable in both axes
+  - fixed corner hit detection issues due to imprecise double comparisons
+  - added single & double tap position feedback
+  - fixed focus when scaling by double-tap/pinch
+ */
+class AvesMagnifier extends StatefulWidget {
+  static const double defaultPanInertia = .2;
+
   final AvesMagnifierController controller;
+  final EdgeInsets viewportPadding;
+
+  // The size of the custom [child]. This value is used to compute the relation between the child and the container's size to calculate the scale value.
+  final Size contentSize;
+
+  final bool allowOriginalScaleBeyondRange;
+  final bool allowGestureScaleBeyondRange;
+  final double panInertia;
+
+  // Defines the minimum size in which the image will be allowed to assume, it is proportional to the original image size.
+  final ScaleLevel minScale;
+
+  // Defines the maximum size in which the image will be allowed to assume, it is proportional to the original image size.
+  final ScaleLevel maxScale;
+
+  // Defines the size the image will assume when the component is initialized, it is proportional to the original image size.
+  final ScaleLevel initialScale;
+
   final ScaleStateCycle scaleStateCycle;
   final bool applyScale;
-  final double panInertia;
   final MagnifierGestureScaleStartCallback? onScaleStart;
   final MagnifierGestureScaleUpdateCallback? onScaleUpdate;
   final MagnifierGestureScaleEndCallback? onScaleEnd;
@@ -28,12 +58,19 @@ class MagnifierCore extends StatefulWidget {
   final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
 
-  const MagnifierCore({
+  const AvesMagnifier({
     super.key,
     required this.controller,
-    required this.scaleStateCycle,
-    required this.applyScale,
-    this.panInertia = .2,
+    required this.contentSize,
+    this.viewportPadding = EdgeInsets.zero,
+    this.allowOriginalScaleBeyondRange = true,
+    this.allowGestureScaleBeyondRange = true,
+    this.minScale = const ScaleLevel(factor: .0),
+    this.maxScale = const ScaleLevel(factor: double.infinity),
+    this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
+    this.scaleStateCycle = defaultScaleStateCycle,
+    this.applyScale = true,
+    this.panInertia = defaultPanInertia,
     this.onScaleStart,
     this.onScaleUpdate,
     this.onScaleEnd,
@@ -44,10 +81,10 @@ class MagnifierCore extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _MagnifierCoreState();
+  State<StatefulWidget> createState() => _AvesMagnifierState();
 }
 
-class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, AvesMagnifierControllerDelegate, EdgeHitDetector {
+class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateMixin, AvesMagnifierControllerDelegate, EdgeHitDetector {
   Offset? _startFocalPoint, _lastViewportFocalPosition;
   double? _startScale, _quickScaleLastY, _quickScaleLastDistance;
   late bool _dropped, _doubleTap, _quickScaleMoved;
@@ -77,12 +114,22 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   @override
-  void didUpdateWidget(covariant MagnifierCore oldWidget) {
+  void didUpdateWidget(covariant AvesMagnifier oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.controller != widget.controller) {
       _unregisterWidget(oldWidget);
       _registerWidget(widget);
+    }
+
+    if (oldWidget.allowOriginalScaleBeyondRange != widget.allowOriginalScaleBeyondRange || oldWidget.minScale != widget.minScale || oldWidget.maxScale != widget.maxScale || oldWidget.initialScale != widget.initialScale || oldWidget.contentSize != widget.contentSize) {
+      controller.setScaleBoundaries((controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
+        allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
+        minScale: widget.minScale,
+        maxScale: widget.maxScale,
+        initialScale: widget.initialScale,
+        contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : null,
+      ));
     }
   }
 
@@ -94,13 +141,13 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     super.dispose();
   }
 
-  void _registerWidget(MagnifierCore widget) {
+  void _registerWidget(AvesMagnifier widget) {
     registerDelegate(widget);
     cachedScaleBoundaries = widget.controller.scaleBoundaries;
     setScaleStateUpdateAnimation(animateOnScaleStateUpdate);
   }
 
-  void _unregisterWidget(MagnifierCore oldWidget) {
+  void _unregisterWidget(AvesMagnifier oldWidget) {
     unregisterDelegate(oldWidget);
     cachedScaleBoundaries = null;
   }
@@ -170,18 +217,21 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     } else {
       newScale = _startScale! * details.scale;
     }
+    if (!widget.allowGestureScaleBeyondRange) {
+      newScale = boundaries.clampScale(newScale);
+    }
+    newScale = max(0, newScale);
     final scaleFocalPoint = _doubleTap ? _startFocalPoint! : details.localFocalPoint;
 
     final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition!;
     final scalePositionDelta = boundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale! / newScale - 1);
-    final newPosition = position + panPositionDelta + scalePositionDelta;
+    final newPosition = boundaries.clampPosition(
+      position: position + panPositionDelta + scalePositionDelta,
+      scale: newScale,
+    );
 
     updateScaleStateFromNewScale(newScale, ChangeSource.gesture);
-    updateMultiple(
-      scale: max(0, newScale),
-      position: newPosition,
-      source: ChangeSource.gesture,
-    );
+    controller.update(position: newPosition, scale: newScale, source: ChangeSource.gesture);
 
     _lastViewportFocalPosition = scaleFocalPoint;
   }
@@ -219,32 +269,40 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       }
     }
 
-    final _position = controller.position;
-    final _scale = controller.scale!;
-    final maxScale = boundaries.maxScale;
-    final minScale = boundaries.minScale;
+    final currentPosition = controller.position;
+    final currentScale = controller.scale!;
 
     // animate back to min/max scale if gesture yielded a scale exceeding them
-    if (_scale > maxScale || _scale < minScale) {
-      final newScale = _scale.clamp(minScale, maxScale);
-      final newPosition = clampPosition(position: _position * newScale / _scale, scale: newScale);
-      animateScale(_scale, newScale);
-      animatePosition(_position, newPosition);
+    final newScale = boundaries.clampScale(currentScale);
+    if (currentScale != newScale) {
+      final newPosition = boundaries.clampPosition(
+        position: currentPosition * newScale / currentScale,
+        scale: newScale,
+      );
+      animateScale(currentScale, newScale);
+      animatePosition(currentPosition, newPosition);
       return;
     }
 
     // The gesture recognizer triggers a new `onScaleStart` every time a pointer/finger is added or removed.
     // Following a pinch-to-zoom gesture, a new panning gesture may start if the user does not lift both fingers at the same time,
     // so we dismiss such panning gestures when it looks like it followed a scaling gesture.
-    final isPanning = _scale == _startScale && (DateTime.now().difference(_lastScaleGestureDate)).inMilliseconds > 100;
+    final isPanning = currentScale == _startScale && (DateTime.now().difference(_lastScaleGestureDate)).inMilliseconds > 100;
 
     // animate position only when panning without scaling
     if (isPanning) {
-      final pps = details.velocity.pixelsPerSecond;
+      var pps = details.velocity.pixelsPerSecond;
       if (pps != Offset.zero) {
-        final newPosition = clampPosition(position: _position + pps * widget.panInertia);
-        if (_position != newPosition) {
-          final tween = Tween<Offset>(begin: _position, end: newPosition);
+        final externalTransform = boundaries.externalTransform;
+        if (externalTransform != null) {
+          pps = Matrix4.inverted(externalTransform).transformOffset(pps);
+        }
+        final newPosition = boundaries.clampPosition(
+          position: currentPosition + pps * widget.panInertia,
+          scale: currentScale,
+        );
+        if (currentPosition != newPosition) {
+          final tween = Tween<Offset>(begin: currentPosition, end: newPosition);
           const curve = Curves.easeOutCubic;
           _positionAnimation = tween.animate(CurvedAnimation(parent: _positionAnimationController, curve: curve));
           _positionAnimationController
@@ -254,7 +312,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       }
     }
 
-    if (_scale != _startScale) {
+    if (currentScale != _startScale) {
       _lastScaleGestureDate = DateTime.now();
     }
   }
@@ -307,7 +365,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     final viewportTapPosition = details.localPosition;
     final viewportSize = boundaries.viewportSize;
     final alignment = Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
-    final childTapPosition = boundaries.viewportToChildPosition(controller, viewportTapPosition);
+    final childTapPosition = boundaries.viewportToContentPosition(controller, viewportTapPosition);
 
     onTap(context, controller.currentState, alignment, childTapPosition);
   }
@@ -324,7 +382,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       if (onDoubleTap(alignment) == true) return;
     }
 
-    final childTapPosition = boundaries.viewportToChildPosition(controller, viewportTapPosition);
+    final childTapPosition = boundaries.viewportToContentPosition(controller, viewportTapPosition);
     nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
   }
 
@@ -375,8 +433,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       stream: controller.stateStream,
       initialData: controller.previousState,
       builder: (context, snapshot) {
-        final boundaries = scaleBoundaries;
-        if (!snapshot.hasData || boundaries == null) return const SizedBox();
+        if (!snapshot.hasData) return const SizedBox();
 
         final magnifierState = snapshot.data!;
         final position = magnifierState.position;
@@ -384,17 +441,19 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
         Widget child = CustomSingleChildLayout(
           delegate: _CenterWithOriginalSizeDelegate(
-            boundaries.childSize,
+            widget.contentSize,
             basePosition,
             applyScale,
           ),
           child: widget.child,
         );
 
+        // `Matrix4.scale` uses dynamic typing and can throw `UnimplementedError` on wrong types
+        final double effectiveScale = (applyScale ? scale : null) ?? 1.0;
         child = Transform(
           transform: Matrix4.identity()
             ..translate(position.dx, position.dy)
-            ..scale(applyScale ? scale : 1.0),
+            ..scale(effectiveScale),
           alignment: basePosition,
           child: child,
         );
@@ -406,7 +465,20 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
           onScaleEnd: onScaleEnd,
           onTapUp: widget.onTap == null ? null : onTap,
           onDoubleTap: onDoubleTap,
-          child: child,
+          child: Padding(
+            padding: widget.viewportPadding,
+            child: LayoutBuilder(builder: (context, constraints) {
+              controller.setScaleBoundaries((controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
+                allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
+                minScale: widget.minScale,
+                maxScale: widget.maxScale,
+                initialScale: widget.initialScale,
+                viewportSize: constraints.biggest,
+                contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : constraints.biggest,
+              ));
+              return child;
+            }),
+          ),
         );
       },
     );
@@ -451,3 +523,15 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with Equ
     return oldDelegate != this;
   }
 }
+
+typedef MagnifierTapCallback = Function(
+  BuildContext context,
+  MagnifierState state,
+  Alignment alignment,
+  Offset childTapPosition,
+);
+typedef MagnifierDoubleTapCallback = bool Function(Alignment alignment);
+typedef MagnifierGestureScaleStartCallback = void Function(ScaleStartDetails details, bool doubleTap, ScaleBoundaries boundaries);
+typedef MagnifierGestureScaleUpdateCallback = bool Function(ScaleUpdateDetails details);
+typedef MagnifierGestureScaleEndCallback = void Function(ScaleEndDetails details);
+typedef MagnifierGestureFlingCallback = void Function(AxisDirection direction);

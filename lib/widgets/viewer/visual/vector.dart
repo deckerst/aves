@@ -8,7 +8,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
-import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:aves/model/view_state.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

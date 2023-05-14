@@ -101,7 +101,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     final tileRect = sectionedListLayout.getTileRect(event.item);
     if (tileRect == null) return;
 
-    final viewportRect = Rect.fromLTWH(0, scrollController.offset, scrollableSize.width, scrollableSize.height);
+    final viewportRect = Offset(0, scrollController.offset) & scrollableSize;
     final itemVisibility = max(0, tileRect.intersect(viewportRect).height) / tileRect.height;
     if (!event.predicate(itemVisibility)) return;
 

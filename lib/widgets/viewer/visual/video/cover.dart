@@ -115,7 +115,7 @@ class _VideoCoverState extends State<VideoCover> {
               if (boundaries != null) {
                 magnifierController.setScaleBoundaries(
                   boundaries.copyWith(
-                    childSize: videoDisplaySize,
+                    contentSize: videoDisplaySize,
                   ),
                 );
               }

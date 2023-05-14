@@ -37,4 +37,18 @@ class ViewState extends Equatable {
       contentSize: contentSize ?? this.contentSize,
     );
   }
+
+  Matrix4 get matrix {
+    final _viewportSize = viewportSize ?? Size.zero;
+    final _contentSize = contentSize ?? Size.zero;
+    final _scale = scale ?? 1.0;
+
+    final scaledContentSize = _contentSize * _scale;
+    final viewOffset = _viewportSize.center(Offset.zero) - scaledContentSize.center(Offset.zero);
+
+    return Matrix4.identity()
+      ..translate(position.dx, position.dy)
+      ..translate(viewOffset.dx, viewOffset.dy)
+      ..scale(_scale, _scale, 1);
+  }
 }

@@ -6,6 +6,7 @@ class Dependencies {
   static const String bsd3 = 'BSD 3-Clause “Revised” License';
   static const String eclipse1 = 'Eclipse Public License 1.0';
   static const String mit = 'MIT License';
+  static const String zlib = 'zlib License';
 
   static const List<Dependency> androidDependencies = [
     Dependency(
@@ -368,6 +369,11 @@ class Dependencies {
       name: 'Tuple',
       license: bsd2,
       sourceUrl: 'https://github.com/google/tuple.dart',
+    ),
+    Dependency(
+      name: 'Vector Math',
+      license: '$zlib, $bsd3',
+      sourceUrl: 'https://github.com/google/vector_math.dart',
     ),
     Dependency(
       name: 'XML',

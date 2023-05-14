@@ -113,6 +113,7 @@ dependencies:
   transparent_image:
   tuple:
   url_launcher:
+  vector_math:
   volume_controller:
   xml:
 

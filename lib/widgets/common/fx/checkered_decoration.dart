@@ -15,7 +15,7 @@ class CheckeredPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final background = Rect.fromLTWH(0, 0, size.width, size.height);
+    final background = Offset.zero & size;
     canvas.drawRect(background, lightPaint);
 
     final dx = offset.dx % (checkSize * 2);

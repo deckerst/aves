@@ -54,6 +54,7 @@ import 'package:url_launcher/url_launcher.dart' as ul;
 
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
+  final Map? debugIntentData;
 
   // temporary exclude locales not ready yet for prime time
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
@@ -85,6 +86,7 @@ class AvesApp extends StatefulWidget {
   const AvesApp({
     super.key,
     required this.flavor,
+    this.debugIntentData,
   });
 
   @override
@@ -227,7 +229,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
               AvesApp.showSystemUI();
             }
             final home = initialized
-                ? _getFirstPage()
+                ? _getFirstPage(intentData: widget.debugIntentData)
                 : AvesScaffold(
                     body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                   );
@@ -390,6 +392,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.setWallpaper:
           case AppMode.slideshow:
           case AppMode.view:
+          case AppMode.edit:
             break;
         }
       case AppLifecycleState.resumed:

@@ -1462,7 +1462,7 @@ packages:
     source: hosted
     version: "3.0.6"
   vector_math:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: vector_math
       sha256: "80b3257d1492ce4d091729e3a67a60407d227c27241d6927be0130c98e741803"

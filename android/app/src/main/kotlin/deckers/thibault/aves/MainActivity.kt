@@ -277,6 +277,18 @@ open class MainActivity : FlutterFragmentActivity() {
                 }
             }
 
+            Intent.ACTION_EDIT -> {
+                (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
+                    // MIME type is optional
+                    val type = intent.type ?: intent.resolveType(this)
+                    return hashMapOf(
+                        INTENT_DATA_KEY_ACTION to INTENT_ACTION_EDIT,
+                        INTENT_DATA_KEY_MIME_TYPE to type,
+                        INTENT_DATA_KEY_URI to uri.toString(),
+                    )
+                }
+            }
+
             Intent.ACTION_GET_CONTENT, Intent.ACTION_PICK -> {
                 return hashMapOf(
                     INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_ITEMS,
@@ -433,6 +445,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 6
         const val PICK_COLLECTION_FILTERS_REQUEST = 7
 
+        const val INTENT_ACTION_EDIT = "edit"
         const val INTENT_ACTION_PICK_ITEMS = "pick_items"
         const val INTENT_ACTION_PICK_COLLECTION_FILTERS = "pick_collection_filters"
         const val INTENT_ACTION_SCREEN_SAVER = "screen_saver"
