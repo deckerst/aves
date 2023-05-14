@@ -34,7 +34,7 @@ import java.io.InputStream
 import java.util.zip.InflaterInputStream
 import java.util.zip.ZipException
 
-// adapted from `PngMetadataReader` to prevent reading OOM from large chunks
+// adapted from `PngMetadataReader` to prevent OOM from reading large chunks
 // as of `metadata-extractor` v2.18.0, there is no way to customize the reader
 // without copying `desiredChunkTypes` and the whole `processChunk` function
 object SafePngMetadataReader {
