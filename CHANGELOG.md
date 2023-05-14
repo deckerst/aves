@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when cataloguing PSD with large XMP
+- crash when cataloguing large HEIF
 
 ## <a id="v1.8.6"></a>[v1.8.6] - 2023-04-30
 
@@ -347,8 +348,8 @@ All notable changes to this project will be documented in this file.
 - Albums / Countries / Tags: live title filter
 - option to hide confirmation message after moving items to the bin
 - Collection / Info: edit description via Exif / IPTC / XMP
-- Info: read XMP from HEIC on Android >=11
-- Collection: support HEIC motion photos on Android >=11
+- Info: read XMP from HEIF on Android >=11
+- Collection: support HEIF motion photos on Android >=11
 - Search: `recently added` filter
 - Dutch translation (thanks Martijn Fabrie, Koen Koppens)
 
@@ -759,7 +760,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - auto album identification and naming
-- opening HEIC images from downloads content URI on Android >=11
+- opening HEIF images from downloads content URI on Android >=11
 
 ## [v1.4.7] - 2021-08-06 [YANKED]
 
@@ -854,7 +855,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Motion photo support
-- Viewer: play videos in multi-track HEIC
+- Viewer: play videos in multi-track HEIF
 - Handle share intent
 
 ### Changed
@@ -981,7 +982,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-Collection: identify multipage TIFF & multitrack HEIC/HEIF Viewer: support for multipage TIFF
+Collection: identify multipage TIFF & multitrack HEIF Viewer: support for multipage TIFF
 Viewer: support for cropped panoramas Albums: grouping options
 
 ### Changed
@@ -1092,7 +1093,7 @@ upgraded libtiff to 4.2.0 for TIFF decoding
 
 - Viewer: leave when the loaded item is deleted and it is the last one
 - Viewer: refresh the viewer overlay and info page when the loaded image is modified
-- Info: prevent reporting a "Media" section for images other than HEIC/HEIF
+- Info: prevent reporting a "Media" section for images other than HEIF
 - Fixed opening items shared via a "file" media content URI
 
 ### Removed
