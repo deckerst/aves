@@ -113,6 +113,7 @@ class _HomePageState extends State<HomePage> {
             final page = settings.getWidgetOpenPage(widgetId);
             switch (page) {
               case WidgetOpenPage.home:
+              case WidgetOpenPage.updateWidget:
                 break;
               case WidgetOpenPage.collection:
                 _initialFilters = settings.getWidgetCollectionFilters(widgetId);

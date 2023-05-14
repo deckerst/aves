@@ -281,6 +281,7 @@
   "widgetOpenPageHome": "Open home",
   "widgetOpenPageCollection": "Open collection",
   "widgetOpenPageViewer": "Open viewer",
+  "widgetTapUpdateWidget": "Update widget",
 
   "storageVolumeDescriptionFallbackPrimary": "Internal storage",
   "storageVolumeDescriptionFallbackNonPrimary": "SD card",

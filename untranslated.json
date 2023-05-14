@@ -178,6 +178,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "storageVolumeDescriptionFallbackPrimary",
     "storageVolumeDescriptionFallbackNonPrimary",
     "rootDirectoryDescription",
@@ -765,6 +766,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "storageVolumeDescriptionFallbackPrimary",
     "storageVolumeDescriptionFallbackNonPrimary",
     "rootDirectoryDescription",
@@ -1245,6 +1247,7 @@
     "maxBrightnessAlways",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "exportEntryDialogQuality",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
@@ -1267,6 +1270,7 @@
     "maxBrightnessAlways",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "exportEntryDialogQuality",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
@@ -1284,7 +1288,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "es": [
@@ -1295,7 +1300,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "eu": [
@@ -1306,7 +1312,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "fa": [
@@ -1382,6 +1389,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "rootDirectoryDescription",
     "otherDirectoryDescription",
     "restrictedAccessDialogMessage",
@@ -1820,7 +1828,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "gl": [
@@ -1891,6 +1900,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "storageVolumeDescriptionFallbackPrimary",
     "storageVolumeDescriptionFallbackNonPrimary",
     "rootDirectoryDescription",
@@ -2555,6 +2565,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "storageVolumeDescriptionFallbackPrimary",
     "storageVolumeDescriptionFallbackNonPrimary",
     "rootDirectoryDescription",
@@ -3199,6 +3210,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "storageVolumeDescriptionFallbackPrimary",
     "storageVolumeDescriptionFallbackNonPrimary",
     "rootDirectoryDescription",
@@ -3674,7 +3686,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "id": [
@@ -3685,7 +3698,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "it": [
@@ -3696,7 +3710,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "ja": [
@@ -3722,6 +3737,7 @@
     "subtitlePositionBottom",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "vaultBinUsageDialogMessage",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
@@ -3757,7 +3773,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "lt": [
@@ -3791,6 +3808,7 @@
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -4036,6 +4054,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "storageVolumeDescriptionFallbackPrimary",
     "storageVolumeDescriptionFallbackNonPrimary",
     "rootDirectoryDescription",
@@ -4521,6 +4540,7 @@
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "patternDialogEnter",
     "patternDialogConfirm",
     "exportEntryDialogQuality",
@@ -4567,6 +4587,7 @@
     "vaultLockTypePattern",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -4653,6 +4674,7 @@
     "videoResumptionModeAlways",
     "wallpaperTargetHome",
     "wallpaperTargetHomeLock",
+    "widgetTapUpdateWidget",
     "setCoverDialogCustom",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
@@ -5145,6 +5167,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "widgetTapUpdateWidget",
     "storageVolumeDescriptionFallbackPrimary",
     "storageVolumeDescriptionFallbackNonPrimary",
     "rootDirectoryDescription",
@@ -5570,7 +5593,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "pt": [
@@ -5581,7 +5605,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "ro": [
@@ -5597,6 +5622,7 @@
     "maxBrightnessAlways",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "exportEntryDialogQuality",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
@@ -5619,6 +5645,7 @@
     "maxBrightnessAlways",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "exportEntryDialogQuality",
     "statePageTitle",
     "stateEmpty",
@@ -5668,6 +5695,7 @@
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "otherDirectoryDescription",
     "storageAccessDialogMessage",
     "restrictedAccessDialogMessage",
@@ -6121,6 +6149,7 @@
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -6501,6 +6530,7 @@
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -6547,7 +6577,8 @@
     "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "widgetTapUpdateWidget"
   ],
 
   "zh": [
@@ -6575,6 +6606,7 @@
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",
@@ -6649,6 +6681,7 @@
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
+    "widgetTapUpdateWidget",
     "newVaultWarningDialogMessage",
     "newVaultDialogTitle",
     "configureVaultDialogTitle",

@@ -275,6 +275,8 @@ extension ExtraWidgetOpenPageView on WidgetOpenPage {
         return context.l10n.widgetOpenPageCollection;
       case WidgetOpenPage.viewer:
         return context.l10n.widgetOpenPageViewer;
+      case WidgetOpenPage.updateWidget:
+        return context.l10n.widgetTapUpdateWidget;
     }
   }
 }

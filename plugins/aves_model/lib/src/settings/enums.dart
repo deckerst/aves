@@ -44,6 +44,6 @@ enum ViewerTransition { slide, parallax, fade, zoomIn, none }
 
 enum WidgetDisplayedItem { random, mostRecent }
 
-enum WidgetOpenPage { home, collection, viewer }
+enum WidgetOpenPage { home, collection, viewer, updateWidget }
 
 enum WidgetShape { rrect, circle, heart }
