@@ -52,6 +52,7 @@ import pixy.meta.meta.MetadataType
 import java.io.*
 import java.nio.channels.Channels
 import java.util.*
+import kotlin.math.absoluteValue
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
@@ -538,11 +539,7 @@ abstract class ImageProvider {
                     exif.setAttribute(ExifInterface.TAG_DATETIME, dateString)
                     exif.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, dateString)
 
-                    val offsetInMinutes = TimeZone.getDefault().getOffset(dateTimeMillis) / 60000
-                    val offsetSign = if (offsetInMinutes < 0) "-" else "+"
-                    val offsetHours = "${offsetInMinutes / 60}".padStart(2, '0')
-                    val offsetMinutes = "${offsetInMinutes % 60}".padStart(2, '0')
-                    val timeZoneString = "$offsetSign$offsetHours:$offsetMinutes"
+                    val timeZoneString = getTimeZoneString(TimeZone.getDefault(), dateTimeMillis)
                     exif.setAttribute(ExifInterface.TAG_OFFSET_TIME, timeZoneString)
                     exif.setAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL, timeZoneString)
 
@@ -1386,6 +1383,15 @@ abstract class ImageProvider {
             } else {
                 false
             }
+        }
+
+        fun getTimeZoneString(timeZone: TimeZone, dateTimeMillis: Long): String {
+            val offset = timeZone.getOffset(dateTimeMillis)
+            val offsetInMinutes = offset.absoluteValue / 60000
+            val offsetSign = if (offset < 0) "-" else "+"
+            val offsetHours = "${offsetInMinutes / 60}".padStart(2, '0')
+            val offsetMinutes = "${offsetInMinutes % 60}".padStart(2, '0')
+            return "$offsetSign$offsetHours:$offsetMinutes"
         }
     }
 }
