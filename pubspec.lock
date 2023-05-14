@@ -407,9 +407,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: kotlin-jvm-target
-      resolved-ref: "4781520e090c3a104e2478cfe8e8cb97235341ec"
-      url: "https://github.com/deckerst/floating.git"
+      ref: main
+      resolved-ref: b073419d48f099b5855816a7c6e04d397b1f1c37
+      url: "https://github.com/wrbl606/floating.git"
     source: git
     version: "2.0.0"
   fluster:

@@ -70,11 +70,9 @@ dependencies:
   flex_color_picker:
   floating:
     git:
-      # url: https://github.com/wrbl606/floating.git
-      # # v2.0.0 is incompatible with AGP8
-      # ref: main
-      url: https://github.com/deckerst/floating.git
-      ref: kotlin-jvm-target
+      url: https://github.com/wrbl606/floating.git
+      # v2.0.0 is incompatible with AGP8
+      ref: main
   fluster:
   flutter_displaymode:
   flutter_highlight:
