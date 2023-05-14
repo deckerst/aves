@@ -7,6 +7,7 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -115,6 +116,7 @@ class _BasicSectionState extends State<BasicSection> {
   Widget _buildChips(BuildContext context) {
     final entry = widget.entry;
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
+    final date = entry.bestDate;
     final album = entry.directory;
     final filters = {
       MimeFilter(entry.mimeType),
@@ -125,6 +127,7 @@ class _BasicSectionState extends State<BasicSection> {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,
+      if (date != null) DateFilter(DateLevel.ymd, date),
       if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
       if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map(TagFilter.new),
