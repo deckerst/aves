@@ -108,15 +108,20 @@ class Analyzer {
   Future<void> start(dynamic args) async {
     List<int>? entryIds;
     var force = false;
+    var progressTotal = 0, progressOffset = 0;
     if (args is Map) {
       entryIds = (args['entryIds'] as List?)?.cast<int>();
       force = args['force'] ?? false;
+      progressTotal = args['progressTotal'];
+      progressOffset = args['progressOffset'];
     }
-    debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries');
+    debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries, at $progressOffset/$progressTotal');
     _controller = AnalysisController(
       canStartService: false,
       entryIds: entryIds,
       force: force,
+      progressTotal: progressTotal,
+      progressOffset: progressOffset,
       stopSignal: ValueNotifier(false),
     );
 

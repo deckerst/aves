@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import androidx.core.app.ComponentActivity
 import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -51,20 +52,35 @@ class AnalysisHandler(private val activity: ComponentActivity, private val onAna
         }
 
         // can be null or empty
-        val entryIds = call.argument<List<Int>>("entryIds")
+        val allEntryIds = call.argument<List<Int>>("entryIds")
+        val progressTotal = allEntryIds?.size ?: 0
+        var progressOffset = 0
 
-        WorkManager.getInstance(activity).enqueueUniqueWork(
+        // work `Data` cannot occupy more than 10240 bytes when serialized
+        // so we split it when we have a long list of entry IDs
+        val chunked = allEntryIds?.chunked(WORK_DATA_CHUNK_SIZE) ?: listOf(null)
+
+        fun buildRequest(entryIds: List<Int>?, progressOffset: Int): OneTimeWorkRequest {
+            val workData = workDataOf(
+                AnalysisWorker.KEY_ENTRY_IDS to entryIds?.toIntArray(),
+                AnalysisWorker.KEY_FORCE to force,
+                AnalysisWorker.KEY_PROGRESS_TOTAL to progressTotal,
+                AnalysisWorker.KEY_PROGRESS_OFFSET to progressOffset,
+            )
+            return OneTimeWorkRequestBuilder<AnalysisWorker>().apply { setInputData(workData) }.build()
+        }
+
+        var work = WorkManager.getInstance(activity).beginUniqueWork(
             ANALYSIS_WORK_NAME,
             ExistingWorkPolicy.KEEP,
-            OneTimeWorkRequestBuilder<AnalysisWorker>().apply {
-                setInputData(
-                    workDataOf(
-                        AnalysisWorker.KEY_ENTRY_IDS to entryIds?.toIntArray(),
-                        AnalysisWorker.KEY_FORCE to force,
-                    )
-                )
-            }.build()
+            buildRequest(chunked.first(), progressOffset),
         )
+        chunked.drop(1).forEach { entryIds ->
+            progressOffset += WORK_DATA_CHUNK_SIZE
+            work = work.then(buildRequest(entryIds, progressOffset))
+        }
+        work.enqueue()
+
         attachToActivity()
         result.success(null)
     }
@@ -89,5 +105,6 @@ class AnalysisHandler(private val activity: ComponentActivity, private val onAna
     companion object {
         const val CHANNEL = "deckers.thibault/aves/analysis"
         private const val ANALYSIS_WORK_NAME = "analysis_work"
+        private const val WORK_DATA_CHUNK_SIZE = 1000
     }
 }

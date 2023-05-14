@@ -63,6 +63,8 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
                         "start", hashMapOf(
                             "entryIds" to inputData.getIntArray(KEY_ENTRY_IDS)?.toList(),
                             "force" to inputData.getBoolean(KEY_FORCE, false),
+                            "progressTotal" to inputData.getInt(KEY_PROGRESS_TOTAL, 0),
+                            "progressOffset" to inputData.getInt(KEY_PROGRESS_OFFSET, 0),
                         )
                     )
                 }
@@ -169,5 +171,7 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
 
         const val KEY_ENTRY_IDS = "entry_ids"
         const val KEY_FORCE = "force"
+        const val KEY_PROGRESS_TOTAL = "progress_total"
+        const val KEY_PROGRESS_OFFSET = "progress_offset"
     }
 }
