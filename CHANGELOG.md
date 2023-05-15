@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - support for animated PNG
 - Info: added day filter with item date
 - Widget: option to update image on tap
+- Slideshow / Screen saver: option for random transition
 
 ### Changed
 

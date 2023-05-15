@@ -251,6 +251,8 @@ extension ExtraViewerTransitionView on ViewerTransition {
         return context.l10n.viewerTransitionZoomIn;
       case ViewerTransition.none:
         return context.l10n.viewerTransitionNone;
+      case ViewerTransition.random:
+        return context.l10n.widgetDisplayedItemRandom;
     }
   }
 }

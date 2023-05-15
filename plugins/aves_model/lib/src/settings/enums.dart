@@ -40,7 +40,7 @@ enum VideoLoopMode { never, shortOnly, always }
 
 enum VideoResumptionMode { never, ask, always }
 
-enum ViewerTransition { slide, parallax, fade, zoomIn, none }
+enum ViewerTransition { slide, parallax, fade, zoomIn, none, random }
 
 enum WidgetDisplayedItem { random, mostRecent }
 
