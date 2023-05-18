@@ -13,7 +13,7 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.10.0
+  flutter: 3.10.1
   sdk: ">=3.0.0 <4.0.0"
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
@@ -147,12 +147,6 @@ dependency_overrides:
       url: https://github.com/deckerst/flutter-google-api-availability.git
       ref: agp8-compat
       path: google_api_availability_android
-  # cf https://github.com/Baseflow/flutter-permission-handler/pull/1039
-  permission_handler_android:
-    git:
-      url: https://github.com/deckerst/flutter-permission-handler.git
-      ref: agp8-compat
-      path: permission_handler_android
   # cf https://github.com/kurenai7968/volume_controller/pull/19
   volume_controller:
     git:

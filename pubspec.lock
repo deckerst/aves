@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: d687576bb973e8d2539d0b4615d985336269a0dbe1b3984e937fd22d31406fb8
+      sha256: "8eb354cb8ebed8a9fdf63699d15deff533bc133128898afaf754926b57d611b6"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "1.3.1"
   analyzer:
     dependency: transitive
     description:
@@ -269,7 +269,7 @@ packages:
     description:
       path: "packages/device_info_plus/device_info_plus"
       ref: main
-      resolved-ref: e8d3b445ce52012456126a3844ddb49b92c5c850
+      resolved-ref: "57d9c8845edfc81fdbabcef9eb1d1ca450e62e7d"
       url: "https://github.com/fluttercommunity/plus_plugins.git"
     source: git
     version: "9.0.0"
@@ -285,10 +285,10 @@ packages:
     dependency: "direct main"
     description:
       name: dynamic_color
-      sha256: "1ffc93e3794696af22ff11d75adcd6f5fb67b45bd54f9d8735a5d1cf8c013841"
+      sha256: "74dff1435a695887ca64899b8990004f8d1232b0e84bfc4faa1fdda7c6f57cc1"
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.4"
+    version: "1.6.5"
   equatable:
     dependency: "direct main"
     description:
@@ -351,10 +351,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_core
-      sha256: "4491238f4fddc885bc994e304a035eb8aba2c935816b2c0b31d87f3ec6e96682"
+      sha256: "250678b816279b3240c3a33e1f76bf712c00718f1fbeffc85873a5da8c077379"
       url: "https://pub.dev"
     source: hosted
-    version: "2.12.0"
+    version: "2.13.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -375,18 +375,18 @@ packages:
     dependency: transitive
     description:
       name: firebase_crashlytics
-      sha256: cc6cab05d4de3257408c167ec1e2e410f21c0764aea22f78481314496a1cc4ca
+      sha256: "0d74cca3085f144f99aa4bd82cc4d33280d4cb72bac0b733cbf97c2d7d126df8"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.0"
+    version: "3.3.1"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
-      sha256: b3b6017045866b981b566896a0de6114181bf9e91465221f2e89996f47a160b4
+      sha256: "13880033d5f2055f53bcda28024e16607b8400445a425f86732c1935da9260db"
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.0"
+    version: "3.6.1"
   flex_color_picker:
     dependency: "direct main"
     description:
@@ -841,7 +841,7 @@ packages:
     description:
       path: "packages/package_info_plus/package_info_plus"
       ref: main
-      resolved-ref: e8d3b445ce52012456126a3844ddb49b92c5c850
+      resolved-ref: "57d9c8845edfc81fdbabcef9eb1d1ca450e62e7d"
       url: "https://github.com/fluttercommunity/plus_plugins.git"
     source: git
     version: "4.0.0"
@@ -951,14 +951,13 @@ packages:
     source: hosted
     version: "10.2.0"
   permission_handler_android:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: permission_handler_android
-      ref: agp8-compat
-      resolved-ref: ad409917f0db1b1ad6a2c74d3c6b3b35f331a81e
-      url: "https://github.com/deckerst/flutter-permission-handler.git"
-    source: git
-    version: "10.2.0"
+      name: permission_handler_android
+      sha256: d8cc6a62ded6d0f49c6eac337e080b066ee3bce4d405bd9439a61e1f1927bfe8
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.2.1"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -1264,10 +1263,10 @@ packages:
     dependency: "direct main"
     description:
       name: sqflite
-      sha256: "3a82c9a216b46b88617e3714dd74227eaca20c501c4abcc213e56db26b9caa00"
+      sha256: b4d6710e1200e96845747e37338ea8a819a12b51689a3bcf31eff0003b37a0b9
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.8+2"
+    version: "2.2.8+4"
   sqflite_common:
     dependency: transitive
     description:
@@ -1409,10 +1408,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "7aac14be5f4731b923cc697ae2d42043945076cd0dbb8806baecc92c1dc88891"
+      sha256: "1a5848f598acc5b7d8f7c18b8cb834ab667e59a13edc3c93e9d09cf38cc6bc87"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.33"
+    version: "6.0.34"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1568,4 +1567,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  flutter: ">=3.10.1"
