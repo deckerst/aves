@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "405666cd3cf0ee0a48d21ec67e65406aad2c726d9fa58840d3375e7bdcd32a07"
+      sha256: ae92f5d747aee634b87f89d9946000c2de774be1d6ac3e58268224348cd0101a
       url: "https://pub.dev"
     source: hosted
-    version: "60.0.0"
+    version: "61.0.0"
   _flutterfire_internals:
     dependency: transitive
     description:
@@ -21,10 +21,10 @@ packages:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "1952250bd005bacb895a01bf1b4dc00e3ba1c526cf47dca54dfe24979c65f5b3"
+      sha256: ea3d8652bda62982addfd92fdc2d0214e5f82e43325104990d4f4c4a2a313562
       url: "https://pub.dev"
     source: hosted
-    version: "5.12.0"
+    version: "5.13.0"
   archive:
     dependency: transitive
     description:
@@ -196,10 +196,10 @@ packages:
     dependency: "direct main"
     description:
       name: connectivity_plus
-      sha256: "45262924896ff72a8cd92b722bb7e3d5020f9e0724531a3e10e22ddae2005991"
+      sha256: "8599ae9edca5ff96163fca3e36f8e481ea917d1e71cdad912c084b5579913f34"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.1"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -267,12 +267,11 @@ packages:
   device_info_plus:
     dependency: "direct main"
     description:
-      path: "packages/device_info_plus/device_info_plus"
-      ref: main
-      resolved-ref: "57d9c8845edfc81fdbabcef9eb1d1ca450e62e7d"
-      url: "https://github.com/fluttercommunity/plus_plugins.git"
-    source: git
-    version: "9.0.0"
+      name: device_info_plus
+      sha256: "499c61743e13909c13374a8c209075385858c614b9c0f2487b5f9995eeaf7369"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.1"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -462,6 +461,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_localization_nn:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "61b18541adb2028798cf246dda93c974120dabb8"
+      url: "https://github.com/deckerst/flutter_localization_nn.git"
+    source: git
+    version: "0.0.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -487,10 +495,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "96af49aa6b57c10a312106ad6f71deed5a754029c24789bbf620ba784f0bd0b0"
+      sha256: "950e77c2bbe1692bc0874fc7fb491b96a4dc340457f4ea1641443d0a6c1ea360"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.14"
+    version: "2.0.15"
   flutter_staggered_animations:
     dependency: "direct main"
     description:
@@ -534,10 +542,10 @@ packages:
     dependency: transitive
     description:
       name: glob
-      sha256: "4515b5b6ddb505ebdd242a5f2cc5d22d3d6a80013789debfbda7777f47ea308c"
+      sha256: "0e7014b3b7d4dac1ca4d6114f82bf1782ee86745b9b42a92c9289c23d8a0ab63"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   google_api_availability:
     dependency: transitive
     description:
@@ -663,10 +671,10 @@ packages:
     dependency: "direct main"
     description:
       name: latlong2
-      sha256: "408993a0e3f46e79ce1f129e4cb0386eef6d48dfa6394939ecacfbd7049154ec"
+      sha256: "08ef7282ba9f76e8495e49e2dc4d653015ac929dce5f92b375a415d30b407ea0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.1"
+    version: "0.8.2"
   lints:
     dependency: transitive
     description:
@@ -703,10 +711,10 @@ packages:
     dependency: transitive
     description:
       name: local_auth_ios
-      sha256: "503a938c4edde6b244c6ee3b1e2e675ddb7e37e79d5056658dbed1997cf04785"
+      sha256: edc2977c5145492f3451db9507a2f2f284ee4f408950b3e16670838726761940
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.3"
   local_auth_platform_interface:
     dependency: transitive
     description:
@@ -839,12 +847,11 @@ packages:
   package_info_plus:
     dependency: "direct main"
     description:
-      path: "packages/package_info_plus/package_info_plus"
-      ref: main
-      resolved-ref: "57d9c8845edfc81fdbabcef9eb1d1ca450e62e7d"
-      url: "https://github.com/fluttercommunity/plus_plugins.git"
-    source: git
-    version: "4.0.0"
+      name: package_info_plus
+      sha256: "28386bbe89ab5a7919a47cea99cdd1128e5a6e0bbd7eaafe20440ead84a15de3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -1566,5 +1573,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.0.0 <4.0.0"
+  dart: ">=3.0.1 <4.0.0"
   flutter: ">=3.10.1"
