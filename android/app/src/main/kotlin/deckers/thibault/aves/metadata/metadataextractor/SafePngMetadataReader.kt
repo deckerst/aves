@@ -34,9 +34,10 @@ import java.io.InputStream
 import java.util.zip.InflaterInputStream
 import java.util.zip.ZipException
 
-// adapted from `PngMetadataReader` to prevent OOM from reading large chunks
-// as of `metadata-extractor` v2.18.0, there is no way to customize the reader
-// without copying `desiredChunkTypes` and the whole `processChunk` function
+// adapted from `PngMetadataReader` to:
+// - prevent OOM from reading large chunks. As of `metadata-extractor` v2.18.0, there is no way to customize the reader
+// without copying `desiredChunkTypes` and the whole `processChunk` function.
+// - parse `acTL` chunk to identify animated PNGs.
 object SafePngMetadataReader {
     private val LOG_TAG = LogUtils.createTag<SafePngMetadataReader>()
 
@@ -60,6 +61,7 @@ object SafePngMetadataReader {
         PngChunkType.pHYs,
         PngChunkType.sBIT,
         PngChunkType.eXIf,
+        PngActlDirectory.chunkType,
     )
 
     @Throws(IOException::class, PngProcessingException::class)
@@ -99,6 +101,21 @@ object SafePngMetadataReader {
             directory.setInt(PngDirectory.TAG_FILTER_METHOD, header.filterMethod.toInt())
             directory.setInt(PngDirectory.TAG_INTERLACE_METHOD, header.interlaceMethod.toInt())
             metadata.addDirectory(directory)
+            // TLAD insert start
+        } else if (chunkType == PngActlDirectory.chunkType) {
+            if (bytes.size != 8) {
+                throw PngProcessingException("Invalid number of bytes")
+            }
+            val reader = SequentialByteArrayReader(bytes)
+            try {
+                metadata.addDirectory(PngActlDirectory().apply {
+                    setInt(PngActlDirectory.TAG_NUM_FRAMES, reader.int32)
+                    setInt(PngActlDirectory.TAG_NUM_PLAYS, reader.int32)
+                })
+            } catch (ex: IOException) {
+                throw PngProcessingException(ex)
+            }
+            // TLAD insert end
         } else if (chunkType == PngChunkType.PLTE) {
             val directory = PngDirectory(PngChunkType.PLTE)
             directory.setInt(PngDirectory.TAG_PALETTE_SIZE, bytes.size / 3)

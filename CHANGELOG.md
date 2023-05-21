@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - option to set the Tags page as home
-- support for animated PNG
+- support for animated PNG (requires rescan)
 - Info: added day filter with item date
 - Widget: option to update image on tap
 - Slideshow / Screen saver: option for random transition
