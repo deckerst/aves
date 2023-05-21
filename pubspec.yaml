@@ -76,6 +76,9 @@ dependencies:
   fluster:
   flutter_displaymode:
   flutter_highlight:
+  flutter_localization_nn:
+    git:
+      url: https://github.com/deckerst/flutter_localization_nn.git
   flutter_map:
   flutter_markdown:
   flutter_staggered_animations:
@@ -129,18 +132,6 @@ dependency_overrides:
   # constrains `material_color_utilities` to v0.2.0, which
   # constrains `dynamic_color` to v1.6.4, which is incompatible with AGP8
   material_color_utilities: ^0.5.0
-  device_info_plus:
-    git:
-      url: https://github.com/fluttercommunity/plus_plugins.git
-      # v9:0:0 is incompatible with AGP8
-      ref: main
-      path: packages/device_info_plus/device_info_plus
-  package_info_plus:
-    git:
-      url: https://github.com/fluttercommunity/plus_plugins.git
-      # v4:0:0 is incompatible with AGP8
-      ref: main
-      path: packages/package_info_plus/package_info_plus
   # cf https://github.com/Baseflow/flutter-google-api-availability/pull/43
   google_api_availability_android:
     git:

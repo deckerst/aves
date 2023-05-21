@@ -45,6 +45,7 @@ import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localization_nn/flutter_localization_nn.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
@@ -66,7 +67,6 @@ class AvesApp extends StatefulWidget {
     'he', // Hebrew
     'hi', // Hindi
     'ml', // Malayalam
-    'nn', // Norwegian Nynorsk
     'or', // Odia
     'sk', // Slovak
     'th', // Thai
@@ -289,7 +289,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                           darkTheme: darkTheme,
                           themeMode: themeBrightness.appThemeMode,
                           locale: settingsLocale,
-                          localizationsDelegates: AppLocalizations.localizationsDelegates,
+                          localizationsDelegates: const [
+                            ...AppLocalizations.localizationsDelegates,
+                            ...LocalizationsNn.delegates,
+                          ],
                           supportedLocales: AvesApp.supportedLocales,
                           // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
                           scrollBehavior: StretchMaterialScrollBehavior(),

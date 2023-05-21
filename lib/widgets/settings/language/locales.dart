@@ -17,6 +17,7 @@ class SupportedLocales {
     'ko': '한국어',
     'lt': 'Lietuvių',
     'nb': 'Norsk (Bokmål)',
+    'nn': 'Norsk (Nynorsk)',
     'nl': 'Nederlands',
     'pl': 'Polski',
     'pt': 'Português (Brasil)',

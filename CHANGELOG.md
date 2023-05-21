@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Info: added day filter with item date
 - Widget: option to update image on tap
 - Slideshow / Screen saver: option for random transition
+- Norwegian (Nynorsk) translation (thanks tryvseu)
 
 ### Changed
 
