@@ -34,6 +34,7 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
   void initState() {
     super.initState();
     _registerWidget(widget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onSelectedEntryChanged());
   }
 
   @override
