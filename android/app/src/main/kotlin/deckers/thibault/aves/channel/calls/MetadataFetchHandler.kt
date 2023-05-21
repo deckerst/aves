@@ -75,6 +75,7 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeRational
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
+import deckers.thibault.aves.metadata.metadataextractor.PngActlDirectory
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
@@ -656,6 +657,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                         }
                                     }
                                 }
+                            }
+
+                            // identification of animated PNG
+                            if (metadata.containsDirectoryOfType(PngActlDirectory::class.java)) {
+                                flags = flags or MASK_IS_ANIMATED
                             }
                         }
 
