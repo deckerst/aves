@@ -39,7 +39,7 @@
   "@changeTooltip": {},
   "actionRemove": "إزالة",
   "@actionRemove": {},
-  "appName": "Aves",
+  "appName": "أيفيس",
   "@appName": {},
   "welcomeOptional": "اختياري",
   "@welcomeOptional": {},
@@ -51,7 +51,7 @@
   "@cancelTooltip": {},
   "previousTooltip": "السابق",
   "@previousTooltip": {},
-  "welcomeMessage": "مرحبا بكم في Aves",
+  "welcomeMessage": "مرحبا بكم في أيفيس",
   "@welcomeMessage": {},
   "applyButtonLabel": "تطبيق",
   "@applyButtonLabel": {},
@@ -68,5 +68,7 @@
   "hideTooltip": "إخفاء",
   "@hideTooltip": {},
   "tagEditorPageAddTagTooltip": "إضافة علامة",
-  "@tagEditorPageAddTagTooltip": {}
+  "@tagEditorPageAddTagTooltip": {},
+  "albumScreenRecordings": "تسجيل الشاشة",
+  "@albumScreenRecordings": {}
 }
