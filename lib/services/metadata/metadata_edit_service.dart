@@ -6,8 +6,10 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_report/aves_report.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 abstract class MetadataEditService {
   Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise});
@@ -125,44 +127,52 @@ class PlatformMetadataEditService implements MetadataEditService {
   Future<void> _processPlatformException(AvesEntry entry, PlatformException e, StackTrace stack) async {
     if (entry.isValid) {
       final code = e.code;
+      final customException = CustomPlatformException.fromStandard(e);
       if (code.endsWith('mp4largemoov')) {
-        await reportService.recordError(_Mp4LargeMoovException(code: e.code, message: e.message, details: e.details, stacktrace: e.stacktrace), stack);
+        await mp4LargeMoov(customException);
       } else if (code.endsWith('mp4largeother')) {
-        await reportService.recordError(_Mp4LargeOtherException(code: e.code, message: e.message, details: e.details, stacktrace: e.stacktrace), stack);
+        await mp4LargeOther(customException);
       } else if (code.endsWith('filenotfound')) {
-        await reportService.recordError(_FileNotFoundException(code: e.code, message: e.message, details: e.details, stacktrace: e.stacktrace), stack);
+        await fileNotFound(customException);
       } else {
         await reportService.recordError(e, stack);
       }
     }
   }
+
+  StackTrace? _currentStack() => ReportService.buildReportStack(Trace.current(), level: 1);
+
+  // distinct exceptions to convince Crashlytics to split reports into distinct issues
+
+  Future<void> mp4LargeMoov(CustomPlatformException e) => reportService.recordError(e, _currentStack());
+
+  Future<void> mp4LargeOther(CustomPlatformException e) => reportService.recordError(e, _currentStack());
+
+  Future<void> fileNotFound(CustomPlatformException e) => reportService.recordError(e, _currentStack());
 }
 
-// distinct exceptions to convince Crashlytics to split reports into distinct issues
+class CustomPlatformException {
+  final String code;
+  final String? message;
+  final dynamic details;
+  final String? stacktrace;
 
-class _Mp4LargeMoovException extends PlatformException {
-  _Mp4LargeMoovException({
-    required super.code,
-    required super.message,
-    required super.details,
-    required super.stacktrace,
+  CustomPlatformException({
+    required this.code,
+    this.message,
+    this.details,
+    this.stacktrace,
   });
-}
 
-class _Mp4LargeOtherException extends PlatformException {
-  _Mp4LargeOtherException({
-    required super.code,
-    required super.message,
-    required super.details,
-    required super.stacktrace,
-  });
-}
+  factory CustomPlatformException.fromStandard(PlatformException e) {
+    return CustomPlatformException(
+      code: e.code,
+      message: e.message,
+      details: e.details,
+      stacktrace: e.stacktrace,
+    );
+  }
 
-class _FileNotFoundException extends PlatformException {
-  _FileNotFoundException({
-    required super.code,
-    required super.message,
-    required super.details,
-    required super.stacktrace,
-  });
+  @override
+  String toString() => '$runtimeType($code, $message, $details, $stacktrace)';
 }

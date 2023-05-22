@@ -108,6 +108,7 @@ dependencies:
   shared_preferences:
   smooth_page_indicator:
   sqflite:
+  stack_trace:
   streams_channel:
     git:
       url: https://github.com/deckerst/aves_streams_channel.git

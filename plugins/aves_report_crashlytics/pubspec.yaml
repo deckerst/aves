@@ -10,12 +10,10 @@ dependencies:
     sdk: flutter
   aves_report:
     path: ../aves_report
-  collection:
   # as of `firebase_core` v2.10.0, upgrading packages downgrades `firebase_core` et al.
   # so that the transitive `path` gets upgraded to v1.8.3
   firebase_core: ">=2.10.0"
   firebase_crashlytics:
-  stack_trace:
 
 dev_dependencies:
   flutter_lints:
