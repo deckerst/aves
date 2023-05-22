@@ -8,6 +8,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  collection:
+  stack_trace:
 
 dev_dependencies:
   flutter_lints:
