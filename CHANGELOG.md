@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 
 - keep showing empty albums if are pinned
 - remember whether to show the title filter when picking albums
-- upgraded Flutter to stable v3.10.1
+- upgraded Flutter to stable v3.10.2
 
 ### Fixed
 
