@@ -125,18 +125,20 @@ packages:
   huawei_hmsavailability:
     dependency: "direct main"
     description:
-      name: huawei_hmsavailability
-      sha256: ab7128852e4188fda1e052cc44d8f881061e79fdd568edd18981347906369653
-      url: "https://pub.dev"
-    source: hosted
+      path: flutter-hms-availability
+      ref: agp8-compat
+      resolved-ref: d861f98fcfbd770420594f92d099ea3128c840c2
+      url: "https://github.com/deckerst/hms-flutter-plugin.git"
+    source: git
     version: "6.6.0+300"
   huawei_map:
     dependency: "direct main"
     description:
-      name: huawei_map
-      sha256: "3cee2a6fe1a8eb03782f29588df082de14b09f81c88b376017ad5afda6df2555"
-      url: "https://pub.dev"
-    source: hosted
+      path: flutter-hms-map
+      ref: agp8-compat
+      resolved-ref: d861f98fcfbd770420594f92d099ea3128c840c2
+      url: "https://github.com/deckerst/hms-flutter-plugin.git"
+    source: git
     version: "6.9.0+300"
   intl:
     dependency: transitive

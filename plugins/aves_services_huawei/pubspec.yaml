@@ -14,8 +14,18 @@ dependencies:
     path: ../aves_platform_meta
   aves_services:
     path: ../aves_services
+  # cf https://github.com/HMS-Core/hms-flutter-plugin/pull/296
   huawei_hmsavailability:
+    git:
+      url: https://github.com/deckerst/hms-flutter-plugin.git
+      ref: agp8-compat
+      path: flutter-hms-availability
+  # cf https://github.com/HMS-Core/hms-flutter-plugin/pull/296
   huawei_map:
+    git:
+      url: https://github.com/deckerst/hms-flutter-plugin.git
+      ref: agp8-compat
+      path: flutter-hms-map
   latlong2:
   provider:
 
