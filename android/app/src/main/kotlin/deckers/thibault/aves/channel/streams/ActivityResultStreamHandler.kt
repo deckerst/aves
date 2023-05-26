@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.streams
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -77,7 +76,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     private fun requestMediaFileAccess() {
         val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) Uri.parse(it) else null }
         val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { if (it is String) it else null }
-        if (uris == null || uris.isEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
+        if (uris.isNullOrEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
             error("requestMediaFileAccess-args", "missing arguments", null)
             return
         }
@@ -112,12 +111,6 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private suspend fun createFile() {
-        @SuppressLint("ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            error("createFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
-            return
-        }
-
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
@@ -155,12 +148,6 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private suspend fun openFile() {
-        @SuppressLint("ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            error("openFile-sdk", "unsupported SDK version=${Build.VERSION.SDK_INT}", null)
-            return
-        }
-
         val mimeType = args["mimeType"] as String? // optional
 
         fun onGranted(uri: Uri) {
@@ -219,7 +206,6 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
     }
 
-    @Suppress("SameParameterValue")
     private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
         handler.post {
             try {

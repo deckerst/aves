@@ -104,6 +104,8 @@ extension ExtraHomePageSettingView on HomePageSetting {
         return context.l10n.drawerCollectionAll;
       case HomePageSetting.albums:
         return context.l10n.drawerAlbumPage;
+      case HomePageSetting.tags:
+        return context.l10n.drawerTagPage;
     }
   }
 }
@@ -249,6 +251,8 @@ extension ExtraViewerTransitionView on ViewerTransition {
         return context.l10n.viewerTransitionZoomIn;
       case ViewerTransition.none:
         return context.l10n.viewerTransitionNone;
+      case ViewerTransition.random:
+        return context.l10n.widgetDisplayedItemRandom;
     }
   }
 }
@@ -273,6 +277,8 @@ extension ExtraWidgetOpenPageView on WidgetOpenPage {
         return context.l10n.widgetOpenPageCollection;
       case WidgetOpenPage.viewer:
         return context.l10n.widgetOpenPageViewer;
+      case WidgetOpenPage.updateWidget:
+        return context.l10n.widgetTapUpdateWidget;
     }
   }
 }

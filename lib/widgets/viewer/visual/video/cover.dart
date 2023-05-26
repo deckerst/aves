@@ -115,7 +115,7 @@ class _VideoCoverState extends State<VideoCover> {
               if (boundaries != null) {
                 magnifierController.setScaleBoundaries(
                   boundaries.copyWith(
-                    childSize: videoDisplaySize,
+                    contentSize: videoDisplaySize,
                   ),
                 );
               }
@@ -144,6 +144,7 @@ class _VideoCoverState extends State<VideoCover> {
                     child: ThumbnailImage(
                       entry: entry,
                       extent: extent,
+                      devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
                       fit: BoxFit.contain,
                       showLoadingBackground: false,
                     ),

@@ -47,13 +47,10 @@ mixin AlbumMixin on SourceBase {
       switch (androidFileUtils.getAlbumType(album)) {
         case AlbumType.regular:
           regularAlbums.add(album);
-          break;
         case AlbumType.app:
           appAlbums.add(album);
-          break;
         default:
           specialAlbums.add(album);
-          break;
       }
     }
     return Map.fromEntries([...specialAlbums, ...appAlbums, ...regularAlbums].map((album) => MapEntry(
@@ -93,7 +90,11 @@ mixin AlbumMixin on SourceBase {
   }
 
   bool _isRemovable(String album) {
-    return !(visibleEntries.any((entry) => entry.directory == album) || _newAlbums.contains(album) || vaults.isVault(album));
+    if (visibleEntries.any((entry) => entry.directory == album)) return false;
+    if (_newAlbums.contains(album)) return false;
+    if (vaults.isVault(album)) return false;
+    if (settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).contains(album)) return false;
+    return true;
   }
 
   // filter summary

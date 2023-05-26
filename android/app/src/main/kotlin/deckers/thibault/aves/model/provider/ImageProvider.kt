@@ -45,11 +45,14 @@ import deckers.thibault.aves.utils.MimeTypes.canReadWithPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import pixy.meta.meta.Metadata
 import pixy.meta.meta.MetadataType
 import java.io.*
 import java.nio.channels.Channels
 import java.util.*
+import kotlin.math.absoluteValue
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
@@ -308,8 +311,7 @@ abstract class ImageProvider {
                     .apply(glideOptions)
                     .load(model)
                     .submit(targetWidthPx, targetHeightPx)
-                @Suppress("BlockingMethodInNonBlockingContext")
-                var bitmap = target.get()
+                var bitmap = withContext(Dispatchers.IO) { target.get() }
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
@@ -457,7 +459,6 @@ abstract class ImageProvider {
         editableFile.delete()
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     suspend fun captureFrame(
         contextWrapper: ContextWrapper,
         desiredNameWithoutExtension: String,
@@ -512,7 +513,7 @@ abstract class ImageProvider {
                     output.write(bytes)
                 }
             } else {
-                val editableFile = File.createTempFile("aves", null).apply {
+                val editableFile = withContext(Dispatchers.IO) { File.createTempFile("aves", null) }.apply {
                     deleteOnExit()
                     transferFrom(ByteArrayInputStream(bytes), bytes.size.toLong())
                 }
@@ -538,11 +539,7 @@ abstract class ImageProvider {
                     exif.setAttribute(ExifInterface.TAG_DATETIME, dateString)
                     exif.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, dateString)
 
-                    val offsetInMinutes = TimeZone.getDefault().getOffset(dateTimeMillis) / 60000
-                    val offsetSign = if (offsetInMinutes < 0) "-" else "+"
-                    val offsetHours = "${offsetInMinutes / 60}".padStart(2, '0')
-                    val offsetMinutes = "${offsetInMinutes % 60}".padStart(2, '0')
-                    val timeZoneString = "$offsetSign$offsetHours:$offsetMinutes"
+                    val timeZoneString = getTimeZoneString(TimeZone.getDefault(), dateTimeMillis)
                     exif.setAttribute(ExifInterface.TAG_OFFSET_TIME, timeZoneString)
                     exif.setAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL, timeZoneString)
 
@@ -1386,6 +1383,15 @@ abstract class ImageProvider {
             } else {
                 false
             }
+        }
+
+        fun getTimeZoneString(timeZone: TimeZone, dateTimeMillis: Long): String {
+            val offset = timeZone.getOffset(dateTimeMillis)
+            val offsetInMinutes = offset.absoluteValue / 60000
+            val offsetSign = if (offset < 0) "-" else "+"
+            val offsetHours = "${offsetInMinutes / 60}".padStart(2, '0')
+            val offsetMinutes = "${offsetInMinutes % 60}".padStart(2, '0')
+            return "$offsetSign$offsetHours:$offsetMinutes"
         }
     }
 }

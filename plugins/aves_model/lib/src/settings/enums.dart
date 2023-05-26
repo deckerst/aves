@@ -14,7 +14,7 @@ enum DisplayRefreshRateMode { auto, highest, lowest }
 
 enum EntryBackground { black, white, checkered }
 
-enum HomePageSetting { collection, albums }
+enum HomePageSetting { collection, albums, tags }
 
 enum KeepScreenOn { never, videoPlayback, viewerOnly, always }
 
@@ -40,10 +40,10 @@ enum VideoLoopMode { never, shortOnly, always }
 
 enum VideoResumptionMode { never, ask, always }
 
-enum ViewerTransition { slide, parallax, fade, zoomIn, none }
+enum ViewerTransition { slide, parallax, fade, zoomIn, none, random }
 
 enum WidgetDisplayedItem { random, mostRecent }
 
-enum WidgetOpenPage { home, collection, viewer }
+enum WidgetOpenPage { home, collection, viewer, updateWidget }
 
 enum WidgetShape { rrect, circle, heart }

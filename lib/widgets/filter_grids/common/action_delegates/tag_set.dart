@@ -70,7 +70,6 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
       // single/multiple filters
       case ChipSetAction.delete:
         _delete(context, filters);
-        break;
       default:
         break;
     }

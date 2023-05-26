@@ -2,10 +2,11 @@ import 'package:aves/app_flavor.dart';
 
 class Dependencies {
   static const String apache2 = 'Apache License 2.0';
-  static const String bsd2 = 'BSD 2-Clause "Simplified" License';
-  static const String bsd3 = 'BSD 3-Clause "Revised" License';
+  static const String bsd2 = 'BSD 2-Clause “Simplified” License';
+  static const String bsd3 = 'BSD 3-Clause “Revised” License';
   static const String eclipse1 = 'Eclipse Public License 1.0';
   static const String mit = 'MIT License';
+  static const String zlib = 'zlib License';
 
   static const List<Dependency> androidDependencies = [
     Dependency(
@@ -88,8 +89,8 @@ class Dependencies {
     Dependency(
       name: 'Local Auth',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/local_auth/local_auth/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/local_auth/local_auth',
+      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/local_auth/local_auth/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/local_auth/local_auth',
     ),
     Dependency(
       name: 'Package Info Plus',
@@ -115,8 +116,8 @@ class Dependencies {
     Dependency(
       name: 'Shared Preferences',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/shared_preferences/shared_preferences/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/shared_preferences/shared_preferences',
+      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/shared_preferences/shared_preferences/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences',
     ),
     Dependency(
       name: 'sqflite',
@@ -131,8 +132,8 @@ class Dependencies {
     Dependency(
       name: 'URL Launcher',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/url_launcher/url_launcher/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/url_launcher/url_launcher',
+      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/url_launcher/url_launcher/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher',
     ),
     Dependency(
       name: 'Volume Controller',
@@ -150,8 +151,8 @@ class Dependencies {
     Dependency(
       name: 'Google Maps for Flutter',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/plugins/blob/main/packages/google_maps_flutter/google_maps_flutter/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/main/packages/google_maps_flutter/google_maps_flutter',
+      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/google_maps_flutter/google_maps_flutter/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/google_maps_flutter/google_maps_flutter',
     ),
   ];
 
@@ -368,6 +369,11 @@ class Dependencies {
       name: 'Tuple',
       license: bsd2,
       sourceUrl: 'https://github.com/google/tuple.dart',
+    ),
+    Dependency(
+      name: 'Vector Math',
+      license: '$zlib, $bsd3',
+      sourceUrl: 'https://github.com/google/vector_math.dart',
     ),
     Dependency(
       name: 'XML',

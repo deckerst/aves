@@ -1,6 +1,11 @@
 buildscript {
     ext {
-        kotlin_version = '1.8.0'
+        kotlin_version = '1.8.21'
+        agp_version = '8.0.1'
+        glide_version = '4.15.1'
+        // AppGallery Connect plugin versions: https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-sdk-changenotes-0000001058732550
+        // TODO TLAD AppGallery Connect plugin v1.9.0.300 does not support Gradle 8+
+        huawei_agconnect_version = '1.9.0.300'
         abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
         useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
         useHms = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("huawei") }
@@ -17,7 +22,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "com.android.tools.build:gradle:$agp_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         if (useCrashlytics) {
@@ -28,7 +33,7 @@ buildscript {
 
         if (useHms) {
             // HMS (used by some flavors only)
-            classpath 'com.huawei.agconnect:agcp:1.8.0.300'
+            classpath "com.huawei.agconnect:agcp:$huawei_agconnect_version"
         }
     }
 }
@@ -57,6 +62,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }

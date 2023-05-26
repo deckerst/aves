@@ -23,13 +23,10 @@ class OverlayRatingTagsRow extends AnimatedWidget {
     switch (rating) {
       case -1:
         ratingString = context.l10n.filterRatingRejectedLabel;
-        break;
       case 0:
         ratingString = '';
-        break;
       default:
         ratingString = '${'★' * rating}${'☆' * (5 - rating)}';
-        break;
     }
 
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);

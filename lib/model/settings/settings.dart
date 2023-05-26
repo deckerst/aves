@@ -118,6 +118,7 @@ class Settings extends ChangeNotifier {
   static const tagSortReverseKey = 'tag_sort_reverse';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
+  static const showAlbumPickQueryKey = 'show_album_pick_query';
 
   // viewer
   static const viewerQuickActionsKey = 'viewer_quick_actions';
@@ -374,7 +375,7 @@ class Settings extends ChangeNotifier {
       if (_locale != null) {
         preferredLocales.add(_locale);
       } else {
-        preferredLocales.addAll(WidgetsBinding.instance.window.locales);
+        preferredLocales.addAll(WidgetsBinding.instance.platformDispatcher.locales);
         if (preferredLocales.isEmpty) {
           // the `window` locales may be empty in a window-less service context
           preferredLocales.addAll(_systemLocalesFallback);
@@ -624,6 +625,10 @@ class Settings extends ChangeNotifier {
     }
     hiddenFilters = _hiddenFilters;
   }
+
+  bool get showAlbumPickQuery => getBool(showAlbumPickQueryKey) ?? false;
+
+  set showAlbumPickQuery(bool newValue) => _set(showAlbumPickQueryKey, newValue);
 
   // viewer
 
@@ -1017,7 +1022,6 @@ class Settings extends ChangeNotifier {
           if (value is num) {
             isRotationLocked = value == 0;
           }
-          break;
         case platformTransitionAnimationScaleKey:
           if (value is num) {
             areAnimationsRemoved = value == 0;
@@ -1075,7 +1079,6 @@ class Settings extends ChangeNotifier {
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not an int');
               }
-              break;
             case subtitleFontSizeKey:
             case infoMapZoomKey:
               if (newValue is double) {
@@ -1083,7 +1086,6 @@ class Settings extends ChangeNotifier {
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not a double');
               }
-              break;
             case isInstalledAppAccessAllowedKey:
             case isErrorReportingAllowedKey:
             case enableDynamicColorKey:
@@ -1107,6 +1109,7 @@ class Settings extends ChangeNotifier {
             case stateSortReverseKey:
             case placeSortReverseKey:
             case tagSortReverseKey:
+            case showAlbumPickQueryKey:
             case showOverlayOnOpeningKey:
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
@@ -1138,7 +1141,6 @@ class Settings extends ChangeNotifier {
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not a bool');
               }
-              break;
             case localeKey:
             case displayRefreshRateModeKey:
             case themeBrightnessKey:
@@ -1181,7 +1183,6 @@ class Settings extends ChangeNotifier {
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not a string');
               }
-              break;
             case drawerTypeBookmarksKey:
             case drawerAlbumBookmarksKey:
             case drawerPageBookmarksKey:
@@ -1197,7 +1198,6 @@ class Settings extends ChangeNotifier {
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not a list');
               }
-              break;
           }
         }
         if (oldValue != newValue) {

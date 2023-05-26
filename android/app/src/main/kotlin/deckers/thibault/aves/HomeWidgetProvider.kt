@@ -18,6 +18,7 @@ import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.FlutterInjector
@@ -40,11 +41,11 @@ class HomeWidgetProvider : AppWidgetProvider() {
             val widgetInfo = appWidgetManager.getAppWidgetOptions(widgetId)
 
             defaultScope.launch {
-                val backgroundBytes = getBytes(context, widgetId, widgetInfo, drawEntryImage = false)
-                updateWidgetImage(context, appWidgetManager, widgetId, widgetInfo, backgroundBytes)
+                val backgroundProps = getProps(context, widgetId, widgetInfo, drawEntryImage = false)
+                updateWidgetImage(context, appWidgetManager, widgetId, widgetInfo, backgroundProps)
 
-                val imageBytes = getBytes(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = false)
-                updateWidgetImage(context, appWidgetManager, widgetId, widgetInfo, imageBytes)
+                val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = false)
+                updateWidgetImage(context, appWidgetManager, widgetId, widgetInfo, imageProps)
             }
         }
     }
@@ -59,8 +60,8 @@ class HomeWidgetProvider : AppWidgetProvider() {
         }
         imageByteFetchJob = defaultScope.launch {
             delay(500)
-            val imageBytes = getBytes(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = true)
-            updateWidgetImage(context, appWidgetManager, widgetId, widgetInfo, imageBytes)
+            val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = true)
+            updateWidgetImage(context, appWidgetManager, widgetId, widgetInfo, imageProps)
         }
     }
 
@@ -76,13 +77,13 @@ class HomeWidgetProvider : AppWidgetProvider() {
         return Pair(widthPx, heightPx)
     }
 
-    private suspend fun getBytes(
+    private suspend fun getProps(
         context: Context,
         widgetId: Int,
         widgetInfo: Bundle,
         drawEntryImage: Boolean,
         reuseEntry: Boolean = false,
-    ): ByteArray? {
+    ): FieldMap? {
         val (widthPx, heightPx) = getWidgetSizePx(context, widgetInfo)
         if (widthPx == 0 || heightPx == 0) return null
 
@@ -90,7 +91,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val messenger = flutterEngine!!.dartExecutor
         val channel = MethodChannel(messenger, WIDGET_DRAW_CHANNEL)
         try {
-            val bytes = suspendCoroutine<Any?> { cont ->
+            val props = suspendCoroutine<Any?> { cont ->
                 defaultScope.launch {
                     FlutterUtils.runOnUiThread {
                         channel.invokeMethod("drawWidget", hashMapOf(
@@ -116,7 +117,8 @@ class HomeWidgetProvider : AppWidgetProvider() {
                     }
                 }
             }
-            if (bytes is ByteArray) return bytes
+            @Suppress("unchecked_cast")
+            return props as FieldMap?
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to draw widget for widgetId=$widgetId widthPx=$widthPx heightPx=$heightPx", e)
         }
@@ -128,9 +130,16 @@ class HomeWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         widgetId: Int,
         widgetInfo: Bundle,
-        bytes: ByteArray?,
+        props: FieldMap?,
     ) {
-        bytes ?: return
+        props ?: return
+
+        val bytes = props["bytes"] as ByteArray?
+        val updateOnTap = props["updateOnTap"] as Boolean?
+        if (bytes == null || updateOnTap == null) {
+            Log.e(LOG_TAG, "missing arguments")
+            return
+        }
 
         val (widthPx, heightPx) = getWidgetSizePx(context, widgetInfo)
         if (widthPx == 0 || heightPx == 0) return
@@ -139,24 +148,11 @@ class HomeWidgetProvider : AppWidgetProvider() {
             val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
             bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes))
 
-            // set a unique URI to prevent the intent (and its extras) from being shared by different widgets
-            val intent = Intent(MainActivity.INTENT_ACTION_WIDGET_OPEN, Uri.parse("widget://$widgetId"), context, MainActivity::class.java)
-                .putExtra(MainActivity.EXTRA_KEY_WIDGET_ID, widgetId)
-
-            val activity = PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                } else {
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                }
-            )
+            val pendingIntent = if (updateOnTap) buildUpdateIntent(context, widgetId) else buildOpenAppIntent(context, widgetId)
 
             val views = RemoteViews(context.packageName, R.layout.app_widget).apply {
                 setImageViewBitmap(R.id.widget_img, bitmap)
-                setOnClickPendingIntent(R.id.widget_img, activity)
+                setOnClickPendingIntent(R.id.widget_img, pendingIntent)
             }
 
             appWidgetManager.updateAppWidget(widgetId, views)
@@ -164,6 +160,39 @@ class HomeWidgetProvider : AppWidgetProvider() {
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to draw widget", e)
         }
+    }
+
+    private fun buildUpdateIntent(context: Context, widgetId: Int): PendingIntent {
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, Uri.parse("widget://$widgetId"), context, HomeWidgetProvider::class.java)
+            .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(widgetId))
+
+        return PendingIntent.getBroadcast(
+            context,
+            0,
+            intent,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+    }
+
+    private fun buildOpenAppIntent(context: Context, widgetId: Int): PendingIntent {
+        // set a unique URI to prevent the intent (and its extras) from being shared by different widgets
+        val intent = Intent(MainActivity.INTENT_ACTION_WIDGET_OPEN, Uri.parse("widget://$widgetId"), context, MainActivity::class.java)
+            .putExtra(MainActivity.EXTRA_KEY_WIDGET_ID, widgetId)
+
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
     }
 
     companion object {

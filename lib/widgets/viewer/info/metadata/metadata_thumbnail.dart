@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MetadataThumbnails extends StatefulWidget {
   final AvesEntry entry;
@@ -44,7 +43,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
                 children: snapshot.data!.map((bytes) {
                   return Image.memory(
                     bytes,
-                    scale: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio),
+                    scale: MediaQuery.devicePixelRatioOf(context),
                   );
                 }).toList(),
               ),

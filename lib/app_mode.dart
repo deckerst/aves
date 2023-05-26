@@ -9,6 +9,7 @@ enum AppMode {
   setWallpaper,
   slideshow,
   view,
+  edit,
 }
 
 extension ExtraAppMode on AppMode {

@@ -39,7 +39,7 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       if (isGeotiff && !hasGps) {
         final info = await metadataFetchService.getGeoTiffInfo(this);
         if (info != null) {
-          final center = MappedGeoTiff(
+          final center = GeoTiffCoordinateConverter(
             info: info,
             entry: this,
           ).center;

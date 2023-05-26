@@ -72,16 +72,12 @@ void _skipConfirmation(ConfirmationDialog type) {
   switch (type) {
     case ConfirmationDialog.createVault:
       settings.confirmCreateVault = false;
-      break;
     case ConfirmationDialog.deleteForever:
       settings.confirmDeleteForever = false;
-      break;
     case ConfirmationDialog.moveToBin:
       settings.confirmMoveToBin = false;
-      break;
     case ConfirmationDialog.moveUndatedItems:
       settings.confirmMoveUndatedItems = false;
-      break;
   }
 }
 

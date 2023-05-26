@@ -33,11 +33,8 @@ ScaleState defaultScaleStateCycle(ScaleState actual) {
     case ScaleState.covering:
       return ScaleState.originalSize;
     case ScaleState.originalSize:
-      return ScaleState.initial;
     case ScaleState.zoomedIn:
     case ScaleState.zoomedOut:
-      return ScaleState.initial;
-    default:
       return ScaleState.initial;
   }
 }

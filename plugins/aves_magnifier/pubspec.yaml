@@ -3,11 +3,13 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  aves_utils:
+    path: ../aves_utils
   equatable:
   provider:
   tuple:

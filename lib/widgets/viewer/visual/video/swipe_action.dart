@@ -22,10 +22,8 @@ extension ExtraSwipeAction on SwipeAction {
     switch (this) {
       case SwipeAction.brightness:
         await ScreenBrightness().setScreenBrightness(value);
-        break;
       case SwipeAction.volume:
         VolumeController().setVolume(value, showSystemUI: false);
-        break;
     }
   }
 }

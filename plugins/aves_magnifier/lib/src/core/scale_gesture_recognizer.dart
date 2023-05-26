@@ -6,13 +6,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
-  final EdgeHitDetector hitDetector;
   final MagnifierGestureDetectorScope scope;
   final ValueNotifier<TapDownDetails?> doubleTapDetails;
 
+  EdgeHitDetector? hitDetector;
+
   MagnifierGestureRecognizer({
     super.debugOwner,
-    required this.hitDetector,
     required this.scope,
     required this.doubleTapDetails,
   });
@@ -93,10 +93,8 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
         // when it should yield to other recognizers
         final canAccept = _areMultiPointers() || _isPriorityGesture() || _canPanX() || _canPanY();
         super.resolve(canAccept ? GestureDisposition.accepted : GestureDisposition.rejected);
-        break;
       case GestureDisposition.rejected:
         super.resolve(disposition);
-        break;
     }
   }
 
@@ -137,9 +135,9 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
     return false;
   }
 
-  bool _canPanX() => hitDetector.shouldMoveX(move, scope.escapeByFling) && isXPan(move);
+  bool _canPanX() => hitDetector != null && hitDetector!.shouldMoveX(move, scope.escapeByFling) && isXPan(move);
 
-  bool _canPanY() => hitDetector.shouldMoveY(move, scope.escapeByFling) && isYPan(move);
+  bool _canPanY() => hitDetector != null && hitDetector!.shouldMoveY(move, scope.escapeByFling) && isYPan(move);
 
   bool _isOverSlop(PointerDeviceKind kind) {
     final spanDelta = (_currentSpan! - _initialSpan!).abs();

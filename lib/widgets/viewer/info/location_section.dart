@@ -89,6 +89,7 @@ class _LocationSectionState extends State<LocationSection> {
           child: GeoMap(
             controller: _mapController,
             entries: [entry],
+            availableSize: MediaQuery.sizeOf(context),
             isAnimatingNotifier: widget.isScrollingNotifier,
             onUserZoomChange: (zoom) => settings.infoMapZoom = zoom.roundToDouble(),
             onMarkerTap: collection != null && canNavigate ? (location, entry) => _openMapPage(context) : null,

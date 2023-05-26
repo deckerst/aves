@@ -307,33 +307,26 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     switch (_action) {
       case LocationEditAction.chooseOnMap:
         _isValidNotifier.value = _mapCoordinates != null;
-        break;
       case LocationEditAction.copyItem:
         _isValidNotifier.value = _copyItemSource.hasGps;
-        break;
       case LocationEditAction.setCustom:
         _isValidNotifier.value = _parseLatLng() != null;
-        break;
       case LocationEditAction.remove:
         _isValidNotifier.value = true;
-        break;
     }
   }
 
   void _submit(BuildContext context) {
+    final navigator = Navigator.maybeOf(context);
     switch (_action) {
       case LocationEditAction.chooseOnMap:
-        Navigator.maybeOf(context)?.pop(_mapCoordinates);
-        break;
+        navigator?.pop(_mapCoordinates);
       case LocationEditAction.copyItem:
-        Navigator.maybeOf(context)?.pop(_copyItemSource.latLng);
-        break;
+        navigator?.pop(_copyItemSource.latLng);
       case LocationEditAction.setCustom:
-        Navigator.maybeOf(context)?.pop(_parseLatLng());
-        break;
+        navigator?.pop(_parseLatLng());
       case LocationEditAction.remove:
-        Navigator.maybeOf(context)?.pop(ExtraAvesEntryMetadataEdition.removalLocation);
-        break;
+        navigator?.pop(ExtraAvesEntryMetadataEdition.removalLocation);
     }
   }
 }

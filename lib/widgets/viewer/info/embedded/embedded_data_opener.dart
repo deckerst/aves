@@ -42,16 +42,12 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
     switch (notification.source) {
       case EmbeddedDataSource.googleDevice:
         fields = await embeddedDataService.extractGoogleDeviceItem(entry, notification.dataUri!);
-        break;
       case EmbeddedDataSource.motionPhotoVideo:
         fields = await embeddedDataService.extractMotionPhotoVideo(entry);
-        break;
       case EmbeddedDataSource.videoCover:
         fields = await embeddedDataService.extractVideoEmbeddedPicture(entry);
-        break;
       case EmbeddedDataSource.xmp:
         fields = await embeddedDataService.extractXmpDataProp(entry, notification.props, notification.mimeType);
-        break;
     }
     if (!fields.containsKey('mimeType') || !fields.containsKey('uri')) {
       showFeedback(context, context.l10n.viewerInfoOpenEmbeddedFailureFeedback);

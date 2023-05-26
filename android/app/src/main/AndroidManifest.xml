@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--
-Gradle v7.4 / Android Gradle Plugin v7.3.0 recommend:
-- removing "package" from AndroidManifest.xml
-- adding it as "namespace" in app/build.gradle
-This change eventually prevents building the app with Flutter v3.7.11.
--->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="deckers.thibault.aves"
     android:installLocation="auto">
 
     <uses-feature
@@ -19,14 +12,18 @@ This change eventually prevents building the app with Flutter v3.7.11.
         android:required="false" />
 
     <!--
-    Scoped storage on Android 10 (API 29) is inconvenient because users need to confirm edition on each individual file.
-    So we request `WRITE_EXTERNAL_STORAGE` until Android 10 (API 29), and enable `requestLegacyExternalStorage`
+    TODO TLAD [Android 14 (API 34)] request/handle READ_MEDIA_VISUAL_USER_SELECTED permission
+    cf https://developer.android.com/about/versions/14/changes/partial-photo-video-access
     -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <!--
+    Scoped storage on Android 10 (API 29) is inconvenient because users need to confirm edition on each individual file.
+    So we request `WRITE_EXTERNAL_STORAGE` until Android 10 (API 29), and enable `requestLegacyExternalStorage`
+    -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
@@ -142,6 +139,15 @@ This change eventually prevents building the app with Flutter v3.7.11.
                 <data android:mimeType="vnd.android.cursor.dir/image" />
                 <data android:mimeType="vnd.android.cursor.dir/video" />
             </intent-filter>
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+                <data android:mimeType="vnd.android.cursor.dir/image" />
+            </intent-filter>
+            -->
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
 
@@ -243,11 +249,6 @@ This change eventually prevents building the app with Flutter v3.7.11.
         </service>
 
         <service
-            android:name=".AnalysisService"
-            android:description="@string/analysis_service_description"
-            android:exported="false" />
-
-        <service
             android:name=".ScreenSaverService"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
@@ -294,7 +295,7 @@ This change eventually prevents building the app with Flutter v3.7.11.
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- as of Flutter v3.7.7, background blur yields black screen with Impeller -->
+        <!-- as of Flutter v3.10.1, Impeller badly renders text, fails to render videos, and crashes with Google Maps -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

@@ -4,7 +4,6 @@
     <string name="search_shortcut_short_label">Szukaj</string>
     <string name="videos_shortcut_short_label">Wideo</string>
     <string name="analysis_channel_name">Przeskanuj multimedia</string>
-    <string name="analysis_service_description">Przeskanuj obrazy oraz wideo</string>
     <string name="analysis_notification_default_title">Skanowanie multimediów</string>
     <string name="analysis_notification_action_stop">Zatrzymaj</string>
     <string name="app_name">Aves</string>

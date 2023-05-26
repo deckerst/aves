@@ -117,7 +117,6 @@ class QueryFilter extends CollectionFilter {
         if (op == opEqual) {
           return (entry) => entry.contentId == valueInt;
         }
-        break;
       case keyContentYear:
         if (valueInt == null) return null;
         switch (op) {
@@ -128,7 +127,6 @@ class QueryFilter extends CollectionFilter {
           case opGreater:
             return (entry) => (entry.bestDate?.year ?? 0) > valueInt;
         }
-        break;
       case keyContentMonth:
         if (valueInt == null) return null;
         switch (op) {
@@ -139,7 +137,6 @@ class QueryFilter extends CollectionFilter {
           case opGreater:
             return (entry) => (entry.bestDate?.month ?? 0) > valueInt;
         }
-        break;
       case keyContentDay:
         if (valueInt == null) return null;
         switch (op) {
@@ -150,7 +147,6 @@ class QueryFilter extends CollectionFilter {
           case opGreater:
             return (entry) => (entry.bestDate?.day ?? 0) > valueInt;
         }
-        break;
       case keyContentWidth:
         if (valueInt == null) return null;
         switch (op) {
@@ -161,7 +157,6 @@ class QueryFilter extends CollectionFilter {
           case opGreater:
             return (entry) => entry.displaySize.width > valueInt;
         }
-        break;
       case keyContentHeight:
         if (valueInt == null) return null;
         switch (op) {
@@ -172,7 +167,6 @@ class QueryFilter extends CollectionFilter {
           case opGreater:
             return (entry) => entry.displaySize.height > valueInt;
         }
-        break;
       case keyContentSize:
         match = _fileSizePattern.firstMatch(valueString);
         if (match == null) return null;
@@ -187,13 +181,10 @@ class QueryFilter extends CollectionFilter {
         switch (multiplierString) {
           case 'K':
             bytes *= kilo;
-            break;
           case 'M':
             bytes *= mega;
-            break;
           case 'G':
             bytes *= giga;
-            break;
         }
 
         switch (op) {
@@ -204,7 +195,6 @@ class QueryFilter extends CollectionFilter {
           case opGreater:
             return (entry) => (entry.sizeBytes ?? 0) > bytes;
         }
-        break;
     }
 
     return null;

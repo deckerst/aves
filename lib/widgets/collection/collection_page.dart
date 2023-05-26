@@ -208,6 +208,7 @@ class _CollectionPageState extends State<CollectionPage> {
       case AppMode.setWallpaper:
       case AppMode.slideshow:
       case AppMode.view:
+      case AppMode.edit:
         return null;
     }
   }

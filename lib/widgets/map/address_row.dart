@@ -9,7 +9,6 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'info_row.dart';
 
@@ -44,12 +43,13 @@ class _MapAddressRowState extends State<MapAddressRow> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return Container(
       alignment: AlignmentDirectional.centerStart,
       // addresses can include non-latin scripts with inconsistent line height,
       // which is especially an issue for relayout/painting of heavy Google map,
       // so we give extra height to give breathing room to the text and stabilize layout
-      height: Theme.of(context).textTheme.bodyMedium!.fontSize! * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor) * 2,
+      height: Theme.of(context).textTheme.bodyMedium!.fontSize! * textScaleFactor * 2,
       child: ValueListenableBuilder<String?>(
         valueListenable: _addressLineNotifier,
         builder: (context, addressLine, child) {

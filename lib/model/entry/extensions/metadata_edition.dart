@@ -52,7 +52,6 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             case DateEditAction.copyItem:
             case DateEditAction.extractFromTitle:
               editCreateDateXmp(descriptions, appliedModifier.setDateTime);
-              break;
             case DateEditAction.shift:
               final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespace: XmpNamespaces.xmp);
               if (xmpDate != null) {
@@ -65,10 +64,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
                   reportService.recordError('failed to parse XMP date=$xmpDate', null);
                 }
               }
-              break;
             case DateEditAction.remove:
               editCreateDateXmp(descriptions, null);
-              break;
           }
           return true;
         }),
@@ -541,10 +538,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
                   }
                 }
               } on FileSystemException catch (_) {}
-              break;
             default:
               date = await metadataFetchService.getDate(this, source.toMetadataField()!);
-              break;
           }
         }
         return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;

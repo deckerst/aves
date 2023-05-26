@@ -5,7 +5,6 @@
     <string name="search_shortcut_short_label">Hledat</string>
     <string name="videos_shortcut_short_label">Videa</string>
     <string name="analysis_channel_name">Prohledat média</string>
-    <string name="analysis_service_description">Prohledat obrázky a videa</string>
     <string name="analysis_notification_default_title">Prohledávání médií</string>
     <string name="analysis_notification_action_stop">Zastavit</string>
     <string name="app_widget_label">Fotorámeček</string>

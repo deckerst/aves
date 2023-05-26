@@ -6,7 +6,7 @@
     <string name="search_shortcut_short_label">Αναζήτηση</string>
     <string name="videos_shortcut_short_label">Βίντεο</string>
     <string name="analysis_channel_name">Σάρωση πολυμέσων</string>
-    <string name="analysis_service_description">Σάρωση εικόνων &amp; Βίντεο</string>
     <string name="analysis_notification_default_title">Σάρωση στοιχείων</string>
     <string name="analysis_notification_action_stop">Διακοπή</string>
+    <string name="safe_mode_shortcut_short_label">Ασφαλής κατάσταση λειτουργίας</string>
 </resources>

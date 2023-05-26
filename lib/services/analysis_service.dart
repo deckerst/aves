@@ -31,7 +31,7 @@ class AnalysisService {
   static Future<void> startService({required bool force, List<int>? entryIds}) async {
     await reportService.log('Start analysis service${entryIds != null ? ' for ${entryIds.length} items' : ''}');
     try {
-      await _platform.invokeMethod('startService', <String, dynamic>{
+      await _platform.invokeMethod('startAnalysis', <String, dynamic>{
         'entryIds': entryIds,
         'force': force,
       });
@@ -108,15 +108,20 @@ class Analyzer {
   Future<void> start(dynamic args) async {
     List<int>? entryIds;
     var force = false;
+    var progressTotal = 0, progressOffset = 0;
     if (args is Map) {
       entryIds = (args['entryIds'] as List?)?.cast<int>();
       force = args['force'] ?? false;
+      progressTotal = args['progressTotal'];
+      progressOffset = args['progressOffset'];
     }
-    debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries');
+    debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries, at $progressOffset/$progressTotal');
     _controller = AnalysisController(
       canStartService: false,
       entryIds: entryIds,
       force: force,
+      progressTotal: progressTotal,
+      progressOffset: progressOffset,
       stopSignal: ValueNotifier(false),
     );
 
@@ -145,17 +150,14 @@ class Analyzer {
       case AnalyzerState.stopping:
         await _stopPlatformService();
         _serviceStateNotifier.value = AnalyzerState.stopped;
-        break;
       case AnalyzerState.stopped:
         _controller?.stopSignal.value = true;
         _stopUpdateTimer();
-        break;
     }
   }
 
   void _onSourceStateChanged() {
     if (_source.isReady) {
-      _refreshApp();
       _serviceStateNotifier.value = AnalyzerState.stopping;
     }
   }
@@ -174,14 +176,6 @@ class Analyzer {
         'title': title,
         'message': progressive ? '${progress.done}/${progress.total}' : null,
       });
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-  }
-
-  Future<void> _refreshApp() async {
-    try {
-      await _channel.invokeMethod('refreshApp');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

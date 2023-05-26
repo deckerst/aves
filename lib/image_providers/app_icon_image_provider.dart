@@ -27,7 +27,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   }
 
   @override
-  ImageStreamCompleter loadBuffer(AppIconImageKey key, DecoderBufferCallback decode) {
+  ImageStreamCompleter loadImage(AppIconImageKey key, ImageDecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -37,7 +37,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderBufferCallback decode) async {
+  Future<ui.Codec> _loadAsync(AppIconImageKey key, ImageDecoderCallback decode) async {
     try {
       final bytes = await appService.getAppIcon(key.packageName, key.size);
       final buffer = await ui.ImmutableBuffer.fromUint8List(bytes.isEmpty ? kTransparentImage : bytes);

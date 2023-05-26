@@ -3,7 +3,6 @@ import 'package:aves/widgets/map/address_row.dart';
 import 'package:aves/widgets/map/date_row.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MapInfoRow extends StatelessWidget {
   final ValueNotifier<AvesEntry?> entryNotifier;
@@ -18,12 +17,11 @@ class MapInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orientation = context.select<MediaQueryData, Orientation>((v) => v.orientation);
-
     return ValueListenableBuilder<AvesEntry?>(
       valueListenable: entryNotifier,
       builder: (context, entry, child) {
-        final content = orientation == Orientation.portrait
+        final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+        final content = isPortrait
             ? [
                 Expanded(
                   child: Column(
@@ -59,5 +57,8 @@ class MapInfoRow extends StatelessWidget {
     );
   }
 
-  static double getIconSize(BuildContext context) => 16.0 * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
+  static double getIconSize(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    return 16 * textScaleFactor;
+  }
 }

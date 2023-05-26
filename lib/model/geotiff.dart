@@ -8,8 +8,7 @@ import 'package:aves/ref/metadata/geotiff.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 
@@ -42,17 +41,143 @@ class GeoTiffInfo extends Equatable {
 
 class MappedGeoTiff with MapOverlay {
   final AvesEntry entry;
-  late LatLng? Function(Point<int> pixel) pointToLatLng;
-  late Point<int>? Function(Point<double> smPoint) epsg3857ToPoint;
 
-  static final mapServiceTileSize = (256 * ui.window.devicePixelRatio).round();
-  static final mapServiceHelper = MapServiceHelper(mapServiceTileSize);
-  static final tileImagePaint = Paint();
-  static final tileMissingPaint = Paint()
+  late final GeoTiffCoordinateConverter _converter;
+  late final int _mapServiceTileSize;
+  late final MapServiceHelper _mapServiceHelper;
+
+  static final _tileImagePaint = Paint();
+  static final _tileMissingPaint = Paint()
     ..style = PaintingStyle.fill
     ..color = const Color(0xFF000000);
 
   MappedGeoTiff({
+    required GeoTiffInfo info,
+    required this.entry,
+    required double devicePixelRatio,
+  }) {
+    _converter = GeoTiffCoordinateConverter(info: info, entry: entry);
+    _mapServiceTileSize = (256 * devicePixelRatio).round();
+    _mapServiceHelper = MapServiceHelper(_mapServiceTileSize);
+  }
+
+  @override
+  Future<MapTile?> getTile(int tx, int ty, int? zoomLevel) async {
+    zoomLevel ??= 0;
+
+    // global projected coordinates in meters (EPSG:3857 Spherical Mercator)
+    final tileTopLeft3857 = _mapServiceHelper.tileTopLeft(tx, ty, zoomLevel);
+    final tileBottomRight3857 = _mapServiceHelper.tileTopLeft(tx + 1, ty + 1, zoomLevel);
+
+    // image region coordinates in pixels
+    final tileTopLeftPx = _converter.epsg3857ToPoint(tileTopLeft3857);
+    final tileBottomRightPx = _converter.epsg3857ToPoint(tileBottomRight3857);
+    if (tileTopLeftPx == null || tileBottomRightPx == null) return null;
+
+    final tileLeft = tileTopLeftPx.x;
+    final tileRight = tileBottomRightPx.x;
+    final tileTop = tileTopLeftPx.y;
+    final tileBottom = tileBottomRightPx.y;
+
+    final width = entry.width;
+    final height = entry.height;
+
+    final regionLeft = tileLeft.clamp(0, width);
+    final regionRight = tileRight.clamp(0, width);
+    final regionTop = tileTop.clamp(0, height);
+    final regionBottom = tileBottom.clamp(0, height);
+
+    final regionWidth = regionRight - regionLeft;
+    final regionHeight = regionBottom - regionTop;
+    if (regionWidth == 0 || regionHeight == 0) return null;
+
+    final tileXScale = (tileRight - tileLeft) / _mapServiceTileSize;
+    final sampleSize = max<int>(1, highestPowerOf2(tileXScale));
+    final region = entry.getRegion(
+      sampleSize: sampleSize,
+      region: Rectangle(regionLeft, regionTop, regionWidth, regionHeight),
+    );
+
+    final imageInfoCompleter = Completer<ImageInfo?>();
+    final imageStream = region.resolve(ImageConfiguration.empty);
+    final imageStreamListener = ImageStreamListener((image, synchronousCall) {
+      imageInfoCompleter.complete(image);
+    }, onError: imageInfoCompleter.completeError);
+    imageStream.addListener(imageStreamListener);
+    ImageInfo? regionImageInfo;
+    try {
+      regionImageInfo = await imageInfoCompleter.future;
+    } catch (error) {
+      debugPrint('failed to get image for region=$region with error=$error');
+    }
+    imageStream.removeListener(imageStreamListener);
+
+    final imageOffset = Offset(
+      regionLeft > tileLeft ? (regionLeft - tileLeft).toDouble() : 0,
+      regionTop > tileTop ? (regionTop - tileTop).toDouble() : 0,
+    );
+    final tileImageScaleX = (tileRight - tileLeft) / _mapServiceTileSize;
+    final tileImageScaleY = (tileBottom - tileTop) / _mapServiceTileSize;
+
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    canvas.scale(1 / tileImageScaleX, 1 / tileImageScaleY);
+    if (regionImageInfo != null) {
+      final s = sampleSize.toDouble();
+      canvas.scale(s, s);
+      canvas.drawImage(regionImageInfo.image, imageOffset / s, _tileImagePaint);
+      canvas.scale(1 / s, 1 / s);
+    } else {
+      // fallback to show area
+      canvas.drawRect(
+        Rect.fromLTWH(
+          imageOffset.dx,
+          imageOffset.dy,
+          regionWidth.toDouble(),
+          regionHeight.toDouble(),
+        ),
+        _tileMissingPaint,
+      );
+    }
+    canvas.scale(tileImageScaleX, tileImageScaleY);
+
+    final picture = recorder.endRecording();
+    final tileImage = await picture.toImage(_mapServiceTileSize, _mapServiceTileSize);
+    final byteData = await tileImage.toByteData(format: ui.ImageByteFormat.png);
+    if (byteData == null) return null;
+
+    return MapTile(
+      width: tileImage.width,
+      height: tileImage.height,
+      data: byteData.buffer.asUint8List(),
+    );
+  }
+
+  @override
+  String get id => entry.uri;
+
+  @override
+  ImageProvider get imageProvider => entry.uriImage;
+
+  @override
+  bool get canOverlay => center != null;
+
+  LatLng? get center => _converter.center;
+
+  @override
+  LatLng? get topLeft => _converter.topLeft;
+
+  @override
+  LatLng? get bottomRight => _converter.bottomRight;
+}
+
+class GeoTiffCoordinateConverter {
+  final AvesEntry entry;
+
+  late LatLng? Function(Point<int> pixel) pointToLatLng;
+  late Point<int>? Function(Point<double> smPoint) epsg3857ToPoint;
+
+  GeoTiffCoordinateConverter({
     required GeoTiffInfo info,
     required this.entry,
   }) {
@@ -129,113 +254,13 @@ class MappedGeoTiff with MapOverlay {
     };
   }
 
-  @override
-  Future<MapTile?> getTile(int tx, int ty, int? zoomLevel) async {
-    zoomLevel ??= 0;
-
-    // global projected coordinates in meters (EPSG:3857 Spherical Mercator)
-    final tileTopLeft3857 = mapServiceHelper.tileTopLeft(tx, ty, zoomLevel);
-    final tileBottomRight3857 = mapServiceHelper.tileTopLeft(tx + 1, ty + 1, zoomLevel);
-
-    // image region coordinates in pixels
-    final tileTopLeftPx = epsg3857ToPoint(tileTopLeft3857);
-    final tileBottomRightPx = epsg3857ToPoint(tileBottomRight3857);
-    if (tileTopLeftPx == null || tileBottomRightPx == null) return null;
-
-    final tileLeft = tileTopLeftPx.x;
-    final tileRight = tileBottomRightPx.x;
-    final tileTop = tileTopLeftPx.y;
-    final tileBottom = tileBottomRightPx.y;
-
-    final regionLeft = tileLeft.clamp(0, width);
-    final regionRight = tileRight.clamp(0, width);
-    final regionTop = tileTop.clamp(0, height);
-    final regionBottom = tileBottom.clamp(0, height);
-
-    final regionWidth = regionRight - regionLeft;
-    final regionHeight = regionBottom - regionTop;
-    if (regionWidth == 0 || regionHeight == 0) return null;
-
-    final tileXScale = (tileRight - tileLeft) / mapServiceTileSize;
-    final sampleSize = max<int>(1, highestPowerOf2(tileXScale));
-    final region = entry.getRegion(
-      sampleSize: sampleSize,
-      region: Rectangle(regionLeft, regionTop, regionWidth, regionHeight),
-    );
-
-    final imageInfoCompleter = Completer<ImageInfo?>();
-    final imageStream = region.resolve(ImageConfiguration.empty);
-    final imageStreamListener = ImageStreamListener((image, synchronousCall) {
-      imageInfoCompleter.complete(image);
-    }, onError: imageInfoCompleter.completeError);
-    imageStream.addListener(imageStreamListener);
-    ImageInfo? regionImageInfo;
-    try {
-      regionImageInfo = await imageInfoCompleter.future;
-    } catch (error) {
-      debugPrint('failed to get image for region=$region with error=$error');
-    }
-    imageStream.removeListener(imageStreamListener);
-
-    final imageOffset = Offset(
-      regionLeft > tileLeft ? (regionLeft - tileLeft).toDouble() : 0,
-      regionTop > tileTop ? (regionTop - tileTop).toDouble() : 0,
-    );
-    final tileImageScaleX = (tileRight - tileLeft) / mapServiceTileSize;
-    final tileImageScaleY = (tileBottom - tileTop) / mapServiceTileSize;
-
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder);
-    canvas.scale(1 / tileImageScaleX, 1 / tileImageScaleY);
-    if (regionImageInfo != null) {
-      final s = sampleSize.toDouble();
-      canvas.scale(s, s);
-      canvas.drawImage(regionImageInfo.image, imageOffset / s, tileImagePaint);
-      canvas.scale(1 / s, 1 / s);
-    } else {
-      // fallback to show area
-      canvas.drawRect(
-        Rect.fromLTWH(
-          imageOffset.dx,
-          imageOffset.dy,
-          regionWidth.toDouble(),
-          regionHeight.toDouble(),
-        ),
-        tileMissingPaint,
-      );
-    }
-    canvas.scale(tileImageScaleX, tileImageScaleY);
-
-    final picture = recorder.endRecording();
-    final tileImage = await picture.toImage(mapServiceTileSize, mapServiceTileSize);
-    final byteData = await tileImage.toByteData(format: ui.ImageByteFormat.png);
-    if (byteData == null) return null;
-
-    return MapTile(
-      width: tileImage.width,
-      height: tileImage.height,
-      data: byteData.buffer.asUint8List(),
-    );
-  }
-
-  @override
-  String get id => entry.uri;
-
-  @override
-  ImageProvider get imageProvider => entry.uriImage;
-
   int get width => entry.width;
 
   int get height => entry.height;
 
-  @override
-  bool get canOverlay => center != null;
-
   LatLng? get center => pointToLatLng(Point((width / 2).round(), (height / 2).round()));
 
-  @override
   LatLng? get topLeft => pointToLatLng(const Point(0, 0));
 
-  @override
   LatLng? get bottomRight => pointToLatLng(Point(width, height));
 }

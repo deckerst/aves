@@ -35,7 +35,6 @@ mixin SizeAwareMixin {
       case MoveType.copy:
       case MoveType.export:
         needed = selection.fold(0, sumSize);
-        break;
       case MoveType.move:
       case MoveType.toBin:
       case MoveType.fromBin:
@@ -46,7 +45,6 @@ mixin SizeAwareMixin {
         // and we need at least as much space as the largest entry because individual entries are copied then deleted
         final largestSingle = selection.fold<int>(0, (largest, entry) => max(largest, entry.sizeBytes ?? 0));
         needed = max(fromOtherVolumes, largestSingle);
-        break;
     }
 
     final hasEnoughSpace = needed < free;

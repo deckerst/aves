@@ -5,6 +5,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,25 +34,25 @@ class TvNavigationPopHandler {
       case HomePageSetting.collection:
         return context.read<CollectionLens>().filters.isEmpty;
       case HomePageSetting.albums:
+      case HomePageSetting.tags:
         return true;
     }
   }
 
   static Route _getHomeRoute() {
-    switch (settings.homePage) {
+    final homePage = settings.homePage;
+    Route buildRoute(WidgetBuilder builder) => MaterialPageRoute(
+          settings: RouteSettings(name: homePage.routeName),
+          builder: builder,
+        );
+
+    switch (homePage) {
       case HomePageSetting.collection:
-        return MaterialPageRoute(
-          settings: const RouteSettings(name: CollectionPage.routeName),
-          builder: (context) => CollectionPage(
-            source: context.read<CollectionSource>(),
-            filters: null,
-          ),
-        );
+        return buildRoute((context) => CollectionPage(source: context.read<CollectionSource>(), filters: null));
       case HomePageSetting.albums:
-        return MaterialPageRoute(
-          settings: const RouteSettings(name: AlbumListPage.routeName),
-          builder: (context) => const AlbumListPage(),
-        );
+        return buildRoute((context) => const AlbumListPage());
+      case HomePageSetting.tags:
+        return buildRoute((context) => const TagListPage());
     }
   }
 }

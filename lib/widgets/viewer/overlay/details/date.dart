@@ -9,7 +9,6 @@ import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class OverlayDateRow extends StatelessWidget {
   final AvesEntry entry;
@@ -24,7 +23,7 @@ class OverlayDateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.l10n.localeName;
-    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+    final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     final date = entry.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;

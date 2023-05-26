@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
@@ -46,6 +45,7 @@ import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localization_nn/flutter_localization_nn.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
@@ -55,10 +55,22 @@ import 'package:url_launcher/url_launcher.dart' as ul;
 
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
+  final Map? debugIntentData;
 
   // temporary exclude locales not ready yet for prime time
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
-  static final _unsupportedLocales = {'ar', 'ckb', 'fa', 'gl', 'he', 'hi', 'nn', 'or', 'sk', 'th'}.map(Locale.new).toSet();
+  static final _unsupportedLocales = {
+    'ar', // Arabic
+    'ckb', // Kurdish (Central)
+    'fa', // Persian
+    'gl', // Galician
+    'he', // Hebrew
+    'hi', // Hindi
+    'ml', // Malayalam
+    'or', // Odia
+    'sk', // Slovak
+    'th', // Thai
+  }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
 
@@ -74,6 +86,7 @@ class AvesApp extends StatefulWidget {
   const AvesApp({
     super.key,
     required this.flavor,
+    this.debugIntentData,
   });
 
   @override
@@ -168,8 +181,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     super.initState();
     EquatableConfig.stringify = true;
     _appSetup = _setup();
-    // remember screen size to use it later, when `context` and `window` are no longer reliable
-    _screenSize = _getScreenSize();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
     _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChanged(event as String?)));
@@ -194,6 +205,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // remember screen size to use it later, when `context` and `window` are no longer reliable
+    _screenSize ??= _getScreenSize(context);
+
     // place the settings provider above `MaterialApp`
     // so it can be used during navigation transitions
     return MultiProvider(
@@ -215,7 +229,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
               AvesApp.showSystemUI();
             }
             final home = initialized
-                ? _getFirstPage()
+                ? _getFirstPage(intentData: widget.debugIntentData)
                 : AvesScaffold(
                     body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                   );
@@ -254,38 +268,34 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         // KEYCODE_ENTER, KEYCODE_BUTTON_A, KEYCODE_NUMPAD_ENTER
                         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
                       },
-                      child: MediaQuery.fromWindow(
-                        child: Builder(
-                          builder: (context) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context).copyWith(
-                                // disable accessible navigation, as it impacts snack bar action timer
-                                // for all users of apps registered as accessibility services,
-                                // even though they are not for accessibility purposes (like TalkBack is)
-                                accessibleNavigation: false,
-                              ),
-                              child: MaterialApp(
-                                navigatorKey: _navigatorKey,
-                                home: home,
-                                navigatorObservers: _navigatorObservers,
-                                builder: (context, child) => _decorateAppChild(
-                                  context: context,
-                                  initialized: initialized,
-                                  child: child,
-                                ),
-                                onGenerateTitle: (context) => context.l10n.appName,
-                                theme: lightTheme,
-                                darkTheme: darkTheme,
-                                themeMode: themeBrightness.appThemeMode,
-                                locale: settingsLocale,
-                                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                                supportedLocales: AvesApp.supportedLocales,
-                                // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                                scrollBehavior: StretchMaterialScrollBehavior(),
-                                useInheritedMediaQuery: true,
-                              ),
-                            );
-                          },
+                      child: MediaQuery(
+                        data: MediaQuery.of(context).copyWith(
+                          // disable accessible navigation, as it impacts snack bar action timer
+                          // for all users of apps registered as accessibility services,
+                          // even though they are not for accessibility purposes (like TalkBack is)
+                          accessibleNavigation: false,
+                        ),
+                        child: MaterialApp(
+                          navigatorKey: _navigatorKey,
+                          home: home,
+                          navigatorObservers: _navigatorObservers,
+                          builder: (context, child) => _decorateAppChild(
+                            context: context,
+                            initialized: initialized,
+                            child: child,
+                          ),
+                          onGenerateTitle: (context) => context.l10n.appName,
+                          theme: lightTheme,
+                          darkTheme: darkTheme,
+                          themeMode: themeBrightness.appThemeMode,
+                          locale: settingsLocale,
+                          localizationsDelegates: const [
+                            ...AppLocalizations.localizationsDelegates,
+                            ...LocalizationsNn.delegates,
+                          ],
+                          supportedLocales: AvesApp.supportedLocales,
+                          // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
+                          scrollBehavior: StretchMaterialScrollBehavior(),
                         ),
                       ),
                     );
@@ -378,7 +388,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.pickSingleMediaExternal:
           case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
-            break;
           case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickMediaInternal:
           case AppMode.pickFilterInternal:
@@ -386,12 +395,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.setWallpaper:
           case AppMode.slideshow:
           case AppMode.view:
+          case AppMode.edit:
             break;
         }
-        break;
       case AppLifecycleState.resumed:
         RecentlyAddedFilter.updateNow();
-        break;
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         break;
@@ -409,9 +417,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
-  Size? _getScreenSize() {
-    final physicalSize = window.physicalSize;
-    final ratio = window.devicePixelRatio;
+  Size? _getScreenSize(BuildContext context) {
+    final view = View.of(context);
+    final physicalSize = view.physicalSize;
+    final ratio = view.devicePixelRatio;
     return physicalSize > Size.zero && ratio > 0 ? physicalSize / ratio : null;
   }
 
@@ -419,7 +428,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   void _saveTopEntries() {
     if (!settings.initialized) return;
 
-    final screenSize = _screenSize ?? _getScreenSize();
+    final screenSize = _screenSize;
     if (screenSize == null) return;
 
     var tileExtent = settings.getTileExtent(CollectionPage.routeName);
@@ -513,10 +522,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         case MaxBrightness.never:
         case MaxBrightness.viewerOnly:
           ScreenBrightness().resetScreenBrightness();
-          break;
         case MaxBrightness.always:
           ScreenBrightness().setScreenBrightness(1);
-          break;
       }
     }
 
@@ -574,7 +581,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
               : 'debug',
       'has_mobile_services': mobileServices.isServiceAvailable,
       'is_television': device.isTelevision,
-      'locales': WidgetsBinding.instance.window.locales.join(', '),
+      'locales': WidgetsBinding.instance.platformDispatcher.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
     await reportService.log('Launch');

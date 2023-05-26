@@ -4,6 +4,7 @@ class MultiCrossFader extends StatefulWidget {
   final Duration duration;
   final Curve fadeCurve, sizeCurve;
   final AlignmentGeometry alignment;
+  final AnimatedCrossFadeBuilder layoutBuilder;
   final Widget child;
 
   const MultiCrossFader({
@@ -12,6 +13,7 @@ class MultiCrossFader extends StatefulWidget {
     this.fadeCurve = Curves.linear,
     this.sizeCurve = Curves.linear,
     this.alignment = Alignment.topCenter,
+    this.layoutBuilder = AnimatedCrossFade.defaultLayoutBuilder,
     required this.child,
   });
 
@@ -53,6 +55,8 @@ class _MultiCrossFaderState extends State<MultiCrossFader> {
       alignment: widget.alignment,
       crossFadeState: _fadeState,
       duration: widget.duration,
+      reverseDuration: widget.duration,
+      layoutBuilder: widget.layoutBuilder,
     );
   }
 }

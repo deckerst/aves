@@ -20,7 +20,6 @@ import 'package:aves_map/aves_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 
 class LocationPickPage extends StatelessWidget {
   static const routeName = '/location_pick';
@@ -137,6 +136,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         controller: _mapController,
         collectionListenable: openingCollection,
         entries: openingCollection?.sortedEntries ?? [],
+        availableSize: MediaQuery.sizeOf(context),
         initialCenter: widget.initialLocation,
         isAnimatingNotifier: _isPageAnimatingNotifier,
         dotLocationNotifier: _dotLocationNotifier,
@@ -177,12 +177,11 @@ class _LocationInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orientation = context.select<MediaQueryData, Orientation>((v) => v.orientation);
-
     return ValueListenableBuilder<LatLng?>(
       valueListenable: locationNotifier,
       builder: (context, location, child) {
-        final content = orientation == Orientation.portrait
+        final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+        final content = isPortrait
             ? [
                 Expanded(
                   child: Column(
@@ -218,7 +217,10 @@ class _LocationInfo extends StatelessWidget {
     );
   }
 
-  static double getIconSize(BuildContext context) => 16.0 * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor);
+  static double getIconSize(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    return 16 * textScaleFactor;
+  }
 }
 
 class _AddressRow extends StatefulWidget {
@@ -251,6 +253,7 @@ class _AddressRowState extends State<_AddressRow> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -263,7 +266,7 @@ class _AddressRowState extends State<_AddressRow> {
             // addresses can include non-latin scripts with inconsistent line height,
             // which is especially an issue for relayout/painting of heavy Google map,
             // so we give extra height to give breathing room to the text and stabilize layout
-            height: Theme.of(context).textTheme.bodyMedium!.fontSize! * context.select<MediaQueryData, double>((mq) => mq.textScaleFactor) * 2,
+            height: Theme.of(context).textTheme.bodyMedium!.fontSize! * textScaleFactor * 2,
             child: ValueListenableBuilder<String?>(
               valueListenable: _addressLineNotifier,
               builder: (context, addressLine, child) {

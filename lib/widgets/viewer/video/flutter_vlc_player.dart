@@ -83,7 +83,7 @@
 //     // do not use `Magnifier` with `applyScale` enabled when using this widget,
 //     // as the original video size will be used to create the `PlatformView`
 //     // and a virtual display larger than the device screen may crash the app
-//     final mqWidth = context.select<MediaQueryData, double>((mq) => mq.size.width);
+//     final mqWidth = MediaQuery.sizeOf(context).width;
 //     final displaySize = entry.displaySize;
 //     final ratio = mqWidth / displaySize.width;
 //     return SizedBox.fromSize(

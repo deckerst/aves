@@ -18,7 +18,7 @@ import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
-import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:aves/model/view_state.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video/cover.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/subtitle.dart';
@@ -37,6 +37,8 @@ class EntryPageView extends StatefulWidget {
   final VoidCallback? onDisposed;
 
   static const decorationCheckSize = 20.0;
+  static const rasterMaxScale = ScaleLevel(factor: 5);
+  static const vectorMaxScale = ScaleLevel(factor: 25);
 
   const EntryPageView({
     super.key,
@@ -62,9 +64,6 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   AvesEntry get entry => widget.pageEntry;
 
   ViewerController get viewerController => widget.viewerController;
-
-  static const rasterMaxScale = ScaleLevel(factor: 5);
-  static const vectorMaxScale = ScaleLevel(factor: 25);
 
   @override
   void initState() {
@@ -180,7 +179,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
 
   Widget _buildSvgView() {
     return _buildMagnifier(
-      maxScale: vectorMaxScale,
+      maxScale: EntryPageView.vectorMaxScale,
       scaleStateCycle: _vectorScaleStateCycle,
       applyScale: false,
       child: VectorImageView(
@@ -382,7 +381,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   Widget _buildMagnifier({
     AvesMagnifierController? controller,
     Size? displaySize,
-    ScaleLevel maxScale = rasterMaxScale,
+    ScaleLevel maxScale = EntryPageView.rasterMaxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
     MagnifierGestureScaleStartCallback? onScaleStart,
@@ -398,7 +397,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
       key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: controller ?? _magnifierController,
-      childSize: displaySize ?? entry.displaySize,
+      contentSize: displaySize ?? entry.displaySize,
       allowOriginalScaleBeyondRange: !isWallpaperMode,
       minScale: minScale,
       maxScale: maxScale,
@@ -419,16 +418,12 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     switch (direction) {
       case AxisDirection.left:
         const ShowPreviousEntryNotification(animate: true).dispatch(context);
-        break;
       case AxisDirection.right:
         const ShowNextEntryNotification(animate: true).dispatch(context);
-        break;
       case AxisDirection.up:
         PopVisualNotification().dispatch(context);
-        break;
       case AxisDirection.down:
         ShowInfoPageNotification().dispatch(context);
-        break;
     }
   }
 
@@ -456,24 +451,18 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     switch (event.command) {
       case MediaCommand.play:
         videoController.play();
-        break;
       case MediaCommand.pause:
         videoController.pause();
-        break;
       case MediaCommand.skipToNext:
         ShowNextVideoNotification().dispatch(context);
-        break;
       case MediaCommand.skipToPrevious:
         ShowPreviousVideoNotification().dispatch(context);
-        break;
       case MediaCommand.stop:
         videoController.pause();
-        break;
       case MediaCommand.seek:
         if (event is MediaSeekCommandEvent) {
           videoController.seekTo(event.position);
         }
-        break;
     }
   }
 
@@ -487,19 +476,13 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
     _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
       viewportSize: v.viewportSize,
-      contentSize: v.childSize,
+      contentSize: v.contentSize,
     );
   }
 
   double? _getSideRatio() {
-    switch (context.read<MediaQueryData?>()?.orientation) {
-      case Orientation.portrait:
-        return 1 / 5;
-      case Orientation.landscape:
-        return 1 / 8;
-      case null:
-        return null;
-    }
+    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+    return isPortrait ? 1 / 5 : 1 / 8;
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {

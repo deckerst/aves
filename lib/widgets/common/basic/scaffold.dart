@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AvesScaffold extends StatelessWidget {
   final PreferredSizeWidget? appBar;
@@ -26,7 +25,7 @@ class AvesScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // prevent conflict between drawer drag gesture and Android navigation gestures
-    final drawerEnableOpenDragGesture = context.select<MediaQueryData, bool>((mq) => mq.systemGestureInsets.horizontal == 0);
+    final drawerEnableOpenDragGesture = MediaQuery.systemGestureInsetsOf(context).horizontal == 0;
 
     return Scaffold(
       appBar: appBar,

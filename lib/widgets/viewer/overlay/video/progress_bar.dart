@@ -9,7 +9,6 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class VideoProgressBar extends StatefulWidget {
   final AvesVideoController? controller;
@@ -155,16 +154,14 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   Widget _buildMuteIndicator() => StreamBuilder<double>(
         stream: controller?.volumeStream ?? Stream.value(1.0),
         builder: (context, snapshot) {
+          final textScaleFactor = MediaQuery.textScaleFactorOf(context);
           final isMuted = controller?.isMuted ?? false;
           return isMuted
               ? Padding(
                   padding: const EdgeInsetsDirectional.only(end: 8),
-                  child: Selector<MediaQueryData, double>(
-                    selector: (context, mq) => mq.textScaleFactor,
-                    builder: (context, textScaleFactor, child) => Icon(
-                      AIcons.mute,
-                      size: 16 * textScaleFactor,
-                    ),
+                  child: Icon(
+                    AIcons.mute,
+                    size: 16 * textScaleFactor,
                   ),
                 )
               : const SizedBox();

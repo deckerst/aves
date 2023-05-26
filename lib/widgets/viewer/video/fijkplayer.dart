@@ -270,13 +270,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
             if (width != null && height != null) {
               videoStreamCount++;
             }
-            break;
           case MediaStreamType.audio:
             audioStreamCount++;
-            break;
           case MediaStreamType.text:
             textStreamCount++;
-            break;
         }
       }
     });
@@ -303,9 +300,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     if (fields == null) return;
     final event = fields['event'] as String?;
     switch (event) {
-      case 'volume':
-        // ignore
-        break;
       case 'audiofocus':
         final value = fields['value'] as int?;
         if (value != null) {
@@ -313,9 +307,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
             case _audioFocusLoss:
             case _audioFocusRequestFailed:
               pause();
-              break;
           }
         }
+      case 'volume':
+        // ignore
         break;
     }
   }
@@ -538,11 +533,9 @@ extension ExtraFijkPlayer on FijkPlayer {
         case FijkState.prepared:
           removeListener(onChanged);
           completer.complete();
-          break;
         case FijkState.error:
           removeListener(onChanged);
           completer.completeError(value.exception);
-          break;
         default:
           break;
       }

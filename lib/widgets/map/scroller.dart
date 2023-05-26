@@ -7,7 +7,6 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/map/info_row.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MapEntryScroller extends StatefulWidget {
   final ValueNotifier<CollectionLens?> regionCollectionNotifier;
@@ -35,6 +34,7 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
   void initState() {
     super.initState();
     _registerWidget(widget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onSelectedEntryChanged());
   }
 
   @override
@@ -71,30 +71,27 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
               child: MapInfoRow(entryNotifier: _infoEntryNotifier),
             ),
             const SizedBox(height: 8),
-            Selector<MediaQueryData, double>(
-              selector: (context, mq) => mq.size.width,
-              builder: (context, mqWidth, child) => ValueListenableBuilder<CollectionLens?>(
-                valueListenable: widget.regionCollectionNotifier,
-                builder: (context, regionCollection, child) {
-                  return AnimatedBuilder(
-                    // update when entries are added/removed
-                    animation: regionCollection ?? ChangeNotifier(),
-                    builder: (context, child) {
-                      final regionEntries = regionCollection?.sortedEntries ?? [];
-                      return ThumbnailScroller(
-                        availableWidth: mqWidth,
-                        entryCount: regionEntries.length,
-                        entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
-                        indexNotifier: widget.selectedIndexNotifier,
-                        onTap: widget.onTap,
-                        heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
-                        highlightable: true,
-                        showLocation: false,
-                      );
-                    },
-                  );
-                },
-              ),
+            ValueListenableBuilder<CollectionLens?>(
+              valueListenable: widget.regionCollectionNotifier,
+              builder: (context, regionCollection, child) {
+                return AnimatedBuilder(
+                  // update when entries are added/removed
+                  animation: regionCollection ?? ChangeNotifier(),
+                  builder: (context, child) {
+                    final regionEntries = regionCollection?.sortedEntries ?? [];
+                    return ThumbnailScroller(
+                      availableWidth: MediaQuery.sizeOf(context).width,
+                      entryCount: regionEntries.length,
+                      entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
+                      indexNotifier: widget.selectedIndexNotifier,
+                      onTap: widget.onTap,
+                      heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
+                      highlightable: true,
+                      showLocation: false,
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),

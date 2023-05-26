@@ -182,18 +182,15 @@ class _AppDebugPageState extends State<AppDebugPage> {
         }, false);
         await favourites.clear();
         await favourites.add(source.visibleEntries);
-        break;
       case AppDebugAction.prepScreenshotStats:
         settings.changeFilterVisibility(settings.hiddenFilters, true);
         settings.changeFilterVisibility({
           PathFilter('/storage/emulated/0/Pictures/Dev'),
         }, false);
-        break;
       case AppDebugAction.prepScreenshotCountries:
         settings.changeFilterVisibility({
           LocationFilter(LocationLevel.country, 'Belgium;BE'),
         }, false);
-        break;
       case AppDebugAction.mediaStoreScanDir:
         // scan files copied from test assets
         // we do it via the app instead of broadcasting via ADB
@@ -202,7 +199,6 @@ class _AppDebugPageState extends State<AppDebugPage> {
           context: context,
           builder: (context) => const MediaStoreScanDirDialog(),
         );
-        break;
       case AppDebugAction.greenScreen:
         await Navigator.maybeOf(context)?.push(
           MaterialPageRoute(
@@ -212,7 +208,6 @@ class _AppDebugPageState extends State<AppDebugPage> {
             ),
           ),
         );
-        break;
     }
   }
 }

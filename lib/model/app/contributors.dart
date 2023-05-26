@@ -44,17 +44,19 @@ class Contributors {
     Contributor('Dick Pluim', 'github@dickpluim.com'),
     Contributor('György Viktor', 'wickdj@gmail.com'),
     Contributor('byPety', 'peter@csordascsalad.hu'),
+    Contributor('tryvseu', 'tryvseu@tuta.io'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
+    // Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'), // Arabic
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
     // Contributor('slasb37', 'p84haghi@gmail.com'), // Persian
-    // Contributor('tryvseu', 'tryvseu@tuta.io'), // Nynorsk
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('Martin Frandel', 'martinko.fr@gmail.com'), // Slovak
     // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
     // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
     // Contributor('Subham Jena', 'subhamjena8465@gmail.com'), // Odia
+    // Contributor('Raman', 'xysed@tutanota.com'), // Malayalam
   };
 }
 

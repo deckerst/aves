@@ -34,8 +34,11 @@ mixin TagMixin on SourceBase {
     if (todo.isEmpty) return;
 
     state = SourceState.cataloguing;
-    var progressDone = 0;
-    final progressTotal = todo.length;
+    var progressDone = controller.progressOffset;
+    var progressTotal = controller.progressTotal;
+    if (progressTotal == 0) {
+      progressTotal = todo.length;
+    }
     setProgress(done: progressDone, total: progressTotal);
 
     var stopCheckCount = 0;

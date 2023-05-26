@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 
 // generate bitmap from widget, for Google map
 class MarkerGeneratorWidget<T extends Key> extends StatefulWidget {
@@ -35,8 +34,12 @@ class _MarkerGeneratorWidgetState<T extends Key> extends State<MarkerGeneratorWi
   @override
   void didUpdateWidget(covariant MarkerGeneratorWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final devicePixelRatio = View.of(context).devicePixelRatio;
     widget.markers.forEach((markerWidget) {
-      final item = getOrCreate(markerWidget.key as T);
+      final item = _getOrCreate(
+        markerKey: markerWidget.key as T,
+        devicePixelRatio: devicePixelRatio,
+      );
       item.globalKey = GlobalKey();
     });
     _checkNextFrame();
@@ -63,7 +66,7 @@ class _MarkerGeneratorWidgetState<T extends Key> extends State<MarkerGeneratorWi
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: Offset(context.select<MediaQueryData, double>((mq) => mq.size.width), 0),
+      offset: Offset(MediaQuery.sizeOf(context).width, 0),
       child: Material(
         type: MaterialType.transparency,
         child: Stack(
@@ -78,11 +81,17 @@ class _MarkerGeneratorWidgetState<T extends Key> extends State<MarkerGeneratorWi
     );
   }
 
-  _MarkerGeneratorItem getOrCreate(T markerKey) {
+  _MarkerGeneratorItem _getOrCreate({
+    required T markerKey,
+    required double devicePixelRatio,
+  }) {
     final existingItem = _items.firstWhereOrNull((v) => v.markerKey == markerKey);
     if (existingItem != null) return existingItem;
 
-    final newItem = _MarkerGeneratorItem(markerKey);
+    final newItem = _MarkerGeneratorItem(
+      markerKey: markerKey,
+      devicePixelRatio: devicePixelRatio,
+    );
     _items.add(newItem);
     return newItem;
   }
@@ -92,10 +101,14 @@ enum MarkerGeneratorItemState { waiting, rendering, done }
 
 class _MarkerGeneratorItem<T extends Key> {
   final T markerKey;
+  final double devicePixelRatio;
   GlobalKey? globalKey;
   MarkerGeneratorItemState state = MarkerGeneratorItemState.waiting;
 
-  _MarkerGeneratorItem(this.markerKey);
+  _MarkerGeneratorItem({
+    required this.markerKey,
+    required this.devicePixelRatio,
+  });
 
   bool get isWaiting => state == MarkerGeneratorItemState.waiting;
 
@@ -107,7 +120,7 @@ class _MarkerGeneratorItem<T extends Key> {
       final boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       if (boundary.hasSize && boundary.size != Size.zero) {
         try {
-          final image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
+          final image = await boundary.toImage(pixelRatio: devicePixelRatio);
           final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
           bytes = byteData?.buffer.asUint8List();
         } catch (error) {

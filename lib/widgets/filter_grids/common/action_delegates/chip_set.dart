@@ -164,48 +164,36 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // general
       case ChipSetAction.configureView:
         configureView(context);
-        break;
       case ChipSetAction.select:
         context.read<Selection<FilterGridItem<T>>>().select();
-        break;
       case ChipSetAction.selectAll:
         context.read<Selection<FilterGridItem<T>>>().addToSelection(allItems);
-        break;
       case ChipSetAction.selectNone:
         context.read<Selection<FilterGridItem<T>>>().clearSelection();
-        break;
       // browsing
       case ChipSetAction.search:
         _goToSearch(context);
-        break;
       case ChipSetAction.toggleTitleSearch:
         context.read<Query>().toggle();
-        break;
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         break;
       // browsing or selecting
       case ChipSetAction.map:
         _goToMap(context, filters);
-        break;
       case ChipSetAction.slideshow:
         _goToSlideshow(context, filters);
-        break;
       case ChipSetAction.stats:
         _goToStats(context, filters);
-        break;
       // selecting (single/multiple filters)
       case ChipSetAction.hide:
         _hide(context, filters);
-        break;
       case ChipSetAction.pin:
         settings.pinnedFilters = settings.pinnedFilters..addAll(filters);
         browse(context);
-        break;
       case ChipSetAction.unpin:
         settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
         browse(context);
-        break;
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
@@ -213,7 +201,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // selecting (single filter)
       case ChipSetAction.setCover:
         _setCover(context, filters.first);
-        break;
       case ChipSetAction.rename:
       case ChipSetAction.configureVault:
         break;

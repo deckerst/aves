@@ -147,25 +147,19 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       // general
       case ChipSetAction.createAlbum:
         _createAlbum(context, locked: false);
-        break;
       case ChipSetAction.createVault:
         _createAlbum(context, locked: true);
-        break;
       // single/multiple filters
       case ChipSetAction.delete:
         _delete(context, filters);
-        break;
       case ChipSetAction.lockVault:
         lockFilters(filters);
         browse(context);
-        break;
       // single filter
       case ChipSetAction.rename:
         _rename(context, filters.first);
-        break;
       case ChipSetAction.configureVault:
         _configureVault(context, filters.first);
-        break;
       default:
         break;
     }
@@ -326,6 +320,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     );
     if (confirmed == null || !confirmed) return;
 
+    settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
     source.forgetNewAlbums(todoAlbums);
     source.cleanEmptyAlbums(emptyAlbums);
 

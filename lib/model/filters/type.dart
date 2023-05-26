@@ -37,27 +37,21 @@ class TypeFilter extends CollectionFilter {
       case _animated:
         _test = (entry) => entry.isAnimated;
         _icon = AIcons.animated;
-        break;
       case _geotiff:
         _test = (entry) => entry.isGeotiff;
         _icon = AIcons.geo;
-        break;
       case _motionPhoto:
         _test = (entry) => entry.isMotionPhoto;
         _icon = AIcons.motionPhoto;
-        break;
       case _panorama:
         _test = (entry) => entry.isImage && entry.is360;
         _icon = AIcons.panorama;
-        break;
       case _raw:
         _test = (entry) => entry.isRaw;
         _icon = AIcons.raw;
-        break;
       case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
         _icon = AIcons.sphericalVideo;
-        break;
     }
   }
 

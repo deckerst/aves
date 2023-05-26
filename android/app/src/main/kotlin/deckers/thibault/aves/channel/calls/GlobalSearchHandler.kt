@@ -1,13 +1,15 @@
 package deckers.thibault.aves.channel.calls
 
-import android.annotation.SuppressLint
 import android.content.Context
 import deckers.thibault.aves.SearchSuggestionsProvider
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class GlobalSearchHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -19,7 +21,6 @@ class GlobalSearchHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    @SuppressLint("CommitPrefEdits")
     private fun registerCallback(call: MethodCall, result: MethodChannel.Result) {
         val callbackHandle = call.argument<Number>("callbackHandle")?.toLong()
         if (callbackHandle == null) {

@@ -17,9 +17,9 @@ class ScaleLevel extends Equatable {
     this.factor = 1.0,
   });
 
-  static double scaleForContained(Size containerSize, Size childSize) => min(containerSize.width / childSize.width, containerSize.height / childSize.height);
+  static double scaleForContained(Size viewportSize, Size contentSize) => min(viewportSize.width / contentSize.width, viewportSize.height / contentSize.height);
 
-  static double scaleForCovering(Size containerSize, Size childSize) => max(containerSize.width / childSize.width, containerSize.height / childSize.height);
+  static double scaleForCovering(Size viewportSize, Size contentSize) => max(viewportSize.width / contentSize.width, viewportSize.height / contentSize.height);
 }
 
 enum ScaleReference { absolute, contained, covered }

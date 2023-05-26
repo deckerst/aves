@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.calls
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -28,20 +27,30 @@ import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.*
+import deckers.thibault.aves.metadata.ExifGeoTiffTags
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDouble
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
+import deckers.thibault.aves.metadata.ExifTags
+import deckers.thibault.aves.metadata.GSpherical
+import deckers.thibault.aves.metadata.GeoTiffKeys
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
+import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.DIR_DNG
 import deckers.thibault.aves.metadata.Metadata.DIR_EXIF_GEOTIFF
 import deckers.thibault.aves.metadata.Metadata.DIR_PNG_TEXTUAL_DATA
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
+import deckers.thibault.aves.metadata.Mp4ParserHelper
+import deckers.thibault.aves.metadata.MultiPage
+import deckers.thibault.aves.metadata.PixyMetaHelper
+import deckers.thibault.aves.metadata.QuickTimeMetadata
+import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.doesPropExist
 import deckers.thibault.aves.metadata.XMP.getPropArrayItemValues
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
@@ -66,6 +75,7 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeRational
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
+import deckers.thibault.aves.metadata.metadataextractor.PngActlDirectory
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
@@ -84,7 +94,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 import java.text.ParseException
@@ -305,12 +314,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                                     val key = kv.key
                                                     // `PNG-iTXt` uses UTF-8, contrary to `PNG-tEXt` and `PNG-zTXt` using Latin-1 / ISO-8859-1
                                                     val charset = if (baseDirName == PNG_ITXT_DIR_NAME) {
-                                                        @SuppressLint("ObsoleteSdkInt")
-                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                                            StandardCharsets.UTF_8
-                                                        } else {
-                                                            Charset.forName("UTF-8")
-                                                        }
+                                                        StandardCharsets.UTF_8
                                                     } else {
                                                         kv.value.charset
                                                     }
@@ -654,6 +658,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                     }
                                 }
                             }
+
+                            // identification of animated PNG
+                            if (metadata.containsDirectoryOfType(PngActlDirectory::class.java)) {
+                                flags = flags or MASK_IS_ANIMATED
+                            }
                         }
 
                         MimeTypes.GIF -> {
@@ -747,10 +756,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         try {
-            @SuppressLint("ObsoleteSdkInt")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
-            }
+            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
                 retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { metadataMap[KEY_DATE_MILLIS] = it }
             }

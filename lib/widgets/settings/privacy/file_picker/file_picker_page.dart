@@ -88,7 +88,6 @@ class _FilePickerPageState extends State<FilePickerPage> {
                     case _PickerAction.toggleHiddenView:
                       settings.filePickerShowHiddenFiles = !showHidden;
                       setState(() {});
-                      break;
                   }
                 },
               ),

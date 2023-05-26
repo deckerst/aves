@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -36,17 +38,17 @@ if (keystorePropertiesFile.exists()) {
     // for release using credentials in environment variables set up by GitHub Actions
     // warning: in property file, single quotes should be escaped with a backslash
     // but they should not be escaped when stored in env variables
-    keystoreProperties['storeFile'] = System.getenv('AVES_STORE_FILE') ?: '<NONE>'
-    keystoreProperties['storePassword'] = System.getenv('AVES_STORE_PASSWORD') ?: '<NONE>'
-    keystoreProperties['keyAlias'] = System.getenv('AVES_KEY_ALIAS') ?: '<NONE>'
-    keystoreProperties['keyPassword'] = System.getenv('AVES_KEY_PASSWORD') ?: '<NONE>'
-    keystoreProperties['googleApiKey'] = System.getenv('AVES_GOOGLE_API_KEY') ?: '<NONE>'
-    keystoreProperties['huaweiApiKey'] = System.getenv('AVES_HUAWEI_API_KEY') ?: '<NONE>'
+    keystoreProperties["storeFile"] = System.getenv("AVES_STORE_FILE") ?: "<NONE>"
+    keystoreProperties["storePassword"] = System.getenv("AVES_STORE_PASSWORD") ?: "<NONE>"
+    keystoreProperties["keyAlias"] = System.getenv("AVES_KEY_ALIAS") ?: "<NONE>"
+    keystoreProperties["keyPassword"] = System.getenv("AVES_KEY_PASSWORD") ?: "<NONE>"
+    keystoreProperties["googleApiKey"] = System.getenv("AVES_GOOGLE_API_KEY") ?: "<NONE>"
+    keystoreProperties["huaweiApiKey"] = System.getenv("AVES_HUAWEI_API_KEY") ?: "<NONE>"
 }
 
 android {
     namespace 'deckers.thibault.aves'
-    compileSdkVersion 33
+    compileSdk 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -58,10 +60,6 @@ android {
         checkAllWarnings true
         warningsAsErrors true
         disable 'InvalidPackage'
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 
     sourceSets {
@@ -80,21 +78,21 @@ android {
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [googleApiKey: keystoreProperties['googleApiKey'] ?: '<NONE>',
-                                huaweiApiKey: keystoreProperties['huaweiApiKey'] ?: '<NONE>']
+        manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>",
+                                huaweiApiKey: keystoreProperties["huaweiApiKey"] ?: "<NONE>"]
         multiDexEnabled true
     }
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties["keyAlias"]
+            keyPassword keystoreProperties["keyPassword"]
+            storeFile keystoreProperties["storeFile"] ? file(keystoreProperties["storeFile"]) : null
+            storePassword keystoreProperties["storePassword"]
         }
     }
 
-    flavorDimensions "store"
+    flavorDimensions = ["store"]
 
     productFlavors {
         play {
@@ -174,6 +172,15 @@ android {
     }
 }
 
+tasks.withType(KotlinCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
 flutter {
     source '../..'
 }
@@ -195,20 +202,21 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
     implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.exifinterface:exifinterface:1.3.6'
     implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
     implementation 'androidx.media:media:1.6.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
 
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation "com.github.bumptech.glide:glide:$glide_version"
     // SLF4J implementation for `mp4parser`
     implementation 'org.slf4j:slf4j-simple:2.0.7'
 
@@ -217,15 +225,17 @@ dependencies {
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
-    implementation 'com.github.deckerst.mp4parser:isoparser:42f2cdc087'
-    implementation 'com.github.deckerst.mp4parser:muxer:42f2cdc087'
+    implementation 'com.github.deckerst.mp4parser:isoparser:b7b853f2e3'
+    implementation 'com.github.deckerst.mp4parser:muxer:b7b853f2e3'
     implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
 
     // huawei flavor only
-    huaweiImplementation 'com.huawei.agconnect:agconnect-core:1.8.0.300'
+    huaweiImplementation "com.huawei.agconnect:agconnect-core:$huawei_agconnect_version"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.9.2"
 
     kapt 'androidx.annotation:annotation:1.6.0'
-    kapt 'com.github.bumptech.glide:compiler:4.15.1'
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')
 }

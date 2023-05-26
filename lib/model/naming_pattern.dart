@@ -38,10 +38,8 @@ class NamingPattern {
           if (processorOptions != null) {
             processors.add(DateNamingProcessor(processorOptions.trim()));
           }
-          break;
         case NameNamingProcessor.key:
           processors.add(const NameNamingProcessor());
-          break;
         case CounterNamingProcessor.key:
           int? start, padding;
           _applyProcessorOptions(processorOptions, (key, value) {
@@ -50,18 +48,14 @@ class NamingPattern {
               switch (key) {
                 case CounterNamingProcessor.optionStart:
                   start = valueInt;
-                  break;
                 case CounterNamingProcessor.optionPadding:
                   padding = valueInt;
-                  break;
               }
             }
           });
           processors.add(CounterNamingProcessor(start: start ?? defaultCounterStart, padding: padding ?? defaultCounterPadding));
-          break;
         default:
           debugPrint('unsupported naming processor: ${match.group(0)}');
-          break;
       }
       index = end;
     });

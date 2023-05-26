@@ -7,6 +7,5 @@
     <string name="app_widget_label">相框</string>
     <string name="search_shortcut_short_label">搜尋</string>
     <string name="analysis_channel_name">媒體掃描</string>
-    <string name="analysis_service_description">掃描圖片和影片</string>
     <string name="analysis_notification_action_stop">停止</string>
 </resources>

@@ -68,13 +68,10 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         switch (_level) {
           case DateLevel.ymd:
             normalizeDate = (v) => DateTime(v.year, v.month, v.day);
-            break;
           case DateLevel.ym:
             normalizeDate = (v) => DateTime(v.year, v.month);
-            break;
           default:
             normalizeDate = (v) => DateTime(v.year);
-            break;
         }
         _firstDate = normalizeDate(firstDate);
         _lastDate = normalizeDate(lastDate);
@@ -118,15 +115,12 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
       case DateLevel.ymd:
         xCount = xRange.inDays;
         incrementDate = (date) => DateTime(date.year, date.month, date.day + 1);
-        break;
       case DateLevel.ym:
         xCount = (xRange.inDays / 30.5).round();
         incrementDate = (date) => DateTime(date.year, date.month + 1);
-        break;
       default:
         xCount = lastDate.year - firstDate.year;
         incrementDate = (date) => DateTime(date.year + 1);
-        break;
     }
     final yMax = entryCountPerDate.values.reduce(max).toDouble();
     final xInterval = yMax / xCount;

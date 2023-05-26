@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_chooser.dart';
@@ -51,8 +50,13 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   @override
   void initState() {
     super.initState();
-    _selectedRowRect.value = Rect.fromLTWH(0, window.physicalSize.height * (reversed ? 1 : -1), 0, 0);
     _registerWidget(widget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _selectedRowRect.value = Rect.fromLTWH(0, MediaQuery.sizeOf(context).height * (reversed ? 1 : -1), 0, 0);
   }
 
   @override

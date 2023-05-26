@@ -1,11 +1,24 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
 import android.util.Log
-import com.drew.imaging.png.*
+import com.drew.imaging.png.PngChromaticities
+import com.drew.imaging.png.PngChunk
+import com.drew.imaging.png.PngChunkReader
+import com.drew.imaging.png.PngChunkType
+import com.drew.imaging.png.PngHeader
+import com.drew.imaging.png.PngProcessingException
 import com.drew.imaging.tiff.TiffProcessingException
 import com.drew.imaging.tiff.TiffReader
-import com.drew.lang.*
-import com.drew.lang.annotations.NotNull
+import com.drew.lang.ByteArrayReader
+import com.drew.lang.ByteConvert
+import com.drew.lang.Charsets
+import com.drew.lang.DateUtil
+import com.drew.lang.KeyValuePair
+import com.drew.lang.RandomAccessStreamReader
+import com.drew.lang.SequentialByteArrayReader
+import com.drew.lang.SequentialReader
+import com.drew.lang.StreamReader
+import com.drew.lang.StreamUtil
 import com.drew.metadata.ErrorDirectory
 import com.drew.metadata.Metadata
 import com.drew.metadata.StringValue
@@ -21,9 +34,10 @@ import java.io.InputStream
 import java.util.zip.InflaterInputStream
 import java.util.zip.ZipException
 
-// adapted from `PngMetadataReader` to prevent reading OOM from large chunks
-// as of `metadata-extractor` v2.18.0, there is no way to customize the reader
-// without copying `desiredChunkTypes` and the whole `processChunk` function
+// adapted from `PngMetadataReader` to:
+// - prevent OOM from reading large chunks. As of `metadata-extractor` v2.18.0, there is no way to customize the reader
+// without copying `desiredChunkTypes` and the whole `processChunk` function.
+// - parse `acTL` chunk to identify animated PNGs.
 object SafePngMetadataReader {
     private val LOG_TAG = LogUtils.createTag<SafePngMetadataReader>()
 
@@ -47,6 +61,7 @@ object SafePngMetadataReader {
         PngChunkType.pHYs,
         PngChunkType.sBIT,
         PngChunkType.eXIf,
+        PngActlDirectory.chunkType,
     )
 
     @Throws(IOException::class, PngProcessingException::class)
@@ -64,7 +79,7 @@ object SafePngMetadataReader {
     }
 
     @Throws(PngProcessingException::class, IOException::class)
-    private fun processChunk(@NotNull metadata: Metadata, @NotNull chunk: PngChunk) {
+    private fun processChunk(metadata: Metadata, chunk: PngChunk) {
         val chunkType = chunk.type
         val bytes = chunk.bytes
 
@@ -86,6 +101,21 @@ object SafePngMetadataReader {
             directory.setInt(PngDirectory.TAG_FILTER_METHOD, header.filterMethod.toInt())
             directory.setInt(PngDirectory.TAG_INTERLACE_METHOD, header.interlaceMethod.toInt())
             metadata.addDirectory(directory)
+            // TLAD insert start
+        } else if (chunkType == PngActlDirectory.chunkType) {
+            if (bytes.size != 8) {
+                throw PngProcessingException("Invalid number of bytes")
+            }
+            val reader = SequentialByteArrayReader(bytes)
+            try {
+                metadata.addDirectory(PngActlDirectory().apply {
+                    setInt(PngActlDirectory.TAG_NUM_FRAMES, reader.int32)
+                    setInt(PngActlDirectory.TAG_NUM_PLAYS, reader.int32)
+                })
+            } catch (ex: IOException) {
+                throw PngProcessingException(ex)
+            }
+            // TLAD insert end
         } else if (chunkType == PngChunkType.PLTE) {
             val directory = PngDirectory(PngChunkType.PLTE)
             directory.setInt(PngDirectory.TAG_PALETTE_SIZE, bytes.size / 3)

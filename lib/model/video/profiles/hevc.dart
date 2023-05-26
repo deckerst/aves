@@ -9,16 +9,12 @@ class Hevc {
     switch (profileIndex) {
       case profileMain:
         profile = 'Main';
-        break;
       case profileMain10:
         profile = 'Main 10';
-        break;
       case profileMainStillPicture:
         profile = 'Main Still Picture';
-        break;
       case profileRExt:
         profile = 'Format Range';
-        break;
       default:
         return '$profileIndex';
     }

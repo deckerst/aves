@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -12,7 +13,6 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
-import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
@@ -240,13 +240,16 @@ class _TvRailState extends State<TvRail> {
     return pageBookmarks.map(_routeNavEntry).toList();
   }
 
-  _NavEntry _routeNavEntry(String routeName) => _NavEntry(
-        icon: DrawerPageIcon(route: routeName),
-        label: DrawerPageTitle(route: routeName),
-        isHome: settings.homePage == HomePageSetting.albums && routeName == AlbumListPage.routeName,
-        isSelected: context.currentRouteName == routeName,
-        onSelection: () => _goTo(routeName),
-      );
+  _NavEntry _routeNavEntry(String routeName) {
+    final homePage = settings.homePage;
+    return _NavEntry(
+      icon: DrawerPageIcon(route: routeName),
+      label: DrawerPageTitle(route: routeName),
+      isHome: homePage != HomePageSetting.collection && routeName == homePage.routeName,
+      isSelected: context.currentRouteName == routeName,
+      onSelection: () => _goTo(routeName),
+    );
+  }
 
   void _goTo(String routeName) {
     Navigator.maybeOf(context)?.pushAndRemoveUntil(

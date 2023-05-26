@@ -8,7 +8,6 @@ import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 import 'aves_dialog.dart';
@@ -60,7 +59,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     return MediaQueryDataProvider(
       child: Builder(
         builder: (context) {
-          final shortestSide = context.select<MediaQueryData, double>((mq) => mq.size.shortestSide);
+          final shortestSide = MediaQuery.sizeOf(context).shortestSide;
           final extent = (shortestSide / 3.0).clamp(60.0, 160.0);
           return AvesDialog(
             scrollableContent: [

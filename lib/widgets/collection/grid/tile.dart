@@ -41,23 +41,20 @@ class InteractiveTile extends StatelessWidget {
             } else {
               OpenViewerNotification(entry).dispatch(context);
             }
-            break;
           case AppMode.pickSingleMediaExternal:
             IntentService.submitPickedItems([entry.uri]);
-            break;
           case AppMode.pickMultipleMediaExternal:
             final selection = context.read<Selection<AvesEntry>>();
             selection.toggleSelection(entry);
-            break;
           case AppMode.pickMediaInternal:
             Navigator.maybeOf(context)?.pop(entry);
-            break;
           case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickFilterInternal:
           case AppMode.screenSaver:
           case AppMode.setWallpaper:
           case AppMode.slideshow:
           case AppMode.view:
+          case AppMode.edit:
             break;
         }
       },

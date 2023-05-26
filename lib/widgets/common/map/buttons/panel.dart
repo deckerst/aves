@@ -42,7 +42,6 @@ class MapButtonPanel extends StatelessWidget {
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           );
         }
-        break;
       case MapNavigationButton.map:
         if (openMapPage != null) {
           navigationButton = MapOverlayButton(
@@ -51,7 +50,6 @@ class MapButtonPanel extends StatelessWidget {
             tooltip: context.l10n.openMapPageTooltip,
           );
         }
-        break;
       case MapNavigationButton.none:
         break;
     }

@@ -2,6 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/app_bar.dart';
@@ -75,22 +76,18 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     switch (sortFactor) {
       case ChipSortFactor.name:
         allMapEntries = toGridItem(source, filters)..sort(compareFiltersByName);
-        break;
       case ChipSortFactor.date:
         allMapEntries = toGridItem(source, filters)..sort(compareFiltersByDate);
-        break;
       case ChipSortFactor.count:
         final filtersWithCount = List.of(filters.map((filter) => MapEntry(filter, source.count(filter))));
         filtersWithCount.sort(compareFiltersByEntryCount);
         filters = filtersWithCount.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
-        break;
       case ChipSortFactor.size:
         final filtersWithSize = List.of(filters.map((filter) => MapEntry(filter, source.size(filter))));
         filtersWithSize.sort(compareFiltersBySize);
         filters = filtersWithSize.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
-        break;
     }
     if (reverse) {
       allMapEntries = allMapEntries.reversed.toList();
@@ -106,30 +103,32 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
   Widget build(BuildContext context) {
     return SelectionProvider<FilterGridItem<T>>(
       child: Builder(
-        builder: (context) => FilterGridPage<T>(
-          appBar: FilterGridAppBar<T, CSAD>(
-            source: widget.source,
-            title: widget.title,
-            actionDelegate: widget.actionDelegate,
-            isEmpty: widget.filterSections.isEmpty,
+        builder: (context) => QueryProvider(
+          child: FilterGridPage<T>(
+            appBar: FilterGridAppBar<T, CSAD>(
+              source: widget.source,
+              title: widget.title,
+              actionDelegate: widget.actionDelegate,
+              isEmpty: widget.filterSections.isEmpty,
+              appBarHeightNotifier: _appBarHeightNotifier,
+            ),
             appBarHeightNotifier: _appBarHeightNotifier,
+            sections: widget.filterSections,
+            newFilters: widget.newFilters ?? {},
+            sortFactor: widget.sortFactor,
+            showHeaders: widget.showHeaders,
+            selectable: true,
+            applyQuery: widget.applyQuery,
+            emptyBuilder: () => ValueListenableBuilder<SourceState>(
+              valueListenable: widget.source.stateNotifier,
+              builder: (context, sourceState, child) {
+                return sourceState != SourceState.loading ? widget.emptyBuilder() : const SizedBox();
+              },
+            ),
+            // do not always enable hero, otherwise unwanted hero gets triggered
+            // when using `Show in [...]` action from a chip in the Collection filter bar
+            heroType: HeroType.onTap,
           ),
-          appBarHeightNotifier: _appBarHeightNotifier,
-          sections: widget.filterSections,
-          newFilters: widget.newFilters ?? {},
-          sortFactor: widget.sortFactor,
-          showHeaders: widget.showHeaders,
-          selectable: true,
-          applyQuery: widget.applyQuery,
-          emptyBuilder: () => ValueListenableBuilder<SourceState>(
-            valueListenable: widget.source.stateNotifier,
-            builder: (context, sourceState, child) {
-              return sourceState != SourceState.loading ? widget.emptyBuilder() : const SizedBox();
-            },
-          ),
-          // do not always enable hero, otherwise unwanted hero gets triggered
-          // when using `Show in [...]` action from a chip in the Collection filter bar
-          heroType: HeroType.onTap,
         ),
       ),
     );

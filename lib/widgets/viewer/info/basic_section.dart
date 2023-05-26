@@ -7,6 +7,7 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -115,6 +116,7 @@ class _BasicSectionState extends State<BasicSection> {
   Widget _buildChips(BuildContext context) {
     final entry = widget.entry;
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
+    final date = entry.bestDate;
     final album = entry.directory;
     final filters = {
       MimeFilter(entry.mimeType),
@@ -125,6 +127,7 @@ class _BasicSectionState extends State<BasicSection> {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,
+      if (date != null) DateFilter(DateLevel.ymd, date),
       if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
       if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map(TagFilter.new),
@@ -202,21 +205,18 @@ class _BasicSectionState extends State<BasicSection> {
               onChooserValue: (rating) => actionDelegate.quickRate(context, entry, rating),
               onPressed: onPressed,
             );
-            break;
           case EntryAction.editTags:
             button = TagButton(
               blurred: false,
               onChooserValue: (filter) => actionDelegate.quickTag(context, entry, filter),
               onPressed: onPressed,
             );
-            break;
           default:
             button = IconButton(
               icon: action.getIcon(),
               onPressed: onPressed,
               tooltip: action.getText(context),
             );
-            break;
         }
         return Stack(
           children: [
@@ -306,7 +306,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
     final locale = l10n.localeName;
-    final use24hour = context.select<MediaQueryData, bool>((v) => v.alwaysUse24HourFormat);
+    final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
     // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)

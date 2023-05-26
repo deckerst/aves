@@ -44,24 +44,18 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     return (scrollableContext.findRenderObject() as RenderBox).size;
   }
 
-  Orientation get _windowOrientation {
-    final size = WidgetsBinding.instance.window.physicalSize;
-    return size.width > size.height ? Orientation.landscape : Orientation.portrait;
-  }
-
   final List<StreamSubscription> _subscriptions = [];
 
   // grid section metrics before the app is laid out with the new orientation
   late SectionedListLayout<T> _lastSectionedListLayout;
   late Size _lastScrollableSize;
-  late Orientation _lastOrientation;
+  Orientation _lastOrientation = Orientation.portrait;
 
   @override
   void initState() {
     super.initState();
     final highlightInfo = context.read<HighlightInfo>();
     _subscriptions.add(highlightInfo.eventBus.on<TrackEvent<T>>().listen(_trackItem));
-    _lastOrientation = _windowOrientation;
     WidgetsBinding.instance.addObserver(this);
     _saveLayoutMetrics();
   }
@@ -78,9 +72,10 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
   @override
   void didChangeMetrics() {
     // the order of `WidgetsBindingObserver` metrics change notification is unreliable
-    // w.r.t. the `MediaQuery` update, and consequentially to this widget update:
+    // w.r.t. the `View` update, and consequentially to this widget update:
     // `WidgetsBindingObserver` is notified mostly before, sometimes after, the widget update
-    final orientation = _windowOrientation;
+    final size = View.of(context).physicalSize;
+    final orientation = size.width > size.height ? Orientation.landscape : Orientation.portrait;
     if (_lastOrientation != orientation) {
       _lastOrientation = orientation;
       _onLayoutChanged();
@@ -106,7 +101,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     final tileRect = sectionedListLayout.getTileRect(event.item);
     if (tileRect == null) return;
 
-    final viewportRect = Rect.fromLTWH(0, scrollController.offset, scrollableSize.width, scrollableSize.height);
+    final viewportRect = Offset(0, scrollController.offset) & scrollableSize;
     final itemVisibility = max(0, tileRect.intersect(viewportRect).height) / tileRect.height;
     if (!event.predicate(itemVisibility)) return;
 
@@ -138,7 +133,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
   Future<void> _saveLayoutMetrics() async {
     // use a delay to obtain current layout metrics
     // so that we can handle window orientation change with the previous metrics,
-    // regardless of the `MediaQuery`/`WidgetsBindingObserver` order uncertainty
+    // regardless of the `View`/`WidgetsBindingObserver` order uncertainty
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (mounted) {

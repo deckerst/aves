@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.calls
 
-import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
@@ -40,6 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 import kotlin.math.roundToInt
@@ -69,13 +69,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             // apps tend to use their name in English when creating directories
             // so we get their names in English as well as the current locale
             val englishConfig = Configuration().apply {
-                @SuppressLint("ObsoleteSdkInt")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    setLocale(Locale.ENGLISH)
-                } else {
-                    @Suppress("deprecation")
-                    locale = Locale.ENGLISH
-                }
+                setLocale(Locale.ENGLISH)
             }
 
             val pm = context.packageManager
@@ -169,8 +163,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                     .submit(size, size)
 
                 try {
-                    @Suppress("BlockingMethodInNonBlockingContext")
-                    data = target.get()?.getBytes(canHaveAlpha = true, recycle = false)
+                    val bitmap = withContext(Dispatchers.IO) { target.get() }
+                    data = bitmap?.getBytes(canHaveAlpha = true, recycle = false)
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
                 }

@@ -50,7 +50,9 @@
   "showButtonLabel": "SHOW",
   "hideButtonLabel": "HIDE",
   "continueButtonLabel": "CONTINUE",
+  "saveCopyButtonLabel": "SAVE COPY",
 
+  "applyTooltip": "Apply",
   "cancelTooltip": "Cancel",
   "changeTooltip": "Change",
   "clearTooltip": "Clear",
@@ -140,6 +142,15 @@
   "entryInfoActionRemoveMetadata": "Remove metadata",
   "entryInfoActionExportMetadata": "Export metadata",
   "entryInfoActionRemoveLocation": "Remove location",
+
+  "editorActionTransform": "Transform",
+
+  "editorTransformCrop": "Crop",
+  "editorTransformRotate": "Rotate",
+
+  "cropAspectRatioFree": "Free",
+  "cropAspectRatioOriginal": "Original",
+  "cropAspectRatioSquare": "Square",
 
   "filterAspectRatioLandscapeLabel": "Landscape",
   "filterAspectRatioPortraitLabel": "Portrait",
@@ -270,6 +281,7 @@
   "widgetOpenPageHome": "Open home",
   "widgetOpenPageCollection": "Open collection",
   "widgetOpenPageViewer": "Open viewer",
+  "widgetTapUpdateWidget": "Update widget",
 
   "storageVolumeDescriptionFallbackPrimary": "Internal storage",
   "storageVolumeDescriptionFallbackNonPrimary": "SD card",
