@@ -133,17 +133,6 @@ dependency_overrides:
   # constrains `material_color_utilities` to v0.2.0, which
   # constrains `dynamic_color` to v1.6.4, which is incompatible with AGP8
   material_color_utilities: ^0.5.0
-  # cf https://github.com/Baseflow/flutter-google-api-availability/pull/43
-  google_api_availability_android:
-    git:
-      url: https://github.com/deckerst/flutter-google-api-availability.git
-      ref: agp8-compat
-      path: google_api_availability_android
-  # cf https://github.com/kurenai7968/volume_controller/pull/19
-  volume_controller:
-    git:
-      url: https://github.com/deckerst/volume_controller.git
-      ref: agp8-compat
 
 flutter:
   assets:

@@ -156,10 +156,10 @@ packages:
     dependency: transitive
     description:
       name: google_api_availability_android
-      sha256: eb309bc0b435731d18f306b598e176a9afcf642089a7d7c5cbb48e393afda345
+      sha256: d95429ae78083585c312de2c6578085e7d53d100a94656d691bce0bb0ce435be
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+1"
+    version: "1.0.1"
   google_api_availability_platform_interface:
     dependency: transitive
     description:
