@@ -312,7 +312,7 @@
       }
     }
   },
-  "entryInfoActionEditLocation": "Brigd stoda",
+  "entryInfoActionEditLocation": "Brigd stadsetjinga",
   "@entryInfoActionEditLocation": {},
   "entryInfoActionRemoveMetadata": "Tak bort metadata",
   "@entryInfoActionRemoveMetadata": {},
@@ -1392,5 +1392,59 @@
   "dateToday": "I dag",
   "@dateToday": {},
   "dateYesterday": "I går",
-  "@dateYesterday": {}
+  "@dateYesterday": {},
+  "entryInfoActionRemoveLocation": "Ta bort stadsetjinga",
+  "@entryInfoActionRemoveLocation": {},
+  "filterLocatedLabel": "Stadsette",
+  "@filterLocatedLabel": {},
+  "settingsShowBottomNavigationBar": "Vis ei framfinningsrad på botnen",
+  "@settingsShowBottomNavigationBar": {},
+  "settingsCollectionBurstPatternsTile": "Attkjenning av seriebilete",
+  "@settingsCollectionBurstPatternsTile": {},
+  "chipActionGoToPlacePage": "Vis i Stadar",
+  "@chipActionGoToPlacePage": {},
+  "settingsNavigationDrawerTile": "Framfinningsmenyen",
+  "@settingsNavigationDrawerTile": {},
+  "settingsNavigationDrawerEditorPageTitle": "Framfinningsmenyen",
+  "@settingsNavigationDrawerEditorPageTitle": {},
+  "locationPickerUseThisLocationButton": "Nytt denne stadsetjinga",
+  "@locationPickerUseThisLocationButton": {},
+  "aboutLicensesFlutterPackagesSectionTitle": "Flutter-pakker",
+  "@aboutLicensesFlutterPackagesSectionTitle": {},
+  "aboutLicensesDartPackagesSectionTitle": "Dart-pakker",
+  "@aboutLicensesDartPackagesSectionTitle": {},
+  "statsWithGps": "{count, plural, other{{count} ting med stadsetjing}}",
+  "@statsWithGps": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "mapAttributionOsmHot": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright)-medverkarar • Fliser av [HOT](https://www.hotosm.org/) • Hust av [OSM France](https://openstreetmap.fr/)",
+  "@mapAttributionOsmHot": {},
+  "mapAttributionStamen": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright)-medverkarar • Fliser av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "@mapAttributionStamen": {},
+  "columnCount": "{count, plural, =1{1 kolonne} other{{count} kolonnar}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "editEntryLocationDialogTitle": "Stadsetjing",
+  "@editEntryLocationDialogTitle": {},
+  "collectionExportFailureFeedback": "{count, plural, =1{Greidde ikkje å føra ut 1 side} other{Greidde ikkje å føra ut {count} sider}}",
+  "@collectionExportFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "albumGroupNone": "Ikkje hop",
+  "@albumGroupNone": {},
+  "editEntryLocationDialogSetCustom": "Set eiga stadsetjing",
+  "@editEntryLocationDialogSetCustom": {},
+  "collectionGroupNone": "Ikkje hop",
+  "@collectionGroupNone": {},
+  "filterNoLocationLabel": "Ustadsette",
+  "@filterNoLocationLabel": {},
+  "settingsNavigationSectionTitle": "Finn fram",
+  "@settingsNavigationSectionTitle": {}
 }
