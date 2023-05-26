@@ -555,13 +555,12 @@ packages:
     source: hosted
     version: "5.0.0"
   google_api_availability_android:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: google_api_availability_android
-      ref: agp8-compat
-      resolved-ref: f5809ddd0ce8b952f53da1b811d501b888b4f4f0
-      url: "https://github.com/deckerst/flutter-google-api-availability.git"
-    source: git
+      name: google_api_availability_android
+      sha256: d95429ae78083585c312de2c6578085e7d53d100a94656d691bce0bb0ce435be
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.1"
   google_api_availability_platform_interface:
     dependency: transitive
@@ -1415,10 +1414,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "1a5848f598acc5b7d8f7c18b8cb834ab667e59a13edc3c93e9d09cf38cc6bc87"
+      sha256: eed4e6a1164aa9794409325c3b707ff424d4d1c2a785e7db67f8bbda00e36e51
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.34"
+    version: "6.0.35"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1486,12 +1485,11 @@ packages:
   volume_controller:
     dependency: "direct main"
     description:
-      path: "."
-      ref: agp8-compat
-      resolved-ref: b5eddb8c3501e16814f39873d7fba4a73aa0f080
-      url: "https://github.com/deckerst/volume_controller.git"
-    source: git
-    version: "2.0.6"
+      name: volume_controller
+      sha256: "189bdc7a554f476b412e4c8b2f474562b09d74bc458c23667356bce3ca1d48c9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   watcher:
     dependency: transitive
     description:
