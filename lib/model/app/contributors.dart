@@ -45,6 +45,7 @@ class Contributors {
     Contributor('György Viktor', 'wickdj@gmail.com'),
     Contributor('byPety', 'peter@csordascsalad.hu'),
     Contributor('tryvseu', 'tryvseu@tuta.io'),
+    Contributor('陳義昇', 'love80312@gmail.com'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'), // Arabic
