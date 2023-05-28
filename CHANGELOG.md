@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.8.7"></a>[v1.8.7] - 2023-05-26
+## <a id="v1.8.8"></a>[v1.8.8] - 2023-05-28
 
 ### Added
 
@@ -25,6 +25,8 @@ All notable changes to this project will be documented in this file.
 
 - crash when cataloguing PSD with large XMP
 - crash when cataloguing large HEIF
+
+## <a id="v1.8.7"></a>[v1.8.7] - 2023-05-26 [YANKED]
 
 ## <a id="v1.8.6"></a>[v1.8.6] - 2023-04-30
 
