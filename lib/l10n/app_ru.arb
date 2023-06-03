@@ -347,7 +347,7 @@
   "@binEntriesConfirmationDialogMessage": {},
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов?}}",
   "@deleteEntriesConfirmationDialogMessage": {},
-  "moveUndatedConfirmationDialogMessage": "Некоторые объекты не имеют даты в метаданных. Их текущая дата будет сброшена с помощью этой операции, если не задана дата в метаданных.",
+  "moveUndatedConfirmationDialogMessage": "Сохранить даты элементов, прежде чем продолжить?",
   "@moveUndatedConfirmationDialogMessage": {},
   "moveUndatedConfirmationDialogSetDate": "Установить дату",
   "@moveUndatedConfirmationDialogSetDate": {},

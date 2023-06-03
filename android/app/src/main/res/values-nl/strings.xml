@@ -8,4 +8,5 @@
     <string name="analysis_channel_name">Media indexeren</string>
     <string name="analysis_notification_default_title">Indexeren van media</string>
     <string name="analysis_notification_action_stop">Stop</string>
+    <string name="safe_mode_shortcut_short_label">Veilige modus</string>
 </resources>
