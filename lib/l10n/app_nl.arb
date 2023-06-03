@@ -51,7 +51,7 @@
   "@saveTooltip": {},
   "pickTooltip": "Kies",
   "@pickTooltip": {},
-  "doubleBackExitMessage": "Tap nogmaals “Terug” om te sluiten.",
+  "doubleBackExitMessage": "Tik nogmaals “Terug” om te sluiten.",
   "@doubleBackExitMessage": {},
   "doNotAskAgain": "Niet opnieuw vragen",
   "@doNotAskAgain": {},
@@ -1186,5 +1186,11 @@
   "lengthUnitPixel": "px",
   "@lengthUnitPixel": {},
   "vaultLockTypePassword": "Wachtwoord",
-  "@vaultLockTypePassword": {}
+  "@vaultLockTypePassword": {},
+  "saveCopyButtonLabel": "KOPIE OPSLAAN",
+  "@saveCopyButtonLabel": {},
+  "applyTooltip": "Toepassen",
+  "@applyTooltip": {},
+  "tagPlaceholderState": "Staat",
+  "@tagPlaceholderState": {}
 }
