@@ -46,7 +46,7 @@ void main() {
   const destinationAlbum = '${FakeStorageService.primaryPath}Pictures/destination';
 
   const aTag = 'sometag';
-  final australiaLatLng = LatLng(-26, 141);
+  const australiaLatLng = LatLng(-26, 141);
   const australiaAddress = AddressDetails(
     id: 0,
     countryCode: 'AU',

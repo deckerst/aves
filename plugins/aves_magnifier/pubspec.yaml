@@ -12,7 +12,6 @@ dependencies:
     path: ../aves_utils
   equatable:
   provider:
-  tuple:
 
 dev_dependencies:
   flutter_lints:

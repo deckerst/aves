@@ -82,7 +82,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return dataTypes;
   }
 
-  static final removalLocation = LatLng(0, 0);
+  static const removalLocation = LatLng(0, 0);
 
   Future<Set<EntryDataType>> editLocation(LatLng? latLng) async {
     final dataTypes = <EntryDataType>{};
