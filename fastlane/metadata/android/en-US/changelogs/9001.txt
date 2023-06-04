@@ -1,5 +1,0 @@
-In v1.7.10:
-- Android TV support (cont'd)
-- interact with videos via media session controls
-- enjoy the app in Czech & Polish
-Full changelog available on GitHub
