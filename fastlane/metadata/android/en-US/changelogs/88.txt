@@ -1,5 +1,0 @@
-In v1.7.8:
-- Android TV support
-- long-press on the move/rate/tag quick actions in the viewer for quicker actions
-- enjoy the app in Romanian, Lithuanian, Norwegian (Bokmål), Chinese (Traditional) & Ukrainian
-Full changelog available on GitHub

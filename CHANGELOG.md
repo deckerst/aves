@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.8.9"></a>[v1.8.9] - 2023-06-04
+
+### Changed
+
+- upgraded Flutter to stable v3.10.3
+
+### Fixed
+
+- duplicates when converting many items
+
 ## <a id="v1.8.8"></a>[v1.8.8] - 2023-05-28
 
 ### Added

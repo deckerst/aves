@@ -1,5 +1,0 @@
-In v1.8.4:
-- view items in full-screen when selecting them
-- watch videos using picture-in-picture
-- navigate with TalkBack
-Full changelog available on GitHub

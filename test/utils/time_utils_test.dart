@@ -36,5 +36,6 @@ void main() {
     expect(parseUnknownDateFormat('2019-02-18 16.00.12-DCM'), DateTime(2019, 2, 18, 16, 0, 12, 0));
     expect(parseUnknownDateFormat('2020-11-01 00.31.02'), DateTime(2020, 11, 1, 0, 31, 2, 0));
     expect(parseUnknownDateFormat('2019-10-31 135703'), DateTime(2019, 10, 31, 13, 57, 3, 0));
+    expect(parseUnknownDateFormat('Foo_2023-03-12_01-59-23.614_1920x1080'), DateTime(2023, 3, 12, 1, 59, 23, 614));
   });
 }

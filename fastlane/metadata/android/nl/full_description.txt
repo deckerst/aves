@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> kan allerlei soorten afbeeldingen en video's aan, waaronder de typische JPEG's en MP4's, maar ook minder gangbare formaten zoals <b>multi-pagina TIFF's, SVG's, oude AVI's en meer</b>! Het scant uw media collectie om <b>bewegende foto's</b>, <b>panorama's</b>, <b>360° video's</b>, evenals <b>GeoTIFF</b> bestanden te herkennen.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>Navigatie en zoeken</b> is een belangrijk onderdeel van <i>Aves</i>. Het doel is dat gebruikers gemakkelijk van albums naar foto's naar tags naar kaarten enz. kunnen gaan.
 
 <i>Aves</i> integrates with Android (from KitKat to Android 13, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
