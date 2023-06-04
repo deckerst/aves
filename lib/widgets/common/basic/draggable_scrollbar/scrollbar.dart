@@ -296,7 +296,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
 
   void _onVerticalDragUpdate(double deltaY) {
     _showThumb();
-    if (_isDragInProcess) {
+    if (_isDragInProcess && thumbMinScrollExtent < thumbMaxScrollExtent) {
       // thumb offset
       _boundlessThumbOffset += deltaY;
       _thumbOffsetNotifier.value = _boundlessThumbOffset.clamp(thumbMinScrollExtent, thumbMaxScrollExtent);
