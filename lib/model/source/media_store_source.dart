@@ -220,6 +220,8 @@ class MediaStoreSource extends CollectionSource {
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController}) async {
     if (_initState == SourceInitializationState.none || !isMonitoring || !isReady) return changedUris;
 
+    state = SourceState.loading;
+
     debugPrint('$runtimeType refreshUris ${changedUris.length} uris');
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       final pathSegments = Uri.parse(uri).pathSegments;
@@ -278,6 +280,8 @@ class MediaStoreSource extends CollectionSource {
     );
 
     invalidateAlbumFilterSummary(directories: existingDirectories);
+
+    state = SourceState.ready;
 
     if (newEntries.isNotEmpty) {
       addEntries(newEntries);

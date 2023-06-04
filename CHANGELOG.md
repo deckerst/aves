@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.10.3
 
+### Fixed
+
+- duplicates when converting many items
+
 ## <a id="v1.8.8"></a>[v1.8.8] - 2023-05-28
 
 ### Added
