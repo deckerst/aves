@@ -1,5 +1,0 @@
-In v1.8.2:
-- write metadata when converting
-- convert many items at once
-- list places in their own page
-Full changelog available on GitHub

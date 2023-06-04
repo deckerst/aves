@@ -1,5 +1,0 @@
-In v1.8.5:
-- navigate states for some countries (requires rescan)
-- group Samsung and Sony bursts
-- lock viewer when watching videos
-Full changelog available on GitHub

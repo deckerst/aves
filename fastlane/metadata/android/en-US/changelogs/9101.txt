@@ -1,5 +1,0 @@
-In v1.8.0:
-- Android TV support (cont'd)
-- hide your secrets in vaults
-- enjoy the app in Basque
-Full changelog available on GitHub
