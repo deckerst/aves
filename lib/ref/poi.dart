@@ -1,9 +1,9 @@
 import 'package:latlong2/latlong.dart';
 
 class PointsOfInterest {
-  static final pointNemo = LatLng(-48.876667, -123.393333);
+  static const pointNemo = LatLng(-48.876667, -123.393333);
 
-  static final wonders = [
+  static const wonders = [
     LatLng(29.979167, 31.134167),
     LatLng(36.451000, 28.223615),
     LatLng(32.5355, 44.4275),

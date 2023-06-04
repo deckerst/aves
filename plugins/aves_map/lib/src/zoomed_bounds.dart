@@ -23,8 +23,7 @@ class ZoomedBounds extends Equatable {
     final swPoint = _crs.latLngToPoint(sw, zoom);
     final nePoint = _crs.latLngToPoint(ne, zoom);
     // assume no padding around bounds
-    final projectedCenter = _crs.pointToLatLng((swPoint + nePoint) / 2, zoom);
-    return projectedCenter ?? GeoUtils.getLatLngCenter([sw, ne]);
+    return _crs.pointToLatLng((swPoint + nePoint) / 2, zoom);
   }
 
   @override
