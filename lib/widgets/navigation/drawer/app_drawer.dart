@@ -17,6 +17,7 @@ import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
+import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
@@ -260,6 +261,7 @@ class _AppDrawerState extends State<AppDrawer> {
           // key is expected by test driver
           key: Key('drawer-page-$route'),
           trailing: trailing,
+          topLevel: route != SearchPage.routeName,
           routeName: route,
         );
       }),
