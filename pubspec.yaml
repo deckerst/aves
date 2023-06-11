@@ -128,12 +128,6 @@ dev_dependencies:
   shared_preferences_platform_interface:
   test:
 
-dependency_overrides:
-  # as of Flutter beta v3.10.0-1.5.pre, `flutter_driver`
-  # constrains `material_color_utilities` to v0.2.0, which
-  # constrains `dynamic_color` to v1.6.4, which is incompatible with AGP8
-  material_color_utilities: ^0.5.0
-
 flutter:
   assets:
     - assets/

@@ -36,7 +36,6 @@ fun PackageManager.getApplicationInfoCompat(packageName: String, flags: Int): Ap
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(flags.toLong()))
     } else {
-        @Suppress("deprecation")
         getApplicationInfo(packageName, flags)
     }
 }
@@ -45,7 +44,6 @@ fun PackageManager.queryIntentActivitiesCompat(intent: Intent, flags: Int): List
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(flags.toLong()))
     } else {
-        @Suppress("deprecation")
         queryIntentActivities(intent, flags)
     }
 }

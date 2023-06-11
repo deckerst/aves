@@ -171,7 +171,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(AIcons.tagUntagged, color: untaggedColor),
+                                  Icon(AIcons.tagUntagged, color: untaggedColor),
                                   const SizedBox(width: 8),
                                   Text(
                                     l10n.filterNoTagLabel,

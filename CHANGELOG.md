@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- target Android 14 (API 34)
 - upgraded Flutter to stable v3.10.4
 
 ### Fixed

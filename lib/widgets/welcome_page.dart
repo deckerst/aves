@@ -77,7 +77,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           Padding(
                             padding: const EdgeInsets.all(16),
                             child: LinkChip(
-                              leading: const Icon(
+                              leading: Icon(
                                 AIcons.privacy,
                                 size: 22,
                               ),

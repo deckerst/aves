@@ -48,7 +48,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace 'deckers.thibault.aves'
-    compileSdk 33
+    compileSdk 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -75,7 +75,7 @@ android {
         // which implementation `DocumentBuilderImpl` is provided by the OS and is not customizable on Android,
         // but the implementation on API <19 is not robust enough and fails to build XMP documents
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>",
