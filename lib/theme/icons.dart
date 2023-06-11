@@ -17,7 +17,7 @@ class AIcons {
   static const brightnessMin = Icons.brightness_low_outlined;
   static const brightnessMax = Icons.brightness_high_outlined;
   static const checked = Icons.done_outlined;
-  static const count = MdiIcons.counter;
+  static final count = MdiIcons.counter;
   static const counter = Icons.plus_one_outlined;
   static const date = Icons.calendar_today_outlined;
   static const dateByDay = Icons.today_outlined;
@@ -42,11 +42,11 @@ class AIcons {
   static const mainStorage = Icons.smartphone_outlined;
   static const mimeType = Icons.code_outlined;
   static const opacity = Icons.opacity;
-  static const privacy = MdiIcons.shieldAccountOutline;
+  static final privacy = MdiIcons.shieldAccountOutline;
   static const rating = Icons.star_border_outlined;
   static const ratingFull = Icons.star;
-  static const ratingRejected = MdiIcons.starMinusOutline;
-  static const ratingUnrated = MdiIcons.starOffOutline;
+  static final ratingRejected = MdiIcons.starMinusOutline;
+  static final ratingUnrated = MdiIcons.starOffOutline;
   static const raw = Icons.raw_on_outlined;
   static const shooting = Icons.camera_outlined;
   static const removableStorage = Icons.sd_storage_outlined;
@@ -56,7 +56,7 @@ class AIcons {
   static const size = Icons.data_usage_outlined;
   static const text = Icons.format_quote_outlined;
   static const tag = Icons.local_offer_outlined;
-  static const tagUntagged = MdiIcons.tagOffOutline;
+  static final tagUntagged = MdiIcons.tagOffOutline;
   static const volumeMin = Icons.volume_mute_outlined;
   static const volumeMax = Icons.volume_up_outlined;
 
@@ -79,35 +79,35 @@ class AIcons {
   static const clear = Icons.clear_outlined;
   static const clipboard = Icons.content_copy_outlined;
   static const convert = Icons.transform_outlined;
-  static const convertToStillImage = MdiIcons.movieRemoveOutline;
+  static final convertToStillImage = MdiIcons.movieRemoveOutline;
   static const copy = Icons.file_copy_outlined;
   static const debug = Icons.whatshot_outlined;
   static const delete = Icons.delete_outlined;
   static const edit = Icons.edit_outlined;
   static const emptyBin = Icons.delete_sweep_outlined;
   static const export = Icons.open_with_outlined;
-  static const fileExport = MdiIcons.fileExportOutline;
-  static const fileImport = MdiIcons.fileImportOutline;
+  static final fileExport = MdiIcons.fileExportOutline;
+  static final fileImport = MdiIcons.fileImportOutline;
   static const flip = Icons.flip_outlined;
   static const favourite = Icons.favorite_border;
   static const favouriteActive = Icons.favorite;
-  static const filter = MdiIcons.filterOutline;
-  static const filterOff = MdiIcons.filterOffOutline;
+  static final filter = MdiIcons.filterOutline;
+  static final filterOff = MdiIcons.filterOffOutline;
   static const geoBounds = Icons.public_outlined;
   static const goUp = Icons.arrow_upward_outlined;
   static const hide = Icons.visibility_off_outlined;
   static const info = Icons.info_outlined;
   static const layers = Icons.layers_outlined;
   static const map = Icons.map_outlined;
-  static const move = MdiIcons.fileMoveOutline;
+  static final move = MdiIcons.fileMoveOutline;
   static const mute = Icons.volume_off_outlined;
   static const unmute = Icons.volume_up_outlined;
   static const name = Icons.abc_outlined;
   static const newTier = Icons.fiber_new_outlined;
   static const openOutside = Icons.open_in_new_outlined;
-  static const openVideo = MdiIcons.moviePlayOutline;
+  static final openVideo = MdiIcons.moviePlayOutline;
   static const pin = Icons.push_pin_outlined;
-  static const unpin = MdiIcons.pinOffOutline;
+  static final unpin = MdiIcons.pinOffOutline;
   static const play = Icons.play_arrow;
   static const pause = Icons.pause;
   static const print = Icons.print_outlined;
@@ -123,10 +123,10 @@ class AIcons {
   static const search = Icons.search_outlined;
   static const select = Icons.select_all_outlined;
   static const setAs = Icons.wallpaper_outlined;
-  static const setCover = MdiIcons.imageEditOutline;
+  static final setCover = MdiIcons.imageEditOutline;
   static const share = Icons.share_outlined;
   static const show = Icons.visibility_outlined;
-  static const showFullscreen = MdiIcons.arrowExpand;
+  static final showFullscreen = MdiIcons.arrowExpand;
   static const slideshow = Icons.slideshow_outlined;
   static const speed = Icons.speed_outlined;
   static const stats = Icons.donut_small_outlined;
@@ -136,7 +136,7 @@ class AIcons {
   static const streamText = Icons.closed_caption_outlined;
   static const vaultLock = Icons.lock_outline;
   static const vaultAdd = Icons.enhanced_encryption_outlined;
-  static const vaultConfigure = MdiIcons.shieldLockOutline;
+  static final vaultConfigure = MdiIcons.shieldLockOutline;
   static const videoSettings = Icons.video_settings_outlined;
   static const view = Icons.grid_view_outlined;
   static const viewerLock = Icons.lock_outline;
@@ -176,6 +176,6 @@ class AIcons {
   static const selected = Icons.check_circle_outline;
   static const unselected = Icons.radio_button_unchecked;
 
-  static const github = MdiIcons.github;
-  static const legal = MdiIcons.scaleBalance;
+  static final github = MdiIcons.github;
+  static final legal = MdiIcons.scaleBalance;
 }

@@ -11,6 +11,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.embedding.engine.loader.FlutterLoader
 import io.flutter.view.FlutterCallbackInformation
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -60,7 +61,7 @@ object FlutterUtils {
     suspend fun runOnUiThread(r: Runnable) {
         val mainLooper = Looper.getMainLooper()
         if (Looper.myLooper() != mainLooper) {
-            suspendCoroutine<Boolean> { cont ->
+            suspendCoroutine { cont: Continuation<Boolean> ->
                 Handler(mainLooper).post {
                     r.run()
                     cont.resume(true)

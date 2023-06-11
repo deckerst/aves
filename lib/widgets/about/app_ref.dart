@@ -19,7 +19,7 @@ class AppReference extends StatefulWidget {
   static List<Widget> buildLinks(BuildContext context) {
     final l10n = context.l10n;
     return [
-      const LinkChip(
+      LinkChip(
         leading: Icon(
           AIcons.github,
           size: 24,
@@ -28,7 +28,7 @@ class AppReference extends StatefulWidget {
         urlString: AppReference.avesGithub,
       ),
       LinkChip(
-        leading: const Icon(
+        leading: Icon(
           AIcons.legal,
           size: 22,
         ),
@@ -36,7 +36,7 @@ class AppReference extends StatefulWidget {
         urlString: '${AppReference.avesGithub}/blob/main/LICENSE',
       ),
       LinkChip(
-        leading: const Icon(
+        leading: Icon(
           AIcons.privacy,
           size: 22,
         ),

@@ -61,11 +61,11 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
               return [
                 PopupMenuItem(
                   value: SettingsAction.export,
-                  child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
+                  child: MenuRow(text: context.l10n.settingsActionExport, icon: Icon(AIcons.fileExport)),
                 ),
                 PopupMenuItem(
                   value: SettingsAction.import,
-                  child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
+                  child: MenuRow(text: context.l10n.settingsActionImport, icon: Icon(AIcons.fileImport)),
                 ),
               ];
             },

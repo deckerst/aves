@@ -100,7 +100,7 @@ class TagIcon extends StatelessWidget {
 
   factory TagIcon.tagged() => const TagIcon._private(icon: AIcons.tag);
 
-  factory TagIcon.untagged() => const TagIcon._private(icon: AIcons.tagUntagged);
+  factory TagIcon.untagged() => TagIcon._private(icon: AIcons.tagUntagged);
 
   static const scale = .9;
 

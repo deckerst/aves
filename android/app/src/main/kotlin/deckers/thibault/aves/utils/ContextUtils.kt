@@ -1,13 +1,10 @@
 package deckers.thibault.aves.utils
 
-import android.app.ActivityManager
-import android.app.Service
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import deckers.thibault.aves.utils.UriUtils.tryParseId
@@ -22,19 +19,6 @@ object ContextUtils {
             .appendPath(getResourceTypeName(resourceId))
             .appendPath(getResourceEntryName(resourceId))
             .build()
-    }
-
-    fun Context.isMyServiceRunning(serviceClass: Class<out Service>): Boolean {
-        val am = this.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
-        am ?: return false
-        @Suppress("deprecation")
-        return am.getRunningServices(Integer.MAX_VALUE).any { it.service.className == serviceClass.name }
-    }
-
-    // `flag`: `DocumentsContract.Document.FLAG_SUPPORTS_COPY`, etc.
-    fun Context.queryDocumentProviderFlag(docUri: Uri, flag: Int): Boolean {
-        val flags = queryContentPropValue(docUri, "", DocumentsContract.Document.COLUMN_FLAGS) as Long?
-        return if (flags != null) (flags.toInt() and flag) == flag else false
     }
 
     fun Context.queryContentPropValue(uri: Uri, mimeType: String, column: String): Any? {
