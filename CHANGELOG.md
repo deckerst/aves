@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="v1.8.9"></a>[v1.8.9] - 2023-06-04
 
+### Added
+
+- About: data usage
+
 ### Changed
 
 - target Android 14 (API 34)

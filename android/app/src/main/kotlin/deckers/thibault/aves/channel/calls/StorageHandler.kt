@@ -9,11 +9,13 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.StorageUtils.getFolderSize
 import deckers.thibault.aves.utils.StorageUtils.getPrimaryVolumePath
 import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.util.PathUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,6 +27,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
+            "getDataUsage" -> ioScope.launch { safe(call, result, ::getDataUsage) }
             "getStorageVolumes" -> ioScope.launch { safe(call, result, ::getStorageVolumes) }
             "getVaultRoot" -> ioScope.launch { safe(call, result, ::getVaultRoot) }
             "getFreeSpace" -> ioScope.launch { safe(call, result, ::getFreeSpace) }
@@ -37,6 +40,37 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "canInsertMedia" -> safe(call, result, ::canInsertMedia)
             else -> result.notImplemented()
         }
+    }
+
+    private fun getDataUsage(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        var internalCache = getFolderSize(context.cacheDir)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            internalCache += getFolderSize(context.codeCacheDir)
+        }
+        val externalCache = context.externalCacheDirs.map(::getFolderSize).sum()
+
+        val dataDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) context.dataDir else File(context.applicationInfo.dataDir)
+
+        val database = getFolderSize(File(dataDir, "databases"))
+        val flutter = getFolderSize(File(PathUtils.getDataDirectory(context)))
+        val vaults = getFolderSize(File(StorageUtils.getVaultRoot(context)))
+        val trash = context.getExternalFilesDirs(null).mapNotNull { StorageUtils.trashDirFor(context, it.path) }.map(::getFolderSize).sum()
+
+        val internalData = getFolderSize(dataDir) - internalCache
+        val externalData = context.getExternalFilesDirs(null).map(::getFolderSize).sum()
+        val miscData = internalData + externalData - (database + flutter + vaults + trash)
+
+        result.success(
+            hashMapOf(
+                "database" to database,
+                "flutter" to flutter,
+                "vaults" to vaults,
+                "trash" to trash,
+                "miscData" to miscData,
+                "internalCache" to internalCache,
+                "externalCache" to externalCache,
+            )
+        )
     }
 
     private fun getStorageVolumes(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

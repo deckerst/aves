@@ -533,6 +533,14 @@
   "aboutBugReportInstruction": "Report on GitHub with the logs and system information",
   "aboutBugReportButton": "Report",
 
+  "aboutDataUsageSectionTitle": "Data Usage",
+  "aboutDataUsageData": "Data",
+  "aboutDataUsageCache": "Cache",
+  "aboutDataUsageDatabase": "Database",
+  "aboutDataUsageMisc": "Misc",
+  "aboutDataUsageInternal": "Internal",
+  "aboutDataUsageExternal": "External",
+
   "aboutCreditsSectionTitle": "Credits",
   "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",
   "aboutCreditsWorldAtlas2": "under ISC License.",

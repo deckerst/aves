@@ -298,6 +298,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -902,6 +909,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -1503,6 +1517,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -1854,7 +1875,54 @@
   "cs": [
     "editorActionTransform",
     "cropAspectRatioFree",
-    "cropAspectRatioSquare"
+    "cropAspectRatioSquare",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
+  "de": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
+  "el": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
+  "es": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
+  "eu": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
   ],
 
   "fa": [
@@ -2030,6 +2098,13 @@
     "aboutBugSaveLogInstruction",
     "aboutBugCopyInfoInstruction",
     "aboutBugReportInstruction",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -2361,6 +2436,16 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
   "gl": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -2549,6 +2634,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -3214,6 +3306,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -3859,6 +3958,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -4207,6 +4313,26 @@
     "filePickerUseThisFolder"
   ],
 
+  "hu": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
+  "id": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
   "it": [
     "saveCopyButtonLabel",
     "applyTooltip",
@@ -4216,7 +4342,14 @@
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
     "cropAspectRatioSquare",
-    "widgetTapUpdateWidget"
+    "widgetTapUpdateWidget",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
   ],
 
   "ja": [
@@ -4246,6 +4379,13 @@
     "vaultBinUsageDialogMessage",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "stateEmpty",
     "placeEmpty",
     "searchStatesSectionTitle",
@@ -4268,6 +4408,16 @@
     "settingsWidgetDisplayedItem",
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage"
+  ],
+
+  "ko": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
   ],
 
   "lt": [
@@ -4319,6 +4469,13 @@
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -4667,6 +4824,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -5037,6 +5201,13 @@
     "patternDialogEnter",
     "patternDialogConfirm",
     "exportEntryDialogQuality",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "statePageTitle",
     "stateEmpty",
     "searchStatesSectionTitle",
@@ -5096,6 +5267,13 @@
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -5135,6 +5313,13 @@
     "authenticateToUnlockVault",
     "viewDialogSortSectionTitle",
     "viewDialogReverseSortOrder",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutLicensesBanner",
     "aboutLicensesAndroidLibrariesSectionTitle",
@@ -5432,6 +5617,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
     "aboutLicensesSectionTitle",
@@ -5751,6 +5943,16 @@
     "filePickerUseThisFolder"
   ],
 
+  "pl": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
+  ],
+
   "pt": [
     "saveCopyButtonLabel",
     "applyTooltip",
@@ -5760,7 +5962,14 @@
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
     "cropAspectRatioSquare",
-    "widgetTapUpdateWidget"
+    "widgetTapUpdateWidget",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
   ],
 
   "ro": [
@@ -5778,12 +5987,29 @@
     "videoResumptionModeAlways",
     "widgetTapUpdateWidget",
     "exportEntryDialogQuality",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "settingsAskEverytime",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
     "settingsVideoResumptionModeDialogTitle",
     "tagEditorDiscardDialogMessage"
+  ],
+
+  "ru": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
   ],
 
   "sk": [
@@ -5891,6 +6117,13 @@
     "aboutBugCopyInfoButton",
     "aboutBugReportInstruction",
     "aboutBugReportButton",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -6294,6 +6527,13 @@
     "editEntryDateDialogShift",
     "removeEntryMetadataDialogTitle",
     "tooManyItemsErrorDialogMessage",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
@@ -6671,6 +6911,13 @@
     "vaultBinUsageDialogMessage",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -6691,6 +6938,16 @@
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
+  ],
+
+  "uk": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
   ],
 
   "zh": [
@@ -6725,6 +6982,13 @@
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -6748,5 +7012,15 @@
     "settingsAccessibilityShowPinchGestureAlternatives",
     "statsTopStatesSectionTitle",
     "tagPlaceholderState"
+  ],
+
+  "zh_Hant": [
+    "aboutDataUsageSectionTitle",
+    "aboutDataUsageData",
+    "aboutDataUsageCache",
+    "aboutDataUsageDatabase",
+    "aboutDataUsageMisc",
+    "aboutDataUsageInternal",
+    "aboutDataUsageExternal"
   ]
 }
