@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class StorageService {
+  Future<Map<String, int>> getDataUsage();
+
   Future<Set<StorageVolume>> getStorageVolumes();
 
   Future<String> getVaultRoot();
@@ -44,6 +46,17 @@ abstract class StorageService {
 class PlatformStorageService implements StorageService {
   static const _platform = MethodChannel('deckers.thibault/aves/storage');
   static final _stream = StreamsChannel('deckers.thibault/aves/activity_result_stream');
+
+  @override
+  Future<Map<String, int>> getDataUsage() async {
+    try {
+      final result = await _platform.invokeMethod('getDataUsage');
+      if (result != null) return (result as Map).cast<String, int>();
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
 
   @override
   Future<Set<StorageVolume>> getStorageVolumes() async {

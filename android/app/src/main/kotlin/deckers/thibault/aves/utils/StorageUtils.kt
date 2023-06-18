@@ -716,6 +716,18 @@ object StorageUtils {
 
     // convenience methods
 
+    fun getFolderSize(f: File): Long {
+        var size: Long = 0
+        if (f.isDirectory) {
+            for (file in f.listFiles()!!) {
+                size += getFolderSize(file)
+            }
+        } else {
+            size = f.length()
+        }
+        return size
+    }
+
     fun ensureTrailingSeparator(dirPath: String): String {
         return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator
     }
