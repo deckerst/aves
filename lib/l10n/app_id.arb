@@ -1334,5 +1334,19 @@
   "cropAspectRatioFree": "Bebas",
   "@cropAspectRatioFree": {},
   "widgetTapUpdateWidget": "Perbarui widget",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageData": "Data",
+  "@aboutDataUsageData": {},
+  "aboutDataUsageDatabase": "Basis Data",
+  "@aboutDataUsageDatabase": {},
+  "aboutDataUsageSectionTitle": "Penggunaan Data",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageCache": "Tembolok",
+  "@aboutDataUsageCache": {},
+  "aboutDataUsageExternal": "Eksternal",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageMisc": "Lainnya",
+  "@aboutDataUsageMisc": {},
+  "aboutDataUsageInternal": "Internal",
+  "@aboutDataUsageInternal": {}
 }
