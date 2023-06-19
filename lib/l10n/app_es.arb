@@ -1334,5 +1334,19 @@
   "cropAspectRatioOriginal": "Original",
   "@cropAspectRatioOriginal": {},
   "widgetTapUpdateWidget": "Actualizar el widget",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageData": "Datos",
+  "@aboutDataUsageData": {},
+  "aboutDataUsageCache": "Cache",
+  "@aboutDataUsageCache": {},
+  "aboutDataUsageDatabase": "Base de datos",
+  "@aboutDataUsageDatabase": {},
+  "aboutDataUsageInternal": "Interno",
+  "@aboutDataUsageInternal": {},
+  "aboutDataUsageExternal": "Exterior",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageSectionTitle": "Uso de los datos",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageMisc": "Varios",
+  "@aboutDataUsageMisc": {}
 }
