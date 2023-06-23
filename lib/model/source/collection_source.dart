@@ -61,8 +61,8 @@ mixin SourceBase {
 
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
   CollectionSource() {
-    settings.updateStream.where((event) => event.key == Settings.localeKey).listen((_) => invalidateAlbumDisplayNames());
-    settings.updateStream.where((event) => event.key == Settings.hiddenFiltersKey).listen((event) {
+    settings.updateStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => invalidateAlbumDisplayNames());
+    settings.updateStream.where((event) => event.key == SettingKeys.hiddenFiltersKey).listen((event) {
       final oldValue = event.oldValue;
       if (oldValue is List<String>?) {
         final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();

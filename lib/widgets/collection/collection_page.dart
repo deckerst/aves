@@ -27,6 +27,7 @@ import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,7 @@ class _CollectionPageState extends State<CollectionPage> {
       filters: widget.filters,
     );
     super.initState();
-    _subscriptions.add(settings.updateStream.where((event) => event.key == Settings.enableBinKey).listen((_) {
+    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.enableBinKey).listen((_) {
       if (!settings.enableBin) {
         _collection.removeFilter(TrashFilter.instance);
       }

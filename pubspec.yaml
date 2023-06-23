@@ -40,6 +40,8 @@ dependencies:
     path: plugins/aves_services_google
   aves_video:
     path: plugins/aves_video
+  aves_video_ijk:
+    path: plugins/aves_video_ijk
   aves_ui:
     path: plugins/aves_ui
   aves_utils:

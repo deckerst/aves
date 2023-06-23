@@ -1,7 +1,7 @@
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/colors.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_grid.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 
 typedef MosaicItemBuilder = Widget Function(int index, double targetExtent);

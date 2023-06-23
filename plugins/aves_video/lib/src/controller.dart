@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_video/src/settings/video.dart';
 import 'package:aves_video/src/stream.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -8,12 +9,17 @@ import 'package:flutter/widgets.dart';
 abstract class AvesVideoController {
   final AvesEntryBase _entry;
   final PlaybackStateHandler playbackStateHandler;
+  final VideoSettings settings;
 
   AvesEntryBase get entry => _entry;
 
   static const resumeTimeSaveMinDuration = Duration(minutes: 2);
 
-  AvesVideoController(AvesEntryBase entry, {required this.playbackStateHandler}) : _entry = entry {
+  AvesVideoController(
+    AvesEntryBase entry, {
+    required this.playbackStateHandler,
+    required this.settings,
+  }) : _entry = entry {
     entry.visualChangeNotifier.addListener(onVisualChanged);
   }
 

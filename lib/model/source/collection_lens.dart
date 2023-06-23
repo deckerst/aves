@@ -84,10 +84,10 @@ class CollectionLens with ChangeNotifier {
     }
     _subscriptions.add(settings.updateStream
         .where((event) => [
-              Settings.collectionBurstPatternsKey,
-              Settings.collectionSortFactorKey,
-              Settings.collectionGroupFactorKey,
-              Settings.collectionSortReverseKey,
+              SettingKeys.collectionBurstPatternsKey,
+              SettingKeys.collectionSortFactorKey,
+              SettingKeys.collectionGroupFactorKey,
+              SettingKeys.collectionSortReverseKey,
             ].contains(event.key))
         .listen((_) => _onSettingsChanged()));
     refresh();
