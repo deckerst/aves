@@ -49,6 +49,7 @@ class Contributors {
     Contributor('Макар Разин', 'makarrazin14@gmail.com'),
     Contributor('Leon', 'leonhoog@outlook.com'),
     Contributor('stephen-cusi', 'magiskcurry@qq.com'),
+    Contributor('atilluF', '110931720+atilluF@users.noreply.github.com'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'), // Arabic
