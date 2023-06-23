@@ -29,6 +29,7 @@ adb.exe shell setprop log.tag.J4A INFO
 adb.exe shell setprop log.tag.MediaCodec WARN
 adb.exe shell setprop log.tag.MediaMetadataRetriever INFO
 adb.exe shell setprop log.tag.MediaMetadataRetrieverJNI INFO
+adb.exe shell setprop log.tag.NativeTiffDecoder INFO
 adb.exe shell setprop log.tag.NuMediaExtractor INFO
 adb.exe shell setprop log.tag.PipelineWatcher INFO
 adb.exe shell setprop log.tag.ReflectedParamUpdater INFO

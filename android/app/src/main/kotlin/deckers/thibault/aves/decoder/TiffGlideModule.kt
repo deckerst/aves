@@ -80,11 +80,15 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             inDirectoryNumber = page
             inSampleSize = sampleSize
         }
-        val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
-        if (bitmap == null) {
-            callback.onLoadFailed(Exception("null bitmap"))
-        } else {
-            callback.onDataReady(bitmap)
+        try {
+            val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            if (bitmap == null) {
+                callback.onLoadFailed(Exception("Decoding full TIFF yielded null bitmap"))
+            } else {
+                callback.onDataReady(bitmap)
+            }
+        } catch (e: Exception) {
+            callback.onLoadFailed(e)
         }
     }
 
