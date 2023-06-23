@@ -1,8 +1,7 @@
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/db/db_metadata.dart';
 import 'package:aves/model/db/db_metadata_sqflite.dart';
-import 'package:aves/model/settings/store/store.dart';
-import 'package:aves/model/settings/store/store_shared_pref.dart';
+import 'package:aves/model/settings/store_shared_pref.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/embedded_data_service.dart';
@@ -15,6 +14,7 @@ import 'package:aves/services/metadata/metadata_fetch_service.dart';
 import 'package:aves/services/security_service.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/window_service.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:aves_report_platform/aves_report_platform.dart';
 import 'package:aves_services/aves_services.dart';

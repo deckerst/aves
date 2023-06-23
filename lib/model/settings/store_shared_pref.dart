@@ -1,4 +1,4 @@
-import 'package:aves/model/settings/store/store.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

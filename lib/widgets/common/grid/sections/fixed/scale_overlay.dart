@@ -1,8 +1,8 @@
 import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/colors.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 
 class FixedExtentScaleOverlay extends StatelessWidget {

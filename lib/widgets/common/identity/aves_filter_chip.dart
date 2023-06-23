@@ -165,7 +165,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     _tapped = false;
     _subscriptions.add(covers.packageChangeStream.listen(_onCoverColorChanged));
     _subscriptions.add(covers.colorChangeStream.listen(_onCoverColorChanged));
-    _subscriptions.add(settings.updateStream.where((event) => event.key == Settings.themeColorModeKey).listen((_) {
+    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.themeColorModeKey).listen((_) {
       // delay so that contextual colors reflect the new settings
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;

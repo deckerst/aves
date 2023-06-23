@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/settings/enums/video_loop_mode.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
@@ -11,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
+  static bool _initializedFijkLog = false;
+
   final EventChannel _eventChannel = const OptionalEventChannel('befovy.com/fijk/event');
 
   late FijkPlayer _instance;
@@ -61,7 +61,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   IjkPlayerAvesVideoController(
     super.entry, {
     required super.playbackStateHandler,
+    required super.settings,
   }) {
+    if (!_initializedFijkLog) {
+      _initializedFijkLog = true;
+      FijkLog.setLevel(FijkLogLevel.Warn);
+    }
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
       (started) {
@@ -96,8 +101,8 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
     _subscriptions.add(settings.updateStream
         .where((event) => {
-              Settings.enableVideoHardwareAccelerationKey,
-              Settings.videoLoopModeKey,
+              SettingKeys.enableVideoHardwareAccelerationKey,
+              SettingKeys.videoLoopModeKey,
             }.contains(event.key))
         .listen((_) => _instance.reset()));
   }

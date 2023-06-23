@@ -41,7 +41,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -456,7 +455,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     await _onTvLayoutChanged();
     _monitorSettings();
 
-    FijkLog.setLevel(FijkLogLevel.Warn);
     unawaited(_setupErrorReporting());
 
     debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
@@ -549,15 +547,15 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     final settingStream = settings.updateStream;
     // app
-    settingStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settingStream.where((event) => event.key == SettingKeys.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
     // display
-    settingStream.where((event) => event.key == Settings.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
-    settingStream.where((event) => event.key == Settings.maxBrightnessKey).listen((_) => applyMaxBrightness());
-    settingStream.where((event) => event.key == Settings.forceTvLayoutKey).listen((_) => applyForceTvLayout());
+    settingStream.where((event) => event.key == SettingKeys.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
+    settingStream.where((event) => event.key == SettingKeys.maxBrightnessKey).listen((_) => applyMaxBrightness());
+    settingStream.where((event) => event.key == SettingKeys.forceTvLayoutKey).listen((_) => applyForceTvLayout());
     // navigation
-    settingStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    settingStream.where((event) => event.key == SettingKeys.keepScreenOnKey).listen((_) => applyKeepScreenOn());
     // platform settings
-    settingStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+    settingStream.where((event) => event.key == SettingKeys.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
 
     applyDisplayRefreshRateMode();
     applyMaxBrightness();
@@ -567,7 +565,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _setupErrorReporting() async {
     await reportService.init();
-    settings.updateStream.where((event) => event.key == Settings.isErrorReportingAllowedKey).listen(
+    settings.updateStream.where((event) => event.key == SettingKeys.isErrorReportingAllowedKey).listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
     await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);

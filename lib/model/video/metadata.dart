@@ -15,13 +15,14 @@ import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_video_ijk/aves_video_ijk.dart';
 import 'package:collection/collection.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
+  static bool _initializedFijkLog = false;
   static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-./:](\d{1,2})[-./:](\d{1,2})([ T](\d{1,2}):(\d{1,2}):(\d{1,2})( ([ap]\.? ?m\.?))?)?');
   static final _ambiguousDatePatterns = {
     RegExp(r'^\d{2}[-/]\d{2}[-/]\d{4}$'),
@@ -45,6 +46,10 @@ class VideoMetadataFormatter {
   };
 
   static Future<Map> getVideoMetadata(AvesEntry entry) async {
+    if (!_initializedFijkLog) {
+      _initializedFijkLog = true;
+      FijkLog.setLevel(FijkLogLevel.Warn);
+    }
     final player = FijkPlayer();
     final info = await player.setDataSourceUntilPrepared(entry.uri).then((v) {
       return player.getInfo();

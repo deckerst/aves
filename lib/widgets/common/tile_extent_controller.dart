@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
@@ -13,6 +14,7 @@ class TileExtentController {
 
   late double userPreferredExtent;
   Size _viewportSize = Size.zero;
+  final List<StreamSubscription> _subscriptions = [];
 
   Size get viewportSize => _viewportSize;
 
@@ -28,11 +30,13 @@ class TileExtentController {
     // initialize extent to 0, so that it will be dynamically sized on first launch
     extentNotifier = ValueNotifier(0);
     userPreferredExtent = settings.getTileExtent(settingsRouteKey);
-    settings.addListener(_onSettingsChanged);
+    _subscriptions.add(settings.updateTileExtentStream.listen((_) => _onSettingsChanged()));
   }
 
   void dispose() {
-    settings.removeListener(_onSettingsChanged);
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
   }
 
   void _onSettingsChanged() {
