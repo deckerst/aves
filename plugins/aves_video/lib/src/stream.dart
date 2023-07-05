@@ -18,5 +18,5 @@ class MediaStreamSummary {
   });
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{type: type, index: $index, codecName: $codecName, language: $language, title: $title, width: $width, height: $height}';
+  String toString() => '$runtimeType#${shortHash(this)}{type: $type, index: $index, codecName: $codecName, language: $language, title: $title, width: $width, height: $height}';
 }

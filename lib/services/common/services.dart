@@ -19,6 +19,8 @@ import 'package:aves_report/aves_report.dart';
 import 'package:aves_report_platform/aves_report_platform.dart';
 import 'package:aves_services/aves_services.dart';
 import 'package:aves_services_platform/aves_services_platform.dart';
+import 'package:aves_video/aves_video.dart';
+import 'package:aves_video_ijk/aves_video_ijk.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart' as p;
 
@@ -30,6 +32,8 @@ final SettingsStore settingsStore = SharedPrefSettingsStore();
 final p.Context pContext = getIt<p.Context>();
 final AvesAvailability availability = getIt<AvesAvailability>();
 final MetadataDb metadataDb = getIt<MetadataDb>();
+final AvesVideoControllerFactory videoControllerFactory = getIt<AvesVideoControllerFactory>();
+final AvesVideoMetadataFetcher videoMetadataFetcher = getIt<AvesVideoMetadataFetcher>();
 
 final AppService appService = getIt<AppService>();
 final DeviceService deviceService = getIt<DeviceService>();
@@ -50,6 +54,8 @@ void initPlatformServices() {
   getIt.registerLazySingleton<p.Context>(p.Context.new);
   getIt.registerLazySingleton<AvesAvailability>(LiveAvesAvailability.new);
   getIt.registerLazySingleton<MetadataDb>(SqfliteMetadataDb.new);
+  getIt.registerLazySingleton<AvesVideoControllerFactory>(IjkVideoControllerFactory.new);
+  getIt.registerLazySingleton<AvesVideoMetadataFetcher>(IjkVideoMetadataFetcher.new);
 
   getIt.registerLazySingleton<AppService>(PlatformAppService.new);
   getIt.registerLazySingleton<DeviceService>(PlatformDeviceService.new);

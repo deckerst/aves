@@ -1,6 +1,7 @@
 library aves_video;
 
 export 'src/controller.dart';
+export 'src/metadata.dart';
 export 'src/settings/subtitles.dart';
 export 'src/settings/video.dart';
 export 'src/stream.dart';

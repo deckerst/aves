@@ -579,11 +579,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     required AvesVideoController controller,
     required EntryAction action,
   }) async {
-    await _videoActionDelegate.onActionSelected(context, entry, controller, action);
     if (action == EntryAction.videoToggleMute) {
-      final override = controller.isMuted;
+      final override = !controller.isMuted;
       videoMutedOverride = override;
       await context.read<VideoConductor>().muteAll(override);
+    } else {
+      await _videoActionDelegate.onActionSelected(context, entry, controller, action);
     }
   }
 

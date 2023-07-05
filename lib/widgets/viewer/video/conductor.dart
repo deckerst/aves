@@ -8,7 +8,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/video/db_playback_state_handler.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:aves_video_ijk/aves_video_ijk.dart';
 import 'package:collection/collection.dart';
 
 class VideoConductor {
@@ -37,7 +36,7 @@ class VideoConductor {
     if (controller != null) {
       _controllers.remove(controller);
     } else {
-      controller = IjkPlayerAvesVideoController(
+      controller = videoControllerFactory.buildController(
         entry,
         playbackStateHandler: playbackStateHandler,
         settings: settings,

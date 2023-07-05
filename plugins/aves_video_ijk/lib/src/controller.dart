@@ -8,9 +8,7 @@ import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class IjkPlayerAvesVideoController extends AvesVideoController {
-  static bool _initializedFijkLog = false;
-
+class IjkVideoController extends AvesVideoController {
   final EventChannel _eventChannel = const OptionalEventChannel('befovy.com/fijk/event');
 
   late FijkPlayer _instance;
@@ -21,7 +19,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final StreamController<double> _speedStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
-  final List<MediaStreamSummary> _streams = [];
   Timer? _initialPlayTimer;
   double _speed = 1;
   double _volume = 1;
@@ -58,15 +55,11 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
   static const captureFrameEnabled = true;
 
-  IjkPlayerAvesVideoController(
+  IjkVideoController(
     super.entry, {
     required super.playbackStateHandler,
     required super.settings,
   }) {
-    if (!_initializedFijkLog) {
-      _initializedFijkLog = true;
-      FijkLog.setLevel(FijkLogLevel.Warn);
-    }
     _instance = FijkPlayer();
     _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
       (started) {
@@ -123,7 +116,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     }
 
     sarNotifier.value = 1;
-    _streams.clear();
+    streams.clear();
     _applyOptions(startMillis);
 
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
@@ -247,56 +240,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     return true;
   }
 
-  void _fetchStreams() async {
-    final mediaInfo = await _instance.getInfo();
-    if (!mediaInfo.containsKey(Keys.streams)) return;
-
-    var videoStreamCount = 0, audioStreamCount = 0, textStreamCount = 0;
-
-    _streams.clear();
-    final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
-    allStreams.forEach((stream) {
-      final type = ExtraStreamType.fromTypeString(stream[Keys.streamType]);
-      if (type != null) {
-        final width = stream[Keys.width] as int?;
-        final height = stream[Keys.height] as int?;
-        _streams.add(MediaStreamSummary(
-          type: type,
-          index: stream[Keys.index],
-          codecName: stream[Keys.codecName],
-          language: stream[Keys.language],
-          title: stream[Keys.title],
-          width: width,
-          height: height,
-        ));
-        switch (type) {
-          case MediaStreamType.video:
-            // check width/height to exclude image streams (that are included among video streams)
-            if (width != null && height != null) {
-              videoStreamCount++;
-            }
-          case MediaStreamType.audio:
-            audioStreamCount++;
-          case MediaStreamType.text:
-            textStreamCount++;
-        }
-      }
-    });
-
-    canSelectStreamNotifier.value = videoStreamCount > 1 || audioStreamCount > 1 || textStreamCount > 0;
-
-    final selectedVideo = await getSelectedStream(MediaStreamType.video);
-    if (selectedVideo != null) {
-      final streamIndex = selectedVideo.index;
-      final streamInfo = allStreams.firstWhereOrNull((stream) => stream[Keys.index] == streamIndex);
-      if (streamInfo != null) {
-        final num = streamInfo[Keys.sarNum] ?? 0;
-        final den = streamInfo[Keys.sarDen] ?? 0;
-        sarNotifier.value = (num != 0 ? num : 1) / (den != 0 ? den : 1);
-      }
-    }
-  }
-
   // cf https://developer.android.com/reference/android/media/AudioManager
   static const int _audioFocusLoss = -1;
   static const int _audioFocusRequestFailed = 0;
@@ -321,7 +264,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   void _onValueChanged() {
-    if (_instance.state == FijkState.prepared && _streams.isEmpty) {
+    if (_instance.state == FijkState.prepared && streams.isEmpty) {
       _fetchStreams();
     }
     _valueStreamController.add(_instance.value);
@@ -427,39 +370,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   // TODO TLAD [video] bug: setting speed fails when there is no audio stream or audio is disabled
   Future<void> _applySpeed() => _instance.setSpeed(speed);
 
-  // When a stream is selected, the video accelerates to catch up with it.
-  // The duration of this acceleration phase depends on the player `min-frames` parameter.
-  // Calling `seekTo` after stream de/selection is a workaround to:
-  // 1) prevent video stream acceleration to catch up with audio
-  // 2) apply timed text stream
-  @override
-  Future<void> selectStream(MediaStreamType type, MediaStreamSummary? selected) async {
-    final current = await getSelectedStream(type);
-    if (current != selected) {
-      if (selected != null) {
-        final newIndex = selected.index;
-        if (newIndex != null) {
-          await _instance.selectTrack(newIndex);
-        }
-      } else if (current != null) {
-        await _instance.deselectTrack(current.index!);
-      }
-      if (type == MediaStreamType.text) {
-        _timedTextStreamController.add(null);
-      }
-      await seekTo(currentPosition);
-    }
-  }
-
-  @override
-  Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type) async {
-    final currentIndex = await _instance.getSelectedTrack(type.code);
-    return currentIndex != -1 ? _streams.firstWhereOrNull((v) => v.index == currentIndex) : null;
-  }
-
-  @override
-  List<MediaStreamSummary> get streams => _streams;
-
   @override
   Future<Uint8List> captureFrame() {
     if (!_instance.value.videoRenderStart) {
@@ -502,6 +412,93 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       default:
         return Alignment.topLeft;
     }
+  }
+
+  // streams (aka tracks)
+
+  final List<MediaStreamSummary> _streams = [];
+
+  @override
+  List<MediaStreamSummary> get streams => _streams;
+
+  void _fetchStreams() async {
+    final mediaInfo = await _instance.getInfo();
+    if (!mediaInfo.containsKey(Keys.streams)) return;
+
+    var videoStreamCount = 0, audioStreamCount = 0, textStreamCount = 0;
+
+    _streams.clear();
+    final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
+    allStreams.forEach((stream) {
+      final type = ExtraStreamType.fromTypeString(stream[Keys.streamType]);
+      if (type != null) {
+        final width = stream[Keys.width] as int?;
+        final height = stream[Keys.height] as int?;
+        _streams.add(MediaStreamSummary(
+          type: type,
+          index: stream[Keys.index],
+          codecName: stream[Keys.codecName],
+          language: stream[Keys.language],
+          title: stream[Keys.title],
+          width: width,
+          height: height,
+        ));
+        switch (type) {
+          case MediaStreamType.video:
+            // check width/height to exclude image streams (that are included among video streams)
+            if (width != null && height != null) {
+              videoStreamCount++;
+            }
+          case MediaStreamType.audio:
+            audioStreamCount++;
+          case MediaStreamType.text:
+            textStreamCount++;
+        }
+      }
+    });
+
+    canSelectStreamNotifier.value = videoStreamCount > 1 || audioStreamCount > 1 || textStreamCount > 0;
+
+    final selectedVideo = await getSelectedStream(MediaStreamType.video);
+    if (selectedVideo != null) {
+      final streamIndex = selectedVideo.index;
+      final streamInfo = allStreams.firstWhereOrNull((stream) => stream[Keys.index] == streamIndex);
+      if (streamInfo != null) {
+        final num = streamInfo[Keys.sarNum] ?? 0;
+        final den = streamInfo[Keys.sarDen] ?? 0;
+        sarNotifier.value = (num != 0 ? num : 1) / (den != 0 ? den : 1);
+      }
+    }
+  }
+
+  @override
+  Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type) async {
+    final currentIndex = await _instance.getSelectedTrack(type.code);
+    return currentIndex != -1 ? _streams.firstWhereOrNull((v) => v.index == currentIndex) : null;
+  }
+
+  // When a stream is selected, the video accelerates to catch up with it.
+  // The duration of this acceleration phase depends on the player `min-frames` parameter.
+  // Calling `seekTo` after stream de/selection is a workaround to:
+  // 1) prevent video stream acceleration to catch up with audio
+  // 2) apply timed text stream
+  @override
+  Future<void> selectStream(MediaStreamType type, MediaStreamSummary? selected) async {
+    final current = await getSelectedStream(type);
+    if (current == selected) return;
+
+    if (selected != null) {
+      final newIndex = selected.index;
+      if (newIndex != null) {
+        await _instance.selectTrack(newIndex);
+      }
+    } else if (current != null) {
+      await _instance.deselectTrack(current.index!);
+    }
+    if (type == MediaStreamType.text) {
+      _timedTextStreamController.add(null);
+    }
+    await seekTo(currentPosition);
   }
 }
 
