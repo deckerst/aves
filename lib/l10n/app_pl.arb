@@ -1492,5 +1492,19 @@
   "cropAspectRatioSquare": "Kwadrat",
   "@cropAspectRatioSquare": {},
   "widgetTapUpdateWidget": "Zaktualizuj widżet",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageExternal": "Zewnętrzny",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageSectionTitle": "Wykorzystanie danych",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageInternal": "Wewnętrzny",
+  "@aboutDataUsageInternal": {},
+  "aboutDataUsageData": "Dane",
+  "@aboutDataUsageData": {},
+  "aboutDataUsageDatabase": "Baza danych",
+  "@aboutDataUsageDatabase": {},
+  "aboutDataUsageCache": "Pamięć podręczna",
+  "@aboutDataUsageCache": {},
+  "aboutDataUsageMisc": "Różne",
+  "@aboutDataUsageMisc": {}
 }

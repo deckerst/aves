@@ -1334,5 +1334,15 @@
   "cropAspectRatioSquare": "Quadrato",
   "@cropAspectRatioSquare": {},
   "widgetTapUpdateWidget": "Aggiorna widget",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageCache": "Cache",
+  "@aboutDataUsageCache": {},
+  "aboutDataUsageMisc": "Varie",
+  "@aboutDataUsageMisc": {},
+  "aboutDataUsageDatabase": "Database",
+  "@aboutDataUsageDatabase": {},
+  "aboutDataUsageSectionTitle": "Utilizzo dati",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageData": "Dati",
+  "@aboutDataUsageData": {}
 }
