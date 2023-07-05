@@ -50,6 +50,9 @@ class Contributors {
     Contributor('Leon', 'leonhoog@outlook.com'),
     Contributor('stephen-cusi', 'magiskcurry@qq.com'),
     Contributor('atilluF', '110931720+atilluF@users.noreply.github.com'),
+    Contributor('Davide Neri', 'davnerix@gmail.com'),
+    Contributor('ShiftCtrlAltDel', 'who--is@yandex.ru'),
+    Contributor('lol lol', 'besonderspositiverpanda@ji5.de'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'), // Arabic
@@ -58,6 +61,7 @@ class Contributors {
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('Martin Frandel', 'martinko.fr@gmail.com'), // Slovak
+    // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
     // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
     // Contributor('Subham Jena', 'subhamjena8465@gmail.com'), // Odia
