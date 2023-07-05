@@ -206,7 +206,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   void _toggleSelectionToIndex(int toIndex) {
     if (toIndex == -1) return;
 
-    Iterable<T> getRange(int start, int end) => items.getRange(start, end);
+    Iterable<T> getRange(int start, int end) => start < end && 0 <= start && end <= items.length ? items.getRange(start, end) : {};
     final selection = context.read<Selection<T>>();
     void addRange(int start, int end) => selection.addToSelection(getRange(start, end));
     void removeRange(int start, int end) => selection.removeFromSelection(getRange(start, end));
