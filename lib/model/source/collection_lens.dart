@@ -245,7 +245,7 @@ class CollectionLens with ChangeNotifier {
           }
         case EntrySortFactor.name:
           final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-          final compare = sortReverse ? (a, b) => source.compareAlbumsByName(b.directory!, a.directory!) : (a, b) => source.compareAlbumsByName(a.directory!, b.directory!);
+          final int Function(EntryAlbumSectionKey, EntryAlbumSectionKey) compare = sortReverse ? (a, b) => source.compareAlbumsByName(b.directory, a.directory) : (a, b) => source.compareAlbumsByName(a.directory, b.directory);
           sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, compare);
         case EntrySortFactor.rating:
           sections = groupBy<AvesEntry, EntryRatingSectionKey>(_filteredSortedEntries, (entry) => EntryRatingSectionKey(entry.rating));
