@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
@@ -56,7 +57,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoTogglePlay:
         await _togglePlayPause(context, controller);
       case EntryAction.videoReplay10:
-        await controller.seekTo(controller.currentPosition - 10000);
+        await controller.seekTo(max(controller.currentPosition - 10000, 0));
       case EntryAction.videoSkip10:
         await controller.seekTo(controller.currentPosition + 10000);
       case EntryAction.openVideo:
@@ -189,6 +190,8 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _togglePlayPause(BuildContext context, AvesVideoController controller) async {
+    if (!context.mounted) return;
+
     if (controller.isPlaying) {
       await controller.pause();
     } else {

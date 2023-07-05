@@ -16,13 +16,10 @@ import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:aves_video_ijk/aves_video_ijk.dart';
 import 'package:collection/collection.dart';
-import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
-  static bool _initializedFijkLog = false;
   static final _dateY4M2D2H2m2s2Pattern = RegExp(r'(\d{4})[-./:](\d{1,2})[-./:](\d{1,2})([ T](\d{1,2}):(\d{1,2}):(\d{1,2})( ([ap]\.? ?m\.?))?)?');
   static final _ambiguousDatePatterns = {
     RegExp(r'^\d{2}[-/]\d{2}[-/]\d{4}$'),
@@ -45,24 +42,8 @@ class VideoMetadataFormatter {
     Codecs.webm: 'WebM',
   };
 
-  static Future<Map> getVideoMetadata(AvesEntry entry) async {
-    if (!_initializedFijkLog) {
-      _initializedFijkLog = true;
-      FijkLog.setLevel(FijkLogLevel.Warn);
-    }
-    final player = FijkPlayer();
-    final info = await player.setDataSourceUntilPrepared(entry.uri).then((v) {
-      return player.getInfo();
-    }).catchError((error) {
-      debugPrint('failed to get video metadata for entry=$entry, error=$error');
-      return {};
-    });
-    await player.release();
-    return info;
-  }
-
   static Future<Map<String, int>> getLoadingMetadata(AvesEntry entry) async {
-    final mediaInfo = await getVideoMetadata(entry);
+    final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
     final fields = <String, int>{};
 
     final streams = mediaInfo[Keys.streams];
@@ -87,7 +68,7 @@ class VideoMetadataFormatter {
   }
 
   static Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry) async {
-    final mediaInfo = await getVideoMetadata(entry);
+    final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
 
     // only consider values with at least 8 characters (yyyymmdd),
     // ignoring unset values like `0`, as well as year values like `2021`

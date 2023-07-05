@@ -455,6 +455,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
     await _onTvLayoutChanged();
     _monitorSettings();
+    videoControllerFactory.init();
 
     unawaited(_setupErrorReporting());
 

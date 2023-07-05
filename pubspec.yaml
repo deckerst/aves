@@ -42,6 +42,8 @@ dependencies:
     path: plugins/aves_video
   aves_video_ijk:
     path: plugins/aves_video_ijk
+#  aves_video_mpv:
+#    path: plugins/aves_video_mpv
   aves_ui:
     path: plugins/aves_ui
   aves_utils:
@@ -65,16 +67,8 @@ dependencies:
   expansion_tile_card:
     git:
       url: https://github.com/deckerst/expansion_tile_card.git
-  fijkplayer:
-    git:
-      url: https://github.com/deckerst/fijkplayer.git
-      ref: aves
   flex_color_picker:
   floating:
-    git:
-      url: https://github.com/wrbl606/floating.git
-      # v2.0.0 is incompatible with AGP8
-      ref: main
   fluster:
   flutter_displaymode:
   flutter_highlight:
@@ -129,6 +123,19 @@ dev_dependencies:
   flutter_lints:
   shared_preferences_platform_interface:
   test:
+
+dependency_overrides:
+  # `media_kit v1.0.0` depends on `wakelock: ^0.6.2`
+  # which is incompatible with packages that moved on with Dart 3
+  win32: ^5.0.0
+#  media_kit:
+#    path: ../media_kit/media_kit
+#  media_kit_video:
+#    path: ../media_kit/media_kit_video
+#  media_kit_native_event_loop:
+#    path: ../media_kit/media_kit_native_event_loop
+#  media_kit_libs_android_video:
+#    path: ../media_kit/media_kit_libs_android_video
 
 flutter:
   assets:

@@ -9,6 +9,8 @@ mixin AvesEntryBase {
 
   int? get pageId;
 
+  String? get path;
+
   int? get sizeBytes;
 
   int? get durationMillis;

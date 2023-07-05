@@ -128,7 +128,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
 
     if (videoAutoPlayEnabled) {
       final resumeTimeMillis = await controller.getResumeTime(context);
-      await _playVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
+      await _autoPlayVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
     }
   }
 
@@ -163,7 +163,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
             final pageVideoController = videoConductor.getController(pageEntry);
             assert(pageVideoController != null);
             if (pageVideoController != null) {
-              await _playVideo(pageVideoController, () => entry == entryNotifier.value && page == multiPageController.page);
+              await _autoPlayVideo(pageVideoController, () => entry == entryNotifier.value && page == multiPageController.page);
             }
           }
         }
@@ -192,7 +192,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  Future<void> _playVideo(AvesVideoController videoController, bool Function() isCurrent, {int? resumeTimeMillis}) async {
+  Future<void> _autoPlayVideo(AvesVideoController videoController, bool Function() isCurrent, {int? resumeTimeMillis}) async {
     // video decoding may fail or have initial artifacts when the player initializes
     // during this widget initialization (because of the page transition and hero animation?)
     // so we play after a delay for increased stability
@@ -204,9 +204,8 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
 
     if (resumeTimeMillis != null) {
       await videoController.seekTo(resumeTimeMillis);
-    } else {
-      await videoController.play();
     }
+    await videoController.play();
 
     // playing controllers are paused when the entry changes,
     // but the controller may still be preparing (not yet playing) when this happens

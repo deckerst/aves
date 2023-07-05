@@ -200,6 +200,7 @@ class AvesEntry with AvesEntryBase {
     _bestTitle = null;
   }
 
+  @override
   String? get path => _path;
 
   // directory path, without the trailing separator
