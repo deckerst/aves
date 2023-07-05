@@ -19,7 +19,9 @@ mixin AlbumMixin on SourceBase {
 
   Set<AlbumFilter> getNewAlbumFilters(BuildContext context) => Set.unmodifiable(_newAlbums.map((v) => AlbumFilter(v, getAlbumDisplayName(context, v))));
 
-  int compareAlbumsByName(String a, String b) {
+  int compareAlbumsByName(String? a, String? b) {
+    a ??= '';
+    b ??= '';
     final ua = getAlbumDisplayName(null, a);
     final ub = getAlbumDisplayName(null, b);
     final c = compareAsciiUpperCaseNatural(ua, ub);
