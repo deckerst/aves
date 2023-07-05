@@ -1,0 +1,10 @@
+{
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeMessage": "Dobrodošli v Avesu",
+  "@welcomeMessage": {},
+  "welcomeOptional": "Izbirno",
+  "@welcomeOptional": {},
+  "welcomeTermsToggle": "Sprejmem pogoje uporabe",
+  "@welcomeTermsToggle": {}
+}

@@ -1492,5 +1492,19 @@
   "cropAspectRatioSquare": "Karratua",
   "@cropAspectRatioSquare": {},
   "widgetTapUpdateWidget": "Eguneratu widgeta",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageSectionTitle": "Datuen erabilera",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageData": "Datuak",
+  "@aboutDataUsageData": {},
+  "aboutDataUsageDatabase": "Datu-basea",
+  "@aboutDataUsageDatabase": {},
+  "aboutDataUsageMisc": "Askotariko",
+  "@aboutDataUsageMisc": {},
+  "aboutDataUsageInternal": "Barnekoa",
+  "@aboutDataUsageInternal": {},
+  "aboutDataUsageExternal": "Kanpokoa",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageCache": "Cachea",
+  "@aboutDataUsageCache": {}
 }
