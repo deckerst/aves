@@ -295,8 +295,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                             ...LocalizationsNn.delegates,
                           ],
                           supportedLocales: AvesApp.supportedLocales,
-                          // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                          scrollBehavior: StretchMaterialScrollBehavior(),
+                          scrollBehavior: AvesScrollBehavior(),
                         ),
                       ),
                     );
@@ -633,13 +632,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   void _onError(String? error) => reportService.recordError(error, null);
 }
 
-class StretchMaterialScrollBehavior extends MaterialScrollBehavior {
+class AvesScrollBehavior extends MaterialScrollBehavior {
   @override
   Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
-    return StretchingOverscrollIndicator(
-      axisDirection: details.direction,
-      child: child,
-    );
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    return animate
+        ? StretchingOverscrollIndicator(
+            axisDirection: details.direction,
+            child: child,
+          )
+        : GlowingOverscrollIndicator(
+            axisDirection: details.direction,
+            color: Colors.white,
+            child: child,
+          );
   }
 }
 
