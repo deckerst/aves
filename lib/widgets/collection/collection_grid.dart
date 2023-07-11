@@ -476,20 +476,13 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        break;
-      case AppLifecycleState.resumed:
-        if (_checkingStoragePermission) {
-          _checkingStoragePermission = false;
-          _isStoragePermissionGranted.then((granted) {
-            if (granted) {
-              widget.collection.source.init();
-            }
-          });
+    if (state == AppLifecycleState.resumed && _checkingStoragePermission) {
+      _checkingStoragePermission = false;
+      _isStoragePermissionGranted.then((granted) {
+        if (granted) {
+          widget.collection.source.init();
         }
+      });
     }
   }
 
