@@ -388,6 +388,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.pickSingleMediaExternal:
           case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
+            break;
           case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickMediaInternal:
           case AppMode.pickFilterInternal:
@@ -400,8 +401,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         }
       case AppLifecycleState.resumed:
         RecentlyAddedFilter.updateNow();
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
+        break;
+      default:
         break;
     }
   }

@@ -296,7 +296,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- as of Flutter v3.10.1, Impeller badly renders text, fails to render videos, and crashes with Google Maps -->
+        <!-- as of Flutter v3.10.1 (stable) / v3.12.0-15.0.pre.105 (master),
+        Impeller badly renders text, fails to render videos, and crashes with Google Maps -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
