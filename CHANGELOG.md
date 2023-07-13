@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 
 - Accessibility: removing animations also removes the overscroll stretch effect
 - target Android 14 (API 34)
-- upgraded Flutter to stable v3.10.5
+- upgraded Flutter to stable v3.10.6
 
 ## <a id="v1.8.9"></a>[v1.8.9] - 2023-06-04
 
