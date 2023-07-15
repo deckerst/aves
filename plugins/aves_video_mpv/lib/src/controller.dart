@@ -37,7 +37,7 @@ class MpvVideoController extends AvesVideoController {
   final ValueNotifier<bool> canSelectStreamNotifier = ValueNotifier(false);
 
   @override
-  final ValueNotifier<double> sarNotifier = ValueNotifier(1);
+  final ValueNotifier<double?> sarNotifier = ValueNotifier(null);
 
   MpvVideoController(
     super.entry, {
@@ -81,6 +81,7 @@ class MpvVideoController extends AvesVideoController {
       if (status == VideoStatus.idle) return;
       _statusStreamController.add(v ? VideoStatus.playing : VideoStatus.paused);
     }));
+    _subscriptions.add(_instance.stream.videoParams.listen((v) => sarNotifier.value = v.par));
     _subscriptions.add(_instance.stream.log.listen((v) => debugPrint('libmpv log: $v')));
     _subscriptions.add(_instance.stream.error.listen((v) => debugPrint('libmpv error: $v')));
     _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.enableVideoHardwareAccelerationKey).listen((_) => _initController()));
@@ -203,16 +204,23 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
-    // TODO TLAD handle SAR / DAR (media_kit Player.stream.width/height just gives raw video size, not rendered size)
-    return Video(
-      controller: _controller,
-      fit: BoxFit.cover,
-      alignment: Alignment.center,
-      controls: NoVideoControls,
-      wakelock: false,
-      subtitleViewConfiguration: const SubtitleViewConfiguration(
-        style: TextStyle(color: Colors.transparent),
-      ),
+    return ValueListenableBuilder<double?>(
+      valueListenable: sarNotifier,
+      builder: (context, sar, child) {
+        // derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
+        // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
+        final dar = entry.displayAspectRatio * (sar ?? 1);
+        return Video(
+          controller: _controller,
+          fill: Colors.transparent,
+          aspectRatio: dar,
+          controls: NoVideoControls,
+          wakelock: false,
+          subtitleViewConfiguration: const SubtitleViewConfiguration(
+            style: TextStyle(color: Colors.transparent),
+          ),
+        );
+      },
     );
   }
 

@@ -197,7 +197,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     final videoController = context.read<VideoConductor>().getController(entry);
     if (videoController == null) return const SizedBox();
 
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder<double?>(
       valueListenable: videoController.sarNotifier,
       builder: (context, sar, child) {
         final videoDisplaySize = entry.videoDisplaySize(sar);

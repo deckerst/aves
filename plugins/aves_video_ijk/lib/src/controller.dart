@@ -46,7 +46,7 @@ class IjkVideoController extends AvesVideoController {
   final ValueNotifier<bool> canSelectStreamNotifier = ValueNotifier(false);
 
   @override
-  final ValueNotifier<double> sarNotifier = ValueNotifier(1);
+  final ValueNotifier<double?> sarNotifier = ValueNotifier(null);
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
 
@@ -115,7 +115,7 @@ class IjkVideoController extends AvesVideoController {
       _startListening();
     }
 
-    sarNotifier.value = 1;
+    sarNotifier.value = null;
     streams.clear();
     _applyOptions(startMillis);
 
@@ -380,24 +380,25 @@ class IjkVideoController extends AvesVideoController {
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
-    return ValueListenableBuilder<double>(
-        valueListenable: sarNotifier,
-        builder: (context, sar, child) {
-          // derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
-          // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
-          final dar = entry.displayAspectRatio * sar;
-          return FijkView(
-            player: _instance,
-            fit: FijkFit(
-              sizeFactor: 1.0,
-              aspectRatio: dar,
-              alignment: _alignmentForRotation(entry.rotationDegrees),
-              macroBlockCrop: _macroBlockCrop,
-            ),
-            panelBuilder: (player, data, context, viewSize, texturePos) => const SizedBox(),
-            color: Colors.transparent,
-          );
-        });
+    return ValueListenableBuilder<double?>(
+      valueListenable: sarNotifier,
+      builder: (context, sar, child) {
+        // derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
+        // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
+        final dar = entry.displayAspectRatio * (sar ?? 1);
+        return FijkView(
+          player: _instance,
+          fit: FijkFit(
+            sizeFactor: 1.0,
+            aspectRatio: dar,
+            alignment: _alignmentForRotation(entry.rotationDegrees),
+            macroBlockCrop: _macroBlockCrop,
+          ),
+          panelBuilder: (player, data, context, viewSize, texturePos) => const SizedBox(),
+          color: Colors.transparent,
+        );
+      },
+    );
   }
 
   Alignment _alignmentForRotation(int rotation) {

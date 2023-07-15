@@ -34,9 +34,9 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get isSized => width > 0 && height > 0;
 
-  Size videoDisplaySize(double sar) {
+  Size videoDisplaySize(double? sar) {
     final size = displaySize;
-    if (sar != 1) {
+    if (sar != null && sar != 1) {
       final dar = displayAspectRatio * sar;
       final w = size.width;
       final h = size.height;
