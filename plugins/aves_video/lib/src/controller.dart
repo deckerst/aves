@@ -102,7 +102,7 @@ abstract class AvesVideoController {
 
   ValueNotifier<bool> get canSelectStreamNotifier;
 
-  ValueNotifier<double> get sarNotifier;
+  ValueNotifier<double?> get sarNotifier;
 
   bool get isMuted;
 
