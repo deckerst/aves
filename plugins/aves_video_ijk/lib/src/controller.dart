@@ -371,7 +371,7 @@ class IjkVideoController extends AvesVideoController {
   Future<void> _applySpeed() => _instance.setSpeed(speed);
 
   @override
-  Future<Uint8List> captureFrame() {
+  Future<Uint8List?> captureFrame() {
     if (!_instance.value.videoRenderStart) {
       return Future.error('cannot capture frame when video is not rendered');
     }

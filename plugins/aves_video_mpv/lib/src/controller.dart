@@ -25,7 +25,7 @@ class MpvVideoController extends AvesVideoController {
   double get maxSpeed => 4;
 
   @override
-  final ValueNotifier<bool> canCaptureFrameNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> canCaptureFrameNotifier = ValueNotifier(true);
 
   @override
   final ValueNotifier<bool> canMuteNotifier = ValueNotifier(true);
@@ -49,14 +49,13 @@ class MpvVideoController extends AvesVideoController {
 
     _instance = Player(
       configuration: const PlayerConfiguration(
+        libass: false,
         logLevel: MPVLogLevel.warn,
       ),
     );
     _initController();
     _init();
 
-    // TODO TLAD listening
-    // canCaptureFrameNotifier.value = captureFrameEnabled && started;
     _startListening();
   }
 
@@ -185,7 +184,7 @@ class MpvVideoController extends AvesVideoController {
   Stream<int> get positionStream => _instance.stream.position.map((pos) => pos.inMilliseconds);
 
   @override
-  Stream<String?> get timedTextStream => _timedTextStreamController.stream;
+  Stream<String?> get timedTextStream => _instance.stream.subtitle.map((v) => v.isEmpty ? null : v[0]);
 
   @override
   bool get isMuted => _instance.state.volume == 0;
@@ -200,10 +199,7 @@ class MpvVideoController extends AvesVideoController {
   set speed(double speed) => _instance.setRate(speed);
 
   @override
-  Future<Uint8List> captureFrame() {
-    // TODO: implement captureFrame
-    throw UnimplementedError();
-  }
+  Future<Uint8List?> captureFrame() => _instance.screenshot();
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
@@ -214,6 +210,9 @@ class MpvVideoController extends AvesVideoController {
       alignment: Alignment.center,
       controls: NoVideoControls,
       wakelock: false,
+      subtitleViewConfiguration: const SubtitleViewConfiguration(
+        style: TextStyle(color: Colors.transparent),
+      ),
     );
   }
 

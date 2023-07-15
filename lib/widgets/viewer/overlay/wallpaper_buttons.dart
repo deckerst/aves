@@ -134,9 +134,11 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
       final videoController = context.read<VideoConductor>().getController(entry);
       if (videoController != null) {
         final bytes = await videoController.captureFrame();
-        needOrientation = rotationDegrees != 0 || isFlipped;
-        needCrop = true;
-        provider = MemoryImage(bytes);
+        if (bytes != null) {
+          needOrientation = rotationDegrees != 0 || isFlipped;
+          needCrop = true;
+          provider = MemoryImage(bytes);
+        }
       }
     } else if (entry.canDecode) {
       if (entry.useTiles) {

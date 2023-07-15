@@ -120,7 +120,7 @@ abstract class AvesVideoController {
 
   List<MediaStreamSummary> get streams;
 
-  Future<Uint8List> captureFrame();
+  Future<Uint8List?> captureFrame();
 
   Future<void> mute(bool muted);
 
