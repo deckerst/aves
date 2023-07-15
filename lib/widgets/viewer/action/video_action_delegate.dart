@@ -70,34 +70,37 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _captureFrame(BuildContext context, AvesEntry entry, AvesVideoController controller) async {
-    final positionMillis = controller.currentPosition;
-    final bytes = await controller.captureFrame();
-
     final destinationAlbum = androidFileUtils.avesVideoCapturesPath;
-    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
+    final positionMillis = controller.currentPosition;
+    final Map<String, dynamic> newFields = {};
 
-    if (!await checkFreeSpace(context, bytes.length, destinationAlbum)) return;
+    final bytes = await controller.captureFrame();
+    if (bytes != null) {
+      if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
-    final rotationDegrees = entry.rotationDegrees;
-    final dateTimeMillis = entry.catalogMetadata?.dateMillis;
-    final latLng = entry.latLng;
-    final exif = {
-      if (rotationDegrees != 0) 'rotationDegrees': rotationDegrees,
-      if (dateTimeMillis != null && dateTimeMillis != 0) 'dateTimeMillis': dateTimeMillis,
-      if (latLng != null) ...{
-        'latitude': latLng.latitude,
-        'longitude': latLng.longitude,
-      }
-    };
+      if (!await checkFreeSpace(context, bytes.length, destinationAlbum)) return;
 
-    final newFields = await mediaEditService.captureFrame(
-      entry,
-      desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
-      exif: exif,
-      bytes: bytes,
-      destinationAlbum: destinationAlbum,
-      nameConflictStrategy: NameConflictStrategy.rename,
-    );
+      final rotationDegrees = entry.rotationDegrees;
+      final dateTimeMillis = entry.catalogMetadata?.dateMillis;
+      final latLng = entry.latLng;
+      final exif = {
+        if (rotationDegrees != 0) 'rotationDegrees': rotationDegrees,
+        if (dateTimeMillis != null && dateTimeMillis != 0) 'dateTimeMillis': dateTimeMillis,
+        if (latLng != null) ...{
+          'latitude': latLng.latitude,
+          'longitude': latLng.longitude,
+        }
+      };
+
+      newFields.addAll(await mediaEditService.captureFrame(
+        entry,
+        desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
+        exif: exif,
+        bytes: bytes,
+        destinationAlbum: destinationAlbum,
+        nameConflictStrategy: NameConflictStrategy.rename,
+      ));
+    }
     final success = newFields.isNotEmpty;
 
     final l10n = context.l10n;

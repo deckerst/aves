@@ -124,10 +124,7 @@ dev_dependencies:
   shared_preferences_platform_interface:
   test:
 
-dependency_overrides:
-  # `media_kit v1.0.0` depends on `wakelock: ^0.6.2`
-  # which is incompatible with packages that moved on with Dart 3
-  win32: ^5.0.0
+#dependency_overrides:
 #  media_kit:
 #    path: ../media_kit/media_kit
 #  media_kit_video:
@@ -136,6 +133,26 @@ dependency_overrides:
 #    path: ../media_kit/media_kit_native_event_loop
 #  media_kit_libs_android_video:
 #    path: ../media_kit/media_kit_libs_android_video
+#  media_kit:
+#    git:
+#      url: https://github.com/alexmercerind/media_kit
+#      ref: main
+#      path: media_kit
+#  media_kit_video:
+#    git:
+#      url: https://github.com/alexmercerind/media_kit
+#      ref: main
+#      path: media_kit_video
+#  media_kit_native_event_loop:
+#    git:
+#      url: https://github.com/alexmercerind/media_kit
+#      ref: main
+#      path: media_kit_native_event_loop
+#  media_kit_libs_android_video:
+#    git:
+#      url: https://github.com/alexmercerind/media_kit
+#      ref: main
+#      path: media_kit_libs_android_video
 
 flutter:
   assets:
