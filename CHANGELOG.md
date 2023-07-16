@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file.
 - target Android 14 (API 34)
 - upgraded Flutter to stable v3.10.6
 
+### Fixed
+
+- flickering when starting videos
+
 ## <a id="v1.8.9"></a>[v1.8.9] - 2023-06-04
 
 ### Changed

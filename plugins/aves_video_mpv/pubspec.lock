@@ -173,7 +173,7 @@ packages:
     description:
       path: media_kit
       ref: main
-      resolved-ref: "6d0f0401b8d87596a6167fd629912cff92003edc"
+      resolved-ref: a1a1d14c5f920442898f22ea61dc9e357a671112
       url: "https://github.com/alexmercerind/media_kit"
     source: git
     version: "1.0.2"
@@ -182,7 +182,7 @@ packages:
     description:
       path: media_kit_libs_android_video
       ref: main
-      resolved-ref: "6d0f0401b8d87596a6167fd629912cff92003edc"
+      resolved-ref: a1a1d14c5f920442898f22ea61dc9e357a671112
       url: "https://github.com/alexmercerind/media_kit"
     source: git
     version: "1.2.0"
@@ -191,7 +191,7 @@ packages:
     description:
       path: media_kit_native_event_loop
       ref: main
-      resolved-ref: "6d0f0401b8d87596a6167fd629912cff92003edc"
+      resolved-ref: a1a1d14c5f920442898f22ea61dc9e357a671112
       url: "https://github.com/alexmercerind/media_kit"
     source: git
     version: "1.0.6"
@@ -200,7 +200,7 @@ packages:
     description:
       path: media_kit_video
       ref: main
-      resolved-ref: "6d0f0401b8d87596a6167fd629912cff92003edc"
+      resolved-ref: a1a1d14c5f920442898f22ea61dc9e357a671112
       url: "https://github.com/alexmercerind/media_kit"
     source: git
     version: "1.0.2"

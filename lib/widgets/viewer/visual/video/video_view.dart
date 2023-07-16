@@ -51,10 +51,9 @@ class _VideoViewState extends State<VideoView> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<VideoStatus>(
-        stream: controller.statusStream,
-        builder: (context, snapshot) {
-          return controller.isReady ? controller.buildPlayerWidget(context) : const SizedBox();
-        });
+      stream: controller.statusStream,
+      builder: (context, snapshot) => controller.isReady ? controller.buildPlayerWidget(context) : const SizedBox(),
+    );
   }
 
   // not called when looping
