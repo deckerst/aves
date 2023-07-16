@@ -383,9 +383,11 @@ class IjkVideoController extends AvesVideoController {
     return ValueListenableBuilder<double?>(
       valueListenable: sarNotifier,
       builder: (context, sar, child) {
+        if (sar == null) return const SizedBox();
+
         // derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
         // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
-        final dar = entry.displayAspectRatio * (sar ?? 1);
+        final dar = entry.displayAspectRatio * sar;
         return FijkView(
           player: _instance,
           fit: FijkFit(

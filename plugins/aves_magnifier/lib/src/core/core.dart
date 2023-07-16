@@ -445,16 +445,6 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
           child: widget.child,
         );
 
-        // `Matrix4.scale` uses dynamic typing and can throw `UnimplementedError` on wrong types
-        final double effectiveScale = (applyScale ? scale : null) ?? 1.0;
-        child = Transform(
-          transform: Matrix4.identity()
-            ..translate(position.dx, position.dy)
-            ..scale(effectiveScale),
-          alignment: basePosition,
-          child: child,
-        );
-
         return MagnifierGestureDetector(
           hitDetector: this,
           onScaleStart: onScaleStart,
@@ -464,17 +454,29 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
           onDoubleTap: onDoubleTap,
           child: Padding(
             padding: widget.viewportPadding,
-            child: LayoutBuilder(builder: (context, constraints) {
-              controller.setScaleBoundaries((controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
-                allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
-                minScale: widget.minScale,
-                maxScale: widget.maxScale,
-                initialScale: widget.initialScale,
-                viewportSize: constraints.biggest,
-                contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : constraints.biggest,
-              ));
-              return child;
-            }),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final boundaries = (controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
+                  allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
+                  minScale: widget.minScale,
+                  maxScale: widget.maxScale,
+                  initialScale: widget.initialScale,
+                  viewportSize: constraints.biggest,
+                  contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : constraints.biggest,
+                );
+                controller.setScaleBoundaries(boundaries);
+
+                // `Matrix4.scale` uses dynamic typing and can throw `UnimplementedError` on wrong types
+                final double effectiveScale = (applyScale ? scale : null) ?? 1.0;
+                return Transform(
+                  transform: Matrix4.identity()
+                    ..translate(position.dx, position.dy)
+                    ..scale(effectiveScale),
+                  alignment: basePosition,
+                  child: child,
+                );
+              },
+            ),
           ),
         );
       },
