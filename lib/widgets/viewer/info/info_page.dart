@@ -238,9 +238,9 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       metadataNotifier: _metadataNotifier,
     );
 
-    return NotificationListener<ReverseFilterNotification>(
+    return NotificationListener<FilterNotification>(
       onNotification: (notification) {
-        _onFilter(notification.reversedFilter);
+        _onFilter(notification.filter);
         return true;
       },
       child: CustomScrollView(

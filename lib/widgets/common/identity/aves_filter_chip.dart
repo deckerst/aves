@@ -6,6 +6,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -100,6 +101,10 @@ class AvesFilterChip extends StatefulWidget {
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.place)) ChipAction.goToPlacePage,
         if (filter is TagFilter) ChipAction.goToTagPage,
+        if (filter is RatingFilter && 1 < filter.rating && filter.rating < 5) ...[
+          if (filter.op != RatingFilter.opOrGreater) ChipAction.ratingOrGreater,
+          if (filter.op != RatingFilter.opOrLower) ChipAction.ratingOrLower,
+        ],
         ChipAction.reverse,
         ChipAction.hide,
         ChipAction.lockVault,
@@ -122,10 +127,19 @@ class AvesFilterChip extends StatefulWidget {
           const PopupMenuDivider(),
           ...actions.where((action) => actionDelegate.isVisible(action, filter: filter)).map((action) {
             late String text;
-            if (action == ChipAction.reverse) {
-              text = filter.reversed ? context.l10n.chipActionFilterIn : context.l10n.chipActionFilterOut;
-            } else {
-              text = action.getText(context);
+            switch (action) {
+              case ChipAction.reverse:
+                text = filter.reversed ? context.l10n.chipActionFilterIn : context.l10n.chipActionFilterOut;
+                break;
+              case ChipAction.ratingOrGreater:
+                text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrGreater);
+                break;
+              case ChipAction.ratingOrLower:
+                text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrLower);
+                break;
+              default:
+                text = action.getText(context);
+                break;
             }
             return PopupMenuItem(
               value: action,

@@ -89,9 +89,9 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     final upQuery = query.trim().toUpperCase();
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
-      child: NotificationListener<ReverseFilterNotification>(
+      child: NotificationListener<FilterNotification>(
         onNotification: (notification) {
-          _select(context, notification.reversedFilter);
+          _select(context, notification.filter);
           return true;
         },
         child: ValueListenableBuilder<String?>(

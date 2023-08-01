@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Collection: filtering by rating range
 - About: data usage
 
 ### Changed
