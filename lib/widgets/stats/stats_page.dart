@@ -166,9 +166,9 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
                 ],
               ),
             );
-            child = NotificationListener<ReverseFilterNotification>(
+            child = NotificationListener<FilterNotification>(
               onNotification: (notification) {
-                _onFilterSelection(context, notification.reversedFilter);
+                _onFilterSelection(context, notification.filter);
                 return true;
               },
               child: AnimationLimiter(
@@ -378,9 +378,9 @@ class StatsTopPage extends StatelessWidget {
         child: SafeArea(
           bottom: false,
           child: Builder(builder: (context) {
-            return NotificationListener<ReverseFilterNotification>(
+            return NotificationListener<FilterNotification>(
               onNotification: (notification) {
-                onFilterSelection(notification.reversedFilter);
+                onFilterSelection(notification.filter);
                 return true;
               },
               child: SingleChildScrollView(

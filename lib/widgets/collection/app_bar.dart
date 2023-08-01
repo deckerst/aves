@@ -194,9 +194,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                             ),
                           ),
                         if (showFilterBar)
-                          NotificationListener<ReverseFilterNotification>(
+                          NotificationListener<FilterNotification>(
                             onNotification: (notification) {
-                              collection.addFilter(notification.reversedFilter);
+                              collection.addFilter(notification.filter);
                               return true;
                             },
                             child: FilterBar(

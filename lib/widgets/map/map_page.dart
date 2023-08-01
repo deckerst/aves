@@ -174,8 +174,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       onNotification: (notification) {
         if (notification is FilterSelectedNotification) {
           _goToCollection(notification.filter);
-        } else if (notification is ReverseFilterNotification) {
-          _goToCollection(notification.reversedFilter);
+        } else if (notification is FilterNotification) {
+          _goToCollection(notification.filter);
         } else {
           return false;
         }

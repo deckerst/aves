@@ -14,6 +14,10 @@ extension ExtraChipActionView on ChipAction {
         return context.l10n.chipActionGoToPlacePage;
       case ChipAction.goToTagPage:
         return context.l10n.chipActionGoToTagPage;
+      case ChipAction.ratingOrGreater:
+      case ChipAction.ratingOrLower:
+        // different data depending on state
+        return toString();
       case ChipAction.reverse:
         // different data depending on state
         return context.l10n.chipActionFilterOut;
@@ -26,22 +30,14 @@ extension ExtraChipActionView on ChipAction {
 
   Widget getIcon() => Icon(_getIconData());
 
-  IconData _getIconData() {
-    switch (this) {
-      case ChipAction.goToAlbumPage:
-        return AIcons.album;
-      case ChipAction.goToCountryPage:
-        return AIcons.country;
-      case ChipAction.goToPlacePage:
-        return AIcons.place;
-      case ChipAction.goToTagPage:
-        return AIcons.tag;
-      case ChipAction.reverse:
-        return AIcons.reverse;
-      case ChipAction.hide:
-        return AIcons.hide;
-      case ChipAction.lockVault:
-        return AIcons.vaultLock;
-    }
-  }
+  IconData _getIconData() => switch (this) {
+        ChipAction.goToAlbumPage => AIcons.album,
+        ChipAction.goToCountryPage => AIcons.country,
+        ChipAction.goToPlacePage => AIcons.place,
+        ChipAction.goToTagPage => AIcons.tag,
+        ChipAction.ratingOrGreater || ChipAction.ratingOrLower => AIcons.rating,
+        ChipAction.reverse => AIcons.reverse,
+        ChipAction.hide => AIcons.hide,
+        ChipAction.lockVault => AIcons.vaultLock,
+      };
 }
