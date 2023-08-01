@@ -65,10 +65,10 @@ packages:
     dependency: transitive
     description:
       name: custom_rounded_rectangle_border
-      sha256: "57b7af53da4e8bf4afa5a8393c446e953a81c23dd309f4341cfc38d19ff6f062"
+      sha256: "3e8ca0c26b8d22d5d3842bab59dfd209995f8e42af7c2eef03da70642c040819"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0-nullsafety.0"
+    version: "0.3.0"
   equatable:
     dependency: transitive
     description:
@@ -224,10 +224,10 @@ packages:
     dependency: transitive
     description:
       name: plugin_platform_interface
-      sha256: "6a2128648c854906c53fa8e33986fc0247a1116122f9534dd20e3ab9e16a32bc"
+      sha256: "43798d895c929056255600343db8f049921cbec94d31ec87f1dc5c16c01935dd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.5"
   polylabel:
     dependency: transitive
     description:

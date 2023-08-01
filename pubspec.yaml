@@ -42,8 +42,8 @@ dependencies:
     path: plugins/aves_video
   aves_video_ijk:
     path: plugins/aves_video_ijk
-#  aves_video_mpv:
-#    path: plugins/aves_video_mpv
+  aves_video_mpv:
+    path: plugins/aves_video_mpv
   aves_ui:
     path: plugins/aves_ui
   aves_utils:
@@ -121,7 +121,6 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   flutter_lints:
-  shared_preferences_platform_interface:
   test:
 
 #dependency_overrides:
@@ -152,7 +151,7 @@ dev_dependencies:
 #    git:
 #      url: https://github.com/alexmercerind/media_kit
 #      ref: main
-#      path: media_kit_libs_android_video
+#      path: libs/android/media_kit_libs_android_video
 
 flutter:
   assets:
