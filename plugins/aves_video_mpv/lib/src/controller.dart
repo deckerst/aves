@@ -219,7 +219,7 @@ class MpvVideoController extends AvesVideoController {
           controls: NoVideoControls,
           wakelock: false,
           subtitleViewConfiguration: const SubtitleViewConfiguration(
-            style: TextStyle(color: Colors.transparent),
+            visible: false,
           ),
         );
       },
