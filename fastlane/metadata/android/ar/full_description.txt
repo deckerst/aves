@@ -1,4 +1,4 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>أيفيس</i> يمكنه التعامل مع جميع أنواع الصور ومقاطع الفيديو ، بما في ذلك ملفات JPEG و MP4 النموذجية ، ولكن أيضًا أشياء أكثر غرابة مثل <b>ملفات TIFF و SVG و AVI القديمة متعددة الصفحات والمزيد</b>! يقوم بمسح مجموعة الوسائط الخاصة بك لتحديد <b> الصور المتحركة</b>, <b>الإستعراضات</b> (المعروف أيضًا باسم الصور البانورامية), <b>360 درجة مقاطع الفيديو</b>, إلى جانب <b>GeoTIFF</b> الملفات.
 
 <b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
 

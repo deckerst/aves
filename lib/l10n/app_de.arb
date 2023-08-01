@@ -1335,10 +1335,18 @@
   "@cropAspectRatioSquare": {},
   "widgetTapUpdateWidget": "Widget öffnen",
   "@widgetTapUpdateWidget": {},
-  "aboutDataUsageSectionTitle": "Benutzter Platz",
+  "aboutDataUsageSectionTitle": "Datennutzung",
   "@aboutDataUsageSectionTitle": {},
   "aboutDataUsageData": "Daten",
   "@aboutDataUsageData": {},
   "aboutDataUsageCache": "Cache",
-  "@aboutDataUsageCache": {}
+  "@aboutDataUsageCache": {},
+  "aboutDataUsageMisc": "Sonstiges",
+  "@aboutDataUsageMisc": {},
+  "aboutDataUsageInternal": "Intern",
+  "@aboutDataUsageInternal": {},
+  "aboutDataUsageExternal": "Extern",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageDatabase": "Datenbank",
+  "@aboutDataUsageDatabase": {}
 }
