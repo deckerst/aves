@@ -124,36 +124,6 @@ dev_dependencies:
   shared_preferences_platform_interface:
   test:
 
-#dependency_overrides:
-#  media_kit:
-#    path: ../media_kit/media_kit
-#  media_kit_video:
-#    path: ../media_kit/media_kit_video
-#  media_kit_native_event_loop:
-#    path: ../media_kit/media_kit_native_event_loop
-#  media_kit_libs_android_video:
-#    path: ../media_kit/media_kit_libs_android_video
-#  media_kit:
-#    git:
-#      url: https://github.com/alexmercerind/media_kit
-#      ref: main
-#      path: media_kit
-#  media_kit_video:
-#    git:
-#      url: https://github.com/alexmercerind/media_kit
-#      ref: main
-#      path: media_kit_video
-#  media_kit_native_event_loop:
-#    git:
-#      url: https://github.com/alexmercerind/media_kit
-#      ref: main
-#      path: media_kit_native_event_loop
-#  media_kit_libs_android_video:
-#    git:
-#      url: https://github.com/alexmercerind/media_kit
-#      ref: main
-#      path: libs/android/media_kit_libs_android_video
-
 flutter:
   assets:
     - assets/

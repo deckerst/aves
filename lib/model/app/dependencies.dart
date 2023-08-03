@@ -93,6 +93,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/local_auth/local_auth',
     ),
     Dependency(
+      name: 'Media Kit',
+      license: mit,
+      sourceUrl: 'https://github.com/media-kit/media-kit',
+    ),
+    Dependency(
       name: 'Package Info Plus',
       license: bsd3,
       licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/package_info_plus/package_info_plus/LICENSE',
