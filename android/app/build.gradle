@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id 'com.android.application'
+    id 'com.google.devtools.ksp' version "$ksp_version"
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
@@ -175,10 +176,10 @@ android {
 tasks.withType(KotlinCompile).configureEach {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+kotlin {
+    jvmToolchain(8)
 }
 
 flutter {
@@ -235,7 +236,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.9.2"
 
     kapt 'androidx.annotation:annotation:1.6.0'
-    kapt "com.github.bumptech.glide:compiler:$glide_version"
+    ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')
 }
