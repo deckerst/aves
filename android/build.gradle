@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlin_version = '1.8.21'
         ksp_version = "$kotlin_version-1.0.11"
-        agp_version = '8.1.0'
+        agp_version = '7.4.2'
         glide_version = '4.15.1'
         // AppGallery Connect plugin versions: https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-sdk-changenotes-0000001058732550
         huawei_agconnect_version = '1.9.1.300'
