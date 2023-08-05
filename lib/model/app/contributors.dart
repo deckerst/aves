@@ -59,17 +59,18 @@ class Contributors {
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'), // Arabic
     // Contributor('Mohamed Zeroug', 'mzeroug19@gmail.com'), // Arabic
+    // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
+    // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
+    // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
+    // Contributor('Chethan', 'chethan@users.noreply.hosted.weblate.org'), // Kannada
+    // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
+    // Contributor('Raman', 'xysed@tutanota.com'), // Malayalam
+    // Contributor('Subham Jena', 'subhamjena8465@gmail.com'), // Odia
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
     // Contributor('slasb37', 'p84haghi@gmail.com'), // Persian
-    // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
-    // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('Martin Frandel', 'martinko.fr@gmail.com'), // Slovak
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
-    // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
-    // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
-    // Contributor('Subham Jena', 'subhamjena8465@gmail.com'), // Odia
-    // Contributor('Raman', 'xysed@tutanota.com'), // Malayalam
-    // Contributor('Chethan', 'chethan@users.noreply.hosted.weblate.org'), // Kannada
+    // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
   };
 }
 
