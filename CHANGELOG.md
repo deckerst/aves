@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- support for animated AVIF (requires rescan)
 - Collection: filtering by rating range
 - About: data usage
 

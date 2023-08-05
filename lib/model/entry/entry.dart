@@ -295,6 +295,9 @@ class AvesEntry with AvesEntryBase {
   }
 
   @override
+  bool get isAnimated => catalogMetadata?.isAnimated ?? false;
+
+  @override
   int? get durationMillis => _durationMillis;
 
   set durationMillis(int? durationMillis) {

@@ -80,18 +80,18 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.flip:
           return targetEntry.canFlip;
         case EntryAction.convert:
-          return canWrite && !targetEntry.isVideo;
+          return canWrite && !targetEntry.isPureVideo;
         case EntryAction.print:
-          return !targetEntry.isVideo;
+          return !targetEntry.isPureVideo;
         case EntryAction.openMap:
           return !settings.useTvLayout && targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
-          return canWrite && targetEntry.isVideo;
+          return canWrite && targetEntry.isPureVideo;
         case EntryAction.lockViewer:
         case EntryAction.videoToggleMute:
-          return !settings.useTvLayout && targetEntry.isVideo;
+          return !settings.useTvLayout && targetEntry.isPureVideo;
         case EntryAction.videoSelectStreams:
         case EntryAction.videoSetSpeed:
         case EntryAction.videoSettings:
@@ -99,7 +99,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoReplay10:
         case EntryAction.videoSkip10:
         case EntryAction.openVideo:
-          return targetEntry.isVideo;
+          return targetEntry.isPureVideo;
         case EntryAction.rotateScreen:
           return !settings.useTvLayout && settings.isRotationLocked;
         case EntryAction.addShortcut:

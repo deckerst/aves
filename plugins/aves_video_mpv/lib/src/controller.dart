@@ -95,7 +95,7 @@ class MpvVideoController extends AvesVideoController {
   }
 
   Future<void> _applyLoop() async {
-    final loopEnabled = settings.videoLoopMode.shouldLoop(entry.durationMillis);
+    final loopEnabled = settings.videoLoopMode.shouldLoop(entry);
     await _instance.setPlaylistMode(loopEnabled ? PlaylistMode.single : PlaylistMode.none);
   }
 
