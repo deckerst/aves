@@ -351,15 +351,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-  ffmpeg_kit_flutter:
+  ffmpeg_kit_flutter_min:
     dependency: transitive
     description:
-      path: "flutter/flutter"
-      ref: development-flutter
-      resolved-ref: "497bda9b0bbd4fb94b3d578fa0c40632b3793de7"
-      url: "https://github.com/arthenica/ffmpeg-kit.git"
-    source: git
-    version: "5.1.0"
+      name: ffmpeg_kit_flutter_min
+      sha256: "103367b415fc19c181f02bf85ba3b932c9599223280d52aeafffd02f979535ea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.0-LTS"
   ffmpeg_kit_flutter_platform_interface:
     dependency: transitive
     description:

@@ -12,11 +12,7 @@ dependencies:
     path: ../aves_model
   aves_video:
     path: ../aves_video
-  ffmpeg_kit_flutter:
-    git:
-      url: https://github.com/arthenica/ffmpeg-kit.git
-      ref: development-flutter
-      path: flutter/flutter
+  ffmpeg_kit_flutter_min: 5.1.0-LTS
 
 dev_dependencies:
   flutter_lints:
