@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">ရုပ်ပုံဘောင်</string>
+    <string name="wallpaper">နောက်ခံ ရုပ်ပုံ</string>
+    <string name="safe_mode_shortcut_short_label">လုံခြုံရေးလုပ်ဆောင်ချက်</string>
+    <string name="analysis_channel_name">မီဒီယာ စကင်</string>
+    <string name="search_shortcut_short_label">ရှာရန်</string>
+    <string name="videos_shortcut_short_label">ဗီဒီယိုများ</string>
+    <string name="analysis_notification_default_title">မီဒီယာ ကိုစကင်ဖတ်နေသည်</string>
+    <string name="analysis_notification_action_stop">ရပ်ရန်</string>
+</resources>
