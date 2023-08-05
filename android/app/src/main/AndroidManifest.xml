@@ -57,8 +57,9 @@
     allow install on API 19, despite the `minSdkVersion` declared in dependencies:
     - Google Maps is from API 20
     - the Security library is from API 21
+    - FFmpegKit for Flutter is from API 24
     -->
-    <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps, androidx.security:security-crypto" />
+    <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps, androidx.security:security-crypto, com.arthenica.ffmpegkit.flutter" />
 
     <!-- from Android 11, we should define <queries> to make other apps visible to this app -->
     <queries>
