@@ -417,7 +417,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
           final targetEntry = pageEntry ?? mainEntry;
           Widget? child;
           // a 360 video is both a video and a panorama but only the video controls are displayed
-          if (targetEntry.isVideo) {
+          if (targetEntry.isPureVideo) {
             child = Selector<VideoConductor, AvesVideoController?>(
               selector: (context, vc) => vc.getController(targetEntry),
               builder: (context, videoController, child) => VideoControlOverlay(

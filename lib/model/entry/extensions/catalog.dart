@@ -3,6 +3,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/video/metadata.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 
@@ -23,7 +24,7 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       catalogMetadata = CatalogMetadata(id: id);
     } else {
       // pre-processing
-      if (isVideo && (!isSized || durationMillis == 0)) {
+      if ((isVideo && (!isSized || durationMillis == 0)) || mimeType == MimeTypes.avif) {
         // exotic video that is not sized during loading
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
         await applyNewFields(fields, persist: persist);
@@ -33,7 +34,7 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
       // post-processing
-      if (isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) {
+      if ((isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) || (mimeType == MimeTypes.avif && durationMillis != null)) {
         catalogMetadata = await VideoMetadataFormatter.getCatalogMetadata(this);
       }
       if (isGeotiff && !hasGps) {

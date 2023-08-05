@@ -126,10 +126,10 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
-  aves_video_ijk:
+  aves_video_ffmpeg:
     dependency: "direct main"
     description:
-      path: "plugins/aves_video_ijk"
+      path: "plugins/aves_video_ffmpeg"
       relative: true
     source: path
     version: "0.0.1"
@@ -351,15 +351,23 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-  fijkplayer:
+  ffmpeg_kit_flutter:
     dependency: transitive
     description:
-      path: "."
-      ref: aves
-      resolved-ref: "935a2d86ebf45fbdbaf8b4a0921d5eaea87410d6"
-      url: "https://github.com/deckerst/fijkplayer.git"
+      path: "flutter/flutter"
+      ref: development-flutter
+      resolved-ref: "497bda9b0bbd4fb94b3d578fa0c40632b3793de7"
+      url: "https://github.com/arthenica/ffmpeg-kit.git"
     source: git
-    version: "0.10.0"
+    version: "5.1.0"
+  ffmpeg_kit_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: ffmpeg_kit_flutter_platform_interface
+      sha256: addf046ae44e190ad0101b2fde2ad909a3cd08a2a109f6106d2f7048b7abedee
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   file:
     dependency: transitive
     description:

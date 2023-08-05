@@ -160,7 +160,7 @@ class IjkVideoController extends AvesVideoController {
       _macroBlockCrop = Offset(s.width, s.height);
     }
 
-    final loopEnabled = settings.videoLoopMode.shouldLoop(entry.durationMillis);
+    final loopEnabled = settings.videoLoopMode.shouldLoop(entry);
 
     // `fastseek`: enable fast, but inaccurate seeks for some formats
     // in practice the flag seems ineffective, but harmless too

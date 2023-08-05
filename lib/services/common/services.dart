@@ -20,7 +20,7 @@ import 'package:aves_report_platform/aves_report_platform.dart';
 import 'package:aves_services/aves_services.dart';
 import 'package:aves_services_platform/aves_services_platform.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:aves_video_ijk/aves_video_ijk.dart';
+import 'package:aves_video_ffmpeg/aves_video_ffmpeg.dart';
 import 'package:aves_video_mpv/aves_video_mpv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart' as p;
@@ -56,7 +56,7 @@ void initPlatformServices() {
   getIt.registerLazySingleton<AvesAvailability>(LiveAvesAvailability.new);
   getIt.registerLazySingleton<MetadataDb>(SqfliteMetadataDb.new);
   getIt.registerLazySingleton<AvesVideoControllerFactory>(MpvVideoControllerFactory.new);
-  getIt.registerLazySingleton<AvesVideoMetadataFetcher>(IjkVideoMetadataFetcher.new);
+  getIt.registerLazySingleton<AvesVideoMetadataFetcher>(FfmpegVideoMetadataFetcher.new);
 
   getIt.registerLazySingleton<AppService>(PlatformAppService.new);
   getIt.registerLazySingleton<DeviceService>(PlatformDeviceService.new);

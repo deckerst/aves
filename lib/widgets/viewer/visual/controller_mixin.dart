@@ -126,7 +126,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     final controller = context.read<VideoConductor>().getOrCreateController(entry);
     setState(() {});
 
-    if (videoAutoPlayEnabled) {
+    if (videoAutoPlayEnabled || entry.isAnimated) {
       final resumeTimeMillis = await controller.getResumeTime(context);
       await _autoPlayVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
     }
@@ -198,7 +198,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     // so we play after a delay for increased stability
     await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
 
-    if (!videoController.isMuted && shouldAutoPlayVideoMuted) {
+    if (!videoController.isMuted && (videoController.entry.isAnimated || shouldAutoPlayVideoMuted)) {
       await videoController.mute(true);
     }
 

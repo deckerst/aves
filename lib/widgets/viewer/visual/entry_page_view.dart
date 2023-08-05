@@ -201,12 +201,13 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
       valueListenable: videoController.sarNotifier,
       builder: (context, sar, child) {
         final videoDisplaySize = entry.videoDisplaySize(sar);
+        final isPureVideo = entry.isPureVideo;
 
         return Selector<Settings, Tuple3<bool, bool, bool>>(
           selector: (context, s) => Tuple3(
-            s.videoGestureDoubleTapTogglePlay,
-            s.videoGestureSideDoubleTapSeek,
-            s.videoGestureVerticalDragBrightnessVolume,
+            isPureVideo && s.videoGestureDoubleTapTogglePlay,
+            isPureVideo && s.videoGestureSideDoubleTapSeek,
+            isPureVideo && s.videoGestureVerticalDragBrightnessVolume,
           ),
           builder: (context, s, child) {
             final playGesture = s.item1;
