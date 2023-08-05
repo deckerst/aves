@@ -1,7 +1,7 @@
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:ffmpeg_kit_flutter_min/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter_min/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit_config.dart';
+import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
 import 'package:flutter/foundation.dart';
 
 class FfmpegVideoMetadataFetcher extends AvesVideoMetadataFetcher {
