@@ -25,7 +25,7 @@ class SettingsTileLeading extends StatelessWidget {
         )),
         shape: BoxShape.circle,
       ),
-      duration: Durations.themeColorModeAnimation,
+      duration: ADurations.themeColorModeAnimation,
       child: DecoratedIcon(
         icon,
         size: 18,

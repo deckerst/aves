@@ -309,7 +309,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       if (animate) {
         pageController.animateToPage(
           target,
-          duration: Durations.viewerHorizontalPageAnimation,
+          duration: ADurations.viewerHorizontalPageAnimation,
           curve: Curves.easeInOutCubic,
         );
       } else {
@@ -333,7 +333,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
     _isVerticallyScrollingNotifier.value = true;
     _stopScrollMonitoringTimer();
-    _verticalScrollMonitoringTimer = Timer(Durations.infoScrollMonitoringTimerDelay, () {
+    _verticalScrollMonitoringTimer = Timer(ADurations.infoScrollMonitoringTimerDelay, () {
       _isVerticallyScrollingNotifier.value = false;
     });
   }

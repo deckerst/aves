@@ -68,7 +68,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   final AvesMapController _mapController = AvesMapController();
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
   final ValueNotifier<LatLng?> _dotLocationNotifier = ValueNotifier(null), _infoLocationNotifier = ValueNotifier(null);
-  final Debouncer _infoDebouncer = Debouncer(delay: Durations.mapInfoDebounceDelay);
+  final Debouncer _infoDebouncer = Debouncer(delay: ADurations.mapInfoDebounceDelay);
 
   CollectionLens? get openingCollection => widget.collection;
 
@@ -78,7 +78,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
       _isPageAnimatingNotifier = ValueNotifier(true);
-      Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
+      Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });

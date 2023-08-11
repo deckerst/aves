@@ -227,7 +227,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
           onActionSelected(action);
         },
       ),
@@ -243,7 +243,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     if (directory == null) return;
 
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
 
     _pickAlbum(directory);
   }
@@ -265,7 +265,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     if (details == null) return;
 
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
 
     await vaults.create(details);
     _pickAlbum(details.path);

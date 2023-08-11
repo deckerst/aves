@@ -152,7 +152,7 @@ class AvesFilterChip extends StatefulWidget {
       );
       if (selectedAction != null) {
         // wait for the popup menu to hide before proceeding with the action
-        await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+        await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
         actionDelegate.onActionSelected(context, filter, selectedAction);
       }
     }

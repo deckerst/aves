@@ -25,7 +25,7 @@ class OverlayCoordinateFilterChip extends StatefulWidget {
 }
 
 class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChip> {
-  final Debouncer _debouncer = Debouncer(delay: Durations.mapInfoDebounceDelay);
+  final Debouncer _debouncer = Debouncer(delay: ADurations.mapInfoDebounceDelay);
   final ValueNotifier<ZoomedBounds?> _idleBoundsNotifier = ValueNotifier(null);
 
   @override

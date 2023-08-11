@@ -433,7 +433,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         },
         onSelected: (action) async {
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
           await _onActionSelected(action);
         },
       ),
@@ -670,7 +670,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     if (value != null && initialValue != value) {
       settings.collectionSortFactor = value.item1!;
       settings.collectionSectionFactor = value.item2!;

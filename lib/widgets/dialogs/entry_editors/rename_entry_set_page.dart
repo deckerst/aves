@@ -103,7 +103,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                       },
                       onSelected: (key) async {
                         // wait for the popup menu to hide before proceeding with the action
-                        await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                        await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
                         _insertProcessor(key);
                       },
                       tooltip: l10n.renameEntrySetPageInsertTooltip,

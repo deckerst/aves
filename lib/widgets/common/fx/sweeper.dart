@@ -40,7 +40,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _angleAnimationController = AnimationController(
-      duration: Durations.sweepingAnimation,
+      duration: ADurations.sweepingAnimation,
       vsync: this,
     );
     final startAngle = widget.startAngle;
@@ -85,7 +85,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
     return IgnorePointer(
       child: AnimatedOpacity(
         opacity: isToggled && (_isAppearing || _angleAnimationController.status == AnimationStatus.forward) ? 1 : 0,
-        duration: Durations.sweeperOpacityAnimation,
+        duration: ADurations.sweeperOpacityAnimation,
         child: ValueListenableBuilder<double>(
             valueListenable: _angleAnimationController,
             builder: (context, value, child) {
@@ -112,7 +112,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
     if (isToggled) {
       _isAppearing = true;
       setState(() {});
-      await Future.delayed(Durations.sweeperOpacityAnimation * timeDilation);
+      await Future.delayed(ADurations.sweeperOpacityAnimation * timeDilation);
       _isAppearing = false;
       if (mounted) {
         _angleAnimationController.reset();

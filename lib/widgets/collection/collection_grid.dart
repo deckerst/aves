@@ -641,7 +641,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
   void _onScrollChanged() {
     widget.isScrollingNotifier.value = true;
     _stopScrollMonitoringTimer();
-    _scrollMonitoringTimer = Timer(Durations.collectionScrollMonitoringTimerDelay, () {
+    _scrollMonitoringTimer = Timer(ADurations.collectionScrollMonitoringTimerDelay, () {
       widget.isScrollingNotifier.value = false;
     });
   }

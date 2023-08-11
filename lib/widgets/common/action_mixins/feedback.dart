@@ -171,7 +171,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
     super.initState();
 
     _animationController = AnimationController(
-      duration: Durations.collectionOpOverlayAnimation,
+      duration: ADurations.collectionOpOverlayAnimation,
       vsync: this,
     );
     _animation = CurvedAnimation(
@@ -395,7 +395,7 @@ class _ActionFeedbackState extends State<ActionFeedback> with SingleTickerProvid
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Durations.viewerActionFeedbackAnimation,
+      duration: ADurations.viewerActionFeedbackAnimation,
       vsync: this,
     );
   }

@@ -122,7 +122,7 @@ class _InfoPageState extends State<InfoPage> {
     ShowImageNotification().dispatch(context);
     _scrollController.animateTo(
       0,
-      duration: Durations.pageTransitionAnimation,
+      duration: ADurations.pageTransitionAnimation,
       curve: Curves.easeInOut,
     );
   }
@@ -271,7 +271,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   }
 
   void _onActionDelegateEvent(ActionEvent<EntryAction> event) {
-    Future.delayed(Durations.dialogTransitionAnimation).then((_) {
+    Future.delayed(ADurations.dialogTransitionAnimation).then((_) {
       if (event is ActionStartedEvent) {
         _isEditingMetadataNotifier.value = event.action;
       } else if (event is ActionEndedEvent) {

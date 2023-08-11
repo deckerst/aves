@@ -29,7 +29,7 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
           valueListenable: source.stateNotifier,
           builder: (context, sourceState, child) {
             return AnimatedSwitcher(
-              duration: Durations.appBarTitleAnimation,
+              duration: ADurations.appBarTitleAnimation,
               transitionBuilder: (child, animation) => FadeTransition(
                 opacity: animation,
                 child: SizeTransition(

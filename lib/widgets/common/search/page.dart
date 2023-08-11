@@ -29,7 +29,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
+  final Debouncer _debouncer = Debouncer(delay: ADurations.searchDebounceDelay);
   final FocusNode _searchFieldFocusNode = FocusNode();
   final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
@@ -77,7 +77,7 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
-    Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
+    Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
       if (!mounted) return;
       _searchFieldFocusNode.requestFocus();
     });

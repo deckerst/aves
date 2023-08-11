@@ -204,7 +204,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                             onLongPress: null,
                           ),
                           crossFadeState: sortedTags.isEmpty ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                          duration: Durations.tagEditorTransition,
+                          duration: ADurations.tagEditorTransition,
                         ),
                       ),
                       const Divider(height: 0),

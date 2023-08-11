@@ -98,7 +98,7 @@ class _OverlayBackgroundState extends State<_OverlayBackground> {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       decoration: _buildBackgroundDecoration(context),
-      duration: Durations.scalingGridBackgroundAnimation,
+      duration: ADurations.scalingGridBackgroundAnimation,
       child: widget.child,
     );
   }

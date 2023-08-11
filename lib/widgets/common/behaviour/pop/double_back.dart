@@ -18,10 +18,10 @@ class DoubleBackPopHandler {
     if (!Navigator.canPop(context) && settings.mustBackTwiceToExit && !_backOnce) {
       _backOnce = true;
       _stopBackTimer();
-      _backTimer = Timer(Durations.doubleBackTimerDelay, () => _backOnce = false);
+      _backTimer = Timer(ADurations.doubleBackTimerDelay, () => _backOnce = false);
       toast(
         context.l10n.doubleBackExitMessage,
-        duration: Durations.doubleBackTimerDelay,
+        duration: ADurations.doubleBackTimerDelay,
       );
       return false;
     }

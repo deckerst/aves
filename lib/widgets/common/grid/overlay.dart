@@ -10,7 +10,7 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
   final BorderRadius? borderRadius;
   final EdgeInsets? padding;
 
-  static const duration = Durations.thumbnailOverlayAnimation;
+  static const duration = ADurations.thumbnailOverlayAnimation;
 
   const GridItemSelectionOverlay({
     super.key,

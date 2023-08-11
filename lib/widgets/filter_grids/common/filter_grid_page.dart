@@ -546,7 +546,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
     final item = visibleSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
     if (item == null) return;
 
-    await Future.delayed(Durations.highlightScrollInitDelay);
+    await Future.delayed(ADurations.highlightScrollInitDelay);
 
     final animate = context.read<Settings>().accessibilityAnimations.animate;
     highlightInfo.trackItem(item, animate: animate, highlightItem: filter);

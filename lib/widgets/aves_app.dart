@@ -156,7 +156,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   late final Future<CorePalette?> _dynamicColorPaletteLoader;
   final TvRailController _tvRailController = TvRailController();
   final CollectionSource _mediaStoreSource = MediaStoreSource();
-  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
+  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
   Size? _screenSize;
 

@@ -1,5 +1,5 @@
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/metadata/xmp.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
