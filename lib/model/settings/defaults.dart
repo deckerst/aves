@@ -72,6 +72,7 @@ class SettingsDefaults {
   ];
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
+  static const overlayHistogramStyle = OverlayHistogramStyle.none;
   static const showOverlayInfo = true;
   static const showOverlayDescription = false;
   static const showOverlayRatingTags = false;

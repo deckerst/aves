@@ -14,6 +14,10 @@ mixin ViewerSettings on SettingsAccess {
 
   set showOverlayMinimap(bool newValue) => set(SettingKeys.showOverlayMinimapKey, newValue);
 
+  OverlayHistogramStyle get overlayHistogramStyle => getEnumOrDefault(SettingKeys.overlayHistogramStyleKey, SettingsDefaults.overlayHistogramStyle, OverlayHistogramStyle.values);
+
+  set overlayHistogramStyle(OverlayHistogramStyle newValue) => set(SettingKeys.overlayHistogramStyleKey, newValue.toString());
+
   bool get showOverlayInfo => getBool(SettingKeys.showOverlayInfoKey) ?? SettingsDefaults.showOverlayInfo;
 
   set showOverlayInfo(bool newValue) => set(SettingKeys.showOverlayInfoKey, newValue);

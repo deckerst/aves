@@ -33,7 +33,7 @@ import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -512,6 +512,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   bool _handleNotification(dynamic notification) {
     if (notification is FilterSelectedNotification) {
       _goToCollection(notification.filter);
+    } else if (notification is FullImageLoadedNotification) {
+      final viewStateController = context.read<ViewStateConductor>().getOrCreateController(notification.entry);
+      // microtask so that listeners do not trigger during build
+      scheduleMicrotask(() => viewStateController.fullImageNotifier.value = notification.image);
     } else if (notification is EntryDeletedNotification) {
       _onEntryRemoved(context, notification.entries);
     } else if (notification is EntryMovedNotification) {

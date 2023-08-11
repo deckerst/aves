@@ -1,7 +1,9 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -81,6 +83,14 @@ class ViewerOverlayPage extends StatelessWidget {
                 selector: (context, s) => s.showOverlayThumbnailPreview,
                 onChanged: (v) => settings.showOverlayThumbnailPreview = v,
                 title: context.l10n.settingsViewerShowOverlayThumbnails,
+              ),
+            if (!useTvLayout)
+              SettingsSelectionListTile<OverlayHistogramStyle>(
+                values: OverlayHistogramStyle.values,
+                getName: (context, v) => v.getName(context),
+                selector: (context, s) => s.overlayHistogramStyle,
+                onSelection: (v) => settings.overlayHistogramStyle = v,
+                tileTitle: context.l10n.settingsViewerShowHistogram,
               ),
           ],
         ),

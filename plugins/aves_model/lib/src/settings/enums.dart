@@ -20,6 +20,8 @@ enum KeepScreenOn { never, videoPlayback, viewerOnly, always }
 
 enum MaxBrightness { never, viewerOnly, always }
 
+enum OverlayHistogramStyle { none, rgb, luminance }
+
 enum SlideshowVideoPlayback { skip, playMuted, playWithSound }
 
 enum SubtitlePosition { top, bottom }

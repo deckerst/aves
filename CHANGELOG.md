@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Video: improved seek accuracy, HDR support, AV1 support, playback speed from x0.25 to x4
 - support for animated AVIF (requires rescan)
 - Collection: filtering by rating range
+- Viewer: optionally show histogram on overlay
 - About: data usage
 
 ### Changed

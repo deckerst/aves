@@ -151,6 +151,19 @@ extension ExtraSlideshowVideoPlaybackView on SlideshowVideoPlayback {
   }
 }
 
+extension ExtraOverlayHistogramStyleView on OverlayHistogramStyle {
+  String getName(BuildContext context) {
+    switch (this) {
+      case OverlayHistogramStyle.none:
+        return context.l10n.overlayHistogramNone;
+      case OverlayHistogramStyle.rgb:
+        return context.l10n.overlayHistogramRGB;
+      case OverlayHistogramStyle.luminance:
+        return context.l10n.overlayHistogramLuminance;
+    }
+  }
+}
+
 extension ExtraSubtitlePositionView on SubtitlePosition {
   String getName(BuildContext context) {
     switch (this) {
