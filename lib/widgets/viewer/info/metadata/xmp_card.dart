@@ -116,7 +116,7 @@ class _XmpCardState extends State<XmpCard> {
                 ),
               ),
               MultiCrossFader(
-                duration: Durations.xmpStructArrayCardTransition,
+                duration: ADurations.xmpStructArrayCardTransition,
                 sizeCurve: Curves.easeOutBack,
                 alignment: AlignmentDirectional.topStart,
                 child: Padding(

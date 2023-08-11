@@ -29,7 +29,7 @@ class ActionPanel extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       margin: const EdgeInsets.all(16),
-      duration: Durations.quickActionHighlightAnimation,
+      duration: ADurations.quickActionHighlightAnimation,
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: child,

@@ -151,7 +151,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
                 color: currentIndex == index ? Colors.transparent : Colors.black45,
                 width: thumbnailExtent,
                 height: thumbnailExtent,
-                duration: Durations.thumbnailScrollerShadeAnimation,
+                duration: ADurations.thumbnailScrollerShadeAnimation,
               );
             },
           ),
@@ -172,7 +172,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
       _isAnimating = true;
       await _scrollController.animateTo(
         targetOffset,
-        duration: Durations.thumbnailScrollerScrollAnimation,
+        duration: ADurations.thumbnailScrollerScrollAnimation,
         curve: Curves.easeOutCubic,
       );
       _isAnimating = false;

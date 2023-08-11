@@ -100,7 +100,7 @@ class ViewerController {
           ),
         ));
     _autopilotAnimationControllers[vsync] = animationController;
-    Future.delayed(Durations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimationControllers[vsync]?.forward());
+    Future.delayed(ADurations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimationControllers[vsync]?.forward());
   }
 }
 

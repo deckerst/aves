@@ -7,9 +7,9 @@ extension ExtraAccessibilityTimeout on AccessibilityTimeout {
     switch (this) {
       case AccessibilityTimeout.system:
         if (hasAction) {
-          return Duration(milliseconds: await (AccessibilityService.getRecommendedTimeToTakeAction(Durations.opToastActionDisplay)));
+          return Duration(milliseconds: await (AccessibilityService.getRecommendedTimeToTakeAction(ADurations.opToastActionDisplay)));
         } else {
-          return Duration(milliseconds: await (AccessibilityService.getRecommendedTimeToRead(Durations.opToastTextDisplay)));
+          return Duration(milliseconds: await (AccessibilityService.getRecommendedTimeToRead(ADurations.opToastTextDisplay)));
         }
       case AccessibilityTimeout.s1:
         return const Duration(seconds: 1);

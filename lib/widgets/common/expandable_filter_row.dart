@@ -119,7 +119,7 @@ class ExpandableFilterRow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (filters.isEmpty) return const SizedBox();
     return AnimatedSwitcher(
-      duration: Durations.filterRowExpandAnimation,
+      duration: ADurations.filterRowExpandAnimation,
       layoutBuilder: (currentChild, previousChildren) => Stack(
         children: [
           ...previousChildren,

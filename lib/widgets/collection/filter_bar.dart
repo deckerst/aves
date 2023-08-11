@@ -62,7 +62,7 @@ class _FilterBarState extends State<FilterBar> {
                 );
               }
             : (context, animation) => const SizedBox(),
-        duration: animate ? Durations.filterBarRemovalAnimation : Duration.zero,
+        duration: animate ? ADurations.filterBarRemovalAnimation : Duration.zero,
       );
     });
     added.forEach((filter) {

@@ -190,7 +190,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     if (value != null && initialValue != value) {
       sortFactor = value.item1!;
       settings.albumGroupFactor = value.item2!;

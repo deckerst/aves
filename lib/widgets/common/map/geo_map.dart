@@ -261,7 +261,7 @@ class _GeoMapState extends State<GeoMap> {
         return AnimatedSize(
           alignment: Alignment.topCenter,
           curve: Curves.easeInOutCubic,
-          duration: Durations.mapStyleSwitchAnimation,
+          duration: ADurations.mapStyleSwitchAnimation,
           child: ValueListenableBuilder<bool>(
             valueListenable: widget.isAnimatingNotifier,
             builder: (context, animating, child) {

@@ -366,7 +366,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
           _onActionSelected(context, action, actionDelegate);
         },
       ),

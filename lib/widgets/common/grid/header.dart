@@ -182,7 +182,7 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
       descendantsAreFocusable: false,
       descendantsAreTraversable: false,
       child: AnimatedSwitcher(
-        duration: Durations.sectionHeaderAnimation,
+        duration: ADurations.sectionHeaderAnimation,
         switchInCurve: Curves.easeInOut,
         switchOutCurve: Curves.easeInOut,
         transitionBuilder: (child, animation) {
@@ -225,7 +225,7 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
     final selection = context.watch<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     return AnimatedSwitcher(
-      duration: Durations.sectionHeaderAnimation,
+      duration: ADurations.sectionHeaderAnimation,
       switchInCurve: Curves.easeOutBack,
       switchOutCurve: Curves.easeOutBack,
       transitionBuilder: (child, animation) => ScaleTransition(

@@ -62,7 +62,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   final MapController _leafletMapController = MapController();
   final List<StreamSubscription> _subscriptions = [];
   Map<MarkerKey<T>, GeoEntry<T>> _geoEntryByMarkerKey = {};
-  final Debouncer _debouncer = Debouncer(delay: Durations.mapIdleDebounceDelay);
+  final Debouncer _debouncer = Debouncer(delay: ADurations.mapIdleDebounceDelay);
 
   ValueNotifier<ZoomedBounds> get boundsNotifier => widget.boundsNotifier;
 

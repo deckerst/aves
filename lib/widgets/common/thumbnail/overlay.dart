@@ -83,7 +83,7 @@ class ThumbnailZoomOverlay extends StatelessWidget {
   });
 
   static const alignment = AlignmentDirectional.bottomEnd;
-  static const duration = Durations.thumbnailOverlayAnimation;
+  static const duration = ADurations.thumbnailOverlayAnimation;
 
   @override
   Widget build(BuildContext context) {

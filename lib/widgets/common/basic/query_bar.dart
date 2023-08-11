@@ -30,7 +30,7 @@ class QueryBar extends StatefulWidget {
 }
 
 class _QueryBarState extends State<QueryBar> {
-  final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
+  final Debouncer _debouncer = Debouncer(delay: ADurations.searchDebounceDelay);
   late TextEditingController _controller;
 
   ValueNotifier<String> get queryNotifier => widget.queryNotifier;
@@ -85,7 +85,7 @@ class _QueryBarState extends State<QueryBar> {
               child: ValueListenableBuilder<TextEditingValue>(
                 valueListenable: _controller,
                 builder: (context, value, child) => AnimatedSwitcher(
-                  duration: Durations.appBarActionChangeAnimation,
+                  duration: ADurations.appBarActionChangeAnimation,
                   transitionBuilder: (child, animation) => FadeTransition(
                     opacity: animation,
                     child: SizeTransition(

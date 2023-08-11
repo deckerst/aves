@@ -174,7 +174,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       await _onPageChanged();
 
       if (entry.isMotionPhoto && shouldAutoPlayMotionPhoto) {
-        await Future.delayed(Durations.motionPhotoAutoPlayDelay);
+        await Future.delayed(ADurations.motionPhotoAutoPlayDelay);
         if (entry == entryNotifier.value) {
           multiPageController.page = 1;
         }

@@ -68,7 +68,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     super.initState();
 
     _isPageAnimatingNotifier = ValueNotifier(true);
-    Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
+    Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
       if (!mounted) return;
       _isPageAnimatingNotifier.value = false;
     });

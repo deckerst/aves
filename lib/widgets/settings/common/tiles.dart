@@ -68,7 +68,7 @@ class SettingsSwitchListTile extends StatelessWidget {
               Expanded(child: titleWidget),
               AnimatedOpacity(
                 opacity: current ? 1 : disabledOpacity,
-                duration: Durations.toggleableTransitionAnimation,
+                duration: ADurations.toggleableTransitionAnimation,
                 child: trailing,
               ),
             ],

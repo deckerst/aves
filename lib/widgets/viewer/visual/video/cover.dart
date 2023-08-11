@@ -3,8 +3,8 @@ import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:aves_video/aves_video.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -106,7 +106,7 @@ class _VideoCoverState extends State<VideoCover> {
           child: AnimatedOpacity(
             opacity: showCover ? 1 : 0,
             curve: Curves.easeInCirc,
-            duration: Durations.viewerVideoPlayerTransition,
+            duration: ADurations.viewerVideoPlayerTransition,
             onEnd: () {
               // while cover is fading out, the same controller is used for both the cover and the video,
               // and both fire scale boundaries events, so we make sure that in the end

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class Durations {
+class ADurations {
   // Flutter animations (with margin)
   static const popupMenuAnimation = Duration(milliseconds: 300 + 20); // ref `_kMenuDuration` used in `_PopupMenuRoute`
   // page transition duration also available via `ModalRoute.of(context)!.transitionDuration * timeDilation`

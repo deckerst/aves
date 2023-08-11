@@ -237,7 +237,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     if (value != null && initialValue != value) {
       sortFactor = value.item1!;
       tileLayout = value.item3!;

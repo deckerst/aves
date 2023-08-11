@@ -25,7 +25,7 @@ class ViewerThumbnailPreview extends StatefulWidget {
 
 class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
   final ValueNotifier<int> _entryIndexNotifier = ValueNotifier(0);
-  final Debouncer _debouncer = Debouncer(delay: Durations.viewerThumbnailScrollDebounceDelay);
+  final Debouncer _debouncer = Debouncer(delay: ADurations.viewerThumbnailScrollDebounceDelay);
 
   List<AvesEntry> get entries => widget.entries;
 

@@ -111,7 +111,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
   void _onQuickActionTargetLeave() {
     _stopLeavingTimer();
     final action = _draggedAvailableAction.value;
-    _targetLeavingTimer = Timer(Durations.quickActionListAnimation + const Duration(milliseconds: 50), () {
+    _targetLeavingTimer = Timer(ADurations.quickActionListAnimation + const Duration(milliseconds: 50), () {
       _removeQuickAction(action);
       _quickActionHighlight.value = false;
     });
@@ -329,10 +329,10 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     _quickActions.insert(targetIndex, action);
     _animatedListKey.currentState!.insertItem(
       targetIndex,
-      duration: Durations.quickActionListAnimation,
+      duration: ADurations.quickActionListAnimation,
     );
     _quickActionsChangeNotifier.notify();
-    Future.delayed(Durations.quickActionListAnimation).then((value) => _reordering = false);
+    Future.delayed(ADurations.quickActionListAnimation).then((value) => _reordering = false);
     return true;
   }
 
@@ -344,7 +344,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     _animatedListKey.currentState!.removeItem(
       index,
       (context, animation) => DraggedPlaceholder(child: _buildQuickActionButton(action, animation)),
-      duration: Durations.quickActionListAnimation,
+      duration: ADurations.quickActionListAnimation,
     );
     _quickActionsChangeNotifier.notify();
     return true;

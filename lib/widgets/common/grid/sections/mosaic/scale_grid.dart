@@ -57,7 +57,7 @@ class MosaicGrid extends StatelessWidget {
             top: dy,
             width: itemWidth,
             height: itemHeight,
-            duration: Durations.scalingGridPositionAnimation,
+            duration: ADurations.scalingGridPositionAnimation,
             child: builder(i, targetExtent),
           ),
         );
