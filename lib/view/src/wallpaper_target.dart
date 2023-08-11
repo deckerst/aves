@@ -4,13 +4,11 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraWallpaperTargetView on WallpaperTarget {
   String getName(BuildContext context) {
-    switch (this) {
-      case WallpaperTarget.home:
-        return context.l10n.wallpaperTargetHome;
-      case WallpaperTarget.lock:
-        return context.l10n.wallpaperTargetLock;
-      case WallpaperTarget.homeLock:
-        return context.l10n.wallpaperTargetHomeLock;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      WallpaperTarget.home => l10n.wallpaperTargetHome,
+      WallpaperTarget.lock => l10n.wallpaperTargetLock,
+      WallpaperTarget.homeLock => l10n.wallpaperTargetHomeLock,
+    };
   }
 }

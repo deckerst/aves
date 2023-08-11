@@ -5,24 +5,19 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraThumbnailOverlayTagIconView on ThumbnailOverlayTagIcon {
   String getName(BuildContext context) {
-    switch (this) {
-      case ThumbnailOverlayTagIcon.tagged:
-        return context.l10n.filterTaggedLabel;
-      case ThumbnailOverlayTagIcon.untagged:
-        return context.l10n.filterNoTagLabel;
-      case ThumbnailOverlayTagIcon.none:
-        return context.l10n.settingsDisabled;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      ThumbnailOverlayTagIcon.tagged => l10n.filterTaggedLabel,
+      ThumbnailOverlayTagIcon.untagged => l10n.filterNoTagLabel,
+      ThumbnailOverlayTagIcon.none => l10n.settingsDisabled,
+    };
   }
 
   IconData getIcon(BuildContext context) {
-    switch (this) {
-      case ThumbnailOverlayTagIcon.tagged:
-        return AIcons.tag;
-      case ThumbnailOverlayTagIcon.untagged:
-        return AIcons.tagUntagged;
-      case ThumbnailOverlayTagIcon.none:
-        return AIcons.tag;
-    }
+    return switch (this) {
+      ThumbnailOverlayTagIcon.tagged => AIcons.tag,
+      ThumbnailOverlayTagIcon.untagged => AIcons.tagUntagged,
+      ThumbnailOverlayTagIcon.none => AIcons.tag,
+    };
   }
 }

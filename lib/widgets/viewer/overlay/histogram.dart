@@ -81,13 +81,17 @@ class _ImageHistogramState extends State<ImageHistogram> {
     final data = (await image.toByteData(format: ImageByteFormat.rawExtendedRgba128))!;
     final floats = Float32List.view(data.buffer);
 
+    // TODO TLAD [histo] compute in isolate?
+    // TODO TLAD [histo] save/reuse levels in view controller
     final newLevels = switch (settings.overlayHistogramStyle) {
       OverlayHistogramStyle.rgb => _computeRgbLevels(floats),
       OverlayHistogramStyle.luminance => _computeLuminanceLevels(floats),
       _ => <Color, List<double>>{},
     };
 
-    setState(() => _levels = newLevels);
+    if (mounted) {
+      setState(() => _levels = newLevels);
+    }
   }
 
   Map<Color, List<double>> _computeRgbLevels(Float32List floats) {

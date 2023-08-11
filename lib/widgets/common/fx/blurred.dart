@@ -58,7 +58,7 @@ class BlurredRRect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: borderRadius,
+      borderRadius: borderRadius ?? BorderRadius.zero,
       child: BackdropFilter(
         // do not modify tree when disabling filter
         filter: enabled ? _filter : _identity,

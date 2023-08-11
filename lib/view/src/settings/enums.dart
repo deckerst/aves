@@ -5,293 +5,241 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraAccessibilityAnimationsView on AccessibilityAnimations {
   String getName(BuildContext context) {
-    switch (this) {
-      case AccessibilityAnimations.system:
-        return context.l10n.settingsSystemDefault;
-      case AccessibilityAnimations.disabled:
-        return context.l10n.accessibilityAnimationsRemove;
-      case AccessibilityAnimations.enabled:
-        return context.l10n.accessibilityAnimationsKeep;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      AccessibilityAnimations.system => l10n.settingsSystemDefault,
+      AccessibilityAnimations.disabled => l10n.accessibilityAnimationsRemove,
+      AccessibilityAnimations.enabled => l10n.accessibilityAnimationsKeep,
+    };
   }
 }
 
 extension ExtraAccessibilityTimeoutView on AccessibilityTimeout {
   String getName(BuildContext context) {
-    switch (this) {
-      case AccessibilityTimeout.system:
-        return context.l10n.settingsSystemDefault;
-      case AccessibilityTimeout.s1:
-        return context.l10n.timeSeconds(1);
-      case AccessibilityTimeout.s3:
-        return context.l10n.timeSeconds(3);
-      case AccessibilityTimeout.s5:
-        return context.l10n.timeSeconds(5);
-      case AccessibilityTimeout.s10:
-        return context.l10n.timeSeconds(10);
-      case AccessibilityTimeout.s30:
-        return context.l10n.timeSeconds(30);
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      AccessibilityTimeout.system => l10n.settingsSystemDefault,
+      AccessibilityTimeout.s1 => l10n.timeSeconds(1),
+      AccessibilityTimeout.s3 => l10n.timeSeconds(3),
+      AccessibilityTimeout.s5 => l10n.timeSeconds(5),
+      AccessibilityTimeout.s10 => l10n.timeSeconds(10),
+      AccessibilityTimeout.s30 => l10n.timeSeconds(30),
+    };
   }
 }
 
 extension ExtraAvesThemeBrightnessView on AvesThemeBrightness {
   String getName(BuildContext context) {
-    switch (this) {
-      case AvesThemeBrightness.system:
-        return context.l10n.settingsSystemDefault;
-      case AvesThemeBrightness.light:
-        return context.l10n.themeBrightnessLight;
-      case AvesThemeBrightness.dark:
-        return context.l10n.themeBrightnessDark;
-      case AvesThemeBrightness.black:
-        return context.l10n.themeBrightnessBlack;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      AvesThemeBrightness.system => l10n.settingsSystemDefault,
+      AvesThemeBrightness.light => l10n.themeBrightnessLight,
+      AvesThemeBrightness.dark => l10n.themeBrightnessDark,
+      AvesThemeBrightness.black => l10n.themeBrightnessBlack,
+    };
   }
 }
 
 extension ExtraCoordinateFormatView on CoordinateFormat {
   String getName(BuildContext context) {
-    switch (this) {
-      case CoordinateFormat.dms:
-        return context.l10n.coordinateFormatDms;
-      case CoordinateFormat.decimal:
-        return context.l10n.coordinateFormatDecimal;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      CoordinateFormat.dms => l10n.coordinateFormatDms,
+      CoordinateFormat.decimal => l10n.coordinateFormatDecimal,
+    };
   }
 }
 
 extension ExtraDisplayRefreshRateModeView on DisplayRefreshRateMode {
   String getName(BuildContext context) {
-    switch (this) {
-      case DisplayRefreshRateMode.auto:
-        return context.l10n.settingsSystemDefault;
-      case DisplayRefreshRateMode.highest:
-        return context.l10n.displayRefreshRatePreferHighest;
-      case DisplayRefreshRateMode.lowest:
-        return context.l10n.displayRefreshRatePreferLowest;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      DisplayRefreshRateMode.auto => l10n.settingsSystemDefault,
+      DisplayRefreshRateMode.highest => l10n.displayRefreshRatePreferHighest,
+      DisplayRefreshRateMode.lowest => l10n.displayRefreshRatePreferLowest,
+    };
   }
 }
 
 extension ExtraEntryMapStyleView on EntryMapStyle {
   String getName(BuildContext context) {
-    switch (this) {
-      case EntryMapStyle.googleNormal:
-        return context.l10n.mapStyleGoogleNormal;
-      case EntryMapStyle.googleHybrid:
-        return context.l10n.mapStyleGoogleHybrid;
-      case EntryMapStyle.googleTerrain:
-        return context.l10n.mapStyleGoogleTerrain;
-      case EntryMapStyle.hmsNormal:
-        return context.l10n.mapStyleHuaweiNormal;
-      case EntryMapStyle.hmsTerrain:
-        return context.l10n.mapStyleHuaweiTerrain;
-      case EntryMapStyle.osmHot:
-        return context.l10n.mapStyleOsmHot;
-      case EntryMapStyle.stamenToner:
-        return context.l10n.mapStyleStamenToner;
-      case EntryMapStyle.stamenWatercolor:
-        return context.l10n.mapStyleStamenWatercolor;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      EntryMapStyle.googleNormal => l10n.mapStyleGoogleNormal,
+      EntryMapStyle.googleHybrid => l10n.mapStyleGoogleHybrid,
+      EntryMapStyle.googleTerrain => l10n.mapStyleGoogleTerrain,
+      EntryMapStyle.hmsNormal => l10n.mapStyleHuaweiNormal,
+      EntryMapStyle.hmsTerrain => l10n.mapStyleHuaweiTerrain,
+      EntryMapStyle.osmHot => l10n.mapStyleOsmHot,
+      EntryMapStyle.stamenToner => l10n.mapStyleStamenToner,
+      EntryMapStyle.stamenWatercolor => l10n.mapStyleStamenWatercolor,
+    };
   }
 }
 
 extension ExtraHomePageSettingView on HomePageSetting {
   String getName(BuildContext context) {
-    switch (this) {
-      case HomePageSetting.collection:
-        return context.l10n.drawerCollectionAll;
-      case HomePageSetting.albums:
-        return context.l10n.drawerAlbumPage;
-      case HomePageSetting.tags:
-        return context.l10n.drawerTagPage;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      HomePageSetting.collection => l10n.drawerCollectionAll,
+      HomePageSetting.albums => l10n.drawerAlbumPage,
+      HomePageSetting.tags => l10n.drawerTagPage,
+    };
   }
 }
 
 extension ExtraKeepScreenOnView on KeepScreenOn {
   String getName(BuildContext context) {
-    switch (this) {
-      case KeepScreenOn.never:
-        return context.l10n.keepScreenOnNever;
-      case KeepScreenOn.videoPlayback:
-        return context.l10n.keepScreenOnVideoPlayback;
-      case KeepScreenOn.viewerOnly:
-        return context.l10n.keepScreenOnViewerOnly;
-      case KeepScreenOn.always:
-        return context.l10n.keepScreenOnAlways;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      KeepScreenOn.never => l10n.keepScreenOnNever,
+      KeepScreenOn.videoPlayback => l10n.keepScreenOnVideoPlayback,
+      KeepScreenOn.viewerOnly => l10n.keepScreenOnViewerOnly,
+      KeepScreenOn.always => l10n.keepScreenOnAlways,
+    };
   }
 }
 
 extension ExtraMaxBrightnessView on MaxBrightness {
   String getName(BuildContext context) {
-    switch (this) {
-      case MaxBrightness.never:
-        return context.l10n.maxBrightnessNever;
-      case MaxBrightness.viewerOnly:
-        return context.l10n.keepScreenOnViewerOnly;
-      case MaxBrightness.always:
-        return context.l10n.maxBrightnessAlways;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      MaxBrightness.never => l10n.maxBrightnessNever,
+      MaxBrightness.viewerOnly => l10n.keepScreenOnViewerOnly,
+      MaxBrightness.always => l10n.maxBrightnessAlways,
+    };
   }
 }
 
 extension ExtraSlideshowVideoPlaybackView on SlideshowVideoPlayback {
   String getName(BuildContext context) {
-    switch (this) {
-      case SlideshowVideoPlayback.skip:
-        return context.l10n.videoPlaybackSkip;
-      case SlideshowVideoPlayback.playMuted:
-        return context.l10n.videoPlaybackMuted;
-      case SlideshowVideoPlayback.playWithSound:
-        return context.l10n.videoPlaybackWithSound;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      SlideshowVideoPlayback.skip => l10n.videoPlaybackSkip,
+      SlideshowVideoPlayback.playMuted => l10n.videoPlaybackMuted,
+      SlideshowVideoPlayback.playWithSound => l10n.videoPlaybackWithSound,
+    };
   }
 }
 
 extension ExtraOverlayHistogramStyleView on OverlayHistogramStyle {
   String getName(BuildContext context) {
-    switch (this) {
-      case OverlayHistogramStyle.none:
-        return context.l10n.overlayHistogramNone;
-      case OverlayHistogramStyle.rgb:
-        return context.l10n.overlayHistogramRGB;
-      case OverlayHistogramStyle.luminance:
-        return context.l10n.overlayHistogramLuminance;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      OverlayHistogramStyle.none => l10n.overlayHistogramNone,
+      OverlayHistogramStyle.rgb => l10n.overlayHistogramRGB,
+      OverlayHistogramStyle.luminance => l10n.overlayHistogramLuminance,
+    };
   }
 }
 
 extension ExtraSubtitlePositionView on SubtitlePosition {
   String getName(BuildContext context) {
-    switch (this) {
-      case SubtitlePosition.top:
-        return context.l10n.subtitlePositionTop;
-      case SubtitlePosition.bottom:
-        return context.l10n.subtitlePositionBottom;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      SubtitlePosition.top => l10n.subtitlePositionTop,
+      SubtitlePosition.bottom => l10n.subtitlePositionBottom,
+    };
   }
 }
 
 extension ExtraUnitSystemView on UnitSystem {
   String getName(BuildContext context) {
-    switch (this) {
-      case UnitSystem.metric:
-        return context.l10n.unitSystemMetric;
-      case UnitSystem.imperial:
-        return context.l10n.unitSystemImperial;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      UnitSystem.metric => l10n.unitSystemMetric,
+      UnitSystem.imperial => l10n.unitSystemImperial,
+    };
   }
 }
 
 extension ExtraVideoAutoPlayModeView on VideoAutoPlayMode {
   String getName(BuildContext context) {
-    switch (this) {
-      case VideoAutoPlayMode.disabled:
-        return context.l10n.settingsDisabled;
-      case VideoAutoPlayMode.playMuted:
-        return context.l10n.videoPlaybackMuted;
-      case VideoAutoPlayMode.playWithSound:
-        return context.l10n.videoPlaybackWithSound;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      VideoAutoPlayMode.disabled => l10n.settingsDisabled,
+      VideoAutoPlayMode.playMuted => l10n.videoPlaybackMuted,
+      VideoAutoPlayMode.playWithSound => l10n.videoPlaybackWithSound,
+    };
   }
 }
 
 extension ExtraVideoBackgroundModeView on VideoBackgroundMode {
   String getName(BuildContext context) {
-    switch (this) {
-      case VideoBackgroundMode.disabled:
-        return context.l10n.settingsDisabled;
-      case VideoBackgroundMode.pip:
-        return context.l10n.settingsVideoEnablePip;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      VideoBackgroundMode.disabled => l10n.settingsDisabled,
+      VideoBackgroundMode.pip => l10n.settingsVideoEnablePip,
+    };
   }
 }
 
 extension ExtraVideoControlsView on VideoControls {
   String getName(BuildContext context) {
-    switch (this) {
-      case VideoControls.play:
-        return context.l10n.videoControlsPlay;
-      case VideoControls.playSeek:
-        return context.l10n.videoControlsPlaySeek;
-      case VideoControls.playOutside:
-        return context.l10n.videoControlsPlayOutside;
-      case VideoControls.none:
-        return context.l10n.videoControlsNone;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      VideoControls.play => l10n.videoControlsPlay,
+      VideoControls.playSeek => l10n.videoControlsPlaySeek,
+      VideoControls.playOutside => l10n.videoControlsPlayOutside,
+      VideoControls.none => l10n.videoControlsNone,
+    };
   }
 }
 
 extension ExtraVideoLoopModeView on VideoLoopMode {
   String getName(BuildContext context) {
-    switch (this) {
-      case VideoLoopMode.never:
-        return context.l10n.videoLoopModeNever;
-      case VideoLoopMode.shortOnly:
-        return context.l10n.videoLoopModeShortOnly;
-      case VideoLoopMode.always:
-        return context.l10n.videoLoopModeAlways;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      VideoLoopMode.never => l10n.videoLoopModeNever,
+      VideoLoopMode.shortOnly => l10n.videoLoopModeShortOnly,
+      VideoLoopMode.always => l10n.videoLoopModeAlways,
+    };
   }
 }
 
 extension ExtraVideoResumptionModeView on VideoResumptionMode {
   String getName(BuildContext context) {
-    switch (this) {
-      case VideoResumptionMode.never:
-        return context.l10n.videoResumptionModeNever;
-      case VideoResumptionMode.ask:
-        return context.l10n.settingsAskEverytime;
-      case VideoResumptionMode.always:
-        return context.l10n.videoResumptionModeAlways;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      VideoResumptionMode.never => l10n.videoResumptionModeNever,
+      VideoResumptionMode.ask => l10n.settingsAskEverytime,
+      VideoResumptionMode.always => l10n.videoResumptionModeAlways,
+    };
   }
 }
 
 extension ExtraViewerTransitionView on ViewerTransition {
   String getName(BuildContext context) {
-    switch (this) {
-      case ViewerTransition.slide:
-        return context.l10n.viewerTransitionSlide;
-      case ViewerTransition.parallax:
-        return context.l10n.viewerTransitionParallax;
-      case ViewerTransition.fade:
-        return context.l10n.viewerTransitionFade;
-      case ViewerTransition.zoomIn:
-        return context.l10n.viewerTransitionZoomIn;
-      case ViewerTransition.none:
-        return context.l10n.viewerTransitionNone;
-      case ViewerTransition.random:
-        return context.l10n.widgetDisplayedItemRandom;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      ViewerTransition.slide => l10n.viewerTransitionSlide,
+      ViewerTransition.parallax => l10n.viewerTransitionParallax,
+      ViewerTransition.fade => l10n.viewerTransitionFade,
+      ViewerTransition.zoomIn => l10n.viewerTransitionZoomIn,
+      ViewerTransition.none => l10n.viewerTransitionNone,
+      ViewerTransition.random => l10n.widgetDisplayedItemRandom,
+    };
   }
 }
 
 extension ExtraWidgetDisplayedItemView on WidgetDisplayedItem {
   String getName(BuildContext context) {
-    switch (this) {
-      case WidgetDisplayedItem.random:
-        return context.l10n.widgetDisplayedItemRandom;
-      case WidgetDisplayedItem.mostRecent:
-        return context.l10n.widgetDisplayedItemMostRecent;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      WidgetDisplayedItem.random => l10n.widgetDisplayedItemRandom,
+      WidgetDisplayedItem.mostRecent => l10n.widgetDisplayedItemMostRecent,
+    };
   }
 }
 
 extension ExtraWidgetOpenPageView on WidgetOpenPage {
   String getName(BuildContext context) {
-    switch (this) {
-      case WidgetOpenPage.home:
-        return context.l10n.widgetOpenPageHome;
-      case WidgetOpenPage.collection:
-        return context.l10n.widgetOpenPageCollection;
-      case WidgetOpenPage.viewer:
-        return context.l10n.widgetOpenPageViewer;
-      case WidgetOpenPage.updateWidget:
-        return context.l10n.widgetTapUpdateWidget;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      WidgetOpenPage.home => l10n.widgetOpenPageHome,
+      WidgetOpenPage.collection => l10n.widgetOpenPageCollection,
+      WidgetOpenPage.viewer => l10n.widgetOpenPageViewer,
+      WidgetOpenPage.updateWidget => l10n.widgetTapUpdateWidget,
+    };
   }
 }

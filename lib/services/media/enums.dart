@@ -8,13 +8,11 @@ extension ExtraNameConflictStrategy on NameConflictStrategy {
   String toPlatform() => name;
 
   String getName(BuildContext context) {
-    switch (this) {
-      case NameConflictStrategy.rename:
-        return context.l10n.nameConflictStrategyRename;
-      case NameConflictStrategy.replace:
-        return context.l10n.nameConflictStrategyReplace;
-      case NameConflictStrategy.skip:
-        return context.l10n.nameConflictStrategySkip;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      NameConflictStrategy.rename => l10n.nameConflictStrategyRename,
+      NameConflictStrategy.replace => l10n.nameConflictStrategyReplace,
+      NameConflictStrategy.skip => l10n.nameConflictStrategySkip,
+    };
   }
 }
