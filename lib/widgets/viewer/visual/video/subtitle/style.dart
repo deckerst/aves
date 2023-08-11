@@ -85,7 +85,7 @@ class SubtitleStyle extends Equatable with Diagnosticable {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(EnumProperty<TextAlign>('hAlign', hAlign));
-    properties.add(EnumProperty<TextAlignVertical>('vAlign', vAlign));
+    properties.add(DiagnosticsProperty<TextAlignVertical>('vAlign', vAlign));
     properties.add(ColorProperty('borderColor', borderColor));
     properties.add(DoubleProperty('borderWidth', borderWidth));
     properties.add(DoubleProperty('edgeBlur', edgeBlur));
