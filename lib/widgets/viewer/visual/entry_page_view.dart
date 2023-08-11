@@ -15,7 +15,7 @@ import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/model/view_state.dart';
@@ -90,7 +90,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
 
   void _registerWidget(EntryPageView widget) {
     final entry = widget.pageEntry;
-    _viewStateNotifier = context.read<ViewStateConductor>().getOrCreateController(entry);
+    _viewStateNotifier = context.read<ViewStateConductor>().getOrCreateController(entry).viewStateNotifier;
     _magnifierController = AvesMagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));

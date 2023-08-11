@@ -6,9 +6,10 @@ import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/fx/checkered_decoration.dart';
-import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves/model/view_state.dart';
+import 'package:aves/widgets/common/fx/checkered_decoration.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
+import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -105,6 +106,7 @@ class _RasterImageViewState extends State<RasterImageView> {
   void _onFullImageCompleted(ImageInfo image, bool synchronousCall) {
     _unregisterFullImage();
     _fullImageLoaded.value = true;
+    FullImageLoadedNotification(entry, fullImageProvider).dispatch(context);
   }
 
   @override

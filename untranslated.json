@@ -142,6 +142,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -487,6 +490,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -640,6 +644,9 @@
   ],
 
   "be": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "viewerTransitionSlide",
     "viewerTransitionFade",
     "viewerTransitionZoomIn",
@@ -920,6 +927,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -1127,6 +1135,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -1473,6 +1484,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -1638,14 +1650,46 @@
     "filePickerUseThisFolder"
   ],
 
+  "cs": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
+  "de": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
   "el": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
     "aboutDataUsageDatabase",
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
-    "aboutDataUsageExternal"
+    "aboutDataUsageExternal",
+    "settingsViewerShowHistogram"
+  ],
+
+  "es": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
+  "eu": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
   ],
 
   "fa": [
@@ -1700,6 +1744,9 @@
     "maxBrightnessNever",
     "maxBrightnessAlways",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
@@ -1996,6 +2043,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -2159,6 +2207,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
   "gl": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -2200,6 +2255,9 @@
     "lengthUnitPercent",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -2537,6 +2595,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -2863,6 +2922,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -3209,6 +3271,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -3515,6 +3578,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -3861,6 +3927,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -4026,6 +4093,27 @@
     "filePickerUseThisFolder"
   ],
 
+  "hu": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
+  "id": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
+  "it": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
   "ja": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -4046,6 +4134,9 @@
     "albumTierVaults",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionBottom",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
@@ -4068,6 +4159,7 @@
     "settingsConfirmationVaultDataLoss",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
+    "settingsViewerShowHistogram",
     "settingsViewerShowDescription",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
@@ -4218,6 +4310,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -4564,6 +4659,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -4729,6 +4825,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "ko": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
   "lt": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -4754,6 +4857,9 @@
     "lengthUnitPercent",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
@@ -4796,6 +4902,7 @@
     "settingsConfirmationVaultDataLoss",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
+    "settingsViewerShowHistogram",
     "settingsViewerShowDescription",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
@@ -4977,6 +5084,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -5323,6 +5433,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -5608,6 +5719,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -5954,6 +6068,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -6133,6 +6248,9 @@
     "cropAspectRatioSquare",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "vaultLockTypePattern",
     "settingsVideoEnablePip",
     "videoResumptionModeNever",
@@ -6154,6 +6272,7 @@
     "settingsAskEverytime",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
+    "settingsViewerShowHistogram",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
@@ -6184,6 +6303,9 @@
     "albumTierVaults",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "vaultLockTypePattern",
@@ -6225,6 +6347,7 @@
     "settingsConfirmationVaultDataLoss",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
+    "settingsViewerShowHistogram",
     "settingsViewerShowRatingTags",
     "settingsViewerShowDescription",
     "settingsVideoPlaybackTile",
@@ -6247,6 +6370,9 @@
   "nn": [
     "sourceStateCataloguing",
     "accessibilityAnimationsKeep",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "settingsVideoEnablePip",
     "widgetTapUpdateWidget",
     "authenticateToConfigureVault",
@@ -6266,6 +6392,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "drawerCollectionAnimated",
+    "settingsViewerShowHistogram",
     "settingsSlideshowAnimatedZoomEffect",
     "settingsHiddenItemsTabFilters",
     "settingsHiddenFiltersBanner",
@@ -6427,6 +6554,9 @@
     "maxBrightnessNever",
     "maxBrightnessAlways",
     "nameConflictStrategyReplace",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "unitSystemMetric",
@@ -6721,6 +6851,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformationSubtitle",
     "settingsViewerShowRatingTags",
@@ -6883,14 +7014,25 @@
     "filePickerUseThisFolder"
   ],
 
+  "pl": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
+  ],
+
   "pt": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
     "aboutDataUsageDatabase",
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
-    "aboutDataUsageExternal"
+    "aboutDataUsageExternal",
+    "settingsViewerShowHistogram"
   ],
 
   "ro": [
@@ -6904,6 +7046,9 @@
     "cropAspectRatioSquare",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "videoResumptionModeNever",
     "videoResumptionModeAlways",
     "widgetTapUpdateWidget",
@@ -6916,11 +7061,19 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "settingsAskEverytime",
+    "settingsViewerShowHistogram",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
     "settingsVideoResumptionModeDialogTitle",
     "tagEditorDiscardDialogMessage"
+  ],
+
+  "ru": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
   ],
 
   "sk": [
@@ -6950,6 +7103,9 @@
     "lengthUnitPercent",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
@@ -7218,6 +7374,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -7544,6 +7701,9 @@
     "nameConflictStrategyRename",
     "nameConflictStrategyReplace",
     "nameConflictStrategySkip",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "subtitlePositionTop",
     "subtitlePositionBottom",
     "themeBrightnessLight",
@@ -7890,6 +8050,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -8083,6 +8244,9 @@
     "lengthUnitPercent",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
@@ -8285,6 +8449,7 @@
     "settingsViewerOverlayTile",
     "settingsViewerOverlayPageTitle",
     "settingsViewerShowOverlayOnOpening",
+    "settingsViewerShowHistogram",
     "settingsViewerShowMinimap",
     "settingsViewerShowInformation",
     "settingsViewerShowInformationSubtitle",
@@ -8471,6 +8636,9 @@
     "lengthUnitPercent",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "vaultLockTypePassword",
@@ -8511,6 +8679,7 @@
     "settingsConfirmationVaultDataLoss",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
+    "settingsViewerShowHistogram",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
@@ -8521,6 +8690,13 @@
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
+  ],
+
+  "uk": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
+    "settingsViewerShowHistogram"
   ],
 
   "zh": [
@@ -8537,6 +8713,9 @@
     "lengthUnitPercent",
     "maxBrightnessNever",
     "maxBrightnessAlways",
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "vaultLockTypePattern",
     "vaultLockTypePin",
     "settingsVideoEnablePip",
@@ -8573,6 +8752,7 @@
     "settingsConfirmationVaultDataLoss",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
+    "settingsViewerShowHistogram",
     "settingsViewerShowDescription",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
@@ -8588,12 +8768,16 @@
   ],
 
   "zh_Hant": [
+    "overlayHistogramNone",
+    "overlayHistogramRGB",
+    "overlayHistogramLuminance",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
     "aboutDataUsageDatabase",
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
-    "aboutDataUsageExternal"
+    "aboutDataUsageExternal",
+    "settingsViewerShowHistogram"
   ]
 }

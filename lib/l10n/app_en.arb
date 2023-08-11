@@ -233,6 +233,10 @@
   "nameConflictStrategyReplace": "Replace",
   "nameConflictStrategySkip": "Skip",
 
+  "overlayHistogramNone": "None",
+  "overlayHistogramRGB": "RGB",
+  "overlayHistogramLuminance": "Luminance",
+
   "subtitlePositionTop": "Top",
   "subtitlePositionBottom": "Bottom",
 
@@ -809,6 +813,7 @@
   "settingsViewerOverlayTile": "Overlay",
   "settingsViewerOverlayPageTitle": "Overlay",
   "settingsViewerShowOverlayOnOpening": "Show on opening",
+  "settingsViewerShowHistogram": "Show histogram",
   "settingsViewerShowMinimap": "Show minimap",
   "settingsViewerShowInformation": "Show information",
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",

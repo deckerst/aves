@@ -13,7 +13,7 @@ import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/dialogs/wallpaper_settings_dialog.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
@@ -94,7 +94,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
   }
 
   Rect? _getVisibleRegion(BuildContext context) {
-    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).value;
+    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).viewState;
     final viewportSize = viewState.viewportSize;
     final contentSize = viewState.contentSize;
     final scale = viewState.scale;
@@ -107,7 +107,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
   }
 
   Future<Uint8List?> _getBytes(BuildContext context, Rect displayRegion) async {
-    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).value;
+    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).viewState;
     final scale = viewState.scale;
 
     final displaySize = entry.displaySize;

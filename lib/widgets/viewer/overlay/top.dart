@@ -5,9 +5,11 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
+import 'package:aves/widgets/viewer/overlay/histogram.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +22,9 @@ class ViewerTopOverlay extends StatelessWidget {
   final ValueNotifier<bool> expandedNotifier;
   final Size availableSize;
   final EdgeInsets? viewInsets, viewPadding;
+
+  static const Color componentBorderColor = Colors.white30;
+  static const double componentDimension = 96;
 
   const ViewerTopOverlay({
     super.key,
@@ -45,7 +50,7 @@ class ViewerTopOverlay extends StatelessWidget {
         final showInfo = settings.showOverlayInfo;
 
         final viewStateConductor = context.read<ViewStateConductor>();
-        final viewStateNotifier = viewStateConductor.getOrCreateController(pageEntry);
+        final viewStateNotifier = viewStateConductor.getOrCreateController(pageEntry).viewStateNotifier;
 
         final blurred = settings.enableBlurEffect;
         final viewInsetsPadding = (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero);
@@ -79,23 +84,58 @@ class ViewerTopOverlay extends StatelessWidget {
                   ),
                 ),
               ),
-            if (settings.showOverlayMinimap)
-              SafeArea(
-                top: !showInfo,
-                minimum: EdgeInsets.only(
-                  left: viewInsetsPadding.left,
-                  right: viewInsetsPadding.right,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: FadeTransition(
-                    opacity: scale,
-                    child: Minimap(
-                      viewStateNotifier: viewStateNotifier,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (settings.showOverlayMinimap)
+                  SafeArea(
+                    top: !showInfo,
+                    minimum: EdgeInsets.only(
+                      left: viewInsetsPadding.left,
+                      right: viewInsetsPadding.right,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FadeTransition(
+                        opacity: scale,
+                        child: Minimap(
+                          viewStateNotifier: viewStateNotifier,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              )
+                const Spacer(),
+                if (settings.overlayHistogramStyle != OverlayHistogramStyle.none)
+                  SafeArea(
+                    top: !showInfo,
+                    minimum: EdgeInsets.only(
+                      left: viewInsetsPadding.left,
+                      right: viewInsetsPadding.right,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FadeTransition(
+                        opacity: scale,
+                        child: Selector<ViewStateConductor, ValueNotifier<ImageProvider?>>(
+                          selector: (context, vsc) => vsc.getOrCreateController(pageEntry!).fullImageNotifier,
+                          builder: (context, fullImageNotifier, child) {
+                            return ValueListenableBuilder<ImageProvider?>(
+                              valueListenable: fullImageNotifier,
+                              builder: (context, fullImage, child) {
+                                if (fullImage == null || pageEntry == null) return const SizedBox();
+                                return ImageHistogram(
+                                  entry: pageEntry,
+                                  image: fullImage,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ],
         );
       },

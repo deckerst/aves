@@ -13,6 +13,7 @@ class MpvVideoController extends AvesVideoController {
   late Player _instance;
   late VideoController _controller;
   late VideoStatus _status;
+  bool _firstFrameRendered = false;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
@@ -113,12 +114,17 @@ class MpvVideoController extends AvesVideoController {
   }
 
   void _initController() {
+    _firstFrameRendered = false;
     _controller = VideoController(
       _instance,
       configuration: VideoControllerConfiguration(
         enableHardwareAcceleration: settings.enableVideoHardwareAcceleration,
       ),
     );
+    _controller.waitUntilFirstFrameRendered.then((v) {
+      _firstFrameRendered = true;
+      _statusStreamController.add(_status);
+    });
   }
 
   @override
@@ -171,7 +177,7 @@ class MpvVideoController extends AvesVideoController {
       case VideoStatus.paused:
       case VideoStatus.playing:
       case VideoStatus.completed:
-        return true;
+        return _firstFrameRendered;
     }
   }
 
