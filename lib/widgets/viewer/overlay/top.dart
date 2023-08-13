@@ -9,6 +9,7 @@ import 'package:aves/widgets/viewer/overlay/histogram.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/view/conductor.dart';
+import 'package:aves/widgets/viewer/view/controller.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -116,15 +117,15 @@ class ViewerTopOverlay extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       child: FadeTransition(
                         opacity: scale,
-                        child: Selector<ViewStateConductor, ValueNotifier<ImageProvider?>>(
-                          selector: (context, vsc) => vsc.getOrCreateController(pageEntry!).fullImageNotifier,
-                          builder: (context, fullImageNotifier, child) {
+                        child: Selector<ViewStateConductor, ViewStateController>(
+                          selector: (context, vsc) => vsc.getOrCreateController(pageEntry!),
+                          builder: (context, viewStateController, child) {
                             return ValueListenableBuilder<ImageProvider?>(
-                              valueListenable: fullImageNotifier,
+                              valueListenable: viewStateController.fullImageNotifier,
                               builder: (context, fullImage, child) {
                                 if (fullImage == null || pageEntry == null) return const SizedBox();
                                 return ImageHistogram(
-                                  entry: pageEntry,
+                                  viewStateController: viewStateController,
                                   image: fullImage,
                                 );
                               },

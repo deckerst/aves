@@ -1,20 +1,19 @@
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
-import 'package:aves_model/aves_model.dart';
+import 'package:aves/widgets/viewer/view/controller.dart';
+import 'package:aves/widgets/viewer/view/histogram.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class ImageHistogram extends StatefulWidget {
-  final AvesEntry entry;
+  final ViewStateController viewStateController;
   final ImageProvider image;
 
   const ImageHistogram({
     super.key,
-    required this.entry,
+    required this.viewStateController,
     required this.image,
   });
 
@@ -23,9 +22,13 @@ class ImageHistogram extends StatefulWidget {
 }
 
 class _ImageHistogramState extends State<ImageHistogram> {
-  Map<Color, List<double>> _levels = {};
+  HistogramLevels _levels = {};
   ImageStream? _imageStream;
   late ImageStreamListener _imageListener;
+
+  ViewStateController get viewStateController => widget.viewStateController;
+
+  AvesEntry get entry => viewStateController.entry;
 
   ImageProvider get imageProvider => widget.image;
 
@@ -73,87 +76,17 @@ class _ImageHistogramState extends State<ImageHistogram> {
     );
   }
 
-  static const int bins = 256;
-  static const int normMax = bins - 1;
-
   Future<void> _updateLevels(ImageInfo info) async {
-    final image = info.image;
-    final data = (await image.toByteData(format: ImageByteFormat.rawExtendedRgba128))!;
-    final floats = Float32List.view(data.buffer);
-
-    // TODO TLAD [histo] compute in isolate?
-    // TODO TLAD [histo] save/reuse levels in view controller
-    final newLevels = switch (settings.overlayHistogramStyle) {
-      OverlayHistogramStyle.rgb => _computeRgbLevels(floats),
-      OverlayHistogramStyle.luminance => _computeLuminanceLevels(floats),
-      _ => <Color, List<double>>{},
-    };
-
+    final targetEntry = entry;
+    final newLevels = await viewStateController.getHistogramLevels(info);
     if (mounted) {
-      setState(() => _levels = newLevels);
+      setState(() => _levels = targetEntry == entry ? newLevels : {});
     }
-  }
-
-  Map<Color, List<double>> _computeRgbLevels(Float32List floats) {
-    final redLevels = List.filled(bins, 0);
-    final greenLevels = List.filled(bins, 0);
-    final blueLevels = List.filled(bins, 0);
-
-    final pixelCount = floats.length / 4;
-    for (var i = 0; i < pixelCount; i += 4) {
-      final a = floats[i + 3];
-      if (a > 0) {
-        final r = floats[i + 0];
-        final g = floats[i + 1];
-        final b = floats[i + 2];
-        redLevels[(r * normMax).round()]++;
-        greenLevels[(g * normMax).round()]++;
-        blueLevels[(b * normMax).round()]++;
-      }
-    }
-
-    final max = [
-      redLevels.max,
-      greenLevels.max,
-      blueLevels.max,
-    ].max;
-    if (max == 0) return {};
-
-    final f = 1.0 / max;
-    return {
-      Colors.red: redLevels.map((v) => v * f).toList(),
-      Colors.green: greenLevels.map((v) => v * f).toList(),
-      Colors.blue: blueLevels.map((v) => v * f).toList(),
-    };
-  }
-
-  Map<Color, List<double>> _computeLuminanceLevels(Float32List floats) {
-    final lumLevels = List.filled(bins, 0);
-
-    final pixelCount = floats.length / 4;
-    for (var i = 0; i < pixelCount; i += 4) {
-      final a = floats[i + 3];
-      if (a > 0) {
-        final r = floats[i + 0];
-        final g = floats[i + 1];
-        final b = floats[i + 2];
-        final c = Color.fromARGB((a * 255).round(), (r * 255).round(), (g * 255).round(), (b * 255).round());
-        lumLevels[(c.computeLuminance() * normMax).round()]++;
-      }
-    }
-
-    final max = lumLevels.max;
-    if (max == 0) return {};
-
-    final f = 1.0 / max;
-    return {
-      Colors.white: lumLevels.map((v) => v * f).toList(),
-    };
   }
 }
 
 class _HistogramPainter extends CustomPainter {
-  final Map<Color, List<double>> levels;
+  final HistogramLevels levels;
   final Color borderColor;
 
   late final Paint fill, borderStroke;
@@ -172,9 +105,14 @@ class _HistogramPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (levels.isEmpty) return;
+
     final backgroundRect = Rect.fromPoints(Offset.zero, Offset(size.width, size.height));
     canvas.drawRect(backgroundRect, fill);
-    levels.forEach((color, values) => _drawLevels(canvas, size, color, values));
+    levels.forEach((channel, values) {
+      final color = _getChannelColor(channel);
+      _drawLevels(canvas, size, color, values);
+    });
     canvas.drawRect(backgroundRect, borderStroke);
   }
 
@@ -199,6 +137,15 @@ class _HistogramPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.fill
           ..color = color.withOpacity(.5));
+  }
+
+  Color _getChannelColor(HistogramChannel channel) {
+    return switch (channel) {
+      HistogramChannel.red => Colors.red,
+      HistogramChannel.green => Colors.green,
+      HistogramChannel.blue => Colors.blue,
+      HistogramChannel.luminance => Colors.white,
+    };
   }
 
   @override
