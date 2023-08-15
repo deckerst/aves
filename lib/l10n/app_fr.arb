@@ -1348,5 +1348,13 @@
   "aboutDataUsageData": "Données",
   "@aboutDataUsageData": {},
   "aboutDataUsageCache": "Cache",
-  "@aboutDataUsageCache": {}
+  "@aboutDataUsageCache": {},
+  "overlayHistogramRGB": "RVB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramLuminance": "Luminance",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "Afficher l'histogramme",
+  "@settingsViewerShowHistogram": {},
+  "overlayHistogramNone": "Aucun",
+  "@overlayHistogramNone": {}
 }
