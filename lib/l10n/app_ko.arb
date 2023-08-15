@@ -1348,5 +1348,13 @@
   "aboutDataUsageData": "데이터",
   "@aboutDataUsageData": {},
   "aboutDataUsageCache": "캐시",
-  "@aboutDataUsageCache": {}
+  "@aboutDataUsageCache": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramNone": "없음",
+  "@overlayHistogramNone": {},
+  "overlayHistogramLuminance": "휘도",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "히스토그램 표시",
+  "@settingsViewerShowHistogram": {}
 }

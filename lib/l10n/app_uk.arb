@@ -341,7 +341,7 @@
       }
     }
   },
-  "videoResumeButtonLabel": "ПРОДОВЖИТИ",
+  "videoResumeButtonLabel": "ВІДНОВИТИ",
   "@videoResumeButtonLabel": {},
   "setCoverDialogAuto": "Авто",
   "@setCoverDialogAuto": {},
@@ -1506,5 +1506,13 @@
   "aboutDataUsageDatabase": "База даних",
   "@aboutDataUsageDatabase": {},
   "aboutDataUsageData": "Дані",
-  "@aboutDataUsageData": {}
+  "@aboutDataUsageData": {},
+  "overlayHistogramNone": "Нічого",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramLuminance": "Яскравість",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "Показати гістограму",
+  "@settingsViewerShowHistogram": {}
 }

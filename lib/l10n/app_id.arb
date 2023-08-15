@@ -1348,5 +1348,13 @@
   "aboutDataUsageMisc": "Lainnya",
   "@aboutDataUsageMisc": {},
   "aboutDataUsageInternal": "Internal",
-  "@aboutDataUsageInternal": {}
+  "@aboutDataUsageInternal": {},
+  "overlayHistogramNone": "Tidak ada",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramLuminance": "Kecerahan",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "Tampilkan histogram",
+  "@settingsViewerShowHistogram": {}
 }
