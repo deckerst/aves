@@ -92,12 +92,11 @@ class _EditEntryTitleDescriptionDialogState extends State<EditEntryTitleDescript
   }
 
   String _fieldName(DescriptionField field) {
-    switch (field) {
-      case DescriptionField.title:
-        return context.l10n.viewerInfoLabelTitle;
-      case DescriptionField.description:
-        return context.l10n.viewerInfoLabelDescription;
-    }
+    final l10n = context.l10n;
+    return switch (field) {
+      DescriptionField.title => l10n.viewerInfoLabelTitle,
+      DescriptionField.description => l10n.viewerInfoLabelDescription,
+    };
   }
 
   void _submit(BuildContext context) {

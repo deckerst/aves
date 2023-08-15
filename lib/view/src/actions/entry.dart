@@ -6,216 +6,137 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraEntryActionView on EntryAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case EntryAction.info:
-        return context.l10n.entryActionInfo;
-      case EntryAction.addShortcut:
-        return context.l10n.collectionActionAddShortcut;
-      case EntryAction.copyToClipboard:
-        return context.l10n.entryActionCopyToClipboard;
-      case EntryAction.delete:
-        return context.l10n.entryActionDelete;
-      case EntryAction.restore:
-        return context.l10n.entryActionRestore;
-      case EntryAction.convert:
-        return context.l10n.entryActionConvert;
-      case EntryAction.print:
-        return context.l10n.entryActionPrint;
-      case EntryAction.rename:
-        return context.l10n.entryActionRename;
-      case EntryAction.copy:
-        return context.l10n.collectionActionCopy;
-      case EntryAction.move:
-        return context.l10n.collectionActionMove;
-      case EntryAction.share:
-        return context.l10n.entryActionShare;
-      case EntryAction.toggleFavourite:
+    final l10n = context.l10n;
+    return switch (this) {
+      EntryAction.info => l10n.entryActionInfo,
+      EntryAction.addShortcut => l10n.collectionActionAddShortcut,
+      EntryAction.copyToClipboard => l10n.entryActionCopyToClipboard,
+      EntryAction.delete => l10n.entryActionDelete,
+      EntryAction.restore => l10n.entryActionRestore,
+      EntryAction.convert => l10n.entryActionConvert,
+      EntryAction.print => l10n.entryActionPrint,
+      EntryAction.rename => l10n.entryActionRename,
+      EntryAction.copy => l10n.collectionActionCopy,
+      EntryAction.move => l10n.collectionActionMove,
+      EntryAction.share => l10n.entryActionShare,
+      EntryAction.toggleFavourite =>
         // different data depending on toggle state
-        return context.l10n.entryActionAddFavourite;
+        l10n.entryActionAddFavourite,
       // raster
-      case EntryAction.rotateCCW:
-        return context.l10n.entryActionRotateCCW;
-      case EntryAction.rotateCW:
-        return context.l10n.entryActionRotateCW;
-      case EntryAction.flip:
-        return context.l10n.entryActionFlip;
+      EntryAction.rotateCCW => l10n.entryActionRotateCCW,
+      EntryAction.rotateCW => l10n.entryActionRotateCW,
+      EntryAction.flip => l10n.entryActionFlip,
       // vector
-      case EntryAction.viewSource:
-        return context.l10n.entryActionViewSource;
+      EntryAction.viewSource => l10n.entryActionViewSource,
       // video
-      case EntryAction.lockViewer:
-        return context.l10n.viewerActionLock;
-      case EntryAction.videoCaptureFrame:
-        return context.l10n.videoActionCaptureFrame;
-      case EntryAction.videoToggleMute:
+      EntryAction.lockViewer => l10n.viewerActionLock,
+      EntryAction.videoCaptureFrame => l10n.videoActionCaptureFrame,
+      EntryAction.videoToggleMute =>
         // different data depending on toggle state
-        return context.l10n.videoActionMute;
-      case EntryAction.videoSelectStreams:
-        return context.l10n.videoActionSelectStreams;
-      case EntryAction.videoSetSpeed:
-        return context.l10n.videoActionSetSpeed;
-      case EntryAction.videoSettings:
-        return context.l10n.viewerActionSettings;
-      case EntryAction.videoTogglePlay:
+        l10n.videoActionMute,
+      EntryAction.videoSelectStreams => l10n.videoActionSelectStreams,
+      EntryAction.videoSetSpeed => l10n.videoActionSetSpeed,
+      EntryAction.videoSettings => l10n.viewerActionSettings,
+      EntryAction.videoTogglePlay =>
         // different data depending on toggle state
-        return context.l10n.videoActionPlay;
-      case EntryAction.videoReplay10:
-        return context.l10n.videoActionReplay10;
-      case EntryAction.videoSkip10:
-        return context.l10n.videoActionSkip10;
+        l10n.videoActionPlay,
+      EntryAction.videoReplay10 => l10n.videoActionReplay10,
+      EntryAction.videoSkip10 => l10n.videoActionSkip10,
       // external
-      case EntryAction.edit:
-        return context.l10n.entryActionEdit;
-      case EntryAction.open:
-      case EntryAction.openVideo:
-        return context.l10n.entryActionOpen;
-      case EntryAction.openMap:
-        return context.l10n.entryActionOpenMap;
-      case EntryAction.setAs:
-        return context.l10n.entryActionSetAs;
+      EntryAction.edit => l10n.entryActionEdit,
+      EntryAction.open || EntryAction.openVideo => l10n.entryActionOpen,
+      EntryAction.openMap => l10n.entryActionOpenMap,
+      EntryAction.setAs => l10n.entryActionSetAs,
       // platform
-      case EntryAction.rotateScreen:
-        return context.l10n.entryActionRotateScreen;
+      EntryAction.rotateScreen => l10n.entryActionRotateScreen,
       // metadata
-      case EntryAction.editDate:
-        return context.l10n.entryInfoActionEditDate;
-      case EntryAction.editLocation:
-        return context.l10n.entryInfoActionEditLocation;
-      case EntryAction.editTitleDescription:
-        return context.l10n.entryInfoActionEditTitleDescription;
-      case EntryAction.editRating:
-        return context.l10n.entryInfoActionEditRating;
-      case EntryAction.editTags:
-        return context.l10n.entryInfoActionEditTags;
-      case EntryAction.removeMetadata:
-        return context.l10n.entryInfoActionRemoveMetadata;
-      case EntryAction.exportMetadata:
-        return context.l10n.entryInfoActionExportMetadata;
+      EntryAction.editDate => l10n.entryInfoActionEditDate,
+      EntryAction.editLocation => l10n.entryInfoActionEditLocation,
+      EntryAction.editTitleDescription => l10n.entryInfoActionEditTitleDescription,
+      EntryAction.editRating => l10n.entryInfoActionEditRating,
+      EntryAction.editTags => l10n.entryInfoActionEditTags,
+      EntryAction.removeMetadata => l10n.entryInfoActionRemoveMetadata,
+      EntryAction.exportMetadata => l10n.entryInfoActionExportMetadata,
       // metadata / GeoTIFF
-      case EntryAction.showGeoTiffOnMap:
-        return context.l10n.entryActionShowGeoTiffOnMap;
+      EntryAction.showGeoTiffOnMap => l10n.entryActionShowGeoTiffOnMap,
       // metadata / motion photo
-      case EntryAction.convertMotionPhotoToStillImage:
-        return context.l10n.entryActionConvertMotionPhotoToStillImage;
-      case EntryAction.viewMotionPhotoVideo:
-        return context.l10n.entryActionViewMotionPhotoVideo;
+      EntryAction.convertMotionPhotoToStillImage => l10n.entryActionConvertMotionPhotoToStillImage,
+      EntryAction.viewMotionPhotoVideo => l10n.entryActionViewMotionPhotoVideo,
       // debug
-      case EntryAction.debug:
-        return 'Debug';
-    }
+      EntryAction.debug => 'Debug',
+    };
   }
 
   Widget getIcon() {
     final child = Icon(getIconData());
-    switch (this) {
-      case EntryAction.debug:
-        return ShaderMask(
+    return switch (this) {
+      EntryAction.debug => ShaderMask(
           shaderCallback: AvesColorsData.debugGradient.createShader,
           blendMode: BlendMode.srcIn,
           child: child,
-        );
-      default:
-        return child;
-    }
+        ),
+      _ => child,
+    };
   }
 
   IconData getIconData() {
-    switch (this) {
-      case EntryAction.info:
-        return AIcons.info;
-      case EntryAction.addShortcut:
-        return AIcons.addShortcut;
-      case EntryAction.copyToClipboard:
-        return AIcons.clipboard;
-      case EntryAction.delete:
-        return AIcons.delete;
-      case EntryAction.restore:
-        return AIcons.restore;
-      case EntryAction.convert:
-        return AIcons.convert;
-      case EntryAction.print:
-        return AIcons.print;
-      case EntryAction.rename:
-        return AIcons.name;
-      case EntryAction.copy:
-        return AIcons.copy;
-      case EntryAction.move:
-        return AIcons.move;
-      case EntryAction.share:
-        return AIcons.share;
-      case EntryAction.toggleFavourite:
+    return switch (this) {
+      EntryAction.info => AIcons.info,
+      EntryAction.addShortcut => AIcons.addShortcut,
+      EntryAction.copyToClipboard => AIcons.clipboard,
+      EntryAction.delete => AIcons.delete,
+      EntryAction.restore => AIcons.restore,
+      EntryAction.convert => AIcons.convert,
+      EntryAction.print => AIcons.print,
+      EntryAction.rename => AIcons.name,
+      EntryAction.copy => AIcons.copy,
+      EntryAction.move => AIcons.move,
+      EntryAction.share => AIcons.share,
+      EntryAction.toggleFavourite =>
         // different data depending on toggle state
-        return AIcons.favourite;
+        AIcons.favourite,
       // raster
-      case EntryAction.rotateCCW:
-        return AIcons.rotateLeft;
-      case EntryAction.rotateCW:
-        return AIcons.rotateRight;
-      case EntryAction.flip:
-        return AIcons.flip;
+      EntryAction.rotateCCW => AIcons.rotateLeft,
+      EntryAction.rotateCW => AIcons.rotateRight,
+      EntryAction.flip => AIcons.flip,
       // vector
-      case EntryAction.viewSource:
-        return AIcons.vector;
+      EntryAction.viewSource => AIcons.vector,
       // video
-      case EntryAction.lockViewer:
-        return AIcons.viewerLock;
-      case EntryAction.videoCaptureFrame:
-        return AIcons.captureFrame;
-      case EntryAction.videoToggleMute:
+      EntryAction.lockViewer => AIcons.viewerLock,
+      EntryAction.videoCaptureFrame => AIcons.captureFrame,
+      EntryAction.videoToggleMute =>
         // different data depending on toggle state
-        return AIcons.mute;
-      case EntryAction.videoSelectStreams:
-        return AIcons.streams;
-      case EntryAction.videoSetSpeed:
-        return AIcons.speed;
-      case EntryAction.videoSettings:
-        return AIcons.videoSettings;
-      case EntryAction.videoTogglePlay:
+        AIcons.mute,
+      EntryAction.videoSelectStreams => AIcons.streams,
+      EntryAction.videoSetSpeed => AIcons.speed,
+      EntryAction.videoSettings => AIcons.videoSettings,
+      EntryAction.videoTogglePlay =>
         // different data depending on toggle state
-        return AIcons.play;
-      case EntryAction.videoReplay10:
-        return AIcons.replay10;
-      case EntryAction.videoSkip10:
-        return AIcons.skip10;
+        AIcons.play,
+      EntryAction.videoReplay10 => AIcons.replay10,
+      EntryAction.videoSkip10 => AIcons.skip10,
       // external
-      case EntryAction.edit:
-        return AIcons.edit;
-      case EntryAction.open:
-      case EntryAction.openVideo:
-        return AIcons.openOutside;
-      case EntryAction.openMap:
-        return AIcons.map;
-      case EntryAction.setAs:
-        return AIcons.setAs;
+      EntryAction.edit => AIcons.edit,
+      EntryAction.open || EntryAction.openVideo => AIcons.openOutside,
+      EntryAction.openMap => AIcons.map,
+      EntryAction.setAs => AIcons.setAs,
       // platform
-      case EntryAction.rotateScreen:
-        return AIcons.rotateScreen;
+      EntryAction.rotateScreen => AIcons.rotateScreen,
       // metadata
-      case EntryAction.editDate:
-        return AIcons.date;
-      case EntryAction.editLocation:
-        return AIcons.location;
-      case EntryAction.editTitleDescription:
-        return AIcons.description;
-      case EntryAction.editRating:
-        return AIcons.rating;
-      case EntryAction.editTags:
-        return AIcons.tag;
-      case EntryAction.removeMetadata:
-        return AIcons.clear;
-      case EntryAction.exportMetadata:
-        return AIcons.fileExport;
+      EntryAction.editDate => AIcons.date,
+      EntryAction.editLocation => AIcons.location,
+      EntryAction.editTitleDescription => AIcons.description,
+      EntryAction.editRating => AIcons.rating,
+      EntryAction.editTags => AIcons.tag,
+      EntryAction.removeMetadata => AIcons.clear,
+      EntryAction.exportMetadata => AIcons.fileExport,
       // metadata / GeoTIFF
-      case EntryAction.showGeoTiffOnMap:
-        return AIcons.map;
+      EntryAction.showGeoTiffOnMap => AIcons.map,
       // metadata / motion photo
-      case EntryAction.convertMotionPhotoToStillImage:
-        return AIcons.convertToStillImage;
-      case EntryAction.viewMotionPhotoVideo:
-        return AIcons.openVideo;
+      EntryAction.convertMotionPhotoToStillImage => AIcons.convertToStillImage,
+      EntryAction.viewMotionPhotoVideo => AIcons.openVideo,
       // debug
-      case EntryAction.debug:
-        return AIcons.debug;
-    }
+      EntryAction.debug => AIcons.debug,
+    };
   }
 }

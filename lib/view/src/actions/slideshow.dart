@@ -5,26 +5,21 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraSlideshowActionView on SlideshowAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case SlideshowAction.resume:
-        return context.l10n.slideshowActionResume;
-      case SlideshowAction.showInCollection:
-        return context.l10n.slideshowActionShowInCollection;
-      case SlideshowAction.settings:
-        return context.l10n.viewerActionSettings;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      SlideshowAction.resume => l10n.slideshowActionResume,
+      SlideshowAction.showInCollection => l10n.slideshowActionShowInCollection,
+      SlideshowAction.settings => l10n.viewerActionSettings,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
-    switch (this) {
-      case SlideshowAction.resume:
-        return AIcons.play;
-      case SlideshowAction.showInCollection:
-        return AIcons.allCollection;
-      case SlideshowAction.settings:
-        return AIcons.settings;
-    }
+    return switch (this) {
+      SlideshowAction.resume => AIcons.play,
+      SlideshowAction.showInCollection => AIcons.allCollection,
+      SlideshowAction.settings => AIcons.settings,
+    };
   }
 }

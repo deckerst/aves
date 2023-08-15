@@ -5,106 +5,69 @@ import 'package:flutter/material.dart';
 
 extension ExtraChipSetActionView on ChipSetAction {
   String getText(BuildContext context) {
-    switch (this) {
+    final l10n = context.l10n;
+    return switch (this) {
       // general
-      case ChipSetAction.configureView:
-        return context.l10n.menuActionConfigureView;
-      case ChipSetAction.select:
-        return context.l10n.menuActionSelect;
-      case ChipSetAction.selectAll:
-        return context.l10n.menuActionSelectAll;
-      case ChipSetAction.selectNone:
-        return context.l10n.menuActionSelectNone;
+      ChipSetAction.configureView => l10n.menuActionConfigureView,
+      ChipSetAction.select => l10n.menuActionSelect,
+      ChipSetAction.selectAll => l10n.menuActionSelectAll,
+      ChipSetAction.selectNone => l10n.menuActionSelectNone,
       // browsing
-      case ChipSetAction.search:
-        return MaterialLocalizations.of(context).searchFieldLabel;
-      case ChipSetAction.toggleTitleSearch:
+      ChipSetAction.search => MaterialLocalizations.of(context).searchFieldLabel,
+      ChipSetAction.toggleTitleSearch =>
         // different data depending on toggle state
-        return context.l10n.collectionActionShowTitleSearch;
-      case ChipSetAction.createAlbum:
-        return context.l10n.chipActionCreateAlbum;
-      case ChipSetAction.createVault:
-        return context.l10n.chipActionCreateVault;
+        l10n.collectionActionShowTitleSearch,
+      ChipSetAction.createAlbum => l10n.chipActionCreateAlbum,
+      ChipSetAction.createVault => l10n.chipActionCreateVault,
       // browsing or selecting
-      case ChipSetAction.map:
-        return context.l10n.menuActionMap;
-      case ChipSetAction.slideshow:
-        return context.l10n.menuActionSlideshow;
-      case ChipSetAction.stats:
-        return context.l10n.menuActionStats;
+      ChipSetAction.map => l10n.menuActionMap,
+      ChipSetAction.slideshow => l10n.menuActionSlideshow,
+      ChipSetAction.stats => l10n.menuActionStats,
       // selecting (single/multiple filters)
-      case ChipSetAction.delete:
-        return context.l10n.chipActionDelete;
-      case ChipSetAction.hide:
-        return context.l10n.chipActionHide;
-      case ChipSetAction.pin:
-        return context.l10n.chipActionPin;
-      case ChipSetAction.unpin:
-        return context.l10n.chipActionUnpin;
-      case ChipSetAction.lockVault:
-        return context.l10n.chipActionLock;
-      case ChipSetAction.showCountryStates:
-        return context.l10n.chipActionShowCountryStates;
+      ChipSetAction.delete => l10n.chipActionDelete,
+      ChipSetAction.hide => l10n.chipActionHide,
+      ChipSetAction.pin => l10n.chipActionPin,
+      ChipSetAction.unpin => l10n.chipActionUnpin,
+      ChipSetAction.lockVault => l10n.chipActionLock,
+      ChipSetAction.showCountryStates => l10n.chipActionShowCountryStates,
       // selecting (single filter)
-      case ChipSetAction.rename:
-        return context.l10n.chipActionRename;
-      case ChipSetAction.setCover:
-        return context.l10n.chipActionSetCover;
-      case ChipSetAction.configureVault:
-        return context.l10n.chipActionConfigureVault;
-    }
+      ChipSetAction.rename => l10n.chipActionRename,
+      ChipSetAction.setCover => l10n.chipActionSetCover,
+      ChipSetAction.configureVault => l10n.chipActionConfigureVault,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
-    switch (this) {
+    return switch (this) {
       // general
-      case ChipSetAction.configureView:
-        return AIcons.view;
-      case ChipSetAction.select:
-        return AIcons.select;
-      case ChipSetAction.selectAll:
-        return AIcons.selected;
-      case ChipSetAction.selectNone:
-        return AIcons.unselected;
+      ChipSetAction.configureView => AIcons.view,
+      ChipSetAction.select => AIcons.select,
+      ChipSetAction.selectAll => AIcons.selected,
+      ChipSetAction.selectNone => AIcons.unselected,
       // browsing
-      case ChipSetAction.search:
-        return AIcons.search;
-      case ChipSetAction.toggleTitleSearch:
+      ChipSetAction.search => AIcons.search,
+      ChipSetAction.toggleTitleSearch =>
         // different data depending on toggle state
-        return AIcons.filter;
-      case ChipSetAction.createAlbum:
-        return AIcons.add;
-      case ChipSetAction.createVault:
-        return AIcons.vaultAdd;
+        AIcons.filter,
+      ChipSetAction.createAlbum => AIcons.add,
+      ChipSetAction.createVault => AIcons.vaultAdd,
       // browsing or selecting
-      case ChipSetAction.map:
-        return AIcons.map;
-      case ChipSetAction.slideshow:
-        return AIcons.slideshow;
-      case ChipSetAction.stats:
-        return AIcons.stats;
+      ChipSetAction.map => AIcons.map,
+      ChipSetAction.slideshow => AIcons.slideshow,
+      ChipSetAction.stats => AIcons.stats,
       // selecting (single/multiple filters)
-      case ChipSetAction.delete:
-        return AIcons.delete;
-      case ChipSetAction.hide:
-        return AIcons.hide;
-      case ChipSetAction.pin:
-        return AIcons.pin;
-      case ChipSetAction.unpin:
-        return AIcons.unpin;
-      case ChipSetAction.lockVault:
-        return AIcons.vaultLock;
-      case ChipSetAction.showCountryStates:
-        return AIcons.state;
+      ChipSetAction.delete => AIcons.delete,
+      ChipSetAction.hide => AIcons.hide,
+      ChipSetAction.pin => AIcons.pin,
+      ChipSetAction.unpin => AIcons.unpin,
+      ChipSetAction.lockVault => AIcons.vaultLock,
+      ChipSetAction.showCountryStates => AIcons.state,
       // selecting (single filter)
-      case ChipSetAction.rename:
-        return AIcons.name;
-      case ChipSetAction.setCover:
-        return AIcons.setCover;
-      case ChipSetAction.configureVault:
-        return AIcons.vaultConfigure;
-    }
+      ChipSetAction.rename => AIcons.name,
+      ChipSetAction.setCover => AIcons.setCover,
+      ChipSetAction.configureVault => AIcons.vaultConfigure,
+    };
   }
 }

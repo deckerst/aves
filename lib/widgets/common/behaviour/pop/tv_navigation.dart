@@ -30,13 +30,10 @@ class TvNavigationPopHandler {
 
     if (currentRoute != homePage.routeName) return false;
 
-    switch (homePage) {
-      case HomePageSetting.collection:
-        return context.read<CollectionLens>().filters.isEmpty;
-      case HomePageSetting.albums:
-      case HomePageSetting.tags:
-        return true;
-    }
+    return switch (homePage) {
+      HomePageSetting.collection => context.read<CollectionLens>().filters.isEmpty,
+      HomePageSetting.albums || HomePageSetting.tags => true,
+    };
   }
 
   static Route _getHomeRoute() {
@@ -46,13 +43,10 @@ class TvNavigationPopHandler {
           builder: builder,
         );
 
-    switch (homePage) {
-      case HomePageSetting.collection:
-        return buildRoute((context) => CollectionPage(source: context.read<CollectionSource>(), filters: null));
-      case HomePageSetting.albums:
-        return buildRoute((context) => const AlbumListPage());
-      case HomePageSetting.tags:
-        return buildRoute((context) => const TagListPage());
-    }
+    return switch (homePage) {
+      HomePageSetting.collection => buildRoute((context) => CollectionPage(source: context.read<CollectionSource>(), filters: null)),
+      HomePageSetting.albums => buildRoute((context) => const AlbumListPage()),
+      HomePageSetting.tags => buildRoute((context) => const TagListPage()),
+    };
   }
 }

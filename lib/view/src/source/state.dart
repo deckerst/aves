@@ -3,17 +3,12 @@ import 'package:aves_model/aves_model.dart';
 
 extension ExtraSourceStateView on SourceState {
   String? getName(AppLocalizations l10n) {
-    switch (this) {
-      case SourceState.loading:
-        return l10n.sourceStateLoading;
-      case SourceState.cataloguing:
-        return l10n.sourceStateCataloguing;
-      case SourceState.locatingCountries:
-        return l10n.sourceStateLocatingCountries;
-      case SourceState.locatingPlaces:
-        return l10n.sourceStateLocatingPlaces;
-      case SourceState.ready:
-        return null;
-    }
+    return switch (this) {
+      SourceState.loading => l10n.sourceStateLoading,
+      SourceState.cataloguing => l10n.sourceStateCataloguing,
+      SourceState.locatingCountries => l10n.sourceStateLocatingCountries,
+      SourceState.locatingPlaces => l10n.sourceStateLocatingPlaces,
+      SourceState.ready => null,
+    };
   }
 }

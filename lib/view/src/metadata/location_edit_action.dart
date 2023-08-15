@@ -4,15 +4,12 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraLocationEditActionView on LocationEditAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case LocationEditAction.chooseOnMap:
-        return context.l10n.editEntryLocationDialogChooseOnMap;
-      case LocationEditAction.copyItem:
-        return context.l10n.editEntryDialogCopyFromItem;
-      case LocationEditAction.setCustom:
-        return context.l10n.editEntryLocationDialogSetCustom;
-      case LocationEditAction.remove:
-        return context.l10n.actionRemove;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      LocationEditAction.chooseOnMap => l10n.editEntryLocationDialogChooseOnMap,
+      LocationEditAction.copyItem => l10n.editEntryDialogCopyFromItem,
+      LocationEditAction.setCustom => l10n.editEntryLocationDialogSetCustom,
+      LocationEditAction.remove => l10n.actionRemove,
+    };
   }
 }

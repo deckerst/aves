@@ -4,21 +4,14 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraAlbumTypeView on AlbumType {
   String? getName(BuildContext context) {
-    switch (this) {
-      case AlbumType.camera:
-        return context.l10n.albumCamera;
-      case AlbumType.download:
-        return context.l10n.albumDownload;
-      case AlbumType.screenshots:
-        return context.l10n.albumScreenshots;
-      case AlbumType.screenRecordings:
-        return context.l10n.albumScreenRecordings;
-      case AlbumType.videoCaptures:
-        return context.l10n.albumVideoCaptures;
-      case AlbumType.regular:
-      case AlbumType.vault:
-      case AlbumType.app:
-        return null;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      AlbumType.camera => l10n.albumCamera,
+      AlbumType.download => l10n.albumDownload,
+      AlbumType.screenshots => l10n.albumScreenshots,
+      AlbumType.screenRecordings => l10n.albumScreenRecordings,
+      AlbumType.videoCaptures => l10n.albumVideoCaptures,
+      AlbumType.regular || AlbumType.vault || AlbumType.app => null,
+    };
   }
 }

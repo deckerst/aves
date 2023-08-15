@@ -1678,20 +1678,6 @@
     "settingsViewerShowHistogram"
   ],
 
-  "es": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
-  ],
-
-  "eu": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
-  ],
-
   "fa": [
     "saveCopyButtonLabel",
     "applyTooltip",
@@ -2205,13 +2191,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
   ],
 
   "gl": [
@@ -4100,13 +4079,6 @@
     "settingsViewerShowHistogram"
   ],
 
-  "id": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
-  ],
-
   "it": [
     "overlayHistogramNone",
     "overlayHistogramRGB",
@@ -4823,13 +4795,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "ko": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
   ],
 
   "lt": [
@@ -6235,53 +6200,23 @@
   ],
 
   "nb": [
-    "saveCopyButtonLabel",
-    "applyTooltip",
-    "chipActionShowCountryStates",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
-    "editorTransformCrop",
-    "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
     "cropAspectRatioSquare",
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
     "overlayHistogramNone",
-    "overlayHistogramRGB",
     "overlayHistogramLuminance",
-    "vaultLockTypePattern",
     "settingsVideoEnablePip",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
     "widgetTapUpdateWidget",
     "patternDialogEnter",
-    "patternDialogConfirm",
-    "exportEntryDialogQuality",
-    "aboutDataUsageSectionTitle",
-    "aboutDataUsageData",
-    "aboutDataUsageCache",
-    "aboutDataUsageDatabase",
-    "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
-    "statePageTitle",
-    "stateEmpty",
-    "searchStatesSectionTitle",
-    "settingsAskEverytime",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
-    "settingsVideoPlaybackTile",
-    "settingsVideoPlaybackPageTitle",
-    "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle",
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle",
-    "statsTopStatesSectionTitle",
-    "tagEditorDiscardDialogMessage",
-    "tagPlaceholderState"
+    "statsTopStatesSectionTitle"
   ],
 
   "nl": [
@@ -8690,13 +8625,6 @@
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
-  ],
-
-  "uk": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
   ],
 
   "zh": [

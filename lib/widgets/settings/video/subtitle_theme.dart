@@ -97,15 +97,12 @@ class SubtitleThemePage extends StatelessWidget {
   }
 
   String _getTextAlignName(BuildContext context, TextAlign align) {
-    switch (align) {
-      case TextAlign.left:
-        return context.l10n.settingsSubtitleThemeTextAlignmentLeft;
-      case TextAlign.center:
-        return context.l10n.settingsSubtitleThemeTextAlignmentCenter;
-      case TextAlign.right:
-        return context.l10n.settingsSubtitleThemeTextAlignmentRight;
-      default:
-        return '';
-    }
+    final l10n = context.l10n;
+    return switch (align) {
+      TextAlign.left => l10n.settingsSubtitleThemeTextAlignmentLeft,
+      TextAlign.center => l10n.settingsSubtitleThemeTextAlignmentCenter,
+      TextAlign.right => l10n.settingsSubtitleThemeTextAlignmentRight,
+      _ => '',
+    };
   }
 }
