@@ -68,14 +68,12 @@ class MimeFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    switch (mime) {
-      case MimeTypes.anyImage:
-        return context.l10n.filterMimeImageLabel;
-      case MimeTypes.anyVideo:
-        return context.l10n.filterMimeVideoLabel;
-      default:
-        return _label;
-    }
+    final l10n = context.l10n;
+    return switch (mime) {
+      MimeTypes.anyImage => l10n.filterMimeImageLabel,
+      MimeTypes.anyVideo => l10n.filterMimeVideoLabel,
+      _ => _label,
+    };
   }
 
   @override

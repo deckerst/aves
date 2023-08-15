@@ -4,11 +4,10 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraLengthUnitView on LengthUnit {
   String getText(BuildContext context) {
-    switch (this) {
-      case LengthUnit.px:
-        return context.l10n.lengthUnitPixel;
-      case LengthUnit.percent:
-        return context.l10n.lengthUnitPercent;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      LengthUnit.px => l10n.lengthUnitPixel,
+      LengthUnit.percent => l10n.lengthUnitPercent,
+    };
   }
 }

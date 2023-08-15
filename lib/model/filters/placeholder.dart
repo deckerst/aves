@@ -86,16 +86,13 @@ class PlaceholderFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    switch (placeholder) {
-      case _country:
-        return context.l10n.tagPlaceholderCountry;
-      case _state:
-        return context.l10n.tagPlaceholderState;
-      case _place:
-        return context.l10n.tagPlaceholderPlace;
-      default:
-        return placeholder;
-    }
+    final l10n = context.l10n;
+    return switch (placeholder) {
+      _country => l10n.tagPlaceholderCountry,
+      _state => l10n.tagPlaceholderState,
+      _place => l10n.tagPlaceholderPlace,
+      _ => placeholder,
+    };
   }
 
   @override

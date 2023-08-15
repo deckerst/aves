@@ -68,18 +68,13 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   CollectionSource get source => widget.source;
 
   String get title {
-    switch (widget.moveType) {
-      case MoveType.copy:
-        return context.l10n.albumPickPageTitleCopy;
-      case MoveType.move:
-        return context.l10n.albumPickPageTitleMove;
-      case MoveType.export:
-        return context.l10n.albumPickPageTitleExport;
-      case MoveType.toBin:
-      case MoveType.fromBin:
-      case null:
-        return context.l10n.albumPickPageTitlePick;
-    }
+    final l10n = context.l10n;
+    return switch (widget.moveType) {
+      MoveType.copy => l10n.albumPickPageTitleCopy,
+      MoveType.move => l10n.albumPickPageTitleMove,
+      MoveType.export => l10n.albumPickPageTitleExport,
+      MoveType.toBin || MoveType.fromBin || null => l10n.albumPickPageTitlePick,
+    };
   }
 
   static const _quickActions = [

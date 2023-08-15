@@ -9,25 +9,20 @@ enum AppExportItem { covers, favourites, settings }
 
 extension ExtraAppExportItem on AppExportItem {
   String getText(BuildContext context) {
-    switch (this) {
-      case AppExportItem.covers:
-        return context.l10n.appExportCovers;
-      case AppExportItem.favourites:
-        return context.l10n.appExportFavourites;
-      case AppExportItem.settings:
-        return context.l10n.appExportSettings;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      AppExportItem.covers => l10n.appExportCovers,
+      AppExportItem.favourites => l10n.appExportFavourites,
+      AppExportItem.settings => l10n.appExportSettings,
+    };
   }
 
   dynamic export(CollectionSource source) {
-    switch (this) {
-      case AppExportItem.covers:
-        return covers.export(source);
-      case AppExportItem.favourites:
-        return favourites.export(source);
-      case AppExportItem.settings:
-        return settings.export();
-    }
+    return switch (this) {
+      AppExportItem.covers => covers.export(source),
+      AppExportItem.favourites => favourites.export(source),
+      AppExportItem.settings => settings.export(),
+    };
   }
 
   Future<void> import(dynamic jsonMap, CollectionSource source) async {

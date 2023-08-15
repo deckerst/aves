@@ -5,22 +5,19 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraMapClusterActionView on MapClusterAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case MapClusterAction.editLocation:
-        return context.l10n.entryInfoActionEditLocation;
-      case MapClusterAction.removeLocation:
-        return context.l10n.entryInfoActionRemoveLocation;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      MapClusterAction.editLocation => l10n.entryInfoActionEditLocation,
+      MapClusterAction.removeLocation => l10n.entryInfoActionRemoveLocation,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
-    switch (this) {
-      case MapClusterAction.editLocation:
-        return AIcons.edit;
-      case MapClusterAction.removeLocation:
-        return AIcons.clear;
-    }
+    return switch (this) {
+      MapClusterAction.editLocation => AIcons.edit,
+      MapClusterAction.removeLocation => AIcons.clear,
+    };
   }
 }

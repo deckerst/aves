@@ -60,16 +60,13 @@ class MissingFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    switch (metadataType) {
-      case _date:
-        return context.l10n.filterNoDateLabel;
-      case _fineAddress:
-        return context.l10n.filterNoAddressLabel;
-      case _title:
-        return context.l10n.filterNoTitleLabel;
-      default:
-        return metadataType;
-    }
+    final l10n = context.l10n;
+    return switch (metadataType) {
+      _date => l10n.filterNoDateLabel,
+      _fineAddress => l10n.filterNoAddressLabel,
+      _title => l10n.filterNoTitleLabel,
+      _ => metadataType,
+    };
   }
 
   @override

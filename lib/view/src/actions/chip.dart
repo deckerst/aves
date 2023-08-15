@@ -5,27 +5,22 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraChipActionView on ChipAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case ChipAction.goToAlbumPage:
-        return context.l10n.chipActionGoToAlbumPage;
-      case ChipAction.goToCountryPage:
-        return context.l10n.chipActionGoToCountryPage;
-      case ChipAction.goToPlacePage:
-        return context.l10n.chipActionGoToPlacePage;
-      case ChipAction.goToTagPage:
-        return context.l10n.chipActionGoToTagPage;
-      case ChipAction.ratingOrGreater:
-      case ChipAction.ratingOrLower:
+    final l10n = context.l10n;
+    return switch (this) {
+      ChipAction.goToAlbumPage => l10n.chipActionGoToAlbumPage,
+      ChipAction.goToCountryPage => l10n.chipActionGoToCountryPage,
+      ChipAction.goToPlacePage => l10n.chipActionGoToPlacePage,
+      ChipAction.goToTagPage => l10n.chipActionGoToTagPage,
+      ChipAction.ratingOrGreater ||
+      ChipAction.ratingOrLower =>
         // different data depending on state
-        return toString();
-      case ChipAction.reverse:
+        toString(),
+      ChipAction.reverse =>
         // different data depending on state
-        return context.l10n.chipActionFilterOut;
-      case ChipAction.hide:
-        return context.l10n.chipActionHide;
-      case ChipAction.lockVault:
-        return context.l10n.chipActionLock;
-    }
+        l10n.chipActionFilterOut,
+      ChipAction.hide => l10n.chipActionHide,
+      ChipAction.lockVault => l10n.chipActionLock,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
