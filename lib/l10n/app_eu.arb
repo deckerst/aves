@@ -1506,5 +1506,13 @@
   "aboutDataUsageExternal": "Kanpokoa",
   "@aboutDataUsageExternal": {},
   "aboutDataUsageCache": "Cachea",
-  "@aboutDataUsageCache": {}
+  "@aboutDataUsageCache": {},
+  "overlayHistogramLuminance": "Luminantzia",
+  "@overlayHistogramLuminance": {},
+  "overlayHistogramNone": "Bat ere ez",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "settingsViewerShowHistogram": "Erakutsi histograma",
+  "@settingsViewerShowHistogram": {}
 }

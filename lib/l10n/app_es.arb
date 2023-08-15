@@ -1348,5 +1348,13 @@
   "aboutDataUsageSectionTitle": "Uso de los datos",
   "@aboutDataUsageSectionTitle": {},
   "aboutDataUsageMisc": "Varios",
-  "@aboutDataUsageMisc": {}
+  "@aboutDataUsageMisc": {},
+  "overlayHistogramLuminance": "Luminancia",
+  "@overlayHistogramLuminance": {},
+  "overlayHistogramNone": "Ninguna",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "settingsViewerShowHistogram": "Mostrar el histograma",
+  "@settingsViewerShowHistogram": {}
 }
