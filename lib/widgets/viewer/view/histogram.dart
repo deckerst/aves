@@ -18,8 +18,8 @@ mixin HistogramMixin {
   static const int bins = 256;
   static const int normMax = bins - 1;
 
-  Future<HistogramLevels> getHistogramLevels(ImageInfo info) async {
-    if (_levels.isEmpty) {
+  Future<HistogramLevels> getHistogramLevels(ImageInfo info, bool forceUpdate) async {
+    if (_levels.isEmpty || forceUpdate) {
       if (_completer == null) {
         _completer = Completer();
         final data = (await info.image.toByteData(format: ImageByteFormat.rawExtendedRgba128))!;
@@ -31,6 +31,7 @@ mixin HistogramMixin {
         _completer?.complete();
       } else {
         await _completer?.future;
+        _completer = null;
       }
     }
     return _levels;
