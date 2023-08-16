@@ -12,7 +12,6 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ViewerDebugPage extends StatelessWidget {
   static const routeName = '/viewer/debug';
@@ -26,11 +25,11 @@ class ViewerDebugPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = <Tuple2<Tab, Widget>>[
-      Tuple2(const Tab(text: 'Entry'), _buildEntryTabView()),
-      if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) Tuple2(const Tab(text: 'DB'), DbTab(entry: entry)),
-      Tuple2(const Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
-      Tuple2(const Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
+    final tabs = <(Tab, Widget)>[
+      (const Tab(text: 'Entry'), _buildEntryTabView()),
+      if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) (const Tab(text: 'DB'), DbTab(entry: entry)),
+      (const Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
+      (const Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
     ];
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -40,12 +39,12 @@ class ViewerDebugPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Debug'),
             bottom: TabBar(
-              tabs: tabs.map((t) => t.item1).toList(),
+              tabs: tabs.map((t) => t.$1).toList(),
             ),
           ),
           body: SafeArea(
             child: TabBarView(
-              children: tabs.map((t) => t.item2).toList(),
+              children: tabs.map((t) => t.$2).toList(),
             ),
           ),
         ),

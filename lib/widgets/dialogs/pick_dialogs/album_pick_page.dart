@@ -27,7 +27,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 Future<String?> pickAlbum({
   required BuildContext context,
@@ -94,8 +93,8 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.pickFilterInternal),
-      child: Selector<Settings, Tuple2<AlbumChipGroupFactor, ChipSortFactor>>(
-        selector: (context, s) => Tuple2(s.albumGroupFactor, s.albumSortFactor),
+      child: Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor)>(
+        selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor),
         builder: (context, s, child) {
           return StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),

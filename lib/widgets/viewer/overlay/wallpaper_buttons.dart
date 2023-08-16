@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class WallpaperButtons extends StatelessWidget with FeedbackMixin {
   final AvesEntry entry;
@@ -57,15 +56,12 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
 
   Future<void> _setWallpaper(BuildContext context) async {
     final l10n = context.l10n;
-    final value = await showDialog<Tuple2<WallpaperTarget, bool>>(
+    final value = await showDialog<(WallpaperTarget, bool)>(
       context: context,
       builder: (context) => const WallpaperSettingsDialog(),
       routeSettings: const RouteSettings(name: WallpaperSettingsDialog.routeName),
     );
     if (value == null) return;
-
-    final target = value.item1;
-    final useScrollEffect = value.item2;
 
     final reportController = StreamController.broadcast();
     unawaited(showOpReport(
@@ -76,6 +72,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     var region = _getVisibleRegion(context);
     if (region == null) return;
 
+    final (target, useScrollEffect) = value;
     if (useScrollEffect) {
       final deltaX = min(region.left, entry.displaySize.width - region.right);
       region = Rect.fromLTRB(region.left - deltaX, region.top, region.right + deltaX, region.bottom);

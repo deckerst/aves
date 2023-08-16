@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:aves/utils/diff_match.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tuple/tuple.dart';
 
 class AnimatedDiffText extends StatefulWidget {
   final String text;
@@ -71,10 +70,7 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
         return Text.rich(
           TextSpan(
             children: _diffs.map((diff) {
-              final oldText = diff.item1;
-              final newText = diff.item2;
-              final oldSize = diff.item3;
-              final newSize = diff.item4;
+              final (oldText, newText, oldSize, newSize) = diff;
               final text = (_animation.value == 0 ? oldText : newText) ?? '';
               return WidgetSpan(
                 child: AnimatedSize(
@@ -144,26 +140,22 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
       ..addAll(d.map((diff) {
         final text = diff.text;
         final size = textSize(text);
-        switch (diff.operation) {
-          case Operation.delete:
-            return Tuple4(text, null, size, Size.zero);
-          case Operation.insert:
-            return Tuple4(null, text, Size.zero, size);
-          case Operation.equal:
-          default:
-            return Tuple4(text, text, size, size);
-        }
+        return switch (diff.operation) {
+          Operation.delete => (text, null, size, Size.zero),
+          Operation.insert => (null, text, Size.zero, size),
+          Operation.equal || _ => (text, text, size, size),
+        };
       }).fold<List<_TextDiff>>([], (prev, v) {
         if (prev.isNotEmpty) {
           final last = prev.last;
-          final prevNewText = last.item2;
+          final prevNewText = last.$2;
           if (prevNewText == null) {
             // previous diff is a deletion
-            final thisOldText = v.item1;
+            final thisOldText = v.$1;
             if (thisOldText == null) {
               // this diff is an insertion
               // merge deletion and insertion as a change operation
-              final change = Tuple4(last.item1, v.item2, last.item3, v.item4);
+              final change = (last.$1, v.$2, last.$3, v.$4);
               return [...prev.take(prev.length - 1), change];
             }
           }
@@ -173,4 +165,4 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
   }
 }
 
-typedef _TextDiff = Tuple4<String?, String?, Size, Size>;
+typedef _TextDiff = (String?, String?, Size, Size);

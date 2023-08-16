@@ -6,7 +6,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 typedef TileBuilder<T> = Widget Function(T item, Size tileSize);
 
@@ -54,7 +53,7 @@ abstract class SectionLayoutBuilder<T> {
     required List<T> section,
     required int sectionGridIndex,
     required int sectionChildIndex,
-    required Tuple2<int, int> Function() itemIndexRange,
+    required (int, int) Function() itemIndexRange,
     required SectionKey sectionKey,
     required double headerExtent,
     required List<Size> itemSizes,
@@ -68,8 +67,8 @@ abstract class SectionLayoutBuilder<T> {
 
     final sectionItemCount = section.length;
     final itemMinMax = itemIndexRange();
-    final minItemIndex = itemMinMax.item1.clamp(0, sectionItemCount);
-    final maxItemIndex = itemMinMax.item2.clamp(0, sectionItemCount);
+    final minItemIndex = itemMinMax.$1.clamp(0, sectionItemCount);
+    final maxItemIndex = itemMinMax.$2.clamp(0, sectionItemCount);
     final childrenCount = maxItemIndex - minItemIndex;
     final children = <Widget>[];
     for (var i = 0; i < childrenCount; i++) {

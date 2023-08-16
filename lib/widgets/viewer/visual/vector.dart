@@ -12,7 +12,6 @@ import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 class VectorImageView extends StatefulWidget {
   final AvesEntry entry;
@@ -233,10 +232,11 @@ class _VectorImageViewState extends State<VectorImageView> {
             viewRect: viewRect,
           );
           if (rects != null) {
+            final (tileRect, regionRect) = rects;
             tiles.add(_RegionTile(
               entry: entry,
-              tileRect: rects.item1,
-              regionRect: rects.item2,
+              tileRect: tileRect,
+              regionRect: regionRect,
               scale: svgScale,
               backgroundColor: backgroundColor,
               backgroundFrameBuilder: backgroundFrameBuilder,
@@ -259,7 +259,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     return viewOrigin & viewportSize;
   }
 
-  Tuple2<Rect, Rectangle<double>>? _getTileRects({
+  (Rect tileRect, Rectangle<double> regionRect)? _getTileRects({
     required double x,
     required double y,
     required double regionSide,
@@ -278,7 +278,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     if (!viewRect.overlaps(tileRect)) return null;
 
     final regionRect = Rectangle<double>(x, y, thisRegionWidth, thisRegionHeight);
-    return Tuple2<Rect, Rectangle<double>>(tileRect, regionRect);
+    return (tileRect, regionRect);
   }
 
   double _imageScaleForViewScale({
