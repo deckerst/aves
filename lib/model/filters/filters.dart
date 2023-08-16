@@ -157,7 +157,7 @@ abstract class CoveredCollectionFilter extends CollectionFilter {
 
   @override
   Future<Color> color(BuildContext context) {
-    final customColor = covers.of(this)?.item3;
+    final customColor = covers.of(this)?.$3;
     if (customColor != null) {
       return SynchronousFuture(customColor);
     }
