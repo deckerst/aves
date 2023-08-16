@@ -70,8 +70,8 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
 
     final extentController = tileExtentController;
     final columnRange = extentController.effectiveColumnRange;
-    _columnMin = columnRange.item1;
-    _columnMax = columnRange.item2;
+    _columnMin = columnRange.$1;
+    _columnMax = columnRange.$2;
   }
 
   @override

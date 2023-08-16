@@ -326,15 +326,15 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     if (!await unlockFilter(context, filter)) return;
 
     final existingCover = covers.of(filter);
-    final entryId = existingCover?.item1;
+    final entryId = existingCover?.$1;
     final customEntry = entryId != null ? context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId) : null;
     final selectedCover = await showDialog<Tuple3<AvesEntry?, String?, Color?>>(
       context: context,
       builder: (context) => CoverSelectionDialog(
         filter: filter,
         customEntry: customEntry,
-        customPackage: existingCover?.item2,
-        customColor: existingCover?.item3,
+        customPackage: existingCover?.$2,
+        customColor: existingCover?.$3,
       ),
       routeSettings: const RouteSettings(name: CoverSelectionDialog.routeName),
     );

@@ -64,7 +64,7 @@ class AlbumFilter extends CoveredCollectionFilter {
   @override
   Future<Color> color(BuildContext context) {
     // custom color has precedence over others, even custom app color
-    final customColor = covers.of(this)?.item3;
+    final customColor = covers.of(this)?.$3;
     if (customColor != null) return SynchronousFuture(customColor);
 
     final colors = context.read<AvesColorsData>();

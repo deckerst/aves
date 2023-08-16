@@ -14,7 +14,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:tuple/tuple.dart';
 
 mixin LocationMixin on CountryMixin, StateMixin {
   static const commitCountThreshold = 200;
@@ -96,16 +95,16 @@ mixin LocationMixin on CountryMixin, StateMixin {
     // -  652 calls (22%) when approximating to 2 decimal places (~1km - town or village)
     // cf https://en.wikipedia.org/wiki/Decimal_degrees#Precision
     final latLngFactor = pow(10, 2);
-    Tuple2<int, int> approximateLatLng(AvesEntry entry) {
+    (int latitude, int longitude) approximateLatLng(AvesEntry entry) {
       // entry has coordinates
       final catalogMetadata = entry.catalogMetadata!;
       final lat = catalogMetadata.latitude!;
       final lng = catalogMetadata.longitude!;
-      return Tuple2<int, int>((lat * latLngFactor).round(), (lng * latLngFactor).round());
+      return ((lat * latLngFactor).round(), (lng * latLngFactor).round());
     }
 
     final located = visibleEntries.where((entry) => entry.hasGps).toSet().difference(todo);
-    final knownLocations = <Tuple2<int, int>, AddressDetails?>{};
+    final knownLocations = <(int, int), AddressDetails?>{};
     located.forEach((entry) {
       knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails);
     });

@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:tuple/tuple.dart';
-
 int highestPowerOf2(num x) => x < 1 ? 0 : pow(2, (log(x) / ln2).floor()).toInt();
 
 int smallestPowerOf2(num x) => x < 1 ? 1 : pow(2, (log(x) / ln2).ceil()).toInt();
@@ -10,16 +8,16 @@ int smallestPowerOf2(num x) => x < 1 ? 1 : pow(2, (log(x) / ln2).ceil()).toInt()
 double roundToPrecision(final double value, {required final int decimals}) => (value * pow(10, decimals)).round() / pow(10, decimals);
 
 // cf https://en.wikipedia.org/wiki/Intersection_(geometry)#Two_line_segments
-Offset? segmentIntersection(Tuple2<Offset, Offset> s1, Tuple2<Offset, Offset> s2) {
-  final x1 = s1.item1.dx;
-  final y1 = s1.item1.dy;
-  final x2 = s1.item2.dx;
-  final y2 = s1.item2.dy;
+Offset? segmentIntersection((Offset, Offset) s1, (Offset, Offset) s2) {
+  final x1 = s1.$1.dx;
+  final y1 = s1.$1.dy;
+  final x2 = s1.$2.dx;
+  final y2 = s1.$2.dy;
 
-  final x3 = s2.item1.dx;
-  final y3 = s2.item1.dy;
-  final x4 = s2.item2.dx;
-  final y4 = s2.item2.dy;
+  final x3 = s2.$1.dx;
+  final y3 = s2.$1.dy;
+  final x4 = s2.$2.dx;
+  final y4 = s2.$2.dy;
 
   final a1 = x2 - x1;
   final b1 = -(x4 - x3);
