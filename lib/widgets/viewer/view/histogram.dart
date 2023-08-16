@@ -16,13 +16,12 @@ mixin HistogramMixin {
   Completer? _completer;
 
   static const int bins = 256;
-  static const int normMax = bins - 1;
 
   Future<HistogramLevels> getHistogramLevels(ImageInfo info, bool forceUpdate) async {
     if (_levels.isEmpty || forceUpdate) {
       if (_completer == null) {
         _completer = Completer();
-        final data = (await info.image.toByteData(format: ImageByteFormat.rawExtendedRgba128))!;
+        final data = (await info.image.toByteData(format: ImageByteFormat.rawStraightRgba))!;
         _levels = switch (settings.overlayHistogramStyle) {
           OverlayHistogramStyle.rgb => await compute<ByteData, HistogramLevels>(_computeRgbLevels, data),
           OverlayHistogramStyle.luminance => await compute<ByteData, HistogramLevels>(_computeLuminanceLevels, data),
@@ -42,17 +41,17 @@ mixin HistogramMixin {
     final greenLevels = List.filled(bins, 0);
     final blueLevels = List.filled(bins, 0);
 
-    final floats = Float32List.view(data.buffer);
-    final pixelCount = floats.length / 4;
+    final view = Uint8List.view(data.buffer);
+    final pixelCount = view.length / 4;
     for (var i = 0; i < pixelCount; i += 4) {
-      final a = floats[i + 3];
+      final a = view[i + 3];
       if (a > 0) {
-        final r = floats[i + 0];
-        final g = floats[i + 1];
-        final b = floats[i + 2];
-        redLevels[(r * normMax).round()]++;
-        greenLevels[(g * normMax).round()]++;
-        blueLevels[(b * normMax).round()]++;
+        final r = view[i + 0];
+        final g = view[i + 1];
+        final b = view[i + 2];
+        redLevels[r]++;
+        greenLevels[g]++;
+        blueLevels[b]++;
       }
     }
 
@@ -73,17 +72,17 @@ mixin HistogramMixin {
 
   static HistogramLevels _computeLuminanceLevels(ByteData data) {
     final lumLevels = List.filled(bins, 0);
+    const normMax = bins - 1;
 
-    final floats = Float32List.view(data.buffer);
-    final pixelCount = floats.length / 4;
+    final view = Uint8List.view(data.buffer);
+    final pixelCount = view.length / 4;
     for (var i = 0; i < pixelCount; i += 4) {
-      final a = floats[i + 3];
+      final a = view[i + 3];
       if (a > 0) {
-        final r = floats[i + 0];
-        final g = floats[i + 1];
-        final b = floats[i + 2];
-        final c = Color.fromARGB((a * 255).round(), (r * 255).round(), (g * 255).round(), (b * 255).round());
-        lumLevels[(c.computeLuminance() * normMax).round()]++;
+        final r = view[i + 0];
+        final g = view[i + 1];
+        final b = view[i + 2];
+        lumLevels[(Color.fromARGB(a, r, g, b).computeLuminance() * normMax).round()]++;
       }
     }
 
