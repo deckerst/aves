@@ -11,7 +11,6 @@ import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
@@ -110,7 +109,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
           section: section,
           sectionGridIndex: sectionGridIndex,
           sectionChildIndex: sectionChildIndex,
-          itemIndexRange: () => isHeader ? const Tuple2(0, 0) : Tuple2(row.firstIndex, row.lastIndex + 1),
+          itemIndexRange: () => isHeader ? const (0, 0) : (row.firstIndex, row.lastIndex + 1),
           sectionKey: sectionKey,
           headerExtent: headerExtent,
           itemSizes: row.itemWidths.map((v) => Size(v, row.height)).toList(),

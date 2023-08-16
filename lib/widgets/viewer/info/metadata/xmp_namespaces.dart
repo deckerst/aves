@@ -19,7 +19,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 @immutable
 class XmpNamespace extends Equatable {
@@ -114,7 +113,7 @@ class XmpNamespace extends Equatable {
             title: card.title,
             structByIndex: card.data,
             formatValue: formatValue,
-            spanBuilders: spanBuilders != null ? (index) => spanBuilders(index, card.data[index]!.item1) : null,
+            spanBuilders: spanBuilders != null ? (index) => spanBuilders(index, card.data[index]!.$1) : null,
           ),
         );
       }),
@@ -206,8 +205,8 @@ class XmpCardData {
     final match = matches.first;
     final field = match.group(1)!;
 
-    final fields = data.putIfAbsent(null, () => Tuple2(<String, XmpProp>{}, cards?.map((v) => v.cloneEmpty()).toList()));
-    final _cards = fields.item2;
+    final fields = data.putIfAbsent(null, () => (<String, XmpProp>{}, cards?.map((v) => v.cloneEmpty()).toList()));
+    final _cards = fields.$2;
     if (_cards != null) {
       final fieldProp = XmpProp(field, prop.value);
       if (_cards.any((v) => v.extract(fieldProp))) {
@@ -215,7 +214,7 @@ class XmpCardData {
       }
     }
 
-    fields.item1[field] = prop;
+    fields.$1[field] = prop;
     return true;
   }
 
@@ -227,8 +226,8 @@ class XmpCardData {
     final index = int.parse(match.group(1)!);
     final field = match.group(2)!;
 
-    final fields = data.putIfAbsent(index, () => Tuple2(<String, XmpProp>{}, cards?.map((v) => v.cloneEmpty()).toList()));
-    final _cards = fields.item2;
+    final fields = data.putIfAbsent(index, () => (<String, XmpProp>{}, cards?.map((v) => v.cloneEmpty()).toList()));
+    final _cards = fields.$2;
     if (_cards != null) {
       final fieldProp = XmpProp(field, prop.value);
       if (_cards.any((v) => v.extract(fieldProp))) {
@@ -236,7 +235,7 @@ class XmpCardData {
       }
     }
 
-    fields.item1[field] = prop;
+    fields.$1[field] = prop;
     return true;
   }
 }

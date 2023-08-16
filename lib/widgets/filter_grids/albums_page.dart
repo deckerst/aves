@@ -17,7 +17,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class AlbumListPage extends StatelessWidget {
   static const routeName = '/albums';
@@ -27,12 +26,12 @@ class AlbumListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    return Selector<Settings, Tuple4<AlbumChipGroupFactor, ChipSortFactor, bool, Set<CollectionFilter>>>(
-      selector: (context, s) => Tuple4(s.albumGroupFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
+    return Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
+      selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
       shouldRebuild: (t1, t2) {
-        // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within `TupleN`
+        // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
         const eq = DeepCollectionEquality();
-        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2) && eq.equals(t1.item3, t2.item3) && eq.equals(t1.item4, t2.item4));
+        return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4));
       },
       builder: (context, s, child) {
         return ValueListenableBuilder<bool>(

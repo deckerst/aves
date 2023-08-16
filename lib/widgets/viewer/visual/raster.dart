@@ -14,7 +14,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:tuple/tuple.dart';
 
 class RasterImageView extends StatefulWidget {
   final AvesEntry entry;
@@ -259,10 +258,11 @@ class _RasterImageViewState extends State<RasterImageView> {
             viewRect: viewRect,
           );
           if (rects != null) {
+            final (tileRect, regionRect) = rects;
             tiles.add(_RegionTile(
               entry: entry,
-              tileRect: rects.item1,
-              regionRect: rects.item2,
+              tileRect: tileRect,
+              regionRect: regionRect,
               sampleSize: sampleSize,
             ));
           }
@@ -283,7 +283,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     return viewOrigin & viewportSize;
   }
 
-  Tuple2<Rect, Rectangle<int>>? _getTileRects({
+  (Rect tileRect, Rectangle<int> regionRect)? _getTileRects({
     required int x,
     required int y,
     required int regionSide,
@@ -314,7 +314,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     } else {
       regionRect = Rectangle<int>(x, y, thisRegionWidth, thisRegionHeight);
     }
-    return Tuple2<Rect, Rectangle<int>>(tileRect, regionRect);
+    return (tileRect, regionRect);
   }
 }
 

@@ -32,7 +32,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
@@ -168,14 +167,14 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   @override
   Future<void> configureView(BuildContext context) async {
-    final initialValue = Tuple4(
+    final initialValue = (
       sortFactor,
       settings.albumGroupFactor,
       tileLayout,
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<Tuple4<ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool>>(
+    final value = await showDialog<(ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<ChipSortFactor, AlbumChipGroupFactor, TileLayout>(
@@ -192,10 +191,10 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     if (value != null && initialValue != value) {
-      sortFactor = value.item1!;
-      settings.albumGroupFactor = value.item2!;
-      tileLayout = value.item3!;
-      sortReverse = value.item4;
+      sortFactor = value.$1!;
+      settings.albumGroupFactor = value.$2!;
+      tileLayout = value.$3!;
+      sortReverse = value.$4;
     }
   }
 

@@ -39,7 +39,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin, EntryStorageMixin, VaultAwareMixin {
   final AvesEntry mainEntry, pageEntry;
@@ -325,7 +324,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _addShortcut(BuildContext context, AvesEntry targetEntry) async {
-    final result = await showDialog<Tuple2<AvesEntry?, String>>(
+    final result = await showDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: targetEntry.bestTitle ?? '',
@@ -334,7 +333,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     if (result == null) return;
 
-    final name = result.item2;
+    final name = result.$2;
     if (name.isEmpty) return;
 
     await appService.pinToHomeScreen(name, targetEntry, uri: targetEntry.uri);

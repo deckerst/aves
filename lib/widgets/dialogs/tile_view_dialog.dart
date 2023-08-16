@@ -11,14 +11,13 @@ import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 import 'aves_dialog.dart';
 
 class TileViewDialog<S, G, L> extends StatefulWidget {
   static const routeName = '/dialog/tile_view';
 
-  final Tuple4<S?, G?, L?, bool> initialValue;
+  final (S? sort, G? group, L? layout, bool reverse) initialValue;
   final List<TileViewDialogOption<S>> sortOptions;
   final List<TileViewDialogOption<G>> groupOptions;
   final List<TileViewDialogOption<L>> layoutOptions;
@@ -63,10 +62,10 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   void initState() {
     super.initState();
     final initialValue = widget.initialValue;
-    _selectedSort = initialValue.item1;
-    _selectedGroup = initialValue.item2;
-    _selectedLayout = initialValue.item3;
-    _reverseSort = initialValue.item4;
+    _selectedSort = initialValue.$1;
+    _selectedGroup = initialValue.$2;
+    _selectedLayout = initialValue.$3;
+    _reverseSort = initialValue.$4;
 
     final extentController = tileExtentController;
     final columnRange = extentController.effectiveColumnRange;
@@ -147,7 +146,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           key: const Key('button-apply'),
           onPressed: () {
             tileExtentController.setUserPreferredColumnCount(_columnCountNotifier.value);
-            Navigator.maybeOf(context)?.pop(Tuple4(_selectedSort, _selectedGroup, _selectedLayout, _reverseSort));
+            Navigator.maybeOf(context)?.pop<(S?, G?, L?, bool)>((_selectedSort, _selectedGroup, _selectedLayout, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
         )

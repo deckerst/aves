@@ -19,7 +19,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class SlideshowPage extends StatefulWidget {
   static const routeName = '/collection/slideshow';
@@ -151,7 +150,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
     );
   }
 
-  Tuple2<bool, bool> get collectionSettings => Tuple2(settings.slideshowShuffle, settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip);
+  (bool, bool) get collectionSettings => (settings.slideshowShuffle, settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip);
 
   Future<void> _showSettings(BuildContext context) async {
     final oldCollectionSettings = collectionSettings;

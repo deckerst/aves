@@ -49,7 +49,6 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
 
 class AvesApp extends StatefulWidget {
@@ -236,16 +235,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                 : AvesScaffold(
                     body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                   );
-            return Selector<Settings, Tuple3<Locale?, AvesThemeBrightness, bool>>(
-              selector: (context, s) => Tuple3(
+            return Selector<Settings, (Locale?, AvesThemeBrightness, bool)>(
+              selector: (context, s) => (
                 s.locale,
                 s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
                 s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
               ),
               builder: (context, s, child) {
-                final settingsLocale = s.item1;
-                final themeBrightness = s.item2;
-                final enableDynamicColor = s.item3;
+                final (settingsLocale, themeBrightness, enableDynamicColor) = s;
 
                 AStyles.updateStylesForLocale(settings.appliedLocale);
 

@@ -20,7 +20,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class CoverSelectionDialog extends StatefulWidget {
   static const routeName = '/dialog/select_cover';
@@ -81,8 +80,8 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final tabs = <Tuple2<Tab, Widget>>[
-      Tuple2(
+    final tabs = <(Tab, Widget)>[
+      (
         _buildTab(
           context,
           const Key('tab-entry'),
@@ -92,7 +91,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         Column(children: _buildEntryOptions()),
       ),
       if (showAppTab)
-        Tuple2(
+        (
           _buildTab(
             context,
             const Key('tab-package'),
@@ -102,7 +101,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
           Column(children: _buildAppOptions()),
         ),
       if (showColorTab)
-        Tuple2(
+        (
           _buildTab(
             context,
             const Key('tab-color'),
@@ -131,7 +130,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                   clipBehavior: Clip.antiAlias,
                   child: TabBar(
                     indicatorWeight: tabIndicatorWeight,
-                    tabs: tabs.map((t) => t.item1).toList(),
+                    tabs: tabs.map((t) => t.$1).toList(),
                   ),
                 ),
                 ConstrainedBox(
@@ -140,7 +139,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                     physics: const NeverScrollableScrollPhysics(),
                     children: tabs
                         .map((t) => SingleChildScrollView(
-                              child: t.item2,
+                              child: t.$2,
                             ))
                         .toList(),
                   ),
@@ -165,7 +164,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
               final entry = _isCustomEntry ? _customEntry : null;
               final package = _isCustomPackage ? _customPackage : null;
               final color = _isCustomColor ? _customColor : null;
-              return Navigator.maybeOf(context)?.pop(Tuple3<AvesEntry?, String?, Color?>(entry, package, color));
+              return Navigator.maybeOf(context)?.pop<(AvesEntry?, String?, Color?)>((entry, package, color));
             },
             child: Text(l10n.applyButtonLabel),
           )

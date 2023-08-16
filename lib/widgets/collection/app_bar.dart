@@ -37,7 +37,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class CollectionAppBar extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
@@ -647,14 +646,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Future<void> _configureView() async {
-    final initialValue = Tuple4(
+    final initialValue = (
       settings.collectionSortFactor,
       settings.collectionSectionFactor,
       settings.getTileLayout(CollectionPage.routeName),
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<Tuple4<EntrySortFactor?, EntryGroupFactor?, TileLayout?, bool>>(
+    final value = await showDialog<(EntrySortFactor?, EntryGroupFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
@@ -672,10 +671,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     if (value != null && initialValue != value) {
-      settings.collectionSortFactor = value.item1!;
-      settings.collectionSectionFactor = value.item2!;
-      settings.setTileLayout(CollectionPage.routeName, value.item3!);
-      settings.collectionSortReverse = value.item4;
+      settings.collectionSortFactor = value.$1!;
+      settings.collectionSectionFactor = value.$2!;
+      settings.setTileLayout(CollectionPage.routeName, value.$3!);
+      settings.collectionSortReverse = value.$4;
     }
   }
 

@@ -31,7 +31,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, VaultAwareMixin {
   Iterable<FilterGridItem<T>> get allItems;
@@ -216,14 +215,14 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   Future<void> configureView(BuildContext context) async {
-    final initialValue = Tuple4(
+    final initialValue = (
       sortFactor,
       null,
       tileLayout,
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<Tuple4<ChipSortFactor?, void, TileLayout?, bool>>(
+    final value = await showDialog<(ChipSortFactor?, void, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<ChipSortFactor, void, TileLayout>(
@@ -239,9 +238,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     // wait for the dialog to hide as applying the change may block the UI
     await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     if (value != null && initialValue != value) {
-      sortFactor = value.item1!;
-      tileLayout = value.item3!;
-      sortReverse = value.item4;
+      sortFactor = value.$1!;
+      tileLayout = value.$3!;
+      sortReverse = value.$4;
     }
   }
 
@@ -328,7 +327,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final existingCover = covers.of(filter);
     final entryId = existingCover?.$1;
     final customEntry = entryId != null ? context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId) : null;
-    final selectedCover = await showDialog<Tuple3<AvesEntry?, String?, Color?>>(
+    final selectedCover = await showDialog<(AvesEntry?, String?, Color?)>(
       context: context,
       builder: (context) => CoverSelectionDialog(
         filter: filter,
@@ -344,9 +343,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       context.read<AvesColorsData>().clearAppColor(filter.album);
     }
 
-    final selectedEntry = selectedCover.item1;
-    final selectedPackage = selectedCover.item2;
-    final selectedColor = selectedCover.item3;
+    final (selectedEntry, selectedPackage, selectedColor) = selectedCover;
     await covers.set(
       filter: filter,
       entryId: selectedEntry?.id,

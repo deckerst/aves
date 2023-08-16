@@ -371,11 +371,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/brianegan/transparent_image',
     ),
     Dependency(
-      name: 'Tuple',
-      license: bsd2,
-      sourceUrl: 'https://github.com/google/tuple.dart',
-    ),
-    Dependency(
       name: 'Vector Math',
       license: '$zlib, $bsd3',
       sourceUrl: 'https://github.com/google/vector_math.dart',

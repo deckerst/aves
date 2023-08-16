@@ -13,7 +13,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class TransformControlPanel extends StatefulWidget {
   final AvesEntry entry;
@@ -32,7 +31,7 @@ class TransformControlPanel extends StatefulWidget {
 }
 
 class _TransformControlPanelState extends State<TransformControlPanel> with TickerProviderStateMixin {
-  late final List<Tuple2<WidgetBuilder, WidgetBuilder>> _tabs;
+  late final List<(WidgetBuilder, WidgetBuilder)> _tabs;
   late final TabController _tabController;
 
   static const padding = EditorControlPanel.padding;
@@ -41,11 +40,11 @@ class _TransformControlPanelState extends State<TransformControlPanel> with Tick
   void initState() {
     super.initState();
     _tabs = [
-      Tuple2(
+      (
         (context) => Tab(text: context.l10n.editorTransformCrop),
         (context) => const CropControlPanel(),
       ),
-      Tuple2(
+      (
         (context) => Tab(text: context.l10n.editorTransformRotate),
         (context) => const RotationControlPanel(),
       ),
@@ -74,7 +73,7 @@ class _TransformControlPanelState extends State<TransformControlPanel> with Tick
             builder: (context, child) {
               return AnimatedSwitcher(
                 duration: context.select<DurationsData, Duration>((v) => v.formTransition),
-                child: _tabs[_tabController.index].item2(context),
+                child: _tabs[_tabController.index].$2(context),
               );
             },
           ),
@@ -87,7 +86,7 @@ class _TransformControlPanelState extends State<TransformControlPanel> with Tick
             ),
             Expanded(
               child: TabBar(
-                tabs: _tabs.map((v) => v.item1(context)).toList(),
+                tabs: _tabs.map((v) => v.$1(context)).toList(),
                 controller: _tabController,
                 padding: const EdgeInsets.symmetric(horizontal: padding),
                 indicatorSize: TabBarIndicatorSize.label,

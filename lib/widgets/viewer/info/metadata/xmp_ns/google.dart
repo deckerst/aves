@@ -4,7 +4,6 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
-import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
   XmpGoogleNamespace({
@@ -13,13 +12,12 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
     required super.rawProps,
   });
 
-  List<Tuple2<String, String>> get dataProps;
+  List<(String, String)> get dataProps;
 
   @override
   Map<String, InfoValueSpanBuilder> linkifyValues(List<XmpProp> props) {
     return Map.fromEntries(dataProps.map((t) {
-      final dataPropPath = t.item1;
-      final mimePropPath = t.item2;
+      final (dataPropPath, mimePropPath) = t;
       final dataProp = props.firstWhereOrNull((prop) => prop.path == dataPropPath);
       final mimeProp = props.firstWhereOrNull((prop) => prop.path == mimePropPath);
       return (dataProp != null && mimeProp != null)
@@ -60,8 +58,8 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
   XmpGAudioNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gAudio);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [
-        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
+  List<(String, String)> get dataProps => [
+        ('${nsPrefix}Data', '${nsPrefix}Mime'),
       ];
 }
 
@@ -69,8 +67,8 @@ class XmpGCameraNamespace extends XmpGoogleNamespace {
   XmpGCameraNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gCamera);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [
-        Tuple2('${nsPrefix}RelitInputImageData', '${nsPrefix}RelitInputImageMime'),
+  List<(String, String)> get dataProps => [
+        ('${nsPrefix}RelitInputImageData', '${nsPrefix}RelitInputImageMime'),
       ];
 }
 
@@ -87,9 +85,9 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
   XmpGDepthNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gDepth);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [
-        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
-        Tuple2('${nsPrefix}Confidence', '${nsPrefix}ConfidenceMime'),
+  List<(String, String)> get dataProps => [
+        ('${nsPrefix}Data', '${nsPrefix}Mime'),
+        ('${nsPrefix}Confidence', '${nsPrefix}ConfidenceMime'),
       ];
 }
 
@@ -156,7 +154,7 @@ class XmpGImageNamespace extends XmpGoogleNamespace {
   XmpGImageNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gImage);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [
-        Tuple2('${nsPrefix}Data', '${nsPrefix}Mime'),
+  List<(String, String)> get dataProps => [
+        ('${nsPrefix}Data', '${nsPrefix}Mime'),
       ];
 }

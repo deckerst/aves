@@ -6,7 +6,6 @@ import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
@@ -88,7 +87,7 @@ class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
           section: section,
           sectionGridIndex: listIndex * columnCount,
           sectionChildIndex: sectionChildIndex,
-          itemIndexRange: () => Tuple2(
+          itemIndexRange: () => (
             (sectionChildIndex - 1) * columnCount,
             sectionChildIndex * columnCount,
           ),

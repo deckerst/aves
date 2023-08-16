@@ -51,7 +51,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class CollectionGrid extends StatefulWidget {
   final String settingsRouteKey;
@@ -132,13 +131,10 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, thumbnailExtent, child) {
             assert(thumbnailExtent > 0);
-            return Selector<TileExtentController, Tuple4<double, int, double, double>>(
-              selector: (context, c) => Tuple4(c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
+            return Selector<TileExtentController, (double, int, double, double)>(
+              selector: (context, c) => (c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
               builder: (context, c, child) {
-                final scrollableWidth = c.item1;
-                final columnCount = c.item2;
-                final tileSpacing = c.item3;
-                final horizontalPadding = c.item4;
+                final (scrollableWidth, columnCount, tileSpacing, horizontalPadding) = c;
                 final source = collection.source;
                 return GridTheme(
                   extent: thumbnailExtent,
@@ -369,9 +365,7 @@ class _CollectionScaler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final metrics = context.select<TileExtentController, Tuple2<double, double>>((v) => Tuple2(v.spacing, v.horizontalPadding));
-    final tileSpacing = metrics.item1;
-    final horizontalPadding = metrics.item2;
+    final (tileSpacing, horizontalPadding) = context.select<TileExtentController, (double, double)>((v) => (v.spacing, v.horizontalPadding));
     final brightness = Theme.of(context).brightness;
     final borderColor = DecoratedThumbnail.borderColor;
     final borderWidth = DecoratedThumbnail.borderWidth(context);
