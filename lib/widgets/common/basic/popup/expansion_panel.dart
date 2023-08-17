@@ -50,7 +50,7 @@ class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>>
       builder: (context, expandedValue, child) {
         return ExpansionPanelList(
           expansionCallback: (index, isExpanded) {
-            widget.expandedNotifier.value = isExpanded ? null : widget.value;
+            widget.expandedNotifier.value = isExpanded ? widget.value : null;
           },
           animationDuration: animationDuration,
           expandedHeaderPadding: EdgeInsets.zero,

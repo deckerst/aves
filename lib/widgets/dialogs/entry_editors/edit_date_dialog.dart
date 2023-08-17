@@ -260,7 +260,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsets.only(bottom: 1),
       child: ExpansionPanelList(
         expansionCallback: (index, isExpanded) {
-          setState(() => _showOptions = !isExpanded);
+          setState(() => _showOptions = isExpanded);
         },
         animationDuration: context.read<DurationsData>().expansionTileAnimation,
         expandedHeaderPadding: EdgeInsets.zero,

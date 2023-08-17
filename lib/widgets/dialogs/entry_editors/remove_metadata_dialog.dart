@@ -58,7 +58,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
             padding: const EdgeInsets.only(bottom: 1),
             child: ExpansionPanelList(
               expansionCallback: (index, isExpanded) {
-                setState(() => _showMore = !isExpanded);
+                setState(() => _showMore = isExpanded);
               },
               animationDuration: animationDuration,
               expandedHeaderPadding: EdgeInsets.zero,

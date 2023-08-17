@@ -286,6 +286,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     switch (AvesApp.lifecycleStateNotifier.value) {
       case AppLifecycleState.inactive:
         _onAppInactive();
+      case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         pauseVideoControllers();
