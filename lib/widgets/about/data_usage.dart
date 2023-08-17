@@ -33,7 +33,7 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     return ExpansionPanelList(
       expansionCallback: (index, isExpanded) {
-        setState(() => _isExpanded = !isExpanded);
+        setState(() => _isExpanded = isExpanded);
       },
       animationDuration: animationDuration,
       expandedHeaderPadding: EdgeInsets.zero,

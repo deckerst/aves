@@ -49,7 +49,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     return ExpansionPanelList(
       expansionCallback: (index, isExpanded) {
-        setState(() => _showInstructions = !isExpanded);
+        setState(() => _showInstructions = isExpanded);
       },
       animationDuration: animationDuration,
       expandedHeaderPadding: EdgeInsets.zero,

@@ -35,6 +35,7 @@ Future<void> configureAndLaunch() async {
     // viewer
     ..showOverlayOnOpening = true
     ..showOverlayMinimap = true
+    ..overlayHistogramStyle = OverlayHistogramStyle.rgb
     ..showOverlayInfo = true
     ..showOverlayShootingDetails = true
     ..showOverlayThumbnailPreview = true
