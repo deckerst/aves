@@ -1506,5 +1506,13 @@
   "aboutDataUsageCache": "Pamięć podręczna",
   "@aboutDataUsageCache": {},
   "aboutDataUsageMisc": "Różne",
-  "@aboutDataUsageMisc": {}
+  "@aboutDataUsageMisc": {},
+  "overlayHistogramNone": "Brak",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramLuminance": "Jasność",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "Pokaż histogram",
+  "@settingsViewerShowHistogram": {}
 }
