@@ -121,7 +121,6 @@ class DataUsageDonut extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final locale = l10n.localeName;
-    final colors = context.watch<AvesColorsData>();
 
     return AvesDonut(
       title: Text(title),
@@ -148,7 +147,8 @@ class DataUsageDonut extends StatelessWidget {
         }
       },
       formatValue: (v) => formatFileSize(locale, v, round: 0),
-      colorize: (d) {
+      colorize: (context, d) {
+        final colors = context.read<AvesColorsData>();
         Color? color;
         switch (d.key) {
           case flutter:

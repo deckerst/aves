@@ -18,10 +18,12 @@ class AColors {
 }
 
 class AvesColorsProvider extends StatelessWidget {
+  final bool allowMonochrome;
   final Widget child;
 
   const AvesColorsProvider({
     super.key,
+    this.allowMonochrome = true,
     required this.child,
   });
 
@@ -30,12 +32,14 @@ class AvesColorsProvider extends StatelessWidget {
     return ProxyProvider<Settings, AvesColorsData>(
       update: (context, settings, __) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        switch (settings.themeColorMode) {
-          case AvesThemeColorMode.monochrome:
-            return isDark ? _MonochromeOnDark() : _MonochromeOnLight();
-          case AvesThemeColorMode.polychrome:
-            return isDark ? NeonOnDark() : PastelOnLight();
+        var mode = settings.themeColorMode;
+        if (!allowMonochrome && mode == AvesThemeColorMode.monochrome) {
+          mode = AvesThemeColorMode.polychrome;
         }
+        return switch (mode) {
+          AvesThemeColorMode.monochrome => isDark ? _MonochromeOnDark() : _MonochromeOnLight(),
+          AvesThemeColorMode.polychrome => isDark ? NeonOnDark() : PastelOnLight(),
+        };
       },
       child: child,
     );
