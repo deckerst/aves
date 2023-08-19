@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - support for animated AVIF (requires rescan)
 - Collection: filtering by rating range
 - Viewer: optionally show histogram on overlay
+- Viewer: external export actions available as quick actions
 - About: data usage
 
 ### Changed
