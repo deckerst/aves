@@ -11,9 +11,9 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 class MpvVideoController extends AvesVideoController {
   late Player _instance;
-  late VideoController _controller;
   late VideoStatus _status;
   bool _firstFrameRendered = false;
+  final ValueNotifier<VideoController?> _controllerNotifier = ValueNotifier(null);
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
@@ -82,6 +82,7 @@ class MpvVideoController extends AvesVideoController {
       if (status == VideoStatus.idle) return;
       _statusStreamController.add(v ? VideoStatus.playing : VideoStatus.paused);
     }));
+    _subscriptions.add(_instance.stream.subtitle.listen((v) => _timedTextStreamController.add(v.isEmpty ? null : v[0])));
     _subscriptions.add(_instance.stream.videoParams.listen((v) => sarNotifier.value = v.par));
     _subscriptions.add(_instance.stream.log.listen((v) => debugPrint('libmpv log: $v')));
     _subscriptions.add(_instance.stream.error.listen((v) => debugPrint('libmpv error: $v')));
@@ -115,16 +116,15 @@ class MpvVideoController extends AvesVideoController {
 
   void _initController() {
     _firstFrameRendered = false;
-    _controller = VideoController(
+    _controllerNotifier.value = VideoController(
       _instance,
       configuration: VideoControllerConfiguration(
         enableHardwareAcceleration: settings.enableVideoHardwareAcceleration,
       ),
-    );
-    _controller.waitUntilFirstFrameRendered.then((v) {
-      _firstFrameRendered = true;
-      _statusStreamController.add(_status);
-    });
+    )..waitUntilFirstFrameRendered.then((v) {
+        _firstFrameRendered = true;
+        _statusStreamController.add(_status);
+      });
   }
 
   @override
@@ -191,7 +191,7 @@ class MpvVideoController extends AvesVideoController {
   Stream<int> get positionStream => _instance.stream.position.map((pos) => pos.inMilliseconds);
 
   @override
-  Stream<String?> get timedTextStream => _instance.stream.subtitle.map((v) => v.isEmpty ? null : v[0]);
+  Stream<String?> get timedTextStream => _timedTextStreamController.stream;
 
   @override
   bool get isMuted => _instance.state.volume == 0;
@@ -218,16 +218,21 @@ class MpvVideoController extends AvesVideoController {
         // derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
         // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
         final dar = entry.displayAspectRatio * sar;
-        return Video(
-          controller: _controller,
-          fill: Colors.transparent,
-          aspectRatio: dar,
-          controls: NoVideoControls,
-          wakelock: false,
-          subtitleViewConfiguration: const SubtitleViewConfiguration(
-            visible: false,
-          ),
-        );
+        return ValueListenableBuilder<VideoController?>(
+            valueListenable: _controllerNotifier,
+            builder: (context, controller, child) {
+              if (controller == null) return const SizedBox();
+              return Video(
+                controller: controller,
+                fill: Colors.transparent,
+                aspectRatio: dar,
+                controls: NoVideoControls,
+                wakelock: false,
+                subtitleViewConfiguration: const SubtitleViewConfiguration(
+                  visible: false,
+                ),
+              );
+            });
       },
     );
   }
@@ -334,6 +339,8 @@ class MpvVideoController extends AvesVideoController {
           break;
         case MediaStreamType.text:
           await _instance.setSubtitleTrack(SubtitleTrack.no());
+          // remove current subtitle, if any
+          _timedTextStreamController.add(null);
           break;
       }
     }
