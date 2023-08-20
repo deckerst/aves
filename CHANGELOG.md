@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.9.0"></a>[v1.9.0] - 2023-08-21
+
 ### Added
 
 - Video: improved seek accuracy, HDR support, AV1 support, playback speed from x0.25 to x4
