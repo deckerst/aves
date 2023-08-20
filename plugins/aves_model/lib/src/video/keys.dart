@@ -82,6 +82,7 @@ class Keys {
   static const streams = 'streams';
   static const tbrDen = 'tbr_den';
   static const tbrNum = 'tbr_num';
+  static const segmentCount = 'segment_count';
   static const streamType = 'type';
   static const title = 'title';
   static const timeBase = 'time_base';

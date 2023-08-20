@@ -52,6 +52,9 @@ object Mp4ParserHelper {
                     }
                     // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                     IsoFile(channel, boxParser).use { isoFile ->
+                        val fragmented = isoFile.boxes.any { box -> box is MovieFragmentBox || box is SegmentIndexBox }
+                        if (fragmented) throw Exception("editing fragmented movies is not supported")
+
                         val lastContentBox = isoFile.boxes.reversed().firstOrNull { box ->
                             when {
                                 box == isoFile.movieBox -> false
@@ -60,7 +63,7 @@ object Mp4ParserHelper {
                                 else -> true
                             }
                         }
-                        lastContentBox ?: throw Exception("failed to find last context box")
+                        lastContentBox ?: throw Exception("failed to find last content box")
                         val oldFileSize = isoFile.size
                         var appendOffset = (isoFile.getBoxOffset { box -> box == lastContentBox })!! + lastContentBox.size
 
@@ -97,7 +100,6 @@ object Mp4ParserHelper {
                         if (trailing > 0) {
                             addFreeBoxEdit(appendOffset, trailing)
                         }
-
                         return edits
                     }
                 }
@@ -277,7 +279,9 @@ object Mp4ParserHelper {
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                         IsoFile(channel, metadataBoxParser()).use { isoFile ->
                             val userDataBox = Path.getPath<UserDataBox>(isoFile.movieBox, UserDataBox.TYPE)
-                            fields.putAll(extractBoxFields(userDataBox))
+                            if (userDataBox != null) {
+                                fields.putAll(extractBoxFields(userDataBox))
+                            }
                         }
                     }
                 }
