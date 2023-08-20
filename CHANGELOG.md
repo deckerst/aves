@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.9.0"></a>[v1.9.0] - 2023-08-21
+
+### Added
+
+- Video: improved seek accuracy, HDR support, AV1 support, playback speed from x0.25 to x4
+- support for animated AVIF (requires rescan)
+- Collection: filtering by rating range
+- Viewer: optionally show histogram on overlay
+- Viewer: external export actions available as quick actions
+- About: data usage
+
+### Changed
+
+- Accessibility: removing animations also removes the overscroll stretch effect
+- target Android 14 (API 34)
+- upgraded Flutter to stable v3.13.0
+
+### Fixed
+
+- flickering when starting videos
+
 ## <a id="v1.8.9"></a>[v1.8.9] - 2023-06-04
 
 ### Changed

@@ -1,0 +1,119 @@
+{
+  "sourceStateLocatingPlaces": "နေရာ တည်နေရာများ",
+  "@sourceStateLocatingPlaces": {},
+  "chipActionDelete": "ဖျက်",
+  "@chipActionDelete": {},
+  "welcomeMessage": "Avesမှကြိုဆိုပါတယ်",
+  "@welcomeMessage": {},
+  "columnCount": "{count, plural, =1{1 ကော်လံ} other{{count} ကော်လံများ}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeOptional": "ရွေးချယ်နိုင်သော။",
+  "@welcomeOptional": {},
+  "welcomeTermsToggle": "ကျွနု်ပ်",
+  "@welcomeTermsToggle": {},
+  "itemCount": "{count, plural, =1{1 အိုင်တမ်} other{{count} အိုင်တမ်များ}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "timeSeconds": "{seconds, plural, =1{1 စက္ကန့်} other{{seconds} စက္ကန့်များ}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "timeMinutes": "{minutes, plural, =1{1 မိနစ်} other{{minutes} မိနစ်များ}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "timeDays": "{days, plural, =1{1 ရက်} other{{days} ရက်များ}}",
+  "@timeDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "focalLength": "{length} မီလီမီတာ",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "applyButtonLabel": "အတည်ပြု",
+  "@applyButtonLabel": {},
+  "cancelTooltip": "ပယ်ဖျက်မည်",
+  "@cancelTooltip": {},
+  "previousTooltip": "နောက်သို့",
+  "@previousTooltip": {},
+  "deleteButtonLabel": "ဖျက်မည်",
+  "@deleteButtonLabel": {},
+  "nextButtonLabel": "ရှေ့သို့",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "ပြရန်",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "ဝှက်ရန်",
+  "@hideButtonLabel": {},
+  "resetTooltip": "ပြန်ပြုပြင်မည်",
+  "@resetTooltip": {},
+  "continueButtonLabel": "ရှေ့ဆက်သွားရန်",
+  "@continueButtonLabel": {},
+  "clearTooltip": "ရှင်းလင်းမည်",
+  "@clearTooltip": {},
+  "saveCopyButtonLabel": "မိတ္တူကိုသိမ်းမည်",
+  "@saveCopyButtonLabel": {},
+  "showTooltip": "ပြရန်",
+  "@showTooltip": {},
+  "actionRemove": "ဖယ်ရှားမည်",
+  "@actionRemove": {},
+  "sourceStateLoading": "ခဏစောင့်ပါ",
+  "@sourceStateLoading": {},
+  "chipActionGoToCountryPage": "နိုင်ငံတွေထဲမှာပြရန်",
+  "@chipActionGoToCountryPage": {},
+  "applyTooltip": "အတည်ပြု",
+  "@applyTooltip": {},
+  "changeTooltip": "ပြောင်းမည်",
+  "@changeTooltip": {},
+  "nextTooltip": "ရှေ့သို့",
+  "@nextTooltip": {},
+  "chipActionGoToPlacePage": "နေရာများထဲတွင်ပြရန်",
+  "@chipActionGoToPlacePage": {},
+  "chipActionGoToTagPage": "အမှတ်အသားများတွင်ပြရန်",
+  "@chipActionGoToTagPage": {},
+  "chipActionFilterOut": "စစ်ထုတ်ရန်",
+  "@chipActionFilterOut": {},
+  "chipActionFilterIn": "စစ်သွင်းရန်",
+  "@chipActionFilterIn": {},
+  "chipActionHide": "ဝှက်",
+  "@chipActionHide": {},
+  "chipActionLock": "သော့ခတ်",
+  "@chipActionLock": {},
+  "chipActionPin": "အပေါ်ဆုံးများပင်တွဲရန်",
+  "@chipActionPin": {},
+  "chipActionUnpin": "အပေါ်ဆုံးမှပင်ဖြုတ်ရန်",
+  "@chipActionUnpin": {},
+  "hideTooltip": "ဝှက်ရန်",
+  "@hideTooltip": {},
+  "pickTooltip": "ရွေးရန်",
+  "@pickTooltip": {},
+  "saveTooltip": "သိမ်းမည်",
+  "@saveTooltip": {},
+  "doubleBackExitMessage": "ထွက်ရန်\"နောက်\"ကိုထပ်နိှပ်ပါ။",
+  "@doubleBackExitMessage": {},
+  "doNotAskAgain": "ထပ်မမေးပါနှင့်",
+  "@doNotAskAgain": {},
+  "sourceStateLocatingCountries": "နိုင်ငံတည်နေရာများ",
+  "@sourceStateLocatingCountries": {},
+  "chipActionGoToAlbumPage": "အယ်လ်ဘမ်တွေထဲမှာပြရန်",
+  "@chipActionGoToAlbumPage": {}
+}

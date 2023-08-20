@@ -83,7 +83,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
                 },
                 onSelected: (action) async {
                   // wait for the popup menu to hide before proceeding with the action
-                  await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+                  await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
                   switch (action) {
                     case _PickerAction.toggleHiddenView:
                       settings.filePickerShowHiddenFiles = !showHidden;
@@ -168,7 +168,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
               title: Text(v.getDescription(context)),
               onTap: () async {
                 Navigator.maybeOf(context)?.pop();
-                await Future.delayed(Durations.drawerTransitionAnimation);
+                await Future.delayed(ADurations.drawerTransitionAnimation);
                 _goTo(v.path);
                 setState(() {});
               },

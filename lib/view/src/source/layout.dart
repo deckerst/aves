@@ -6,24 +6,18 @@ import 'package:flutter/widgets.dart';
 extension ExtraTileLayoutView on TileLayout {
   String getName(BuildContext context) {
     final l10n = context.l10n;
-    switch (this) {
-      case TileLayout.mosaic:
-        return l10n.tileLayoutMosaic;
-      case TileLayout.grid:
-        return l10n.tileLayoutGrid;
-      case TileLayout.list:
-        return l10n.tileLayoutList;
-    }
+    return switch (this) {
+      TileLayout.mosaic => l10n.tileLayoutMosaic,
+      TileLayout.grid => l10n.tileLayoutGrid,
+      TileLayout.list => l10n.tileLayoutList,
+    };
   }
 
   IconData get icon {
-    switch (this) {
-      case TileLayout.mosaic:
-        return AIcons.layoutMosaic;
-      case TileLayout.grid:
-        return AIcons.layoutGrid;
-      case TileLayout.list:
-        return AIcons.layoutList;
-    }
+    return switch (this) {
+      TileLayout.mosaic => AIcons.layoutMosaic,
+      TileLayout.grid => AIcons.layoutGrid,
+      TileLayout.list => AIcons.layoutList,
+    };
   }
 }

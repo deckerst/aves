@@ -61,17 +61,17 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
               return [
                 PopupMenuItem(
                   value: SettingsAction.export,
-                  child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
+                  child: MenuRow(text: context.l10n.settingsActionExport, icon: Icon(AIcons.fileExport)),
                 ),
                 PopupMenuItem(
                   value: SettingsAction.import,
-                  child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
+                  child: MenuRow(text: context.l10n.settingsActionImport, icon: Icon(AIcons.fileImport)),
                 ),
               ];
             },
             onSelected: (action) async {
               // wait for the popup menu to hide before proceeding with the action
-              await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+              await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
               _onActionSelected(action);
             },
           ),
@@ -119,9 +119,9 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
         );
         if (success != null) {
           if (success) {
-            showFeedback(context, context.l10n.genericSuccessFeedback);
+            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
           } else {
-            showFeedback(context, context.l10n.genericFailureFeedback);
+            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
           }
         }
       case SettingsAction.import:
@@ -141,7 +141,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             } else {
               if (allJsonMap is! Map) {
                 debugPrint('failed to import app json=$allJsonMap');
-                showFeedback(context, context.l10n.genericFailureFeedback);
+                showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
                 return;
               }
               allJsonMap.keys.where((v) => v != exportVersionKey).forEach((k) {
@@ -165,10 +165,10 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             await Future.forEach<AppExportItem>(toImport, (item) async {
               return item.import(importable[item], source);
             });
-            showFeedback(context, context.l10n.genericSuccessFeedback);
+            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
           } catch (error) {
             debugPrint('failed to import app json, error=$error');
-            showFeedback(context, context.l10n.genericFailureFeedback);
+            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
           }
         }
     }

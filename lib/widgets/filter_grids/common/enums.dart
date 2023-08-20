@@ -6,37 +6,26 @@ enum AlbumImportance { newAlbum, pinned, special, apps, vaults, regular }
 
 extension ExtraAlbumImportance on AlbumImportance {
   String getText(BuildContext context) {
-    switch (this) {
-      case AlbumImportance.newAlbum:
-        return context.l10n.albumTierNew;
-      case AlbumImportance.pinned:
-        return context.l10n.albumTierPinned;
-      case AlbumImportance.special:
-        return context.l10n.albumTierSpecial;
-      case AlbumImportance.apps:
-        return context.l10n.albumTierApps;
-      case AlbumImportance.vaults:
-        return context.l10n.albumTierVaults;
-      case AlbumImportance.regular:
-        return context.l10n.albumTierRegular;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      AlbumImportance.newAlbum => l10n.albumTierNew,
+      AlbumImportance.pinned => l10n.albumTierPinned,
+      AlbumImportance.special => l10n.albumTierSpecial,
+      AlbumImportance.apps => l10n.albumTierApps,
+      AlbumImportance.vaults => l10n.albumTierVaults,
+      AlbumImportance.regular => l10n.albumTierRegular,
+    };
   }
 
   IconData getIcon() {
-    switch (this) {
-      case AlbumImportance.newAlbum:
-        return AIcons.newTier;
-      case AlbumImportance.pinned:
-        return AIcons.pin;
-      case AlbumImportance.special:
-        return AIcons.important;
-      case AlbumImportance.apps:
-        return AIcons.app;
-      case AlbumImportance.vaults:
-        return AIcons.locked;
-      case AlbumImportance.regular:
-        return AIcons.album;
-    }
+    return switch (this) {
+      AlbumImportance.newAlbum => AIcons.newTier,
+      AlbumImportance.pinned => AIcons.pin,
+      AlbumImportance.special => AIcons.important,
+      AlbumImportance.apps => AIcons.app,
+      AlbumImportance.vaults => AIcons.locked,
+      AlbumImportance.regular => AIcons.album,
+    };
   }
 }
 
@@ -44,24 +33,19 @@ enum AlbumMimeType { images, videos, mixed }
 
 extension ExtraAlbumMimeType on AlbumMimeType {
   String getText(BuildContext context) {
-    switch (this) {
-      case AlbumMimeType.images:
-        return context.l10n.drawerCollectionImages;
-      case AlbumMimeType.videos:
-        return context.l10n.drawerCollectionVideos;
-      case AlbumMimeType.mixed:
-        return context.l10n.albumMimeTypeMixed;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      AlbumMimeType.images => l10n.drawerCollectionImages,
+      AlbumMimeType.videos => l10n.drawerCollectionVideos,
+      AlbumMimeType.mixed => l10n.albumMimeTypeMixed,
+    };
   }
 
   IconData getIcon() {
-    switch (this) {
-      case AlbumMimeType.images:
-        return AIcons.image;
-      case AlbumMimeType.videos:
-        return AIcons.video;
-      case AlbumMimeType.mixed:
-        return AIcons.mimeType;
-    }
+    return switch (this) {
+      AlbumMimeType.images => AIcons.image,
+      AlbumMimeType.videos => AIcons.video,
+      AlbumMimeType.mixed => AIcons.mimeType,
+    };
   }
 }

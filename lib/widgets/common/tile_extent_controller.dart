@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tuple/tuple.dart';
 
 class TileExtentController {
   final String settingsRouteKey;
@@ -13,6 +13,7 @@ class TileExtentController {
 
   late double userPreferredExtent;
   Size _viewportSize = Size.zero;
+  final List<StreamSubscription> _subscriptions = [];
 
   Size get viewportSize => _viewportSize;
 
@@ -28,11 +29,13 @@ class TileExtentController {
     // initialize extent to 0, so that it will be dynamically sized on first launch
     extentNotifier = ValueNotifier(0);
     userPreferredExtent = settings.getTileExtent(settingsRouteKey);
-    settings.addListener(_onSettingsChanged);
+    _subscriptions.add(settings.updateTileExtentStream.listen((_) => _onSettingsChanged()));
   }
 
   void dispose() {
-    settings.removeListener(_onSettingsChanged);
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
   }
 
   void _onSettingsChanged() {
@@ -98,7 +101,7 @@ class TileExtentController {
 
   double get effectiveExtentMax => _extentForColumnCount(_effectiveColumnCountMin());
 
-  Tuple2<int, int> get effectiveColumnRange => Tuple2(_effectiveColumnCountMin(), _effectiveColumnCountMax());
+  (int min, int max) get effectiveColumnRange => (_effectiveColumnCountMin(), _effectiveColumnCountMax());
 
   int get columnCount => _effectiveColumnCountForExtent(extentNotifier.value);
 

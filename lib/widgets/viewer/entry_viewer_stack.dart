@@ -33,7 +33,7 @@ import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/overlay/video/video.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:aves/widgets/viewer/visual/controller_mixin.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -286,6 +286,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     switch (AvesApp.lifecycleStateNotifier.value) {
       case AppLifecycleState.inactive:
         _onAppInactive();
+      case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         pauseVideoControllers();
@@ -417,7 +418,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
           final targetEntry = pageEntry ?? mainEntry;
           Widget? child;
           // a 360 video is both a video and a panorama but only the video controls are displayed
-          if (targetEntry.isVideo) {
+          if (targetEntry.isPureVideo) {
             child = Selector<VideoConductor, AvesVideoController?>(
               selector: (context, vc) => vc.getController(targetEntry),
               builder: (context, videoController, child) => VideoControlOverlay(
@@ -512,6 +513,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   bool _handleNotification(dynamic notification) {
     if (notification is FilterSelectedNotification) {
       _goToCollection(notification.filter);
+    } else if (notification is FullImageLoadedNotification) {
+      final viewStateController = context.read<ViewStateConductor>().getOrCreateController(notification.entry);
+      // microtask so that listeners do not trigger during build
+      scheduleMicrotask(() => viewStateController.fullImageNotifier.value = notification.image);
     } else if (notification is EntryDeletedNotification) {
       _onEntryRemoved(context, notification.entries);
     } else if (notification is EntryMovedNotification) {
@@ -579,11 +584,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     required AvesVideoController controller,
     required EntryAction action,
   }) async {
-    await _videoActionDelegate.onActionSelected(context, entry, controller, action);
     if (action == EntryAction.videoToggleMute) {
-      final override = controller.isMuted;
+      final override = !controller.isMuted;
       videoMutedOverride = override;
       await context.read<VideoConductor>().muteAll(override);
+    } else {
+      await _videoActionDelegate.onActionSelected(context, entry, controller, action);
     }
   }
 

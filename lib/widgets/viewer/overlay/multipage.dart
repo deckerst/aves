@@ -1,7 +1,7 @@
 import 'package:aves/model/multipage.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -109,15 +109,10 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        break;
-      case AppLifecycleState.resumed:
-        // workaround for blank map when resuming app
-        // cf https://github.com/flutter/flutter/issues/40284
-        _serviceMapController?.setMapStyle(null);
+    if (state == AppLifecycleState.resumed) {
+      // workaround for blank map when resuming app
+      // cf https://github.com/flutter/flutter/issues/40284
+      _serviceMapController?.setMapStyle(null);
     }
   }
 

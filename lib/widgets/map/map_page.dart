@@ -115,7 +115,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
       _isPageAnimatingNotifier.value = true;
-      Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
+      Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });
@@ -139,7 +139,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions.add(openingCollection.source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _updateRegionCollection()));
 
     _selectedIndexNotifier.addListener(_onThumbnailIndexChanged);
-    Future.delayed(Durations.pageTransitionAnimation * timeDilation + const Duration(seconds: 1), () {
+    Future.delayed(ADurations.pageTransitionAnimation * timeDilation + const Duration(seconds: 1), () {
       final regionEntries = regionCollection?.sortedEntries ?? [];
       final initialEntry = widget.initialEntry ?? regionEntries.firstOrNull;
       if (initialEntry != null) {
@@ -174,8 +174,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       onNotification: (notification) {
         if (notification is FilterSelectedNotification) {
           _goToCollection(notification.filter);
-        } else if (notification is ReverseFilterNotification) {
-          _goToCollection(notification.reversedFilter);
+        } else if (notification is FilterNotification) {
+          _goToCollection(notification.filter);
         } else {
           return false;
         }
@@ -475,7 +475,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     );
     if (selectedAction != null) {
       // wait for the popup menu to hide before proceeding with the action
-      await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+      await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
       final delegate = EntrySetActionDelegate();
       switch (selectedAction) {
         case MapClusterAction.editLocation:

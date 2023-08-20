@@ -28,7 +28,7 @@ class MapEntryScroller extends StatefulWidget {
 
 class _MapEntryScrollerState extends State<MapEntryScroller> {
   final ValueNotifier<AvesEntry?> _infoEntryNotifier = ValueNotifier(null);
-  final Debouncer _infoDebouncer = Debouncer(delay: Durations.mapInfoDebounceDelay);
+  final Debouncer _infoDebouncer = Debouncer(delay: ADurations.mapInfoDebounceDelay);
 
   @override
   void initState() {

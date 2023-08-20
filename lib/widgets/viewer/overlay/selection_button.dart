@@ -14,7 +14,7 @@ class SelectionButton extends StatelessWidget {
   final Animation<double> scale;
 
   static const double padding = 8;
-  static const duration = Durations.thumbnailOverlayAnimation;
+  static const duration = ADurations.thumbnailOverlayAnimation;
 
   const SelectionButton({
     super.key,

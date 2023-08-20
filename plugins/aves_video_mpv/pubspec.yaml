@@ -1,0 +1,26 @@
+name: aves_video_mpv
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  aves_model:
+    path: ../aves_model
+  aves_video:
+    path: ../aves_video
+  aves_utils:
+    path: ../aves_utils
+  collection:
+  media_kit:
+  media_kit_libs_android_video:
+  media_kit_native_event_loop:
+  media_kit_video:
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:

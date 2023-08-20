@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/view_state.dart';
 import 'package:aves/widgets/editor/transform/controller.dart';
 import 'package:aves/widgets/editor/transform/transformation.dart';
+import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,6 @@ import 'package:provider/provider.dart';
 
 class Minimap extends StatelessWidget {
   final ValueNotifier<ViewState> viewStateNotifier;
-
-  static const Size minimapSize = Size(96, 96);
 
   const Minimap({
     super.key,
@@ -28,44 +27,44 @@ class Minimap extends StatelessWidget {
           final contentSize = viewState.contentSize;
           if (viewportSize == null || contentSize == null) return const SizedBox();
           return StreamBuilder<Transformation?>(
-              stream: context.select<TransformController?, Stream<Transformation?>>((v) => v?.transformationStream ?? Stream.value(null)),
-              builder: (context, snapshot) {
-                final transformation = snapshot.data;
-                return CustomPaint(
-                  painter: MinimapPainter(
-                    viewportSize: viewportSize,
-                    contentSize: contentSize,
-                    viewCenterOffset: viewState.position,
-                    viewScale: viewState.scale!,
-                    transformation: transformation,
-                    minimapBorderColor: Colors.white30,
-                  ),
-                  size: minimapSize,
-                );
-              });
+            stream: context.select<TransformController?, Stream<Transformation?>>((v) => v?.transformationStream ?? Stream.value(null)),
+            builder: (context, snapshot) {
+              final transformation = snapshot.data;
+              return CustomPaint(
+                painter: _MinimapPainter(
+                  viewportSize: viewportSize,
+                  contentSize: contentSize,
+                  viewCenterOffset: viewState.position,
+                  viewScale: viewState.scale!,
+                  transformation: transformation,
+                  minimapBorderColor: ViewerTopOverlay.componentBorderColor,
+                ),
+                size: const Size.square(ViewerTopOverlay.componentDimension),
+              );
+            },
+          );
         },
       ),
     );
   }
 }
 
-class MinimapPainter extends CustomPainter {
+class _MinimapPainter extends CustomPainter {
   final Size contentSize, viewportSize;
   final Offset viewCenterOffset;
   final double viewScale;
   final Transformation? transformation;
-  final Color minimapBorderColor, viewportBorderColor;
+  final Color minimapBorderColor;
 
   late final Paint fill, minimapStroke, viewportStroke;
 
-  MinimapPainter({
+  _MinimapPainter({
     required this.viewportSize,
     required this.contentSize,
     required this.viewCenterOffset,
     required this.viewScale,
     this.transformation,
     this.minimapBorderColor = Colors.white,
-    this.viewportBorderColor = Colors.white,
   }) {
     fill = Paint()
       ..style = PaintingStyle.fill
@@ -75,7 +74,7 @@ class MinimapPainter extends CustomPainter {
       ..color = minimapBorderColor;
     viewportStroke = Paint()
       ..style = PaintingStyle.stroke
-      ..color = viewportBorderColor;
+      ..color = Colors.white;
   }
 
   @override

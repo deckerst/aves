@@ -26,7 +26,9 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get isImage => MimeTypes.isImage(mimeType);
 
-  bool get isVideo => MimeTypes.isVideo(mimeType);
+  bool get isVideo => MimeTypes.isVideo(mimeType) || (mimeType == MimeTypes.avif && isAnimated);
+
+  bool get isPureVideo => isVideo && !isAnimated;
 
   // size
 
@@ -34,9 +36,9 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get isSized => width > 0 && height > 0;
 
-  Size videoDisplaySize(double sar) {
+  Size videoDisplaySize(double? sar) {
     final size = displaySize;
-    if (sar != 1) {
+    if (sar != null && sar != 1) {
       final dar = displayAspectRatio * sar;
       final w = size.width;
       final h = size.height;
@@ -67,8 +69,6 @@ extension ExtraAvesEntryProps on AvesEntry {
   }
 
   // catalog
-
-  bool get isAnimated => catalogMetadata?.isAnimated ?? false;
 
   bool get isGeotiff => catalogMetadata?.isGeotiff ?? false;
 

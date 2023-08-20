@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id 'com.android.application'
+    id 'com.google.devtools.ksp' version "$ksp_version"
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
@@ -48,7 +49,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace 'deckers.thibault.aves'
-    compileSdk 33
+    compileSdk 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -75,7 +76,7 @@ android {
         // which implementation `DocumentBuilderImpl` is provided by the OS and is not customizable on Android,
         // but the implementation on API <19 is not robust enough and fails to build XMP documents
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>",
@@ -175,10 +176,10 @@ android {
 tasks.withType(KotlinCompile).configureEach {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
+kotlin {
+    jvmToolchain(8)
 }
 
 flutter {
@@ -202,7 +203,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation 'androidx.core:core-ktx:1.10.1'
@@ -224,7 +225,7 @@ dependencies {
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:876e53870a'
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:90c06eebf4'
     implementation 'com.github.deckerst.mp4parser:isoparser:4cc0c5d06c'
     implementation 'com.github.deckerst.mp4parser:muxer:4cc0c5d06c'
     implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
@@ -232,10 +233,10 @@ dependencies {
     // huawei flavor only
     huaweiImplementation "com.huawei.agconnect:agconnect-core:$huawei_agconnect_version"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.9.2"
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 
     kapt 'androidx.annotation:annotation:1.6.0'
-    kapt "com.github.bumptech.glide:compiler:$glide_version"
+    ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')
 }

@@ -9,9 +9,8 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
-typedef XmpExtractedCard = Tuple2<Map<String, XmpProp>, List<XmpCardData>?>;
+typedef XmpExtractedCard = (Map<String, XmpProp>, List<XmpCardData>?);
 
 class XmpCard extends StatefulWidget {
   final String title;
@@ -30,7 +29,7 @@ class XmpCard extends StatefulWidget {
     directStruct = structByIndex[null];
 
     final length = structByIndex.keys.whereNotNull().fold(0, max);
-    indexedStructs = length > 0 ? [for (var i = 0; i < length; i++) structByIndex[i + 1] ?? const Tuple2({}, null)] : null;
+    indexedStructs = length > 0 ? [for (var i = 0; i < length; i++) structByIndex[i + 1] ?? const ({}, null)] : null;
   }
 
   @override
@@ -77,8 +76,8 @@ class _XmpCardState extends State<XmpCard> {
         valueListenable: _indexNotifier,
         builder: (context, index, child) {
           final data = _isIndexed ? indexedStructs![index] : widget.directStruct!;
-          final props = data.item1.entries.map((kv) => XmpProp(kv.key, kv.value.value)).toList()..sort();
-          final cards = data.item2;
+          final props = data.$1.entries.map((kv) => XmpProp(kv.key, kv.value.value)).toList()..sort();
+          final cards = data.$2;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +115,7 @@ class _XmpCardState extends State<XmpCard> {
                 ),
               ),
               MultiCrossFader(
-                duration: Durations.xmpStructArrayCardTransition,
+                duration: ADurations.xmpStructArrayCardTransition,
                 sizeCurve: Curves.easeOutBack,
                 alignment: AlignmentDirectional.topStart,
                 child: Padding(
@@ -139,7 +138,7 @@ class _XmpCardState extends State<XmpCard> {
                       title: card.title,
                       structByIndex: card.data,
                       formatValue: widget.formatValue,
-                      spanBuilders: spanBuilders != null ? (index) => spanBuilders(index, card.data[index]!.item1) : null,
+                      spanBuilders: spanBuilders != null ? (index) => spanBuilders(index, card.data[index]!.$1) : null,
                     ),
                   );
                 }),

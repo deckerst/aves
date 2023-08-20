@@ -205,7 +205,12 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         var len: Int
         while (inputStream.read(buffer).also { len = it } != -1) {
             // cannot decode image on Flutter side when using `buffer` directly
-            success(buffer.copyOf(len))
+            if (MemoryUtils.canAllocate(len)) {
+                success(buffer.copyOf(len))
+            } else {
+                error("streamBytes-memory", "not enough memory to allocate $len bytes", null)
+                return
+            }
         }
     }
 

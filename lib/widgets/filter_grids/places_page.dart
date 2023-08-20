@@ -13,7 +13,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class PlaceListPage extends StatelessWidget {
   static const routeName = '/places';
@@ -23,12 +22,12 @@ class PlaceListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    return Selector<Settings, Tuple3<ChipSortFactor, bool, Set<CollectionFilter>>>(
-      selector: (context, s) => Tuple3(s.placeSortFactor, s.placeSortReverse, s.pinnedFilters),
+    return Selector<Settings, (ChipSortFactor, bool, Set<CollectionFilter>)>(
+      selector: (context, s) => (s.placeSortFactor, s.placeSortReverse, s.pinnedFilters),
       shouldRebuild: (t1, t2) {
-        // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within `TupleN`
+        // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
         const eq = DeepCollectionEquality();
-        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2) && eq.equals(t1.item3, t2.item3));
+        return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3));
       },
       builder: (context, s, child) {
         return StreamBuilder(

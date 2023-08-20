@@ -15,7 +15,6 @@ import 'package:aves/widgets/settings/navigation/drawer_tab_albums.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_fixed.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 class NavigationDrawerEditorPage extends StatefulWidget {
   static const routeName = '/settings/navigation_drawer';
@@ -65,8 +64,8 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final tabs = <Tuple2<Tab, Widget>>[
-      Tuple2(
+    final tabs = <(Tab, Widget)>[
+      (
         Tab(text: l10n.settingsNavigationDrawerTabTypes),
         DrawerFixedListTab<CollectionFilter?>(
           items: _typeItems,
@@ -75,13 +74,13 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
           title: (item) => DrawerFilterTitle(filter: item),
         ),
       ),
-      Tuple2(
+      (
         Tab(text: l10n.settingsNavigationDrawerTabAlbums),
         DrawerAlbumTab(
           items: _albumItems,
         ),
       ),
-      Tuple2(
+      (
         Tab(text: l10n.settingsNavigationDrawerTabPages),
         DrawerFixedListTab<String>(
           items: _pageItems,
@@ -99,7 +98,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
           automaticallyImplyLeading: !settings.useTvLayout,
           title: Text(l10n.settingsNavigationDrawerEditorPageTitle),
           bottom: TabBar(
-            tabs: tabs.map((t) => t.item1).toList(),
+            tabs: tabs.map((t) => t.$1).toList(),
           ),
         ),
         body: WillPopScope(
@@ -111,7 +110,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
           },
           child: SafeArea(
             child: TabBarView(
-              children: tabs.map((t) => t.item2).toList(),
+              children: tabs.map((t) => t.$2).toList(),
             ),
           ),
         ),

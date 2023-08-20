@@ -3,13 +3,12 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:tuple/tuple.dart';
 
 final ServicePolicy servicePolicy = ServicePolicy._private();
 
 class ServicePolicy {
   final StreamController<QueueState> _queueStreamController = StreamController.broadcast();
-  final Map<Object, Tuple2<int, _Task>> _paused = {};
+  final Map<Object, (int, _Task)> _paused = {};
   final SplayTreeMap<int, LinkedHashMap<Object, _Task>> _queues = SplayTreeMap();
   final LinkedHashMap<Object, _Task> _runningQueue = LinkedHashMap();
 
@@ -30,8 +29,8 @@ class ServicePolicy {
     key ??= platformCall.hashCode;
     final toResume = _paused.remove(key);
     if (toResume != null) {
-      priority = toResume.item1;
-      task = toResume.item2 as _Task<T>;
+      priority = toResume.$1;
+      task = toResume.$2 as _Task<T>;
       completer = task.completer;
     } else {
       completer = Completer<T>();
@@ -56,8 +55,8 @@ class ServicePolicy {
   Future<T>? resume<T>(Object key) {
     final toResume = _paused.remove(key);
     if (toResume != null) {
-      final priority = toResume.item1;
-      final task = toResume.item2 as _Task<T>;
+      final priority = toResume.$1;
+      final task = toResume.$2 as _Task<T>;
       _getQueue(priority)[key] = task;
       _pickNext();
       return task.completer.future;
@@ -97,7 +96,7 @@ class ServicePolicy {
   }
 
   bool pause(Object key, Iterable<int> priorities) {
-    return _takeOut(key, priorities, (priority, task) => _paused.putIfAbsent(key, () => Tuple2(priority, task)));
+    return _takeOut(key, priorities, (priority, task) => _paused.putIfAbsent(key, () => (priority, task)));
   }
 
   bool isPaused(Object key) => _paused.containsKey(key);

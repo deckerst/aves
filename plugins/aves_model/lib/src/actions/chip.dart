@@ -3,6 +3,8 @@ enum ChipAction {
   goToCountryPage,
   goToPlacePage,
   goToTagPage,
+  ratingOrGreater,
+  ratingOrLower,
   reverse,
   hide,
   lockVault,

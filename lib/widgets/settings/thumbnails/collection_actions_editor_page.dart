@@ -5,7 +5,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 class CollectionActionEditorPage extends StatelessWidget {
   static const routeName = '/settings/collection_actions';
@@ -15,8 +14,8 @@ class CollectionActionEditorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final tabs = <Tuple2<Tab, Widget>>[
-      Tuple2(
+    final tabs = <(Tab, Widget)>[
+      (
         Tab(text: l10n.settingsCollectionQuickActionTabBrowsing),
         QuickActionEditorBody<EntrySetAction>(
           bannerText: context.l10n.settingsCollectionBrowsingQuickActionEditorBanner,
@@ -27,7 +26,7 @@ class CollectionActionEditorPage extends StatelessWidget {
           save: (actions) => settings.collectionBrowsingQuickActions = actions,
         ),
       ),
-      Tuple2(
+      (
         Tab(text: l10n.settingsCollectionQuickActionTabSelecting),
         QuickActionEditorBody<EntrySetAction>(
           bannerText: context.l10n.settingsCollectionSelectionQuickActionEditorBanner,
@@ -49,12 +48,12 @@ class CollectionActionEditorPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(context.l10n.settingsCollectionQuickActionEditorPageTitle),
           bottom: TabBar(
-            tabs: tabs.map((t) => t.item1).toList(),
+            tabs: tabs.map((t) => t.$1).toList(),
           ),
         ),
         body: SafeArea(
           child: TabBarView(
-            children: tabs.map((t) => t.item2).toList(),
+            children: tabs.map((t) => t.$2).toList(),
           ),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/view_state.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/media_session_service.dart';
 import 'package:aves/theme/icons.dart';
@@ -15,10 +16,9 @@ import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
-import 'package:aves/model/view_state.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video/cover.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/subtitle.dart';
@@ -29,7 +29,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
@@ -90,7 +89,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
 
   void _registerWidget(EntryPageView widget) {
     final entry = widget.pageEntry;
-    _viewStateNotifier = context.read<ViewStateConductor>().getOrCreateController(entry);
+    _viewStateNotifier = context.read<ViewStateConductor>().getOrCreateController(entry).viewStateNotifier;
     _magnifierController = AvesMagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
@@ -197,21 +196,20 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
     final videoController = context.read<VideoConductor>().getController(entry);
     if (videoController == null) return const SizedBox();
 
-    return ValueListenableBuilder<double>(
+    return ValueListenableBuilder<double?>(
       valueListenable: videoController.sarNotifier,
       builder: (context, sar, child) {
         final videoDisplaySize = entry.videoDisplaySize(sar);
+        final isPureVideo = entry.isPureVideo;
 
-        return Selector<Settings, Tuple3<bool, bool, bool>>(
-          selector: (context, s) => Tuple3(
-            s.videoGestureDoubleTapTogglePlay,
-            s.videoGestureSideDoubleTapSeek,
-            s.videoGestureVerticalDragBrightnessVolume,
+        return Selector<Settings, (bool, bool, bool)>(
+          selector: (context, s) => (
+            isPureVideo && s.videoGestureDoubleTapTogglePlay,
+            isPureVideo && s.videoGestureSideDoubleTapSeek,
+            isPureVideo && s.videoGestureVerticalDragBrightnessVolume,
           ),
           builder: (context, s, child) {
-            final playGesture = s.item1;
-            final seekGesture = s.item2;
-            final useVerticalDragGesture = s.item3;
+            final (playGesture, seekGesture, useVerticalDragGesture) = s;
             final useTapGesture = playGesture || seekGesture;
 
             MagnifierDoubleTapCallback? onDoubleTap;

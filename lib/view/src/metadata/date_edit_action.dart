@@ -4,19 +4,14 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraDateEditActionView on DateEditAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case DateEditAction.setCustom:
-        return context.l10n.editEntryDateDialogSetCustom;
-      case DateEditAction.copyField:
-        return context.l10n.editEntryDateDialogCopyField;
-      case DateEditAction.copyItem:
-        return context.l10n.editEntryDialogCopyFromItem;
-      case DateEditAction.extractFromTitle:
-        return context.l10n.editEntryDateDialogExtractFromTitle;
-      case DateEditAction.shift:
-        return context.l10n.editEntryDateDialogShift;
-      case DateEditAction.remove:
-        return context.l10n.actionRemove;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      DateEditAction.setCustom => l10n.editEntryDateDialogSetCustom,
+      DateEditAction.copyField => l10n.editEntryDateDialogCopyField,
+      DateEditAction.copyItem => l10n.editEntryDialogCopyFromItem,
+      DateEditAction.extractFromTitle => l10n.editEntryDateDialogExtractFromTitle,
+      DateEditAction.shift => l10n.editEntryDateDialogShift,
+      DateEditAction.remove => l10n.actionRemove,
+    };
   }
 }

@@ -1334,5 +1334,19 @@
   "cropAspectRatioSquare": "Quadrat",
   "@cropAspectRatioSquare": {},
   "widgetTapUpdateWidget": "Widget öffnen",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageSectionTitle": "Datennutzung",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageData": "Daten",
+  "@aboutDataUsageData": {},
+  "aboutDataUsageCache": "Cache",
+  "@aboutDataUsageCache": {},
+  "aboutDataUsageMisc": "Sonstiges",
+  "@aboutDataUsageMisc": {},
+  "aboutDataUsageInternal": "Intern",
+  "@aboutDataUsageInternal": {},
+  "aboutDataUsageExternal": "Extern",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageDatabase": "Datenbank",
+  "@aboutDataUsageDatabase": {}
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
@@ -56,7 +57,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoTogglePlay:
         await _togglePlayPause(context, controller);
       case EntryAction.videoReplay10:
-        await controller.seekTo(controller.currentPosition - 10000);
+        await controller.seekTo(max(controller.currentPosition - 10000, 0));
       case EntryAction.videoSkip10:
         await controller.seekTo(controller.currentPosition + 10000);
       case EntryAction.openVideo:
@@ -69,34 +70,37 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _captureFrame(BuildContext context, AvesEntry entry, AvesVideoController controller) async {
-    final positionMillis = controller.currentPosition;
-    final bytes = await controller.captureFrame();
-
     final destinationAlbum = androidFileUtils.avesVideoCapturesPath;
-    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
+    final positionMillis = controller.currentPosition;
+    final Map<String, dynamic> newFields = {};
 
-    if (!await checkFreeSpace(context, bytes.length, destinationAlbum)) return;
+    final bytes = await controller.captureFrame();
+    if (bytes != null) {
+      if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
-    final rotationDegrees = entry.rotationDegrees;
-    final dateTimeMillis = entry.catalogMetadata?.dateMillis;
-    final latLng = entry.latLng;
-    final exif = {
-      if (rotationDegrees != 0) 'rotationDegrees': rotationDegrees,
-      if (dateTimeMillis != null && dateTimeMillis != 0) 'dateTimeMillis': dateTimeMillis,
-      if (latLng != null) ...{
-        'latitude': latLng.latitude,
-        'longitude': latLng.longitude,
-      }
-    };
+      if (!await checkFreeSpace(context, bytes.length, destinationAlbum)) return;
 
-    final newFields = await mediaEditService.captureFrame(
-      entry,
-      desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
-      exif: exif,
-      bytes: bytes,
-      destinationAlbum: destinationAlbum,
-      nameConflictStrategy: NameConflictStrategy.rename,
-    );
+      final rotationDegrees = entry.rotationDegrees;
+      final dateTimeMillis = entry.catalogMetadata?.dateMillis;
+      final latLng = entry.latLng;
+      final exif = {
+        if (rotationDegrees != 0) 'rotationDegrees': rotationDegrees,
+        if (dateTimeMillis != null && dateTimeMillis != 0) 'dateTimeMillis': dateTimeMillis,
+        if (latLng != null) ...{
+          'latitude': latLng.latitude,
+          'longitude': latLng.longitude,
+        }
+      };
+
+      newFields.addAll(await mediaEditService.captureFrame(
+        entry,
+        desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
+        exif: exif,
+        bytes: bytes,
+        destinationAlbum: destinationAlbum,
+        nameConflictStrategy: NameConflictStrategy.rename,
+      ));
+    }
     final success = newFields.isNotEmpty;
 
     final l10n = context.l10n;
@@ -127,9 +131,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
               },
             )
           : null;
-      showFeedback(context, l10n.genericSuccessFeedback, showAction);
+      showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
     } else {
-      showFeedback(context, l10n.genericFailureFeedback);
+      showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     }
   }
 
@@ -189,6 +193,8 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _togglePlayPause(BuildContext context, AvesVideoController controller) async {
+    if (!context.mounted) return;
+
     if (controller.isPlaying) {
       await controller.pause();
     } else {
@@ -199,7 +205,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await controller.play();
       }
       // hide overlay
-      _overlayHidingTimer = Timer(context.read<DurationsData>().iconAnimation + Durations.videoOverlayHideDelay, () {
+      _overlayHidingTimer = Timer(context.read<DurationsData>().iconAnimation + ADurations.videoOverlayHideDelay, () {
         const ToggleOverlayNotification(visible: false).dispatch(context);
       });
     }

@@ -1,7 +1,7 @@
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 

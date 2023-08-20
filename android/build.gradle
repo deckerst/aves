@@ -1,11 +1,11 @@
 buildscript {
     ext {
         kotlin_version = '1.8.21'
-        agp_version = '8.0.1'
+        ksp_version = "$kotlin_version-1.0.11"
+        agp_version = '7.4.2'
         glide_version = '4.15.1'
         // AppGallery Connect plugin versions: https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-sdk-changenotes-0000001058732550
-        // TODO TLAD AppGallery Connect plugin v1.9.0.300 does not support Gradle 8+
-        huawei_agconnect_version = '1.9.0.300'
+        huawei_agconnect_version = '1.9.1.300'
         abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
         useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
         useHms = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("huawei") }

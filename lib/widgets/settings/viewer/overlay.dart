@@ -1,10 +1,11 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ViewerOverlayPage extends StatelessWidget {
   static const routeName = '/settings/viewer/overlay';
@@ -34,11 +35,10 @@ class ViewerOverlayPage extends StatelessWidget {
               title: context.l10n.settingsViewerShowInformation,
               subtitle: context.l10n.settingsViewerShowInformationSubtitle,
             ),
-            Selector<Settings, Tuple2<bool, bool>>(
-              selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayRatingTags),
+            Selector<Settings, (bool, bool)>(
+              selector: (context, s) => (s.showOverlayInfo, s.showOverlayRatingTags),
               builder: (context, s, child) {
-                final showInfo = s.item1;
-                final current = s.item2;
+                final (showInfo, current) = s;
                 return SwitchListTile(
                   value: current,
                   onChanged: showInfo ? (v) => settings.showOverlayRatingTags = v : null,
@@ -46,11 +46,10 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            Selector<Settings, Tuple2<bool, bool>>(
-              selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayShootingDetails),
+            Selector<Settings, (bool, bool)>(
+              selector: (context, s) => (s.showOverlayInfo, s.showOverlayShootingDetails),
               builder: (context, s, child) {
-                final showInfo = s.item1;
-                final current = s.item2;
+                final (showInfo, current) = s;
                 return SwitchListTile(
                   value: current,
                   onChanged: showInfo ? (v) => settings.showOverlayShootingDetails = v : null,
@@ -58,11 +57,10 @@ class ViewerOverlayPage extends StatelessWidget {
                 );
               },
             ),
-            Selector<Settings, Tuple2<bool, bool>>(
-              selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayDescription),
+            Selector<Settings, (bool, bool)>(
+              selector: (context, s) => (s.showOverlayInfo, s.showOverlayDescription),
               builder: (context, s, child) {
-                final showInfo = s.item1;
-                final current = s.item2;
+                final (showInfo, current) = s;
                 return SwitchListTile(
                   value: current,
                   onChanged: showInfo ? (v) => settings.showOverlayDescription = v : null,
@@ -81,6 +79,14 @@ class ViewerOverlayPage extends StatelessWidget {
                 selector: (context, s) => s.showOverlayThumbnailPreview,
                 onChanged: (v) => settings.showOverlayThumbnailPreview = v,
                 title: context.l10n.settingsViewerShowOverlayThumbnails,
+              ),
+            if (!useTvLayout)
+              SettingsSelectionListTile<OverlayHistogramStyle>(
+                values: OverlayHistogramStyle.values,
+                getName: (context, v) => v.getName(context),
+                selector: (context, s) => s.overlayHistogramStyle,
+                onSelection: (v) => settings.overlayHistogramStyle = v,
+                tileTitle: context.l10n.settingsViewerShowHistogram,
               ),
           ],
         ),

@@ -41,7 +41,7 @@ void main() {
     final aspectRatio = AspectRatioFilter.landscape;
     expect(aspectRatio, jsonRoundTrip(aspectRatio));
 
-    final bounds = CoordinateFilter(LatLng(29.979167, 28.223615), LatLng(36.451000, 31.134167));
+    final bounds = CoordinateFilter(const LatLng(29.979167, 28.223615), const LatLng(36.451000, 31.134167));
     expect(bounds, jsonRoundTrip(bounds));
 
     final date = DateFilter(DateLevel.ym, DateTime(1969, 7));

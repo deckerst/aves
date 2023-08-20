@@ -115,12 +115,12 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
       if (event.animate) {
         await scrollController.animateTo(
           scrollOffset,
-          duration: Duration(milliseconds: (scrollOffset / 2).round().clamp(Durations.highlightScrollAnimationMinMillis, Durations.highlightScrollAnimationMaxMillis)),
+          duration: Duration(milliseconds: (scrollOffset / 2).round().clamp(ADurations.highlightScrollAnimationMinMillis, ADurations.highlightScrollAnimationMaxMillis)),
           curve: Curves.easeInOutCubic,
         );
       } else {
         scrollController.jumpTo(scrollOffset);
-        await Future.delayed(Durations.highlightJumpDelay);
+        await Future.delayed(ADurations.highlightJumpDelay);
       }
     }
 

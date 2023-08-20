@@ -108,3 +108,11 @@ class EntryMovedNotification extends Notification with EquatableMixin {
 
   const EntryMovedNotification(this.moveType, this.entries);
 }
+
+@immutable
+class FullImageLoadedNotification extends Notification {
+  final AvesEntry entry;
+  final ImageProvider image;
+
+  const FullImageLoadedNotification(this.entry, this.image);
+}

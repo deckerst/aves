@@ -89,7 +89,7 @@ class GridThemeData {
         if (located && showLocated) LocationIcon.located(),
         if (!located && showUnlocated) LocationIcon.unlocated(),
         if (entry.rating != 0 && showRating) RatingIcon(entry: entry),
-        if (entry.isVideo)
+        if (entry.isPureVideo)
           VideoIcon(entry: entry)
         else if (entry.isAnimated)
           const AnimatedImageIcon()

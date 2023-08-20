@@ -6,57 +6,41 @@ import 'package:flutter/widgets.dart';
 extension ExtraEntryGroupFactorView on EntryGroupFactor {
   String getName(BuildContext context) {
     final l10n = context.l10n;
-    switch (this) {
-      case EntryGroupFactor.album:
-        return l10n.collectionGroupAlbum;
-      case EntryGroupFactor.month:
-        return l10n.collectionGroupMonth;
-      case EntryGroupFactor.day:
-        return l10n.collectionGroupDay;
-      case EntryGroupFactor.none:
-        return l10n.collectionGroupNone;
-    }
+    return switch (this) {
+      EntryGroupFactor.album => l10n.collectionGroupAlbum,
+      EntryGroupFactor.month => l10n.collectionGroupMonth,
+      EntryGroupFactor.day => l10n.collectionGroupDay,
+      EntryGroupFactor.none => l10n.collectionGroupNone,
+    };
   }
 
   IconData get icon {
-    switch (this) {
-      case EntryGroupFactor.album:
-        return AIcons.album;
-      case EntryGroupFactor.month:
-        return AIcons.dateByMonth;
-      case EntryGroupFactor.day:
-        return AIcons.dateByDay;
-      case EntryGroupFactor.none:
-        return AIcons.clear;
-    }
+    return switch (this) {
+      EntryGroupFactor.album => AIcons.album,
+      EntryGroupFactor.month => AIcons.dateByMonth,
+      EntryGroupFactor.day => AIcons.dateByDay,
+      EntryGroupFactor.none => AIcons.clear,
+    };
   }
 }
 
 extension ExtraAlbumChipGroupFactorView on AlbumChipGroupFactor {
   String getName(BuildContext context) {
     final l10n = context.l10n;
-    switch (this) {
-      case AlbumChipGroupFactor.importance:
-        return l10n.albumGroupTier;
-      case AlbumChipGroupFactor.mimeType:
-        return l10n.albumGroupType;
-      case AlbumChipGroupFactor.volume:
-        return l10n.albumGroupVolume;
-      case AlbumChipGroupFactor.none:
-        return l10n.albumGroupNone;
-    }
+    return switch (this) {
+      AlbumChipGroupFactor.importance => l10n.albumGroupTier,
+      AlbumChipGroupFactor.mimeType => l10n.albumGroupType,
+      AlbumChipGroupFactor.volume => l10n.albumGroupVolume,
+      AlbumChipGroupFactor.none => l10n.albumGroupNone,
+    };
   }
 
   IconData get icon {
-    switch (this) {
-      case AlbumChipGroupFactor.importance:
-        return AIcons.important;
-      case AlbumChipGroupFactor.mimeType:
-        return AIcons.mimeType;
-      case AlbumChipGroupFactor.volume:
-        return AIcons.removableStorage;
-      case AlbumChipGroupFactor.none:
-        return AIcons.clear;
-    }
+    return switch (this) {
+      AlbumChipGroupFactor.importance => AIcons.important,
+      AlbumChipGroupFactor.mimeType => AIcons.mimeType,
+      AlbumChipGroupFactor.volume => AIcons.removableStorage,
+      AlbumChipGroupFactor.none => AIcons.clear,
+    };
   }
 }

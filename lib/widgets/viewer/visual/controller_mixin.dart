@@ -126,9 +126,9 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     final controller = context.read<VideoConductor>().getOrCreateController(entry);
     setState(() {});
 
-    if (videoAutoPlayEnabled) {
+    if (videoAutoPlayEnabled || entry.isAnimated) {
       final resumeTimeMillis = await controller.getResumeTime(context);
-      await _playVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
+      await _autoPlayVideo(controller, () => entry == entryNotifier.value, resumeTimeMillis: resumeTimeMillis);
     }
   }
 
@@ -163,7 +163,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
             final pageVideoController = videoConductor.getController(pageEntry);
             assert(pageVideoController != null);
             if (pageVideoController != null) {
-              await _playVideo(pageVideoController, () => entry == entryNotifier.value && page == multiPageController.page);
+              await _autoPlayVideo(pageVideoController, () => entry == entryNotifier.value && page == multiPageController.page);
             }
           }
         }
@@ -174,7 +174,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       await _onPageChanged();
 
       if (entry.isMotionPhoto && shouldAutoPlayMotionPhoto) {
-        await Future.delayed(Durations.motionPhotoAutoPlayDelay);
+        await Future.delayed(ADurations.motionPhotoAutoPlayDelay);
         if (entry == entryNotifier.value) {
           multiPageController.page = 1;
         }
@@ -192,21 +192,20 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  Future<void> _playVideo(AvesVideoController videoController, bool Function() isCurrent, {int? resumeTimeMillis}) async {
+  Future<void> _autoPlayVideo(AvesVideoController videoController, bool Function() isCurrent, {int? resumeTimeMillis}) async {
     // video decoding may fail or have initial artifacts when the player initializes
     // during this widget initialization (because of the page transition and hero animation?)
     // so we play after a delay for increased stability
     await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
 
-    if (!videoController.isMuted && shouldAutoPlayVideoMuted) {
+    if (!videoController.isMuted && (videoController.entry.isAnimated || shouldAutoPlayVideoMuted)) {
       await videoController.mute(true);
     }
 
     if (resumeTimeMillis != null) {
       await videoController.seekTo(resumeTimeMillis);
-    } else {
-      await videoController.play();
     }
+    await videoController.play();
 
     // playing controllers are paused when the entry changes,
     // but the controller may still be preparing (not yet playing) when this happens

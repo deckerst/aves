@@ -7,13 +7,13 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
-version: 1.8.9+100
+version: 1.9.0+101
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.10.3
+  flutter: 3.13.0
   sdk: ">=3.0.0 <4.0.0"
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
@@ -40,6 +40,12 @@ dependencies:
     path: plugins/aves_services_google
   aves_video:
     path: plugins/aves_video
+#  aves_video_ijk:
+#    path: plugins/aves_video_ijk
+  aves_video_ffmpeg:
+    path: plugins/aves_video_ffmpeg
+  aves_video_mpv:
+    path: plugins/aves_video_mpv
   aves_ui:
     path: plugins/aves_ui
   aves_utils:
@@ -63,16 +69,8 @@ dependencies:
   expansion_tile_card:
     git:
       url: https://github.com/deckerst/expansion_tile_card.git
-  fijkplayer:
-    git:
-      url: https://github.com/deckerst/fijkplayer.git
-      ref: aves
   flex_color_picker:
   floating:
-    git:
-      url: https://github.com/wrbl606/floating.git
-      # v2.0.0 is incompatible with AGP8
-      ref: main
   fluster:
   flutter_displaymode:
   flutter_highlight:
@@ -113,7 +111,6 @@ dependencies:
     git:
       url: https://github.com/deckerst/aves_streams_channel.git
   transparent_image:
-  tuple:
   url_launcher:
   vector_math:
   volume_controller:
@@ -127,12 +124,6 @@ dev_dependencies:
   flutter_lints:
   shared_preferences_platform_interface:
   test:
-
-dependency_overrides:
-  # as of Flutter beta v3.10.0-1.5.pre, `flutter_driver`
-  # constrains `material_color_utilities` to v0.2.0, which
-  # constrains `dynamic_color` to v1.6.4, which is incompatible with AGP8
-  material_color_utilities: ^0.5.0
 
 flutter:
   assets:

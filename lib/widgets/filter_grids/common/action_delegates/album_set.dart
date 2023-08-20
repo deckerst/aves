@@ -17,6 +17,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
@@ -32,7 +33,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
@@ -168,14 +168,14 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   @override
   Future<void> configureView(BuildContext context) async {
-    final initialValue = Tuple4(
+    final initialValue = (
       sortFactor,
       settings.albumGroupFactor,
       tileLayout,
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<Tuple4<ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool>>(
+    final value = await showDialog<(ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<ChipSortFactor, AlbumChipGroupFactor, TileLayout>(
@@ -190,12 +190,12 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     if (value != null && initialValue != value) {
-      sortFactor = value.item1!;
-      settings.albumGroupFactor = value.item2!;
-      tileLayout = value.item3!;
-      sortReverse = value.item4;
+      sortFactor = value.$1!;
+      settings.albumGroupFactor = value.$2!;
+      tileLayout = value.$3!;
+      sortReverse = value.$4;
     }
   }
 
@@ -256,7 +256,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         }
       },
     );
-    showFeedback(context, l10n.genericSuccessFeedback, showAction);
+    showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
   }
 
   Future<void> _delete(BuildContext context, Set<AlbumFilter> filters) async {
@@ -364,7 +364,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedbackWithMessenger(context, messenger, l10n.collectionDeleteFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, FeedbackType.warn, l10n.collectionDeleteFailureFeedback(count));
         }
 
         // cleanup
@@ -443,9 +443,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedbackWithMessenger(context, messenger, l10n.collectionMoveFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, FeedbackType.warn, l10n.collectionMoveFailureFeedback(count));
         } else {
-          showFeedbackWithMessenger(context, messenger, l10n.genericSuccessFeedback);
+          showFeedbackWithMessenger(context, messenger, FeedbackType.info, l10n.genericSuccessFeedback);
         }
 
         // cleanup

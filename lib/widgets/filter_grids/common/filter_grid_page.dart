@@ -46,7 +46,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 typedef QueryTest<T extends CollectionFilter> = List<FilterGridItem<T>> Function(BuildContext context, List<FilterGridItem<T>> filters, String query);
 
@@ -317,13 +316,10 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
             final sectionedListLayoutProvider = ValueListenableBuilder<double>(
               valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
               builder: (context, thumbnailExtent, child) {
-                return Selector<TileExtentController, Tuple4<double, int, double, double>>(
-                  selector: (context, c) => Tuple4(c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
+                return Selector<TileExtentController, (double, int, double, double)>(
+                  selector: (context, c) => (c.viewportSize.width, c.columnCount, c.spacing, c.horizontalPadding),
                   builder: (context, c, child) {
-                    final scrollableWidth = c.item1;
-                    final columnCount = c.item2;
-                    final tileSpacing = c.item3;
-                    final horizontalPadding = c.item4;
+                    final (scrollableWidth, columnCount, tileSpacing, horizontalPadding) = c;
                     // do not listen for animation delay change
                     final target = context.read<DurationsData>().staggeredAnimationPageTarget;
                     final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
@@ -546,7 +542,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
     final item = visibleSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
     if (item == null) return;
 
-    await Future.delayed(Durations.highlightScrollInitDelay);
+    await Future.delayed(ADurations.highlightScrollInitDelay);
 
     final animate = context.read<Settings>().accessibilityAnimations.animate;
     highlightInfo.trackItem(item, animate: animate, highlightItem: filter);
@@ -571,9 +567,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final metrics = context.select<TileExtentController, Tuple2<double, double>>((v) => Tuple2(v.spacing, v.horizontalPadding));
-    final tileSpacing = metrics.item1;
-    final horizontalPadding = metrics.item2;
+    final (tileSpacing, horizontalPadding) = context.select<TileExtentController, (double, double)>((v) => (v.spacing, v.horizontalPadding));
     final brightness = Theme.of(context).brightness;
     return GridScaleGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,

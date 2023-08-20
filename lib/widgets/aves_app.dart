@@ -41,7 +41,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +49,6 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
 
 class AvesApp extends StatefulWidget {
@@ -67,9 +65,12 @@ class AvesApp extends StatefulWidget {
     'gl', // Galician
     'he', // Hebrew
     'hi', // Hindi
+    'kn', // Kannada
     'ml', // Malayalam
+    'my', // Burmese
     'or', // Odia
     'sk', // Slovak
+    'sl', // Slovenian
     'th', // Thai
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
@@ -154,7 +155,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   late final Future<CorePalette?> _dynamicColorPaletteLoader;
   final TvRailController _tvRailController = TvRailController();
   final CollectionSource _mediaStoreSource = MediaStoreSource();
-  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.mediaContentChangeDebounceDelay);
+  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
   Size? _screenSize;
 
@@ -234,16 +235,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                 : AvesScaffold(
                     body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                   );
-            return Selector<Settings, Tuple3<Locale?, AvesThemeBrightness, bool>>(
-              selector: (context, s) => Tuple3(
+            return Selector<Settings, (Locale?, AvesThemeBrightness, bool)>(
+              selector: (context, s) => (
                 s.locale,
                 s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
                 s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
               ),
               builder: (context, s, child) {
-                final settingsLocale = s.item1;
-                final themeBrightness = s.item2;
-                final enableDynamicColor = s.item3;
+                final (settingsLocale, themeBrightness, enableDynamicColor) = s;
 
                 AStyles.updateStylesForLocale(settings.appliedLocale);
 
@@ -295,8 +294,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                             ...LocalizationsNn.delegates,
                           ],
                           supportedLocales: AvesApp.supportedLocales,
-                          // TODO TLAD remove custom scroll behavior when this is fixed: https://github.com/flutter/flutter/issues/82906
-                          scrollBehavior: StretchMaterialScrollBehavior(),
+                          scrollBehavior: AvesScrollBehavior(),
                         ),
                       ),
                     );
@@ -389,6 +387,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.pickSingleMediaExternal:
           case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
+            break;
           case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickMediaInternal:
           case AppMode.pickFilterInternal:
@@ -401,8 +400,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         }
       case AppLifecycleState.resumed:
         RecentlyAddedFilter.updateNow();
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
+        break;
+      default:
         break;
     }
   }
@@ -455,8 +454,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
     await _onTvLayoutChanged();
     _monitorSettings();
+    videoControllerFactory.init();
 
-    FijkLog.setLevel(FijkLogLevel.Warn);
     unawaited(_setupErrorReporting());
 
     debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
@@ -549,15 +548,15 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     final settingStream = settings.updateStream;
     // app
-    settingStream.where((event) => event.key == Settings.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settingStream.where((event) => event.key == SettingKeys.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
     // display
-    settingStream.where((event) => event.key == Settings.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
-    settingStream.where((event) => event.key == Settings.maxBrightnessKey).listen((_) => applyMaxBrightness());
-    settingStream.where((event) => event.key == Settings.forceTvLayoutKey).listen((_) => applyForceTvLayout());
+    settingStream.where((event) => event.key == SettingKeys.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
+    settingStream.where((event) => event.key == SettingKeys.maxBrightnessKey).listen((_) => applyMaxBrightness());
+    settingStream.where((event) => event.key == SettingKeys.forceTvLayoutKey).listen((_) => applyForceTvLayout());
     // navigation
-    settingStream.where((event) => event.key == Settings.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    settingStream.where((event) => event.key == SettingKeys.keepScreenOnKey).listen((_) => applyKeepScreenOn());
     // platform settings
-    settingStream.where((event) => event.key == Settings.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+    settingStream.where((event) => event.key == SettingKeys.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
 
     applyDisplayRefreshRateMode();
     applyMaxBrightness();
@@ -567,7 +566,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _setupErrorReporting() async {
     await reportService.init();
-    settings.updateStream.where((event) => event.key == Settings.isErrorReportingAllowedKey).listen(
+    settings.updateStream.where((event) => event.key == SettingKeys.isErrorReportingAllowedKey).listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
     await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);
@@ -633,13 +632,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   void _onError(String? error) => reportService.recordError(error, null);
 }
 
-class StretchMaterialScrollBehavior extends MaterialScrollBehavior {
+class AvesScrollBehavior extends MaterialScrollBehavior {
   @override
   Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
-    return StretchingOverscrollIndicator(
-      axisDirection: details.direction,
-      child: child,
-    );
+    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    return animate
+        ? StretchingOverscrollIndicator(
+            axisDirection: details.direction,
+            child: child,
+          )
+        : GlowingOverscrollIndicator(
+            axisDirection: details.direction,
+            color: Colors.white,
+            child: child,
+          );
   }
 }
 

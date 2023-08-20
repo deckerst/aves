@@ -13,6 +13,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
@@ -58,6 +59,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
   final Map<String, int> _entryCountPerTag = {}, _entryCountPerAlbum = {};
   final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
+  int _totalSizeBytes = 0;
 
   Set<AvesEntry> get entries => widget.entries;
 
@@ -66,12 +68,14 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     super.initState();
 
     _isPageAnimatingNotifier = ValueNotifier(true);
-    Future.delayed(Durations.pageTransitionAnimation * timeDilation).then((_) {
+    Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
       if (!mounted) return;
       _isPageAnimatingNotifier.value = false;
     });
 
     entries.forEach((entry) {
+      _totalSizeBytes += entry.sizeBytes ?? 0;
+
       if (entry.hasAddress) {
         final address = entry.addressDetails!;
         var country = address.countryName;
@@ -123,7 +127,6 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
               text: l10n.collectionEmptyImages,
             );
           } else {
-            final theme = Theme.of(context);
             final chartAnimationDuration = context.read<DurationsData>().chartTransition;
 
             final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
@@ -148,51 +151,24 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
               ],
             );
 
-            final catalogued = entries.where((entry) => entry.isCatalogued);
-            final withGps = catalogued.where((entry) => entry.hasGps);
-            final withGpsCount = withGps.length;
-            final withGpsPercent = withGpsCount / entries.length;
-            final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-            final lineHeight = 16 * textScaleFactor;
-            final barRadius = Radius.circular(lineHeight / 2);
-            final locationIndicator = Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
+            final showRatings = _entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
+            final source = widget.source;
+            final sizeIndicator = Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(AIcons.location),
-                      Expanded(
-                        child: LinearPercentIndicator(
-                          percent: withGpsPercent,
-                          lineHeight: lineHeight,
-                          backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
-                          progressColor: theme.colorScheme.secondary,
-                          animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
-                          isRTL: context.isRtl,
-                          barRadius: barRadius,
-                          center: LinearPercentIndicatorText(percent: withGpsPercent),
-                          padding: EdgeInsets.symmetric(horizontal: lineHeight),
-                        ),
-                      ),
-                      // end padding to match leading, so that inside label is aligned with outside label below
-                      const SizedBox(width: 24),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.statsWithGps(withGpsCount),
-                    textAlign: TextAlign.center,
+                  const Icon(AIcons.size),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(formatFileSize(l10n.localeName, _totalSizeBytes)),
                   ),
                 ],
               ),
             );
-            final showRatings = _entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
-            final source = widget.source;
-            child = NotificationListener<ReverseFilterNotification>(
+            child = NotificationListener<FilterNotification>(
               onNotification: (notification) {
-                _onFilterSelection(context, notification.reversedFilter);
+                _onFilterSelection(context, notification.filter);
                 return true;
               },
               child: AnimationLimiter(
@@ -214,7 +190,10 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
                         animationDuration: chartAnimationDuration,
                         onFilterSelection: (filter) => _onFilterSelection(context, filter),
                       ),
-                      locationIndicator,
+                      const SizedBox(height: 16),
+                      sizeIndicator,
+                      const SizedBox(height: 16),
+                      _LocationIndicator(entries: entries),
                       ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
                       ..._buildFilterSection<String>(context, l10n.statsTopStatesSectionTitle, _entryCountPerState, (v) => LocationFilter(LocationLevel.state, v)),
                       ..._buildFilterSection<String>(context, l10n.statsTopPlacesSectionTitle, _entryCountPerPlace, (v) => LocationFilter(LocationLevel.place, v)),
@@ -399,9 +378,9 @@ class StatsTopPage extends StatelessWidget {
         child: SafeArea(
           bottom: false,
           child: Builder(builder: (context) {
-            return NotificationListener<ReverseFilterNotification>(
+            return NotificationListener<FilterNotification>(
               onNotification: (notification) {
-                onFilterSelection(notification.reversedFilter);
+                onFilterSelection(notification.filter);
                 return true;
               },
               child: SingleChildScrollView(
@@ -414,6 +393,57 @@ class StatsTopPage extends StatelessWidget {
             );
           }),
         ),
+      ),
+    );
+  }
+}
+
+class _LocationIndicator extends StatelessWidget {
+  final Set<AvesEntry> entries;
+
+  const _LocationIndicator({required this.entries});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final catalogued = entries.where((entry) => entry.isCatalogued);
+    final withGps = catalogued.where((entry) => entry.hasGps);
+    final withGpsCount = withGps.length;
+    final withGpsPercent = withGpsCount / entries.length;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final lineHeight = 16 * textScaleFactor;
+    final barRadius = Radius.circular(lineHeight / 2);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(AIcons.location),
+              Expanded(
+                child: LinearPercentIndicator(
+                  percent: withGpsPercent,
+                  lineHeight: lineHeight,
+                  backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
+                  progressColor: theme.colorScheme.secondary,
+                  animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
+                  isRTL: context.isRtl,
+                  barRadius: barRadius,
+                  center: LinearPercentIndicatorText(percent: withGpsPercent),
+                  padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                ),
+              ),
+              // end padding to match leading, so that inside label is aligned with outside label below
+              const SizedBox(width: 24),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            context.l10n.statsWithGps(withGpsCount),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

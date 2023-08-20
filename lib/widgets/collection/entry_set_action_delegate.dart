@@ -45,7 +45,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin {
   bool isVisible(
@@ -322,7 +321,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
+          showFeedback(context, FeedbackType.warn, context.l10n.collectionDeleteFailureFeedback(count));
         }
 
         // cleanup
@@ -439,10 +438,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           final successCount = successOps.length;
           if (successCount < todoCount) {
             final count = todoCount - successCount;
-            showFeedback(context, l10n.collectionEditFailureFeedback(count));
+            showFeedback(context, FeedbackType.warn, l10n.collectionEditFailureFeedback(count));
           } else {
             final count = editedOps.length;
-            showFeedback(context, l10n.collectionEditSuccessFeedback(count));
+            showFeedback(context, FeedbackType.info, l10n.collectionEditSuccessFeedback(count));
           }
         }
       },
@@ -487,7 +486,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (confirmed == null || !confirmed) return null;
 
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     return supported;
   }
 
@@ -709,7 +708,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
     }
-    final result = await showDialog<Tuple2<AvesEntry?, String>>(
+    final result = await showDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: defaultName ?? '',
@@ -719,13 +718,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
     if (result == null) return;
 
-    final coverEntry = result.item1;
-    final name = result.item2;
+    final (coverEntry, name) = result;
     if (name.isEmpty) return;
 
     await appService.pinToHomeScreen(name, coverEntry, filters: filters);
     if (!device.showPinShortcutFeedback) {
-      showFeedback(context, context.l10n.genericSuccessFeedback);
+      showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }
   }
 }

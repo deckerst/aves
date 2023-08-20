@@ -10,25 +10,19 @@ class BurstPatterns {
   ];
 
   static String getName(String pattern) {
-    switch (pattern) {
-      case samsung:
-        return 'Samsung';
-      case sony:
-        return 'Sony';
-      default:
-        return pattern;
-    }
+    return switch (pattern) {
+      samsung => 'Samsung',
+      sony => 'Sony',
+      _ => pattern,
+    };
   }
 
   static String getExample(String pattern) {
-    switch (pattern) {
-      case samsung:
-        return '20151021_072800_007';
-      case sony:
-        return 'DSC_0007_BURST20151021072800123';
-      default:
-        return '?';
-    }
+    return switch (pattern) {
+      samsung => '20151021_072800_007',
+      sony => 'DSC_0007_BURST20151021072800123',
+      _ => '?',
+    };
   }
 
   static const byManufacturer = {

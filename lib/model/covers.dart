@@ -13,7 +13,6 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
-import 'package:tuple/tuple.dart';
 
 final Covers covers = Covers._private();
 
@@ -40,11 +39,11 @@ class Covers {
 
   Set<CoverRow> get all => Set.unmodifiable(_rows);
 
-  Tuple3<int?, String?, Color?>? of(CollectionFilter filter) {
+  (int? entryId, String? packageName, Color? color)? of(CollectionFilter filter) {
     if (filter is AlbumFilter && vaults.isLocked(filter.album)) return null;
 
     final row = _rows.firstWhereOrNull((row) => row.filter == filter);
-    return row != null ? Tuple3(row.entryId, row.packageName, row.color) : null;
+    return row != null ? (row.entryId, row.packageName, row.color) : null;
   }
 
   Future<void> set({
@@ -113,7 +112,7 @@ class Covers {
   }
 
   AlbumType effectiveAlbumType(String albumPath) {
-    final filterPackage = of(AlbumFilter(albumPath, null))?.item2;
+    final filterPackage = of(AlbumFilter(albumPath, null))?.$2;
     if (filterPackage != null) {
       return filterPackage.isEmpty ? AlbumType.regular : AlbumType.app;
     } else {
@@ -122,7 +121,7 @@ class Covers {
   }
 
   String? effectiveAlbumPackage(String albumPath) {
-    final filterPackage = of(AlbumFilter(albumPath, null))?.item2;
+    final filterPackage = of(AlbumFilter(albumPath, null))?.$2;
     return filterPackage ?? appInventory.getAlbumAppPackageName(albumPath);
   }
 

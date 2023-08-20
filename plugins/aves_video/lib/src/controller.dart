@@ -1,19 +1,34 @@
 import 'dart:async';
 
 import 'package:aves_model/aves_model.dart';
-import 'package:aves_video/src/stream.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
+abstract class AvesVideoControllerFactory {
+  void init();
+
+  AvesVideoController buildController(
+      AvesEntryBase entry, {
+        required PlaybackStateHandler playbackStateHandler,
+        required VideoSettings settings,
+      });
+}
 
 abstract class AvesVideoController {
   final AvesEntryBase _entry;
   final PlaybackStateHandler playbackStateHandler;
+  final VideoSettings settings;
 
   AvesEntryBase get entry => _entry;
 
   static const resumeTimeSaveMinDuration = Duration(minutes: 2);
 
-  AvesVideoController(AvesEntryBase entry, {required this.playbackStateHandler}) : _entry = entry {
+  AvesVideoController(
+    AvesEntryBase entry, {
+    required this.playbackStateHandler,
+    required this.settings,
+  }) : _entry = entry {
     entry.visualChangeNotifier.addListener(onVisualChanged);
   }
 
@@ -38,7 +53,7 @@ abstract class AvesVideoController {
 
   Future<void> seekTo(int targetMillis);
 
-  Future<void> seekToProgress(double progress) => seekTo((duration * progress).toInt());
+  Future<void> seekToProgress(double progress) => seekTo((duration * progress.clamp(0, 1)).toInt());
 
   Listenable get playCompletedListenable;
 
@@ -51,6 +66,18 @@ abstract class AvesVideoController {
   Stream<double> get speedStream;
 
   bool get isReady;
+
+  Future<void> get untilReady {
+    if (isReady) return Future.value();
+
+    final completer = Completer();
+    late StreamSubscription<VideoStatus> sub;
+    sub = statusStream.where((_) => isReady).listen((_) {
+      sub.cancel();
+      completer.complete();
+    });
+    return completer.future;
+  }
 
   bool get isPlaying => status == VideoStatus.playing;
 
@@ -75,7 +102,7 @@ abstract class AvesVideoController {
 
   ValueNotifier<bool> get canSelectStreamNotifier;
 
-  ValueNotifier<double> get sarNotifier;
+  ValueNotifier<double?> get sarNotifier;
 
   bool get isMuted;
 
@@ -93,7 +120,7 @@ abstract class AvesVideoController {
 
   List<MediaStreamSummary> get streams;
 
-  Future<Uint8List> captureFrame();
+  Future<Uint8List?> captureFrame();
 
   Future<void> mute(bool muted);
 

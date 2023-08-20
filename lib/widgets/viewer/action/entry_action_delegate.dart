@@ -39,7 +39,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin, EntryStorageMixin, VaultAwareMixin {
   final AvesEntry mainEntry, pageEntry;
@@ -80,18 +79,18 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.flip:
           return targetEntry.canFlip;
         case EntryAction.convert:
-          return canWrite && !targetEntry.isVideo;
+          return canWrite && !targetEntry.isPureVideo;
         case EntryAction.print:
-          return !targetEntry.isVideo;
+          return !targetEntry.isPureVideo;
         case EntryAction.openMap:
           return !settings.useTvLayout && targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
         case EntryAction.videoCaptureFrame:
-          return canWrite && targetEntry.isVideo;
+          return canWrite && targetEntry.isPureVideo;
         case EntryAction.lockViewer:
         case EntryAction.videoToggleMute:
-          return !settings.useTvLayout && targetEntry.isVideo;
+          return !settings.useTvLayout && targetEntry.isPureVideo;
         case EntryAction.videoSelectStreams:
         case EntryAction.videoSetSpeed:
         case EntryAction.videoSettings:
@@ -99,7 +98,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoReplay10:
         case EntryAction.videoSkip10:
         case EntryAction.openVideo:
-          return targetEntry.isVideo;
+          return targetEntry.isPureVideo;
         case EntryAction.rotateScreen:
           return !settings.useTvLayout && settings.isRotationLocked;
         case EntryAction.addShortcut:
@@ -185,7 +184,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _addShortcut(context, targetEntry);
       case EntryAction.copyToClipboard:
         appService.copyToClipboard(targetEntry.uri, targetEntry.bestTitle).then((success) {
-          showFeedback(context, success ? context.l10n.genericSuccessFeedback : context.l10n.genericFailureFeedback);
+          if (success) {
+            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+          } else {
+            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
+          }
         });
       case EntryAction.delete:
         _delete(context, targetEntry);
@@ -325,7 +328,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _addShortcut(BuildContext context, AvesEntry targetEntry) async {
-    final result = await showDialog<Tuple2<AvesEntry?, String>>(
+    final result = await showDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: targetEntry.bestTitle ?? '',
@@ -334,12 +337,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     if (result == null) return;
 
-    final name = result.item2;
+    final name = result.$2;
     if (name.isEmpty) return;
 
     await appService.pinToHomeScreen(name, targetEntry, uri: targetEntry.uri);
     if (!device.showPinShortcutFeedback) {
-      showFeedback(context, context.l10n.genericSuccessFeedback);
+      showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }
   }
 
@@ -376,7 +379,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermission(context, {targetEntry})) return;
 
     if (!await targetEntry.delete()) {
-      showFeedback(context, l10n.genericFailureFeedback);
+      showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
       if (source.initState != SourceInitializationState.none) {
@@ -401,7 +404,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (newName == null || newName.isEmpty || newName == targetEntry.filenameWithoutExtension) return;
 
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
     await rename(
       context,
       entriesToNewName: {targetEntry: '$newName${targetEntry.extension}'},

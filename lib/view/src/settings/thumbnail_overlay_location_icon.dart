@@ -5,23 +5,18 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraThumbnailOverlayLocationIconView on ThumbnailOverlayLocationIcon {
   String getName(BuildContext context) {
-    switch (this) {
-      case ThumbnailOverlayLocationIcon.located:
-        return context.l10n.filterLocatedLabel;
-      case ThumbnailOverlayLocationIcon.unlocated:
-        return context.l10n.filterNoLocationLabel;
-      case ThumbnailOverlayLocationIcon.none:
-        return context.l10n.settingsDisabled;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      ThumbnailOverlayLocationIcon.located => l10n.filterLocatedLabel,
+      ThumbnailOverlayLocationIcon.unlocated => l10n.filterNoLocationLabel,
+      ThumbnailOverlayLocationIcon.none => l10n.settingsDisabled,
+    };
   }
 
   IconData getIcon(BuildContext context) {
-    switch (this) {
-      case ThumbnailOverlayLocationIcon.unlocated:
-        return AIcons.locationUnlocated;
-      case ThumbnailOverlayLocationIcon.located:
-      case ThumbnailOverlayLocationIcon.none:
-        return AIcons.location;
-    }
+    return switch (this) {
+      ThumbnailOverlayLocationIcon.unlocated => AIcons.locationUnlocated,
+      ThumbnailOverlayLocationIcon.located || ThumbnailOverlayLocationIcon.none => AIcons.location,
+    };
   }
 }

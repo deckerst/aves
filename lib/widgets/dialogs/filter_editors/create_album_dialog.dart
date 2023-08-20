@@ -133,7 +133,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     // when the field gets focus, we wait for the soft keyboard to appear
     // then scroll to the bottom to make sure the field is in view
     if (_nameFieldFocusNode.hasFocus) {
-      await Future.delayed(Durations.softKeyboardDisplayDelay + const Duration(milliseconds: 500));
+      await Future.delayed(ADurations.softKeyboardDisplayDelay + const Duration(milliseconds: 500));
       _scrollToBottom();
     }
   }
@@ -141,7 +141,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   void _scrollToBottom() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
-      duration: Durations.dialogFieldReachAnimation,
+      duration: ADurations.dialogFieldReachAnimation,
       curve: Curves.easeInOut,
     );
   }

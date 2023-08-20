@@ -217,9 +217,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     );
     if (success != null) {
       if (success) {
-        showFeedback(context, context.l10n.genericSuccessFeedback);
+        showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
       } else {
-        showFeedback(context, context.l10n.genericFailureFeedback);
+        showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
       }
     }
   }

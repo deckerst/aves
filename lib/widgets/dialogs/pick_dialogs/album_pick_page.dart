@@ -27,7 +27,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 Future<String?> pickAlbum({
   required BuildContext context,
@@ -68,18 +67,13 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   CollectionSource get source => widget.source;
 
   String get title {
-    switch (widget.moveType) {
-      case MoveType.copy:
-        return context.l10n.albumPickPageTitleCopy;
-      case MoveType.move:
-        return context.l10n.albumPickPageTitleMove;
-      case MoveType.export:
-        return context.l10n.albumPickPageTitleExport;
-      case MoveType.toBin:
-      case MoveType.fromBin:
-      case null:
-        return context.l10n.albumPickPageTitlePick;
-    }
+    final l10n = context.l10n;
+    return switch (widget.moveType) {
+      MoveType.copy => l10n.albumPickPageTitleCopy,
+      MoveType.move => l10n.albumPickPageTitleMove,
+      MoveType.export => l10n.albumPickPageTitleExport,
+      MoveType.toBin || MoveType.fromBin || null => l10n.albumPickPageTitlePick,
+    };
   }
 
   static const _quickActions = [
@@ -99,8 +93,8 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.pickFilterInternal),
-      child: Selector<Settings, Tuple2<AlbumChipGroupFactor, ChipSortFactor>>(
-        selector: (context, s) => Tuple2(s.albumGroupFactor, s.albumSortFactor),
+      child: Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor)>(
+        selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor),
         builder: (context, s, child) {
           return StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
@@ -227,7 +221,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
           onActionSelected(action);
         },
       ),
@@ -243,7 +237,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     if (directory == null) return;
 
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
 
     _pickAlbum(directory);
   }
@@ -265,7 +259,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     if (details == null) return;
 
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
 
     await vaults.create(details);
     _pickAlbum(details.path);

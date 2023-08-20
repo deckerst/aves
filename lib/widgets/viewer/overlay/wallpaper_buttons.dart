@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:aves/services/wallpaper_service.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -13,12 +12,12 @@ import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/dialogs/wallpaper_settings_dialog.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
-import 'package:aves/widgets/viewer/visual/conductor.dart';
+import 'package:aves/widgets/viewer/view/conductor.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class WallpaperButtons extends StatelessWidget with FeedbackMixin {
   final AvesEntry entry;
@@ -57,15 +56,12 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
 
   Future<void> _setWallpaper(BuildContext context) async {
     final l10n = context.l10n;
-    final value = await showDialog<Tuple2<WallpaperTarget, bool>>(
+    final value = await showDialog<(WallpaperTarget, bool)>(
       context: context,
       builder: (context) => const WallpaperSettingsDialog(),
       routeSettings: const RouteSettings(name: WallpaperSettingsDialog.routeName),
     );
     if (value == null) return;
-
-    final target = value.item1;
-    final useScrollEffect = value.item2;
 
     final reportController = StreamController.broadcast();
     unawaited(showOpReport(
@@ -76,6 +72,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     var region = _getVisibleRegion(context);
     if (region == null) return;
 
+    final (target, useScrollEffect) = value;
     if (useScrollEffect) {
       final deltaX = min(region.left, entry.displaySize.width - region.right);
       region = Rect.fromLTRB(region.left - deltaX, region.top, region.right + deltaX, region.bottom);
@@ -89,12 +86,12 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     if (success) {
       await SystemNavigator.pop();
     } else {
-      showFeedback(context, l10n.genericFailureFeedback);
+      showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     }
   }
 
   Rect? _getVisibleRegion(BuildContext context) {
-    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).value;
+    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).viewState;
     final viewportSize = viewState.viewportSize;
     final contentSize = viewState.contentSize;
     final scale = viewState.scale;
@@ -107,7 +104,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
   }
 
   Future<Uint8List?> _getBytes(BuildContext context, Rect displayRegion) async {
-    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).value;
+    final viewState = context.read<ViewStateConductor>().getOrCreateController(entry).viewState;
     final scale = viewState.scale;
 
     final displaySize = entry.displaySize;
@@ -134,9 +131,11 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
       final videoController = context.read<VideoConductor>().getController(entry);
       if (videoController != null) {
         final bytes = await videoController.captureFrame();
-        needOrientation = rotationDegrees != 0 || isFlipped;
-        needCrop = true;
-        provider = MemoryImage(bytes);
+        if (bytes != null) {
+          needOrientation = rotationDegrees != 0 || isFlipped;
+          needCrop = true;
+          provider = MemoryImage(bytes);
+        }
       }
     } else if (entry.canDecode) {
       if (entry.useTiles) {

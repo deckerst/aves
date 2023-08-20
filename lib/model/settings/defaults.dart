@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/utils/colors.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
@@ -75,6 +72,7 @@ class SettingsDefaults {
   ];
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;
+  static const overlayHistogramStyle = OverlayHistogramStyle.none;
   static const showOverlayInfo = true;
   static const showOverlayDescription = false;
   static const showOverlayRatingTags = false;
@@ -83,26 +81,6 @@ class SettingsDefaults {
   static const viewerGestureSideTapNext = false;
   static const viewerUseCutout = true;
   static const enableMotionPhotoAutoPlay = false;
-
-  // video
-  static const enableVideoHardwareAcceleration = true;
-  static const videoAutoPlayMode = VideoAutoPlayMode.disabled;
-  static const videoBackgroundMode = VideoBackgroundMode.disabled;
-  static const videoLoopMode = VideoLoopMode.shortOnly;
-  static const videoResumptionMode = VideoResumptionMode.ask;
-  static const videoShowRawTimedText = false;
-  static const videoControls = VideoControls.play;
-  static const videoGestureDoubleTapTogglePlay = false;
-  static const videoGestureSideDoubleTapSeek = true;
-  static const videoGestureVerticalDragBrightnessVolume = false;
-
-  // subtitles
-  static const subtitleFontSize = 20.0;
-  static const subtitleTextAlignment = TextAlign.center;
-  static const subtitleTextPosition = SubtitlePosition.bottom;
-  static const subtitleShowOutline = true;
-  static const subtitleTextColor = Color(0xFFFFFFFF);
-  static const subtitleBackgroundColor = ColorUtils.transparentBlack;
 
   // info
   static const infoMapZoom = 12.0;

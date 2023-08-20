@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
   aves_model:
     path: ../aves_model
+  aves_utils:
+    path: ../aves_utils
 
 dev_dependencies:
   flutter_lints:

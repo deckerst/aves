@@ -282,7 +282,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                         onSelected: (action) {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
-                          Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, action));
+                          Future.delayed(ADurations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, action));
                         },
                         onCanceled: () {
                           _popupExpandedNotifier.value = null;

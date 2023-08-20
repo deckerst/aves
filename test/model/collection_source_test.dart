@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db_metadata.dart';
@@ -46,7 +47,7 @@ void main() {
   const destinationAlbum = '${FakeStorageService.primaryPath}Pictures/destination';
 
   const aTag = 'sometag';
-  final australiaLatLng = LatLng(-26, 141);
+  const australiaLatLng = LatLng(-26, 141);
   const australiaAddress = AddressDetails(
     id: 0,
     countryCode: 'AU',
@@ -201,7 +202,7 @@ void main() {
 
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     expect(covers.count, 1);
-    expect(covers.of(albumFilter)?.item1, image1.id);
+    expect(covers.of(albumFilter)?.$1, image1.id);
 
     await covers.set(filter: albumFilter, entryId: null, packageName: null, color: null);
     expect(covers.count, 0);
@@ -229,7 +230,7 @@ void main() {
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.of(albumFilter)?.item1, image1.id);
+    expect(covers.of(albumFilter)?.$1, image1.id);
   });
 
   test('favourites and covers are cleared when removing entries', () async {
@@ -348,7 +349,7 @@ void main() {
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.of(albumFilter)?.item1, image1.id);
+    expect(covers.of(albumFilter)?.$1, image1.id);
   });
 
   testWidgets('unique album names', (tester) async {
@@ -369,22 +370,26 @@ void main() {
 
     final source = await _initSource();
     await tester.pumpWidget(
-      Builder(
-        builder: (context) {
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Elea/Zeno'), 'Elea/Zeno');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Citium/Zeno'), 'Citium/Zeno');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Cleanthes'), 'Cleanthes');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Chrysippus'), 'Chrysippus');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Chrysippus'), 'Chrysippus (${FakeStorageService.removableDescription})');
-          expect(source.getAlbumDisplayName(context, FakeStorageService.primaryRootAlbum), FakeStorageService.primaryDescription);
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Seneca'), 'Pictures/Seneca');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Cicero'), 'Cicero');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Hannah Arendt'), 'Hannah Arendt');
-          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Arendt'), 'Arendt');
-          return const Placeholder();
-        },
+      Localizations(
+        locale: AppLocalizations.supportedLocales.first,
+        delegates: AppLocalizations.localizationsDelegates,
+        child: Builder(
+          builder: (context) {
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Elea/Zeno'), 'Elea/Zeno');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Citium/Zeno'), 'Citium/Zeno');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Cleanthes'), 'Cleanthes');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Chrysippus'), 'Chrysippus');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Chrysippus'), 'Chrysippus (${FakeStorageService.removableDescription})');
+            expect(source.getAlbumDisplayName(context, FakeStorageService.primaryRootAlbum), FakeStorageService.primaryDescription);
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Seneca'), 'Pictures/Seneca');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Cicero'), 'Cicero');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Hannah Arendt'), 'Hannah Arendt');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Arendt'), 'Arendt');
+            return const Placeholder();
+          },
+        ),
       ),
     );
   });

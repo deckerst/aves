@@ -341,7 +341,7 @@
       }
     }
   },
-  "videoResumeButtonLabel": "ПРОДОВЖИТИ",
+  "videoResumeButtonLabel": "ВІДНОВИТИ",
   "@videoResumeButtonLabel": {},
   "setCoverDialogAuto": "Авто",
   "@setCoverDialogAuto": {},
@@ -1492,5 +1492,27 @@
   "cropAspectRatioSquare": "Площа",
   "@cropAspectRatioSquare": {},
   "widgetTapUpdateWidget": "Оновити віджет",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageSectionTitle": "Використання даних",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageMisc": "Різне",
+  "@aboutDataUsageMisc": {},
+  "aboutDataUsageInternal": "Внутрішній",
+  "@aboutDataUsageInternal": {},
+  "aboutDataUsageExternal": "Зовнішній",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageCache": "Кеш",
+  "@aboutDataUsageCache": {},
+  "aboutDataUsageDatabase": "База даних",
+  "@aboutDataUsageDatabase": {},
+  "aboutDataUsageData": "Дані",
+  "@aboutDataUsageData": {},
+  "overlayHistogramNone": "Нічого",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramLuminance": "Яскравість",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "Показати гістограму",
+  "@settingsViewerShowHistogram": {}
 }

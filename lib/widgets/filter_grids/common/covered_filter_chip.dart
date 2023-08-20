@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/apps.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -13,7 +14,6 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/model/apps.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -183,7 +183,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (pinned)
           AnimatedPadding(
             padding: EdgeInsetsDirectional.only(end: padding),
-            duration: Durations.chipDecorationAnimation,
+            duration: ADurations.chipDecorationAnimation,
             child: Icon(
               AIcons.pin,
               color: _detailColor(context),
@@ -193,7 +193,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
           AnimatedPadding(
             padding: EdgeInsetsDirectional.only(end: padding),
-            duration: Durations.chipDecorationAnimation,
+            duration: ADurations.chipDecorationAnimation,
             child: Icon(
               AIcons.removableStorage,
               color: _detailColor(context),
@@ -203,7 +203,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is AlbumFilter && vaults.isVault(filter.album))
           AnimatedPadding(
             padding: EdgeInsetsDirectional.only(end: padding),
-            duration: Durations.chipDecorationAnimation,
+            duration: ADurations.chipDecorationAnimation,
             child: Icon(
               AIcons.locked,
               color: _detailColor(context),

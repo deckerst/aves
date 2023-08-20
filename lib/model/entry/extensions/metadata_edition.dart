@@ -8,8 +8,8 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/ref/metadata/exif.dart';
 import 'package:aves/ref/metadata/iptc.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/metadata/xmp.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
 import 'package:aves/utils/time_utils.dart';
@@ -82,7 +82,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return dataTypes;
   }
 
-  static final removalLocation = LatLng(0, 0);
+  static const removalLocation = LatLng(0, 0);
 
   Future<Set<EntryDataType>> editLocation(LatLng? latLng) async {
     final dataTypes = <EntryDataType>{};

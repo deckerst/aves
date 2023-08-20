@@ -80,22 +80,16 @@ class TypeFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    switch (itemType) {
-      case _animated:
-        return context.l10n.filterTypeAnimatedLabel;
-      case _motionPhoto:
-        return context.l10n.filterTypeMotionPhotoLabel;
-      case _panorama:
-        return context.l10n.filterTypePanoramaLabel;
-      case _raw:
-        return context.l10n.filterTypeRawLabel;
-      case _sphericalVideo:
-        return context.l10n.filterTypeSphericalVideoLabel;
-      case _geotiff:
-        return context.l10n.filterTypeGeotiffLabel;
-      default:
-        return itemType;
-    }
+    final l10n = context.l10n;
+    return switch (itemType) {
+      _animated => l10n.filterTypeAnimatedLabel,
+      _motionPhoto => l10n.filterTypeMotionPhotoLabel,
+      _panorama => l10n.filterTypePanoramaLabel,
+      _raw => l10n.filterTypeRawLabel,
+      _sphericalVideo => l10n.filterTypeSphericalVideoLabel,
+      _geotiff => l10n.filterTypeGeotiffLabel,
+      _ => itemType,
+    };
   }
 
   @override

@@ -200,6 +200,7 @@ class AvesEntry with AvesEntryBase {
     _bestTitle = null;
   }
 
+  @override
   String? get path => _path;
 
   // directory path, without the trailing separator
@@ -292,6 +293,9 @@ class AvesEntry with AvesEntryBase {
     final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month, d.day);
   }
+
+  @override
+  bool get isAnimated => catalogMetadata?.isAnimated ?? false;
 
   @override
   int? get durationMillis => _durationMillis;

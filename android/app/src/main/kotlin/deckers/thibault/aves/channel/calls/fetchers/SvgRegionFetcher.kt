@@ -96,12 +96,7 @@ class SvgRegionFetcher internal constructor(
             svg.renderToCanvas(canvas, renderOptions)
 
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)
-
-            if (bitmap != null) {
-                result.success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
-            } else {
-                result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
-            }
+            result.success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
         } catch (e: Exception) {
             result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
         }

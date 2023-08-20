@@ -5,142 +5,88 @@ import 'package:flutter/material.dart';
 
 extension ExtraEntrySetActionView on EntrySetAction {
   String getText(BuildContext context) {
-    switch (this) {
+    return switch (this) {
       // general
-      case EntrySetAction.configureView:
-        return context.l10n.menuActionConfigureView;
-      case EntrySetAction.select:
-        return context.l10n.menuActionSelect;
-      case EntrySetAction.selectAll:
-        return context.l10n.menuActionSelectAll;
-      case EntrySetAction.selectNone:
-        return context.l10n.menuActionSelectNone;
+      EntrySetAction.configureView => context.l10n.menuActionConfigureView,
+      EntrySetAction.select => context.l10n.menuActionSelect,
+      EntrySetAction.selectAll => context.l10n.menuActionSelectAll,
+      EntrySetAction.selectNone => context.l10n.menuActionSelectNone,
       // browsing
-      case EntrySetAction.searchCollection:
-        return MaterialLocalizations.of(context).searchFieldLabel;
-      case EntrySetAction.toggleTitleSearch:
+      EntrySetAction.searchCollection => MaterialLocalizations.of(context).searchFieldLabel,
+      EntrySetAction.toggleTitleSearch =>
         // different data depending on toggle state
-        return context.l10n.collectionActionShowTitleSearch;
-      case EntrySetAction.addShortcut:
-        return context.l10n.collectionActionAddShortcut;
-      case EntrySetAction.emptyBin:
-        return context.l10n.collectionActionEmptyBin;
+        context.l10n.collectionActionShowTitleSearch,
+      EntrySetAction.addShortcut => context.l10n.collectionActionAddShortcut,
+      EntrySetAction.emptyBin => context.l10n.collectionActionEmptyBin,
       // browsing or selecting
-      case EntrySetAction.map:
-        return context.l10n.menuActionMap;
-      case EntrySetAction.slideshow:
-        return context.l10n.menuActionSlideshow;
-      case EntrySetAction.stats:
-        return context.l10n.menuActionStats;
-      case EntrySetAction.rescan:
-        return context.l10n.collectionActionRescan;
+      EntrySetAction.map => context.l10n.menuActionMap,
+      EntrySetAction.slideshow => context.l10n.menuActionSlideshow,
+      EntrySetAction.stats => context.l10n.menuActionStats,
+      EntrySetAction.rescan => context.l10n.collectionActionRescan,
       // selecting
-      case EntrySetAction.share:
-        return context.l10n.entryActionShare;
-      case EntrySetAction.delete:
-        return context.l10n.entryActionDelete;
-      case EntrySetAction.restore:
-        return context.l10n.entryActionRestore;
-      case EntrySetAction.copy:
-        return context.l10n.collectionActionCopy;
-      case EntrySetAction.move:
-        return context.l10n.collectionActionMove;
-      case EntrySetAction.rename:
-        return context.l10n.entryActionRename;
-      case EntrySetAction.convert:
-        return context.l10n.entryActionConvert;
-      case EntrySetAction.toggleFavourite:
+      EntrySetAction.share => context.l10n.entryActionShare,
+      EntrySetAction.delete => context.l10n.entryActionDelete,
+      EntrySetAction.restore => context.l10n.entryActionRestore,
+      EntrySetAction.copy => context.l10n.collectionActionCopy,
+      EntrySetAction.move => context.l10n.collectionActionMove,
+      EntrySetAction.rename => context.l10n.entryActionRename,
+      EntrySetAction.convert => context.l10n.entryActionConvert,
+      EntrySetAction.toggleFavourite =>
         // different data depending on toggle state
-        return context.l10n.entryActionAddFavourite;
-      case EntrySetAction.rotateCCW:
-        return context.l10n.entryActionRotateCCW;
-      case EntrySetAction.rotateCW:
-        return context.l10n.entryActionRotateCW;
-      case EntrySetAction.flip:
-        return context.l10n.entryActionFlip;
-      case EntrySetAction.editDate:
-        return context.l10n.entryInfoActionEditDate;
-      case EntrySetAction.editLocation:
-        return context.l10n.entryInfoActionEditLocation;
-      case EntrySetAction.editTitleDescription:
-        return context.l10n.entryInfoActionEditTitleDescription;
-      case EntrySetAction.editRating:
-        return context.l10n.entryInfoActionEditRating;
-      case EntrySetAction.editTags:
-        return context.l10n.entryInfoActionEditTags;
-      case EntrySetAction.removeMetadata:
-        return context.l10n.entryInfoActionRemoveMetadata;
-    }
+        context.l10n.entryActionAddFavourite,
+      EntrySetAction.rotateCCW => context.l10n.entryActionRotateCCW,
+      EntrySetAction.rotateCW => context.l10n.entryActionRotateCW,
+      EntrySetAction.flip => context.l10n.entryActionFlip,
+      EntrySetAction.editDate => context.l10n.entryInfoActionEditDate,
+      EntrySetAction.editLocation => context.l10n.entryInfoActionEditLocation,
+      EntrySetAction.editTitleDescription => context.l10n.entryInfoActionEditTitleDescription,
+      EntrySetAction.editRating => context.l10n.entryInfoActionEditRating,
+      EntrySetAction.editTags => context.l10n.entryInfoActionEditTags,
+      EntrySetAction.removeMetadata => context.l10n.entryInfoActionRemoveMetadata,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
-    switch (this) {
+    return switch (this) {
       // general
-      case EntrySetAction.configureView:
-        return AIcons.view;
-      case EntrySetAction.select:
-        return AIcons.select;
-      case EntrySetAction.selectAll:
-        return AIcons.selected;
-      case EntrySetAction.selectNone:
-        return AIcons.unselected;
+      EntrySetAction.configureView => AIcons.view,
+      EntrySetAction.select => AIcons.select,
+      EntrySetAction.selectAll => AIcons.selected,
+      EntrySetAction.selectNone => AIcons.unselected,
       // browsing
-      case EntrySetAction.searchCollection:
-        return AIcons.search;
-      case EntrySetAction.toggleTitleSearch:
+      EntrySetAction.searchCollection => AIcons.search,
+      EntrySetAction.toggleTitleSearch =>
         // different data depending on toggle state
-        return AIcons.filter;
-      case EntrySetAction.addShortcut:
-        return AIcons.addShortcut;
-      case EntrySetAction.emptyBin:
-        return AIcons.emptyBin;
+        AIcons.filter,
+      EntrySetAction.addShortcut => AIcons.addShortcut,
+      EntrySetAction.emptyBin => AIcons.emptyBin,
       // browsing or selecting
-      case EntrySetAction.map:
-        return AIcons.map;
-      case EntrySetAction.slideshow:
-        return AIcons.slideshow;
-      case EntrySetAction.stats:
-        return AIcons.stats;
-      case EntrySetAction.rescan:
-        return AIcons.refresh;
+      EntrySetAction.map => AIcons.map,
+      EntrySetAction.slideshow => AIcons.slideshow,
+      EntrySetAction.stats => AIcons.stats,
+      EntrySetAction.rescan => AIcons.refresh,
       // selecting
-      case EntrySetAction.share:
-        return AIcons.share;
-      case EntrySetAction.delete:
-        return AIcons.delete;
-      case EntrySetAction.restore:
-        return AIcons.restore;
-      case EntrySetAction.copy:
-        return AIcons.copy;
-      case EntrySetAction.move:
-        return AIcons.move;
-      case EntrySetAction.rename:
-        return AIcons.name;
-      case EntrySetAction.convert:
-        return AIcons.convert;
-      case EntrySetAction.toggleFavourite:
+      EntrySetAction.share => AIcons.share,
+      EntrySetAction.delete => AIcons.delete,
+      EntrySetAction.restore => AIcons.restore,
+      EntrySetAction.copy => AIcons.copy,
+      EntrySetAction.move => AIcons.move,
+      EntrySetAction.rename => AIcons.name,
+      EntrySetAction.convert => AIcons.convert,
+      EntrySetAction.toggleFavourite =>
         // different data depending on toggle state
-        return AIcons.favourite;
-      case EntrySetAction.rotateCCW:
-        return AIcons.rotateLeft;
-      case EntrySetAction.rotateCW:
-        return AIcons.rotateRight;
-      case EntrySetAction.flip:
-        return AIcons.flip;
-      case EntrySetAction.editDate:
-        return AIcons.date;
-      case EntrySetAction.editLocation:
-        return AIcons.location;
-      case EntrySetAction.editTitleDescription:
-        return AIcons.description;
-      case EntrySetAction.editRating:
-        return AIcons.rating;
-      case EntrySetAction.editTags:
-        return AIcons.tag;
-      case EntrySetAction.removeMetadata:
-        return AIcons.clear;
-    }
+        AIcons.favourite,
+      EntrySetAction.rotateCCW => AIcons.rotateLeft,
+      EntrySetAction.rotateCW => AIcons.rotateRight,
+      EntrySetAction.flip => AIcons.flip,
+      EntrySetAction.editDate => AIcons.date,
+      EntrySetAction.editLocation => AIcons.location,
+      EntrySetAction.editTitleDescription => AIcons.description,
+      EntrySetAction.editRating => AIcons.rating,
+      EntrySetAction.editTags => AIcons.tag,
+      EntrySetAction.removeMetadata => AIcons.clear,
+    };
   }
 }

@@ -15,6 +15,7 @@
     TODO TLAD [Android 14 (API 34)] request/handle READ_MEDIA_VISUAL_USER_SELECTED permission
     cf https://developer.android.com/about/versions/14/changes/partial-photo-video-access
     -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission
@@ -56,8 +57,9 @@
     allow install on API 19, despite the `minSdkVersion` declared in dependencies:
     - Google Maps is from API 20
     - the Security library is from API 21
+    - FFmpegKit for Flutter is from API 24
     -->
-    <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps, androidx.security:security-crypto" />
+    <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps, androidx.security:security-crypto, com.arthenica.ffmpegkit.flutter" />
 
     <!-- from Android 11, we should define <queries> to make other apps visible to this app -->
     <queries>
@@ -295,7 +297,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- as of Flutter v3.10.1, Impeller badly renders text, fails to render videos, and crashes with Google Maps -->
+        <!-- as of Flutter v3.10.1 (stable) / v3.12.0-15.0.pre.105 (master),
+        Impeller badly renders text, fails to render videos, and crashes with Google Maps -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

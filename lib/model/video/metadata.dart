@@ -8,6 +8,7 @@ import 'package:aves/model/video/profiles/aac.dart';
 import 'package:aves/model/video/profiles/h264.dart';
 import 'package:aves/model/video/profiles/hevc.dart';
 import 'package:aves/ref/languages.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/mp4.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
@@ -15,10 +16,8 @@ import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
 class VideoMetadataFormatter {
@@ -26,7 +25,8 @@ class VideoMetadataFormatter {
   static final _ambiguousDatePatterns = {
     RegExp(r'^\d{2}[-/]\d{2}[-/]\d{4}$'),
   };
-  static final _durationPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
+  static final _durationHmsmPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
+  static final _durationSmPattern = RegExp(r'(\d+)(.\d+)');
   static final _locationPattern = RegExp(r'([+-][.0-9]+)');
   static final Map<String, String> _codecNames = {
     Codecs.ac3: 'AC-3',
@@ -44,20 +44,8 @@ class VideoMetadataFormatter {
     Codecs.webm: 'WebM',
   };
 
-  static Future<Map> getVideoMetadata(AvesEntry entry) async {
-    final player = FijkPlayer();
-    final info = await player.setDataSourceUntilPrepared(entry.uri).then((v) {
-      return player.getInfo();
-    }).catchError((error) {
-      debugPrint('failed to get video metadata for entry=$entry, error=$error');
-      return {};
-    });
-    await player.release();
-    return info;
-  }
-
   static Future<Map<String, int>> getLoadingMetadata(AvesEntry entry) async {
-    final mediaInfo = await getVideoMetadata(entry);
+    final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
     final fields = <String, int>{};
 
     final streams = mediaInfo[Keys.streams];
@@ -77,12 +65,26 @@ class VideoMetadataFormatter {
     final durationMicros = mediaInfo[Keys.durationMicros];
     if (durationMicros is num) {
       fields['durationMillis'] = (durationMicros / 1000).round();
+    } else {
+      final duration = _parseDuration(mediaInfo[Keys.duration]);
+      if (duration != null) {
+        fields['durationMillis'] = duration.inMilliseconds;
+      }
     }
     return fields;
   }
 
   static Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry) async {
-    final mediaInfo = await getVideoMetadata(entry);
+    var catalogMetadata = entry.catalogMetadata ?? CatalogMetadata(id: entry.id);
+
+    final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
+
+    if (entry.mimeType == MimeTypes.avif) {
+      final duration = _parseDuration(mediaInfo[Keys.duration]);
+      if (duration == null) return null;
+
+      catalogMetadata = catalogMetadata.copyWith(isAnimated: true);
+    }
 
     // only consider values with at least 8 characters (yyyymmdd),
     // ignoring unset values like `0`, as well as year values like `2021`
@@ -102,12 +104,12 @@ class VideoMetadataFormatter {
 
     // exclude date if it is suspiciously close to epoch
     if (dateMillis != null && !DateTime.fromMillisecondsSinceEpoch(dateMillis).isAtSameDayAs(epoch)) {
-      return (entry.catalogMetadata ?? CatalogMetadata(id: entry.id)).copyWith(
+      catalogMetadata = catalogMetadata.copyWith(
         dateMillis: dateMillis,
       );
     }
 
-    return entry.catalogMetadata;
+    return catalogMetadata;
   }
 
   static bool isAmbiguousDate(String dateString) {
@@ -194,14 +196,21 @@ class VideoMetadataFormatter {
 
           switch (key) {
             case Keys.codecLevel:
+            case Keys.codecTag:
+            case Keys.codecTagString:
+            case Keys.durationTs:
             case Keys.fpsNum:
-            case Keys.handlerName:
             case Keys.index:
+            case Keys.isAvc:
+            case Keys.probeScore:
+            case Keys.programCount:
+            case Keys.refs:
             case Keys.sarNum:
             case Keys.selectedAudioStream:
             case Keys.selectedTextStream:
             case Keys.selectedVideoStream:
             case Keys.statisticsTags:
+            case Keys.streamCount:
             case Keys.streams:
             case Keys.streamType:
             case Keys.tbrNum:
@@ -219,10 +228,14 @@ class VideoMetadataFormatter {
             case Keys.bitrate:
             case Keys.bps:
               save('Bit Rate', _formatMetric(value, 'b/s'));
+            case Keys.bitsPerRawSample:
+              save('Bits Per Raw Sample', value);
             case Keys.byteCount:
               save('Size', _formatFilesize(value));
             case Keys.channelLayout:
               save('Channel Layout', _formatChannelLayout(value));
+            case Keys.chromaLocation:
+              save('Chroma Location', value);
             case Keys.codecName:
               if (value != 'none') {
                 save('Format', _formatCodecName(value));
@@ -233,6 +246,18 @@ class VideoMetadataFormatter {
                 // user-friendly descriptions for related enums are defined in libavutil/pixfmt.h
                 save('Pixel Format', (value as String).toUpperCase());
               }
+            case Keys.codedHeight:
+              save('Coded Height', '$value pixels');
+            case Keys.codedWidth:
+              save('Coded Width', '$value pixels');
+            case Keys.colorPrimaries:
+              save('Color Primaries', (value as String).toUpperCase());
+            case Keys.colorRange:
+              save('Color Range', (value as String).toUpperCase());
+            case Keys.colorSpace:
+              save('Color Space', (value as String).toUpperCase());
+            case Keys.colorTransfer:
+              save('Color Transfer', (value as String).toUpperCase());
             case Keys.codecProfileId:
               {
                 final profile = int.tryParse(value);
@@ -242,9 +267,9 @@ class VideoMetadataFormatter {
                     case Codecs.h264:
                     case Codecs.hevc:
                       {
-                        final levelString = info[Keys.codecLevel];
-                        if (levelString != null) {
-                          final level = int.tryParse(levelString) ?? 0;
+                        final levelValue = info[Keys.codecLevel];
+                        if (levelValue != null) {
+                          final level = levelValue is int ? levelValue : int.tryParse(levelValue) ?? 0;
                           if (codec == Codecs.h264) {
                             profileString = H264.formatProfile(profile, level);
                           } else {
@@ -268,6 +293,8 @@ class VideoMetadataFormatter {
               save('Compatible Brands', formattedBrands);
             case Keys.creationTime:
               save('Creation Time', _formatDate(value));
+            case Keys.dar:
+              save('Display Aspect Ratio', value);
             case Keys.date:
               if (value is String && value != '0') {
                 final charCount = value.length;
@@ -277,10 +304,18 @@ class VideoMetadataFormatter {
               save('Duration', _formatDuration(value));
             case Keys.durationMicros:
               if (value != 0) save('Duration', formatPreciseDuration(Duration(microseconds: value)));
+            case Keys.extraDataSize:
+              save('Extra Data Size', _formatFilesize(value));
+            case Keys.fieldOrder:
+              save('Field Order', value);
             case Keys.fpsDen:
               save('Frame Rate', '${roundToPrecision(info[Keys.fpsNum] / info[Keys.fpsDen], decimals: 3).toString()} FPS');
             case Keys.frameCount:
               save('Frame Count', value);
+            case Keys.handlerName:
+              save('Handler Name', value);
+            case Keys.hasBFrames:
+              save('Has B-Frames', value);
             case Keys.height:
               save('Height', '$value pixels');
             case Keys.language:
@@ -295,6 +330,8 @@ class VideoMetadataFormatter {
               save('Media Type', value);
             case Keys.minorVersion:
               if (value != '0') save('Minor Version', value);
+            case Keys.nalLengthSize:
+              save('NAL Length Size', _formatFilesize(value));
             case Keys.quicktimeLocationAccuracyHorizontal:
               save('QuickTime Location Horizontal Accuracy', value);
             case Keys.quicktimeCreationDate:
@@ -304,25 +341,41 @@ class VideoMetadataFormatter {
             case Keys.quicktimeSoftware:
               // redundant with `QuickTime Metadata` directory
               break;
+            case Keys.rFrameRate:
+              save('R Frame Rate', value);
             case Keys.rotate:
               save('Rotation', '$value°');
+            case Keys.sampleFormat:
+              save('Sample Format', (value as String).toUpperCase());
             case Keys.sampleRate:
               save('Sample Rate', _formatMetric(value, 'Hz'));
+            case Keys.sar:
+              save('Sample Aspect Ratio', value);
             case Keys.sarDen:
               final sarNum = info[Keys.sarNum];
               final sarDen = info[Keys.sarDen];
               // skip common square pixels (1:1)
               if (sarNum != sarDen) save('SAR', '$sarNum:$sarDen');
+            case Keys.segmentCount:
+              save('Segment Count', value);
             case Keys.sourceOshash:
               save('Source OSHash', value);
             case Keys.startMicros:
               if (value != 0) save('Start', formatPreciseDuration(Duration(microseconds: value)));
+            case Keys.startPts:
+              save('Start PTS', value);
+            case Keys.startTime:
+              save('Start', _formatDuration(value));
             case Keys.statisticsWritingApp:
               save('Stats Writing App', value);
             case Keys.statisticsWritingDateUtc:
               save('Stats Writing Date', _formatDate(value));
+            case Keys.timeBase:
+              save('Time Base', value);
             case Keys.track:
               if (value != '0') save('Track', value);
+            case Keys.vendorId:
+              save('Vendor ID', value);
             case Keys.width:
               save('Width', '$value pixels');
             case Keys.xiaomiSlowMoment:
@@ -340,7 +393,12 @@ class VideoMetadataFormatter {
 
   static String _formatBrand(String value) => Mp4.brands[value] ?? value;
 
-  static String _formatChannelLayout(value) => ChannelLayouts.names[value] ?? 'unknown ($value)';
+  static String _formatChannelLayout(dynamic value) {
+    if (value is int) {
+      return ChannelLayouts.names[value] ?? 'unknown ($value)';
+    }
+    return '$value';
+  }
 
   static String _formatCodecName(String value) => _codecNames[value] ?? value.toUpperCase().replaceAll('_', ' ');
 
@@ -352,28 +410,49 @@ class VideoMetadataFormatter {
     return date.toIso8601String();
   }
 
-  // input example: '00:00:05.408000000'
-  static String _formatDuration(String value) {
-    final match = _durationPattern.firstMatch(value);
+  // input example: '00:00:05.408000000' or '5.408000'
+  static Duration? _parseDuration(String? value) {
+    if (value == null) return null;
+
+    var match = _durationHmsmPattern.firstMatch(value);
     if (match != null) {
       final h = int.tryParse(match.group(1)!);
       final m = int.tryParse(match.group(2)!);
       final s = int.tryParse(match.group(3)!);
       final millis = double.tryParse(match.group(4)!);
       if (h != null && m != null && s != null && millis != null) {
-        return formatPreciseDuration(Duration(
+        return Duration(
           hours: h,
           minutes: m,
           seconds: s,
           milliseconds: (millis * 1000).toInt(),
-        ));
+        );
       }
     }
-    return value;
+
+    match = _durationSmPattern.firstMatch(value);
+    if (match != null) {
+      final s = int.tryParse(match.group(1)!);
+      final millis = double.tryParse(match.group(2)!);
+      if (s != null && millis != null) {
+        return Duration(
+          seconds: s,
+          milliseconds: (millis * 1000).toInt(),
+        );
+      }
+    }
+
+    return null;
   }
 
-  static String _formatFilesize(String value) {
-    final size = int.tryParse(value);
+  // input example: '00:00:05.408000000' or '5.408000'
+  static String _formatDuration(String value) {
+    final duration = _parseDuration(value);
+    return duration != null ? formatPreciseDuration(duration) : value;
+  }
+
+  static String _formatFilesize(dynamic value) {
+    final size = value is int ? value : int.tryParse(value);
     return size != null ? formatFileSize('en_US', size) : value;
   }
 

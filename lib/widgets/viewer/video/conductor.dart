@@ -6,7 +6,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/video/db_playback_state_handler.dart';
-import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
@@ -37,7 +36,11 @@ class VideoConductor {
     if (controller != null) {
       _controllers.remove(controller);
     } else {
-      controller = IjkPlayerAvesVideoController(entry, playbackStateHandler: playbackStateHandler);
+      controller = videoControllerFactory.buildController(
+        entry,
+        playbackStateHandler: playbackStateHandler,
+        settings: settings,
+      );
       _subscriptions.add(controller.statusStream.listen((event) => _onControllerStatusChanged(entry, controller!, event)));
     }
     _controllers.insert(0, controller);

@@ -27,7 +27,7 @@ class ViewerActionEditorPage extends StatelessWidget {
       EntryAction.flip,
     ],
     [
-      ...EntryActions.exportInternal,
+      ...EntryActions.export,
       ...EntryActions.video.whereNot((v) => v == EntryAction.videoSettings),
     ],
     EntryActions.commonMetadataActions,

@@ -8,7 +8,6 @@ import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 import 'aves_dialog.dart';
 
@@ -40,7 +39,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     if (_collection != null) {
       final entries = _collection.sortedEntries;
       if (entries.isNotEmpty) {
-        final coverEntries = _collection.filters.map((filter) => covers.of(filter)?.item1).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.id == id)).whereNotNull();
+        final coverEntries = _collection.filters.map((filter) => covers.of(filter)?.$1).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.id == id)).whereNotNull();
         _coverEntry = coverEntries.firstOrNull ?? entries.first;
       }
     }
@@ -142,7 +141,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.maybeOf(context)?.pop(Tuple2<AvesEntry?, String>(_coverEntry, _nameController.text));
+      Navigator.maybeOf(context)?.pop<(AvesEntry?, String)>((_coverEntry, _nameController.text));
     }
   }
 }

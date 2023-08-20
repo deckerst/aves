@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -26,6 +27,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.goToCountryPage:
       case ChipAction.goToPlacePage:
       case ChipAction.goToTagPage:
+      case ChipAction.ratingOrGreater:
+      case ChipAction.ratingOrLower:
       case ChipAction.reverse:
         return true;
       case ChipAction.hide:
@@ -46,8 +49,12 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         _goTo(context, filter, PlaceListPage.routeName, (context) => const PlaceListPage());
       case ChipAction.goToTagPage:
         _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
+      case ChipAction.ratingOrGreater:
+        FilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrGreater)).dispatch(context);
+      case ChipAction.ratingOrLower:
+        FilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrLower)).dispatch(context);
       case ChipAction.reverse:
-        ReverseFilterNotification(filter).dispatch(context);
+        FilterNotification(filter.reverse()).dispatch(context);
       case ChipAction.hide:
         _hide(context, filter);
       case ChipAction.lockVault:
@@ -95,8 +102,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
 }
 
 @immutable
-class ReverseFilterNotification extends Notification {
-  final CollectionFilter reversedFilter;
+class FilterNotification extends Notification {
+  final CollectionFilter filter;
 
-  ReverseFilterNotification(CollectionFilter filter) : reversedFilter = filter.reverse();
+  const FilterNotification(this.filter);
 }

@@ -5,22 +5,19 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraShareActionView on ShareAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case ShareAction.imageOnly:
-        return context.l10n.entryActionShareImageOnly;
-      case ShareAction.videoOnly:
-        return context.l10n.entryActionShareVideoOnly;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      ShareAction.imageOnly => l10n.entryActionShareImageOnly,
+      ShareAction.videoOnly => l10n.entryActionShareVideoOnly,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
-    switch (this) {
-      case ShareAction.imageOnly:
-        return AIcons.image;
-      case ShareAction.videoOnly:
-        return AIcons.video;
-    }
+    return switch (this) {
+      ShareAction.imageOnly => AIcons.image,
+      ShareAction.videoOnly => AIcons.video,
+    };
   }
 }

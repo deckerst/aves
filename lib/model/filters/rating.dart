@@ -8,18 +8,34 @@ class RatingFilter extends CollectionFilter {
   static const type = 'rating';
 
   final int rating;
+  final String op;
   late final EntryFilter _test;
 
-  @override
-  List<Object?> get props => [rating, reversed];
+  static const opEqual = '=';
+  static const opOrLower = '<=';
+  static const opOrGreater = '>=';
 
-  RatingFilter(this.rating, {super.reversed = false}) {
-    _test = (entry) => entry.rating == rating;
+  @override
+  List<Object?> get props => [rating, op, reversed];
+
+  RatingFilter(this.rating, {this.op = opEqual, super.reversed = false}) {
+    _test = switch (op) {
+      opOrLower => (entry) => entry.rating <= rating && entry.rating > 0,
+      opOrGreater => (entry) => entry.rating >= rating,
+      opEqual || _ => (entry) => entry.rating == rating,
+    };
   }
+
+  RatingFilter copyWith(String op) => RatingFilter(
+        rating,
+        op: op,
+        reversed: reversed,
+      );
 
   factory RatingFilter.fromMap(Map<String, dynamic> json) {
     return RatingFilter(
       json['rating'] ?? 0,
+      op: json['op'] ?? opEqual,
       reversed: json['reversed'] ?? false,
     );
   }
@@ -28,6 +44,7 @@ class RatingFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'rating': rating,
+        'op': op,
         'reversed': reversed,
       };
 
@@ -38,37 +55,42 @@ class RatingFilter extends CollectionFilter {
   bool get exclusiveProp => true;
 
   @override
-  String get universalLabel => '$rating';
+  String get universalLabel => '$op $rating';
 
   @override
-  String getLabel(BuildContext context) => formatRating(context, rating);
+  String getLabel(BuildContext context) => switch (op) {
+        opOrLower || opOrGreater => '${UniChars.whiteMediumStar} ${formatRatingRange(context, rating, op)}',
+        opEqual || _ => formatRating(context, rating),
+      };
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
-    switch (rating) {
-      case -1:
-        return Icon(AIcons.ratingRejected, size: size);
-      case 0:
-        return Icon(AIcons.ratingUnrated, size: size);
-      default:
-        return null;
-    }
+    return switch (rating) {
+      -1 => Icon(AIcons.ratingRejected, size: size),
+      0 => Icon(AIcons.ratingUnrated, size: size),
+      _ => null,
+    };
   }
 
   @override
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$rating';
+  String get key => '$type-$reversed-$rating-$op';
 
   static String formatRating(BuildContext context, int rating) {
-    switch (rating) {
-      case -1:
-        return context.l10n.filterRatingRejectedLabel;
-      case 0:
-        return context.l10n.filterNoRatingLabel;
-      default:
-        return UniChars.whiteMediumStar * rating;
-    }
+    return switch (rating) {
+      -1 => context.l10n.filterRatingRejectedLabel,
+      0 => context.l10n.filterNoRatingLabel,
+      _ => UniChars.whiteMediumStar * rating,
+    };
+  }
+
+  static String formatRatingRange(BuildContext context, int rating, String op) {
+    return switch (op) {
+      opOrLower => '1~$rating',
+      opOrGreater => '$rating~5',
+      opEqual || _ => '$rating',
+    };
   }
 }

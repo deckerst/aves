@@ -1,4 +1,4 @@
-<i>Aves</i> aplikazioak mota guztitako irudi eta bideoak, nahiz ohiko zure JPEG eta MP4 fitxategiak eta exotikoagoak diren <b>orri ugaritako TIFF, SVG, AVI zaharrak eta are gehiago</b> maneiatzen ditu! Zure media-bilduma eskaneatzen du <b>mugimendu-argazkiak</b>, <b>panoramikak</b> (argazki esferikoak bezala ere ezagunak), <b>360°-ko bideoak</b>, baita <b>GeoTIFF</b> fitxategiak ere.
+<i>Aves</i> aplikazioak mota guztitako irudi eta bideoak, nahiz zure ohiko JPEG eta MP4 fitxategiak, eta exotikoagoak diren <b>orri ugaritako TIFF, SVG, AVI zaharrak eta are gehiago</b> maneiatzen ditu! Zure media-bilduma eskaneatzen du <b>mugimendu-argazkiak</b>, <b>panoramikak</b> (argazki esferikoak bezala ere ezagunak), <b>360°-ko bideoak</b>, baita <b>GeoTIFF</b> fitxategiak ere.
 
 <b>Nabigazioa eta bilaketa</b> <i>Aves</i> aplikazioaren zati garrantzitsu bat da. Helburua, erabiltzaileek albumetatik argazkietara, etiketetara, mapetara, etab. modu errazean mugi ahal izatea da.
 

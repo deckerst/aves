@@ -5,43 +5,34 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraChipActionView on ChipAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case ChipAction.goToAlbumPage:
-        return context.l10n.chipActionGoToAlbumPage;
-      case ChipAction.goToCountryPage:
-        return context.l10n.chipActionGoToCountryPage;
-      case ChipAction.goToPlacePage:
-        return context.l10n.chipActionGoToPlacePage;
-      case ChipAction.goToTagPage:
-        return context.l10n.chipActionGoToTagPage;
-      case ChipAction.reverse:
+    final l10n = context.l10n;
+    return switch (this) {
+      ChipAction.goToAlbumPage => l10n.chipActionGoToAlbumPage,
+      ChipAction.goToCountryPage => l10n.chipActionGoToCountryPage,
+      ChipAction.goToPlacePage => l10n.chipActionGoToPlacePage,
+      ChipAction.goToTagPage => l10n.chipActionGoToTagPage,
+      ChipAction.ratingOrGreater ||
+      ChipAction.ratingOrLower =>
         // different data depending on state
-        return context.l10n.chipActionFilterOut;
-      case ChipAction.hide:
-        return context.l10n.chipActionHide;
-      case ChipAction.lockVault:
-        return context.l10n.chipActionLock;
-    }
+        toString(),
+      ChipAction.reverse =>
+        // different data depending on state
+        l10n.chipActionFilterOut,
+      ChipAction.hide => l10n.chipActionHide,
+      ChipAction.lockVault => l10n.chipActionLock,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
-  IconData _getIconData() {
-    switch (this) {
-      case ChipAction.goToAlbumPage:
-        return AIcons.album;
-      case ChipAction.goToCountryPage:
-        return AIcons.country;
-      case ChipAction.goToPlacePage:
-        return AIcons.place;
-      case ChipAction.goToTagPage:
-        return AIcons.tag;
-      case ChipAction.reverse:
-        return AIcons.reverse;
-      case ChipAction.hide:
-        return AIcons.hide;
-      case ChipAction.lockVault:
-        return AIcons.vaultLock;
-    }
-  }
+  IconData _getIconData() => switch (this) {
+        ChipAction.goToAlbumPage => AIcons.album,
+        ChipAction.goToCountryPage => AIcons.country,
+        ChipAction.goToPlacePage => AIcons.place,
+        ChipAction.goToTagPage => AIcons.tag,
+        ChipAction.ratingOrGreater || ChipAction.ratingOrLower => AIcons.rating,
+        ChipAction.reverse => AIcons.reverse,
+        ChipAction.hide => AIcons.hide,
+        ChipAction.lockVault => AIcons.vaultLock,
+      };
 }

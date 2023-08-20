@@ -1492,5 +1492,19 @@
   "cropAspectRatioFree": "Kötetlen",
   "@cropAspectRatioFree": {},
   "widgetTapUpdateWidget": "Widget frissítése",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageData": "Adat",
+  "@aboutDataUsageData": {},
+  "aboutDataUsageDatabase": "Adatbázis",
+  "@aboutDataUsageDatabase": {},
+  "aboutDataUsageMisc": "Egyéb",
+  "@aboutDataUsageMisc": {},
+  "aboutDataUsageInternal": "Belső",
+  "@aboutDataUsageInternal": {},
+  "aboutDataUsageExternal": "Külső",
+  "@aboutDataUsageExternal": {},
+  "aboutDataUsageSectionTitle": "Adatforgalom",
+  "@aboutDataUsageSectionTitle": {},
+  "aboutDataUsageCache": "Gyorsítótár",
+  "@aboutDataUsageCache": {}
 }

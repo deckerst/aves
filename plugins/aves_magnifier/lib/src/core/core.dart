@@ -12,7 +12,6 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tuple/tuple.dart';
 
 /*
   adapted from package `photo_view` v0.9.2:
@@ -162,7 +161,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 
   Stopwatch? _scaleStopwatch;
   VelocityTracker? _velocityTracker;
-  var _mayFlingLTRB = const Tuple4(false, false, false, false);
+  var _mayFlingLTRB = const (false, false, false, false);
 
   void onScaleStart(ScaleStartDetails details, bool doubleTap) {
     final boundaries = scaleBoundaries;
@@ -172,7 +171,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 
     _scaleStopwatch = Stopwatch()..start();
     _velocityTracker = VelocityTracker.withKind(_flingPointerKind);
-    _mayFlingLTRB = const Tuple4(true, true, true, true);
+    _mayFlingLTRB = const (true, true, true, true);
     _updateMayFling();
 
     _startScale = scale;
@@ -246,9 +245,8 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
     final estimate = _velocityTracker?.getVelocityEstimate();
     final onFling = widget.onFling;
     if (estimate != null && onFling != null) {
+      final (left, up, right, down) = _mayFlingLTRB;
       if (_isFlingGesture(estimate, _flingPointerKind, Axis.horizontal)) {
-        final left = _mayFlingLTRB.item1;
-        final right = _mayFlingLTRB.item3;
         if (left ^ right) {
           if (left) {
             onFling(AxisDirection.left);
@@ -257,8 +255,6 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
           }
         }
       } else if (_isFlingGesture(estimate, _flingPointerKind, Axis.vertical)) {
-        final up = _mayFlingLTRB.item2;
-        final down = _mayFlingLTRB.item4;
         if (up ^ down) {
           if (up) {
             onFling(AxisDirection.up);
@@ -320,11 +316,12 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
   void _updateMayFling() {
     final xHit = getXEdgeHit();
     final yHit = getYEdgeHit();
-    _mayFlingLTRB = Tuple4(
-      _mayFlingLTRB.item1 && xHit.hasHitMin,
-      _mayFlingLTRB.item2 && yHit.hasHitMin,
-      _mayFlingLTRB.item3 && xHit.hasHitMax,
-      _mayFlingLTRB.item4 && yHit.hasHitMax,
+    final (left, up, right, down) = _mayFlingLTRB;
+    _mayFlingLTRB = (
+      xHit.hasHitMin && left,
+      yHit.hasHitMin && up,
+      xHit.hasHitMax && right,
+      yHit.hasHitMax && down,
     );
   }
 
@@ -448,16 +445,6 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
           child: widget.child,
         );
 
-        // `Matrix4.scale` uses dynamic typing and can throw `UnimplementedError` on wrong types
-        final double effectiveScale = (applyScale ? scale : null) ?? 1.0;
-        child = Transform(
-          transform: Matrix4.identity()
-            ..translate(position.dx, position.dy)
-            ..scale(effectiveScale),
-          alignment: basePosition,
-          child: child,
-        );
-
         return MagnifierGestureDetector(
           hitDetector: this,
           onScaleStart: onScaleStart,
@@ -467,17 +454,29 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
           onDoubleTap: onDoubleTap,
           child: Padding(
             padding: widget.viewportPadding,
-            child: LayoutBuilder(builder: (context, constraints) {
-              controller.setScaleBoundaries((controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
-                allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
-                minScale: widget.minScale,
-                maxScale: widget.maxScale,
-                initialScale: widget.initialScale,
-                viewportSize: constraints.biggest,
-                contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : constraints.biggest,
-              ));
-              return child;
-            }),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final boundaries = (controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
+                  allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
+                  minScale: widget.minScale,
+                  maxScale: widget.maxScale,
+                  initialScale: widget.initialScale,
+                  viewportSize: constraints.biggest,
+                  contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : constraints.biggest,
+                );
+                controller.setScaleBoundaries(boundaries);
+
+                // `Matrix4.scale` uses dynamic typing and can throw `UnimplementedError` on wrong types
+                final double effectiveScale = (applyScale ? scale : null) ?? 1.0;
+                return Transform(
+                  transform: Matrix4.identity()
+                    ..translate(position.dx, position.dy)
+                    ..scale(effectiveScale),
+                  alignment: basePosition,
+                  child: child,
+                );
+              },
+            ),
           ),
         );
       },

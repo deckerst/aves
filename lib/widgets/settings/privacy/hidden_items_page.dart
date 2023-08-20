@@ -13,7 +13,6 @@ import 'package:aves/widgets/settings/privacy/file_picker/file_picker_page.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class HiddenItemsPage extends StatelessWidget {
   static const routeName = '/settings/hidden_items';
@@ -23,12 +22,12 @@ class HiddenItemsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final tabs = <Tuple2<Tab, Widget>>[
-      Tuple2(
+    final tabs = <(Tab, Widget)>[
+      (
         Tab(text: l10n.settingsHiddenItemsTabFilters),
         const _HiddenFilters(),
       ),
-      Tuple2(
+      (
         Tab(text: l10n.settingsHiddenItemsTabPaths),
         const _HiddenPaths(),
       ),
@@ -41,12 +40,12 @@ class HiddenItemsPage extends StatelessWidget {
           automaticallyImplyLeading: !settings.useTvLayout,
           title: Text(l10n.settingsHiddenItemsPageTitle),
           bottom: TabBar(
-            tabs: tabs.map((t) => t.item1).toList(),
+            tabs: tabs.map((t) => t.$1).toList(),
           ),
         ),
         body: SafeArea(
           child: TabBarView(
-            children: tabs.map((t) => t.item2).toList(),
+            children: tabs.map((t) => t.$2).toList(),
           ),
         ),
       ),
@@ -155,7 +154,7 @@ class _HiddenPaths extends StatelessWidget {
                   ),
                 );
                 // wait for the dialog to hide as applying the change may block the UI
-                await Future.delayed(Durations.pageTransitionAnimation * timeDilation);
+                await Future.delayed(ADurations.pageTransitionAnimation * timeDilation);
                 if (path != null && path.isNotEmpty) {
                   settings.changeFilterVisibility({PathFilter(path)}, false);
                 }

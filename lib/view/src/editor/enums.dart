@@ -6,52 +6,42 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraEditorActionView on EditorAction {
   String getText(BuildContext context) {
-    switch (this) {
-      case EditorAction.transform:
-        return context.l10n.editorActionTransform;
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      EditorAction.transform => l10n.editorActionTransform,
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
-    switch (this) {
-      case EditorAction.transform:
-        return AIcons.transform;
-    }
+    return switch (this) {
+      EditorAction.transform => AIcons.transform,
+    };
   }
 }
 
 extension ExtraCropAspectRatioView on CropAspectRatio {
   String getText(BuildContext context) {
-    switch (this) {
-      case CropAspectRatio.free:
-        return context.l10n.cropAspectRatioFree;
-      case CropAspectRatio.original:
-        return context.l10n.cropAspectRatioOriginal;
-      case CropAspectRatio.square:
-        return context.l10n.cropAspectRatioSquare;
-      case CropAspectRatio.ar_16_9:
-        return '16${UniChars.ratio}9';
-      case CropAspectRatio.ar_4_3:
-        return '4${UniChars.ratio}3';
-    }
+    final l10n = context.l10n;
+    return switch (this) {
+      CropAspectRatio.free => l10n.cropAspectRatioFree,
+      CropAspectRatio.original => l10n.cropAspectRatioOriginal,
+      CropAspectRatio.square => l10n.cropAspectRatioSquare,
+      CropAspectRatio.ar_16_9 => '16${UniChars.ratio}9',
+      CropAspectRatio.ar_4_3 => '4${UniChars.ratio}3',
+    };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() {
-    switch (this) {
-      case CropAspectRatio.free:
-        return AIcons.aspectRatioFree;
-      case CropAspectRatio.original:
-        return AIcons.aspectRatioOriginal;
-      case CropAspectRatio.square:
-        return AIcons.aspectRatioSquare;
-      case CropAspectRatio.ar_16_9:
-        return AIcons.aspectRatio_16_9;
-      case CropAspectRatio.ar_4_3:
-        return AIcons.aspectRatio_4_3;
-    }
+    return switch (this) {
+      CropAspectRatio.free => AIcons.aspectRatioFree,
+      CropAspectRatio.original => AIcons.aspectRatioOriginal,
+      CropAspectRatio.square => AIcons.aspectRatioSquare,
+      CropAspectRatio.ar_16_9 => AIcons.aspectRatio_16_9,
+      CropAspectRatio.ar_4_3 => AIcons.aspectRatio_4_3,
+    };
   }
 }

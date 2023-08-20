@@ -1,0 +1,30 @@
+name: aves_video_ffmpeg
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  aves_model:
+    path: ../aves_model
+  aves_video:
+    path: ../aves_video
+#  ffmpeg_kit_flutter_min: 5.1.0-LTS
+#  ffmpeg_kit_flutter:
+#    git:
+#      url: https://github.com/arthenica/ffmpeg-kit.git
+#      ref: development-flutter
+#      path: flutter/flutter
+  ffmpeg_kit_flutter:
+    git:
+      url: https://github.com/deckerst/ffmpeg-kit.git
+      ref: background-lts
+      path: flutter/flutter
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:
