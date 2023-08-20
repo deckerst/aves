@@ -149,7 +149,7 @@ class _MetadataTabState extends State<MetadataTab> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: Text(data),
+                      child: SelectableText(data),
                     ),
                   )
               ],

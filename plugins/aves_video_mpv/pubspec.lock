@@ -172,10 +172,10 @@ packages:
     dependency: "direct main"
     description:
       name: media_kit
-      sha256: "0a89e7037002a62701ec319c375586849f9ef8e681820e1dd4a4ff7b843f7542"
+      sha256: d7a827080fb28f0ba4e8a7ab3f3e3f868fa817f0a94499640466ade84a1c31c9
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4+1"
+    version: "1.1.5"
   media_kit_libs_android_video:
     dependency: "direct main"
     description:
@@ -196,10 +196,10 @@ packages:
     dependency: "direct main"
     description:
       name: media_kit_video
-      sha256: e7fcbe426d42a78ad6696f8f557adb9cbdc012177829026d04992cc106a1c815
+      sha256: d4143a96d97965d025bbb8b88db0ebf301e3c4cfa10c7e2ad7fd47c86a7febae
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.5"
+    version: "1.1.6"
   meta:
     dependency: transitive
     description:
