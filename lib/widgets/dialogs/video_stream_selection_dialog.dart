@@ -143,8 +143,9 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: TextDropdownButton<MediaStreamSummary>(
-          values: streams.whereNotNull().toList(),
+        // allow `null` subtitle stream to disable subtitles
+        child: TextDropdownButton<MediaStreamSummary?>(
+          values: streams,
           valueText: _streamName,
           value: current,
           onChanged: streams.length > 1 ? (newValue) => setState(() => setter(newValue)) : null,
