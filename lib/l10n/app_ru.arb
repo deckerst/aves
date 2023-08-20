@@ -1348,5 +1348,13 @@
   "aboutDataUsageInternal": "Внутреннее",
   "@aboutDataUsageInternal": {},
   "aboutDataUsageExternal": "Внешнее",
-  "@aboutDataUsageExternal": {}
+  "@aboutDataUsageExternal": {},
+  "overlayHistogramNone": "Откл.",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "settingsViewerShowHistogram": "Показать гистограмму",
+  "@settingsViewerShowHistogram": {},
+  "overlayHistogramLuminance": "Яркость",
+  "@overlayHistogramLuminance": {}
 }
