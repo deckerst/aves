@@ -131,9 +131,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
               },
             )
           : null;
-      showFeedback(context, l10n.genericSuccessFeedback, showAction);
+      showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
     } else {
-      showFeedback(context, l10n.genericFailureFeedback);
+      showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     }
   }
 
