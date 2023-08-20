@@ -356,6 +356,8 @@ class VideoMetadataFormatter {
               final sarDen = info[Keys.sarDen];
               // skip common square pixels (1:1)
               if (sarNum != sarDen) save('SAR', '$sarNum:$sarDen');
+            case Keys.segmentCount:
+              save('Segment Count', value);
             case Keys.sourceOshash:
               save('Source OSHash', value);
             case Keys.startMicros:
