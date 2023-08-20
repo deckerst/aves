@@ -18,10 +18,12 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
+enum FeedbackType { info, warn }
+
 mixin FeedbackMixin {
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-  void showFeedback(BuildContext context, String message, [SnackBarAction? action]) {
+  void showFeedback(BuildContext context, FeedbackType type, String message, [SnackBarAction? action]) {
     ScaffoldMessengerState? scaffoldMessenger;
     try {
       scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -31,18 +33,19 @@ mixin FeedbackMixin {
       debugPrint('failed to find ScaffoldMessenger in context');
     }
     if (scaffoldMessenger != null) {
-      showFeedbackWithMessenger(context, scaffoldMessenger, message, action);
+      showFeedbackWithMessenger(context, scaffoldMessenger, type, message, action);
     }
   }
 
   // provide the messenger if feedback happens as the widget is disposed
-  void showFeedbackWithMessenger(BuildContext context, ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
+  void showFeedbackWithMessenger(BuildContext context, ScaffoldMessengerState messenger, FeedbackType type, String message, [SnackBarAction? action]) {
     settings.timeToTakeAction.getSnackBarDuration(action != null).then((duration) {
       final start = DateTime.now();
       final theme = Theme.of(context);
       final snackBarTheme = theme.snackBarTheme;
 
       final snackBarContent = _FeedbackMessage(
+        type: type,
         message: message,
         progressColor: theme.colorScheme.secondary,
         start: start,
@@ -274,11 +277,13 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 }
 
 class _FeedbackMessage extends StatefulWidget {
+  final FeedbackType type;
   final String message;
   final DateTime? start, stop;
   final Color progressColor;
 
   const _FeedbackMessage({
+    required this.type,
     required this.message,
     required this.progressColor,
     this.start,
@@ -326,54 +331,78 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    final text = Text(widget.message);
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final theme = Theme.of(context);
     final contentTextStyle = theme.snackBarTheme.contentTextStyle ?? ThemeData(brightness: theme.brightness).textTheme.titleMedium!;
+    final fontSize = theme.snackBarTheme.contentTextStyle?.fontSize ?? theme.textTheme.bodyMedium!.fontSize!;
     final timerChangeShadowColor = theme.colorScheme.primary;
-    return _remainingDurationMillis == null
-        ? text
-        : Row(
-            children: [
-              Expanded(child: text),
-              const SizedBox(width: 16),
-              AnimatedBuilder(
-                animation: _remainingDurationMillis!,
-                builder: (context, child) {
-                  final remainingDurationMillis = _remainingDurationMillis!.value;
-                  return CircularIndicator(
-                    radius: 16,
-                    lineWidth: 2,
-                    percent: remainingDurationMillis / _totalDurationMillis!,
-                    background: Colors.grey,
-                    // progress color is provided by the caller,
-                    // because we cannot use the app context theme here
-                    foreground: widget.progressColor,
-                    center: ChangeHighlightText(
-                      '${(remainingDurationMillis / 1000).ceil()}',
-                      style: contentTextStyle.copyWith(
-                        shadows: [
-                          Shadow(
-                            color: timerChangeShadowColor.withOpacity(0),
-                            blurRadius: 0,
-                          )
-                        ],
-                      ),
-                      changedStyle: contentTextStyle.copyWith(
-                        shadows: [
-                          Shadow(
-                            color: timerChangeShadowColor,
-                            blurRadius: 5,
-                          )
-                        ],
-                      ),
-                      duration: context.read<DurationsData>().formTextStyleTransition,
-                    ),
-                  );
-                },
-              ),
-            ],
-          );
+
+    return Row(
+      children: [
+        if (widget.type == FeedbackType.warn) ...[
+          CustomPaint(
+            painter: _WarnIndicator(),
+            size: Size(4, fontSize * textScaleFactor),
+          ),
+          const SizedBox(width: 8),
+        ],
+        Expanded(child: Text(widget.message)),
+        if (_remainingDurationMillis != null) ...[
+          const SizedBox(width: 16),
+          AnimatedBuilder(
+            animation: _remainingDurationMillis!,
+            builder: (context, child) {
+              final remainingDurationMillis = _remainingDurationMillis!.value;
+              return CircularIndicator(
+                radius: 16,
+                lineWidth: 2,
+                percent: remainingDurationMillis / _totalDurationMillis!,
+                background: Colors.grey,
+                // progress color is provided by the caller,
+                // because we cannot use the app context theme here
+                foreground: widget.progressColor,
+                center: ChangeHighlightText(
+                  '${(remainingDurationMillis / 1000).ceil()}',
+                  style: contentTextStyle.copyWith(
+                    shadows: [
+                      Shadow(
+                        color: timerChangeShadowColor.withOpacity(0),
+                        blurRadius: 0,
+                      )
+                    ],
+                  ),
+                  changedStyle: contentTextStyle.copyWith(
+                    shadows: [
+                      Shadow(
+                        color: timerChangeShadowColor,
+                        blurRadius: 5,
+                      )
+                    ],
+                  ),
+                  duration: context.read<DurationsData>().formTextStyleTransition,
+                ),
+              );
+            },
+          ),
+        ]
+      ],
+    );
   }
+}
+
+class _WarnIndicator extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRRect(
+      RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(size.shortestSide / 2)),
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = Colors.amber,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_WarnIndicator oldDelegate) => false;
 }
 
 class ActionFeedback extends StatefulWidget {

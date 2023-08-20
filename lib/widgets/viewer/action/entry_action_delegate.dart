@@ -184,7 +184,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _addShortcut(context, targetEntry);
       case EntryAction.copyToClipboard:
         appService.copyToClipboard(targetEntry.uri, targetEntry.bestTitle).then((success) {
-          showFeedback(context, success ? context.l10n.genericSuccessFeedback : context.l10n.genericFailureFeedback);
+          if (success) {
+            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+          } else {
+            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
+          }
         });
       case EntryAction.delete:
         _delete(context, targetEntry);
@@ -338,7 +342,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     await appService.pinToHomeScreen(name, targetEntry, uri: targetEntry.uri);
     if (!device.showPinShortcutFeedback) {
-      showFeedback(context, context.l10n.genericSuccessFeedback);
+      showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }
   }
 
@@ -375,7 +379,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermission(context, {targetEntry})) return;
 
     if (!await targetEntry.delete()) {
-      showFeedback(context, l10n.genericFailureFeedback);
+      showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
       if (source.initState != SourceInitializationState.none) {

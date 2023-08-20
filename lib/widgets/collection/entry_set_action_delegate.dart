@@ -321,7 +321,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
+          showFeedback(context, FeedbackType.warn, context.l10n.collectionDeleteFailureFeedback(count));
         }
 
         // cleanup
@@ -438,10 +438,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           final successCount = successOps.length;
           if (successCount < todoCount) {
             final count = todoCount - successCount;
-            showFeedback(context, l10n.collectionEditFailureFeedback(count));
+            showFeedback(context, FeedbackType.warn, l10n.collectionEditFailureFeedback(count));
           } else {
             final count = editedOps.length;
-            showFeedback(context, l10n.collectionEditSuccessFeedback(count));
+            showFeedback(context, FeedbackType.info, l10n.collectionEditSuccessFeedback(count));
           }
         }
       },
@@ -723,7 +723,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     await appService.pinToHomeScreen(name, coverEntry, filters: filters);
     if (!device.showPinShortcutFeedback) {
-      showFeedback(context, context.l10n.genericSuccessFeedback);
+      showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }
   }
 }

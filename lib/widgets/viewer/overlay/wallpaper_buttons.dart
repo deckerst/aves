@@ -86,7 +86,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     if (success) {
       await SystemNavigator.pop();
     } else {
-      showFeedback(context, l10n.genericFailureFeedback);
+      showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     }
   }
 

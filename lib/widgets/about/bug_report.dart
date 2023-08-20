@@ -174,16 +174,16 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     );
     if (success != null) {
       if (success) {
-        showFeedback(context, context.l10n.genericSuccessFeedback);
+        showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
       } else {
-        showFeedback(context, context.l10n.genericFailureFeedback);
+        showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
       }
     }
   }
 
   Future<void> _copySystemInfo() async {
     await Clipboard.setData(ClipboardData(text: await _infoLoader));
-    showFeedback(context, context.l10n.genericSuccessFeedback);
+    showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
   }
 
   Future<void> _goToGithub() => AvesApp.launchUrl(bugReportUrl);

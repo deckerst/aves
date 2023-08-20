@@ -17,6 +17,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
@@ -255,7 +256,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         }
       },
     );
-    showFeedback(context, l10n.genericSuccessFeedback, showAction);
+    showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
   }
 
   Future<void> _delete(BuildContext context, Set<AlbumFilter> filters) async {
@@ -363,7 +364,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedbackWithMessenger(context, messenger, l10n.collectionDeleteFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, FeedbackType.warn, l10n.collectionDeleteFailureFeedback(count));
         }
 
         // cleanup
@@ -442,9 +443,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedbackWithMessenger(context, messenger, l10n.collectionMoveFailureFeedback(count));
+          showFeedbackWithMessenger(context, messenger, FeedbackType.warn, l10n.collectionMoveFailureFeedback(count));
         } else {
-          showFeedbackWithMessenger(context, messenger, l10n.genericSuccessFeedback);
+          showFeedbackWithMessenger(context, messenger, FeedbackType.info, l10n.genericSuccessFeedback);
         }
 
         // cleanup

@@ -50,7 +50,7 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
         fields = await embeddedDataService.extractXmpDataProp(entry, notification.props, notification.mimeType);
     }
     if (!fields.containsKey('mimeType') || !fields.containsKey('uri')) {
-      showFeedback(context, context.l10n.viewerInfoOpenEmbeddedFailureFeedback);
+      showFeedback(context, FeedbackType.warn, context.l10n.viewerInfoOpenEmbeddedFailureFeedback);
       return;
     }
 

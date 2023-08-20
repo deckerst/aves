@@ -116,12 +116,14 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           final count = selectionCount - successCount;
           showFeedback(
             context,
+            FeedbackType.warn,
             l10n.collectionExportFailureFeedback(count),
             showAction,
           );
         } else {
           showFeedback(
             context,
+            FeedbackType.info,
             l10n.genericSuccessFeedback,
             showAction,
           );
@@ -226,7 +228,11 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedback(context, copy ? l10n.collectionCopyFailureFeedback(count) : l10n.collectionMoveFailureFeedback(count));
+          showFeedback(
+            context,
+            FeedbackType.warn,
+            copy ? l10n.collectionCopyFailureFeedback(count) : l10n.collectionMoveFailureFeedback(count),
+          );
         } else {
           final count = movedOps.length;
           final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
@@ -268,6 +274,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           if (!toBin || (toBin && settings.confirmAfterMoveToBin)) {
             showFeedback(
               context,
+              FeedbackType.info,
               copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count),
               action,
             );
@@ -366,10 +373,10 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
-          showFeedback(context, l10n.collectionRenameFailureFeedback(count));
+          showFeedback(context, FeedbackType.warn, l10n.collectionRenameFailureFeedback(count));
         } else {
           final count = movedOps.length;
-          showFeedback(context, l10n.collectionRenameSuccessFeedback(count));
+          showFeedback(context, FeedbackType.info, l10n.collectionRenameSuccessFeedback(count));
           onSuccess?.call();
         }
       },

@@ -57,9 +57,9 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
           await targetEntry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
           await targetEntry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
         }
-        showFeedback(context, l10n.genericSuccessFeedback);
+        showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback);
       } else {
-        showFeedback(context, l10n.genericFailureFeedback);
+        showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
       }
     } catch (error, stack) {
       await reportService.recordError(error, stack);

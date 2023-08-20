@@ -74,7 +74,7 @@ mixin VaultAwareMixin on FeedbackMixin {
   Future<bool> unlockAlbum(BuildContext context, String dirPath) async {
     final success = await _tryUnlock(dirPath, context);
     if (!success) {
-      showFeedback(context, context.l10n.genericFailureFeedback);
+      showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
     }
     return success;
   }
