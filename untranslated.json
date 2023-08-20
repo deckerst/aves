@@ -6949,13 +6949,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "pl": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
-  ],
-
   "pt": [
     "overlayHistogramNone",
     "overlayHistogramRGB",
@@ -7002,13 +6995,6 @@
     "settingsVideoResumptionModeTile",
     "settingsVideoResumptionModeDialogTitle",
     "tagEditorDiscardDialogMessage"
-  ],
-
-  "ru": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
   ],
 
   "sk": [
