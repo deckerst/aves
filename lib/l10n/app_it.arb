@@ -1348,5 +1348,11 @@
   "aboutDataUsageInternal": "Interno",
   "@aboutDataUsageInternal": {},
   "aboutDataUsageExternal": "Esterno",
-  "@aboutDataUsageExternal": {}
+  "@aboutDataUsageExternal": {},
+  "overlayHistogramNone": "Nessuno",
+  "@overlayHistogramNone": {},
+  "overlayHistogramLuminance": "Luminanza",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "Mostra istogramma",
+  "@settingsViewerShowHistogram": {}
 }
