@@ -1237,10 +1237,10 @@ packages:
     dependency: transitive
     description:
       name: screen_brightness_windows
-      sha256: "80d90ecdc63fc0823f2ecb1be323471619287937e14210650d7b25ca181abd05"
+      sha256: db39219ce99aecd697a86a47f0c1866977e50ea5d881e7224aee26f48c27c6a4
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.1"
+    version: "0.1.2"
   shared_preferences:
     dependency: "direct main"
     description:

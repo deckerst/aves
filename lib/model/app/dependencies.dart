@@ -73,11 +73,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/material-foundation/material-dynamic-color-flutter',
     ),
     Dependency(
-      name: 'fijkplayer (Aves fork)',
-      license: mit,
-      sourceUrl: 'https://github.com/deckerst/fijkplayer',
-    ),
-    Dependency(
       name: 'Floating',
       license: mit,
       sourceUrl: 'https://github.com/wrbl606/floating',
