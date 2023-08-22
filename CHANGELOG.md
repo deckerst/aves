@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.9.1"></a>[v1.9.1] - 2023-08-22
+
+### Fixed
+
+- editing some WEBP corrupting them (by failing instead)
+
 ## <a id="v1.9.0"></a>[v1.9.0] - 2023-08-21
 
 ### Added
@@ -24,6 +30,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - flickering when starting videos
+- editing fragmented MP4 corrupting them (by failing instead)
 
 ## <a id="v1.8.9"></a>[v1.8.9] - 2023-06-04
 

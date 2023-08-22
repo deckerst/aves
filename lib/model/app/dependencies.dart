@@ -5,6 +5,7 @@ class Dependencies {
   static const String bsd2 = 'BSD 2-Clause “Simplified” License';
   static const String bsd3 = 'BSD 3-Clause “Revised” License';
   static const String eclipse1 = 'Eclipse Public License 1.0';
+  static const String lgpl3 = 'GNU Lesser General Public License v3.0';
   static const String mit = 'MIT License';
   static const String zlib = 'zlib License';
 
@@ -72,11 +73,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/material-foundation/material-dynamic-color-flutter',
     ),
     Dependency(
-      name: 'fijkplayer (Aves fork)',
-      license: mit,
-      sourceUrl: 'https://github.com/deckerst/fijkplayer',
-    ),
-    Dependency(
       name: 'Floating',
       license: mit,
       sourceUrl: 'https://github.com/wrbl606/floating',
@@ -91,6 +87,11 @@ class Dependencies {
       license: bsd3,
       licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/local_auth/local_auth/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/local_auth/local_auth',
+    ),
+    Dependency(
+      name: 'FFmpegKit',
+      license: lgpl3,
+      sourceUrl: 'https://github.com/arthenica/ffmpeg-kit',
     ),
     Dependency(
       name: 'Media Kit',

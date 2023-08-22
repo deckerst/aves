@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Binder
 import android.os.Build
@@ -682,6 +683,14 @@ abstract class ImageProvider {
             val editedMimeType = detectMimeType(context, Uri.fromFile(editableFile), mimeType)
             if (editedMimeType != mimeType) {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for uri=$uri path=$path")
+            }
+
+            if (mimeType == MimeTypes.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // as of androidx.exifinterface:exifinterface:1.3.6, editing some specific WEBP
+                // makes them undecodable by some decoders (including Android's and Chrome's)
+                // even though `BitmapFactory` successfully decodes their bounds,
+                // so we check whether decoding it throws an exception
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
             }
 
             if (videoBytes != null) {
