@@ -459,7 +459,7 @@
   "@filePickerDoNotShowHiddenFiles": {},
   "filterLocatedLabel": "Lokalizované",
   "@filterLocatedLabel": {},
-  "coordinateDms": "{suradnice}{smer}",
+  "coordinateDms": "{coordinate} {direction}",
   "@coordinateDms": {
     "placeholders": {
       "coordinate": {
