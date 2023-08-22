@@ -5,9 +5,9 @@ repository: https://github.com/deckerst/aves
 # - pubspec version
 # - github changelog: /CHANGELOG.md
 # - play changelog:   /whatsnew/whatsnew-en-US
-# - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XX01.txt
-# - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XX.txt
-version: 1.9.0+101
+# - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
+# - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
+version: 1.9.1+102
 publish_to: none
 
 environment:

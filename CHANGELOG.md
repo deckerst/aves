@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.9.1"></a>[v1.9.1] - 2023-08-22
+
 ### Fixed
 
 - editing some WEBP corrupting them (by failing instead)
