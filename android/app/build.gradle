@@ -63,6 +63,13 @@ android {
         disable 'InvalidPackage'
     }
 
+    packagingOptions {
+        // The Amazon Developer console mistakenly considers the app to not be 64-bit compatible
+        // if there are some libs in `lib/armeabi-v7a` unmatched by libs in `lib/arm64-v8a`,
+        // so we exclude the extra `neon` libs bundled by `FFmpegKit`.
+        exclude 'lib/armeabi-v7a/*_neon.so'
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
