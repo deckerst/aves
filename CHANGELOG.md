@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - upgraded Flutter to stable v3.13.1
+- building without FFmpeg `neon` libs
+- building with gradle toolchain resolver plugin
 
 ## <a id="v1.9.1"></a>[v1.9.1] - 2023-08-22
 
