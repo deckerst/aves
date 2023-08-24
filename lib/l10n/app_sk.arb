@@ -278,11 +278,11 @@
   "@videoControlsPlayOutside": {},
   "mapStyleGoogleNormal": "Google mapy",
   "@mapStyleGoogleNormal": {},
-  "mapStyleGoogleHybrid": "Google mapy (Hybridne)",
+  "mapStyleGoogleHybrid": "Google mapy (Hybridné)",
   "@mapStyleGoogleHybrid": {},
   "mapStyleHuaweiNormal": "Mapy Petal",
   "@mapStyleHuaweiNormal": {},
-  "mapStyleHuaweiTerrain": "Mapy Petal (terén)",
+  "mapStyleHuaweiTerrain": "Mapy Petal (Terén)",
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarian OSM",
   "@mapStyleOsmHot": {},
@@ -899,5 +899,118 @@
   "filePickerShowHiddenFiles": "Ukázať skryté súbory",
   "@filePickerShowHiddenFiles": {},
   "aboutPageTitle": "O aplikácií",
-  "@aboutPageTitle": {}
+  "@aboutPageTitle": {},
+  "vaultLockTypePattern": "Vzor",
+  "@vaultLockTypePattern": {},
+  "vaultLockTypePassword": "Heslo",
+  "@vaultLockTypePassword": {},
+  "settingsVideoEnablePip": "Obraz-v-obraze",
+  "@settingsVideoEnablePip": {},
+  "videoResumptionModeAlways": "Vždy",
+  "@videoResumptionModeAlways": {},
+  "widgetTapUpdateWidget": "Aktualizovať widget",
+  "@widgetTapUpdateWidget": {},
+  "aboutDataUsageCache": "Cache",
+  "@aboutDataUsageCache": {},
+  "maxBrightnessNever": "Nikdy",
+  "@maxBrightnessNever": {},
+  "maxBrightnessAlways": "Vždy",
+  "@maxBrightnessAlways": {},
+  "videoResumptionModeNever": "Nikdy",
+  "@videoResumptionModeNever": {},
+  "albumPickPageTitlePick": "Vyber album",
+  "@albumPickPageTitlePick": {},
+  "albumDownload": "Stiahnuť",
+  "@albumDownload": {},
+  "overlayHistogramLuminance": "Svietivosť",
+  "@overlayHistogramLuminance": {},
+  "storageAccessDialogMessage": "Prosím vyber {directory} - “{volume}” v ďalšom okne aby aplikácia mala prístup k dátam v priečinku.",
+  "@storageAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "notEnoughSpaceDialogMessage": "Táto operácia potrebuje {neededSize} voľnej pamäti “{volume}” na dokončenie, dostupných je však iba {freeSize}.",
+  "@notEnoughSpaceDialogMessage": {
+    "placeholders": {
+      "neededSize": {
+        "type": "String",
+        "example": "314 MB"
+      },
+      "freeSize": {
+        "type": "String",
+        "example": "123 MB"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "unsupportedTypeDialogMessage": "{count, plural, =1{Táto operácia neni podporovaná pre {types} súbor.} other{Táto operácia neni podporovaná pre {types} súbory.}}",
+  "@unsupportedTypeDialogMessage": {
+    "placeholders": {
+      "count": {},
+      "types": {
+        "type": "String",
+        "example": "GIF, TIFF, MP4",
+        "description": "a list of unsupported types"
+      }
+    }
+  },
+  "albumPickPageTitleExport": "Exportovať do albumu",
+  "@albumPickPageTitleExport": {},
+  "albumPickPageTitleMove": "Presunúť do Albumu",
+  "@albumPickPageTitleMove": {},
+  "overlayHistogramNone": "Žiadne",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "otherDirectoryDescription": "“{name}” priečinok",
+  "@otherDirectoryDescription": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Pictures",
+        "description": "the name of a specific directory"
+      }
+    }
+  },
+  "restrictedAccessDialogMessage": "Táto aplikácia nemôže modifikovať súbory v {directory} - “{volume}”.\n\nProsím použi predinštalovanú aplikáciu na presun súborov do iného priečinka.",
+  "@restrictedAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "albumPickPageTitleCopy": "Kopírovať do Albumu",
+  "@albumPickPageTitleCopy": {},
+  "albumCamera": "Kamera",
+  "@albumCamera": {},
+  "albumScreenshots": "Snímky obrazovky",
+  "@albumScreenshots": {},
+  "albumScreenRecordings": "Nahrávania obrazovky",
+  "@albumScreenRecordings": {},
+  "authenticateToConfigureVault": "Na konfiguráciu trezora je potrebné overenie",
+  "@authenticateToConfigureVault": {},
+  "lengthUnitPercent": "%",
+  "@lengthUnitPercent": {},
+  "vaultLockTypePin": "PIN",
+  "@vaultLockTypePin": {}
 }
