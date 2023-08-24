@@ -69,8 +69,9 @@ class Dependencies {
     ),
     Dependency(
       name: 'Dynamic Color',
-      license: bsd3,
-      sourceUrl: 'https://github.com/material-foundation/material-dynamic-color-flutter',
+      license: apache2,
+      licenseUrl: 'https://github.com/material-foundation/flutter-packages/blob/main/packages/dynamic_color/LICENSE',
+      sourceUrl: 'https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color',
     ),
     Dependency(
       name: 'Floating',

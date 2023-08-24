@@ -7,13 +7,13 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.9.1+102
+version: 1.9.2+103
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.13.0
+  flutter: 3.13.1
   sdk: ">=3.0.0 <4.0.0"
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor

@@ -32,20 +32,16 @@
 
     <!-- to access media with original metadata with scoped storage (API >=29) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-    <!-- to analyze media in a service -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- to fetch map tiles -->
+    <!-- TODO TLAD still needed to fetch map tiles / reverse geocoding / else ? check in release mode -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- from Android 12 (API 31), users can optionally grant access to the media management special permission -->
     <uses-permission
         android:name="android.permission.MANAGE_MEDIA"
         tools:ignore="ProtectedPermissions" />
-    <!-- to show foreground service progress via notification -->
+    <!-- to show analysis service progress via notification -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- to change wallpaper -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
-    <!-- to unlock vaults (API >=28) -->
-    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <!-- TODO TLAD remove this permission when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -53,11 +49,25 @@
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
         android:maxSdkVersion="25" />
 
+    <!-- additional permissions added by plugins:
+
+    `{package}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` by `androidx.appcompat:appcompat`
+
+    `android.permission.ACCESS_NETWORK_STATE`,
+    `android.permission.FOREGROUND_SERVICE`,
+    `android.permission.RECEIVE_BOOT_COMPLETED`,
+    `android.permission.WAKE_LOCK` by `androidx.work:work-runtime-ktx`, to analyze media in a service
+
+    `android.permission.ACCESS_NETWORK_STATE` by `dev.fluttercommunity.plus.connectivity`, TODO TLAD still needed?
+
+    `android.permission.USE_BIOMETRIC` by `io.flutter.plugins.localauth`, to unlock vaults (API >=28)
+    -->
+
     <!--
     allow install on API 19, despite the `minSdkVersion` declared in dependencies:
     - Google Maps is from API 20
     - the Security library is from API 21
-    - FFmpegKit for Flutter is from API 24
+    - FFmpegKit for Flutter is from API 24 (when not LTS)
     -->
     <uses-sdk tools:overrideLibrary="io.flutter.plugins.googlemaps, androidx.security:security-crypto, com.arthenica.ffmpegkit.flutter" />
 
