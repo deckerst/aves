@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.9.3"></a>[v1.9.3] - 2023-08-28
+
 ### Changed
 
 - target API 33 to prevent foreground service crashes with Android 14 beta 5
