@@ -4072,13 +4072,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "hu": [
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "settingsViewerShowHistogram"
-  ],
-
   "it": [
     "overlayHistogramRGB"
   ],
