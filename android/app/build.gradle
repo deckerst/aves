@@ -83,7 +83,7 @@ android {
         // which implementation `DocumentBuilderImpl` is provided by the OS and is not customizable on Android,
         // but the implementation on API <19 is not robust enough and fails to build XMP documents
         minSdkVersion 19
-        targetSdkVersion 34
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>",
