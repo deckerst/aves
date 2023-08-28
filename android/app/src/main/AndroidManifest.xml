@@ -32,6 +32,11 @@
 
     <!-- to access media with original metadata with scoped storage (API >=29) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <!-- to provide a foreground service type, as required by Android 14 (API 34) -->
+<!-- TODO TLAD revisit with Android 14 >beta5 -->
+<!--    <uses-permission-->
+<!--        android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"-->
+<!--        tools:ignore="SystemPermissionTypo" />-->
     <!-- TODO TLAD still needed to fetch map tiles / reverse geocoding / else ? check in release mode -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- from Android 12 (API 31), users can optionally grant access to the media management special permission -->

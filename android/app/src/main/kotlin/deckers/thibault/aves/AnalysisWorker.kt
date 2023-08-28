@@ -3,6 +3,7 @@ package deckers.thibault.aves
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationChannelCompat
@@ -148,16 +149,27 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             WorkManager.getInstance(applicationContext).createCancelPendingIntent(id)
         ).build()
         val icon = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) R.drawable.ic_notification else R.mipmap.ic_launcher_round
+        val contentTitle = title ?: applicationContext.getText(R.string.analysis_notification_default_title)
         val notification = NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL)
-            .setContentTitle(title ?: applicationContext.getText(R.string.analysis_notification_default_title))
+            .setContentTitle(contentTitle)
+            .setTicker(contentTitle)
             .setContentText(message)
-            .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
             .setSmallIcon(icon)
+            .setOngoing(true)
             .setContentIntent(openAppIntent)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
             .addAction(stopAction)
             .build()
-        return ForegroundInfo(NOTIFICATION_ID, notification)
+        // TODO TLAD revisit with Android 14 >beta5
+        return ForegroundInfo(NOTIFICATION_ID, notification);
+//        return if (Build.VERSION.SDK_INT >= 34) {
+//            // as of Android 14 beta 5, foreground service type is mandatory
+//            // despite the sample code omitting it at:
+//            // https://developer.android.com/guide/background/persistent/how-to/long-running
+//            val type = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+//            ForegroundInfo(NOTIFICATION_ID, notification, type)
+//        } else {
+//            ForegroundInfo(NOTIFICATION_ID, notification)
+//        }
     }
 
     companion object {
