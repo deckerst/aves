@@ -1506,5 +1506,13 @@
   "aboutDataUsageSectionTitle": "Adatforgalom",
   "@aboutDataUsageSectionTitle": {},
   "aboutDataUsageCache": "Gyorsítótár",
-  "@aboutDataUsageCache": {}
+  "@aboutDataUsageCache": {},
+  "overlayHistogramNone": "Nincs",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramLuminance": "Fényerő",
+  "@overlayHistogramLuminance": {},
+  "settingsViewerShowHistogram": "Hisztogram megjelenítése",
+  "@settingsViewerShowHistogram": {}
 }
