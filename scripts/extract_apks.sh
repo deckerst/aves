@@ -4,6 +4,10 @@ if [ ! -d "scripts" ]; then
 fi
 
 BUNDLE="/home/tibo/Downloads/app-play-release.aab"
+APKS_FULL="/home/tibo/Downloads/app-play-release.apks"
+APKS_STRIPPED="/home/tibo/Downloads/app-play-release_stripped.apks"
+
+rm "$APKS_FULL"
 
 # shellcheck disable=SC2001
 OUTPUT=$(sed "s|\.aab|\.apks|" <<<"$BUNDLE")
@@ -20,3 +24,5 @@ echo "$BUNDLE -> $OUTPUT"
 bundletool build-apks --bundle="$BUNDLE" --output="$OUTPUT" \
   --ks="$STORE_PATH" --ks-pass="pass:$STORE_PW" \
   --ks-key-alias="$KEY_ALIAS" --key-pass="pass:$KEY_PW"
+
+../apkstripper "$APKS_FULL" "$APKS_STRIPPED"
