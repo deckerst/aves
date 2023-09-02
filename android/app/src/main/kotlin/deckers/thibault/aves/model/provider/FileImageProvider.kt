@@ -13,16 +13,17 @@ import java.io.File
 
 internal class FileImageProvider : ImageProvider() {
     override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
-        val mimeType = if (sourceMimeType != null) {
-            sourceMimeType
-        } else {
-            val fromExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
-            if (fromExtension != null) {
-                fromExtension
-            } else {
-                callback.onFailure(Exception("MIME type was not provided and cannot be guessed from extension of uri=$uri"))
-                return
+        var mimeType = sourceMimeType
+
+        if (mimeType == null) {
+            val extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
+            if (extension != null) {
+                mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
             }
+        }
+        if (mimeType == null) {
+            callback.onFailure(Exception("MIME type was not provided and cannot be guessed from extension of uri=$uri"))
+            return
         }
 
         val entry = SourceEntry(SourceEntry.ORIGIN_FILE, uri, mimeType)
