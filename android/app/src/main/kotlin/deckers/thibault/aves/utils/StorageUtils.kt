@@ -587,7 +587,7 @@ object StorageUtils {
             when {
                 uriPath?.contains("/downloads/") == true -> {
                     // e.g. `content://media/external_primary/downloads/...`
-                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideoUri -> return imageVideoUri }
                 }
 
                 uriPath?.contains("/file/") == true -> {
@@ -618,7 +618,7 @@ object StorageUtils {
             when {
                 uriPath?.contains("/downloads/") == true -> {
                     // e.g. `content://media/external_primary/downloads/...`
-                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideUri -> return imageVideUri }
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideoUri -> return imageVideoUri }
                 }
 
                 uri.userInfo != null -> return stripMediaUriUserInfo(uri)
