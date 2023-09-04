@@ -670,5 +670,13 @@
   "mapAttributionOsmHot": "Даныя карты © [OpenStreetMap](https://www.openstreetmap.org/copyright) удзельнікі • Пліткі ад [HOT](https://www.hotosm.org/) • Арганізаваны [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "viewerInfoLabelSize": "Памер",
-  "@viewerInfoLabelSize": {}
+  "@viewerInfoLabelSize": {},
+  "viewerTransitionSlide": "Слізгаценне",
+  "@viewerTransitionSlide": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramNone": "Няма",
+  "@overlayHistogramNone": {},
+  "overlayHistogramLuminance": "Яркасць",
+  "@overlayHistogramLuminance": {}
 }

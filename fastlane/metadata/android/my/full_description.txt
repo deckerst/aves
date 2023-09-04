@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> ဟာ သာမန် JPEG နှင့် MP4 ဖိုင်တွေအပါအဝင် ဓာတ်ပုံနဲ့ ဗီဒီယိုမျိုးစုံကို ကိုင်တွယ်နိုင်တဲ့အပြင် တွေ့ရခဲတဲ့အရာတွေဖြစ်တဲ့ <b>စာမျက်နှာများစွာပါဝင်တဲ့ TIFF ဖိုင်တွေ၊ အရင်က AVI ဗီဒီယိုဖိုင်တွေ၊ အစရှိတာတွေကိုလည်း ကိုင်တွယ်နိုင်ပါတယ်။</b> <b> လှုပ်ရှားမှုပါတဲ့ပုံတွေ</b>၊ <b>မြင်ကွင်းကျယ်ဓာတ်ပုံတွေ</b>၊ <b>၃၆၀° ဗီဒီယိုတွေ</b>နဲ့ <b>GeoTIFF</b> ဖိုင်တွေကို ဖော်ထုတ်ဖို့အတွက် သင့်မီဒီယာစုစည်းမှုကို စကင်ဖတ်မှာပါ။
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>အလွယ်တကူ ရှာဖွေကြည့်ရှုနိုင်တာက</b> <i>Aves</i> ရဲ့ အဓိကကျတဲ့အစိတ်အပိုင်းတစ်ခုဖြစ်ပါတယ်။ အသုံးပြုသူတွေကို အယ်လ်ဘမ်တွေကနေ ပုံတွေ၊ ပုံတွေကနေ tag တွေ၊ tag တွေကနေ မြေပုံတွေ၊ အစရှိသဖြင့် အလွယ်လေးကူးပြောင်းနိုင်စေဖို့က <i>Aves</i> ရဲ့ ပန်းတိုင်ဖြစ်ပါတယ်။
 
-<i>Aves</i> integrates with Android (from KitKat to Android 13, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> ဟာ Android (KitKat ကနေ Android 13 အထိ၊ Android တီဗီအပါအဝင်) ဖြင့်ပေါင်းစပ်ပြီး <b>ဝစ်ဂျက်တွေ</b>၊ <b>အက်ပ်ဖြတ်လမ်းတိုတွေ</b>၊ <b>screen saver တွေ</b>နဲ့ <b>နေရာအနှံ့ရှာဖွေမှုတွေကိုပါ</b> ကိုင်တွယ်နိုင်ပါတယ်။ ဒါ့အပြင် <b>မီဒီယာကြည့်ဖို့၊ မီဒီယာရွေးချယ်ဖို့</b>အတွက်လည်း သုံးလို့ရပါသေးတယ်။

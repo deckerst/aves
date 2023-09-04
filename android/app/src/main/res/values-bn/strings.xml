@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpaper">ওয়ালপেপার</string>
+    <string name="search_shortcut_short_label">সার্চ</string>
+    <string name="videos_shortcut_short_label">ভিডিও</string>
+    <string name="analysis_notification_default_title">মিডিয়া সন্ধান চলছে</string>
+    <string name="analysis_channel_name">মিডিয়া সন্ধান</string>
+    <string name="analysis_notification_action_stop">থামান</string>
+    <string name="app_name">আভেস</string>
+    <string name="app_widget_label">ছবির ফ্রেম</string>
+    <string name="safe_mode_shortcut_short_label">নিরাপদ মোড</string>
+</resources>
