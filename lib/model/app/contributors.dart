@@ -74,6 +74,7 @@ class Contributors {
     // Contributor('Martin Frandel', 'martinko.fr@gmail.com'), // Slovak
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
+    // Contributor('ngocanhtve', 'ngocanh.tve@gmail.com'), // Vietnamese
   };
 }
 
