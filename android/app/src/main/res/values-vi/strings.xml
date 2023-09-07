@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="analysis_notification_action_stop">Dừng</string>
+    <string name="app_widget_label">Khung Ảnh</string>
+    <string name="analysis_notification_default_title">Đang quét phương tiện</string>
+    <string name="videos_shortcut_short_label">Video</string>
+    <string name="safe_mode_shortcut_short_label">Chế độ an toàn</string>
+    <string name="wallpaper">Hình nền</string>
+    <string name="app_name">Aves</string>
+    <string name="analysis_channel_name">Quét phương tiện</string>
+    <string name="search_shortcut_short_label">Tìm kiếm</string>
+</resources>
