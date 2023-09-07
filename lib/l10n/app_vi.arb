@@ -1,0 +1,10 @@
+{
+  "welcomeTermsToggle": "Tôi đồng ý với các Điều khoản và Điều kiện",
+  "@welcomeTermsToggle": {},
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeMessage": "Chào mừng đến với Aves",
+  "@welcomeMessage": {},
+  "welcomeOptional": "Không bắt buộc",
+  "@welcomeOptional": {}
+}
