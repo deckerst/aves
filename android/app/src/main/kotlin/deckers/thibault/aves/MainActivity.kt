@@ -194,6 +194,9 @@ open class MainActivity : FlutterFragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         Log.i(LOG_TAG, "onNewIntent intent=$intent")
+        intent.extras?.takeUnless { it.isEmpty }?.let {
+            Log.i(LOG_TAG, "onNewIntent intent extras=$it")
+        }
         super.onNewIntent(intent)
         intentStreamHandler.notifyNewIntent(extractIntentData(intent))
     }
@@ -265,7 +268,10 @@ open class MainActivity : FlutterFragmentActivity() {
                 }
             }
 
-            Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
+            Intent.ACTION_VIEW,
+            Intent.ACTION_SEND,
+            "com.android.camera.action.REVIEW",
+            "com.android.camera.action.SPLIT_SCREEN_REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
                     // MIME type is optional
                     val type = intent.type ?: intent.resolveType(this)

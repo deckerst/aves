@@ -38,11 +38,6 @@ internal class ContentImageProvider : ImageProvider() {
         }
 
         val mimeType = extractorMimeType ?: sourceMimeType
-        if (mimeType == null) {
-            callback.onFailure(Exception("MIME type is null for uri=$uri"))
-            return
-        }
-
         val fields: FieldMap = hashMapOf(
             "origin" to SourceEntry.ORIGIN_UNKNOWN_CONTENT,
             "uri" to uri.toString(),
@@ -57,10 +52,17 @@ internal class ContentImageProvider : ImageProvider() {
                 cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) fields["title"] = cursor.getString(it) }
                 cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields["sizeBytes"] = cursor.getLong(it) }
                 cursor.getColumnIndex(MediaStore.MediaColumns.DATA).let { if (it != -1) fields["path"] = cursor.getString(it) }
+                // mime type fallback if it was not provided and not found via `metadata-extractor`
+                cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1 && mimeType == null) fields["sourceMimeType"] = cursor.getString(it) }
                 cursor.close()
             }
         } catch (e: Exception) {
             callback.onFailure(e)
+            return
+        }
+
+        if (fields["sourceMimeType"] == null) {
+            callback.onFailure(Exception("Failed to find MIME type for uri=$uri"))
             return
         }
 

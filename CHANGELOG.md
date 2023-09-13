@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.9.4"></a>[v1.9.4] - 2023-09-13
+
+### Changed
+
+- upgraded Flutter to stable v3.13.4
+
+### Fixed
+
+- CVE-2023-4863 - Security vulnerability in WebP
+
 ## <a id="v1.9.3"></a>[v1.9.3] - 2023-08-28
 
 ### Changed

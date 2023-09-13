@@ -1506,5 +1506,11 @@
   "aboutDataUsageInternal": "Interní",
   "@aboutDataUsageInternal": {},
   "aboutDataUsageExternal": "Externí",
-  "@aboutDataUsageExternal": {}
+  "@aboutDataUsageExternal": {},
+  "overlayHistogramNone": "Žádný",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "settingsViewerShowHistogram": "Zobrazit histogram",
+  "@settingsViewerShowHistogram": {}
 }
