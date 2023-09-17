@@ -1,5 +1,0 @@
-In v1.8.6:
-- more settings for video resumption and conversion quality
-- support for Sony predictive capture bursts
-- enjoy the app in Hungarian
-Full changelog available on GitHub

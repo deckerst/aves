@@ -5,7 +5,8 @@
     <string name="wallpaper">ڕوونما</string>
     <string name="search_shortcut_short_label">گەڕان</string>
     <string name="videos_shortcut_short_label">ڤیدیۆ</string>
-    <string name="analysis_channel_name">گەڕان بۆ فایل</string>
-    <string name="analysis_notification_default_title">گەڕان بۆ فایلەکان</string>
+    <string name="analysis_channel_name">گەڕان لە پەڕگە</string>
+    <string name="analysis_notification_default_title">لە پەڕگەکان دەگەڕێت</string>
     <string name="analysis_notification_action_stop">وەستاندن</string>
+    <string name="safe_mode_shortcut_short_label">دۆخی پارێزراو</string>
 </resources>
