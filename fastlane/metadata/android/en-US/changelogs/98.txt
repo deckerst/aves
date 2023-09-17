@@ -1,5 +1,0 @@
-In v1.8.7:
-- play your animated PNGs
-- set your home to the Tags page
-- enjoy the app in Norwegian (Nynorsk)
-Full changelog available on GitHub
