@@ -33,7 +33,8 @@ final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
 const _millisMaxDigits = 13; // 13 digits can go up to 2286/11/20
 
 DateTime? dateTimeFromMillis(int? millis, {bool isUtc = false}) {
-  if (millis == null || millis == 0) return null;
+  // exclude `0` and `-1` as they are both used as default values
+  if (millis == null || millis == 0 || millis == -1) return null;
   try {
     return DateTime.fromMillisecondsSinceEpoch(millis, isUtc: isUtc);
   } catch (error) {
