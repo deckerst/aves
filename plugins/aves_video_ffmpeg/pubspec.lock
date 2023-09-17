@@ -51,10 +51,10 @@ packages:
     description:
       path: "flutter/flutter"
       ref: background-lts
-      resolved-ref: "1606719442d8ca04827a94dacd8d3d7a17b5526d"
+      resolved-ref: "8eb0534b9f74d7242adf68e22a3578d235911466"
       url: "https://github.com/deckerst/ffmpeg-kit.git"
     source: git
-    version: "5.1.0"
+    version: "6.0.2"
   ffmpeg_kit_flutter_platform_interface:
     dependency: transitive
     description:
