@@ -154,9 +154,10 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     final originAlbums = entries.map((e) => e.directory).whereNotNull().toSet();
     if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return;
 
-    await Future.forEach<String>(destinationAlbums, (destinationAlbum) async {
-      if (!await checkFreeSpaceForMove(context, entries, destinationAlbum, moveType)) return;
-    });
+    final hasEnoughSpaceByDestination = await Future.wait(destinationAlbums.map((destinationAlbum) {
+      return checkFreeSpaceForMove(context, entries, destinationAlbum, moveType);
+    }));
+    if (hasEnoughSpaceByDestination.any((v) => !v)) return;
 
     final l10n = context.l10n;
     var nameConflictStrategy = NameConflictStrategy.rename;
