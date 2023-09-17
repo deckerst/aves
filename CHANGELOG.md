@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- crash when cataloguing some videos
+
 ## <a id="v1.9.4"></a>[v1.9.4] - 2023-09-13
 
 ### Changed

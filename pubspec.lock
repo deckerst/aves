@@ -306,10 +306,10 @@ packages:
     dependency: "direct main"
     description:
       name: dynamic_color
-      sha256: de4798a7069121aee12d5895315680258415de9b00e717723a1bd73d58f0126d
+      sha256: "96bff3df72e3d428bda2b874c7a521e8c86f592cae626ea594922fcc8d166e0c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.6"
+    version: "1.6.7"
   equatable:
     dependency: "direct main"
     description:
@@ -356,10 +356,10 @@ packages:
     description:
       path: "flutter/flutter"
       ref: background-lts
-      resolved-ref: "1606719442d8ca04827a94dacd8d3d7a17b5526d"
+      resolved-ref: "8eb0534b9f74d7242adf68e22a3578d235911466"
       url: "https://github.com/deckerst/ffmpeg-kit.git"
     source: git
-    version: "5.1.0"
+    version: "6.0.2"
   ffmpeg_kit_flutter_platform_interface:
     dependency: transitive
     description:
