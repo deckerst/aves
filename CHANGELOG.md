@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when cataloguing some videos
+- workflow when moving to an album with insufficient storage
 
 ## <a id="v1.9.4"></a>[v1.9.4] - 2023-09-13
 
