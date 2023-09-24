@@ -685,11 +685,13 @@ abstract class ImageProvider {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for uri=$uri path=$path")
             }
 
-            if (mimeType == MimeTypes.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                // as of androidx.exifinterface:exifinterface:1.3.6, editing some specific WEBP
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                // 1) as of androidx.exifinterface:exifinterface:1.3.6, editing some specific WEBP
                 // makes them undecodable by some decoders (including Android's and Chrome's)
                 // even though `BitmapFactory` successfully decodes their bounds,
                 // so we check whether decoding it throws an exception
+                // 2) some users have reported corruption when editing JPEG as well,
+                // but conditions are unknown (specific image, custom ROM, low storage, race condition, etc.)
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
             }
 
