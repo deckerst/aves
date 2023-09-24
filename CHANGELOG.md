@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.9.6"></a>[v1.9.6] - 2023-09-25
+
 ### Fixed
 
 - editing some image EXIF corrupting them (by failing instead)
