@@ -57,7 +57,7 @@ internal class ContentImageProvider : ImageProvider() {
                 cursor.close()
             }
         } catch (e: Exception) {
-            callback.onFailure(e)
+            callback.onFailure(Exception("Failed to query content, error=${e.message}"))
             return
         }
 

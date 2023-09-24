@@ -30,10 +30,16 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
 open class MainActivity : FlutterFragmentActivity() {
+    private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
     private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
@@ -149,7 +155,7 @@ open class MainActivity : FlutterFragmentActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            setupShortcuts()
+            defaultScope.launch { setupShortcuts() }
         }
     }
 
@@ -432,7 +438,9 @@ open class MainActivity : FlutterFragmentActivity() {
             )
             .build()
 
-        ShortcutManagerCompat.setDynamicShortcuts(this, listOf(videos, search, safeMode))
+        val shortcutInfoList = listOf(videos, search, safeMode)
+        ShortcutManagerCompat.setDynamicShortcuts(this, shortcutInfoList)
+        Log.i(LOG_TAG, "set shortcuts: ${shortcutInfoList.joinToString(", ") { v -> v.id }}")
     }
 
     private fun onAnalysisCompleted() {

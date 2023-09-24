@@ -14,13 +14,19 @@ import deckers.thibault.aves.model.FieldMap
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.util.*
 
 class DeviceHandler(private val context: Context) : MethodCallHandler {
+    private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "canManageMedia" -> safe(call, result, ::canManageMedia)
-            "getCapabilities" -> safe(call, result, ::getCapabilities)
+            "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
             "getDefaultTimeZoneRawOffsetMillis" -> safe(call, result, ::getDefaultTimeZoneRawOffsetMillis)
             "getLocales" -> safe(call, result, ::getLocales)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
