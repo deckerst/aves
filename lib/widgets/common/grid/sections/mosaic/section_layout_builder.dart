@@ -19,7 +19,9 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   late double rowHeightMax;
   final CoverRatioResolver<T> coverRatioResolver;
 
-  static const heightMaxFactor = 2.4;
+  static const double heightMaxFactor = 2.4;
+  static const double minThumbnailAspectRatio = 9 / 32;
+  static const double maxThumbnailAspectRatio = 32 / 9;
 
   MosaicSectionLayoutBuilder({
     required super.sections,
@@ -76,7 +78,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
       targetExtent: tileWidth,
       spacing: spacing,
       bottom: bottom,
-      coverRatioResolver: coverRatioResolver,
+      coverRatioResolver: (item) => coverRatioResolver(item).clamp(minThumbnailAspectRatio, maxThumbnailAspectRatio),
     );
     final rowCount = rows.length;
     final sectionChildCount = 1 + rowCount;

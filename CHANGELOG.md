@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- mosaic layout: clamp ratio to 32/9
+
 ## <a id="v1.9.6"></a>[v1.9.6] - 2023-09-25
 
 ### Fixed
