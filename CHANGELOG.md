@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - mosaic layout: clamp ratio to 32/9
+- Video: disable subtitles by default
 
 ## <a id="v1.9.6"></a>[v1.9.6] - 2023-09-25
 
