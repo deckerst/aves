@@ -341,8 +341,6 @@ class MpvVideoController extends AvesVideoController {
           break;
         case MediaStreamType.text:
           await _instance.setSubtitleTrack(SubtitleTrack.no());
-          // remove current subtitle, if any
-          _timedTextStreamController.add(null);
           break;
       }
     }
