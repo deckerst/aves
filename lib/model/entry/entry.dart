@@ -331,6 +331,7 @@ class AvesEntry with AvesEntryBase {
 
   String? _bestTitle;
 
+  @override
   String? get bestTitle {
     _bestTitle ??= _catalogMetadata?.xmpTitle?.isNotEmpty == true ? _catalogMetadata!.xmpTitle : (filenameWithoutExtension ?? sourceTitle);
     return _bestTitle;

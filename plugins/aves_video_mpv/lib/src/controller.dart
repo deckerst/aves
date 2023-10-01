@@ -49,7 +49,8 @@ class MpvVideoController extends AvesVideoController {
     _statusStreamController.add(_status);
 
     _instance = Player(
-      configuration: const PlayerConfiguration(
+      configuration: PlayerConfiguration(
+        title: entry.bestTitle ?? entry.uri,
         libass: false,
         logLevel: MPVLogLevel.warn,
       ),
@@ -106,6 +107,7 @@ class MpvVideoController extends AvesVideoController {
 
     await _applyLoop();
     await _instance.open(Media(entry.uri), play: playing);
+    await _instance.setSubtitleTrack(SubtitleTrack.no());
     if (startMillis > 0) {
       await seekTo(startMillis);
     }

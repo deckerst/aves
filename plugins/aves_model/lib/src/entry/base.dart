@@ -11,6 +11,8 @@ mixin AvesEntryBase {
 
   String? get path;
 
+  String? get bestTitle;
+
   int? get sizeBytes;
 
   int? get durationMillis;

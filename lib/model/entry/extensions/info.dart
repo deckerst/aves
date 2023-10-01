@@ -72,6 +72,9 @@ extension ExtraAvesEntryInfo on AvesEntry {
   Future<List<MetadataDirectory>> _getStreamDirectories(BuildContext context) async {
     final directories = <MetadataDirectory>[];
     final mediaInfo = await videoMetadataFetcher.getMetadata(this);
+    if (!context.mounted) {
+      return directories;
+    }
 
     final formattedMediaTags = VideoMetadataFormatter.formatInfo(mediaInfo);
     if (formattedMediaTags.isNotEmpty) {
