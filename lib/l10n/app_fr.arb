@@ -1349,7 +1349,7 @@
   "@aboutDataUsageData": {},
   "aboutDataUsageCache": "Cache",
   "@aboutDataUsageCache": {},
-  "overlayHistogramRGB": "RVB",
+  "overlayHistogramRGB": "RGB",
   "@overlayHistogramRGB": {},
   "overlayHistogramLuminance": "Luminance",
   "@overlayHistogramLuminance": {},
