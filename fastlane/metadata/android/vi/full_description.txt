@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> có thể xử lý tất cả các loại hình ảnh và video, bao gồm cả JPEG và MP4 thông thường của bạn, cũng như những thứ kỳ lạ hơn như <b>TIFF nhiều trang, SVG, AVI cũ và hơn thế nữa</b>! Nó quét bộ sưu tập phương tiện của bạn để xác định <b>ảnh chuyển động</b>, <b>ảnh toàn cảnh</b> (còn gọi là ảnh toàn cảnh 360 độ), <b>video 360 độ</b> cũng như các tập tin <b>GeoTIFF</b>.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>Điều hướng và tìm kiếm</b> là một phần quan trọng của <i>Aves</i>. Mục tiêu là để người dùng dễ dàng chuyển từ album sang ảnh sang thẻ sang bản đồ, v.v.
 
-<i>Aves</i> integrates with Android (from KitKat to Android 13, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> tương thích với Android (từ KitKat đến Android 13, bao gồm cả Android TV) với các tính năng như <b>widget</b>, <b>phím tắt ứng dụng</b>, <b>trình bảo vệ màn hình</b> và xử lý <b>tìm kiếm toàn hệ thống</b>. Nó cũng hoạt động như một <b>trình xem và lựa chọn phương tiện</b>.
