@@ -81,10 +81,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_map
-      sha256: "5286f72f87deb132daa1489442d6cc46e986fc105cb727d9ae1b602b35b1d1f3"
+      sha256: e625957146c7d2e847da2cdefd893d6f5315ced6ee5228d2c05fec760cab3ad7
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "6.0.0"
   http:
     dependency: transitive
     description:
@@ -133,6 +133,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: "6bbb9d6f7056729537a4309bda2e74e18e5d9f14302489cc1e93f33b3fe32cac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2+1"
   material_color_utilities:
     dependency: transitive
     description:

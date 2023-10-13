@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class ScaleLayerOptions {
@@ -65,7 +65,7 @@ class ScaleLayerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final map = FlutterMapState.maybeOf(context)!;
+    final map = MapCamera.of(context);
     final center = map.center;
     final latitude = center.latitude.abs();
     final level = map.zoom.round() +
