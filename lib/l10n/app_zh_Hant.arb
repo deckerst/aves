@@ -1492,5 +1492,7 @@
   "settingsViewerShowDescription": "顯示描述",
   "@settingsViewerShowDescription": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "顯示多點觸控手勢的備選方案",
-  "@settingsAccessibilityShowPinchGestureAlternatives": {}
+  "@settingsAccessibilityShowPinchGestureAlternatives": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {}
 }

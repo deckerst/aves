@@ -1354,5 +1354,7 @@
   "overlayHistogramLuminance": "Luminanza",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "Mostra istogramma",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {}
 }
