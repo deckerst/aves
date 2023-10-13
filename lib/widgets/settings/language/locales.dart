@@ -25,6 +25,7 @@ class SupportedLocales {
     'ru': 'Русский',
     'tr': 'Türkçe',
     'uk': 'Українська',
+    'vi': 'Tiếng Việt',
     'zh': '简体中文',
     'zh_Hant': '繁體中文',
   };

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Vietnamese translation (thanks ngocanhtve, Le Nhut Binh)
+
 ### Changed
 
 - mosaic layout: clamp ratio to 32/9
