@@ -1226,5 +1226,7 @@
   "tagEditorDiscardDialogMessage": "是否放弃更改？",
   "@tagEditorDiscardDialogMessage": {},
   "vaultLockTypePassword": "密码",
-  "@vaultLockTypePassword": {}
+  "@vaultLockTypePassword": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {}
 }
