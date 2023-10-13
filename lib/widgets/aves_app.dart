@@ -63,6 +63,7 @@ class AvesApp extends StatefulWidget {
     'bn', // Bengali
     'ckb', // Kurdish (Central)
     'fa', // Persian
+    'fi', // Finnish
     'gl', // Galician
     'he', // Hebrew
     'hi', // Hindi
@@ -73,7 +74,6 @@ class AvesApp extends StatefulWidget {
     'sk', // Slovak
     'sl', // Slovenian
     'th', // Thai
-    'vi', // Vietnamese
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
