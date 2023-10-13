@@ -18,7 +18,6 @@ class Attribution extends StatelessWidget {
     switch (style) {
       case EntryMapStyle.osmHot:
         return _buildAttributionMarkdown(context, context.l10n.mapAttributionOsmHot);
-      case EntryMapStyle.stamenToner:
       case EntryMapStyle.stamenWatercolor:
         return _buildAttributionMarkdown(context, context.l10n.mapAttributionStamen);
       default:

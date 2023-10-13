@@ -19,28 +19,13 @@ class OSMHotLayer extends StatelessWidget {
   }
 }
 
-class StamenTonerLayer extends StatelessWidget {
-  const StamenTonerLayer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return TileLayer(
-      urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
-      subdomains: const ['a', 'b', 'c', 'd'],
-      backgroundColor: _tileLayerBackgroundColor,
-      retinaMode: MediaQuery.devicePixelRatioOf(context) > 1,
-      userAgentPackageName: device.userAgent,
-    );
-  }
-}
-
 class StamenWatercolorLayer extends StatelessWidget {
   const StamenWatercolorLayer({super.key});
 
   @override
   Widget build(BuildContext context) {
     return TileLayer(
-      urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
+      urlTemplate: 'https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.jpg',
       subdomains: const ['a', 'b', 'c', 'd'],
       backgroundColor: _tileLayerBackgroundColor,
       retinaMode: MediaQuery.devicePixelRatioOf(context) > 1,

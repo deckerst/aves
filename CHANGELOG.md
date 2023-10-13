@@ -12,7 +12,12 @@ All notable changes to this project will be documented in this file.
 
 - mosaic layout: clamp ratio to 32/9
 - Video: disable subtitles by default
+- Map: Stamen Watercolor layer (no longer served for free by Stamen) now served by Smithsonian Institution
 - upgraded Flutter to stable v3.13.6
+
+### Removed
+
+- Map: Stamen Toner layer (no longer served for free by Stamen)
 
 ## <a id="v1.9.6"></a>[v1.9.6] - 2023-09-25
 

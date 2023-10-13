@@ -198,8 +198,6 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     switch (widget.style) {
       case EntryMapStyle.osmHot:
         return const OSMHotLayer();
-      case EntryMapStyle.stamenToner:
-        return const StamenTonerLayer();
       case EntryMapStyle.stamenWatercolor:
         return const StamenWatercolorLayer();
       default:
