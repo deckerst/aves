@@ -9,6 +9,5 @@ enum EntryMapStyle {
   // Leaflet
   // browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
   osmHot,
-  stamenToner,
   stamenWatercolor,
 }

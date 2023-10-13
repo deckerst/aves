@@ -185,7 +185,6 @@ class _GeoMapState extends State<GeoMap> {
                 onMarkerLongPress: onMarkerLongPress,
               );
             case EntryMapStyle.osmHot:
-            case EntryMapStyle.stamenToner:
             case EntryMapStyle.stamenWatercolor:
               child = EntryLeafletMap<AvesEntry>(
                 controller: controller,
