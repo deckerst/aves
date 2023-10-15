@@ -71,7 +71,6 @@ class AvesApp extends StatefulWidget {
     'ml', // Malayalam
     'my', // Burmese
     'or', // Odia
-    'sk', // Slovak
     'sl', // Slovenian
     'th', // Thai
   }.map(Locale.new).toSet();
