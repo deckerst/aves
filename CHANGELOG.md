@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Slovak translation (thanks Martin Frandel, Milan Šalka)
 - Vietnamese translation (thanks ngocanhtve, Le Nhut Binh)
 
 ### Changed
