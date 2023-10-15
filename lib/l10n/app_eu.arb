@@ -295,8 +295,6 @@
   "@mapStyleHuaweiTerrain": {},
   "nameConflictStrategyReplace": "Ordezkatu",
   "@nameConflictStrategyReplace": {},
-  "mapStyleStamenToner": "Stamen Toner (monokromatikoa)",
-  "@mapStyleStamenToner": {},
   "keepScreenOnVideoPlayback": "Bideoa erreproduzitzean",
   "@keepScreenOnVideoPlayback": {},
   "keepScreenOnAlways": "Beti",

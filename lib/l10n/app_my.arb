@@ -430,8 +430,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarian OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner (အဖြူအမဲ)",
-  "@mapStyleStamenToner": {},
   "mapStyleGoogleHybrid": "Google မြေပုံ (ဂြိုဟ်တု)",
   "@mapStyleGoogleHybrid": {},
   "subtitlePositionBottom": "အောက်ဘက်",
