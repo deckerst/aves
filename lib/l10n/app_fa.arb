@@ -376,7 +376,5 @@
         "description": "the name of a storage volume"
       }
     }
-  },
-  "mapStyleStamenToner": "استامن (نمایش رود ها)",
-  "@mapStyleStamenToner": {}
+  }
 }

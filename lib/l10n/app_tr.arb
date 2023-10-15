@@ -231,8 +231,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "İnsancıl OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Tonik",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Suluboya",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Yeniden adlandır",

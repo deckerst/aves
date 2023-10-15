@@ -245,8 +245,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarian OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Ganti nama",

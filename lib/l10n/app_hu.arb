@@ -1370,8 +1370,6 @@
   "@mapStyleOsmHot": {},
   "mapStyleStamenWatercolor": "Stamen Akvarell",
   "@mapStyleStamenWatercolor": {},
-  "mapStyleStamenToner": "Stamen Fekete-fehér",
-  "@mapStyleStamenToner": {},
   "unsupportedTypeDialogMessage": "{count, plural, =1{Ez a művelet nem támogatott a következő típusú elemnél: {types}.} other{Ez a művelet nem támogatott a következő típusú elemeknél: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {

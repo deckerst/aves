@@ -159,8 +159,6 @@
   "@filterTypeGeotiffLabel": {},
   "filterMimeVideoLabel": "Vídeo",
   "@filterMimeVideoLabel": {},
-  "mapStyleStamenToner": "Stamen Toner",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor (con sombreamento e cores)",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Renomear",

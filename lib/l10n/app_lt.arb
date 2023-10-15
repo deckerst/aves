@@ -961,8 +961,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarinis OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner (monochromatinis)",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor (akvarelė)",
   "@mapStyleStamenWatercolor": {},
   "keepScreenOnViewerOnly": "Tik peržiūros puslapiui",

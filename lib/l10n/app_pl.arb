@@ -221,8 +221,6 @@
   "@videoLoopModeShortOnly": {},
   "mapStyleHuaweiTerrain": "Mapy Petal (teren)",
   "@mapStyleHuaweiTerrain": {},
-  "mapStyleStamenToner": "Stamen Toner (czarno-białe)",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor (kolory wody)",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Zmień nazwę",

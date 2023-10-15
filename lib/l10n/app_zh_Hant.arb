@@ -221,8 +221,6 @@
   "@mapStyleHuaweiNormal": {},
   "mapStyleHuaweiTerrain": "Petal 地圖 (地形)",
   "@mapStyleHuaweiTerrain": {},
-  "mapStyleStamenToner": "Stamen Toner",
-  "@mapStyleStamenToner": {},
   "nameConflictStrategyRename": "重新命名",
   "@nameConflictStrategyRename": {},
   "nameConflictStrategyReplace": "取代",
