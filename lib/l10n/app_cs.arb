@@ -283,8 +283,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitární OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner (černobílé)",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor (vodové barvy)",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Přejmenovat",

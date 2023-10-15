@@ -277,8 +277,6 @@
   "@mapStyleGoogleTerrain": {},
   "mapStyleOsmHot": "Humanitarian OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyReplace": "แทนที่",

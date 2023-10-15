@@ -249,8 +249,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "OSM Humanitaire",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner (Monochrome)",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor (Aquarelle)",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Renommer",
