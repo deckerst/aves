@@ -249,8 +249,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarian OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "重命名",
@@ -1226,5 +1224,7 @@
   "tagEditorDiscardDialogMessage": "是否放弃更改？",
   "@tagEditorDiscardDialogMessage": {},
   "vaultLockTypePassword": "密码",
-  "@vaultLockTypePassword": {}
+  "@vaultLockTypePassword": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {}
 }

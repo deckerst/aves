@@ -11,6 +11,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
+import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/error.dart';
 import 'package:aves_model/aves_model.dart';
@@ -197,16 +198,20 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     // use `RawImage` instead of `Image`, using `ImageInfo` to check dimensions
     // and have more control when chaining image providers
 
-    final thumbnailWidth = isMosaic ? extent * entry.displayAspectRatio : extent;
     final thumbnailHeight = extent;
+    final double thumbnailWidth;
+    if (isMosaic) {
+      thumbnailWidth = thumbnailHeight *
+          entry.displayAspectRatio.clamp(
+            MosaicSectionLayoutBuilder.minThumbnailAspectRatio,
+            MosaicSectionLayoutBuilder.maxThumbnailAspectRatio,
+          );
+    } else {
+      thumbnailWidth = extent;
+    }
     final canHaveAlpha = entry.canHaveAlpha;
 
-    final fit = widget.fit ??
-        (entry.isSvg
-            ? BoxFit.contain
-            : isMosaic
-                ? BoxFit.contain
-                : BoxFit.cover);
+    final fit = widget.fit ?? (entry.isSvg ? BoxFit.contain : BoxFit.cover);
     final imageInfo = _lastImageInfo;
     Widget image = imageInfo == null
         ? Container(
@@ -266,7 +271,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
           Widget child = TransitionImage(
             image: entry.bestCachedThumbnail,
             animation: animation,
-            thumbnailFit: isMosaic ? BoxFit.contain : BoxFit.cover,
+            thumbnailFit: BoxFit.cover,
             viewerFit: BoxFit.contain,
             background: backgroundColor,
           );

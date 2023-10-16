@@ -249,8 +249,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarian OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner (토너)",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor (수채화)",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "이름 변경",

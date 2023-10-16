@@ -23,8 +23,10 @@ class SupportedLocales {
     'pt': 'Português (Brasil)',
     'ro': 'Română',
     'ru': 'Русский',
+    'sk': 'Slovenčina',
     'tr': 'Türkçe',
     'uk': 'Українська',
+    'vi': 'Tiếng Việt',
     'zh': '简体中文',
     'zh_Hant': '繁體中文',
   };

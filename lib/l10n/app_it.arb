@@ -249,8 +249,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "OSM umanitario",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen Toner (Monocromatico)",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor (Acquerello)",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Rinomina",
@@ -1354,5 +1352,7 @@
   "overlayHistogramLuminance": "Luminanza",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "Mostra istogramma",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {}
 }

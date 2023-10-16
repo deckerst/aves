@@ -132,7 +132,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
       final latLng = LatLng(geoEntry.latitude!, geoEntry.longitude!);
       return Marker(
         point: latLng,
-        builder: (context) => GestureDetector(
+        child: GestureDetector(
           onTap: () => widget.onMarkerTap?.call(geoEntry),
           // marker tap handling prevents the default handling of focal zoom on double tap,
           // so we reimplement the double tap gesture here
@@ -142,39 +142,35 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
         ),
         width: markerSize.width,
         height: markerSize.height,
-        anchorPos: AnchorPos.align(AnchorAlign.top),
+        alignment: Alignment.topCenter,
       );
     }).toList();
 
     return FlutterMap(
       options: MapOptions(
-        center: bounds.projectedCenter,
-        zoom: bounds.zoom,
-        rotation: bounds.rotation,
+        initialCenter: bounds.projectedCenter,
+        initialZoom: bounds.zoom,
+        initialRotation: bounds.rotation,
         minZoom: widget.minZoom,
         maxZoom: widget.maxZoom,
-        // TODO TLAD [map] as of flutter_map v0.14.0, `doubleTapZoom` does not move when zoom is already maximal
-        // this could be worked around with https://github.com/fleaflet/flutter_map/pull/960
-        interactiveFlags: interactive ? InteractiveFlag.all : InteractiveFlag.none,
-        // prevent triggering multiple gestures at once (e.g. rotating a bit when mostly zooming)
-        enableMultiFingerGestureRace: true,
+        backgroundColor: Colors.transparent,
+        interactionOptions: InteractionOptions(
+          // TODO TLAD [map] as of flutter_map v0.14.0, `doubleTapZoom` does not move when zoom is already maximal
+          // this could be worked around with https://github.com/fleaflet/flutter_map/pull/960
+          flags: interactive ? InteractiveFlag.all : InteractiveFlag.none,
+          // prevent triggering multiple gestures at once (e.g. rotating a bit when mostly zooming)
+          enableMultiFingerGestureRace: true,
+        ),
         onTap: (tapPosition, point) => widget.onMapTap?.call(point),
       ),
       mapController: _leafletMapController,
-      nonRotatedChildren: [
-        ScaleLayerWidget(
-          options: ScaleLayerOptions(
-            unitSystem: settings.unitSystem,
-          ),
-        ),
-      ],
       children: [
         _buildMapLayer(),
         if (widget.overlayEntry != null) _buildOverlayImageLayer(),
         MarkerLayer(
           markers: markers,
           rotate: true,
-          rotateAlignment: Alignment.bottomCenter,
+          alignment: Alignment.bottomCenter,
         ),
         ValueListenableBuilder<LatLng?>(
           valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
@@ -183,11 +179,16 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
               if (dotLocation != null)
                 Marker(
                   point: dotLocation,
-                  builder: (context) => const DotMarker(),
+                  child: const DotMarker(),
                   width: dotMarkerSize.width,
                   height: dotMarkerSize.height,
                 )
             ],
+          ),
+        ),
+        ScaleLayerWidget(
+          options: ScaleLayerOptions(
+            unitSystem: settings.unitSystem,
           ),
         ),
       ],
@@ -198,8 +199,6 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     switch (widget.style) {
       case EntryMapStyle.osmHot:
         return const OSMHotLayer();
-      case EntryMapStyle.stamenToner:
-        return const StamenTonerLayer();
       case EntryMapStyle.stamenWatercolor:
         return const StamenWatercolorLayer();
       default:
@@ -244,19 +243,18 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   }
 
   void _updateVisibleRegion() {
-    final bounds = _leafletMapController.bounds;
-    if (bounds != null) {
-      boundsNotifier.value = ZoomedBounds(
-        sw: bounds.southWest,
-        ne: bounds.northEast,
-        zoom: _leafletMapController.zoom,
-        rotation: _leafletMapController.rotation,
-      );
-    }
+    final camera = _leafletMapController.camera;
+    final bounds = camera.visibleBounds;
+    boundsNotifier.value = ZoomedBounds(
+      sw: bounds.southWest,
+      ne: bounds.northEast,
+      zoom: camera.zoom,
+      rotation: camera.rotation,
+    );
   }
 
   Future<void> _resetRotation() async {
-    final rotation = _leafletMapController.rotation;
+    final rotation = _leafletMapController.camera.rotation;
     // prevent multiple turns
     final begin = (rotation.abs() % 360) * rotation.sign;
     final rotationTween = Tween<double>(begin: begin, end: 0);
@@ -264,19 +262,21 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   }
 
   Future<void> _zoomBy(double amount, {LatLng? focalPoint}) async {
-    final endZoom = (_leafletMapController.zoom + amount).clamp(widget.minZoom, widget.maxZoom);
+    final camera = _leafletMapController.camera;
+    final endZoom = (camera.zoom + amount).clamp(widget.minZoom, widget.maxZoom);
     widget.onUserZoomChange?.call(endZoom);
 
-    final center = _leafletMapController.center;
+    final center = camera.center;
     final centerTween = LatLngTween(begin: center, end: focalPoint ?? center);
 
-    final zoomTween = Tween<double>(begin: _leafletMapController.zoom, end: endZoom);
+    final zoomTween = Tween<double>(begin: camera.zoom, end: endZoom);
     await _animateCamera((animation) => _leafletMapController.move(centerTween.evaluate(animation)!, zoomTween.evaluate(animation)));
   }
 
   Future<void> _moveTo(LatLng point) async {
-    final centerTween = LatLngTween(begin: _leafletMapController.center, end: point);
-    await _animateCamera((animation) => _leafletMapController.move(centerTween.evaluate(animation)!, _leafletMapController.zoom));
+    final camera = _leafletMapController.camera;
+    final centerTween = LatLngTween(begin: camera.center, end: point);
+    await _animateCamera((animation) => _leafletMapController.move(centerTween.evaluate(animation)!, camera.zoom));
   }
 
   Future<void> _animateCamera(void Function(Animation<double> animation) animate) async {

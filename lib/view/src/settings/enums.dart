@@ -71,7 +71,6 @@ extension ExtraEntryMapStyleView on EntryMapStyle {
       EntryMapStyle.hmsNormal => l10n.mapStyleHuaweiNormal,
       EntryMapStyle.hmsTerrain => l10n.mapStyleHuaweiTerrain,
       EntryMapStyle.osmHot => l10n.mapStyleOsmHot,
-      EntryMapStyle.stamenToner => l10n.mapStyleStamenToner,
       EntryMapStyle.stamenWatercolor => l10n.mapStyleStamenWatercolor,
     };
   }

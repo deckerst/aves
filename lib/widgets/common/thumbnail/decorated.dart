@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/grid/overlay.dart';
+import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/thumbnail/overlay.dart';
@@ -30,8 +31,17 @@ class DecoratedThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final thumbnailWidth = isMosaic ? tileExtent * entry.displayAspectRatio : tileExtent;
-    final thumbnailHeight = tileExtent;
+    final double thumbnailHeight = tileExtent;
+    final double thumbnailWidth;
+    if (isMosaic) {
+      thumbnailWidth = thumbnailHeight *
+          entry.displayAspectRatio.clamp(
+            MosaicSectionLayoutBuilder.minThumbnailAspectRatio,
+            MosaicSectionLayoutBuilder.maxThumbnailAspectRatio,
+          );
+    } else {
+      thumbnailWidth = tileExtent;
+    }
 
     Widget child = ThumbnailImage(
       entry: entry,

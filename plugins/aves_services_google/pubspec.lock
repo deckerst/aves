@@ -74,10 +74,10 @@ packages:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "86add5ef97215562d2e090535b0a16f197902b10c369c558a100e74ea06e8659"
+      sha256: "7035152271ff67b072a211152846e9f1259cf1be41e34cd3e0b5463d2d6b8419"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.3"
+    version: "9.1.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -135,10 +135,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_map
-      sha256: "5286f72f87deb132daa1489442d6cc46e986fc105cb727d9ae1b602b35b1d1f3"
+      sha256: e625957146c7d2e847da2cdefd893d6f5315ced6ee5228d2c05fec760cab3ad7
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "6.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -204,10 +204,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
-      sha256: "2a595c9789070786c654e9772ec0d1bb759ae37d2dd776291af5398531274e06"
+      sha256: "2aa28eb9b9d5dfdce6932a7b7f096430bf83a1a09b4e21e81939351f407c787f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   google_maps_flutter_platform_interface:
     dependency: "direct main"
     description:
@@ -296,6 +296,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: "6bbb9d6f7056729537a4309bda2e74e18e5d9f14302489cc1e93f33b3fe32cac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2+1"
   material_color_utilities:
     dependency: transitive
     description:
@@ -372,10 +380,10 @@ packages:
     dependency: transitive
     description:
       name: sanitize_html
-      sha256: "0a445f19bbaa196f5a4f93461aa066b94e6e025622eb1e9bc77872a5e25233a5"
+      sha256: "12669c4a913688a26555323fb9cec373d8f9fbe091f2d01c40c723b33caa8989"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -449,10 +457,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: c97defd418eef4ec88c0d1652cdce84b9f7b63dd7198e266d06ac1710d527067
+      sha256: "350a11abd2d1d97e0cc7a28a81b781c08002aa2864d9e3f192ca0ffa18b06ed3"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.8"
+    version: "5.0.9"
   win32_registry:
     dependency: transitive
     description:

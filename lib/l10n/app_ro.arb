@@ -261,8 +261,6 @@
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Redenumiți",
   "@nameConflictStrategyRename": {},
-  "mapStyleStamenToner": "Stamine Toner",
-  "@mapStyleStamenToner": {},
   "nameConflictStrategyReplace": "Înlocuiți",
   "@nameConflictStrategyReplace": {},
   "nameConflictStrategySkip": "Sări",

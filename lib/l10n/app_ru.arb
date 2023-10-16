@@ -249,8 +249,6 @@
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarian OSM",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenToner": "Stamen ч/б",
-  "@mapStyleStamenToner": {},
   "mapStyleStamenWatercolor": "Stamen Акварель",
   "@mapStyleStamenWatercolor": {},
   "nameConflictStrategyRename": "Переименовать",
