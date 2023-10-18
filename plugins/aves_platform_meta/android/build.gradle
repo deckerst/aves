@@ -4,7 +4,7 @@ version '1.0-SNAPSHOT'
 buildscript {
     ext {
         kotlin_version = '1.8.21'
-        agp_version = '8.0.1'
+        agp_version = '8.1.2'
     }
 
     repositories {
@@ -30,7 +30,7 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace 'deckers.thibault.aves.aves_platform_meta'
-    compileSdkVersion 33
+    compileSdk 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -52,6 +52,6 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
+        minSdk 19
     }
 }
