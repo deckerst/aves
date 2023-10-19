@@ -27,9 +27,11 @@ import 'package:aves/widgets/debug/report.dart';
 import 'package:aves/widgets/debug/settings.dart';
 import 'package:aves/widgets/debug/storage.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
@@ -132,6 +134,23 @@ class _AppDebugPageState extends State<AppDebugPage> {
             setState(() {});
           },
           title: const Text('Show tasks overlay'),
+        ),
+        ElevatedButton(
+          onPressed: () => LeakTracking.collectLeaks().then((leaks) {
+            leaks.byType.forEach((type, reports) {
+              debugPrint('* leak type=$type');
+              groupBy(reports, (report) => report.type).forEach((reportType, typedReports) {
+                debugPrint('  * report type=$reportType');
+                groupBy(typedReports, (report) => report.trackedClass).forEach((trackedClass, classedReports) {
+                  debugPrint('    trackedClass=$trackedClass reports=${classedReports.length}');
+                  // classedReports.forEach((report) {
+                  //   debugPrint('    phase=${report.phase} retainingPath=${report.retainingPath} detailedPath=${report.detailedPath} context=${report.context}');
+                  // });
+                });
+              });
+            });
+          }),
+          child: const Text('Collect leaks'),
         ),
         ElevatedButton(
           onPressed: () => source.init(loadTopEntriesFirst: false),

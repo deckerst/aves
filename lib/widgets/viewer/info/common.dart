@@ -139,12 +139,14 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
   }
 
   double _getSpanWidth(TextSpan span, double textScaleFactor) {
-    final para = RenderParagraph(
+    final paragraph = RenderParagraph(
       span,
       textDirection: TextDirection.ltr,
       textScaleFactor: textScaleFactor,
     )..layout(const BoxConstraints(), parentUsesSize: true);
-    return para.getMaxIntrinsicWidth(double.infinity);
+    final width = paragraph.getMaxIntrinsicWidth(double.infinity);
+    paragraph.dispose();
+    return width;
   }
 
   List<InlineSpan> _buildTextValueSpans(BuildContext context, String key, String value) {

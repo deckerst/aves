@@ -34,6 +34,9 @@ class _EntryViewerPageState extends State<EntryViewerPage> {
   @override
   void dispose() {
     _viewerController.dispose();
+    // provided collection should be a new instance specifically created
+    // for the `EntryViewerPage` widget, so it can be safely disposed here
+    widget.collection?.dispose();
     super.dispose();
   }
 

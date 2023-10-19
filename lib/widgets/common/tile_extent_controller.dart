@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
@@ -26,6 +27,13 @@ class TileExtentController {
     required this.spacing,
     required this.horizontalPadding,
   }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$TileExtentController',
+        object: this,
+      );
+    }
     // initialize extent to 0, so that it will be dynamically sized on first launch
     extentNotifier = ValueNotifier(0);
     userPreferredExtent = settings.getTileExtent(settingsRouteKey);
@@ -33,6 +41,9 @@ class TileExtentController {
   }
 
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();

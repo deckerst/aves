@@ -437,12 +437,13 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
       l10n.setCoverDialogCustom,
     }.fold('', (previousValue, element) => '$previousValue\n$element');
 
-    final para = RenderParagraph(
+    final paragraph = RenderParagraph(
       TextSpan(text: _optionLines, style: Theme.of(context).textTheme.titleMedium!),
       textDirection: TextDirection.ltr,
       textScaleFactor: MediaQuery.textScaleFactorOf(context),
     )..layout(const BoxConstraints(), parentUsesSize: true);
-    final textWidth = para.getMaxIntrinsicWidth(double.infinity);
+    final textWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
+    paragraph.dispose();
 
     // from `RadioListTile` layout
     const contentPadding = 32;

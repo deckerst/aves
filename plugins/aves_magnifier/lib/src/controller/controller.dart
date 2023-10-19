@@ -4,6 +4,7 @@ import 'package:aves_magnifier/src/controller/state.dart';
 import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
 import 'package:aves_magnifier/src/scale/scale_level.dart';
 import 'package:aves_magnifier/src/scale/state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class AvesMagnifierController {
@@ -19,6 +20,13 @@ class AvesMagnifierController {
   AvesMagnifierController({
     MagnifierState? initialState,
   }) : super() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AvesMagnifierController',
+        object: this,
+      );
+    }
     const source = ChangeSource.internal;
     initial = initialState ?? const MagnifierState(position: Offset.zero, scale: null, source: source);
     previousState = initial;
@@ -29,6 +37,16 @@ class AvesMagnifierController {
     previousScaleState = _initialScaleState;
     _currentScaleState = _initialScaleState;
     _setScaleState(_initialScaleState);
+  }
+
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    _disposed = true;
+    _stateStreamController.close();
+    _scaleBoundariesStreamController.close();
+    _scaleStateChangeStreamController.close();
   }
 
   Stream<MagnifierState> get stateStream => _stateStreamController.stream;
@@ -50,13 +68,6 @@ class AvesMagnifierController {
   bool get hasScaleSateChanged => previousScaleState != scaleState;
 
   bool get isZooming => scaleState.state == ScaleState.zoomedIn || scaleState.state == ScaleState.zoomedOut;
-
-  void dispose() {
-    _disposed = true;
-    _stateStreamController.close();
-    _scaleBoundariesStreamController.close();
-    _scaleStateChangeStreamController.close();
-  }
 
   void update({
     Offset? position,

@@ -644,7 +644,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         builder: (context) => MapPage(collection: mapCollection),
       ),
     );
-    mapCollection.dispose();
   }
 
   void _goToSlideshow(BuildContext context) {

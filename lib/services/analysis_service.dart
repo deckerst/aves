@@ -10,6 +10,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -92,12 +93,22 @@ class Analyzer {
 
   Analyzer() {
     debugPrint('$runtimeType create');
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$Analyzer',
+        object: this,
+      );
+    }
     _serviceStateNotifier.addListener(_onServiceStateChanged);
     _source.stateNotifier.addListener(_onSourceStateChanged);
   }
 
   void dispose() {
     debugPrint('$runtimeType dispose');
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _serviceStateNotifier.removeListener(_onServiceStateChanged);
     _source.stateNotifier.removeListener(_onSourceStateChanged);
     _stopUpdateTimer();

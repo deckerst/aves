@@ -255,7 +255,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         builder: (context) => MapPage(collection: mapCollection),
       ),
     );
-    mapCollection.dispose();
   }
 
   void _goToSlideshow(BuildContext context, Set<T> filters) {

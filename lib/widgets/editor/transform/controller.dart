@@ -33,11 +33,21 @@ class TransformController {
   final Size displaySize;
 
   TransformController(this.displaySize) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$TransformController',
+        object: this,
+      );
+    }
     reset();
     aspectRatioNotifier.addListener(_onAspectRatioChanged);
   }
 
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     aspectRatioNotifier.dispose();
   }
 

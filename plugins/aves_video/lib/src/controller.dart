@@ -29,11 +29,21 @@ abstract class AvesVideoController {
     required this.playbackStateHandler,
     required this.settings,
   }) : _entry = entry {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AvesVideoController',
+        object: this,
+      );
+    }
     entry.visualChangeNotifier.addListener(onVisualChanged);
   }
 
   @mustCallSuper
   Future<void> dispose() async {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }

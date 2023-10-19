@@ -165,6 +165,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _mapController.dispose();
     _selectedIndexNotifier.removeListener(_onThumbnailIndexChanged);
     regionCollection?.dispose();
+    // provided collection should be a new instance specifically created
+    // for the `MapPage` widget, so it can be safely disposed here
+    widget.collection.dispose();
     super.dispose();
   }
 
@@ -394,10 +397,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
+          final viewerCollection = regionCollection?.copyWith(
+            listenToSource: false,
+          );
           return EntryViewerPage(
-            collection: regionCollection?.copyWith(
-              listenToSource: false,
-            ),
+            collection: viewerCollection,
             initialEntry: initialEntry,
           );
         },

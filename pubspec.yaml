@@ -83,6 +83,7 @@ dependencies:
   get_it:
   intl:
   latlong2:
+  leak_tracker:
   local_auth:
   material_color_utilities:
   material_design_icons_flutter:

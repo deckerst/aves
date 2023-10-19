@@ -25,6 +25,7 @@ class VideoConductor {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+    _controllers.forEach((v) => v.dispose());
     _controllers.clear();
     if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
       await windowService.keepScreenOn(false);

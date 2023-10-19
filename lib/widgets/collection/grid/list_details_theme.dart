@@ -32,20 +32,21 @@ class EntryListDetailsTheme extends StatelessWidget {
         final titleStyle = textTheme.bodyMedium!;
         final captionStyle = textTheme.bodySmall!;
 
-        final titleLineHeight = (RenderParagraph(
+        final titleLineHeightParagraph = RenderParagraph(
           TextSpan(text: 'Fake Title', style: titleStyle),
           textDirection: TextDirection.ltr,
           textScaleFactor: textScaleFactor,
-        )..layout(const BoxConstraints(), parentUsesSize: true))
-            .getMaxIntrinsicHeight(double.infinity);
+        )..layout(const BoxConstraints(), parentUsesSize: true);
+        final titleLineHeight = titleLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
+        titleLineHeightParagraph.dispose();
 
-        final captionLineHeight = (RenderParagraph(
+        final captionLineHeightParagraph = RenderParagraph(
           TextSpan(text: formatDateTime(DateTime.now(), locale, use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
           textScaleFactor: textScaleFactor,
           strutStyle: AStyles.overflowStrut,
-        )..layout(const BoxConstraints(), parentUsesSize: true))
-            .getMaxIntrinsicHeight(double.infinity);
+        )..layout(const BoxConstraints(), parentUsesSize: true);
+        final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
 
         var titleMaxLines = 1;
         var showDate = false;

@@ -6,6 +6,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/viewer/controls/events.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class ViewerController {
@@ -47,6 +48,13 @@ class ViewerController {
     this.autopilotInterval,
     this.autopilotAnimatedZoom = false,
   }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$ViewerController',
+        object: this,
+      );
+    }
     _initialScale = initialScale;
     _autopilotNotifier = ValueNotifier(autopilot);
     _autopilotNotifier.addListener(_onAutopilotChanged);
@@ -54,6 +62,9 @@ class ViewerController {
   }
 
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _autopilotNotifier.removeListener(_onAutopilotChanged);
     _clearAutopilotAnimations();
     _stopPlayTimer();

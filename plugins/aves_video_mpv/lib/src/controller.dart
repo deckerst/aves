@@ -69,6 +69,7 @@ class MpvVideoController extends AvesVideoController {
     await _statusStreamController.close();
     await _timedTextStreamController.close();
     await _instance.dispose();
+    _completedNotifier.dispose();
   }
 
   void _startListening() {

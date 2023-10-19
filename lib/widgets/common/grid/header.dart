@@ -127,7 +127,7 @@ class SectionHeader<T> extends StatelessWidget {
   }) {
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     final maxContentWidth = maxWidth - (SectionHeader.padding.horizontal + SectionHeader.margin.horizontal);
-    final para = RenderParagraph(
+    final paragraph = RenderParagraph(
       TextSpan(
         children: [
           // as of Flutter v3.7.7, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
@@ -148,7 +148,9 @@ class SectionHeader<T> extends StatelessWidget {
       textDirection: TextDirection.ltr,
       textScaleFactor: textScaleFactor,
     )..layout(BoxConstraints(maxWidth: maxContentWidth), parentUsesSize: true);
-    return para.getMaxIntrinsicHeight(maxContentWidth);
+    final height = paragraph.getMaxIntrinsicHeight(maxContentWidth);
+    paragraph.dispose();
+    return height;
   }
 }
 

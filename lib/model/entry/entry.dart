@@ -49,8 +49,7 @@ class AvesEntry with AvesEntryBase {
   @override
   final AChangeNotifier visualChangeNotifier = AChangeNotifier();
 
-  final AChangeNotifier metadataChangeNotifier = AChangeNotifier();
-  final AChangeNotifier addressChangeNotifier = AChangeNotifier();
+  final AChangeNotifier metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
   AvesEntry({
     required int? id,
@@ -72,6 +71,13 @@ class AvesEntry with AvesEntryBase {
     required this.origin,
     this.burstEntries,
   }) : id = id ?? 0 {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AvesEntry',
+        object: this,
+      );
+    }
     this.path = path;
     this.sourceTitle = sourceTitle;
     this.dateModifiedSecs = dateModifiedSecs;
@@ -181,6 +187,9 @@ class AvesEntry with AvesEntryBase {
   }
 
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     visualChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
