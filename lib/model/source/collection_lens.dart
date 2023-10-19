@@ -99,6 +99,8 @@ class CollectionLens with ChangeNotifier {
       ..forEach((sub) => sub.cancel())
       ..clear();
     favourites.removeListener(_onFavouritesChanged);
+    filterChangeNotifier.dispose();
+    sortSectionChangeNotifier.dispose();
     super.dispose();
   }
 

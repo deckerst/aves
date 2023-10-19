@@ -32,6 +32,12 @@ class _LicensesState extends State<Licenses> {
     _sortPackages();
   }
 
+  @override
+  void dispose() {
+    _expandedNotifier.dispose();
+    super.dispose();
+  }
+
   void _sortPackages() {
     int compare(Dependency a, Dependency b) => compareAsciiUpperCase(a.name, b.name);
     _platform.sort(compare);

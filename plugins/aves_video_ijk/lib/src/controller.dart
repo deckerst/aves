@@ -85,6 +85,7 @@ class IjkVideoController extends AvesVideoController {
     await _valueStreamController.close();
     await _timedTextStreamController.close();
     await _instance.release();
+    _completedNotifier.dispose();
   }
 
   void _startListening() {

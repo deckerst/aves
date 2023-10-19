@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves_map/src/zoomed_bounds.dart';
+import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 class AvesMapController {
@@ -16,7 +17,20 @@ class AvesMapController {
 
   Stream<MapMarkerLocationChangeEvent> get markerLocationChanges => _events.where((event) => event is MapMarkerLocationChangeEvent).cast<MapMarkerLocationChangeEvent>();
 
+  AvesMapController() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AvesMapController',
+        object: this,
+      );
+    }
+  }
+
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _streamController.close();
   }
 

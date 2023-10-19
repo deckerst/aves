@@ -38,13 +38,14 @@ class CaptionedButton extends StatefulWidget {
     final width = getWidth(context);
     var height = width;
     if (showCaption) {
-      final para = RenderParagraph(
+      final paragraph = RenderParagraph(
         TextSpan(text: text, style: CaptionedButtonText.textStyle(context)),
         textDirection: TextDirection.ltr,
         textScaleFactor: MediaQuery.textScaleFactorOf(context),
         maxLines: CaptionedButtonText.maxLines,
       )..layout(const BoxConstraints(), parentUsesSize: true);
-      height += para.getMaxIntrinsicHeight(width) + padding.vertical;
+      height += paragraph.getMaxIntrinsicHeight(width) + padding.vertical;
+      paragraph.dispose();
     }
     return Size(width, height);
   }

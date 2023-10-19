@@ -153,13 +153,14 @@ class VideoSubtitles extends StatelessWidget {
                           var transform = Matrix4.identity();
 
                           if (position != null) {
-                            final para = RenderParagraph(
+                            final paragraph = RenderParagraph(
                               TextSpan(children: spans),
                               textDirection: TextDirection.ltr,
                               textScaleFactor: MediaQuery.textScaleFactorOf(context),
                             )..layout(const BoxConstraints());
-                            final textWidth = para.getMaxIntrinsicWidth(double.infinity);
-                            final textHeight = para.getMaxIntrinsicHeight(double.infinity);
+                            final textWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
+                            final textHeight = paragraph.getMaxIntrinsicHeight(double.infinity);
+                            paragraph.dispose();
 
                             late double anchorOffsetX, anchorOffsetY;
                             switch (textHAlign) {

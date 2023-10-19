@@ -2,6 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,11 +16,22 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     String? initialQuery,
     required super.searchFieldLabel,
   }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AvesSearchDelegate',
+        object: this,
+      );
+    }
     query = initialQuery ?? '';
   }
 
   @mustCallSuper
-  void dispose() {}
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+  }
 
   @override
   Widget? buildLeading(BuildContext context) {

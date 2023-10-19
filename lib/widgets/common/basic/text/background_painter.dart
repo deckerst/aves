@@ -44,6 +44,7 @@ class TextBackgroundPainter extends StatelessWidget {
           TextSelection(baseOffset: 0, extentOffset: textLength),
           boxHeightStyle: ui.BoxHeightStyle.max,
         );
+        paragraph.dispose();
 
         // merge boxes to avoid artifacts at box edges, from anti-aliasing and rounding hacks
         final lineRects = groupBy<TextBox, double>(allBoxes, (v) => v.top).entries.map((kv) {

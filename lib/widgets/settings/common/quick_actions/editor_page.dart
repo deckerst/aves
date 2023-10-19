@@ -104,6 +104,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
 
   @override
   void dispose() {
+    _quickActionsChangeNotifier.dispose();
     _stopLeavingTimer();
     super.dispose();
   }

@@ -153,7 +153,6 @@ class _LocationSectionState extends State<LocationSection> {
         ),
       ),
     );
-    mapCollection.dispose();
   }
 
   void _onMetadataChanged() {

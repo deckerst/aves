@@ -49,6 +49,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
   void dispose() {
     _animationController?.dispose();
     _clearChooserOverlayEntry();
+    _chooserValueNotifier.dispose();
     super.dispose();
   }
 

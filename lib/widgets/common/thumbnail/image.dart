@@ -88,6 +88,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   }
 
   void _registerWidget(ThumbnailImage widget) {
+    // TODO TLAD [leak] `widget.entry.visualChangeNotifier`
     widget.entry.visualChangeNotifier.addListener(_onVisualChanged);
     _initProvider();
   }

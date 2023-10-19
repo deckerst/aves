@@ -23,6 +23,7 @@ import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,9 +33,20 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   VideoActionDelegate({
     required this.collection,
-  });
+  }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$VideoActionDelegate',
+        object: this,
+      );
+    }
+  }
 
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     stopOverlayHidingTimer();
   }
 

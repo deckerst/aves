@@ -192,7 +192,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _overlayVisible.dispose();
     _viewLocked.dispose();
     _overlayExpandedNotifier.dispose();
+    _currentVerticalPage.dispose();
+    _horizontalPager.dispose();
     _verticalPager.dispose();
+    _verticalScrollNotifier.dispose();
     _heroInfoNotifier.dispose();
     _stopOverlayHidingTimer();
     AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);

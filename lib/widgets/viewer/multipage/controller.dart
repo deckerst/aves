@@ -24,6 +24,13 @@ class MultiPageController {
   set page(int? page) => pageNotifier.value = page;
 
   MultiPageController(this.entry) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$MultiPageController',
+        object: this,
+      );
+    }
     reset();
   }
 
@@ -40,6 +47,9 @@ class MultiPageController {
       });
 
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _disposed = true;
     pageNotifier.dispose();
   }
