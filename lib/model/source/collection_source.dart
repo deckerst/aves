@@ -61,6 +61,13 @@ mixin SourceBase {
 
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
   CollectionSource() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$CollectionSource',
+        object: this,
+      );
+    }
     settings.updateStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => invalidateAlbumDisplayNames());
     settings.updateStream.where((event) => event.key == SettingKeys.hiddenFiltersKey).listen((event) {
       final oldValue = event.oldValue;
@@ -74,6 +81,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
       _onFilterVisibilityChanged(newlyVisibleFilters);
     });
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    _rawEntries.forEach((v) => v.dispose());
   }
 
   final EventBus _eventBus = EventBus();
@@ -447,7 +462,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   Future<void> analyze(AnalysisController? analysisController, {Set<AvesEntry>? entries}) async {
     final todoEntries = entries ?? visibleEntries;
-    final _analysisController = analysisController ?? AnalysisController();
+    final defaultAnalysisController = AnalysisController();
+    final _analysisController = analysisController ?? defaultAnalysisController;
     final force = _analysisController.force;
     if (!_analysisController.isStopping) {
       var startAnalysisService = false;
@@ -481,6 +497,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         updateDerivedFilters(todoEntries);
       }
     }
+    defaultAnalysisController.dispose();
     state = SourceState.ready;
   }
 

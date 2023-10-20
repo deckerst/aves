@@ -180,9 +180,12 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
   void _onScaleEnd(ScaleEndDetails details) {
     if (_scaledSizeNotifier == null) return;
-    if (_overlayEntry != null) {
-      _overlayEntry!.remove();
-      _overlayEntry = null;
+
+    final overlayEntry = _overlayEntry;
+    _overlayEntry = null;
+    if (overlayEntry != null) {
+      overlayEntry.remove();
+      overlayEntry.dispose();
     }
 
     _applyingScale = true;

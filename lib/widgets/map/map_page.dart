@@ -163,7 +163,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChanged);
     _mapController.dispose();
-    _selectedIndexNotifier.removeListener(_onThumbnailIndexChanged);
+    _selectedIndexNotifier.dispose();
     regionCollection?.dispose();
     // provided collection should be a new instance specifically created
     // for the `MapPage` widget, so it can be safely disposed here

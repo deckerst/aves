@@ -38,6 +38,12 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
   final ValueNotifier<TapDownDetails?> doubleTapDetails = ValueNotifier(null);
 
   @override
+  void dispose() {
+    doubleTapDetails.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final gestureSettings = MediaQuery.gestureSettingsOf(context);
     final gestures = <Type, GestureRecognizerFactory>{};

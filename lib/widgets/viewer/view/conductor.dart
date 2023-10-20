@@ -73,6 +73,10 @@ class ViewStateConductor {
       entry,
       ...?entry.burstEntries,
     }.map((v) => v.uri).toSet();
-    _controllers.removeWhere((v) => uris.contains(v.entry.uri));
+    final entryControllers = _controllers.where((v) => uris.contains(v.entry.uri)).toSet();
+    entryControllers.forEach((controller) {
+      _controllers.remove(controller);
+      controller.dispose();
+    });
   }
 }

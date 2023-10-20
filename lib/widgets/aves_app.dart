@@ -196,13 +196,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _pageTransitionsBuilderNotifier.dispose();
-    _tvMediaQueryModifierNotifier.dispose();
-    _appModeNotifier.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
     WidgetsBinding.instance.removeObserver(this);
+    _pageTransitionsBuilderNotifier.dispose();
+    _tvMediaQueryModifierNotifier.dispose();
+    _appModeNotifier.dispose();
+    _mediaStoreSource.dispose();
     super.dispose();
   }
 

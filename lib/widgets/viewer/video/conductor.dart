@@ -33,11 +33,10 @@ class VideoConductor {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
-    await _disposeAll();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _controllers.forEach((v) => v.dispose());
+    await _disposeAll();
     _controllers.clear();
     if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
       await windowService.keepScreenOn(false);

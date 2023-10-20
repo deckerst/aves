@@ -109,9 +109,11 @@ class Analyzer {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
+    _stopUpdateTimer();
+    _controller?.dispose();
     _serviceStateNotifier.removeListener(_onServiceStateChanged);
     _source.stateNotifier.removeListener(_onSourceStateChanged);
-    _stopUpdateTimer();
+    _source.dispose();
   }
 
   Future<void> start(dynamic args) async {
@@ -125,13 +127,13 @@ class Analyzer {
       progressOffset = args['progressOffset'];
     }
     debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries, at $progressOffset/$progressTotal');
+    _controller?.dispose();
     _controller = AnalysisController(
       canStartService: false,
       entryIds: entryIds,
       force: force,
       progressTotal: progressTotal,
       progressOffset: progressOffset,
-      stopSignal: ValueNotifier(false),
     );
 
     settings.systemLocalesFallback = await deviceService.getLocales();
@@ -160,7 +162,7 @@ class Analyzer {
         await _stopPlatformService();
         _serviceStateNotifier.value = AnalyzerState.stopped;
       case AnalyzerState.stopped:
-        _controller?.stopSignal.value = true;
+        _controller?.enableStopSignal();
         _stopUpdateTimer();
     }
   }
