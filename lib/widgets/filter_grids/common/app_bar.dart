@@ -111,7 +111,6 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   void dispose() {
     _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
-    _isSelectingNotifier.removeListener(_onActivityChanged);
     _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions

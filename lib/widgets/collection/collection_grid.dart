@@ -302,7 +302,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
 
   @override
   void dispose() {
-    _appBarHeightNotifier.removeListener(_onAppBarHeightChanged);
+    _appBarHeightNotifier.dispose();
     super.dispose();
   }
 

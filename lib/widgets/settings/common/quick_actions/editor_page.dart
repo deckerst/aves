@@ -104,7 +104,13 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
 
   @override
   void dispose() {
+    _draggedQuickAction.dispose();
+    _draggedAvailableAction.dispose();
+    _quickActionHighlight.dispose();
+    _availableActionHighlight.dispose();
     _quickActionsChangeNotifier.dispose();
+    _availableActionPageController.dispose();
+
     _stopLeavingTimer();
     super.dispose();
   }

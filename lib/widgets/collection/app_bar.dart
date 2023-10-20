@@ -123,7 +123,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _unregisterWidget(widget);
     _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
-    _isSelectingNotifier.removeListener(_onActivityChanged);
     _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions

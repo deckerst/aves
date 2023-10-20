@@ -82,6 +82,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   void dispose() {
     _latitudeController.dispose();
     _longitudeController.dispose();
+    _isValidNotifier.dispose();
     super.dispose();
   }
 

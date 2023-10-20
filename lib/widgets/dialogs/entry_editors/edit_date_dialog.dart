@@ -60,6 +60,9 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   @override
   void dispose() {
     _isValidNotifier.dispose();
+    _shiftHour.dispose();
+    _shiftMinute.dispose();
+    _shiftSign.dispose();
     super.dispose();
   }
 

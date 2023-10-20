@@ -391,12 +391,15 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       return dateMillis == null || dateMillis == 0;
     }).toSet();
     if (undatedItems.isNotEmpty) {
-      if (!await showSkippableConfirmationDialog(
+      final confirmationDialogDelegate = MoveUndatedConfirmationDialogDelegate();
+      final confirmed = await showSkippableConfirmationDialog(
         context: context,
         type: ConfirmationDialog.moveUndatedItems,
-        delegate: MoveUndatedConfirmationDialogDelegate(),
+        delegate: confirmationDialogDelegate,
         confirmationButtonLabel: context.l10n.continueButtonLabel,
-      )) return false;
+      );
+      confirmationDialogDelegate.dispose();
+      if (!confirmed) return false;
 
       if (settings.setMetadataDateBeforeFileOp) {
         final entriesToDate = undatedItems.where((entry) => entry.canEditDate).toSet();
@@ -459,6 +462,10 @@ class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
 
   MoveUndatedConfirmationDialogDelegate() {
     _setMetadataDate.value = settings.setMetadataDateBeforeFileOp;
+  }
+
+  void dispose() {
+    _setMetadataDate.dispose();
   }
 
   @override

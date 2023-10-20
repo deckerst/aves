@@ -65,7 +65,7 @@ class ViewerController {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
-    _autopilotNotifier.removeListener(_onAutopilotChanged);
+    _autopilotNotifier.dispose();
     _clearAutopilotAnimations();
     _stopPlayTimer();
     _streamController.close();

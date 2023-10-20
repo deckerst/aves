@@ -29,6 +29,13 @@ class _DurationDialogState extends State<DurationDialog> {
   }
 
   @override
+  void dispose() {
+    _minutes.dispose();
+    _seconds.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Builder(builder: (context) {

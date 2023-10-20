@@ -96,8 +96,10 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _dotLocationNotifier.removeListener(_updateLocationInfo);
     _mapController.dispose();
+    _isPageAnimatingNotifier.dispose();
+    _dotLocationNotifier.dispose();
+    _infoLocationNotifier.dispose();
     super.dispose();
   }
 

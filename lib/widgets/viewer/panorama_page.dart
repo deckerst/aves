@@ -50,7 +50,8 @@ class _PanoramaPageState extends State<PanoramaPage> {
 
   @override
   void dispose() {
-    _overlayVisible.removeListener(_onOverlayVisibleChanged);
+    _overlayVisible.dispose();
+    _sensorControl.dispose();
     super.dispose();
   }
 
