@@ -9,11 +9,18 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DebugSettingsSection extends StatelessWidget {
+class DebugSettingsSection extends StatefulWidget {
   const DebugSettingsSection({super.key});
 
   @override
+  State<DebugSettingsSection> createState() => _DebugSettingsSectionState();
+}
+
+class _DebugSettingsSectionState extends State<DebugSettingsSection> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Consumer<Settings>(
       builder: (context, settings, child) {
         String toMultiline(Iterable? l) => l != null && l.isNotEmpty ? '\n${l.join('\n')}' : '$l';
@@ -76,4 +83,7 @@ class DebugSettingsSection extends StatelessWidget {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

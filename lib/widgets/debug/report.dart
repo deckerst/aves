@@ -4,11 +4,18 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
-class DebugErrorReportingSection extends StatelessWidget {
+class DebugErrorReportingSection extends StatefulWidget {
   const DebugErrorReportingSection({super.key});
 
   @override
+  State<DebugErrorReportingSection> createState() => _DebugErrorReportingSectionState();
+}
+
+class _DebugErrorReportingSectionState extends State<DebugErrorReportingSection> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return AvesExpansionTile(
       title: 'Reporting',
       children: [
@@ -56,4 +63,7 @@ class DebugErrorReportingSection extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

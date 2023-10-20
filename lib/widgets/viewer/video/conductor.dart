@@ -9,6 +9,7 @@ import 'package:aves/widgets/viewer/video/db_playback_state_handler.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 class VideoConductor {
   final CollectionLens? _collection;
@@ -18,10 +19,21 @@ class VideoConductor {
 
   static const _defaultMaxControllerCount = 3;
 
-  VideoConductor({CollectionLens? collection}) : _collection = collection;
+  VideoConductor({CollectionLens? collection}) : _collection = collection {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$VideoConductor',
+        object: this,
+      );
+    }
+  }
 
   Future<void> dispose() async {
-    await disposeAll();
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    await _disposeAll();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -82,7 +94,7 @@ class VideoConductor {
 
   Future<void> _applyToAll(FutureOr Function(AvesVideoController controller) action) => Future.forEach<AvesVideoController>(_controllers, action);
 
-  Future<void> disposeAll() => _applyToAll((controller) => controller.dispose());
+  Future<void> _disposeAll() => _applyToAll((controller) => controller.dispose());
 
   Future<void> pauseAll() => _applyToAll((controller) => controller.pause());
 
