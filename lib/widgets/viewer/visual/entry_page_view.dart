@@ -84,6 +84,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   void dispose() {
     _unregisterWidget(widget);
     widget.onDisposed?.call();
+    _actionFeedbackChildNotifier.dispose();
     super.dispose();
   }
 
@@ -305,9 +306,11 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
                 return true;
               };
               onScaleEnd = (details) {
-                if (_actionFeedbackOverlayEntry != null) {
-                  _actionFeedbackOverlayEntry!.remove();
-                  _actionFeedbackOverlayEntry = null;
+                final overlayEntry = _actionFeedbackOverlayEntry;
+                _actionFeedbackOverlayEntry = null;
+                if (overlayEntry != null) {
+                  overlayEntry.remove();
+                  overlayEntry.dispose();
                 }
               };
             }

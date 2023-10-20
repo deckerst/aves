@@ -12,7 +12,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 class MpvVideoController extends AvesVideoController {
   late Player _instance;
   late VideoStatus _status;
-  bool _firstFrameRendered = false;
+  bool _disposed = false, _firstFrameRendered = false;
   final ValueNotifier<VideoController?> _controllerNotifier = ValueNotifier(null);
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
@@ -63,12 +63,15 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   Future<void> dispose() async {
+    assert(!_disposed);
+    _disposed = true;
     await super.dispose();
     _stopListening();
     _stopStreamFetchTimer();
     await _statusStreamController.close();
     await _timedTextStreamController.close();
     await _instance.dispose();
+    _controllerNotifier.dispose();
     _completedNotifier.dispose();
   }
 

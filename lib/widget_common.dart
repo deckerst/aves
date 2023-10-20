@@ -90,5 +90,6 @@ Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
   if (entry != null) {
     settings.setWidgetUri(widgetId, entry.uri);
   }
+  source.dispose();
   return entry;
 }

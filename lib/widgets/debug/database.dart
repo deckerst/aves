@@ -39,6 +39,12 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
   }
 
   @override
+  void dispose() {
+    _disposeLoadedContent();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 
@@ -63,7 +69,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.reset().then((_) => _reload()),
                         child: const Text('Reset'),
                       ),
                     ],
@@ -86,7 +92,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearEntries().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.clearEntries().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -107,7 +113,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearDates().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.clearDates().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -128,7 +134,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearCatalogMetadata().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.clearCatalogMetadata().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -149,7 +155,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearAddresses().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.clearAddresses().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -170,7 +176,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearTrashDetails().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.clearTrashDetails().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -191,7 +197,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => vaults.clear().then((_) => _startDbReport()),
+                        onPressed: () => vaults.clear().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -212,7 +218,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => favourites.clear().then((_) => _startDbReport()),
+                        onPressed: () => favourites.clear().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -233,7 +239,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => covers.clear().then((_) => _startDbReport()),
+                        onPressed: () => covers.clear().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -254,7 +260,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearVideoPlayback().then((_) => _startDbReport()),
+                        onPressed: () => metadataDb.clearVideoPlayback().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -268,6 +274,11 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
     );
   }
 
+  Future<void> _reload() async {
+    await _disposeLoadedContent();
+    _startDbReport();
+  }
+  
   void _startDbReport() {
     _dbFileSizeLoader = metadataDb.dbFileSize();
     _dbEntryLoader = metadataDb.loadEntries();
@@ -280,6 +291,10 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
     _dbCoversLoader = metadataDb.loadAllCovers();
     _dbVideoPlaybackLoader = metadataDb.loadAllVideoPlayback();
     setState(() {});
+  }
+  
+  Future<void> _disposeLoadedContent() async {
+    (await _dbEntryLoader).forEach((v) => v.dispose());
   }
 
   @override

@@ -47,14 +47,17 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
         SwitchListTile(
           value: _taskQueueOverlayEntry != null,
           onChanged: (v) {
-            _taskQueueOverlayEntry?.remove();
+            final overlayEntry = _taskQueueOverlayEntry;
+            _taskQueueOverlayEntry = null;
+            if (overlayEntry != null) {
+              overlayEntry.remove();
+              overlayEntry.dispose();
+            }
             if (v) {
               _taskQueueOverlayEntry = OverlayEntry(
                 builder: (context) => const DebugTaskQueueOverlay(),
               );
               Overlay.of(context).insert(_taskQueueOverlayEntry!);
-            } else {
-              _taskQueueOverlayEntry = null;
             }
             setState(() {});
           },

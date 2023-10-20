@@ -29,5 +29,6 @@ class ViewStateController with HistogramMixin {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     viewStateNotifier.dispose();
+    fullImageNotifier.dispose();
   }
 }

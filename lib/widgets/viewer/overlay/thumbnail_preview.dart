@@ -49,7 +49,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
 
   @override
   void dispose() {
-    _entryIndexNotifier.removeListener(_onScrollerIndexChanged);
+    _entryIndexNotifier.dispose();
     super.dispose();
   }
 

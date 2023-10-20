@@ -257,7 +257,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final controller = AnalysisController(canStartService: true, force: true);
     final collection = context.read<CollectionLens>();
-    collection.source.analyze(controller, entries: entries);
+    collection.source.analyze(controller, entries: entries).then((_) => controller.dispose());
 
     _browse(context);
   }
