@@ -62,6 +62,12 @@ class _XmpCardState extends State<XmpCard> {
   }
 
   @override
+  void dispose() {
+    _indexNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _isIndexed = isIndexed;
 

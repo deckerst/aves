@@ -190,6 +190,7 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   @override
   void dispose() {
     AvesApp.pageRouteObserver.unsubscribe(this);
+    _isBlurAllowedNotifier.dispose();
     super.dispose();
   }
 

@@ -74,6 +74,12 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   }
 
   @override
+  void dispose() {
+    _columnCountNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 

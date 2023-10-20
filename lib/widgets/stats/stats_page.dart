@@ -109,6 +109,12 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
   }
 
   @override
+  void dispose() {
+    _isPageAnimatingNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final useTvLayout = settings.useTvLayout;
     return ValueListenableBuilder<bool>(

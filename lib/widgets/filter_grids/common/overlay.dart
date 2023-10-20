@@ -28,6 +28,12 @@ class _ChipHighlightOverlayState extends State<ChipHighlightOverlay> {
   CollectionFilter get filter => widget.filter;
 
   @override
+  void dispose() {
+    _highlightedNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final highlightInfo = context.watch<HighlightInfo>();
     _highlightedNotifier.value = highlightInfo.contains(filter);

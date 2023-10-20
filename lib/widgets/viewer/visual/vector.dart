@@ -78,6 +78,7 @@ class _VectorImageViewState extends State<VectorImageView> {
 
   @override
   void dispose() {
+    _fullImageLoaded.dispose();
     _unregisterFullImage();
     super.dispose();
   }

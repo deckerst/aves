@@ -119,10 +119,10 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   @override
   void dispose() {
     cleanEntryControllers(entry);
-    _viewerController.dispose();
-    _videoActionDelegate.dispose();
+    _overlayVisible.dispose();
     _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChanged);
+    _videoActionDelegate.dispose();
+    _viewerController.dispose();
     super.dispose();
   }
 

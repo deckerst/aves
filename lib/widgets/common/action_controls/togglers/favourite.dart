@@ -29,7 +29,7 @@ class FavouriteToggler extends StatefulWidget {
 }
 
 class _FavouriteTogglerState extends State<FavouriteToggler> {
-  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isFavouriteNotifier = ValueNotifier(false);
 
   Set<AvesEntry> get entries => widget.entries;
 
@@ -53,14 +53,14 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
   @override
   void dispose() {
     favourites.removeListener(_onChanged);
-    isFavouriteNotifier.dispose();
+    _isFavouriteNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: isFavouriteNotifier,
+      valueListenable: _isFavouriteNotifier,
       builder: (context, isFavourite, child) {
         if (widget.isMenuItem) {
           return isFavourite
@@ -88,7 +88,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
                 favouriteSweeperIcon,
                 color: context.select<AvesColorsData, Color>((v) => v.favourite),
               ),
-              toggledNotifier: isFavouriteNotifier,
+              toggledNotifier: _isFavouriteNotifier,
             ),
           ],
         );
@@ -97,7 +97,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
   }
 
   void _onChanged() {
-    isFavouriteNotifier.value = entries.isNotEmpty && entries.every((entry) => entry.isFavourite);
+    _isFavouriteNotifier.value = entries.isNotEmpty && entries.every((entry) => entry.isFavourite);
   }
 }
 
@@ -116,7 +116,7 @@ class FavouriteTogglerCaption extends StatefulWidget {
 }
 
 class _FavouriteTogglerCaptionState extends State<FavouriteTogglerCaption> {
-  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isFavouriteNotifier = ValueNotifier(false);
 
   Set<AvesEntry> get entries => widget.entries;
 
@@ -136,14 +136,14 @@ class _FavouriteTogglerCaptionState extends State<FavouriteTogglerCaption> {
   @override
   void dispose() {
     favourites.removeListener(_onChanged);
-    isFavouriteNotifier.dispose();
+    _isFavouriteNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: isFavouriteNotifier,
+      valueListenable: _isFavouriteNotifier,
       builder: (context, isFavourite, child) {
         return CaptionedButtonText(
           text: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
@@ -154,6 +154,6 @@ class _FavouriteTogglerCaptionState extends State<FavouriteTogglerCaption> {
   }
 
   void _onChanged() {
-    isFavouriteNotifier.value = entries.isNotEmpty && entries.every((entry) => entry.isFavourite);
+    _isFavouriteNotifier.value = entries.isNotEmpty && entries.every((entry) => entry.isFavourite);
   }
 }

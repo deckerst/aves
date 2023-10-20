@@ -159,12 +159,18 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
-    _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChanged);
     _mapController.dispose();
+    _isPageAnimatingNotifier.dispose();
     _selectedIndexNotifier.dispose();
-    regionCollection?.dispose();
+    _regionCollectionNotifier.value?.dispose();
+    _regionCollectionNotifier.dispose();
+    _dotLocationNotifier.dispose();
+    _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
+    _dotEntryNotifier.dispose();
+    _overlayOpacityNotifier.dispose();
+    _overlayVisible.dispose();
+    _overlayAnimationController.dispose();
+
     // provided collection should be a new instance specifically created
     // for the `MapPage` widget, so it can be safely disposed here
     widget.collection.dispose();

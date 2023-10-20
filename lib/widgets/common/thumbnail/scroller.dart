@@ -36,7 +36,7 @@ class ThumbnailScroller extends StatefulWidget {
 }
 
 class _ThumbnailScrollerState extends State<ThumbnailScroller> {
-  final _cancellableNotifier = ValueNotifier(true);
+  final ValueNotifier<bool> _cancellableNotifier = ValueNotifier(true);
   late ScrollController _scrollController;
   bool _isAnimating = false, _isScrolling = false;
 
@@ -71,6 +71,7 @@ class _ThumbnailScrollerState extends State<ThumbnailScroller> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _cancellableNotifier.dispose();
     super.dispose();
   }
 

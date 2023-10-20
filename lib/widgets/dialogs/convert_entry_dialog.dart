@@ -88,6 +88,8 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   void dispose() {
     _widthController.dispose();
     _heightController.dispose();
+    _isValidNotifier.dispose();
+    _mimeTypeNotifier.dispose();
     super.dispose();
   }
 

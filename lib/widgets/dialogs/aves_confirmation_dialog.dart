@@ -119,7 +119,13 @@ class _SkippableConfirmationDialog extends StatefulWidget {
 }
 
 class _SkippableConfirmationDialogState extends State<_SkippableConfirmationDialog> {
-  final ValueNotifier<bool> _skip = ValueNotifier(false);
+  final ValueNotifier<bool> _skipNotifier = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _skipNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,10 +133,10 @@ class _SkippableConfirmationDialogState extends State<_SkippableConfirmationDial
       scrollableContent: [
         ...widget.delegate.build(context),
         ValueListenableBuilder<bool>(
-          valueListenable: _skip,
+          valueListenable: _skipNotifier,
           builder: (context, flag, child) => SwitchListTile(
             value: flag,
-            onChanged: (v) => _skip.value = v,
+            onChanged: (v) => _skipNotifier.value = v,
             title: Text(context.l10n.doNotAskAgain),
           ),
         ),
@@ -139,7 +145,7 @@ class _SkippableConfirmationDialogState extends State<_SkippableConfirmationDial
         const CancelButton(),
         TextButton(
           onPressed: () {
-            if (_skip.value) {
+            if (_skipNotifier.value) {
               _skipConfirmation(widget.type);
             }
             Navigator.maybeOf(context)?.pop(true);

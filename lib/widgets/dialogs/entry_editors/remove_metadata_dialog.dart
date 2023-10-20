@@ -46,6 +46,12 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
   }
 
   @override
+  void dispose() {
+    _isValidNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);

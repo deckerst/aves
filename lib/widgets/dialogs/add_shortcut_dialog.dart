@@ -50,6 +50,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _isValidNotifier.dispose();
     super.dispose();
   }
 
