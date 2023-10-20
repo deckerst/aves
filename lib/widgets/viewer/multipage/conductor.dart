@@ -1,14 +1,30 @@
+import 'dart:async';
+
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 class MultiPageConductor {
   final List<MultiPageController> _controllers = [];
 
   static const maxControllerCount = 3;
 
+  MultiPageConductor() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$MultiPageConductor',
+        object: this,
+      );
+    }
+  }
+
   Future<void> dispose() async {
-    await Future.forEach<MultiPageController>(_controllers, (controller) => controller.dispose());
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    await _disposeAll();
     _controllers.clear();
   }
 
@@ -29,4 +45,8 @@ class MultiPageConductor {
   MultiPageController? getController(AvesEntry entry) {
     return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
+
+  Future<void> _applyToAll(FutureOr Function(MultiPageController controller) action) => Future.forEach<MultiPageController>(_controllers, action);
+
+  Future<void> _disposeAll() => _applyToAll((controller) => controller.dispose());
 }

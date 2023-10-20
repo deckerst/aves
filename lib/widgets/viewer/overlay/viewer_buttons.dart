@@ -143,7 +143,7 @@ class _TvButtonRowContent extends StatelessWidget {
             final enabled = actionDelegate.canApply(action);
             return CaptionedButton(
               scale: scale,
-              iconButtonBuilder: (context, focusNode) => ViewerButtonRowContent._buildButtonIcon(
+              iconButtonBuilder: (context, focusNode) => _ViewerButtonRowContentState._buildButtonIcon(
                 context: context,
                 action: action,
                 mainEntry: mainEntry,
@@ -202,18 +202,15 @@ class _TvButtonRowContent extends StatelessWidget {
   }
 }
 
-class ViewerButtonRowContent extends StatelessWidget {
+class ViewerButtonRowContent extends StatefulWidget {
   final EntryActionDelegate actionDelegate;
   final List<EntryAction> quickActions, topLevelActions, exportActions, videoActions;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
-  final ValueNotifier<String?> _popupExpandedNotifier = ValueNotifier(null);
-
-  AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
 
   static const double padding = 8;
 
-  ViewerButtonRowContent({
+  const ViewerButtonRowContent({
     super.key,
     required this.actionDelegate,
     required this.quickActions,
@@ -226,7 +223,31 @@ class ViewerButtonRowContent extends StatelessWidget {
   });
 
   @override
+  State<ViewerButtonRowContent> createState() => _ViewerButtonRowContentState();
+}
+
+class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
+  final ValueNotifier<String?> _popupExpandedNotifier = ValueNotifier(null);
+
+  AvesEntry get mainEntry => widget.mainEntry;
+
+  AvesEntry get pageEntry => widget.pageEntry;
+
+  AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
+
+  static const double padding = ViewerButtonRowContent.padding;
+
+  @override
+  void dispose() {
+    _popupExpandedNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final topLevelActions = widget.topLevelActions;
+    final exportActions = widget.exportActions;
+    final videoActions = widget.videoActions;
     final hasOverflowMenu = pageEntry.canRotate || pageEntry.canFlip || topLevelActions.isNotEmpty || exportActions.isNotEmpty || videoActions.isNotEmpty;
     return Selector<VideoConductor, AvesVideoController?>(
       selector: (context, vc) => vc.getController(pageEntry),
@@ -236,12 +257,12 @@ class ViewerButtonRowContent extends StatelessWidget {
           child: Row(
             children: [
               const Spacer(),
-              ...quickActions.map((action) => _buildOverlayButton(context, action, videoController)),
+              ...widget.quickActions.map((action) => _buildOverlayButton(context, action, videoController)),
               if (hasOverflowMenu)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: padding / 2),
                   child: OverlayButton(
-                    scale: scale,
+                    scale: widget.scale,
                     child: FontSizeIconTheme(
                       child: AvesPopupMenuButton<EntryAction>(
                         key: const Key('entry-menu-button'),
@@ -282,7 +303,7 @@ class ViewerButtonRowContent extends StatelessWidget {
                         onSelected: (action) {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
-                          Future.delayed(ADurations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, action));
+                          Future.delayed(ADurations.popupMenuAnimation * timeDilation, () => widget.actionDelegate.onActionSelected(context, action));
                         },
                         onCanceled: () {
                           _popupExpandedNotifier.value = null;
@@ -309,14 +330,14 @@ class ViewerButtonRowContent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: padding / 2),
       child: OverlayButton(
-        scale: scale,
+        scale: widget.scale,
         child: _buildButtonIcon(
           context: context,
           action: action,
           mainEntry: mainEntry,
           pageEntry: pageEntry,
           videoController: videoController,
-          actionDelegate: actionDelegate,
+          actionDelegate: widget.actionDelegate,
         ),
       ),
     );
@@ -381,7 +402,7 @@ class ViewerButtonRowContent extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: PopupMenuItem(
               value: action,
-              enabled: actionDelegate.canApply(action),
+              enabled: widget.actionDelegate.canApply(action),
               child: Tooltip(
                 message: action.getText(context),
                 child: Center(child: action.getIcon()),

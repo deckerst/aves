@@ -6,21 +6,21 @@ import 'package:provider/provider.dart';
 class PopupMenuExpansionPanel<T> extends PopupMenuEntry<T> {
   final bool enabled;
   final String value;
-  final ValueNotifier<String?> expandedNotifier;
+  final ValueNotifier<String?>? expandedNotifier;
   final IconData icon;
   final String title;
   final List<PopupMenuEntry<T>> items;
 
-  PopupMenuExpansionPanel({
+  const PopupMenuExpansionPanel({
     super.key,
     this.enabled = true,
     this.height = kMinInteractiveDimension,
     required this.value,
-    ValueNotifier<String?>? expandedNotifier,
+    this.expandedNotifier,
     required this.icon,
     required this.title,
     required this.items,
-  }) : expandedNotifier = expandedNotifier ?? ValueNotifier(null);
+  });
 
   @override
   final double height;
@@ -36,6 +36,16 @@ class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>>
   // ref `_kMenuHorizontalPadding` used in `PopupMenuItem`
   static const double _horizontalPadding = 16;
 
+  final ValueNotifier<String?> _internalExpandedNotifier = ValueNotifier(null);
+
+  ValueNotifier<String?> get expandedNotifier => widget.expandedNotifier ?? _internalExpandedNotifier;
+
+  @override
+  void dispose() {
+    _internalExpandedNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -46,11 +56,11 @@ class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>>
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
 
     Widget child = ValueListenableBuilder<String?>(
-      valueListenable: widget.expandedNotifier,
+      valueListenable: expandedNotifier,
       builder: (context, expandedValue, child) {
         return ExpansionPanelList(
           expansionCallback: (index, isExpanded) {
-            widget.expandedNotifier.value = isExpanded ? widget.value : null;
+            expandedNotifier.value = isExpanded ? widget.value : null;
           },
           animationDuration: animationDuration,
           expandedHeaderPadding: EdgeInsets.zero,

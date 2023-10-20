@@ -12,7 +12,20 @@ class ViewStateConductor {
 
   static const maxControllerCount = 3;
 
+  ViewStateConductor() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$ViewStateConductor',
+        object: this,
+      );
+    }
+  }
+
   Future<void> dispose() async {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _controllers.forEach((v) => v.dispose());
     _controllers.clear();
   }
