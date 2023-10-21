@@ -42,6 +42,12 @@ class _QueryBarState extends State<QueryBar> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final clearButton = IconButton(
       icon: const Icon(AIcons.clear),

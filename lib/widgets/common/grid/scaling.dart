@@ -56,6 +56,12 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
   TileLayout get tileLayout => widget.tileLayout;
 
   @override
+  void dispose() {
+    _scaledSizeNotifier?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final gestureSettings = MediaQuery.gestureSettingsOf(context);
 
@@ -166,6 +172,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
     if (_scaledSizeNotifier == null) return;
+
     final s = details.scale;
     switch (tileLayout) {
       case TileLayout.mosaic:
@@ -180,6 +187,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
   void _onScaleEnd(ScaleEndDetails details) {
     if (_scaledSizeNotifier == null) return;
+
+    final scaledSize = _scaledSizeNotifier!.value;
+    _scaledSizeNotifier!.dispose();
+    _scaledSizeNotifier = null;
 
     final overlayEntry = _overlayEntry;
     _overlayEntry = null;
@@ -196,12 +207,11 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     switch (tileLayout) {
       case TileLayout.mosaic:
       case TileLayout.grid:
-        preferredExtent = _scaledSizeNotifier!.value.width;
+        preferredExtent = scaledSize.width;
       case TileLayout.list:
-        preferredExtent = _scaledSizeNotifier!.value.height;
+        preferredExtent = scaledSize.height;
     }
     final newExtent = tileExtentController.setUserPreferredExtent(preferredExtent);
-    _scaledSizeNotifier = null;
     if (newExtent == oldExtent) {
       _applyingScale = false;
     } else {

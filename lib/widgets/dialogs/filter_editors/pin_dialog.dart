@@ -23,6 +23,12 @@ class _PinDialogState extends State<PinDialog> {
   String? _firstPin;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return AvesDialog(

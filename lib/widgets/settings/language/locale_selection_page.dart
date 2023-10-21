@@ -30,6 +30,12 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
   }
 
   @override
+  void dispose() {
+    _queryNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final useTvLayout = settings.useTvLayout;
     return AvesScaffold(

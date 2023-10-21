@@ -29,6 +29,13 @@ class _PasswordDialogState extends State<PasswordDialog> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AvesDialog(
       content: Column(

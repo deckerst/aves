@@ -55,6 +55,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _expandedDirectoryNotifier.dispose();
     super.dispose();
   }
 

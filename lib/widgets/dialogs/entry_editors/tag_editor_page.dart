@@ -54,6 +54,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
 
   @override
   void dispose() {
+    _newTagTextController.dispose();
     _newTagTextFocusNode.dispose();
     _expandedSectionNotifier.dispose();
     super.dispose();

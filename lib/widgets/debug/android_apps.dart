@@ -27,6 +27,12 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
   }
 
   @override
+  void dispose() {
+    _queryNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 

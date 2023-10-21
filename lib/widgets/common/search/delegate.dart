@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 abstract class AvesSearchDelegate extends SearchDelegate {
   final String routeName;
   final bool canPop;
+  final TextEditingController queryTextController = TextEditingController();
+  final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);
 
   AvesSearchDelegate({
     required this.routeName,
@@ -31,6 +33,8 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
+    queryTextController.dispose();
+    currentBodyNotifier.dispose();
   }
 
   @override
@@ -113,8 +117,6 @@ abstract class AvesSearchDelegate extends SearchDelegate {
 
   ScrollController? get suggestionsScrollController => null;
 
-  final TextEditingController queryTextController = TextEditingController();
-
   final ProxyAnimation proxyAnimation = ProxyAnimation(kAlwaysDismissedAnimation);
 
   @override
@@ -127,8 +129,6 @@ abstract class AvesSearchDelegate extends SearchDelegate {
       queryTextController.selection = TextSelection.fromPosition(TextPosition(offset: queryTextController.text.length));
     }
   }
-
-  final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);
 
   SearchBody? get currentBody => currentBodyNotifier.value;
 

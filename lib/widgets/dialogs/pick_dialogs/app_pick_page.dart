@@ -38,6 +38,12 @@ class _AppPickPageState extends State<AppPickPage> {
   }
 
   @override
+  void dispose() {
+    _queryNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final useTvLayout = settings.useTvLayout;
     return AvesScaffold(
