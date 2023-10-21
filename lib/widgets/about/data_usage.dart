@@ -7,6 +7,7 @@ import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_donut.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,7 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
   @override
   void initState() {
     super.initState();
-    _loader = storageService.getDataUsage();
+    _reload();
   }
 
   @override
@@ -81,6 +82,18 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
                     byTypes: cacheMap,
                     animationDuration: animationDuration,
                   ),
+                  Center(
+                    child: AvesOutlinedButton(
+                      label: context.l10n.aboutDataUsageClearCache,
+                      onPressed: () async {
+                        await storageService.deleteTempDirectory();
+                        await mediaFetchService.clearSizedThumbnailDiskCache();
+                        imageCache.clear();
+                        _reload();
+                        setState(() {});
+                      },
+                    ),
+                  ),
                 ],
               );
             },
@@ -91,6 +104,10 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
         ),
       ],
     );
+  }
+
+  void _reload() {
+    _loader = storageService.getDataUsage();
   }
 }
 

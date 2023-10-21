@@ -543,6 +543,7 @@
   "aboutDataUsageMisc": "Misc",
   "aboutDataUsageInternal": "Internal",
   "aboutDataUsageExternal": "External",
+  "aboutDataUsageClearCache": "Clear Cache",
 
   "aboutCreditsSectionTitle": "Credits",
   "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",

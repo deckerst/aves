@@ -458,6 +458,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _monitorSettings();
     videoControllerFactory.init();
 
+    unawaited(storageService.deleteTempDirectory());
     unawaited(_setupErrorReporting());
 
     debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');

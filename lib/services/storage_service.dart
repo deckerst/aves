@@ -27,6 +27,8 @@ abstract class StorageService {
   // returns number of deleted directories
   Future<int> deleteEmptyRegularDirectories(Set<String> dirPaths);
 
+  Future<bool> deleteTempDirectory();
+
   // returns whether user granted access to a directory of his choosing
   Future<bool> requestDirectoryAccess(String path);
 
@@ -156,6 +158,17 @@ class PlatformStorageService implements StorageService {
       await reportService.recordError(e, stack);
     }
     return 0;
+  }
+
+  @override
+  Future<bool> deleteTempDirectory() async {
+    try {
+      final result = await _platform.invokeMethod('deleteTempDirectory');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 
   @override

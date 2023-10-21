@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - target Android 14 (API 34)
 - upgraded Flutter to stable v3.13.8
 
+### Fixed
+
+- temporary files remaining in the cache directory forever
+
 ## <a id="v1.9.7"></a>[v1.9.7] - 2023-10-17
 
 ### Added
