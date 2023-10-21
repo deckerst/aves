@@ -24,6 +24,12 @@ class _DebugAndroidCodecSectionState extends State<DebugAndroidCodecSection> wit
   }
 
   @override
+  void dispose() {
+    _queryNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 

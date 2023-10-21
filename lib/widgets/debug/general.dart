@@ -71,9 +71,15 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
                 debugPrint('  * report type=$reportType');
                 groupBy(typedReports, (report) => report.trackedClass).forEach((trackedClass, classedReports) {
                   debugPrint('    trackedClass=$trackedClass reports=${classedReports.length}');
-                  // classedReports.forEach((report) {
-                  //   debugPrint('    phase=${report.phase} retainingPath=${report.retainingPath} detailedPath=${report.detailedPath} context=${report.context}');
-                  // });
+                  classedReports.forEach((report) {
+                    final phase = report.phase;
+                    final retainingPath = report.retainingPath;
+                    final detailedPath = report.detailedPath;
+                    final context = report.context;
+                    if (phase != null || retainingPath != null || detailedPath != null || context != null) {
+                      debugPrint('      phase=$phase retainingPath=$retainingPath detailedPath=$detailedPath context=$context');
+                    }
+                  });
                 });
               });
             });

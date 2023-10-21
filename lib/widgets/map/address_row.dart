@@ -42,6 +42,12 @@ class _MapAddressRowState extends State<MapAddressRow> {
   }
 
   @override
+  void dispose() {
+    _addressLineNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return Container(

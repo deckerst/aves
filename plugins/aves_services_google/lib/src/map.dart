@@ -87,7 +87,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
     _unregisterWidget(widget);
     _serviceMapController?.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    _sizeNotifier.removeListener(_onSizeChange);
+    _sizeNotifier.dispose();
     super.dispose();
   }
 

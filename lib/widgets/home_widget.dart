@@ -33,7 +33,7 @@ class HomeWidgetPainter {
     ui.ImageByteFormat format = ui.ImageByteFormat.rawRgba,
   }) async {
     final widgetSizePx = Size(widthPx.toDouble(), heightPx.toDouble());
-    late final ui.Image? entryImage;
+    final ui.Image? entryImage;
     if (entry != null) {
       final extent = shape.extentPx(widgetSizePx, entry!) / devicePixelRatio;
       entryImage = await _getEntryImage(entry, extent);
@@ -48,6 +48,7 @@ class HomeWidgetPainter {
     canvas.clipPath(path);
     if (entryImage != null) {
       canvas.drawImage(entryImage, Offset(widgetSizePx.width - entryImage.width, widgetSizePx.height - entryImage.height) / 2, Paint());
+      entryImage.dispose();
     } else {
       canvas.drawPaint(Paint()..shader = backgroundGradient.createShader(rect));
     }

@@ -254,6 +254,12 @@ class _AddressRowState extends State<_AddressRow> {
   }
 
   @override
+  void dispose() {
+    _addressLineNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     return Row(

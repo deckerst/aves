@@ -44,6 +44,7 @@ class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChi
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _idleBoundsNotifier.dispose();
     super.dispose();
   }
 

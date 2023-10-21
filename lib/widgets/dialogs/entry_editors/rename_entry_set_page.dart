@@ -52,7 +52,8 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
 
   @override
   void dispose() {
-    _patternTextController.removeListener(_onUserPatternChanged);
+    _patternTextController.dispose();
+    _namingPatternNotifier.dispose();
     super.dispose();
   }
 
