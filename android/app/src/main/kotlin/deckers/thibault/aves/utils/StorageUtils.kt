@@ -26,6 +26,7 @@ import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.io.FileInputStream
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -593,8 +594,7 @@ object StorageUtils {
                 uriPath?.contains("/file/") == true -> {
                     // e.g. `content://media/external/file/...`
                     // create an ad-hoc temporary file for decoding only
-                    File.createTempFile("aves", null).apply {
-                        deleteOnExit()
+                    createTempFile(context).apply {
                         try {
                             transferFrom(openInputStream(context, uri), sizeBytes)
                             return Uri.fromFile(this)
@@ -712,6 +712,25 @@ object StorageUtils {
             Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri effectiveUri=$effectiveUri")
             null
         }
+    }
+
+    private fun getTempDirectory(context: Context): File = File(context.cacheDir, "temp")
+
+    fun createTempFile(context: Context, extension: String? = null): File {
+        val directory = getTempDirectory(context)
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw IOException("failed to create directories at path=$directory")
+        }
+        val tempFile = File.createTempFile("aves", extension, directory)
+        // `deleteOnExit` is unreliable, but it does not hurt
+        tempFile.deleteOnExit()
+        return tempFile
+    }
+
+    fun deleteTempDirectory(context: Context): Boolean {
+        val directory = getTempDirectory(context)
+        if (!directory.exists()) return false
+        return directory.deleteRecursively()
     }
 
     // convenience methods

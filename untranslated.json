@@ -307,6 +307,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -732,6 +733,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -1331,6 +1333,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -1864,6 +1867,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -2214,13 +2218,15 @@
   ],
 
   "cs": [
-    "overlayHistogramLuminance"
+    "overlayHistogramLuminance",
+    "aboutDataUsageClearCache"
   ],
 
   "de": [
     "overlayHistogramNone",
     "overlayHistogramRGB",
     "overlayHistogramLuminance",
+    "aboutDataUsageClearCache",
     "settingsViewerShowHistogram"
   ],
 
@@ -2235,7 +2241,16 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "settingsViewerShowHistogram"
+  ],
+
+  "es": [
+    "aboutDataUsageClearCache"
+  ],
+
+  "eu": [
+    "aboutDataUsageClearCache"
   ],
 
   "fa": [
@@ -2421,6 +2436,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -2942,6 +2958,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -3291,6 +3308,10 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "aboutDataUsageClearCache"
+  ],
+
   "gl": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -3489,6 +3510,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -4164,6 +4186,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -4819,6 +4842,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -5168,6 +5192,18 @@
     "filePickerUseThisFolder"
   ],
 
+  "hu": [
+    "aboutDataUsageClearCache"
+  ],
+
+  "id": [
+    "aboutDataUsageClearCache"
+  ],
+
+  "it": [
+    "aboutDataUsageClearCache"
+  ],
+
   "ja": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -5205,6 +5241,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "stateEmpty",
     "placeEmpty",
     "searchStatesSectionTitle",
@@ -5529,6 +5566,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -5878,6 +5916,10 @@
     "filePickerUseThisFolder"
   ],
 
+  "ko": [
+    "aboutDataUsageClearCache"
+  ],
+
   "lt": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -5937,6 +5979,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -6295,6 +6338,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -6652,6 +6696,7 @@
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
     "menuActionConfigureView",
+    "aboutDataUsageClearCache",
     "newFilterBanner",
     "settingsDefault",
     "settingsNavigationDrawerTile",
@@ -6767,6 +6812,7 @@
     "patternDialogEnter",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
@@ -6825,6 +6871,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -6875,6 +6922,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutLicensesBanner",
     "aboutLicensesAndroidLibrariesSectionTitle",
@@ -7182,6 +7230,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
     "aboutLicensesSectionTitle",
@@ -7502,6 +7551,14 @@
     "filePickerUseThisFolder"
   ],
 
+  "pl": [
+    "aboutDataUsageClearCache"
+  ],
+
+  "pt": [
+    "aboutDataUsageClearCache"
+  ],
+
   "ro": [
     "saveCopyButtonLabel",
     "applyTooltip",
@@ -7527,6 +7584,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "settingsAskEverytime",
     "settingsViewerShowHistogram",
     "settingsVideoPlaybackTile",
@@ -7534,6 +7592,14 @@
     "settingsVideoResumptionModeTile",
     "settingsVideoResumptionModeDialogTitle",
     "tagEditorDiscardDialogMessage"
+  ],
+
+  "ru": [
+    "aboutDataUsageClearCache"
+  ],
+
+  "sk": [
+    "aboutDataUsageClearCache"
   ],
 
   "sl": [
@@ -7862,6 +7928,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -8276,6 +8343,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
@@ -8664,6 +8732,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -8685,6 +8754,14 @@
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
+  ],
+
+  "uk": [
+    "aboutDataUsageClearCache"
+  ],
+
+  "vi": [
+    "aboutDataUsageClearCache"
   ],
 
   "zh": [
@@ -8728,6 +8805,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -8764,6 +8842,7 @@
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
+    "aboutDataUsageClearCache",
     "settingsViewerShowHistogram"
   ]
 }

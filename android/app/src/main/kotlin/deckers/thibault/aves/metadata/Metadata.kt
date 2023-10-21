@@ -160,8 +160,7 @@ object Metadata {
     }
 
     fun createPreviewFile(context: Context, uri: Uri): File {
-        return File.createTempFile("aves", null, context.cacheDir).apply {
-            deleteOnExit()
+        return StorageUtils.createTempFile(context).apply {
             transferFrom(StorageUtils.openInputStream(context, uri), PREVIEW_SIZE)
         }
     }

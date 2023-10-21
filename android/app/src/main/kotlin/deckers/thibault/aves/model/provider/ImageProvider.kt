@@ -381,8 +381,7 @@ abstract class ImageProvider {
         targetUri: Uri,
         targetPath: String,
     ) {
-        val editableFile = File.createTempFile("aves", null).apply {
-            deleteOnExit()
+        val editableFile = StorageUtils.createTempFile(context).apply {
             // copy original file to a temporary file for editing
             val inputStream = StorageUtils.openInputStream(context, targetUri)
             transferFrom(inputStream, File(targetPath).length())
@@ -514,8 +513,7 @@ abstract class ImageProvider {
                     output.write(bytes)
                 }
             } else {
-                val editableFile = withContext(Dispatchers.IO) { File.createTempFile("aves", null) }.apply {
-                    deleteOnExit()
+                val editableFile = withContext(Dispatchers.IO) { StorageUtils.createTempFile(contextWrapper) }.apply {
                     transferFrom(ByteArrayInputStream(bytes), bytes.size.toLong())
                 }
 
@@ -649,8 +647,7 @@ abstract class ImageProvider {
         val originalFileSize = File(path).length()
         val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
         var videoBytes: ByteArray? = null
-        val editableFile = File.createTempFile("aves", null).apply {
-            deleteOnExit()
+        val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 if (videoSize != null) {
                     // handle motion photo and embedded video separately
@@ -733,8 +730,7 @@ abstract class ImageProvider {
         val originalFileSize = File(path).length()
         val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
         var videoBytes: ByteArray? = null
-        val editableFile = File.createTempFile("aves", null).apply {
-            deleteOnExit()
+        val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 if (videoSize != null) {
                     // handle motion photo and embedded video separately
@@ -898,8 +894,7 @@ abstract class ImageProvider {
 
         val originalFileSize = File(path).length()
         val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
-        val editableFile = File.createTempFile("aves", null).apply {
-            deleteOnExit()
+        val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 editXmpWithPixy(
                     context = context,
@@ -1275,8 +1270,7 @@ abstract class ImageProvider {
             return
         }
 
-        val editableFile = File.createTempFile("aves", null).apply {
-            deleteOnExit()
+        val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 val inputStream = StorageUtils.openInputStream(context, uri)
                 // partial copy
@@ -1316,8 +1310,7 @@ abstract class ImageProvider {
 
         val originalFileSize = File(path).length()
         val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.toInt()
-        val editableFile = File.createTempFile("aves", null).apply {
-            deleteOnExit()
+        val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 outputStream().use { output ->
                     // reopen input to read from start

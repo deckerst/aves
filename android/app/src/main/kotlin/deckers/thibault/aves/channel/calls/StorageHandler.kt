@@ -36,6 +36,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getRestrictedDirectories" -> ioScope.launch { safe(call, result, ::getRestrictedDirectories) }
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
             "deleteEmptyDirectories" -> ioScope.launch { safe(call, result, ::deleteEmptyDirectories) }
+            "deleteTempDirectory" -> ioScope.launch { safe(call, result, ::deleteTempDirectory) }
             "canRequestMediaFileBulkAccess" -> safe(call, result, ::canRequestMediaFileBulkAccess)
             "canInsertMedia" -> safe(call, result, ::canInsertMedia)
             else -> result.notImplemented()
@@ -198,6 +199,10 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(deleted)
+    }
+
+    private fun deleteTempDirectory(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(StorageUtils.deleteTempDirectory(context))
     }
 
     private fun canRequestMediaFileBulkAccess(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
