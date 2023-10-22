@@ -68,26 +68,26 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       stream: covers.entryChangeStream.where((event) => event == null || event.contains(filter)),
       builder: (context, snapshot) => Consumer<CollectionSource>(
         builder: (context, source, child) {
-          switch (T) {
-            case AlbumFilter:
+          switch (filter) {
+            case AlbumFilter filter:
               {
-                final album = (filter as AlbumFilter).album;
+                final album = filter.album;
                 return StreamBuilder<AlbumSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
-            case LocationFilter:
+            case LocationFilter filter:
               {
-                final countryCode = (filter as LocationFilter).code;
+                final countryCode = filter.code;
                 return StreamBuilder<CountrySummaryInvalidatedEvent>(
                   stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
-            case TagFilter:
+            case TagFilter filter:
               {
-                final tag = (filter as TagFilter).tag;
+                final tag = filter.tag;
                 return StreamBuilder<TagSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags!.contains(tag)),
                   builder: (context, snapshot) => _buildChip(context, source),

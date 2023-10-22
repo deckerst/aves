@@ -296,7 +296,8 @@ class _AddressRowState extends State<_AddressRow> {
   Future<void> _updateAddress() async {
     final location = widget.location;
     final addressLine = await _getAddressLine(location);
-    if (mounted && location == widget.location) {
+    if (!mounted) return;
+    if (location == widget.location) {
       _addressLineNotifier.value = addressLine;
     }
   }

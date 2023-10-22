@@ -7,11 +7,11 @@ class LabeledCheckbox extends StatefulWidget {
   final String text;
 
   const LabeledCheckbox({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChanged,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   State<LabeledCheckbox> createState() => _LabeledCheckboxState();

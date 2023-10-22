@@ -13,8 +13,8 @@ class SloppyScrollPhysics extends ScrollPhysics {
   const SloppyScrollPhysics({
     required this.gestureSettings,
     this.touchSlopFactor = 1,
-    ScrollPhysics? parent,
-  }) : super(parent: parent);
+    super.parent,
+  });
 
   @override
   SloppyScrollPhysics applyTo(ScrollPhysics? ancestor) {

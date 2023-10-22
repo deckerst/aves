@@ -41,9 +41,9 @@ class _SliverKnownExtentList extends SliverMultiBoxAdaptorWidget {
   final List<SectionLayout> sectionLayouts;
 
   const _SliverKnownExtentList({
-    required SliverChildDelegate delegate,
+    required super.delegate,
     required this.sectionLayouts,
-  }) : super(delegate: delegate);
+  });
 
   @override
   _RenderSliverKnownExtentBoxAdaptor createRenderObject(BuildContext context) {
@@ -69,10 +69,9 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
   }
 
   _RenderSliverKnownExtentBoxAdaptor({
-    required RenderSliverBoxChildManager childManager,
+    required super.childManager,
     required List<SectionLayout> sectionLayouts,
-  })  : _sectionLayouts = sectionLayouts,
-        super(childManager: childManager);
+  })  : _sectionLayouts = sectionLayouts;
 
   SectionLayout? sectionAtIndex(int index) => sectionLayouts.firstWhereOrNull((section) => section.hasChild(index));
 

@@ -122,7 +122,7 @@ class BottomPaddingSliver extends StatelessWidget {
 }
 
 class TvTileGridBottomPaddingSliver extends StatelessWidget {
-  const TvTileGridBottomPaddingSliver({Key? key}) : super(key: key);
+  const TvTileGridBottomPaddingSliver({super.key});
 
   @override
   Widget build(BuildContext context) {

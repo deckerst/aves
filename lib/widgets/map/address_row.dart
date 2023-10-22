@@ -92,7 +92,8 @@ class _MapAddressRowState extends State<MapAddressRow> {
   Future<void> _updateAddress() async {
     final entry = widget.entry;
     final addressLine = await _getAddressLine(entry);
-    if (mounted && entry == widget.entry) {
+    if (!mounted) return;
+    if (entry == widget.entry) {
       _addressLineNotifier.value = addressLine;
     }
   }
