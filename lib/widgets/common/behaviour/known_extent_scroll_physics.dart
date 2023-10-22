@@ -9,8 +9,8 @@ class KnownExtentScrollPhysics extends ScrollPhysics {
   const KnownExtentScrollPhysics({
     required this.indexToScrollOffset,
     required this.scrollOffsetToIndex,
-    ScrollPhysics? parent,
-  }) : super(parent: parent);
+    super.parent,
+  });
 
   @override
   KnownExtentScrollPhysics applyTo(ScrollPhysics? ancestor) {

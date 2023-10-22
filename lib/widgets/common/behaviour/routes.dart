@@ -16,10 +16,9 @@ class DirectPageTransitionsTheme extends PageTransitionsTheme {
 
 class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
   DirectMaterialPageRoute({
-    RouteSettings? settings,
+    super.settings,
     required WidgetBuilder builder,
   }) : super(
-          settings: settings,
           transitionDuration: Duration.zero,
           pageBuilder: (context, a, sa) => builder(context),
         );
@@ -32,9 +31,9 @@ class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
 
 class TransparentMaterialPageRoute<T> extends PageRouteBuilder<T> {
   TransparentMaterialPageRoute({
-    RouteSettings? settings,
-    required RoutePageBuilder pageBuilder,
-  }) : super(settings: settings, pageBuilder: pageBuilder);
+    super.settings,
+    required super.pageBuilder,
+  });
 
   @override
   bool get opaque => false;

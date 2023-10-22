@@ -6,22 +6,14 @@ class GeoEntry<T> extends Clusterable {
 
   GeoEntry({
     this.entry,
-    double? latitude,
-    double? longitude,
-    bool? isCluster = false,
-    int? clusterId,
-    int? pointsSize,
-    String? markerId,
-    String? childMarkerId,
-  }) : super(
-          latitude: latitude,
-          longitude: longitude,
-          isCluster: isCluster,
-          clusterId: clusterId,
-          pointsSize: pointsSize,
-          markerId: markerId,
-          childMarkerId: childMarkerId,
-        );
+    super.latitude,
+    super.longitude,
+    super.isCluster = false,
+    super.clusterId,
+    super.pointsSize,
+    super.markerId,
+    super.childMarkerId,
+  });
 
   factory GeoEntry.createCluster(BaseCluster cluster, double longitude, double latitude) {
     return GeoEntry(

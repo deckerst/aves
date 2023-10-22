@@ -279,9 +279,9 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                                 icon: AIcons.export,
                                 title: context.l10n.entryActionExport,
                                 items: [
-                                  ...exportInternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
+                                  ...exportInternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                                   if (exportInternalActions.isNotEmpty && exportExternalActions.isNotEmpty) const PopupMenuDivider(height: 0),
-                                  ...exportExternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
+                                  ...exportExternalActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                                 ],
                               ),
                             if (videoActions.isNotEmpty)
@@ -291,7 +291,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                                 icon: AIcons.video,
                                 title: context.l10n.settingsVideoSectionTitle,
                                 items: [
-                                  ...videoActions.map((action) => _buildPopupMenuItem(context, action, videoController)).toList(),
+                                  ...videoActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                                 ],
                               ),
                             if (!kReleaseMode) ...[

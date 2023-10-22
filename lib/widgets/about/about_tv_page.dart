@@ -61,7 +61,7 @@ class AboutTvPage extends StatelessWidget {
 }
 
 class _Content extends StatefulWidget {
-  const _Content({Key? key}) : super(key: key);
+  const _Content();
 
   @override
   State<_Content> createState() => _ContentState();

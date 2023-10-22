@@ -27,8 +27,8 @@ class MagnifierGestureDetectorScope extends InheritedWidget {
     this.touchSlopFactor = .8,
     this.escapeByFling = true,
     this.acceptPointerEvent,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   static MagnifierGestureDetectorScope? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MagnifierGestureDetectorScope>();

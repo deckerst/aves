@@ -358,19 +358,16 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     } else {
       Navigator.maybeOf(context)?.pop();
     }
-
+    if (!mounted) return;
     // needed to refresh when entry changes but the page does not (e.g. on page deletion)
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {});
   }
 
   // when the entry image itself changed (e.g. after rotation)
   void _onVisualChanged() async {
-    // rebuild to refresh the Image inside ImagePage
-    if (mounted) {
-      setState(() {});
-    }
+    if (!mounted) return;
+    // rebuild to refresh the `Image` inside `ImagePage`
+    setState(() {});
   }
 
   void _onPlayPauseIntent(PlayPauseIntent intent) {

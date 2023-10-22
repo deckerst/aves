@@ -44,9 +44,8 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
       curve: Curves.linear,
     ))
       ..addListener(() {
-        if (mounted) {
-          setState(() {});
-        }
+        if (!mounted) return;
+        setState(() {});
       });
     _registerWidget(widget);
   }

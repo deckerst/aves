@@ -11,8 +11,8 @@ class FixedExtentGridRow extends MultiChildRenderObjectWidget {
     required this.height,
     required this.spacing,
     required this.textDirection,
-    required List<Widget> children,
-  }) : super(children: children);
+    required super.children,
+  });
 
   @override
   RenderObject createRenderObject(BuildContext context) {

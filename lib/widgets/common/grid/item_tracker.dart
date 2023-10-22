@@ -135,11 +135,9 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     // so that we can handle window orientation change with the previous metrics,
     // regardless of the `View`/`WidgetsBindingObserver` order uncertainty
     await Future.delayed(const Duration(milliseconds: 500));
-
-    if (mounted) {
-      _lastSectionedListLayout = context.read<SectionedListLayout<T>>();
-      _lastScrollableSize = scrollableSize;
-    }
+    if (!mounted) return;
+    _lastSectionedListLayout = context.read<SectionedListLayout<T>>();
+    _lastScrollableSize = scrollableSize;
   }
 
   void _onLayoutChanged() {
