@@ -1,3 +1,4 @@
+import 'package:aves/model/device.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/about/credits.dart';
 import 'package:aves/widgets/about/translators.dart';
@@ -10,7 +11,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class AboutTvPage extends StatelessWidget {
@@ -72,15 +72,8 @@ enum _Section { links, credits, translators, licenses }
 class _ContentState extends State<_Content> {
   final FocusNode _railFocusNode = FocusNode();
   final ValueNotifier<int> _railIndexNotifier = ValueNotifier(0);
-  late Future<PackageInfo> _packageInfoLoader;
 
   static const double railWidth = 256;
-
-  @override
-  void initState() {
-    super.initState();
-    _packageInfoLoader = PackageInfo.fromPlatform();
-  }
 
   @override
   void dispose() {
@@ -149,12 +142,7 @@ class _ContentState extends State<_Content> {
   Widget _getTitle(_Section key) {
     switch (key) {
       case _Section.links:
-        return FutureBuilder<PackageInfo>(
-          future: _packageInfoLoader,
-          builder: (context, snapshot) {
-            return Text('${context.l10n.appName} ${snapshot.data?.version}');
-          },
-        );
+        return Text('${context.l10n.appName} ${device.packageVersion}');
       case _Section.credits:
         return Text(context.l10n.aboutCreditsSectionTitle);
       case _Section.translators:

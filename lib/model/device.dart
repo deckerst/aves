@@ -8,10 +8,14 @@ import 'package:package_info_plus/package_info_plus.dart';
 final Device device = Device._private();
 
 class Device {
-  late final String _userAgent;
+  late final String _packageName, _packageVersion, _userAgent;
   late final bool _canAuthenticateUser, _canGrantDirectoryAccess, _canPinShortcut;
   late final bool _canRenderFlagEmojis, _canRenderSubdivisionFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper, _canUseCrypto;
   late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
+
+  String get packageName => _packageName;
+
+  String get packageVersion => _packageVersion;
 
   String get userAgent => _userAgent;
 
@@ -49,7 +53,9 @@ class Device {
 
   Future<void> init() async {
     final packageInfo = await PackageInfo.fromPlatform();
-    _userAgent = '${packageInfo.packageName}/${packageInfo.version}';
+    _packageName = packageInfo.packageName;
+    _packageVersion = packageInfo.version;
+    _userAgent = '$_packageName/$_packageVersion';
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     _isTelevision = androidInfo.systemFeatures.contains('android.software.leanback');
