@@ -148,9 +148,9 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final storageVolumes = await storageService.getStorageVolumes();
     final storageGrants = await storageService.getGrantedDirectories();
     return [
-      'Package: ${packageInfo.packageName}',
+      'Package: ${device.packageName}',
       'Installer: ${packageInfo.installerStore}',
-      'Aves version: ${packageInfo.version}-$flavor, build ${packageInfo.buildNumber}',
+      'Aves version: ${device.packageVersion}-$flavor, build ${packageInfo.buildNumber}',
       'Flutter: ${version['channel']} ${version['frameworkVersion']}',
       'Android version: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}',
       'Android build: ${androidInfo.display}',

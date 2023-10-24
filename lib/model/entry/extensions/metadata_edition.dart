@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aves/convert/convert.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -18,7 +19,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:xml/xml.dart';
 
 extension ExtraAvesEntryMetadataEdition on AvesEntry {
@@ -569,7 +569,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     final editedXmpString = await XMP.edit(
       xmpString,
-      () => PackageInfo.fromPlatform().then((v) => 'Aves v${v.version}'),
+      'Aves v${device.packageVersion}',
       apply,
     );
 
