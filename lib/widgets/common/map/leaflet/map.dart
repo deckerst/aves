@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
-import 'package:aves/widgets/common/map/leaflet/latlng_tween.dart';
+import 'package:aves/widgets/common/map/leaflet/latlng_tween.dart' as llt;
 import 'package:aves/widgets/common/map/leaflet/scale_layer.dart';
 import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
 import 'package:aves_map/aves_map.dart';
@@ -267,7 +267,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     widget.onUserZoomChange?.call(endZoom);
 
     final center = camera.center;
-    final centerTween = LatLngTween(begin: center, end: focalPoint ?? center);
+    final centerTween = llt.LatLngTween(begin: center, end: focalPoint ?? center);
 
     final zoomTween = Tween<double>(begin: camera.zoom, end: endZoom);
     await _animateCamera((animation) => _leafletMapController.move(centerTween.evaluate(animation)!, zoomTween.evaluate(animation)));
@@ -275,7 +275,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
 
   Future<void> _moveTo(LatLng point) async {
     final camera = _leafletMapController.camera;
-    final centerTween = LatLngTween(begin: camera.center, end: point);
+    final centerTween = llt.LatLngTween(begin: camera.center, end: point);
     await _animateCamera((animation) => _leafletMapController.move(centerTween.evaluate(animation)!, camera.zoom));
   }
 
