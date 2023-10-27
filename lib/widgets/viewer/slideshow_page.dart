@@ -125,6 +125,9 @@ class _SlideshowPageState extends State<SlideshowPage> {
         _viewerController.autopilot = true;
       case SlideshowAction.showInCollection:
         _showInCollection();
+      case SlideshowAction.cast:
+        // ignore, as it should be handled at the viewer level
+        break;
       case SlideshowAction.settings:
         _showSettings(context);
     }
