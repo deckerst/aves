@@ -2,19 +2,19 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/ref/mime_types.dart';
-import 'package:aves/ref/upnp.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/dialogs/cast_dialog.dart';
 import 'package:collection/collection.dart';
+import 'package:dlna_dart/dlna.dart';
+import 'package:dlna_dart/xmlParser.dart';
 import 'package:flutter/material.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'package:upnp2/upnp.dart';
 
 mixin CastMixin {
-  Device? _renderer;
+  DLNADevice? _renderer;
   HttpServer? _mediaServer;
 
   bool get isCasting => _renderer != null && _mediaServer != null;
@@ -25,7 +25,7 @@ mixin CastMixin {
     final renderer = await _selectRenderer(context);
     _renderer = renderer;
     if (renderer == null) return;
-    debugPrint('cast: select renderer `${renderer.friendlyName}` at ${renderer.urlBase}');
+    debugPrint('cast: select renderer `${renderer.info.friendlyName}` at ${renderer.info.URLBase}');
 
     final ip = await NetworkInfo().getWifiIP();
     if (ip == null) return;
@@ -66,12 +66,12 @@ mixin CastMixin {
     await _mediaServer?.close();
     _mediaServer = null;
 
-    // await _renderer?.stop();
+    await _renderer?.stop();
     _renderer = null;
   }
 
-  Future<Device?> _selectRenderer(BuildContext context) async {
-    return await showDialog<Device?>(
+  Future<DLNADevice?> _selectRenderer(BuildContext context) async {
+    return await showDialog<DLNADevice?>(
       context: context,
       builder: (context) => const CastDialog(),
       routeSettings: const RouteSettings(name: CastDialog.routeName),
@@ -85,12 +85,12 @@ mixin CastMixin {
 
     debugPrint('cast: set entry=$entry');
     try {
-      await _setAVTransportURI(
+      await renderer.setUrl(
         '$_serverBaseUrl/${entry.id}',
-        entry.bestTitle ?? '${entry.id}',
-        entry.mimeType,
+        title: entry.bestTitle ?? '',
+        type: entry.isVideo ? PlayType.Video : PlayType.Image,
       );
-      await _play();
+      await renderer.play();
     } catch (error, stack) {
       await reportService.recordError(error, stack);
     }
@@ -99,37 +99,5 @@ mixin CastMixin {
   String? get _serverBaseUrl {
     final server = _mediaServer;
     return server != null ? 'http://${server.address.host}:${server.port}' : null;
-  }
-
-  Future<Service?> get _avTransportService async {
-    return _renderer!.getService(Upnp.upnpServiceTypeAVTransport);
-  }
-
-  Future<Map<String, String>> _setAVTransportURI(String url, String title, String mimeType) async {
-    final service = await _avTransportService;
-    if (service == null) return {};
-
-    var meta = '';
-    if (MimeTypes.isVideo(mimeType)) {
-      meta = '''<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sec="http://www.sec.co.kr/"><item id="false" parentID="1" restricted="0"><dc:title>$title</dc:title><dc:creator>unkown</dc:creator><upnp:class>object.item.videoItem</upnp:class><res resolution="4"></res></item></DIDL-Lite>''';
-    } else if (MimeTypes.isImage(mimeType)) {
-      meta = '''<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/" xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sec="http://www.sec.co.kr/"><item id="false" parentID="1" restricted="0"><dc:title>$title</dc:title><dc:creator>unkown</dc:creator><upnp:class>object.item.imageItem</upnp:class><res resolution="4"></res></item></DIDL-Lite>''';
-    }
-    var args = {
-      'InstanceID': 0,
-      'CurrentURI': url,
-      'CurrentURIMetaData': meta,
-    };
-    return service.invokeAction('SetAVTransportURI', args);
-  }
-
-  Future<Map<String, String>> _play() async {
-    final service = await _avTransportService;
-    if (service == null) return {};
-
-    return service.invokeAction('Play', {
-      'InstanceID': 0,
-      'Speed': 1,
-    });
   }
 }
