@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Viewer / Slideshow: cast images via DLNA/UPnP
+
 ### Changed
 
 - target Android 14 (API 34)
