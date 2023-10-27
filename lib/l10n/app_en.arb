@@ -112,6 +112,7 @@
   "entryActionEdit": "Edit",
   "entryActionOpen": "Open with",
   "entryActionSetAs": "Set as",
+  "entryActionCast": "Cast",
   "entryActionOpenMap": "Show in map app",
   "entryActionRotateScreen": "Rotate screen",
   "entryActionAddFavourite": "Add to favorites",
@@ -517,6 +518,8 @@
   "tileLayoutMosaic": "Mosaic",
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "List",
+
+  "castDialogTitle": "Cast Devices",
 
   "coverDialogTabCover": "Cover",
   "coverDialogTabApp": "App",

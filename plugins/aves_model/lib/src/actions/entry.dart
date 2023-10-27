@@ -33,6 +33,7 @@ enum EntryAction {
   openVideo,
   openMap,
   setAs,
+  cast,
   // platform
   rotateScreen,
   // metadata
@@ -82,6 +83,7 @@ class EntryActions {
     EntryAction.open,
     EntryAction.openMap,
     EntryAction.setAs,
+    EntryAction.cast,
   ];
 
   static const pageActions = {

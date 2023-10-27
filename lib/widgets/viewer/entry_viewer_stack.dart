@@ -516,6 +516,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   bool _handleNotification(dynamic notification) {
     if (notification is FilterSelectedNotification) {
       _goToCollection(notification.filter);
+    } else if (notification is CastNotification) {
+      _cast(notification.enabled);
     } else if (notification is FullImageLoadedNotification) {
       final viewStateController = context.read<ViewStateConductor>().getOrCreateController(notification.entry);
       // microtask so that listeners do not trigger during build
@@ -579,6 +581,21 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       return false;
     }
     return true;
+  }
+
+  Future<void> _cast(bool enabled) async {
+    if (enabled) {
+      final entries = collection?.sortedEntries;
+      if (entries != null) {
+        await viewerController.initCast(context, entries);
+        final entry = entryNotifier.value;
+        if (entry != null) {
+          await viewerController.castEntry(entry);
+        }
+      }
+    } else {
+      await viewerController.stopCast();
+    }
   }
 
   Future<void> _onVideoAction({
@@ -756,6 +773,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _isEntryTracked = false;
     await pauseVideoControllers();
     await initEntryControllers(newEntry);
+
+    if (viewerController.isCasting) {
+      final entry = entryNotifier.value;
+      if (entry != null) {
+        await viewerController.castEntry(entry);
+      }
+    }
   }
 
   void _onWillPop() {
@@ -816,6 +840,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     // get the theme first, as the context is likely
     // to be unmounted after the other async steps
     final theme = Theme.of(context);
+
+    await viewerController.stopCast();
 
     switch (settings.maxBrightness) {
       case MaxBrightness.never:
