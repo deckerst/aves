@@ -51,6 +51,7 @@
     "entryActionEdit",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -286,6 +287,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -644,6 +646,7 @@
   ],
 
   "be": [
+    "entryActionCast",
     "binEntriesConfirmationDialogMessage",
     "deleteEntriesConfirmationDialogMessage",
     "setCoverDialogCustom",
@@ -712,6 +715,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -1077,6 +1081,7 @@
     "entryActionEdit",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -1312,6 +1317,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -1689,6 +1695,7 @@
     "entryActionFlip",
     "entryActionShowGeoTiffOnMap",
     "entryActionConvertMotionPhotoToStillImage",
+    "entryActionCast",
     "videoActionCaptureFrame",
     "videoActionSelectStreams",
     "viewerActionLock",
@@ -1846,6 +1853,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -2218,22 +2226,28 @@
   ],
 
   "cs": [
+    "entryActionCast",
     "overlayHistogramLuminance",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "de": [
+    "entryActionCast",
     "overlayHistogramNone",
     "overlayHistogramRGB",
     "overlayHistogramLuminance",
+    "castDialogTitle",
     "aboutDataUsageClearCache",
     "settingsViewerShowHistogram"
   ],
 
   "el": [
+    "entryActionCast",
     "overlayHistogramNone",
     "overlayHistogramRGB",
     "overlayHistogramLuminance",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -2246,10 +2260,14 @@
   ],
 
   "es": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "eu": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
@@ -2262,6 +2280,7 @@
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "entryActionCast",
     "videoActionPause",
     "videoActionPlay",
     "videoActionSelectStreams",
@@ -2423,6 +2442,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "appPickDialogNone",
     "aboutLinkLicense",
@@ -2774,6 +2794,7 @@
     "clearTooltip",
     "chipActionFilterIn",
     "entryActionSetAs",
+    "entryActionCast",
     "videoActionUnmute",
     "videoActionSelectStreams",
     "filterTypeRawLabel",
@@ -2937,6 +2958,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -3309,6 +3331,8 @@
   ],
 
   "fr": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
@@ -3323,6 +3347,7 @@
     "chipActionConfigureVault",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
+    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "entryInfoActionExportMetadata",
@@ -3489,6 +3514,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -3930,6 +3956,7 @@
     "entryActionEdit",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -4165,6 +4192,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -4586,6 +4614,7 @@
     "entryActionEdit",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -4821,6 +4850,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -5193,14 +5223,20 @@
   ],
 
   "hu": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "id": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "it": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
@@ -5211,6 +5247,7 @@
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -5234,6 +5271,7 @@
     "vaultBinUsageDialogMessage",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -5310,6 +5348,7 @@
     "entryActionEdit",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -5545,6 +5584,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -5917,6 +5957,8 @@
   ],
 
   "ko": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
@@ -5929,6 +5971,7 @@
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -5972,6 +6015,7 @@
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -6082,6 +6126,7 @@
     "entryActionEdit",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -6317,6 +6362,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -6689,6 +6735,7 @@
   ],
 
   "my": [
+    "entryActionCast",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
     "overlayHistogramLuminance",
@@ -6696,6 +6743,7 @@
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
     "menuActionConfigureView",
+    "castDialogTitle",
     "aboutDataUsageClearCache",
     "newFilterBanner",
     "settingsDefault",
@@ -6799,6 +6847,7 @@
   ],
 
   "nb": [
+    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -6810,6 +6859,7 @@
     "settingsVideoEnablePip",
     "widgetTapUpdateWidget",
     "patternDialogEnter",
+    "castDialogTitle",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
@@ -6826,6 +6876,7 @@
     "chipActionShowCountryStates",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
+    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -6864,6 +6915,7 @@
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -6905,6 +6957,7 @@
 
   "nn": [
     "sourceStateCataloguing",
+    "entryActionCast",
     "accessibilityAnimationsKeep",
     "overlayHistogramNone",
     "overlayHistogramRGB",
@@ -6915,6 +6968,7 @@
     "authenticateToUnlockVault",
     "viewDialogSortSectionTitle",
     "viewDialogReverseSortOrder",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -7006,6 +7060,7 @@
     "entryActionViewMotionPhotoVideo",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -7213,6 +7268,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "appPickDialogTitle",
     "appPickDialogNone",
@@ -7552,16 +7608,21 @@
   ],
 
   "pl": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "pt": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "ro": [
     "saveCopyButtonLabel",
     "applyTooltip",
+    "entryActionCast",
     "editorActionTransform",
     "editorTransformCrop",
     "editorTransformRotate",
@@ -7577,6 +7638,7 @@
     "videoResumptionModeAlways",
     "widgetTapUpdateWidget",
     "exportEntryDialogQuality",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -7595,10 +7657,14 @@
   ],
 
   "ru": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "sk": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
@@ -7672,6 +7738,7 @@
     "entryActionEdit",
     "entryActionOpen",
     "entryActionSetAs",
+    "entryActionCast",
     "entryActionOpenMap",
     "entryActionRotateScreen",
     "entryActionAddFavourite",
@@ -7907,6 +7974,7 @@
     "tileLayoutMosaic",
     "tileLayoutGrid",
     "tileLayoutList",
+    "castDialogTitle",
     "coverDialogTabCover",
     "coverDialogTabApp",
     "coverDialogTabColor",
@@ -8293,6 +8361,7 @@
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -8336,6 +8405,7 @@
     "editEntryDateDialogShift",
     "removeEntryMetadataDialogTitle",
     "tooManyItemsErrorDialogMessage",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -8686,6 +8756,7 @@
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -8725,6 +8796,7 @@
     "vaultBinUsageDialogMessage",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -8757,16 +8829,21 @@
   ],
 
   "uk": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "vi": [
+    "entryActionCast",
+    "castDialogTitle",
     "aboutDataUsageClearCache"
   ],
 
   "zh": [
     "saveCopyButtonLabel",
     "chipActionGoToPlacePage",
+    "entryActionCast",
     "editorTransformCrop",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
@@ -8798,6 +8875,7 @@
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",
@@ -8833,8 +8911,10 @@
   ],
 
   "zh_Hant": [
+    "entryActionCast",
     "overlayHistogramNone",
     "overlayHistogramLuminance",
+    "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageCache",

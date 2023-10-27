@@ -79,6 +79,16 @@ class VideoActionNotification extends Notification {
 }
 
 @immutable
+class CastNotification extends Notification with EquatableMixin {
+  final bool enabled;
+
+  @override
+  List<Object?> get props => [enabled];
+
+  const CastNotification(this.enabled);
+}
+
+@immutable
 class FilterSelectedNotification extends Notification with EquatableMixin {
   final CollectionFilter filter;
 

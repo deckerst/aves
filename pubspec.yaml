@@ -117,6 +117,10 @@ dependencies:
   volume_controller:
   xml:
 
+  dlna_dart:
+  network_info_plus:
+  shelf:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

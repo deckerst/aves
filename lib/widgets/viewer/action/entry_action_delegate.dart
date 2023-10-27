@@ -108,6 +108,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.copyToClipboard:
         case EntryAction.open:
         case EntryAction.setAs:
+        case EntryAction.cast:
           return !settings.useTvLayout;
         case EntryAction.info:
         case EntryAction.share:
@@ -256,6 +257,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         appService.setAs(targetEntry.uri, targetEntry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
+      case EntryAction.cast:
+        const CastNotification(true).dispatch(context);
       // platform
       case EntryAction.rotateScreen:
         _rotateScreen(context);

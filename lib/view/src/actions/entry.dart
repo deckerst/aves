@@ -47,6 +47,7 @@ extension ExtraEntryActionView on EntryAction {
       EntryAction.open || EntryAction.openVideo => l10n.entryActionOpen,
       EntryAction.openMap => l10n.entryActionOpenMap,
       EntryAction.setAs => l10n.entryActionSetAs,
+      EntryAction.cast => l10n.entryActionCast,
       // platform
       EntryAction.rotateScreen => l10n.entryActionRotateScreen,
       // metadata
@@ -120,6 +121,7 @@ extension ExtraEntryActionView on EntryAction {
       EntryAction.open || EntryAction.openVideo => AIcons.openOutside,
       EntryAction.openMap => AIcons.map,
       EntryAction.setAs => AIcons.setAs,
+      EntryAction.cast => AIcons.cast,
       // platform
       EntryAction.rotateScreen => AIcons.rotateScreen,
       // metadata
