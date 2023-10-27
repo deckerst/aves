@@ -1,3 +1,4 @@
+import 'package:aves/ref/upnp.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:dlna_dart/dlna.dart';
@@ -16,15 +17,16 @@ class _CastDialogState extends State<CastDialog> {
   final DLNAManager _dlnaManager = DLNAManager();
   final Map<String, DLNADevice> _seenRenderers = {};
 
-  static const String upnpDeviceTypeMediaRenderer = 'urn:schemas-upnp-org:device:MediaRenderer:1';
-
   @override
   void initState() {
     super.initState();
 
     _dlnaManager.start().then((deviceManager) {
       deviceManager.devices.stream.listen((devices) {
-        _seenRenderers.addAll(Map.fromEntries(devices.entries.where((kv) => kv.value.info.deviceType == upnpDeviceTypeMediaRenderer)));
+        _seenRenderers.addAll(Map.fromEntries(devices.entries.where((kv) => kv.value.info.deviceType == Upnp.upnpDeviceTypeMediaRenderer).map((kv) {
+          final device = kv.value;
+          return MapEntry(device.info.friendlyName, device);
+        })));
         setState(() {});
       });
     });
