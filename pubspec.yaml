@@ -117,7 +117,7 @@ dependencies:
   volume_controller:
   xml:
 
-  upnp2:
+  dlna_dart:
   network_info_plus:
   shelf:
 

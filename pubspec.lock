@@ -302,6 +302,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  dlna_dart:
+    dependency: "direct main"
+    description:
+      name: dlna_dart
+      sha256: ae07c1c53077bbf58756fa589f936968719b0085441981d33e74f82f89d1d281
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -1543,14 +1551,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0+1"
-  upnp2:
-    dependency: "direct main"
-    description:
-      name: upnp2
-      sha256: "60902d702809a9802ed6fe953cf8ebebfbab1ef8d99e516665b74b6a4522cad4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.11"
   uri_parser:
     dependency: transitive
     description:
