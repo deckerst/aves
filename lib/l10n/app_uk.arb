@@ -1512,5 +1512,11 @@
   "overlayHistogramLuminance": "Яскравість",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "Показати гістограму",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "Очистити кеш",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Трансляція",
+  "@entryActionCast": {},
+  "castDialogTitle": "Пристрої трансляції",
+  "@castDialogTitle": {}
 }

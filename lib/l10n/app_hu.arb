@@ -1512,5 +1512,7 @@
   "overlayHistogramLuminance": "Fényerő",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "Hisztogram megjelenítése",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "Gyorsítótár törlése",
+  "@aboutDataUsageClearCache": {}
 }
