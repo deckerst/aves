@@ -127,29 +127,12 @@ class _LicenseRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final bodyTextStyle = textTheme.bodyMedium!;
-    final subColor = bodyTextStyle.color!.withOpacity(.6);
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LinkChip(
-            text: package.name,
-            urlString: package.sourceUrl,
-            textStyle: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Padding(
-            padding: const EdgeInsetsDirectional.only(start: 16),
-            child: LinkChip(
-              text: package.license,
-              urlString: package.licenseUrl,
-              color: subColor,
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: LinkChip(
+        text: package.name,
+        urlString: package.sourceUrl,
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }

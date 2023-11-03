@@ -13,7 +13,7 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.13.8
+  flutter: 3.13.9
   sdk: ">=3.0.0 <4.0.0"
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
@@ -63,6 +63,7 @@ dependencies:
   country_code:
   decorated_icon:
   device_info_plus:
+  dlna_dart:
   dynamic_color:
   equatable:
   event_bus:
@@ -87,6 +88,7 @@ dependencies:
   local_auth:
   material_color_utilities:
   material_design_icons_flutter:
+  network_info_plus:
   overlay_support:
   package_info_plus:
   palette_generator:
@@ -105,6 +107,7 @@ dependencies:
   provider:
   screen_brightness:
   shared_preferences:
+  shelf:
   smooth_page_indicator:
   sqflite:
   stack_trace:
@@ -116,10 +119,6 @@ dependencies:
   vector_math:
   volume_controller:
   xml:
-
-  dlna_dart:
-  network_info_plus:
-  shelf:
 
 dev_dependencies:
   flutter_test:
