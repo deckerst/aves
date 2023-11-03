@@ -74,6 +74,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color',
     ),
     Dependency(
+      name: 'FFmpegKit',
+      license: lgpl3,
+      sourceUrl: 'https://github.com/arthenica/ffmpeg-kit',
+    ),
+    Dependency(
       name: 'Floating',
       license: mit,
       sourceUrl: 'https://github.com/wrbl606/floating',
@@ -90,14 +95,15 @@ class Dependencies {
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/local_auth/local_auth',
     ),
     Dependency(
-      name: 'FFmpegKit',
-      license: lgpl3,
-      sourceUrl: 'https://github.com/arthenica/ffmpeg-kit',
-    ),
-    Dependency(
       name: 'Media Kit',
       license: mit,
       sourceUrl: 'https://github.com/media-kit/media-kit',
+    ),
+    Dependency(
+      name: 'Network Info Plus',
+      license: bsd3,
+      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/network_info_plus/network_info_plus/LICENSE',
+      sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/network_info_plus',
     ),
     Dependency(
       name: 'Package Info Plus',
@@ -306,6 +312,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/denixport/dart.country',
     ),
     Dependency(
+      name: 'DLNA Dart',
+      license: bsd3,
+      sourceUrl: 'https://github.com/suconghou/dlna-dart',
+    ),
+    Dependency(
       name: 'Equatable',
       license: mit,
       sourceUrl: 'https://github.com/felangel/equatable',
@@ -366,6 +377,11 @@ class Dependencies {
       name: 'Proj4dart',
       license: mit,
       sourceUrl: 'https://github.com/maRci002/proj4dart',
+    ),
+    Dependency(
+      name: 'Shelf',
+      license: bsd3,
+      sourceUrl: 'https://github.com/dart-lang/shelf',
     ),
     Dependency(
       name: 'Stack Trace',

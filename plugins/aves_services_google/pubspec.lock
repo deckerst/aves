@@ -127,10 +127,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: ad76540d21c066228ee3f9d1dad64a9f7e46530e8bb7c85011a88bc1fd874bc5
+      sha256: e2a421b7e59244faef694ba7b30562e489c2b489866e505074eb005cd7060db7
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   flutter_map:
     dependency: transitive
     description:
@@ -196,10 +196,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_maps_flutter_android
-      sha256: "1a4375d0ed0e36af4a2c7a7cd97ec8c423b40bff6c4270face40d2c1cba6c8af"
+      sha256: "4023e79184c762e63efe04da629d876085e0c296a7ca26745fb5750d4acd0aa2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.2"
+    version: "2.5.3"
   google_maps_flutter_ios:
     dependency: transitive
     description:
