@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- long press actions trigger haptic feedback according to OS settings
 - target Android 14 (API 34)
 - upgraded Flutter to stable v3.13.9
 

@@ -98,6 +98,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
               final fromItem = _getItemAt(details.localPosition);
               if (fromItem == null) return;
 
+              Feedback.forLongPress(context);
               final selection = context.read<Selection<T>>();
               selection.toggleSelection(fromItem);
               _selecting = selection.isSelected([fromItem]);
