@@ -40,7 +40,7 @@ class SectionHeader<T> extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         onLongPress: selectable
-            ? () {
+            ? Feedback.wrapForLongPress(() {
                 final selection = context.read<Selection<T>>();
                 if (selection.isSelecting) {
                   _toggleSectionSelection(context);
@@ -48,7 +48,7 @@ class SectionHeader<T> extends StatelessWidget {
                   selection.select();
                   selection.addToSelection(_getSectionEntries(context));
                 }
-              }
+              }, context)
             : null,
         child: Text.rich(
           TextSpan(

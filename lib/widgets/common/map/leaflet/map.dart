@@ -137,7 +137,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
           // marker tap handling prevents the default handling of focal zoom on double tap,
           // so we reimplement the double tap gesture here
           onDoubleTap: interactive ? () => _zoomBy(1, focalPoint: latLng) : null,
-          onLongPress: () => widget.onMarkerLongPress?.call(geoEntry, LatLng(geoEntry.latitude!, geoEntry.longitude!)),
+          onLongPress: Feedback.wrapForLongPress(() => widget.onMarkerLongPress?.call(geoEntry, LatLng(geoEntry.latitude!, geoEntry.longitude!)), context),
           child: widget.markerWidgetBuilder(markerKey),
         ),
         width: markerSize.width,
