@@ -247,11 +247,11 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           }
         : null;
     final onLongPress = widget.onLongPress != null
-        ? () {
+        ? Feedback.wrapForLongPress(() {
             if (_tapPosition != null) {
               widget.onLongPress?.call(context, filter, _tapPosition!);
             }
-          }
+          }, context)
         : null;
 
     Widget? content;
