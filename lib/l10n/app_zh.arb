@@ -1226,5 +1226,7 @@
   "vaultLockTypePassword": "密码",
   "@vaultLockTypePassword": {},
   "overlayHistogramRGB": "RGB",
-  "@overlayHistogramRGB": {}
+  "@overlayHistogramRGB": {},
+  "saveCopyButtonLabel": "保存副本",
+  "@saveCopyButtonLabel": {}
 }

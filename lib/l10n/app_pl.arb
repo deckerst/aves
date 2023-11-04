@@ -1512,5 +1512,11 @@
   "overlayHistogramLuminance": "Jasność",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "Pokaż histogram",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "Wyczyść pamięć podręczną",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Cast",
+  "@entryActionCast": {},
+  "castDialogTitle": "Urządzenia Cast",
+  "@castDialogTitle": {}
 }
