@@ -732,12 +732,10 @@
     "aboutBugReportButton",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
-    "aboutDataUsageCache",
     "aboutDataUsageDatabase",
     "aboutDataUsageMisc",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
-    "aboutDataUsageClearCache",
     "aboutCreditsSectionTitle",
     "aboutCreditsWorldAtlas1",
     "aboutCreditsWorldAtlas2",
@@ -1025,11 +1023,7 @@
     "settingsCollectionTile",
     "statsPageTitle",
     "statsWithGps",
-    "statsTopCountriesSectionTitle",
-    "statsTopStatesSectionTitle",
-    "viewerOpenPanoramaButtonLabel",
-    "viewerInfoLabelUri",
-    "viewerInfoSearchSuggestionRights"
+    "statsTopCountriesSectionTitle"
   ],
 
   "bn": [
@@ -2227,9 +2221,7 @@
 
   "cs": [
     "entryActionCast",
-    "overlayHistogramLuminance",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
+    "castDialogTitle"
   ],
 
   "de": [
@@ -2259,55 +2251,11 @@
     "settingsViewerShowHistogram"
   ],
 
-  "es": [
-    "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
-  ],
-
-  "eu": [
-    "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
-  ],
-
   "fa": [
-    "saveCopyButtonLabel",
-    "applyTooltip",
-    "clearTooltip",
-    "chipActionGoToPlacePage",
-    "chipActionLock",
-    "chipActionShowCountryStates",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "entryActionCast",
-    "videoActionPause",
-    "videoActionPlay",
-    "videoActionSelectStreams",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "slideshowActionResume",
-    "editorActionTransform",
-    "editorTransformCrop",
-    "editorTransformRotate",
-    "cropAspectRatioFree",
-    "cropAspectRatioOriginal",
-    "cropAspectRatioSquare",
-    "filterAspectRatioLandscapeLabel",
-    "filterAspectRatioPortraitLabel",
     "filterLocatedLabel",
     "filterTaggedLabel",
     "filterRatingRejectedLabel",
-    "filterTypeAnimatedLabel",
-    "filterTypeRawLabel",
-    "filterTypeGeotiffLabel",
-    "accessibilityAnimationsRemove",
-    "accessibilityAnimationsKeep",
-    "albumTierNew",
-    "albumTierPinned",
     "albumTierSpecial",
-    "albumTierVaults",
-    "albumTierRegular",
     "coordinateFormatDms",
     "coordinateFormatDecimal",
     "coordinateDms",
@@ -2315,44 +2263,11 @@
     "coordinateDmsSouth",
     "coordinateDmsEast",
     "coordinateDmsWest",
-    "keepScreenOnNever",
-    "keepScreenOnVideoPlayback",
-    "keepScreenOnViewerOnly",
-    "keepScreenOnAlways",
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "nameConflictStrategySkip",
     "overlayHistogramNone",
     "overlayHistogramRGB",
     "overlayHistogramLuminance",
-    "vaultLockTypePattern",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "settingsVideoEnablePip",
-    "videoControlsNone",
     "videoPlaybackSkip",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "viewerTransitionSlide",
     "viewerTransitionParallax",
-    "viewerTransitionFade",
-    "viewerTransitionZoomIn",
-    "viewerTransitionNone",
-    "wallpaperTargetHome",
-    "wallpaperTargetLock",
-    "wallpaperTargetHomeLock",
-    "widgetDisplayedItemRandom",
-    "widgetDisplayedItemMostRecent",
-    "widgetOpenPageHome",
-    "widgetOpenPageCollection",
-    "widgetOpenPageViewer",
-    "widgetTapUpdateWidget",
-    "rootDirectoryDescription",
-    "otherDirectoryDescription",
-    "restrictedAccessDialogMessage",
-    "notEnoughSpaceDialogMessage",
     "missingSystemFilePickerDialogMessage",
     "unsupportedTypeDialogMessage",
     "nameConflictDialogSingleSourceMessage",
@@ -3332,8 +3247,7 @@
 
   "fr": [
     "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
+    "castDialogTitle"
   ],
 
   "gl": [
@@ -5224,14 +5138,12 @@
 
   "hu": [
     "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
+    "castDialogTitle"
   ],
 
   "id": [
     "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
+    "castDialogTitle"
   ],
 
   "it": [
@@ -5958,8 +5870,7 @@
 
   "ko": [
     "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
+    "castDialogTitle"
   ],
 
   "lt": [
@@ -7607,12 +7518,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "pl": [
-    "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
-  ],
-
   "pt": [
     "entryActionCast",
     "castDialogTitle",
@@ -7654,12 +7559,6 @@
     "settingsVideoResumptionModeTile",
     "settingsVideoResumptionModeDialogTitle",
     "tagEditorDiscardDialogMessage"
-  ],
-
-  "ru": [
-    "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
   ],
 
   "sk": [
@@ -8828,20 +8727,7 @@
     "tagPlaceholderState"
   ],
 
-  "uk": [
-    "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
-  ],
-
-  "vi": [
-    "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
-  ],
-
   "zh": [
-    "saveCopyButtonLabel",
     "chipActionGoToPlacePage",
     "entryActionCast",
     "editorTransformCrop",
