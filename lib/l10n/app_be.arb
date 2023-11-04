@@ -690,5 +690,17 @@
   "viewerTransitionFade": "Згасанне",
   "@viewerTransitionFade": {},
   "widgetDisplayedItemRandom": "Выпадковы",
-  "@widgetDisplayedItemRandom": {}
+  "@widgetDisplayedItemRandom": {},
+  "viewerOpenPanoramaButtonLabel": "АДКРЫЦЬ ПАНАРАМУ",
+  "@viewerOpenPanoramaButtonLabel": {},
+  "aboutDataUsageCache": "Кэш",
+  "@aboutDataUsageCache": {},
+  "statsTopStatesSectionTitle": "Топ краін",
+  "@statsTopStatesSectionTitle": {},
+  "viewerInfoLabelUri": "URI",
+  "@viewerInfoLabelUri": {},
+  "aboutDataUsageClearCache": "Ачысціць кэш",
+  "@aboutDataUsageClearCache": {},
+  "viewerInfoSearchSuggestionRights": "Правы",
+  "@viewerInfoSearchSuggestionRights": {}
 }

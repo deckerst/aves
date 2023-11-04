@@ -1354,5 +1354,11 @@
   "overlayHistogramRGB": "RGB",
   "@overlayHistogramRGB": {},
   "settingsViewerShowHistogram": "Mostrar el histograma",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "Borrar la cache",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Echar",
+  "@entryActionCast": {},
+  "castDialogTitle": "Dispositivos Cast",
+  "@castDialogTitle": {}
 }

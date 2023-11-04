@@ -1354,5 +1354,11 @@
   "settingsViewerShowHistogram": "Показать гистограмму",
   "@settingsViewerShowHistogram": {},
   "overlayHistogramLuminance": "Яркость",
-  "@overlayHistogramLuminance": {}
+  "@overlayHistogramLuminance": {},
+  "aboutDataUsageClearCache": "Очистить кэш",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Трансляция",
+  "@entryActionCast": {},
+  "castDialogTitle": "Устройства трансляции",
+  "@castDialogTitle": {}
 }

@@ -1354,5 +1354,7 @@
   "settingsViewerShowHistogram": "Afficher l'histogramme",
   "@settingsViewerShowHistogram": {},
   "overlayHistogramNone": "Aucun",
-  "@overlayHistogramNone": {}
+  "@overlayHistogramNone": {},
+  "aboutDataUsageClearCache": "Vider le cache",
+  "@aboutDataUsageClearCache": {}
 }
