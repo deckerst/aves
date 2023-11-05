@@ -28,6 +28,8 @@ class ViewerActionEditorPage extends StatelessWidget {
     ],
     [
       ...EntryActions.export,
+    ],
+    [
       ...EntryActions.video.whereNot((v) => v == EntryAction.videoSettings),
     ],
     EntryActions.commonMetadataActions,
