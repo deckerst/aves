@@ -27,8 +27,8 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
   final List<StreamSubscription> _subscriptions = [];
 
   void registerDelegate(AvesMagnifier widget) {
-    _subscriptions.add(widget.controller.stateStream.listen(_onMagnifierStateChange));
-    _subscriptions.add(widget.controller.scaleStateChangeStream.listen(_onScaleStateChange));
+    _subscriptions.add(widget.controller.stateStream.listen(_onMagnifierStateChanged));
+    _subscriptions.add(widget.controller.scaleStateChangeStream.listen(_onScaleStateChanged));
   }
 
   void unregisterDelegate(AvesMagnifier oldWidget) {
@@ -38,7 +38,7 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
       ..clear();
   }
 
-  void _onScaleStateChange(ScaleStateChange scaleStateChange) {
+  void _onScaleStateChanged(ScaleStateChange scaleStateChange) {
     if (scaleStateChange.source == ChangeSource.internal) return;
     if (!controller.hasScaleSateChanged) return;
 
@@ -66,7 +66,7 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
     _animateScale = animateScale;
   }
 
-  void _onMagnifierStateChange(MagnifierState state) {
+  void _onMagnifierStateChanged(MagnifierState state) {
     final boundaries = scaleBoundaries;
     if (boundaries == null) return;
 
