@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - temporary files remaining in the cache directory forever
+- detecting motion photos with more items in the XMP Container directory
 
 ## <a id="v1.9.7"></a>[v1.9.7] - 2023-10-17
 
