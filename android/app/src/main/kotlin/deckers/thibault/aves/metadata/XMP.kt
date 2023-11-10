@@ -188,17 +188,15 @@ object XMP {
             // Container motion photo
             if (doesPropExist(GCONTAINER_DIRECTORY_PROP_NAME)) {
                 val count = countPropArrayItems(GCONTAINER_DIRECTORY_PROP_NAME)
-                if (count == 2) {
-                    var hasImage = false
-                    var hasVideo = false
-                    for (i in 1 until count + 1) {
-                        val mime = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_MIME_PROP_NAME))?.value
-                        val length = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
-                        hasImage = hasImage || MimeTypes.isImage(mime) && length != null
-                        hasVideo = hasVideo || MimeTypes.isVideo(mime) && length != null
-                    }
-                    if (hasImage && hasVideo) return true
+                var hasImage = false
+                var hasVideo = false
+                for (i in 1 until count + 1) {
+                    val mime = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_MIME_PROP_NAME))?.value
+                    val length = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
+                    hasImage = hasImage || MimeTypes.isImage(mime) && length != null
+                    hasVideo = hasVideo || MimeTypes.isVideo(mime) && length != null
                 }
+                if (hasImage && hasVideo) return true
             }
 
             return false
