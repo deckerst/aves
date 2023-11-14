@@ -37,6 +37,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  aves_utils:
+    dependency: "direct main"
+    description:
+      path: "../aves_utils"
+      relative: true
+    source: path
+    version: "0.0.1"
   characters:
     dependency: transitive
     description:

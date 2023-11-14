@@ -14,6 +14,8 @@ dependencies:
     path: ../aves_platform_meta
   aves_services:
     path: ../aves_services
+  aves_utils:
+    path: ../aves_utils
   # cf https://github.com/HMS-Core/hms-flutter-plugin/pull/296
   huawei_hmsavailability:
     git:

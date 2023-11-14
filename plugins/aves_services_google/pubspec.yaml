@@ -12,6 +12,8 @@ dependencies:
     path: ../aves_map
   aves_services:
     path: ../aves_services
+  aves_utils:
+    path: ../aves_utils
   device_info_plus:
   google_api_availability:
   google_maps_flutter:
