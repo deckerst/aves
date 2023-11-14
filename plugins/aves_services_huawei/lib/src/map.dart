@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:huawei_map/huawei_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
@@ -146,12 +147,13 @@ class _EntryHmsMapState<T> extends State<EntryHmsMap<T>> {
 
         final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
         // final overlayEntry = widget.overlayEntry;
-        return ValueListenableBuilder<ll.LatLng?>(
-          valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
+        return NullableValueListenableBuilder<ll.LatLng?>(
+          valueListenable: widget.dotLocationNotifier,
           builder: (context, dotLocation, child) {
-            return ValueListenableBuilder<double>(
-              valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
-              builder: (context, overlayOpacity, child) {
+            return NullableValueListenableBuilder<double>(
+              valueListenable: widget.overlayOpacityNotifier,
+              builder: (context, value, child) {
+                // final double overlayOpacity = value ?? 1.0;
                 return HuaweiMap(
                   initialCameraPosition: CameraPosition(
                     bearing: bounds.rotation,

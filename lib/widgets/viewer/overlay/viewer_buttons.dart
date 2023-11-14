@@ -28,6 +28,7 @@ import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -438,15 +439,18 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
     Widget? child;
     void onPressed() => actionDelegate.onActionSelected(context, action);
 
-    ValueListenableBuilder<bool> _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
-      return ValueListenableBuilder<bool>(
-        valueListenable: enabledNotifier ?? ValueNotifier(false),
-        builder: (context, canDo, child) => IconButton(
-          icon: child!,
-          onPressed: canDo ? onPressed : null,
-          focusNode: focusNode,
-          tooltip: action.getText(context),
-        ),
+    Widget _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
+      return NullableValueListenableBuilder<bool>(
+        valueListenable: enabledNotifier,
+        builder: (context, value, child) {
+          final canDo = value ?? false;
+          return IconButton(
+            icon: child!,
+            onPressed: canDo ? onPressed : null,
+            focusNode: focusNode,
+            tooltip: action.getText(context),
+          );
+        },
         child: action.getIcon(),
       );
     }

@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/map/leaflet/latlng_tween.dart' as llt;
 import 'package:aves/widgets/common/map/leaflet/scale_layer.dart';
 import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -172,8 +173,8 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
           rotate: true,
           alignment: Alignment.bottomCenter,
         ),
-        ValueListenableBuilder<LatLng?>(
-          valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
+        NullableValueListenableBuilder<LatLng?>(
+          valueListenable: widget.dotLocationNotifier,
           builder: (context, dotLocation, child) => MarkerLayer(
             markers: [
               if (dotLocation != null)
@@ -214,9 +215,10 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     final corner2 = overlayEntry.bottomRight;
     if (corner1 == null || corner2 == null) return const SizedBox();
 
-    return ValueListenableBuilder<double>(
-      valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
-      builder: (context, overlayOpacity, child) {
+    return NullableValueListenableBuilder<double>(
+      valueListenable: widget.overlayOpacityNotifier,
+      builder: (context, value, child) {
+        final double overlayOpacity = value ?? 1.0;
         return OverlayImageLayer(
           overlayImages: [
             OverlayImage(
