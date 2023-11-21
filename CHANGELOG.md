@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 - temporary files remaining in the cache directory forever
 - detecting motion photos with more items in the XMP Container directory
+- parsing EXIF date written as epoch time
 
 ## <a id="v1.9.7"></a>[v1.9.7] - 2023-10-17
 
