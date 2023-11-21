@@ -31,8 +31,14 @@ import deckers.thibault.aves.utils.LogUtils
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
+import java.util.Locale
+import java.util.TimeZone
+import java.util.regex.Pattern
 
 object Helper {
     private val LOG_TAG = LogUtils.createTag<Helper>()
@@ -150,10 +156,103 @@ object Helper {
 
     fun Directory.getSafeDateMillis(tag: Int, subSecond: String?): Long? {
         if (this.containsTag(tag)) {
-            val date = this.getDate(tag, subSecond, TimeZone.getDefault())
+            val date = this.getDatePlus(tag, subSecond, TimeZone.getDefault())
             if (date != null) return date.time
         }
         return null
+    }
+
+    // This seems to cover all known Exif and Xmp date strings
+    // Note that "    :  :     :  :  " is a valid date string according to the Exif spec (which means 'unknown date'): http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/datetimeoriginal.html
+    private val datePatterns = arrayOf(
+        "yyyy:MM:dd HH:mm:ss",
+        "yyyy:MM:dd HH:mm",
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd HH:mm",
+        "yyyy.MM.dd HH:mm:ss",
+        "yyyy.MM.dd HH:mm",
+        "yyyy-MM-dd'T'HH:mm:ss",
+        "yyyy-MM-dd'T'HH:mm",
+        "yyyy-MM-dd",
+        "yyyy-MM",
+        "yyyyMMdd",  // as used in IPTC data
+        "yyyy"
+    )
+    private val subsecondPattern = Pattern.compile("(\\d\\d:\\d\\d:\\d\\d)(\\.\\d+)")
+    private val timeZonePattern = Pattern.compile("(Z|[+-]\\d\\d:\\d\\d|[+-]\\d\\d\\d\\d)$")
+    private val calendar: Calendar = GregorianCalendar()
+    private const val PARSED_DATE_YEAR_MAX = 10000
+
+    // adapted from `metadata-extractor` v2.18.0 `Directory.getDate()`
+    // to also parse dates written as timestamps
+    private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone?): Date? {
+        var effectiveSubSecond = subSecond
+        var effectiveTimeZone = timeZone
+        val o = this.getObject(tagType)
+        if (o is Date) return o
+
+        var date: Date? = null
+        if (o is String || o is StringValue) {
+            var dateString = o.toString()
+
+            // if the date string has subsecond information, it supersedes the subsecond parameter
+            val subsecondMatcher = subsecondPattern.matcher(dateString)
+            if (subsecondMatcher.find()) {
+                effectiveSubSecond = subsecondMatcher.group(2)?.substring(1)
+                dateString = subsecondMatcher.replaceAll("$1")
+            }
+
+            // if the date string has time zone information, it supersedes the timeZone parameter
+            val timeZoneMatcher = timeZonePattern.matcher(dateString)
+            if (timeZoneMatcher.find()) {
+                effectiveTimeZone = TimeZone.getTimeZone("GMT" + timeZoneMatcher.group().replace("Z".toRegex(), ""))
+                dateString = timeZoneMatcher.replaceAll("")
+            }
+            for (datePattern in datePatterns) {
+                try {
+                    val parsed = SimpleDateFormat(datePattern, Locale.ROOT).apply {
+                        this.timeZone = effectiveTimeZone ?: TimeZone.getTimeZone("GMT") // don't interpret zone time
+                    }.parse(dateString)
+                    if (parsed != null) {
+                        calendar.time = parsed
+                        if (calendar.get(Calendar.YEAR) < PARSED_DATE_YEAR_MAX) {
+                            date = parsed
+                            break
+                        }
+                    }
+                } catch (ex: ParseException) {
+                    // simply try the next pattern
+                }
+            }
+            if (date == null) {
+                val dateLong = dateString.toLongOrNull()
+                if (dateLong != null) {
+                    val epochTimeMillis = when (dateLong) {
+                        in 0..99999999999 -> dateLong * 1000 // seconds
+                        in 100000000000..99999999999999 -> dateLong // millis
+                        in 100000000000000..9999999999999999 -> dateLong / 1000 // micros
+                        else -> dateLong / 1000000 // nanos
+                    }
+                    date = Date(epochTimeMillis)
+                }
+            }
+        }
+        if (date == null) return null
+
+        if (effectiveSubSecond != null) {
+            try {
+                val millisecond = (".$effectiveSubSecond".toDouble() * 1000).toInt()
+                if (millisecond in 0..999) {
+                    val calendar = Calendar.getInstance()
+                    calendar.time = date
+                    calendar[Calendar.MILLISECOND] = millisecond
+                    return calendar.time
+                }
+            } catch (e: NumberFormatException) {
+                // ignore
+            }
+        }
+        return date
     }
 
     // time tag and sub-second tag are *not* in the same directory
