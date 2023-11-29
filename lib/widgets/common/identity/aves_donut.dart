@@ -4,6 +4,7 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -85,8 +86,8 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
             ),
           ];
 
-          final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-          final minWidth = avesDonutMinWidth * textScaleFactor;
+          final textScaler = MediaQuery.textScalerOf(context);
+          final minWidth = textScaler.scale(avesDonutMinWidth);
           final availableWidth = constraints.maxWidth;
           final dim = max(minWidth, availableWidth / (availableWidth > 4 * minWidth ? 4 : (availableWidth > 2 * minWidth ? 2 : 1)));
 
@@ -94,7 +95,16 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
             width: dim,
             height: dim,
             child: Stack(
+              alignment: Alignment.center,
               children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(dim)),
+                  child: Container(
+                    width: dim * .7,
+                    height: dim * .7,
+                    color: Themes.secondLayerColor(context),
+                  ),
+                ),
                 charts.PieChart(
                   series,
                   animate: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
@@ -145,7 +155,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                             Text(
                               formatValue(d.value),
                               style: TextStyle(
-                                color: Theme.of(context).textTheme.bodySmall!.color,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                             const SizedBox(width: 4),

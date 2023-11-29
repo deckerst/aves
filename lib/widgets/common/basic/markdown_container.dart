@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
@@ -53,8 +54,11 @@ class MarkdownContainer extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).canvasColor,
-        border: Border.all(color: Theme.of(context).dividerColor, width: AvesBorder.curvedBorderWidth(context)),
+        color: Themes.secondLayerColor(context),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: AvesBorder.curvedBorderWidth(context),
+        ),
         borderRadius: const BorderRadius.all(Radius.circular(16)),
       ),
       constraints: BoxConstraints(maxWidth: useTvLayout ? double.infinity : mobileMaxWidth),

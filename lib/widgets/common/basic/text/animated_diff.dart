@@ -117,7 +117,7 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
     final paragraph = RenderParagraph(
       TextSpan(text: text, style: widget.textStyle),
       textDirection: Directionality.of(context),
-      textScaleFactor: MediaQuery.textScaleFactorOf(context),
+      textScaler: MediaQuery.textScalerOf(context),
       strutStyle: widget.strutStyle,
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final width = paragraph.getMaxIntrinsicWidth(double.infinity);

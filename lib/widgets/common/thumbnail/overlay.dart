@@ -67,7 +67,7 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
       builder: (context) => Container(
         decoration: BoxDecoration(
           border: Border.fromBorderSide(BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.primary,
             width: context.select<GridThemeData, double>((t) => t.highlightBorderWidth),
           )),
         ),

@@ -125,7 +125,9 @@ class SectionHeader<T> extends StatelessWidget {
     bool hasLeading = false,
     bool hasTrailing = false,
   }) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
+    final leadingFontSize = leadingSize.height;
+    final textScaleFactor = textScaler.scale(leadingFontSize) / leadingFontSize;
     final maxContentWidth = maxWidth - (SectionHeader.padding.horizontal + SectionHeader.margin.horizontal);
     final paragraph = RenderParagraph(
       TextSpan(
@@ -146,7 +148,7 @@ class SectionHeader<T> extends StatelessWidget {
         ],
       ),
       textDirection: TextDirection.ltr,
-      textScaleFactor: textScaleFactor,
+      textScaler: textScaler,
     )..layout(BoxConstraints(maxWidth: maxContentWidth), parentUsesSize: true);
     final height = paragraph.getMaxIntrinsicHeight(maxContentWidth);
     paragraph.dispose();
@@ -239,16 +241,25 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
         data: TooltipTheme.of(context).copyWith(
           preferBelow: false,
         ),
-        child: IconButton(
-          iconSize: 26,
-          padding: const EdgeInsetsDirectional.only(end: 6, bottom: 4),
-          onPressed: onPressed,
-          tooltip: isSelected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
-          constraints: BoxConstraints(
-            minHeight: SectionHeader.leadingSize.height,
-            minWidth: SectionHeader.leadingSize.width,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(end: 8, bottom: 6),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: IconButton(
+              iconSize: 26,
+              visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
+              padding: const EdgeInsets.symmetric(horizontal: 7),
+              onPressed: onPressed,
+              tooltip: isSelected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
+              constraints: BoxConstraints(
+                minHeight: SectionHeader.leadingSize.height,
+                minWidth: SectionHeader.leadingSize.width,
+              ),
+              icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
+            ),
           ),
-          icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
         ),
       ),
     );

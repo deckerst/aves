@@ -22,7 +22,7 @@ class EmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.secondary.withOpacity(.5);
+    final color = Theme.of(context).colorScheme.primary.withOpacity(.5);
     return Padding(
       padding: safeBottom
           ? EdgeInsets.only(

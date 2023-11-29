@@ -79,7 +79,7 @@ class ImageMarker extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
             decoration: ShapeDecoration(
-              color: theme.colorScheme.secondary,
+              color: theme.colorScheme.primary,
               shape: Directionality.of(context) == TextDirection.rtl
                   ? CustomRoundedRectangleBorder(
                       leftSide: borderSide,

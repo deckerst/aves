@@ -62,7 +62,9 @@ class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChi
     final theme = Theme.of(context);
     return Theme(
       data: theme.copyWith(
-        scaffoldBackgroundColor: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
+        colorScheme: theme.colorScheme.copyWith(
+          background: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
+        ),
       ),
       child: Align(
         alignment: Alignment.topLeft,

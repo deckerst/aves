@@ -51,7 +51,7 @@ class MosaicScaleOverlay extends StatelessWidget {
                         alignment: Alignment.center,
                         children: [
                           _buildBar(extentMax, colorScheme.onPrimary.withOpacity(.1)),
-                          _buildBar(scaledSize.width, colorScheme.secondary),
+                          _buildBar(scaledSize.width, colorScheme.primary),
                         ],
                       ),
                     ),

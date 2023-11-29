@@ -31,7 +31,7 @@ class GridTheme extends StatelessWidget {
         final margin = OverlayIcon.defaultMargin.vertical;
         var iconSize = min(24.0, ((extent - margin) / 5).floorToDouble() - margin);
         final fontSize = (iconSize * .7).floorToDouble();
-        iconSize *= mq.textScaleFactor;
+        iconSize = mq.textScaler.scale(iconSize);
         final highlightBorderWidth = extent * .1;
         final interactiveDimension = min(iconSize * 2, kMinInteractiveDimension);
         return GridThemeData(

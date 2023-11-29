@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
@@ -144,10 +142,6 @@ class DialogTitle extends StatelessWidget {
       decoration: AvesDialog.contentDecoration(context),
       child: Text(
         title,
-        style: const TextStyle(
-          fontWeight: FontWeight.normal,
-          fontFeatures: [FontFeature.enable('smcp')],
-        ),
         textAlign: TextAlign.center,
       ),
     );

@@ -17,6 +17,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     this.canPop = true,
     String? initialQuery,
     required super.searchFieldLabel,
+    required super.searchFieldStyle,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectCreated(
@@ -26,15 +27,6 @@ abstract class AvesSearchDelegate extends SearchDelegate {
       );
     }
     query = initialQuery ?? '';
-  }
-
-  @mustCallSuper
-  void dispose() {
-    if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
-    }
-    queryTextController.dispose();
-    currentBodyNotifier.dispose();
   }
 
   @override
@@ -137,4 +129,17 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   }
 
   SearchPageRoute? route;
+
+  /// Releases the resources.
+  @override
+  @mustCallSuper
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    currentBodyNotifier.dispose();
+    queryTextController.dispose();
+    proxyAnimation.parent = null;
+    super.dispose();
+  }
 }

@@ -68,7 +68,7 @@ class _CrumbLineState extends State<CrumbLine> {
             return Center(
               child: DefaultTextStyle.merge(
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 child: _buildText(text),
               ),

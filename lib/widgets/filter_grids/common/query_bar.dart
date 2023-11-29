@@ -17,9 +17,9 @@ class FilterQueryBar<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     return Container(
-      height: getPreferredHeight(textScaleFactor),
+      height: getPreferredHeight(textScaler),
       alignment: Alignment.topCenter,
       child: Selector<Selection<FilterGridItem<T>>, bool>(
         selector: (context, selection) => !selection.isSelecting,
@@ -33,5 +33,5 @@ class FilterQueryBar<T extends CollectionFilter> extends StatelessWidget {
     );
   }
 
-  static double getPreferredHeight(double textScaleFactor) => QueryBar.getPreferredHeight(textScaleFactor);
+  static double getPreferredHeight(TextScaler textScaler) => QueryBar.getPreferredHeight(textScaler);
 }

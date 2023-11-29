@@ -8,7 +8,6 @@ import 'package:aves/widgets/editor/transform/control_panel.dart';
 import 'package:aves/widgets/editor/transform/controller.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,13 +28,12 @@ class EditorControlPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        if (actionNotifier.value != null) {
-          _cancelAction(context);
-          return SynchronousFuture(false);
-        }
-        return SynchronousFuture(true);
+    return PopScope(
+      canPop: actionNotifier.value == null,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        _cancelAction(context);
       },
       child: Padding(
         padding: const EdgeInsets.all(padding),

@@ -41,7 +41,7 @@ class CaptionedButton extends StatefulWidget {
       final paragraph = RenderParagraph(
         TextSpan(text: text, style: CaptionedButtonText.textStyle(context)),
         textDirection: TextDirection.ltr,
-        textScaleFactor: MediaQuery.textScaleFactorOf(context),
+        textScaler: MediaQuery.textScalerOf(context),
         maxLines: CaptionedButtonText.maxLines,
       )..layout(const BoxConstraints(), parentUsesSize: true);
       height += paragraph.getMaxIntrinsicHeight(width) + padding.vertical;

@@ -22,7 +22,7 @@ class AvesLogo extends StatelessWidget {
       painter: AvesLogoPainter(),
     );
     if (context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.monochrome)) {
-      final tint = Color.lerp(theme.colorScheme.secondary, Colors.white, .5)!;
+      final tint = Color.lerp(theme.colorScheme.primary, Colors.white, .5)!;
       child = ColorFiltered(
         colorFilter: ColorFilter.mode(tint, BlendMode.modulate),
         child: ColorFiltered(

@@ -14,7 +14,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final bool isMosaic, selectable, highlightable;
   final Object? Function()? heroTagger;
 
-  static final Color borderColor = Colors.grey.shade700;
+  static Color borderColor(BuildContext context) => Theme.of(context).dividerColor;
 
   static double borderWidth(BuildContext context) => AvesBorder.straightBorderWidth(context);
 
@@ -75,7 +75,7 @@ class DecoratedThumbnail extends StatelessWidget {
       // so we use `foregroundDecoration` instead
       foregroundDecoration: BoxDecoration(
         border: Border.fromBorderSide(BorderSide(
-          color: borderColor,
+          color: borderColor(context),
           width: borderWidth(context),
         )),
       ),

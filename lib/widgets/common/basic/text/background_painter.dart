@@ -36,7 +36,7 @@ class TextBackgroundPainter extends StatelessWidget {
           ),
           textAlign: textAlign,
           textDirection: Directionality.of(context),
-          textScaleFactor: MediaQuery.textScaleFactorOf(context),
+          textScaler: MediaQuery.textScalerOf(context),
         )..layout(constraints, parentUsesSize: true);
 
         final textLength = spans.map((v) => v.text?.length ?? 0).sum;

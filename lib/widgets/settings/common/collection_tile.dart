@@ -44,7 +44,7 @@ class SettingsCollectionTile extends StatelessWidget {
                       if (hasSubtitle)
                         Text(
                           l10n.drawerCollectionAll,
-                          style: textTheme.bodyMedium!.copyWith(color: textTheme.bodySmall!.color),
+                          style: textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant),
                         ),
                     ],
                   ),

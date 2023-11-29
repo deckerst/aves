@@ -81,6 +81,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
             .map((item) => BottomNavigationBarItem(
                   icon: item.icon(context),
                   label: item.label(context),
+                  tooltip: item.label(context),
                 ))
             .toList(),
         onTap: (index) => _goTo(context, items, index),

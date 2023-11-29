@@ -121,7 +121,7 @@ class _TvRailState extends State<TvRail> {
             focusNode: _focusNode,
             skipTraversal: true,
             child: NavigationRail(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.background,
               extended: extended,
               destinations: navEntries
                   .map((v) => NavigationRailDestination(

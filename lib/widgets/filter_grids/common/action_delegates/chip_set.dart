@@ -11,6 +11,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -292,6 +293,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
+          searchFieldStyle: Themes.searchFieldStyle(context),
           source: context.read<CollectionSource>(),
         ),
       ),

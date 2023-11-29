@@ -6,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/app_bar/sliver_app_bar_title.dart';
@@ -113,6 +114,7 @@ class InfoAppBar extends StatelessWidget {
       context: context,
       delegate: InfoSearchDelegate(
         searchFieldLabel: context.l10n.viewerInfoSearchFieldLabel,
+        searchFieldStyle: Themes.searchFieldStyle(context),
         entry: entry,
         metadataNotifier: metadataNotifier,
         isSelecting: isSelecting,

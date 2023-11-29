@@ -22,8 +22,8 @@ class AvesBottomNavItem extends Equatable {
       return DrawerFilterIcon(filter: filter);
     }
 
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final iconSize = 24 * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final iconSize = textScaler.scale(24);
     return Icon(NavigationDisplay.getPageIcon(route), size: iconSize);
   }
 

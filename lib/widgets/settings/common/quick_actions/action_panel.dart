@@ -1,4 +1,5 @@
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:flutter/material.dart';
 
 class ActionPanel extends StatelessWidget {
@@ -14,11 +15,7 @@ class ActionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = highlight
-        ? theme.colorScheme.secondary
-        : theme.brightness == Brightness.dark
-            ? Colors.blueGrey
-            : Colors.blueGrey.shade100;
+    final color = highlight ? theme.colorScheme.primary : Color.alphaBlend(theme.colorScheme.surfaceTint.withOpacity(.2), Themes.secondLayerColor(context));
     return AnimatedContainer(
       foregroundDecoration: BoxDecoration(
         color: color.withOpacity(.2),

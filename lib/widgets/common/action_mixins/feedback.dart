@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/accessibility_timeout.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/overlay_snack_bar.dart';
@@ -11,7 +12,6 @@ import 'package:aves/widgets/common/basic/circle.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -47,7 +47,7 @@ mixin FeedbackMixin {
       final snackBarContent = _FeedbackMessage(
         type: type,
         message: message,
-        progressColor: theme.colorScheme.secondary,
+        progressColor: theme.colorScheme.primary,
         start: start,
         stop: action != null ? start.add(duration) : null,
       );
@@ -80,6 +80,7 @@ mixin FeedbackMixin {
                         child: Text(action.label),
                       )
                     : null,
+                animation: kAlwaysCompleteAnimation,
                 dismissDirection: DismissDirection.horizontal,
                 onDismiss: () => notificationOverlayEntry?.dismiss(),
               ),
@@ -201,10 +202,11 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    final progressColor = Theme.of(context).colorScheme.secondary;
+    final colorScheme = Theme.of(context).colorScheme;
+    final progressColor = colorScheme.primary;
     final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
-    return WillPopScope(
-      onWillPop: () => SynchronousFuture(false),
+    return PopScope(
+      canPop: false,
       child: StreamBuilder<T>(
         stream: opStream,
         builder: (context, snapshot) {
@@ -220,7 +222,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   width: diameter + 2,
                   height: diameter + 2,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark ? const Color(0xBB000000) : const Color(0xEEFFFFFF),
+                    color: colorScheme.brightness == Brightness.dark ? const Color(0xBB000000) : const Color(0xEEFFFFFF),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -238,7 +240,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   percent: percent,
                   lineWidth: strokeWidth,
                   radius: diameter / 2,
-                  backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
+                  backgroundColor: colorScheme.onSurface.withOpacity(.2),
                   progressColor: progressColor,
                   animation: animate,
                   center: total != null
@@ -331,18 +333,21 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     final theme = Theme.of(context);
-    final contentTextStyle = theme.snackBarTheme.contentTextStyle ?? ThemeData(brightness: theme.brightness).textTheme.titleMedium!;
-    final fontSize = theme.snackBarTheme.contentTextStyle?.fontSize ?? theme.textTheme.bodyMedium!.fontSize!;
-    final timerChangeShadowColor = theme.colorScheme.primary;
+    final colorScheme = theme.colorScheme;
+    final contentTextStyle = theme.snackBarTheme.contentTextStyle ??
+        theme.textTheme.bodyMedium!.copyWith(
+          color: colorScheme.onInverseSurface,
+        );
+    final timerChangeShadowColor = colorScheme.primary;
 
     return Row(
       children: [
         if (widget.type == FeedbackType.warn) ...[
           CustomPaint(
-            painter: _WarnIndicator(),
-            size: Size(4, fontSize * textScaleFactor),
+            painter: const _WarnIndicator(AColors.warning),
+            size: Size(4, textScaler.scale(contentTextStyle.fontSize!)),
           ),
           const SizedBox(width: 8),
         ],
@@ -391,13 +396,17 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 }
 
 class _WarnIndicator extends CustomPainter {
+  final Color color;
+
+  const _WarnIndicator(this.color);
+
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRRect(
       RRect.fromLTRBR(0, 0, size.width, size.height, Radius.circular(size.shortestSide / 2)),
       Paint()
         ..style = PaintingStyle.fill
-        ..color = Colors.amber,
+        ..color = color,
     );
   }
 

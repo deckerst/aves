@@ -18,11 +18,11 @@ class AvesOutlinedButton extends StatelessWidget {
     final style = ButtonStyle(
       side: MaterialStateProperty.resolveWith<BorderSide>((states) {
         return BorderSide(
-          color: states.contains(MaterialState.disabled) ? theme.disabledColor : theme.colorScheme.secondary,
+          color: states.contains(MaterialState.disabled) ? theme.disabledColor : theme.colorScheme.primary,
         );
       }),
       foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-        return states.contains(MaterialState.disabled) ? theme.disabledColor : theme.colorScheme.onSecondary;
+        return states.contains(MaterialState.disabled) ? theme.disabledColor : theme.colorScheme.onPrimary;
       }),
     );
     return icon != null

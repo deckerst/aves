@@ -51,7 +51,10 @@ class InfoRowGroup extends StatefulWidget {
   static const valueStyle = TextStyle(fontSize: fontSize);
   static final _keyStyle = valueStyle.copyWith(height: 2.0);
 
-  static TextStyle keyStyle(BuildContext context) => Theme.of(context).textTheme.bodySmall!.merge(_keyStyle);
+  static TextStyle keyStyle(BuildContext context) {
+    final theme = Theme.of(context);
+    return theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant).merge(_keyStyle);
+  }
 
   const InfoRowGroup({
     super.key,
@@ -97,8 +100,8 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
     final _keyStyle = InfoRowGroup.keyStyle(context);
 
     // compute the size of keys and space in order to align values
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: _buildTextValue(key), style: _keyStyle), textScaleFactor))));
+    final textScaler = MediaQuery.textScalerOf(context);
+    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: _buildTextValue(key), style: _keyStyle), textScaler))));
 
     final lastKey = keyValues.keys.last;
     return LayoutBuilder(
@@ -115,6 +118,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                 final value = kv.value;
                 final spanBuilder = spanBuilders[key] ?? _buildTextValueSpans;
                 final thisSpaceSize = max(0.0, (baseValueX - keySizes[key]!)) + InfoRowGroup.keyValuePadding;
+                final textScaleFactor = textScaler.scale(thisSpaceSize) / thisSpaceSize;
 
                 return [
                   TextSpan(text: _buildTextValue(key), style: _keyStyle),
@@ -138,11 +142,11 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
     );
   }
 
-  double _getSpanWidth(TextSpan span, double textScaleFactor) {
+  double _getSpanWidth(TextSpan span, TextScaler textScaler) {
     final paragraph = RenderParagraph(
       span,
       textDirection: TextDirection.ltr,
-      textScaleFactor: textScaleFactor,
+      textScaler: textScaler,
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final width = paragraph.getMaxIntrinsicWidth(double.infinity);
     paragraph.dispose();

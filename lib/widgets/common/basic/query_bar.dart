@@ -26,7 +26,7 @@ class QueryBar extends StatefulWidget {
   @override
   State<QueryBar> createState() => _QueryBarState();
 
-  static double getPreferredHeight(double textScaleFactor) => kToolbarHeight * textScaleFactor;
+  static double getPreferredHeight(TextScaler textScaler) => textScaler.scale(kToolbarHeight);
 }
 
 class _QueryBarState extends State<QueryBar> {

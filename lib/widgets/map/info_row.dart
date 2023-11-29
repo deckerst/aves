@@ -58,7 +58,7 @@ class MapInfoRow extends StatelessWidget {
   }
 
   static double getIconSize(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    return 16 * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    return textScaler.scale(16);
   }
 }

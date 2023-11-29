@@ -21,6 +21,7 @@ import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
@@ -689,6 +690,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
+          searchFieldStyle: Themes.searchFieldStyle(context),
           source: collection.source,
           parentCollection: collection,
         ),

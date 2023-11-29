@@ -1,5 +1,6 @@
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
@@ -71,6 +72,7 @@ class PageNavTile extends StatelessWidget {
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(
             searchFieldLabel: context.l10n.searchCollectionFieldHint,
+            searchFieldStyle: Themes.searchFieldStyle(context),
             source: context.read<CollectionSource>(),
             parentCollection: currentCollection?.copyWith(),
           ),

@@ -1,48 +1,58 @@
 import 'package:flutter/material.dart';
 
-class TextDropdownButton<T> extends DropdownButton<T> {
-  TextDropdownButton({
+class TextDropdownButton<T> extends StatefulWidget {
+  final List<T> values;
+  final String Function(T value) valueText;
+  final IconData Function(T value)? valueIcon;
+  final T? value;
+  final Widget? underline;
+  final bool isExpanded;
+  final double? itemHeight;
+  final Color? dropdownColor;
+  final ValueChanged<T?>? onChanged;
+
+  const TextDropdownButton({
     super.key,
-    required List<T> values,
-    required String Function(T value) valueText,
-    IconData Function(T value)? valueIcon,
-    super.value,
-    super.hint,
-    super.disabledHint,
-    required super.onChanged,
-    super.onTap,
-    super.elevation,
-    super.style,
-    super.underline,
-    super.icon,
-    super.iconDisabledColor,
-    super.iconEnabledColor,
-    super.iconSize,
-    super.isDense,
-    super.isExpanded,
-    super.itemHeight,
-    super.focusColor,
-    super.focusNode,
-    super.autofocus,
-    super.dropdownColor,
-    super.menuMaxHeight,
-    super.enableFeedback,
-    super.alignment,
-    super.borderRadius,
-  }) : super(
-          items: values
-              .map((v) => DropdownMenuItem<T>(
-                    value: v,
-                    child: _buildItem(valueText(v), valueIcon?.call(v), selected: false),
-                  ))
-              .toList(),
-          selectedItemBuilder: (context) => values
-              .map((v) => DropdownMenuItem<T>(
-                    value: v,
-                    child: _buildItem(valueText(v), valueIcon?.call(v), selected: true),
-                  ))
-              .toList(),
-        );
+    required this.values,
+    required this.valueText,
+    this.valueIcon,
+    this.value,
+    this.underline,
+    this.isExpanded = false,
+    this.itemHeight = kMinInteractiveDimension,
+    this.dropdownColor,
+    required this.onChanged,
+  });
+
+  @override
+  State<TextDropdownButton<T>> createState() => _TextDropdownButtonState<T>();
+}
+
+class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      items: widget.values
+          .map((v) => DropdownMenuItem<T>(
+                value: v,
+                child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: false),
+              ))
+          .toList(),
+      selectedItemBuilder: (context) => widget.values
+          .map((v) => DropdownMenuItem<T>(
+                value: v,
+                child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: true),
+              ))
+          .toList(),
+      value: widget.value,
+      style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal),
+      underline: widget.underline,
+      isExpanded: widget.isExpanded,
+      itemHeight: widget.itemHeight,
+      dropdownColor: widget.dropdownColor,
+      onChanged: widget.onChanged,
+    );
+  }
 
   static Widget _buildItem<T>(String text, IconData? icon, {required bool selected}) {
     final softWrap = selected ? false : null;

@@ -112,7 +112,6 @@ class _ContentState extends State<_Content> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(123)),
                     ),
-                    // tileColor: theme.scaffoldBackgroundColor,
                   );
                 },
                 itemCount: _Section.values.length,
@@ -193,7 +192,7 @@ class _ContentState extends State<_Content> {
                         return Theme(
                           data: theme.copyWith(
                             listTileTheme: listTileTheme.copyWith(
-                              tileColor: theme.scaffoldBackgroundColor,
+                              tileColor: theme.colorScheme.background,
                             ),
                           ),
                           child: const TvLicensePage(),

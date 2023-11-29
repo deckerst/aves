@@ -11,11 +11,11 @@ class FontSizeIconTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     final iconTheme = IconTheme.of(context);
     return IconTheme(
       data: iconTheme.copyWith(
-        size: iconTheme.size! * textScaleFactor,
+        size: textScaler.scale(iconTheme.size!),
       ),
       child: child,
     );

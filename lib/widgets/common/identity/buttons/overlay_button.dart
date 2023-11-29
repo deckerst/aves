@@ -58,57 +58,66 @@ class _OverlayButtonState extends State<OverlayButton> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final borderRadius = widget.borderRadius;
 
     final blurred = settings.enableBlurEffect;
     final overlayBackground = Themes.overlayBackgroundColor(
-      brightness: Theme.of(context).brightness,
+      brightness: colorScheme.brightness,
       blurred: blurred,
     );
 
-    return ScaleTransition(
-      scale: widget.scale,
-      child: ValueListenableBuilder<bool>(
-        valueListenable: _focusedNotifier,
-        builder: (context, focused, child) {
-          final border = AvesBorder.border(
-            context,
-            width: AvesBorder.curvedBorderWidth(context) * (focused ? 3 : 1),
-          );
-          return borderRadius != null
-              ? BlurredRRect(
-                  enabled: blurred,
-                  borderRadius: borderRadius,
-                  child: Material(
-                    type: MaterialType.button,
+    return Theme(
+      data: theme.copyWith(
+        colorScheme: colorScheme.copyWith(
+          onSurfaceVariant: colorScheme.onSurface,
+        ),
+      ),
+      child: ScaleTransition(
+        scale: widget.scale,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: _focusedNotifier,
+          builder: (context, focused, child) {
+            final border = AvesBorder.border(
+              context,
+              width: AvesBorder.curvedBorderWidth(context) * (focused ? 3 : 1),
+            );
+            return borderRadius != null
+                ? BlurredRRect(
+                    enabled: blurred,
                     borderRadius: borderRadius,
-                    color: overlayBackground,
-                    child: AnimatedContainer(
-                      foregroundDecoration: BoxDecoration(
-                        border: border,
-                        borderRadius: borderRadius,
+                    child: Material(
+                      type: MaterialType.button,
+                      borderRadius: borderRadius,
+                      color: overlayBackground,
+                      child: AnimatedContainer(
+                        foregroundDecoration: BoxDecoration(
+                          border: border,
+                          borderRadius: borderRadius,
+                        ),
+                        duration: const Duration(milliseconds: 200),
+                        child: widget.child,
                       ),
-                      duration: const Duration(milliseconds: 200),
-                      child: widget.child,
                     ),
-                  ),
-                )
-              : BlurredOval(
-                  enabled: blurred,
-                  child: Material(
-                    type: MaterialType.circle,
-                    color: overlayBackground,
-                    child: AnimatedContainer(
-                      foregroundDecoration: BoxDecoration(
-                        border: border,
-                        shape: BoxShape.circle,
+                  )
+                : BlurredOval(
+                    enabled: blurred,
+                    child: Material(
+                      type: MaterialType.circle,
+                      color: overlayBackground,
+                      child: AnimatedContainer(
+                        foregroundDecoration: BoxDecoration(
+                          border: border,
+                          shape: BoxShape.circle,
+                        ),
+                        duration: const Duration(milliseconds: 200),
+                        child: widget.child,
                       ),
-                      duration: const Duration(milliseconds: 200),
-                      child: widget.child,
                     ),
-                  ),
-                );
-        },
+                  );
+          },
+        ),
       ),
     );
   }

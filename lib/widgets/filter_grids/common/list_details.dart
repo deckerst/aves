@@ -70,9 +70,9 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
             softWrap: false,
             overflow: detailsTheme.titleMaxLines == 1 ? TextOverflow.fade : TextOverflow.ellipsis,
             maxLines: detailsTheme.titleMaxLines,
-            // `textScaleFactor` is applied to font size and icon size at the theme level,
+            // `textScaler` is applied to font size and icon size at the theme level,
             // otherwise the leading icon will be low-res scaled up/down
-            textScaleFactor: 1,
+            textScaler: TextScaler.noScaling,
           ),
           if (!locked) ...[
             const SizedBox(height: FilterListDetailsTheme.titleDetailPadding),

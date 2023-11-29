@@ -33,9 +33,6 @@ class PopupMenuExpansionPanel<T> extends PopupMenuEntry<T> {
 }
 
 class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>> {
-  // ref `_kMenuHorizontalPadding` used in `PopupMenuItem`
-  static const double _horizontalPadding = 16;
-
   final ValueNotifier<String?> _internalExpandedNotifier = ValueNotifier(null);
 
   ValueNotifier<String?> get expandedNotifier => widget.expandedNotifier ?? _internalExpandedNotifier;
@@ -48,11 +45,11 @@ class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    var style = PopupMenuTheme.of(context).textStyle ?? theme.textTheme.titleMedium!;
-    if (!widget.enabled) {
-      style = style.copyWith(color: theme.disabledColor);
-    }
+    final style = PopupMenuTheme.of(context).labelTextStyle!.resolve(
+      <MaterialState>{
+        if (!widget.enabled) MaterialState.disabled,
+      },
+    )!;
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
 
     Widget child = ValueListenableBuilder<String?>(
@@ -75,7 +72,7 @@ class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>>
                       color: widget.enabled ? null : Theme.of(context).disabledColor,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: MenuRow(
                         text: widget.title,
                         icon: Icon(widget.icon),

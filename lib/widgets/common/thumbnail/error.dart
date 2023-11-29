@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    const color = Colors.blueGrey;
+    final color = Themes.backgroundTextColor(context);
     return FutureBuilder<bool>(
         future: _exists,
         builder: (context, snapshot) {
@@ -65,7 +66,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
           }
           return Container(
             alignment: Alignment.center,
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.background,
             width: extent,
             height: extent,
             child: child,

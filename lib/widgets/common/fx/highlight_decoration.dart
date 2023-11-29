@@ -22,8 +22,8 @@ class _HighlightDecorationPainter extends BoxPainter {
     if (size == null) return;
 
     final confHeight = size.height;
-    final paintHeight = confHeight * .4;
-    final rect = Rect.fromLTWH(offset.dx, offset.dy + confHeight - paintHeight, size.width, paintHeight);
+    final paintHeight = confHeight * .32;
+    final rect = Rect.fromLTWH(offset.dx, offset.dy + size.height * .58, size.width, paintHeight);
     final rrect = RRect.fromRectAndRadius(rect, Radius.circular(paintHeight));
     final paint = Paint()..color = decoration.color;
     canvas.drawRRect(rrect, paint);
