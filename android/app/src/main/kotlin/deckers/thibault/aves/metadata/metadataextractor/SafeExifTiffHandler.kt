@@ -8,7 +8,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.exif.ExifTiffHandler
 import java.io.IOException
 
-class SafeExifTiffHandler(metadata: Metadata, parentDirectory: Directory?) : ExifTiffHandler(metadata, parentDirectory) {
+class SafeExifTiffHandler(metadata: Metadata, parentDirectory: Directory?, exifStartOffset: Int) : ExifTiffHandler(metadata, parentDirectory, exifStartOffset) {
     @Throws(IOException::class)
     override fun customProcessTag(
         tagOffset: Int,

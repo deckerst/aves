@@ -388,7 +388,7 @@ enum class DirType {
         override fun createDirectory() = ExifIFD0Directory()
     },
     EXIF_THUMBNAIL {
-        override fun createDirectory() = ExifThumbnailDirectory()
+        override fun createDirectory() = ExifThumbnailDirectory(0)
     },
     GPS {
         override fun createDirectory() = GpsDirectory()

@@ -45,6 +45,7 @@ object SafePngMetadataReader {
     private const val chunkSizeDangerThreshold = SafeXmpReader.SEGMENT_TYPE_SIZE_DANGER_THRESHOLD
 
     private val latin1Encoding = Charsets.ISO_8859_1
+    private val utf8Encoding = Charsets.UTF_8
     private val desiredChunkTypes: Set<PngChunkType> = hashSetOf(
         PngChunkType.IHDR,
         PngChunkType.PLTE,
@@ -234,7 +235,7 @@ object SafePngMetadataReader {
             val reader: SequentialReader = SequentialByteArrayReader(bytes)
 
             // Keyword is 1-79 bytes, followed by the 1 byte null character
-            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, latin1Encoding)
+            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, utf8Encoding)
             val keyword = keywordsv.toString()
             val compressionFlag = reader.int8
             val compressionMethod = reader.int8
@@ -273,7 +274,7 @@ object SafePngMetadataReader {
                     XmpReader().extract(textBytes, metadata)
                 } else {
                     val textPairs: MutableList<KeyValuePair> = ArrayList()
-                    textPairs.add(KeyValuePair(keyword, StringValue(textBytes, latin1Encoding)))
+                    textPairs.add(KeyValuePair(keyword, StringValue(textBytes, utf8Encoding)))
                     val directory = PngDirectory(PngChunkType.iTXt)
                     directory.setObject(PngDirectory.TAG_TEXTUAL_DATA, textPairs)
                     metadata.addDirectory(directory)
@@ -316,7 +317,7 @@ object SafePngMetadataReader {
             metadata.addDirectory(directory)
         } else if (chunkType == PngChunkType.eXIf) {
             try {
-                val handler = ExifTiffHandler(metadata, null)
+                val handler = ExifTiffHandler(metadata, null, 0)
                 TiffReader().processTiff(ByteArrayReader(bytes), handler, 0)
             } catch (ex: TiffProcessingException) {
                 val directory = PngDirectory(PngChunkType.eXIf)
