@@ -18,7 +18,6 @@ object ExifTags {
     private const val SAMPLE_FORMAT = 0x0153
     private const val SMIN_SAMPLE_VALUE = 0x0154
     private const val SMAX_SAMPLE_VALUE = 0x0155
-    private const val RATING_PERCENT = 0x4749
     private const val SONY_RAW_FILE_TYPE = 0x7000
     private const val SONY_TONE_CURVE = 0x7010
     private const val MATTEING = 0x80e3
@@ -40,7 +39,6 @@ object ExifTags {
         SAMPLE_FORMAT to "Sample Format",
         SMIN_SAMPLE_VALUE to "S Min Sample Value",
         SMAX_SAMPLE_VALUE to "S Max Sample Value",
-        RATING_PERCENT to "Rating Percent",
         SONY_RAW_FILE_TYPE to "Sony Raw File Type",
         SONY_TONE_CURVE to "Sony Tone Curve",
         MATTEING to "Matteing",

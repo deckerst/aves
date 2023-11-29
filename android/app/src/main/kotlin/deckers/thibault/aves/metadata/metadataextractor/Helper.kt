@@ -116,7 +116,7 @@ object Helper {
     fun safeReadTiff(input: InputStream): com.drew.metadata.Metadata {
         val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, safeReadStreamLength)
         val metadata = com.drew.metadata.Metadata()
-        val handler = SafeExifTiffHandler(metadata, null)
+        val handler = SafeExifTiffHandler(metadata, null, 0)
         TiffReader().processTiff(reader, handler, 0)
         return metadata
     }
