@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 // as of Flutter v3.3.10, the resolution order of multiple `WillPopScope` is random
@@ -21,7 +22,12 @@ class AvesPopScope extends StatelessWidget {
 
         final shouldPop = handlers.fold(true, (prev, v) => prev ? v(context) : false);
         if (shouldPop) {
-          Navigator.of(context).pop();
+          if (Navigator.canPop(context)) {
+            Navigator.maybeOf(context)?.pop();
+          } else {
+            // exit
+            SystemNavigator.pop();
+          }
         }
       },
       child: child,
