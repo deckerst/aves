@@ -10,10 +10,12 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves_model/aves_model.dart';
@@ -77,24 +79,27 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                     final info = snapshot.data;
                     if (info == null) return const SizedBox();
 
-                    final theme = Theme.of(context);
                     return Container(
                       decoration: BoxDecoration(
-                        color: theme.cardColor,
+                        color: Themes.secondLayerColor(context),
                         border: Border.all(
-                          color: theme.colorScheme.onPrimary,
+                          color: Theme.of(context).dividerColor,
+                          width: AvesBorder.curvedBorderWidth(context),
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        borderRadius: const BorderRadius.all(Radius.circular(16)),
                       ),
                       constraints: const BoxConstraints(maxHeight: 100),
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       clipBehavior: Clip.antiAlias,
                       child: SingleChildScrollView(
-                        padding: const EdgeInsetsDirectional.only(start: 8, top: 4, end: 16, bottom: 4),
+                        padding: const EdgeInsets.all(8),
                         // to show a scroll bar, we would need to provide a scroll controller
                         // to both the `Scrollable` and the `Scrollbar`, but
                         // as of Flutter v3.0.0, `SelectableText` does not allow passing the `scrollController`
-                        child: SelectableText(info),
+                        child: SelectableText(
+                          info,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
                     );
                   },
@@ -122,7 +127,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               border: Border.fromBorderSide(BorderSide(
-                color: isMonochrome ? context.select<AvesColorsData, Color>((v) => v.neutral) : Theme.of(context).colorScheme.secondary,
+                color: isMonochrome ? context.select<AvesColorsData, Color>((v) => v.neutral) : Theme.of(context).colorScheme.primary,
                 width: AvesFilterChip.outlineWidth,
               )),
               shape: BoxShape.circle,

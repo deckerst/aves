@@ -57,15 +57,14 @@ class _FilePickerPageState extends State<FilePickerPage> {
         return !isHidden;
       }
     }).toList();
-    return WillPopScope(
-      onWillPop: () {
-        if (_directory.relativeDir.isEmpty) {
-          return SynchronousFuture(true);
-        }
+    return PopScope(
+      canPop: _directory.relativeDir.isEmpty,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
         final parent = pContext.dirname(currentDirectoryPath);
         _goTo(parent);
         setState(() {});
-        return SynchronousFuture(false);
       },
       child: AvesScaffold(
         appBar: AppBar(

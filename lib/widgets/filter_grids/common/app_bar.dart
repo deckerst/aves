@@ -7,6 +7,7 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
@@ -177,13 +178,13 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   double get appBarContentHeight {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    double height = kToolbarHeight * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    double height = textScaler.scale(kToolbarHeight);
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
     if (context.read<Query>().enabled) {
-      height += FilterQueryBar.getPreferredHeight(textScaleFactor);
+      height += FilterQueryBar.getPreferredHeight(textScaler);
     }
     return height;
   }
@@ -446,6 +447,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
+          searchFieldStyle: Themes.searchFieldStyle(context),
           source: source,
         ),
       ),

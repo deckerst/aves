@@ -194,7 +194,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     final drawPoints = !isInterpolated;
 
     final colorScheme = Theme.of(context).colorScheme;
-    final accentColor = colorScheme.secondary;
+    final accentColor = colorScheme.primary;
     final axisColor = charts.ColorUtil.fromDartColor(drawPoints ? colorScheme.onPrimary.withOpacity(.9) : Colors.transparent);
     final measureLineColor = charts.ColorUtil.fromDartColor(drawPoints ? colorScheme.onPrimary.withOpacity(.1) : Colors.transparent);
     final histogramLineColor = charts.ColorUtil.fromDartColor(drawLine ? accentColor : Colors.white);
@@ -326,7 +326,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
                 Text(
                   numberFormat.format(count),
                   style: TextStyle(
-                    color: Theme.of(context).textTheme.bodySmall!.color,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.end,
                 ),

@@ -16,9 +16,11 @@ class SettingsTileLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return AnimatedContainer(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
+        color: colorScheme.background,
         border: Border.fromBorderSide(BorderSide(
           color: color,
           width: AvesFilterChip.outlineWidth,
@@ -30,7 +32,7 @@ class SettingsTileLeading extends StatelessWidget {
         icon,
         size: 18,
         color: DefaultTextStyle.of(context).style.color,
-        shadows: Theme.of(context).brightness == Brightness.dark ? AStyles.embossShadows : null,
+        shadows: colorScheme.brightness == Brightness.dark ? AStyles.embossShadows : null,
       ),
     );
   }

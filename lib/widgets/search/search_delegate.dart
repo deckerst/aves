@@ -66,6 +66,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
 
   CollectionSearchDelegate({
     required super.searchFieldLabel,
+    required super.searchFieldStyle,
     required this.source,
     this.parentCollection,
     super.canPop,

@@ -60,8 +60,8 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final effectiveThumbnailExtent = max(thumbnailExtent, thumbnailExtent * textScaleFactor);
+    final textScaler = MediaQuery.textScalerOf(context);
+    final effectiveThumbnailExtent = max(thumbnailExtent, textScaler.scale(thumbnailExtent));
     return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.renameEntrySetPageTitle),
@@ -146,7 +146,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                             children: [
                               Text(
                                 sourceName,
-                                style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color),
+                                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 softWrap: false,
                                 overflow: TextOverflow.fade,
                                 maxLines: 1,

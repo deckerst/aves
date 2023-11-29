@@ -39,12 +39,12 @@ class AppReference extends StatelessWidget {
   }
 
   Widget _buildAvesLine(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         AvesLogo(
-          size: _appTitleStyle.fontSize! * textScaleFactor * 1.3,
+          size: textScaler.scale(_appTitleStyle.fontSize!) * 1.3,
         ),
         const SizedBox(width: 8),
         Text(

@@ -281,7 +281,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
       return Text(
         l10n.viewerInfoUnknown,
         style: TextStyle(
-          color: Theme.of(context).textTheme.bodySmall!.color,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       );
     }

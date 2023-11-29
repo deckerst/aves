@@ -50,7 +50,7 @@ class SearchPageRoute<T> extends PageRoute<T> {
 
   @override
   Animation<double> createAnimation() {
-    final animation = super.createAnimation();
+    final Animation<double> animation = super.createAnimation();
     delegate.proxyAnimation.parent = animation;
     return animation;
   }

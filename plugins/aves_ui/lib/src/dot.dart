@@ -49,7 +49,7 @@ class AvesDot extends StatelessWidget {
           child: Container(
             width: diameter,
             height: diameter,
-            color: theme.colorScheme.secondary,
+            color: theme.colorScheme.primary,
           ),
         ),
       ),

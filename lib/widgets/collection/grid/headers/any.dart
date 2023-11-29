@@ -89,8 +89,8 @@ class CollectionSectionHeader extends StatelessWidget {
       headerExtent = AlbumSectionHeader.getPreferredHeight(context, maxWidth, source, sectionKey);
     }
 
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    headerExtent = max(headerExtent, SectionHeader.leadingSize.height * textScaleFactor) + SectionHeader.padding.vertical + SectionHeader.margin.vertical;
+    final textScaler = MediaQuery.textScalerOf(context);
+    headerExtent = max(headerExtent, textScaler.scale(SectionHeader.leadingSize.height)) + SectionHeader.padding.vertical + SectionHeader.margin.vertical;
     return headerExtent;
   }
 }

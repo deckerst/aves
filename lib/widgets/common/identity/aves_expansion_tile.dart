@@ -46,6 +46,7 @@ class AvesExpansionTile extends StatelessWidget {
 
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return ExpansionTileCard(
       // key is expected by test driver
       key: Key('tilecard-$value'),
@@ -55,9 +56,8 @@ class AvesExpansionTile extends StatelessWidget {
       expandable: enabled,
       initiallyExpanded: initiallyExpanded,
       finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
-      baseColor: theme.scaffoldBackgroundColor,
-      expandedColor: theme.canvasColor,
-      expandedTextColor: theme.colorScheme.onBackground,
+      baseColor: theme.colorScheme.background,
+      expandedTextColor: colorScheme.onBackground,
       duration: animationDuration,
       shadowColor: theme.shadowColor,
       child: Column(

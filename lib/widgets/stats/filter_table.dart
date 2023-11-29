@@ -1,6 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/stats/percent_text.dart';
@@ -46,8 +47,8 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
       });
     }
 
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final lineHeight = 16 * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final lineHeight = textScaler.scale(16);
     final barRadius = Radius.circular(lineHeight / 2);
     final isRtl = context.isRtl;
 
@@ -57,13 +58,13 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
         builder: (context, constraints) {
           final showPercentIndicator = constraints.maxWidth - (chipWidth + countWidth) > percentIndicatorMinWidth;
           final displayedEntries = maxRowCount != null ? sortedEntries.take(maxRowCount!) : sortedEntries;
-          final theme = Theme.of(context);
           final isMonochrome = settings.themeColorMode == AvesThemeColorMode.monochrome;
           return Table(
             children: displayedEntries.map((kv) {
               final filter = filterBuilder(kv.key);
               final count = kv.value;
               final percent = count / totalEntryCount;
+              final colorScheme = Theme.of(context).colorScheme;
               return TableRow(
                 children: [
                   Container(
@@ -82,23 +83,30 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                       future: filter.color(context),
                       builder: (context, snapshot) {
                         final color = snapshot.data;
-                        return LinearPercentIndicator(
-                          percent: percent,
-                          lineHeight: lineHeight,
-                          backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
-                          progressColor: isMonochrome ? theme.colorScheme.secondary : color,
-                          animation: animate,
-                          isRTL: isRtl,
-                          barRadius: barRadius,
-                          center: LinearPercentIndicatorText(percent: percent),
-                          padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                        return Stack(
+                          // use a stack instead of `center` field, so that the widgets
+                          // are centered even when the center child has larger height
+                          alignment: Alignment.center,
+                          children: [
+                            LinearPercentIndicator(
+                              percent: percent,
+                              lineHeight: lineHeight,
+                              backgroundColor: Themes.secondLayerColor(context),
+                              progressColor: isMonochrome ? colorScheme.primary : color,
+                              animation: animate,
+                              isRTL: isRtl,
+                              barRadius: barRadius,
+                              padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                            ),
+                            LinearPercentIndicatorText(percent: percent),
+                          ],
                         );
                       },
                     ),
                   Text(
                     numberFormat.format(count),
                     style: TextStyle(
-                      color: theme.textTheme.bodySmall!.color,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     textAlign: TextAlign.end,
                   ),

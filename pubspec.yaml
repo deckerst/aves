@@ -13,8 +13,8 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.13.9
-  sdk: ">=3.0.0 <4.0.0"
+  flutter: 3.16.1
+  sdk: '>=3.2.0 <4.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
@@ -168,20 +168,20 @@ flutter:
 #  adapts from package `flutter_highlight` v0.7.0
 #
 #  `OutputBuffer` in `/services/common/output_buffer.dart`
-#  adapts from Flutter v3.10.0 `_OutputBuffer` in `/foundation/consolidate_response.dart`
+#  adapts from Flutter v3.16.0 `_OutputBuffer` in `/foundation/consolidate_response.dart`
 #
 #  `TvLicensePage` in `/widgets/about/tv_license_page.dart`
-#  adapts from Flutter v3.10.0 `_LicenseData` in `/material/about.dart`
+#  adapts from Flutter v3.16.0 `_LicenseData` in `/material/about.dart`
 #  and `_PackageLicensePage` in `/material/about.dart`
 #
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
-#  adapts from Flutter v3.10.0 `SnackBar` in `/material/snack_bar.dart`
+#  adapts from Flutter v3.16.0 `SnackBar` in `/material/snack_bar.dart`
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
-#  adapts from Flutter v3.10.0 `ScaleGestureRecognizer` in `/gestures/scale.dart`
+#  adapts from Flutter v3.16.0 `ScaleGestureRecognizer` in `/gestures/scale.dart`
 #
 #  `KnownExtentScrollPhysics` in `/widgets/common/behaviour/known_extent_scroll_physics.dart`
-#  adapts from Flutter v3.10.0 `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
+#  adapts from Flutter v3.16.0 `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
 #
 #  `TransitionImage` in `/widgets/common/fx/transition_image.dart`
 #  adapts from Flutter v3.10.0 `_ImageState` in `/widgets/image.dart`
@@ -190,5 +190,5 @@ flutter:
 #  `_RenderSliverKnownExtentBoxAdaptor` in `/widgets/common/grid/sliver.dart`
 #  adapts from Flutter v3.10.0 `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 #
-#  `CollectionSearchDelegate`, `SearchPageRoute` in `/widgets/search/search_delegate.dart`
-#  adapts from Flutter v3.10.0 `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`
+#  `AvesSearchDelegate`, `SearchPageRoute` in `/widgets/common/search/*.dart`
+#  adapts from Flutter v3.16.0 `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`

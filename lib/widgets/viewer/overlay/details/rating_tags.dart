@@ -29,9 +29,12 @@ class OverlayRatingTagsRow extends AnimatedWidget {
         ratingString = '${'★' * rating}${'☆' * (5 - rating)}';
     }
 
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final hasTags = tags.isNotEmpty;
+
+    const iconSize = ViewerDetailOverlayContent.iconSize;
+    final textScaleFactor = textScaler.scale(iconSize) / iconSize;
 
     return Text.rich(
       TextSpan(
@@ -45,7 +48,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
                 padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
                 child: DecoratedIcon(
                   AIcons.tag,
-                  size: ViewerDetailOverlayContent.iconSize / textScaleFactor,
+                  size: iconSize / textScaleFactor,
                   shadows: ViewerDetailOverlayContent.shadows(context),
                 ),
               ),

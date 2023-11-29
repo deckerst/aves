@@ -214,10 +214,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   Widget build(BuildContext context) {
     final viewStateConductor = context.read<ViewStateConductor>();
-    return WillPopScope(
-      onWillPop: () {
-        _onWillPop();
-        return SynchronousFuture(false);
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        _onPopInvoked();
       },
       child: ValueListenableProvider<HeroInfo?>.value(
         value: _heroInfoNotifier,
@@ -561,7 +563,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       if (_overlayVisible.value) {
         _overlayVisible.value = false;
       } else {
-        _onWillPop();
+        _onPopInvoked();
       }
     } else if (notification is TvShowMoreInfoNotification) {
       if (!_overlayVisible.value) {
@@ -782,7 +784,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     }
   }
 
-  void _onWillPop() {
+  void _onPopInvoked() {
     if (_currentVerticalPage.value == infoPage) {
       // back from info to image
       _goToVerticalPage(imagePage);

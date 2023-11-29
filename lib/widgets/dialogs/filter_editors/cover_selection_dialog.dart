@@ -57,8 +57,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   static const double appPickerExtent = 32;
 
   double tabBarHeight(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    return 64 * max(1, textScaleFactor);
+    return MediaQuery.textScalerOf(context).clamp(minScaleFactor: 1).scale(64);
   }
 
   static const double tabIndicatorWeight = 2;
@@ -401,8 +400,8 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   }) {
     // cannot use `IconTheme` over `TabBar` to change size,
     // because `TabBar` does so internally
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final iconSize = IconTheme.of(context).size! * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final iconSize = textScaler.scale(IconTheme.of(context).size!);
     return Tab(
       key: key,
       height: tabBarHeight(context),
@@ -440,7 +439,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final paragraph = RenderParagraph(
       TextSpan(text: _optionLines, style: Theme.of(context).textTheme.titleMedium!),
       textDirection: TextDirection.ltr,
-      textScaleFactor: MediaQuery.textScaleFactorOf(context),
+      textScaler: MediaQuery.textScalerOf(context),
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final textWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
     paragraph.dispose();

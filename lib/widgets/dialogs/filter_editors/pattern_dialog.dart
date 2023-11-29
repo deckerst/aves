@@ -35,7 +35,7 @@ class _PatternDialogState extends State<PatternDialog> {
               dimension: MediaQuery.sizeOf(context).shortestSide / 2,
               child: PatternLock(
                 relativePadding: .4,
-                selectedColor: colorScheme.secondary,
+                selectedColor: colorScheme.primary,
                 notSelectedColor: colorScheme.onBackground,
                 pointRadius: 8,
                 fillPoints: true,

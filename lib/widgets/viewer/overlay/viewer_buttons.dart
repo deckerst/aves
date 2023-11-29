@@ -397,6 +397,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
 
     Widget buildItem(EntryAction action) => Expanded(
           child: Material(
+            color: Colors.transparent,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),

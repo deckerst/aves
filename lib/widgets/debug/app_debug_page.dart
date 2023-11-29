@@ -17,6 +17,7 @@ import 'package:aves/widgets/debug/android_codecs.dart';
 import 'package:aves/widgets/debug/android_dirs.dart';
 import 'package:aves/widgets/debug/app_debug_action.dart';
 import 'package:aves/widgets/debug/cache.dart';
+import 'package:aves/widgets/debug/colors.dart';
 import 'package:aves/widgets/debug/database.dart';
 import 'package:aves/widgets/debug/general.dart';
 import 'package:aves/widgets/debug/media_store_scan_dialog.dart';
@@ -72,6 +73,7 @@ class AppDebugPage extends StatelessWidget {
                 DebugAndroidCodecSection(),
                 DebugAndroidDirSection(),
                 DebugCacheSection(),
+                DebugColorSection(),
                 DebugAppDatabaseSection(),
                 DebugErrorReportingSection(),
                 DebugSettingsSection(),

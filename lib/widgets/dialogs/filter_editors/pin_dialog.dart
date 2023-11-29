@@ -52,8 +52,8 @@ class _PinDialogState extends State<PinDialog> {
               pinTheme: PinTheme(
                 activeColor: colorScheme.onBackground,
                 inactiveColor: colorScheme.onBackground,
-                selectedColor: colorScheme.secondary,
-                selectedFillColor: colorScheme.secondary,
+                selectedColor: colorScheme.primary,
+                selectedFillColor: colorScheme.primary,
                 borderRadius: BorderRadius.circular(8),
                 shape: PinCodeFieldShape.box,
               ),

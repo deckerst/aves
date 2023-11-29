@@ -74,7 +74,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
               ),
               child: MediaQuery(
                 data: MediaQuery.of(context).copyWith(
-                  textScaleFactor: 1,
+                  textScaler: TextScaler.noScaling,
                 ),
                 child: Column(
                   key: _progressBarKey,
@@ -154,14 +154,14 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   Widget _buildMuteIndicator() => StreamBuilder<double>(
         stream: controller?.volumeStream ?? Stream.value(1.0),
         builder: (context, snapshot) {
-          final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+          final textScaler = MediaQuery.textScalerOf(context);
           final isMuted = controller?.isMuted ?? false;
           return isMuted
               ? Padding(
                   padding: const EdgeInsetsDirectional.only(end: 8),
                   child: Icon(
                     AIcons.mute,
-                    size: 16 * textScaleFactor,
+                    size: textScaler.scale(16),
                   ),
                 )
               : const SizedBox();

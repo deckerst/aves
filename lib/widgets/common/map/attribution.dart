@@ -33,7 +33,7 @@ class Attribution extends StatelessWidget {
         data: data,
         selectable: true,
         styleSheet: MarkdownStyleSheet(
-          a: TextStyle(color: theme.colorScheme.secondary),
+          a: TextStyle(color: theme.colorScheme.primary),
           p: theme.textTheme.bodySmall!.merge(const TextStyle(fontSize: InfoRowGroup.fontSize)),
         ),
         onTapLink: (text, href, title) => AvesApp.launchUrl(href),

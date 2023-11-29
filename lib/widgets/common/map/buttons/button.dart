@@ -22,32 +22,42 @@ class MapOverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final blurred = settings.enableBlurEffect;
-    return Selector<MapThemeData, Animation<double>>(
-      selector: (context, v) => v.scale,
-      builder: (context, scale, child) => ScaleTransition(
-        scale: scale,
-        child: child,
+
+    return Theme(
+      data: theme.copyWith(
+        colorScheme: colorScheme.copyWith(
+          onSurfaceVariant: colorScheme.onSurface,
+        ),
       ),
-      child: BlurredOval(
-        enabled: blurred,
-        child: Material(
-          type: MaterialType.circle,
-          color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
-          child: Ink(
-            decoration: BoxDecoration(
-              border: AvesBorder.border(context),
-              shape: BoxShape.circle,
-            ),
-            child: Selector<MapThemeData, VisualDensity?>(
-              selector: (context, v) => v.visualDensity,
-              builder: (context, visualDensity, child) => IconButton(
-                key: buttonKey,
-                iconSize: 20,
-                visualDensity: visualDensity,
-                icon: icon,
-                onPressed: onPressed,
-                tooltip: tooltip,
+      child: Selector<MapThemeData, Animation<double>>(
+        selector: (context, v) => v.scale,
+        builder: (context, scale, child) => ScaleTransition(
+          scale: scale,
+          child: child,
+        ),
+        child: BlurredOval(
+          enabled: blurred,
+          child: Material(
+            type: MaterialType.circle,
+            color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
+            child: Ink(
+              decoration: BoxDecoration(
+                border: AvesBorder.border(context),
+                shape: BoxShape.circle,
+              ),
+              child: Selector<MapThemeData, VisualDensity?>(
+                selector: (context, v) => v.visualDensity,
+                builder: (context, visualDensity, child) => IconButton(
+                  key: buttonKey,
+                  iconSize: 20,
+                  visualDensity: visualDensity,
+                  icon: icon,
+                  onPressed: onPressed,
+                  tooltip: tooltip,
+                ),
               ),
             ),
           ),

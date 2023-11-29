@@ -82,11 +82,13 @@ class _AppDrawerState extends State<AppDrawer> {
 
     return Drawer(
       child: ListTileTheme.merge(
-        selectedColor: Theme.of(context).colorScheme.secondary,
+        selectedColor: Theme.of(context).colorScheme.primary,
+        horizontalTitleGap: 20,
+        visualDensity: VisualDensity.comfortable,
         child: Selector<MediaQueryData, double>(
           selector: (context, mq) => mq.effectiveBottomPadding,
           builder: (context, mqPaddingBottom, child) {
-            final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+            final textScaler = MediaQuery.textScalerOf(context);
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
               controller: _scrollController,
@@ -95,7 +97,7 @@ class _AppDrawerState extends State<AppDrawer> {
               padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: IconTheme(
                 data: iconTheme.copyWith(
-                  size: iconTheme.size! * textScaleFactor,
+                  size: textScaler.scale(iconTheme.size!),
                 ),
                 child: Column(
                   children: drawerItems,
@@ -118,9 +120,12 @@ class _AppDrawerState extends State<AppDrawer> {
       ));
     }
 
+    final drawerButtonStyle = ButtonStyle(
+      padding: MaterialStateProperty.all(const EdgeInsetsDirectional.only(start: 12, end: 16)),
+    );
     return Container(
-      padding: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
-      color: Theme.of(context).colorScheme.secondary,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      color: Theme.of(context).colorScheme.primary,
       child: SafeArea(
         bottom: false,
         child: Column(
@@ -132,12 +137,12 @@ class _AppDrawerState extends State<AppDrawer> {
                 spacing: 16,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  const AvesLogo(size: 56),
+                  const AvesLogo(size: 48),
                   Text(
                     context.l10n.appName,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 44,
+                      fontSize: 38,
                       fontWeight: FontWeight.w300,
                       letterSpacing: 1.0,
                       fontFeatures: [FontFeature.enable('smcp')],
@@ -162,6 +167,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     // key is expected by test driver
                     key: const Key('drawer-about-button'),
                     onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
+                    style: drawerButtonStyle,
                     icon: const Icon(AIcons.info),
                     label: Text(context.l10n.drawerAboutButton),
                   ),
@@ -169,6 +175,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     // key is expected by test driver
                     key: const Key('drawer-settings-button'),
                     onPressed: () => goTo(SettingsPage.routeName, (_) => const SettingsPage()),
+                    style: drawerButtonStyle,
                     icon: const Icon(AIcons.settings),
                     label: Text(context.l10n.drawerSettingsButton),
                   ),

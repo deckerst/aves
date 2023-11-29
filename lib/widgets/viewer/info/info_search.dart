@@ -18,11 +18,13 @@ class InfoSearchDelegate extends SearchDelegate {
 
   InfoSearchDelegate({
     required String searchFieldLabel,
+    required TextStyle searchFieldStyle,
     required this.entry,
     required this.metadataNotifier,
     required this.isSelecting,
   }) : super(
           searchFieldLabel: searchFieldLabel,
+          searchFieldStyle: searchFieldStyle,
         );
 
   @override

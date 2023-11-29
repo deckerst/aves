@@ -96,7 +96,7 @@ class LocationFilter extends CoveredCollectionFilter {
             return Text(
               flag,
               style: TextStyle(fontSize: size),
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.noScaling,
             );
           }
         }
@@ -108,7 +108,7 @@ class LocationFilter extends CoveredCollectionFilter {
             return Text(
               flag,
               style: TextStyle(fontSize: size),
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.noScaling,
             );
           }
         }

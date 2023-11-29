@@ -11,7 +11,6 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:panorama/panorama.dart';
@@ -57,11 +56,9 @@ class _PanoramaPageState extends State<PanoramaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        _onLeave();
-        return SynchronousFuture(true);
-      },
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) => _onLeave(),
       child: AvesScaffold(
         body: Stack(
           children: [
