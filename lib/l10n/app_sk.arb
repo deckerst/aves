@@ -1512,5 +1512,11 @@
   "settingsViewerShowHistogram": "Zobraziť histogram",
   "@settingsViewerShowHistogram": {},
   "settingsVideoPlaybackTile": "Prehrávanie",
-  "@settingsVideoPlaybackTile": {}
+  "@settingsVideoPlaybackTile": {},
+  "entryActionCast": "Krúžky",
+  "@entryActionCast": {},
+  "aboutDataUsageClearCache": "Vymazať cache",
+  "@aboutDataUsageClearCache": {},
+  "castDialogTitle": "Cast zariadenia",
+  "@castDialogTitle": {}
 }

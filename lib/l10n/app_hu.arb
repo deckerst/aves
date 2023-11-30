@@ -1514,5 +1514,9 @@
   "settingsViewerShowHistogram": "Hisztogram megjelenítése",
   "@settingsViewerShowHistogram": {},
   "aboutDataUsageClearCache": "Gyorsítótár törlése",
-  "@aboutDataUsageClearCache": {}
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Kivetítés",
+  "@entryActionCast": {},
+  "castDialogTitle": "Kivetítő eszközök",
+  "@castDialogTitle": {}
 }
