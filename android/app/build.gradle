@@ -68,11 +68,6 @@ android {
         // if there are some libs in `lib/armeabi-v7a` unmatched by libs in `lib/arm64-v8a`,
         // so we exclude the extra `neon` libs bundled by `FFmpegKit`.
         exclude 'lib/armeabi-v7a/*_neon.so'
-
-        // necessary since Flutter v3.16.0
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-        pickFirst 'lib/arm64-v8a/libc++_shared.so'
-        pickFirst 'lib/x86_64/libc++_shared.so'
     }
 
     sourceSets {
