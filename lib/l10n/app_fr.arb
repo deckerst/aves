@@ -1356,5 +1356,9 @@
   "overlayHistogramNone": "Aucun",
   "@overlayHistogramNone": {},
   "aboutDataUsageClearCache": "Vider le cache",
-  "@aboutDataUsageClearCache": {}
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Caster",
+  "@entryActionCast": {},
+  "castDialogTitle": "Appareils",
+  "@castDialogTitle": {}
 }

@@ -1,11 +1,11 @@
 {
-  "aboutPageTitle": "ଵିଷୟରେ",
+  "aboutPageTitle": "ସମ୍ବନ୍ଧରେ",
   "@aboutPageTitle": {},
   "sortBySize": "ଆକାର ଅନୁଯାୟୀ",
   "@sortBySize": {},
   "albumCamera": "କ୍ୟାମେରା",
   "@albumCamera": {},
-  "drawerAboutButton": "ଵିଷୟରେ",
+  "drawerAboutButton": "ସମ୍ବନ୍ଧରେ",
   "@drawerAboutButton": {},
   "drawerSettingsButton": "ସେଟିଂ",
   "@drawerSettingsButton": {},
@@ -138,5 +138,11 @@
   "setCoverDialogAuto": "ସ୍ୱତଃ",
   "@setCoverDialogAuto": {},
   "welcomeOptional": "ଵୈକଳ୍ପିକ",
-  "@welcomeOptional": {}
+  "@welcomeOptional": {},
+  "viewDialogGroupSectionTitle": "ଗୋଷ୍ଠୀ",
+  "@viewDialogGroupSectionTitle": {},
+  "viewDialogSortSectionTitle": "ସଜାନ୍ତୁ",
+  "@viewDialogSortSectionTitle": {},
+  "menuActionStats": "ପରିସଂଖ୍ୟାନ",
+  "@menuActionStats": {}
 }
