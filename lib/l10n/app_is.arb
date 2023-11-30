@@ -37,7 +37,7 @@
   "@aboutDataUsageMisc": {},
   "editorActionTransform": "Ummyndun",
   "@editorActionTransform": {},
-  "collectionExportFailureFeedback": "{count, plural, ={Mistókst að flytja út 1 atriði} other{Mistókst að flytja út {count} atriði}}",
+  "collectionExportFailureFeedback": "{count, plural, =1{Mistókst að flytja út 1 atriði} other{Mistókst að flytja út {count} atriðum}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {}
@@ -145,7 +145,7 @@
   "@chipActionHide": {},
   "aboutDataUsageDatabase": "Gagnagrunnur",
   "@aboutDataUsageDatabase": {},
-  "collectionMoveFailureFeedback": "{count, plural, ={Mistókst að flytja 1 atriði} other{Mistókst að flytja {count} atriði}}",
+  "collectionMoveFailureFeedback": "{count, plural, =1{Mistókst að flytja 1 atriði} other{Mistókst að flytja {count} atriðum}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {}
@@ -351,7 +351,7 @@
   "@appName": {},
   "sortOrderOldestFirst": "Elsta fyrst",
   "@sortOrderOldestFirst": {},
-  "collectionRenameFailureFeedback": "{count, plural, ={Mistókst að endurnefna 1 atriði} other{Mistókst að endurnefna {count} atriði}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Mistókst að endurnefna 1 atriði} other{Mistókst að endurnefna {count} atriðum}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
       "count": {}
@@ -361,7 +361,7 @@
   "@videoResumptionModeAlways": {},
   "tagEditorDiscardDialogMessage": "Viltu henda breytingum?",
   "@tagEditorDiscardDialogMessage": {},
-  "collectionEditSuccessFeedback": "{count, plural, ={Breytti 1 atriði} other{Breytti {count} atriðum}}",
+  "collectionEditSuccessFeedback": "{count, plural, =1{Breytti 1 atriði} other{Breytti {count} atriðum}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {}
@@ -419,7 +419,7 @@
   "@collectionGroupNone": {},
   "searchRatingSectionTitle": "Einkunnir",
   "@searchRatingSectionTitle": {},
-  "collectionCopyFailureFeedback": "{count, plural, ={Mistókst að afrita 1 atriði} other{Mistókst að afrita {count} atriði}}",
+  "collectionCopyFailureFeedback": "{count, plural, =1{Mistókst að afrita 1 atriði} other{Mistókst að afrita {count} atriðum}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {}
@@ -483,7 +483,7 @@
   "@viewerTransitionZoomIn": {},
   "drawerCollectionAll": "Allt safnið",
   "@drawerCollectionAll": {},
-  "collectionMoveSuccessFeedback": "{count, plural, ={Færði 1 atriði} other{Færði {count} atriði}}",
+  "collectionMoveSuccessFeedback": "{count, plural, =1{Færði 1 atriði} other{Færði {count} atriðum}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {}
@@ -593,7 +593,7 @@
   "@drawerCollectionSphericalVideos": {},
   "moveUndatedConfirmationDialogMessage": "Vista dagsetningar atriðis áður en haldið er áfram?",
   "@moveUndatedConfirmationDialogMessage": {},
-  "collectionEditFailureFeedback": "{count, plural, ={Mistókst að breyta 1 atriði} other{Mistókst að breyta {count} atriðum}}",
+  "collectionEditFailureFeedback": "{count, plural, =1{Mistókst að breyta 1 atriði} other{Mistókst að breyta {count} atriðum}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {}
@@ -649,7 +649,7 @@
   "@exportEntryDialogWidth": {},
   "newAlbumDialogTitle": "Nýtt albúm",
   "@newAlbumDialogTitle": {},
-  "collectionRenameSuccessFeedback": "{count, plural, ={Endurnefndi 1 atriði} other{Endurnefndi {count} atriði}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{Endurnefndi 1 atriði} other{Endurnefndi {count} atriðum}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {}

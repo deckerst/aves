@@ -646,17 +646,9 @@
   ],
 
   "be": [
-    "entryActionCast",
     "binEntriesConfirmationDialogMessage",
     "deleteEntriesConfirmationDialogMessage",
-    "setCoverDialogCustom",
-    "hideFilterConfirmationDialogMessage",
     "newVaultWarningDialogMessage",
-    "vaultBinUsageDialogMessage",
-    "renameAlbumDialogLabel",
-    "renameAlbumDialogLabelAlreadyExistsHelper",
-    "renameEntrySetPageTitle",
-    "renameEntrySetPagePatternFieldLabel",
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
@@ -724,12 +716,6 @@
     "aboutPageTitle",
     "aboutLinkLicense",
     "aboutLinkPolicy",
-    "aboutBugSectionTitle",
-    "aboutBugSaveLogInstruction",
-    "aboutBugCopyInfoInstruction",
-    "aboutBugCopyInfoButton",
-    "aboutBugReportInstruction",
-    "aboutBugReportButton",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
     "aboutDataUsageDatabase",
@@ -3245,11 +3231,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "fr": [
-    "entryActionCast",
-    "castDialogTitle"
-  ],
-
   "gl": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -5136,11 +5117,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "hu": [
-    "entryActionCast",
-    "castDialogTitle"
-  ],
-
   "id": [
     "entryActionCast",
     "castDialogTitle"
@@ -5866,11 +5842,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "ko": [
-    "entryActionCast",
-    "castDialogTitle"
   ],
 
   "lt": [
@@ -7171,9 +7142,6 @@
     "menuActionSelectNone",
     "menuActionMap",
     "menuActionSlideshow",
-    "menuActionStats",
-    "viewDialogSortSectionTitle",
-    "viewDialogGroupSectionTitle",
     "viewDialogLayoutSectionTitle",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
@@ -7559,12 +7527,6 @@
     "settingsVideoResumptionModeTile",
     "settingsVideoResumptionModeDialogTitle",
     "tagEditorDiscardDialogMessage"
-  ],
-
-  "sk": [
-    "entryActionCast",
-    "castDialogTitle",
-    "aboutDataUsageClearCache"
   ],
 
   "sl": [
