@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer / Slideshow: cast images via DLNA/UPnP
+- Icelandic translation (thanks Sveinn í Felli)
 
 ### Changed
 
