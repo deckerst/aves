@@ -542,5 +542,7 @@
   "settingsVideoEnablePip": "تصویر در تصویر",
   "@settingsVideoEnablePip": {},
   "wallpaperTargetHomeLock": "صفحهٔ خانه و صفحهٔ قفل",
-  "@wallpaperTargetHomeLock": {}
+  "@wallpaperTargetHomeLock": {},
+  "viewDialogSortSectionTitle": "ترتیب بندی",
+  "@viewDialogSortSectionTitle": {}
 }
