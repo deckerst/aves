@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.0"></a>[v1.10.0] - 2023-12-02
+
 ### Added
 
 - Viewer / Slideshow: cast images via DLNA/UPnP
