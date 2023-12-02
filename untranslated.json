@@ -646,24 +646,7 @@
   ],
 
   "be": [
-    "binEntriesConfirmationDialogMessage",
-    "deleteEntriesConfirmationDialogMessage",
-    "newVaultWarningDialogMessage",
-    "renameEntrySetPageInsertTooltip",
-    "renameEntrySetPagePreviewSectionTitle",
-    "renameProcessorCounter",
-    "renameProcessorName",
-    "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
-    "exportEntryDialogFormat",
-    "exportEntryDialogWidth",
-    "exportEntryDialogHeight",
-    "exportEntryDialogQuality",
-    "exportEntryDialogWriteMetadata",
-    "renameEntryDialogLabel",
-    "editEntryDialogCopyFromItem",
-    "editEntryDialogTargetFieldsHeader",
-    "editEntryDateDialogTitle",
     "editEntryDateDialogSetCustom",
     "editEntryDateDialogCopyField",
     "editEntryDateDialogExtractFromTitle",
@@ -837,7 +820,6 @@
     "searchRatingSectionTitle",
     "searchMetadataSectionTitle",
     "settingsPageTitle",
-    "settingsSystemDefault",
     "settingsDefault",
     "settingsDisabled",
     "settingsAskEverytime",
@@ -983,33 +965,7 @@
     "settingsStorageAccessRevokeTooltip",
     "settingsAccessibilitySectionTitle",
     "settingsRemoveAnimationsTile",
-    "settingsRemoveAnimationsDialogTitle",
-    "settingsTimeToTakeActionTile",
-    "settingsAccessibilityShowPinchGestureAlternatives",
-    "settingsDisplaySectionTitle",
-    "settingsThemeBrightnessTile",
-    "settingsThemeBrightnessDialogTitle",
-    "settingsThemeColorHighlights",
-    "settingsThemeEnableDynamicColor",
-    "settingsDisplayRefreshRateModeTile",
-    "settingsDisplayRefreshRateModeDialogTitle",
-    "settingsDisplayUseTvInterface",
-    "settingsLanguageSectionTitle",
-    "settingsLanguageTile",
-    "settingsLanguagePageTitle",
-    "settingsCoordinateFormatTile",
-    "settingsCoordinateFormatDialogTitle",
-    "settingsUnitSystemTile",
-    "settingsUnitSystemDialogTitle",
-    "settingsScreenSaverPageTitle",
-    "settingsWidgetPageTitle",
-    "settingsWidgetShowOutline",
-    "settingsWidgetOpenPage",
-    "settingsWidgetDisplayedItem",
-    "settingsCollectionTile",
-    "statsPageTitle",
-    "statsWithGps",
-    "statsTopCountriesSectionTitle"
+    "statsWithGps"
   ],
 
   "bn": [
@@ -2205,16 +2161,9 @@
     "filePickerUseThisFolder"
   ],
 
-  "cs": [
-    "entryActionCast",
-    "castDialogTitle"
-  ],
-
   "de": [
     "entryActionCast",
     "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
     "castDialogTitle",
     "aboutDataUsageClearCache",
     "settingsViewerShowHistogram"
@@ -2337,7 +2286,6 @@
     "menuActionSelect",
     "menuActionSelectAll",
     "menuActionSelectNone",
-    "viewDialogSortSectionTitle",
     "viewDialogLayoutSectionTitle",
     "viewDialogReverseSortOrder",
     "tileLayoutMosaic",
