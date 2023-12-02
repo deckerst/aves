@@ -31,9 +31,9 @@ class WallpaperPage extends StatelessWidget {
   final AvesEntry? entry;
 
   const WallpaperPage({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +60,9 @@ class EntryEditor extends StatefulWidget {
   final AvesEntry entry;
 
   const EntryEditor({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   State<EntryEditor> createState() => _EntryEditorState();
@@ -119,10 +119,10 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   @override
   void dispose() {
     cleanEntryControllers(entry);
-    _viewerController.dispose();
-    _videoActionDelegate.dispose();
+    _overlayVisible.dispose();
     _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChanged);
+    _videoActionDelegate.dispose();
+    _viewerController.dispose();
     super.dispose();
   }
 

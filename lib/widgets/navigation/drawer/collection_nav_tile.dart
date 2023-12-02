@@ -13,7 +13,6 @@ class CollectionNavTile extends StatelessWidget {
   final Widget? leading;
   final Widget title;
   final Widget? trailing;
-  final bool dense;
   final CollectionFilter? filter;
   final bool Function() isSelected;
 
@@ -22,10 +21,9 @@ class CollectionNavTile extends StatelessWidget {
     required this.leading,
     required this.title,
     this.trailing,
-    bool? dense,
     required this.filter,
     required this.isSelected,
-  }) : dense = dense ?? false;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +47,6 @@ class CollectionNavTile extends StatelessWidget {
                 },
               )
             : null,
-        dense: dense,
         onTap: () => _goToCollection(context),
         selected: context.currentRouteName == CollectionPage.routeName && isSelected(),
       ),

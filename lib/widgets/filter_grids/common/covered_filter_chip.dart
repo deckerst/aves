@@ -43,17 +43,17 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     this.heroType = HeroType.onTap,
   }) : thumbnailExtent = thumbnailExtent ?? extent;
 
-  static double tileHeight({required double extent, required double textScaleFactor, required bool showText}) {
-    return extent + infoHeight(extent: extent, textScaleFactor: textScaleFactor, showText: showText);
+  static double tileHeight({required double extent, required TextScaler textScaler, required bool showText}) {
+    return extent + infoHeight(extent: extent, textScaler: textScaler, showText: showText);
   }
 
   // info includes title and content details
-  static double infoHeight({required double extent, required double textScaleFactor, required bool showText}) {
+  static double infoHeight({required double extent, required TextScaler textScaler, required bool showText}) {
     if (!showText) return 0;
 
     // height can actually be a little larger or smaller, when info includes icons or non-latin scripts
     // but it's not worth measuring text metrics, as the widget is flexible enough to absorb the difference
-    return (AvesFilterChip.fontSize + detailFontSize(extent) + 4) * textScaleFactor + AvesFilterChip.decoratedContentVerticalPadding * 2;
+    return textScaler.scale(AvesFilterChip.fontSize + detailFontSize(extent) + 4) + AvesFilterChip.decoratedContentVerticalPadding * 2;
   }
 
   static Radius radius(double extent) => Radius.circular(min<double>(AvesFilterChip.defaultRadius, extent / 4));
@@ -68,26 +68,26 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       stream: covers.entryChangeStream.where((event) => event == null || event.contains(filter)),
       builder: (context, snapshot) => Consumer<CollectionSource>(
         builder: (context, source, child) {
-          switch (T) {
-            case AlbumFilter:
+          switch (filter) {
+            case AlbumFilter filter:
               {
-                final album = (filter as AlbumFilter).album;
+                final album = filter.album;
                 return StreamBuilder<AlbumSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
-            case LocationFilter:
+            case LocationFilter filter:
               {
-                final countryCode = (filter as LocationFilter).code;
+                final countryCode = filter.code;
                 return StreamBuilder<CountrySummaryInvalidatedEvent>(
                   stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
-            case TagFilter:
+            case TagFilter filter:
               {
-                final tag = (filter as TagFilter).tag;
+                final tag = filter.tag;
                 return StreamBuilder<TagSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags!.contains(tag)),
                   builder: (context, snapshot) => _buildChip(context, source),
@@ -111,7 +111,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       // album filters themselves do not change, but decoration derived from it does
       chipKey = ValueKey(appInventory.areAppNamesReadyNotifier.value);
     }
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     return AvesFilterChip(
       key: chipKey,
       filter: _filter,
@@ -123,7 +123,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: infoHeight(
               extent: extent,
-              textScaleFactor: textScaleFactor,
+              textScaler: textScaler,
               showText: showText,
             ),
           ),
@@ -168,7 +168,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     );
   }
 
-  Color _detailColor(BuildContext context) => Theme.of(context).textTheme.bodySmall!.color!;
+  Color _detailColor(BuildContext context) => Theme.of(context).colorScheme.onSurfaceVariant;
 
   Widget _buildDetails(BuildContext context, CollectionSource source, T filter) {
     final locale = context.l10n.localeName;

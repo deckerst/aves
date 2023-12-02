@@ -23,6 +23,12 @@ class _PinDialogState extends State<PinDialog> {
   String? _firstPin;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return AvesDialog(
@@ -46,8 +52,8 @@ class _PinDialogState extends State<PinDialog> {
               pinTheme: PinTheme(
                 activeColor: colorScheme.onBackground,
                 inactiveColor: colorScheme.onBackground,
-                selectedColor: colorScheme.secondary,
-                selectedFillColor: colorScheme.secondary,
+                selectedColor: colorScheme.primary,
+                selectedFillColor: colorScheme.primary,
                 borderRadius: BorderRadius.circular(8),
                 shape: PinCodeFieldShape.box,
               ),

@@ -80,9 +80,8 @@ class _ImageHistogramState extends State<ImageHistogram> {
     final targetEntry = entry;
     final forceUpdate = targetEntry.isAnimated;
     final newLevels = await viewStateController.getHistogramLevels(info, forceUpdate);
-    if (mounted) {
-      setState(() => _levels = targetEntry == entry ? newLevels : {});
-    }
+    if (!mounted) return;
+    setState(() => _levels = targetEntry == entry ? newLevels : {});
   }
 }
 

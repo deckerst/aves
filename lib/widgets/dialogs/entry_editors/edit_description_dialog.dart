@@ -35,6 +35,13 @@ class _EditEntryTitleDescriptionDialogState extends State<EditEntryTitleDescript
   }
 
   @override
+  void dispose() {
+    _titleTextController.dispose();
+    _descriptionTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Builder(builder: (context) {

@@ -76,6 +76,7 @@ class AIcons {
   static const addShortcut = Icons.add_to_home_screen_outlined;
   static const cancel = Icons.cancel_outlined;
   static const captureFrame = Icons.screenshot_outlined;
+  static const cast = Icons.cast_outlined;
   static const clear = Icons.clear_outlined;
   static const clipboard = Icons.content_copy_outlined;
   static const convert = Icons.transform_outlined;

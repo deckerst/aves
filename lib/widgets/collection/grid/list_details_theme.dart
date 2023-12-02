@@ -26,26 +26,27 @@ class EntryListDetailsTheme extends StatelessWidget {
         final locale = context.l10n.localeName;
 
         final use24hour = mq.alwaysUse24HourFormat;
-        final textScaleFactor = mq.textScaleFactor;
+        final textScaler = mq.textScaler;
 
         final textTheme = Theme.of(context).textTheme;
         final titleStyle = textTheme.bodyMedium!;
         final captionStyle = textTheme.bodySmall!;
 
-        final titleLineHeight = (RenderParagraph(
+        final titleLineHeightParagraph = RenderParagraph(
           TextSpan(text: 'Fake Title', style: titleStyle),
           textDirection: TextDirection.ltr,
-          textScaleFactor: textScaleFactor,
-        )..layout(const BoxConstraints(), parentUsesSize: true))
-            .getMaxIntrinsicHeight(double.infinity);
+          textScaler: textScaler,
+        )..layout(const BoxConstraints(), parentUsesSize: true);
+        final titleLineHeight = titleLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
+        titleLineHeightParagraph.dispose();
 
-        final captionLineHeight = (RenderParagraph(
+        final captionLineHeightParagraph = RenderParagraph(
           TextSpan(text: formatDateTime(DateTime.now(), locale, use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
-          textScaleFactor: textScaleFactor,
+          textScaler: textScaler,
           strutStyle: AStyles.overflowStrut,
-        )..layout(const BoxConstraints(), parentUsesSize: true))
-            .getMaxIntrinsicHeight(double.infinity);
+        )..layout(const BoxConstraints(), parentUsesSize: true);
+        final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
 
         var titleMaxLines = 1;
         var showDate = false;
@@ -71,7 +72,7 @@ class EntryListDetailsTheme extends StatelessWidget {
           captionStyle: captionStyle,
           iconTheme: IconThemeData(
             color: captionStyle.color,
-            size: captionStyle.fontSize! * textScaleFactor,
+            size: textScaler.scale(captionStyle.fontSize!),
           ),
         );
       },

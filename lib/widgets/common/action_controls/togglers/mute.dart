@@ -4,6 +4,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
 
@@ -25,9 +26,10 @@ class MuteToggler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: controller?.canMuteNotifier ?? ValueNotifier(false),
-      builder: (context, canDo, child) {
+    return NullableValueListenableBuilder<bool>(
+      valueListenable: controller?.canMuteNotifier,
+      builder: (context, value, child) {
+        final canDo = value ?? false;
         return StreamBuilder<double>(
           stream: controller?.volumeStream ?? Stream.value(1.0),
           builder: (context, snapshot) {
@@ -66,9 +68,10 @@ class MuteTogglerCaption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: controller?.canMuteNotifier ?? ValueNotifier(false),
-      builder: (context, canDo, child) {
+    return NullableValueListenableBuilder<bool>(
+      valueListenable: controller?.canMuteNotifier,
+      builder: (context, value, child) {
+        final canDo = value ?? false;
         return StreamBuilder<double>(
           stream: controller?.volumeStream ?? Stream.value(1.0),
           builder: (context, snapshot) {

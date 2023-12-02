@@ -96,8 +96,10 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _dotLocationNotifier.removeListener(_updateLocationInfo);
     _mapController.dispose();
+    _isPageAnimatingNotifier.dispose();
+    _dotLocationNotifier.dispose();
+    _infoLocationNotifier.dispose();
     super.dispose();
   }
 
@@ -218,8 +220,8 @@ class _LocationInfo extends StatelessWidget {
   }
 
   static double getIconSize(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    return 16 * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    return textScaler.scale(16);
   }
 }
 
@@ -252,8 +254,14 @@ class _AddressRowState extends State<_AddressRow> {
   }
 
   @override
+  void dispose() {
+    _addressLineNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -266,7 +274,7 @@ class _AddressRowState extends State<_AddressRow> {
             // addresses can include non-latin scripts with inconsistent line height,
             // which is especially an issue for relayout/painting of heavy Google map,
             // so we give extra height to give breathing room to the text and stabilize layout
-            height: Theme.of(context).textTheme.bodyMedium!.fontSize! * textScaleFactor * 2,
+            height: textScaler.scale(Theme.of(context).textTheme.bodyMedium!.fontSize!) * 2,
             child: ValueListenableBuilder<String?>(
               valueListenable: _addressLineNotifier,
               builder: (context, addressLine, child) {
@@ -288,7 +296,8 @@ class _AddressRowState extends State<_AddressRow> {
   Future<void> _updateAddress() async {
     final location = widget.location;
     final addressLine = await _getAddressLine(location);
-    if (mounted && location == widget.location) {
+    if (!mounted) return;
+    if (location == widget.location) {
       _addressLineNotifier.value = addressLine;
     }
   }

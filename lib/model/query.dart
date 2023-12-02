@@ -16,6 +16,13 @@ class Query extends ChangeNotifier {
     }
   }
 
+  @override
+  void dispose() {
+    _focusRequestNotifier.dispose();
+    _queryNotifier.dispose();
+    super.dispose();
+  }
+
   bool _enabled = false;
 
   bool get enabled => _enabled;

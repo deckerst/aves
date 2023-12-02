@@ -192,7 +192,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _overlayVisible.dispose();
     _viewLocked.dispose();
     _overlayExpandedNotifier.dispose();
+    _currentVerticalPage.dispose();
+    _horizontalPager.dispose();
     _verticalPager.dispose();
+    _verticalScrollNotifier.dispose();
     _heroInfoNotifier.dispose();
     _stopOverlayHidingTimer();
     AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);
@@ -211,10 +214,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   Widget build(BuildContext context) {
     final viewStateConductor = context.read<ViewStateConductor>();
-    return WillPopScope(
-      onWillPop: () {
-        _onWillPop();
-        return SynchronousFuture(false);
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+
+        _onPopInvoked();
       },
       child: ValueListenableProvider<HeroInfo?>.value(
         value: _heroInfoNotifier,
@@ -513,6 +518,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   bool _handleNotification(dynamic notification) {
     if (notification is FilterSelectedNotification) {
       _goToCollection(notification.filter);
+    } else if (notification is CastNotification) {
+      _cast(notification.enabled);
     } else if (notification is FullImageLoadedNotification) {
       final viewStateController = context.read<ViewStateConductor>().getOrCreateController(notification.entry);
       // microtask so that listeners do not trigger during build
@@ -556,7 +563,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       if (_overlayVisible.value) {
         _overlayVisible.value = false;
       } else {
-        _onWillPop();
+        _onPopInvoked();
       }
     } else if (notification is TvShowMoreInfoNotification) {
       if (!_overlayVisible.value) {
@@ -576,6 +583,21 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       return false;
     }
     return true;
+  }
+
+  Future<void> _cast(bool enabled) async {
+    if (enabled) {
+      final entries = collection?.sortedEntries;
+      if (entries != null) {
+        await viewerController.initCast(context, entries);
+        final entry = entryNotifier.value;
+        if (entry != null) {
+          await viewerController.castEntry(entry);
+        }
+      }
+    } else {
+      await viewerController.stopCast();
+    }
   }
 
   Future<void> _onVideoAction({
@@ -753,9 +775,16 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _isEntryTracked = false;
     await pauseVideoControllers();
     await initEntryControllers(newEntry);
+
+    if (viewerController.isCasting) {
+      final entry = entryNotifier.value;
+      if (entry != null) {
+        await viewerController.castEntry(entry);
+      }
+    }
   }
 
-  void _onWillPop() {
+  void _onPopInvoked() {
     if (_currentVerticalPage.value == infoPage) {
       // back from info to image
       _goToVerticalPage(imagePage);
@@ -813,6 +842,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     // get the theme first, as the context is likely
     // to be unmounted after the other async steps
     final theme = Theme.of(context);
+
+    await viewerController.stopCast();
 
     switch (settings.maxBrightness) {
       case MaxBrightness.never:

@@ -1307,7 +1307,7 @@
   "@settingsSlideshowShuffle": {},
   "settingsSlideshowAnimatedZoomEffect": "Animovaný efekt přiblížení",
   "@settingsSlideshowAnimatedZoomEffect": {},
-  "settingsSlideshowIntervalTile": "Interval",
+  "settingsSlideshowIntervalTile": "Prodleva",
   "@settingsSlideshowIntervalTile": {},
   "settingsSubtitleThemeSample": "Toto je příklad.",
   "@settingsSubtitleThemeSample": {},
@@ -1510,5 +1510,13 @@
   "overlayHistogramRGB": "RGB",
   "@overlayHistogramRGB": {},
   "settingsViewerShowHistogram": "Zobrazit histogram",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "overlayHistogramLuminance": "Světelnost",
+  "@overlayHistogramLuminance": {},
+  "aboutDataUsageClearCache": "Vymazat mezipaměť",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Promítat",
+  "@entryActionCast": {},
+  "castDialogTitle": "Zařízení pro promítání",
+  "@castDialogTitle": {}
 }

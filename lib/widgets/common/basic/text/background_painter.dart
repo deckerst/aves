@@ -36,7 +36,7 @@ class TextBackgroundPainter extends StatelessWidget {
           ),
           textAlign: textAlign,
           textDirection: Directionality.of(context),
-          textScaleFactor: MediaQuery.textScaleFactorOf(context),
+          textScaler: MediaQuery.textScalerOf(context),
         )..layout(constraints, parentUsesSize: true);
 
         final textLength = spans.map((v) => v.text?.length ?? 0).sum;
@@ -44,6 +44,7 @@ class TextBackgroundPainter extends StatelessWidget {
           TextSelection(baseOffset: 0, extentOffset: textLength),
           boxHeightStyle: ui.BoxHeightStyle.max,
         );
+        paragraph.dispose();
 
         // merge boxes to avoid artifacts at box edges, from anti-aliasing and rounding hacks
         final lineRects = groupBy<TextBox, double>(allBoxes, (v) => v.top).entries.map((kv) {

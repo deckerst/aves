@@ -24,7 +24,7 @@ class ViewerThumbnailPreview extends StatefulWidget {
 }
 
 class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
-  final ValueNotifier<int> _entryIndexNotifier = ValueNotifier(0);
+  late final ValueNotifier<int> _entryIndexNotifier;
   final Debouncer _debouncer = Debouncer(delay: ADurations.viewerThumbnailScrollDebounceDelay);
 
   List<AvesEntry> get entries => widget.entries;
@@ -34,7 +34,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
   @override
   void initState() {
     super.initState();
-    _entryIndexNotifier.value = widget.displayedIndex;
+    _entryIndexNotifier = ValueNotifier(widget.displayedIndex);
     _entryIndexNotifier.addListener(_onScrollerIndexChanged);
   }
 
@@ -49,7 +49,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
 
   @override
   void dispose() {
-    _entryIndexNotifier.removeListener(_onScrollerIndexChanged);
+    _entryIndexNotifier.dispose();
     super.dispose();
   }
 
@@ -65,8 +65,7 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
   }
 
   void _onScrollerIndexChanged() => _debouncer(() {
-        if (mounted) {
-          ShowEntryNotification(animate: false, index: _entryIndexNotifier.value).dispatch(context);
-        }
+        if (!mounted) return;
+        ShowEntryNotification(animate: false, index: _entryIndexNotifier.value).dispatch(context);
       });
 }

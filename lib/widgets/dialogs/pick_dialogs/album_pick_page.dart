@@ -90,6 +90,12 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   ];
 
   @override
+  void dispose() {
+    _appBarHeightNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: ValueNotifier(AppMode.pickFilterInternal),

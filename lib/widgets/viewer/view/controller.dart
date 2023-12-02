@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/view_state.dart';
 import 'package:aves/widgets/viewer/view/histogram.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ViewStateController with HistogramMixin {
@@ -13,9 +14,21 @@ class ViewStateController with HistogramMixin {
   ViewStateController({
     required this.entry,
     required this.viewStateNotifier,
-  });
+  }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$ViewStateController',
+        object: this,
+      );
+    }
+  }
 
   void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     viewStateNotifier.dispose();
+    fullImageNotifier.dispose();
   }
 }

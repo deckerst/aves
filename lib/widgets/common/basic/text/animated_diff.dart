@@ -114,14 +114,15 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
   }
 
   Size textSize(String text) {
-    final para = RenderParagraph(
+    final paragraph = RenderParagraph(
       TextSpan(text: text, style: widget.textStyle),
       textDirection: Directionality.of(context),
-      textScaleFactor: MediaQuery.textScaleFactorOf(context),
+      textScaler: MediaQuery.textScalerOf(context),
       strutStyle: widget.strutStyle,
     )..layout(const BoxConstraints(), parentUsesSize: true);
-    final width = para.getMaxIntrinsicWidth(double.infinity);
-    final height = para.getMaxIntrinsicHeight(double.infinity);
+    final width = paragraph.getMaxIntrinsicWidth(double.infinity);
+    final height = paragraph.getMaxIntrinsicHeight(double.infinity);
+    paragraph.dispose();
     return Size(width, height);
   }
 

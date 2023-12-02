@@ -10,6 +10,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -92,15 +93,27 @@ class Analyzer {
 
   Analyzer() {
     debugPrint('$runtimeType create');
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$Analyzer',
+        object: this,
+      );
+    }
     _serviceStateNotifier.addListener(_onServiceStateChanged);
     _source.stateNotifier.addListener(_onSourceStateChanged);
   }
 
   void dispose() {
     debugPrint('$runtimeType dispose');
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    _stopUpdateTimer();
+    _controller?.dispose();
     _serviceStateNotifier.removeListener(_onServiceStateChanged);
     _source.stateNotifier.removeListener(_onSourceStateChanged);
-    _stopUpdateTimer();
+    _source.dispose();
   }
 
   Future<void> start(dynamic args) async {
@@ -114,13 +127,13 @@ class Analyzer {
       progressOffset = args['progressOffset'];
     }
     debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries, at $progressOffset/$progressTotal');
+    _controller?.dispose();
     _controller = AnalysisController(
       canStartService: false,
       entryIds: entryIds,
       force: force,
       progressTotal: progressTotal,
       progressOffset: progressOffset,
-      stopSignal: ValueNotifier(false),
     );
 
     settings.systemLocalesFallback = await deviceService.getLocales();
@@ -149,7 +162,7 @@ class Analyzer {
         await _stopPlatformService();
         _serviceStateNotifier.value = AnalyzerState.stopped;
       case AnalyzerState.stopped:
-        _controller?.stopSignal.value = true;
+        _controller?.enableStopSignal();
         _stopUpdateTimer();
     }
   }

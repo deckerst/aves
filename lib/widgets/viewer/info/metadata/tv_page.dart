@@ -64,7 +64,7 @@ class _TvMetadataPageState extends State<TvMetadataPage> {
           if (selectedDir == null) return const SizedBox();
 
           final rail = NavigationRail(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
             extended: true,
             destinations: titles.mapIndexed((i, title) {
               final dir = metadata[titles[i]]!;

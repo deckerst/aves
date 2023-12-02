@@ -725,12 +725,19 @@ class MediaStoreImageProvider : ImageProvider() {
         val df = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri)
         df ?: throw Exception("failed to get document at path=$oldPath")
 
+        val requestedName = newFile.name
         val renamed = df.renameTo(newFile.name)
         if (!renamed) {
             throw Exception("failed to rename document at path=$oldPath")
         }
+        val effectiveName = df.name
+        if (requestedName != effectiveName) {
+            Log.w(LOG_TAG, "requested renaming document at uri=$oldMediaUri path=$oldPath with name=${requestedName} but got name=$effectiveName")
+        }
+        val newPath = File(newFile.parentFile, df.name).path
+
         scanObsoletePath(activity, oldMediaUri, oldPath, mimeType)
-        return scanNewPathByMediaStore(activity, newFile.path, mimeType)
+        return scanNewPathByMediaStore(activity, newPath, mimeType)
     }
 
     private suspend fun renameSingleByFile(

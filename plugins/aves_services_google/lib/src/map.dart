@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong2/latlong.dart' as ll;
@@ -66,12 +67,13 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
   ZoomedBounds get bounds => boundsNotifier.value;
 
   static const uninitializedLatLng = LatLng(0, 0);
+  static const boundInitDelay = Duration(milliseconds: 100);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _sizeNotifier.addListener(_onSizeChange);
+    _sizeNotifier.addListener(_onSizeChanged);
     _registerWidget(widget);
   }
 
@@ -87,7 +89,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
     _unregisterWidget(widget);
     _serviceMapController?.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    _sizeNotifier.removeListener(_onSizeChange);
+    _sizeNotifier.dispose();
     super.dispose();
   }
 
@@ -140,37 +142,49 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
   }
 
   Widget _buildMap() {
-    final _onMarkerLongPress = widget.onMarkerLongPress;
     return StreamBuilder(
       stream: _markerBitmapReadyStreamController.stream,
       builder: (context, _) {
-        final markers = <Marker>{};
+        final mediaMarkers = <Marker>{};
         _geoEntryByMarkerKey.forEach((markerKey, geoEntry) {
           final bytes = _markerBitmaps[markerKey];
           if (bytes != null) {
             final point = LatLng(geoEntry.latitude!, geoEntry.longitude!);
-            markers.add(Marker(
+            mediaMarkers.add(Marker(
               markerId: MarkerId(geoEntry.markerId!),
               consumeTapEvents: true,
               icon: BitmapDescriptor.fromBytes(bytes),
               position: point,
               onTap: () => widget.onMarkerTap?.call(geoEntry),
+              // TODO TLAD [map] GoogleMap.onLongPress is not appropriate for mediaMarkers, so the call should be here when this is fixed: https://github.com/flutter/flutter/issues/107148
+              // onLongPress: widget.onMarkerLongPress != null
+              //     ? (v) {
+              //         final pressLocation = _fromServiceLatLng(v);
+              //         final mediaMarkers = _geoEntryByMarkerKey.values.toSet();
+              //         final geoEntry = ImageMarker.markerMatch(pressLocation, bounds.zoom, mediaMarkers);
+              //         if (geoEntry != null) {
+              //           widget.onMarkerLongPress?.call(geoEntry, pressLocation);
+              //         }
+              //       }
+              //     : null,
             ));
           }
         });
 
         final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
         final overlayEntry = widget.overlayEntry;
-        return ValueListenableBuilder<ll.LatLng?>(
-          valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
+        return NullableValueListenableBuilder<ll.LatLng?>(
+          valueListenable: widget.dotLocationNotifier,
           builder: (context, dotLocation, child) {
-            return ValueListenableBuilder<double>(
-              valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
-              builder: (context, overlayOpacity, child) {
+            return NullableValueListenableBuilder<double>(
+              valueListenable: widget.overlayOpacityNotifier,
+              builder: (context, value, child) {
+                final double overlayOpacity = value ?? 1.0;
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     _sizeNotifier.value = constraints.biggest;
-                    return GoogleMap(
+                    return _GoogleMap(
+                      dotLocationNotifier: widget.dotLocationNotifier ?? ValueNotifier(null),
                       initialCameraPosition: CameraPosition(
                         bearing: -bounds.rotation,
                         target: _toServiceLatLng(bounds.projectedCenter),
@@ -179,30 +193,17 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
                       onMapCreated: (controller) async {
                         _serviceMapController = controller;
                         final zoom = await controller.getZoomLevel();
+                        // the visible region is sometimes incorrect when queried right after creation,
+                        await Future.delayed(boundInitDelay);
                         await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
-                        if (mounted) {
-                          setState(() {});
-                        }
+                        // `onCameraIdle` is not always automatically triggered following map creation
+                        _onIdle();
                       },
-                      // compass disabled to use provider agnostic controls
-                      compassEnabled: false,
-                      mapToolbarEnabled: false,
                       mapType: _toMapType(widget.style),
                       minMaxZoomPreference: MinMaxZoomPreference(widget.minZoom, widget.maxZoom),
-                      rotateGesturesEnabled: true,
-                      scrollGesturesEnabled: interactive,
-                      // zoom controls disabled to use provider agnostic controls
-                      zoomControlsEnabled: false,
-                      zoomGesturesEnabled: interactive,
-                      // lite mode disabled because it lacks camera animation
-                      liteModeEnabled: false,
-                      // tilt disabled to match leaflet
-                      tiltGesturesEnabled: false,
-                      myLocationEnabled: false,
-                      myLocationButtonEnabled: false,
+                      interactive: interactive,
                       markers: {
-                        // TODO TLAD workaround for dot location marker not showing the last value until this is fixed: https://github.com/flutter/flutter/issues/103686
-                        ...markers,
+                        ...mediaMarkers,
                         if (dotLocation != null && _dotMarkerBitmap != null)
                           Marker(
                             markerId: const MarkerId('dot'),
@@ -225,16 +226,6 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
                       onCameraMove: (position) => _updateVisibleRegion(zoom: position.zoom, rotation: -position.bearing),
                       onCameraIdle: _onIdle,
                       onTap: (v) => widget.onMapTap?.call(_fromServiceLatLng(v)),
-                      onLongPress: _onMarkerLongPress != null
-                          ? (v) {
-                              final pressLocation = _fromServiceLatLng(v);
-                              final markers = _geoEntryByMarkerKey.values.toSet();
-                              final geoEntry = ImageMarker.markerMatch(pressLocation, bounds.zoom, markers);
-                              if (geoEntry != null) {
-                                _onMarkerLongPress(geoEntry, pressLocation);
-                              }
-                            }
-                          : null,
                     );
                   },
                 );
@@ -248,11 +239,9 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
 
   // sometimes the map does not properly update after changing the widget size,
   // so we monitor the size and force refreshing after an arbitrary small delay
-  // TODO TLAD [map] this workaround no longer works with Flutter beta v3.3.0-0.0.pre
-  Future<void> _onSizeChange() async {
-    await Future.delayed(const Duration(milliseconds: 100));
-    debugPrint('refresh map for size=${_sizeNotifier.value}');
-    await _serviceMapController?.setMapStyle(null);
+  Future<void> _onSizeChanged() async {
+    await Future.delayed(boundInitDelay);
+    _onIdle();
   }
 
   void _onIdle() {
@@ -278,12 +267,6 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
         zoom: zoom,
         rotation: rotation,
       );
-    } else {
-      // the visible region is sometimes uninitialized when queried right after creation,
-      // so we query it again next frame
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _updateVisibleRegion(zoom: zoom, rotation: rotation);
-      });
     }
   }
 
@@ -343,5 +326,104 @@ class GmsGeoTiffTileProvider extends TileProvider {
       return Tile(tile.width, tile.height, tile.data);
     }
     return TileProvider.noTile;
+  }
+}
+
+class _GoogleMap extends StatefulWidget {
+  final ValueNotifier<ll.LatLng?>? dotLocationNotifier;
+  final CameraPosition initialCameraPosition;
+  final MapCreatedCallback? onMapCreated;
+  final MapType mapType;
+  final MinMaxZoomPreference minMaxZoomPreference;
+  final bool interactive;
+  final Set<Marker> markers;
+  final Set<TileOverlay> tileOverlays;
+  final CameraPositionCallback? onCameraMove;
+  final VoidCallback? onCameraIdle;
+  final ArgumentCallback<LatLng>? onTap;
+
+  const _GoogleMap({
+    required this.dotLocationNotifier,
+    required this.initialCameraPosition,
+    required this.onMapCreated,
+    required this.mapType,
+    required this.minMaxZoomPreference,
+    required this.interactive,
+    required this.markers,
+    required this.tileOverlays,
+    required this.onCameraMove,
+    required this.onCameraIdle,
+    required this.onTap,
+  });
+
+  @override
+  State<_GoogleMap> createState() => _GoogleMapState();
+}
+
+class _GoogleMapState extends State<_GoogleMap> {
+  @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(covariant _GoogleMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(_GoogleMap widget) {
+    widget.dotLocationNotifier?.addListener(_onDotLocationChanged);
+  }
+
+  void _unregisterWidget(_GoogleMap widget) {
+    widget.dotLocationNotifier?.removeListener(_onDotLocationChanged);
+  }
+
+  // TODO TLAD [map] remove when this is fixed: https://github.com/flutter/flutter/issues/103686
+  Future<void> _onDotLocationChanged() async {
+    // workaround for dot location marker not always reflecting the current location,
+    // despite `ValueListenableBuilder` on `widget.dotLocationNotifier`
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GoogleMap(
+      initialCameraPosition: widget.initialCameraPosition,
+      onMapCreated: widget.onMapCreated,
+      // compass disabled to use provider agnostic controls
+      compassEnabled: false,
+      mapToolbarEnabled: false,
+      mapType: widget.mapType,
+      minMaxZoomPreference: widget.minMaxZoomPreference,
+      rotateGesturesEnabled: true,
+      scrollGesturesEnabled: widget.interactive,
+      // zoom controls disabled to use provider agnostic controls
+      zoomControlsEnabled: false,
+      zoomGesturesEnabled: widget.interactive,
+      // lite mode disabled because it lacks camera animation
+      liteModeEnabled: false,
+      // tilt disabled to match leaflet
+      tiltGesturesEnabled: false,
+      myLocationEnabled: false,
+      myLocationButtonEnabled: false,
+      markers: widget.markers,
+      tileOverlays: widget.tileOverlays,
+      onCameraMove: widget.onCameraMove,
+      onCameraIdle: widget.onCameraIdle,
+      onTap: widget.onTap,
+    );
   }
 }

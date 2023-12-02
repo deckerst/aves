@@ -28,6 +28,12 @@ class _ChipHighlightOverlayState extends State<ChipHighlightOverlay> {
   CollectionFilter get filter => widget.filter;
 
   @override
+  void dispose() {
+    _highlightedNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final highlightInfo = context.watch<HighlightInfo>();
     _highlightedNotifier.value = highlightInfo.contains(filter);
@@ -35,7 +41,7 @@ class _ChipHighlightOverlayState extends State<ChipHighlightOverlay> {
       builder: (context) => Container(
         decoration: BoxDecoration(
           border: Border.fromBorderSide(BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.primary,
             width: widget.extent * .1,
           )),
           borderRadius: widget.borderRadius,

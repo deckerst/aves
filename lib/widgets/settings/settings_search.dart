@@ -15,6 +15,7 @@ class SettingsSearchDelegate extends AvesSearchDelegate {
 
   SettingsSearchDelegate({
     required super.searchFieldLabel,
+    required super.searchFieldStyle,
     required this.sections,
   }) : super(
           routeName: pageRouteName,

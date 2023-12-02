@@ -55,6 +55,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _expandedDirectoryNotifier.dispose();
     super.dispose();
   }
 
@@ -143,7 +144,6 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
 
   Future<void> _getMetadata() async {
     if (!mounted) return;
-
     final titledDirectories = await entry.getMetadataDirectories(context);
     metadataNotifier.value = Map.fromEntries(titledDirectories);
     _expandedDirectoryNotifier.value = null;

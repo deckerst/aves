@@ -33,7 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.io.File
 import java.io.InputStream
 
 class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
@@ -279,8 +278,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         embeddedByteLength: Long,
     ) {
         val extension = extensionFor(mimeType)
-        val targetFile = File.createTempFile("aves", extension, context.cacheDir).apply {
-            deleteOnExit()
+        val targetFile = StorageUtils.createTempFile(context, extension).apply {
             transferFrom(embeddedByteStream, embeddedByteLength)
         }
 

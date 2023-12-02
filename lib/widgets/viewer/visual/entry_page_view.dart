@@ -84,6 +84,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   void dispose() {
     _unregisterWidget(widget);
     widget.onDisposed?.call();
+    _actionFeedbackChildNotifier.dispose();
     super.dispose();
   }
 
@@ -267,14 +268,14 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
               var move = Offset.zero;
               var dropped = false;
               double? startValue;
-              final valueNotifier = ValueNotifier<double?>(null);
+              ValueNotifier<double?>? valueNotifier;
 
               onScaleStart = (details, doubleTap, boundaries) {
                 dropped = details.pointerCount > 1 || doubleTap;
                 if (dropped) return;
 
                 startValue = null;
-                valueNotifier.value = null;
+                valueNotifier = ValueNotifier<double?>(null);
                 final alignmentX = details.focalPoint.dx / boundaries.viewportSize.width;
                 final action = alignmentX > .5 ? SwipeAction.volume : SwipeAction.brightness;
                 action.get().then((v) => startValue = v);
@@ -283,15 +284,17 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
                 _actionFeedbackOverlayEntry = OverlayEntry(
                   builder: (context) => SwipeActionFeedback(
                     action: action,
-                    valueNotifier: valueNotifier,
+                    valueNotifier: valueNotifier!,
                   ),
                 );
                 Overlay.of(context).insert(_actionFeedbackOverlayEntry!);
               };
               onScaleUpdate = (details) {
+                if (valueNotifier == null) return false;
+
                 move += details.focalPointDelta;
                 dropped |= details.pointerCount > 1;
-                if (valueNotifier.value == null) {
+                if (valueNotifier!.value == null) {
                   dropped |= MagnifierGestureRecognizer.isXPan(move);
                 }
                 if (dropped) return false;
@@ -299,15 +302,19 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
                 final _startValue = startValue;
                 if (_startValue != null) {
                   final double value = (_startValue - move.dy / SwipeActionFeedback.height).clamp(0, 1);
-                  valueNotifier.value = value;
+                  valueNotifier!.value = value;
                   swipeAction?.set(value);
                 }
                 return true;
               };
               onScaleEnd = (details) {
-                if (_actionFeedbackOverlayEntry != null) {
-                  _actionFeedbackOverlayEntry!.remove();
-                  _actionFeedbackOverlayEntry = null;
+                valueNotifier?.dispose();
+
+                final overlayEntry = _actionFeedbackOverlayEntry;
+                _actionFeedbackOverlayEntry = null;
+                if (overlayEntry != null) {
+                  overlayEntry.remove();
+                  overlayEntry.dispose();
                 }
               };
             }
@@ -479,6 +486,7 @@ class _EntryPageViewState extends State<EntryPageView> with SingleTickerProvider
   }
 
   double? _getSideRatio() {
+    if (!mounted) return null;
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
     return isPortrait ? 1 / 5 : 1 / 8;
   }

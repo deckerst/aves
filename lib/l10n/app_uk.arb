@@ -1231,7 +1231,7 @@
   "@tagPageTitle": {},
   "searchAlbumsSectionTitle": "Альбоми",
   "@searchAlbumsSectionTitle": {},
-  "settingsSystemDefault": "Система за замовчуванням",
+  "settingsSystemDefault": "Як у системі",
   "@settingsSystemDefault": {},
   "searchRatingSectionTitle": "Рейтинги",
   "@searchRatingSectionTitle": {},
@@ -1512,5 +1512,11 @@
   "overlayHistogramLuminance": "Яскравість",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "Показати гістограму",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "Очистити кеш",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Трансляція",
+  "@entryActionCast": {},
+  "castDialogTitle": "Пристрої трансляції",
+  "@castDialogTitle": {}
 }

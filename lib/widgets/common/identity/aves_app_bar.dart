@@ -32,7 +32,9 @@ class AvesAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textScaler = MediaQuery.textScalerOf(context);
     final useTvLayout = settings.useTvLayout;
     return SliverPersistentHeader(
       floating: !useTvLayout,
@@ -45,54 +47,66 @@ class AvesAppBar extends StatelessWidget {
           child: AvesFloatingBar(
             builder: (context, backgroundColor, child) => Material(
               color: backgroundColor,
-              child: child,
+              child: InkWell(
+                // absorb taps while providing visual feedback
+                onTap: () {},
+                onLongPress: () {},
+                child: child,
+              ),
             ),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: kToolbarHeight * textScaleFactor,
-                  child: Row(
-                    children: [
-                      leading != null
-                          ? Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: Hero(
-                                tag: leadingHeroTag,
-                                flightShuttleBuilder: _flightShuttleBuilder,
-                                transitionOnUserGestures: true,
-                                child: FontSizeIconTheme(
-                                  child: leading!,
+            child: Theme(
+              data: theme.copyWith(
+                colorScheme: colorScheme.copyWith(
+                  onSurfaceVariant: colorScheme.onSurface,
+                ),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: textScaler.scale(kToolbarHeight),
+                    child: Row(
+                      children: [
+                        leading != null
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                child: Hero(
+                                  tag: leadingHeroTag,
+                                  flightShuttleBuilder: _flightShuttleBuilder,
+                                  transitionOnUserGestures: true,
+                                  child: FontSizeIconTheme(
+                                    child: leading!,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : const SizedBox(width: 16),
-                      Expanded(
-                        child: DefaultTextStyle(
-                          style: Theme.of(context).appBarTheme.titleTextStyle!,
-                          child: Hero(
-                            tag: titleHeroTag,
-                            flightShuttleBuilder: _flightShuttleBuilder,
-                            transitionOnUserGestures: true,
-                            child: AnimatedSwitcher(
-                              duration: context.read<DurationsData>().iconAnimation,
-                              child: FontSizeIconTheme(
-                                child: Row(
-                                  key: ValueKey(transitionKey),
-                                  children: [
-                                    Expanded(child: title),
-                                    ...actions,
-                                  ],
+                              )
+                            : const SizedBox(width: 16),
+                        Expanded(
+                          child: DefaultTextStyle(
+                            style: theme.appBarTheme.titleTextStyle!,
+                            child: Hero(
+                              tag: titleHeroTag,
+                              flightShuttleBuilder: _flightShuttleBuilder,
+                              transitionOnUserGestures: true,
+                              child: AnimatedSwitcher(
+                                duration: context.read<DurationsData>().iconAnimation,
+                                child: FontSizeIconTheme(
+                                  child: Row(
+                                    key: ValueKey(transitionKey),
+                                    children: [
+                                      Expanded(child: title),
+                                      ...actions,
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                if (bottom != null) bottom!,
-              ],
+                  if (bottom != null) bottom!,
+                ],
+              ),
             ),
           ),
         ),
@@ -190,6 +204,7 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   @override
   void dispose() {
     AvesApp.pageRouteObserver.unsubscribe(this);
+    _isBlurAllowedNotifier.dispose();
     super.dispose();
   }
 
@@ -212,7 +227,7 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final backgroundColor = theme.appBarTheme.backgroundColor!;
+    final backgroundColor = theme.appBarTheme.backgroundColor ?? theme.colorScheme.surface;
     return ValueListenableBuilder<bool>(
       valueListenable: _isBlurAllowedNotifier,
       builder: (context, isBlurAllowed, child) {

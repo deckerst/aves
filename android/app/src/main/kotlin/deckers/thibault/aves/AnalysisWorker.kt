@@ -159,17 +159,15 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             .setContentIntent(openAppIntent)
             .addAction(stopAction)
             .build()
-        // TODO TLAD revisit with Android 14 >beta5
-        return ForegroundInfo(NOTIFICATION_ID, notification);
-//        return if (Build.VERSION.SDK_INT >= 34) {
-//            // as of Android 14 beta 5, foreground service type is mandatory
-//            // despite the sample code omitting it at:
-//            // https://developer.android.com/guide/background/persistent/how-to/long-running
-//            val type = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-//            ForegroundInfo(NOTIFICATION_ID, notification, type)
-//        } else {
-//            ForegroundInfo(NOTIFICATION_ID, notification)
-//        }
+        return if (Build.VERSION.SDK_INT >= 34) {
+            // from Android 14 (API 34), foreground service type is mandatory
+            // despite the sample code omitting it at:
+            // https://developer.android.com/guide/background/persistent/how-to/long-running
+            val type = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            ForegroundInfo(NOTIFICATION_ID, notification, type)
+        } else {
+            ForegroundInfo(NOTIFICATION_ID, notification)
+        }
     }
 
     companion object {

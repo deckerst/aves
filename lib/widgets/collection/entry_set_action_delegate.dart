@@ -21,6 +21,7 @@ import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
@@ -257,7 +258,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final controller = AnalysisController(canStartService: true, force: true);
     final collection = context.read<CollectionLens>();
-    collection.source.analyze(controller, entries: entries);
+    collection.source.analyze(controller, entries: entries).then((_) => controller.dispose());
 
     _browse(context);
   }
@@ -644,7 +645,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         builder: (context) => MapPage(collection: mapCollection),
       ),
     );
-    mapCollection.dispose();
   }
 
   void _goToSlideshow(BuildContext context) {
@@ -690,6 +690,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
+          searchFieldStyle: Themes.searchFieldStyle(context),
           source: collection.source,
           parentCollection: collection,
         ),

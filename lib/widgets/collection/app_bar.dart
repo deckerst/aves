@@ -12,6 +12,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
@@ -123,7 +124,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _unregisterWidget(widget);
     _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
-    _isSelectingNotifier.removeListener(_onActivityChanged);
     _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
@@ -223,8 +223,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   double get appBarContentHeight {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    double height = kToolbarHeight * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    double height = textScaler.scale(kToolbarHeight);
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
     }
@@ -232,7 +232,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       height += FilterBar.preferredHeight;
     }
     if (context.read<Query>().enabled) {
-      height += EntryQueryBar.getPreferredHeight(textScaleFactor);
+      height += EntryQueryBar.getPreferredHeight(textScaler);
     }
     return height;
   }
@@ -540,6 +540,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
     Widget buildItem(EntrySetAction action) => Expanded(
           child: Material(
+            color: Colors.transparent,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
@@ -683,6 +684,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
+          searchFieldStyle: Themes.searchFieldStyle(context),
           source: collection.source,
           parentCollection: collection,
         ),

@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -122,7 +123,7 @@ class BottomPaddingSliver extends StatelessWidget {
 }
 
 class TvTileGridBottomPaddingSliver extends StatelessWidget {
-  const TvTileGridBottomPaddingSliver({Key? key}) : super(key: key);
+  const TvTileGridBottomPaddingSliver({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -151,9 +152,10 @@ class SafeCutoutArea extends StatelessWidget {
     return ValueListenableBuilder<EdgeInsets>(
       valueListenable: AvesApp.cutoutInsetsNotifier,
       builder: (context, cutoutInsets, child) {
-        return ValueListenableBuilder<double>(
-          valueListenable: animation ?? ValueNotifier(1),
-          builder: (context, factor, child) {
+        return NullableValueListenableBuilder<double>(
+          valueListenable: animation,
+          builder: (context, value, child) {
+            final double factor = value ?? 1.0;
             final effectiveInsets = cutoutInsets * factor;
             return Padding(
               padding: effectiveInsets,

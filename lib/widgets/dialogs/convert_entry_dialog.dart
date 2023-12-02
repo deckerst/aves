@@ -88,6 +88,8 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   void dispose() {
     _widthController.dispose();
     _heightController.dispose();
+    _isValidNotifier.dispose();
+    _mimeTypeNotifier.dispose();
     super.dispose();
   }
 
@@ -95,14 +97,14 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: AvesDialog.defaultHorizontalContentPadding);
-    final theme = Theme.of(context);
-    final trailingStyle = TextStyle(color: theme.textTheme.bodySmall!.color);
-    final trailingChangeShadowColor = theme.colorScheme.onPrimary;
+    final colorScheme = Theme.of(context).colorScheme;
+    final trailingStyle = TextStyle(color: colorScheme.onSurfaceVariant);
+    final trailingChangeShadowColor = colorScheme.onPrimary;
 
     // used by the drop down to match input decoration
     final textFieldDecorationBorder = Border(
       bottom: BorderSide(
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.38), //Color(0xFFBDBDBD),
+        color: colorScheme.onSurface.withOpacity(0.38), //Color(0xFFBDBDBD),
         width: 1.0,
       ),
     );

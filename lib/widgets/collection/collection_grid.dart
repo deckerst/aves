@@ -302,7 +302,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
 
   @override
   void dispose() {
-    _appBarHeightNotifier.removeListener(_onAppBarHeightChanged);
+    _appBarHeightNotifier.dispose();
     super.dispose();
   }
 
@@ -367,7 +367,7 @@ class _CollectionScaler extends StatelessWidget {
   Widget build(BuildContext context) {
     final (tileSpacing, horizontalPadding) = context.select<TileExtentController, (double, double)>((v) => (v.spacing, v.horizontalPadding));
     final brightness = Theme.of(context).brightness;
-    final borderColor = DecoratedThumbnail.borderColor;
+    final borderColor = DecoratedThumbnail.borderColor(context);
     final borderWidth = DecoratedThumbnail.borderWidth(context);
     return GridScaleGestureDetector<AvesEntry>(
       scrollableKey: scrollableKey,

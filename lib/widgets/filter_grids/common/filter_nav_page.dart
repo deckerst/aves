@@ -100,6 +100,12 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
 
   @override
+  void dispose() {
+    _appBarHeightNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SelectionProvider<FilterGridItem<T>>(
       child: Builder(

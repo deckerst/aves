@@ -39,6 +39,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _nameController.dispose();
     _nameFieldFocusNode.removeListener(_onFocus);
     _nameFieldFocusNode.dispose();

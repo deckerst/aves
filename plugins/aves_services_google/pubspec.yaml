@@ -3,7 +3,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -12,6 +12,8 @@ dependencies:
     path: ../aves_map
   aves_services:
     path: ../aves_services
+  aves_utils:
+    path: ../aves_utils
   device_info_plus:
   google_api_availability:
   google_maps_flutter:

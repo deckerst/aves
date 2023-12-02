@@ -96,18 +96,18 @@ class AvesApp extends StatefulWidget {
   State<AvesApp> createState() => _AvesAppState();
 
   static void setSystemUIStyle(ThemeData theme) {
-    final style = systemUIStyleForBrightness(theme.brightness, theme.scaffoldBackgroundColor);
+    final style = systemUIStyleForBrightness(theme.brightness, theme.colorScheme.background);
     SystemChrome.setSystemUIOverlayStyle(style);
   }
 
-  static SystemUiOverlayStyle systemUIStyleForBrightness(Brightness themeBrightness, Color scaffoldBackgroundColor) {
+  static SystemUiOverlayStyle systemUIStyleForBrightness(Brightness themeBrightness, Color backgroundColor) {
     final barBrightness = themeBrightness == Brightness.light ? Brightness.dark : Brightness.light;
     const statusBarColor = Colors.transparent;
     // as of Flutter v3.3.0-0.2.pre, setting `SystemUiOverlayStyle` (whether manually or automatically because of `AppBar`)
     // prevents the canvas from drawing behind the nav bar on Android <10 (API <29),
     // so the nav bar is opaque, even when requesting `SystemUiMode.edgeToEdge` from Flutter
     // or setting `android:windowTranslucentNavigation` in Android themes.
-    final navBarColor = device.supportEdgeToEdgeUIMode ? Colors.transparent : scaffoldBackgroundColor;
+    final navBarColor = device.supportEdgeToEdgeUIMode ? Colors.transparent : backgroundColor;
     return SystemUiOverlayStyle(
       systemNavigationBarColor: navBarColor,
       systemNavigationBarDividerColor: navBarColor,
@@ -196,13 +196,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _pageTransitionsBuilderNotifier.dispose();
-    _tvMediaQueryModifierNotifier.dispose();
-    _appModeNotifier.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
     WidgetsBinding.instance.removeObserver(this);
+    _pageTransitionsBuilderNotifier.dispose();
+    _tvMediaQueryModifierNotifier.dispose();
+    _appModeNotifier.dispose();
+    _mediaStoreSource.dispose();
     super.dispose();
   }
 
@@ -457,6 +458,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _monitorSettings();
     videoControllerFactory.init();
 
+    unawaited(storageService.deleteTempDirectory());
     unawaited(_setupErrorReporting());
 
     debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
@@ -491,7 +493,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         );
 
         return mq.copyWith(
-          textScaleFactor: 1.1,
+          textScaler: const TextScaler.linear(1.1),
           padding: newPadding,
           viewPadding: newViewPadding,
           navigationMode: NavigationMode.directional,

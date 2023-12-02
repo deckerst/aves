@@ -88,6 +88,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   }
 
   void _registerWidget(ThumbnailImage widget) {
+    // TODO TLAD [leak] `widget.entry.visualChangeNotifier`
     widget.entry.visualChangeNotifier.addListener(_onVisualChanged);
     _initProvider();
   }
@@ -160,9 +161,8 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   }
 
   void _onError(Object exception, StackTrace? stackTrace) {
-    if (mounted) {
-      setState(() => _lastException = exception);
-    }
+    if (!mounted) return;
+    setState(() => _lastException = exception);
   }
 
   bool _needSizedProvider(ImageInfo? currentImageInfo) {

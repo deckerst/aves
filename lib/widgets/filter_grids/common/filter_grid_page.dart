@@ -324,10 +324,10 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                     final target = context.read<DurationsData>().staggeredAnimationPageTarget;
                     final tileAnimationDelay = context.read<TileExtentController>().getTileAnimationDelay(target);
 
-                    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+                    final textScaler = MediaQuery.textScalerOf(context);
                     final tileHeight = CoveredFilterChip.tileHeight(
                       extent: thumbnailExtent,
-                      textScaleFactor: textScaleFactor,
+                      textScaler: textScaler,
                       showText: tileLayout != TileLayout.list,
                     );
                     return GridTheme(
@@ -566,13 +566,13 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     final (tileSpacing, horizontalPadding) = context.select<TileExtentController, (double, double)>((v) => (v.spacing, v.horizontalPadding));
     final brightness = Theme.of(context).brightness;
     return GridScaleGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,
       tileLayout: tileLayout,
-      heightForWidth: (width) => CoveredFilterChip.tileHeight(extent: width, textScaleFactor: textScaleFactor, showText: true),
+      heightForWidth: (width) => CoveredFilterChip.tileHeight(extent: width, textScaler: textScaler, showText: true),
       gridBuilder: (center, tileSize, child) => CustomPaint(
         painter: FixedExtentGridPainter(
           tileLayout: tileLayout,

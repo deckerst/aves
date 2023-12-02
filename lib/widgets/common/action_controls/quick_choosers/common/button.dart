@@ -49,6 +49,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
   void dispose() {
     _animationController?.dispose();
     _clearChooserOverlayEntry();
+    _chooserValueNotifier.dispose();
     super.dispose();
   }
 
@@ -69,28 +70,39 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
       );
     }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onLongPressStart: _hasChooser ? _showChooser : null,
-      onLongPressMoveUpdate: _hasChooser ? _moveUpdateStreamController.add : null,
-      onLongPressEnd: _hasChooser
-          ? (details) {
-              _clearChooserOverlayEntry();
-              final selectedValue = _chooserValueNotifier.value;
-              if (selectedValue != null) {
-                widget.onChooserValue?.call(selectedValue);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return Theme(
+      data: theme.copyWith(
+        colorScheme: colorScheme.copyWith(
+          onSurfaceVariant: colorScheme.onSurface,
+        ),
+      ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onLongPressStart: _hasChooser ? _showChooser : null,
+        onLongPressMoveUpdate: _hasChooser ? _moveUpdateStreamController.add : null,
+        onLongPressEnd: _hasChooser
+            ? (details) {
+                _clearChooserOverlayEntry();
+                final selectedValue = _chooserValueNotifier.value;
+                if (selectedValue != null) {
+                  widget.onChooserValue?.call(selectedValue);
+                }
               }
-            }
-          : null,
-      onLongPressCancel: _clearChooserOverlayEntry,
-      child: child,
+            : null,
+        onLongPressCancel: _clearChooserOverlayEntry,
+        child: child,
+      ),
     );
   }
 
   void _clearChooserOverlayEntry() {
-    if (_chooserOverlayEntry != null) {
-      _chooserOverlayEntry!.remove();
-      _chooserOverlayEntry = null;
+    final overlayEntry = _chooserOverlayEntry;
+    _chooserOverlayEntry = null;
+    if (overlayEntry != null) {
+      overlayEntry.remove();
+      overlayEntry.dispose();
     }
   }
 

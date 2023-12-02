@@ -6,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -36,7 +37,6 @@ class _TagEditorPageState extends State<TagEditorPage> {
   late final List<CollectionFilter> _topTags;
   final List<CollectionFilter> _userAddedFilters = [];
 
-  static const Color untaggedColor = Colors.blueGrey;
   static final List<PlaceholderFilter> _placeholders = [
     PlaceholderFilter.country,
     PlaceholderFilter.state,
@@ -54,6 +54,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
 
   @override
   void dispose() {
+    _newTagTextController.dispose();
     _newTagTextFocusNode.dispose();
     _expandedSectionNotifier.dispose();
     super.dispose();
@@ -69,10 +70,14 @@ class _TagEditorPageState extends State<TagEditorPage> {
     });
     List<MapEntry<CollectionFilter, int>> sortedTags = _sortCurrentTags(entryCountByTag);
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (!_isModified) return true;
+    final untaggedColor = Themes.backgroundTextColor(context);
 
+    return PopScope(
+      canPop: !_isModified,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+
+        final NavigatorState navigator = Navigator.of(context);
         final confirmed = await showDialog<bool>(
               context: context,
               builder: (context) => AvesDialog(
@@ -88,7 +93,9 @@ class _TagEditorPageState extends State<TagEditorPage> {
               routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
             ) ??
             false;
-        return confirmed;
+        if (confirmed) {
+          navigator.pop();
+        }
       },
       child: AvesScaffold(
         appBar: AppBar(
@@ -104,6 +111,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
               onPressed: () => Navigator.maybeOf(context)?.pop(filtersByEntry),
               tooltip: l10n.saveTooltip,
             ),
+            const SizedBox(width: 16),
           ],
         ),
         body: SafeArea(
@@ -175,7 +183,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                                   const SizedBox(width: 8),
                                   Text(
                                     l10n.filterNoTagLabel,
-                                    style: const TextStyle(color: untaggedColor),
+                                    style: TextStyle(color: untaggedColor),
                                   ),
                                 ],
                               ),

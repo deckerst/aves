@@ -159,12 +159,21 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
-    _overlayAnimationController.dispose();
-    _overlayVisible.removeListener(_onOverlayVisibleChanged);
     _mapController.dispose();
-    _selectedIndexNotifier.removeListener(_onThumbnailIndexChanged);
-    regionCollection?.dispose();
+    _isPageAnimatingNotifier.dispose();
+    _selectedIndexNotifier.dispose();
+    _regionCollectionNotifier.value?.dispose();
+    _regionCollectionNotifier.dispose();
+    _dotLocationNotifier.dispose();
+    _dotEntryNotifier.value?.metadataChangeNotifier.removeListener(_onMarkerEntryMetadataChanged);
+    _dotEntryNotifier.dispose();
+    _overlayOpacityNotifier.dispose();
+    _overlayVisible.dispose();
+    _overlayAnimationController.dispose();
+
+    // provided collection should be a new instance specifically created
+    // for the `MapPage` widget, so it can be safely disposed here
+    widget.collection.dispose();
     super.dispose();
   }
 
@@ -394,10 +403,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
+          final viewerCollection = regionCollection?.copyWith(
+            listenToSource: false,
+          );
           return EntryViewerPage(
-            collection: regionCollection?.copyWith(
-              listenToSource: false,
-            ),
+            collection: viewerCollection,
             initialEntry: initialEntry,
           );
         },

@@ -13,6 +13,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -106,6 +107,12 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
       final rating = entry.rating;
       _entryCountPerRating[rating] = (_entryCountPerRating[rating] ?? 0) + 1;
     });
+  }
+
+  @override
+  void dispose() {
+    _isPageAnimatingNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -410,8 +417,8 @@ class _LocationIndicator extends StatelessWidget {
     final withGps = catalogued.where((entry) => entry.hasGps);
     final withGpsCount = withGps.length;
     final withGpsPercent = withGpsCount / entries.length;
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final lineHeight = 16 * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final lineHeight = textScaler.scale(16);
     final barRadius = Radius.circular(lineHeight / 2);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -422,16 +429,23 @@ class _LocationIndicator extends StatelessWidget {
             children: [
               const Icon(AIcons.location),
               Expanded(
-                child: LinearPercentIndicator(
-                  percent: withGpsPercent,
-                  lineHeight: lineHeight,
-                  backgroundColor: theme.colorScheme.onPrimary.withOpacity(.1),
-                  progressColor: theme.colorScheme.secondary,
-                  animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
-                  isRTL: context.isRtl,
-                  barRadius: barRadius,
-                  center: LinearPercentIndicatorText(percent: withGpsPercent),
-                  padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                child: Stack(
+                  // use a stack instead of `center` field, so that the widgets
+                  // are centered even when the center child has larger height
+                  alignment: Alignment.center,
+                  children: [
+                    LinearPercentIndicator(
+                      percent: withGpsPercent,
+                      lineHeight: lineHeight,
+                      backgroundColor: Themes.secondLayerColor(context),
+                      progressColor: theme.colorScheme.primary,
+                      animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
+                      isRTL: context.isRtl,
+                      barRadius: barRadius,
+                      padding: EdgeInsets.symmetric(horizontal: lineHeight),
+                    ),
+                    LinearPercentIndicatorText(percent: withGpsPercent),
+                  ],
                 ),
               ),
               // end padding to match leading, so that inside label is aligned with outside label below

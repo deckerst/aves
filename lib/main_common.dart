@@ -3,7 +3,9 @@ import 'dart:isolate';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 void mainCommon(AppFlavor flavor, {Map? debugIntentData}) {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
@@ -35,5 +37,9 @@ void mainCommon(AppFlavor flavor, {Map? debugIntentData}) {
   // ErrorWidget.builder = (details) => ErrorWidget(details.exception);
   // cf https://docs.flutter.dev/testing/errors
 
+  LeakTracking.start();
+  MemoryAllocations.instance.addListener(
+    (event) => LeakTracking.dispatchObjectEvent(event.toMap()),
+  );
   runApp(AvesApp(flavor: flavor, debugIntentData: debugIntentData));
 }

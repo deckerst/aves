@@ -60,7 +60,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
     }
     return MergeSemantics(
       child: ListTileTheme.merge(
-        selectedColor: activeColor ?? Theme.of(context).colorScheme.secondary,
+        selectedColor: activeColor ?? Theme.of(context).colorScheme.primary,
         child: ListTile(
           leading: leading,
           title: title,

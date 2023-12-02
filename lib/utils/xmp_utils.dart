@@ -188,7 +188,7 @@ class XMP {
 
   static Future<String?> edit(
     String? xmpString,
-    Future<String> Function() toolkit,
+    String toolkit,
     bool Function(List<XmlNode> descriptions) apply, {
     DateTime? modifyDate,
   }) async {
@@ -202,7 +202,7 @@ class XMP {
       builder.element(XmpElements.xXmpmeta, namespace: nsX, namespaces: {
         nsX: prefixOf(nsX),
       }, attributes: {
-        '${prefixOf(nsX)}$propNamespaceSeparator${XmpAttributes.xXmptk}': await toolkit(),
+        '${prefixOf(nsX)}$propNamespaceSeparator${XmpAttributes.xXmptk}': toolkit,
       });
       xmpDoc = builder.buildDocument();
     }

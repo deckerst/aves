@@ -33,10 +33,9 @@
     <!-- to access media with original metadata with scoped storage (API >=29) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <!-- to provide a foreground service type, as required by Android 14 (API 34) -->
-    <!-- TODO TLAD revisit with Android 14 >beta5 -->
-    <!--    <uses-permission-->
-    <!--        android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"-->
-    <!--        tools:ignore="SystemPermissionTypo" />-->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"
+        tools:ignore="SystemPermissionTypo" />
     <!-- TODO TLAD still needed to fetch map tiles / reverse geocoding / else ? check in release mode -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- from Android 12 (API 31), users can optionally grant access to the media management special permission -->
@@ -69,7 +68,7 @@
     -->
 
     <!--
-    allow install on API 19, despite the `minSdkVersion` declared in dependencies:
+    allow install on API 19, despite the `minSdk` declared in dependencies:
     - Google Maps is from API 20
     - the Security library is from API 21
     - FFmpegKit for Flutter is from API 24 (when not LTS)
@@ -102,18 +101,24 @@
         </intent>
     </queries>
 
+    <!--
+    as of Flutter v3.16.0, predictive back gesture does not work
+    as expected when extending `FlutterFragmentActivity`
+    so we disable `enableOnBackInvokedCallback`
+    -->
     <application
         android:allowBackup="true"
         android:appCategory="image"
         android:banner="@drawable/banner"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="false"
         android:fullBackupContent="@xml/full_backup_content"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
-        tools:targetApi="s">
+        tools:targetApi="tiramisu">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -248,6 +253,12 @@
             </intent-filter>
         </receiver>
 
+        <!-- anonymous service for analysis worker is specified here to provide service type -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
+
         <service
             android:name=".MediaPlaybackService"
             android:exported="false"
@@ -304,8 +315,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- as of Flutter v3.10.1 (stable) / v3.12.0-15.0.pre.105 (master),
-        Impeller badly renders text, fails to render videos, and crashes with Google Maps -->
+        <!-- as of Flutter v3.16.0 (stable),
+        Impeller fails to render videos & platform views, has poor performance -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

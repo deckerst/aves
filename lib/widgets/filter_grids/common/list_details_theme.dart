@@ -30,28 +30,30 @@ class FilterListDetailsTheme extends StatelessWidget {
         final locale = context.l10n.localeName;
 
         final use24hour = mq.alwaysUse24HourFormat;
-        final textScaleFactor = mq.textScaleFactor;
+        final textScaler = mq.textScaler;
 
         final textTheme = Theme.of(context).textTheme;
         final titleStyleBase = textTheme.bodyMedium!;
-        final titleStyle = titleStyleBase.copyWith(fontSize: titleStyleBase.fontSize! * textScaleFactor);
+        final titleStyle = titleStyleBase.copyWith(fontSize: textScaler.scale(titleStyleBase.fontSize!));
         final captionStyle = textTheme.bodySmall!;
 
-        final titleIconSize = AvesFilterChip.iconSize * textScaleFactor;
-        final titleLineHeight = (RenderParagraph(
+        final titleIconSize = textScaler.scale(AvesFilterChip.iconSize);
+        final titleLineHeightParagraph = RenderParagraph(
           TextSpan(text: 'Fake Title', style: titleStyle),
           textDirection: TextDirection.ltr,
-          textScaleFactor: textScaleFactor,
-        )..layout(const BoxConstraints(), parentUsesSize: true))
-            .getMaxIntrinsicHeight(double.infinity);
+          textScaler: textScaler,
+        )..layout(const BoxConstraints(), parentUsesSize: true);
+        final titleLineHeight = titleLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
+        titleLineHeightParagraph.dispose();
 
-        final captionLineHeight = (RenderParagraph(
+        final captionLineHeightParagraph = RenderParagraph(
           TextSpan(text: formatDateTime(DateTime.now(), locale, use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
-          textScaleFactor: textScaleFactor,
+          textScaler: textScaler,
           strutStyle: AStyles.overflowStrut,
-        )..layout(const BoxConstraints(), parentUsesSize: true))
-            .getMaxIntrinsicHeight(double.infinity);
+        )..layout(const BoxConstraints(), parentUsesSize: true);
+        final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
+        captionLineHeightParagraph.dispose();
 
         var titleMaxLines = 1;
         var showCount = false;
@@ -79,7 +81,7 @@ class FilterListDetailsTheme extends StatelessWidget {
           titleIconSize: titleIconSize,
           captionIconTheme: IconThemeData(
             color: captionStyle.color,
-            size: captionStyle.fontSize! * textScaleFactor,
+            size: textScaler.scale(captionStyle.fontSize!),
           ),
         );
       },

@@ -34,6 +34,7 @@ class XmpNamespaceView {
     XmpNamespaces.gettyImagesGift: 'Getty Images',
     XmpNamespaces.gimp210: 'GIMP 2.10',
     XmpNamespaces.gimpXmp: 'GIMP',
+    XmpNamespaces.hdrgm: 'HDR Gain Map',
     XmpNamespaces.illustrator: 'Illustrator',
     XmpNamespaces.iptc4xmpCore: 'IPTC Core',
     XmpNamespaces.iptc4xmpExt: 'IPTC Extension',

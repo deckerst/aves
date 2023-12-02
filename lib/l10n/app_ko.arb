@@ -1354,5 +1354,11 @@
   "overlayHistogramLuminance": "휘도",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "히스토그램 표시",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "캐시 삭제",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "전송",
+  "@entryActionCast": {},
+  "castDialogTitle": "전송 대상",
+  "@castDialogTitle": {}
 }

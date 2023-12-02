@@ -9,16 +9,17 @@ abstract class AvesVideoControllerFactory {
   void init();
 
   AvesVideoController buildController(
-      AvesEntryBase entry, {
-        required PlaybackStateHandler playbackStateHandler,
-        required VideoSettings settings,
-      });
+    AvesEntryBase entry, {
+    required PlaybackStateHandler playbackStateHandler,
+    required VideoSettings settings,
+  });
 }
 
 abstract class AvesVideoController {
   final AvesEntryBase _entry;
   final PlaybackStateHandler playbackStateHandler;
   final VideoSettings settings;
+  bool _disposed = false;
 
   AvesEntryBase get entry => _entry;
 
@@ -29,11 +30,23 @@ abstract class AvesVideoController {
     required this.playbackStateHandler,
     required this.settings,
   }) : _entry = entry {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AvesVideoController',
+        object: this,
+      );
+    }
     entry.visualChangeNotifier.addListener(onVisualChanged);
   }
 
   @mustCallSuper
   Future<void> dispose() async {
+    assert(!_disposed);
+    _disposed = true;
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
     _entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }

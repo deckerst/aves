@@ -64,11 +64,20 @@ class MpvVideoController extends AvesVideoController {
   @override
   Future<void> dispose() async {
     await super.dispose();
+
     _stopListening();
     _stopStreamFetchTimer();
     await _statusStreamController.close();
     await _timedTextStreamController.close();
     await _instance.dispose();
+    _controllerNotifier.dispose();
+
+    _completedNotifier.dispose();
+    canCaptureFrameNotifier.dispose();
+    canMuteNotifier.dispose();
+    canSetSpeedNotifier.dispose();
+    canSelectStreamNotifier.dispose();
+    sarNotifier.dispose();
   }
 
   void _startListening() {

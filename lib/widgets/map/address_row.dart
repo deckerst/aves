@@ -42,14 +42,20 @@ class _MapAddressRowState extends State<MapAddressRow> {
   }
 
   @override
+  void dispose() {
+    _addressLineNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final textScaler = MediaQuery.textScalerOf(context);
     return Container(
       alignment: AlignmentDirectional.centerStart,
       // addresses can include non-latin scripts with inconsistent line height,
       // which is especially an issue for relayout/painting of heavy Google map,
       // so we give extra height to give breathing room to the text and stabilize layout
-      height: Theme.of(context).textTheme.bodyMedium!.fontSize! * textScaleFactor * 2,
+      height: textScaler.scale(Theme.of(context).textTheme.bodyMedium!.fontSize!) * 2,
       child: ValueListenableBuilder<String?>(
         valueListenable: _addressLineNotifier,
         builder: (context, addressLine, child) {
@@ -86,7 +92,8 @@ class _MapAddressRowState extends State<MapAddressRow> {
   Future<void> _updateAddress() async {
     final entry = widget.entry;
     final addressLine = await _getAddressLine(entry);
-    if (mounted && entry == widget.entry) {
+    if (!mounted) return;
+    if (entry == widget.entry) {
       _addressLineNotifier.value = addressLine;
     }
   }

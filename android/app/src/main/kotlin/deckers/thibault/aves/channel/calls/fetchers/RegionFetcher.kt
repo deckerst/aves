@@ -16,7 +16,6 @@ import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
-import java.io.File
 import kotlin.math.roundToInt
 
 class RegionFetcher internal constructor(
@@ -113,8 +112,7 @@ class RegionFetcher internal constructor(
             .submit()
         try {
             val bitmap = target.get()
-            val tempFile = File.createTempFile("aves", null, context.cacheDir).apply {
-                deleteOnExit()
+            val tempFile = StorageUtils.createTempFile(context).apply {
                 outputStream().use { output ->
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
                 }

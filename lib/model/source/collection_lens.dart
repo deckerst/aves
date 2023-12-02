@@ -37,6 +37,7 @@ class CollectionLens with ChangeNotifier {
   bool listenToSource, groupBursts, fixedSort;
   List<AvesEntry>? fixedSelection;
 
+  final Set<AvesEntry> _syntheticEntries = {};
   List<AvesEntry> _filteredSortedEntries = [];
 
   Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
@@ -99,6 +100,9 @@ class CollectionLens with ChangeNotifier {
       ..forEach((sub) => sub.cancel())
       ..clear();
     favourites.removeListener(_onFavouritesChanged);
+    filterChangeNotifier.dispose();
+    sortSectionChangeNotifier.dispose();
+    _disposeSyntheticEntries();
     super.dispose();
   }
 
@@ -115,6 +119,11 @@ class CollectionLens with ChangeNotifier {
         listenToSource: listenToSource ?? this.listenToSource,
         fixedSelection: fixedSelection ?? this.fixedSelection,
       );
+
+  void _disposeSyntheticEntries() {
+    _syntheticEntries.forEach((v) => v.dispose());
+    _syntheticEntries.clear();
+  }
 
   bool get isEmpty => _filteredSortedEntries.isEmpty;
 
@@ -180,6 +189,7 @@ class CollectionLens with ChangeNotifier {
 
   void _applyFilters() {
     final entries = fixedSelection ?? (filters.contains(TrashFilter.instance) ? source.trashedEntries : source.visibleEntries);
+    _disposeSyntheticEntries();
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
     if (groupBursts) {
@@ -194,6 +204,7 @@ class CollectionLens with ChangeNotifier {
         entries.sort(AvesEntrySort.compareByName);
         final mainEntry = entries.first;
         final burstEntry = mainEntry.copyWith(burstEntries: entries);
+        _syntheticEntries.add(burstEntry);
 
         entries.skip(1).toList().forEach((subEntry) {
           _filteredSortedEntries.remove(subEntry);

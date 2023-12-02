@@ -1512,5 +1512,11 @@
   "overlayHistogramLuminance": "Fényerő",
   "@overlayHistogramLuminance": {},
   "settingsViewerShowHistogram": "Hisztogram megjelenítése",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "Gyorsítótár törlése",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Kivetítés",
+  "@entryActionCast": {},
+  "castDialogTitle": "Kivetítő eszközök",
+  "@castDialogTitle": {}
 }

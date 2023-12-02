@@ -13,10 +13,10 @@ class ActionEvent<T> extends Equatable {
 
 @immutable
 class ActionStartedEvent<T> extends ActionEvent<T> {
-  const ActionStartedEvent(T action) : super(action);
+  const ActionStartedEvent(super.action);
 }
 
 @immutable
 class ActionEndedEvent<T> extends ActionEvent<T> {
-  const ActionEndedEvent(T action) : super(action);
+  const ActionEndedEvent(super.action);
 }

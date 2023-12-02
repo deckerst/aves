@@ -4,7 +4,8 @@ class AnalysisController {
   final bool canStartService, force;
   final int progressTotal, progressOffset;
   final List<int>? entryIds;
-  final ValueNotifier<bool> stopSignal;
+
+  final ValueNotifier<bool> _stopSignal = ValueNotifier(false);
 
   AnalysisController({
     this.canStartService = true,
@@ -12,8 +13,24 @@ class AnalysisController {
     this.force = false,
     this.progressTotal = 0,
     this.progressOffset = 0,
-    ValueNotifier<bool>? stopSignal,
-  }) : stopSignal = stopSignal ?? ValueNotifier(false);
+  }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AnalysisController',
+        object: this,
+      );
+    }
+  }
 
-  bool get isStopping => stopSignal.value;
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    _stopSignal.dispose();
+  }
+
+  bool get isStopping => _stopSignal.value;
+
+  void enableStopSignal() => _stopSignal.value = true;
 }

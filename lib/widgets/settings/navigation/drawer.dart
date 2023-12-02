@@ -13,7 +13,6 @@ import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_albums.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_fixed.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDrawerEditorPage extends StatefulWidget {
@@ -101,12 +100,12 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
             tabs: tabs.map((t) => t.$1).toList(),
           ),
         ),
-        body: WillPopScope(
-          onWillPop: () {
+        body: PopScope(
+          canPop: true,
+          onPopInvoked: (didPop) {
             settings.drawerTypeBookmarks = _typeItems.where(_visibleTypes.contains).toList();
             settings.drawerAlbumBookmarks = _albumItems;
             settings.drawerPageBookmarks = _pageItems.where(_visiblePages.contains).toList();
-            return SynchronousFuture(true);
           },
           child: SafeArea(
             child: TabBarView(

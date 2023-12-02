@@ -77,7 +77,7 @@ class _TvLicensePageState extends State<TvLicensePage> {
                       final isSelected = index == selectedIndex;
                       final theme = Theme.of(context);
                       return Ink(
-                        color: isSelected ? theme.highlightColor : theme.cardColor,
+                        color: isSelected ? theme.highlightColor : theme.colorScheme.background,
                         child: ListTile(
                           title: Text(packageName),
                           subtitle: Text(MaterialLocalizations.of(context).licensesPackageDetailText(bindings.length)),
@@ -302,7 +302,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
         ),
         body: Center(
           child: Material(
-            color: theme.cardColor,
+            color: theme.colorScheme.background,
             elevation: 4.0,
             child: Container(
               constraints: BoxConstraints.loose(const Size.fromWidth(600.0)),
@@ -332,7 +332,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             pinned: true,
-            backgroundColor: theme.cardColor,
+            backgroundColor: theme.colorScheme.background,
             title: _PackageLicensePageTitle(
               title: title,
               subtitle: subtitle,

@@ -232,7 +232,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   @override
   Widget build(BuildContext context) {
     final decoration = widget.decoration;
-    final chipBackground = Theme.of(context).scaffoldBackgroundColor;
+    final chipBackground = Theme.of(context).colorScheme.background;
 
     final onTap = widget.onTap != null
         ? () {
@@ -247,25 +247,30 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           }
         : null;
     final onLongPress = widget.onLongPress != null
-        ? () {
+        ? Feedback.wrapForLongPress(() {
             if (_tapPosition != null) {
               widget.onLongPress?.call(context, filter, _tapPosition!);
             }
-          }
+          }, context)
         : null;
 
     Widget? content;
     if (widget.showText) {
-      final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-      final iconSize = AvesFilterChip.iconSize * textScaleFactor;
+      final textScaler = MediaQuery.textScalerOf(context);
+      final iconSize = textScaler.scale(AvesFilterChip.iconSize);
       final leading = widget.leadingOverride ?? filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
       final trailing = onRemove != null
-          ? IconButton(
-              icon: Icon(AIcons.clear, size: iconSize),
-              padding: EdgeInsets.zero,
-              splashRadius: IconTheme.of(context).size,
-              constraints: const BoxConstraints(),
-              onPressed: onRemove,
+          ? Theme(
+              data: Theme.of(context).copyWith(
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: IconButton(
+                icon: Icon(AIcons.clear, size: iconSize),
+                padding: EdgeInsets.zero,
+                splashRadius: IconTheme.of(context).size,
+                constraints: const BoxConstraints(),
+                onPressed: onRemove,
+              ),
             )
           : null;
 
@@ -397,7 +402,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                       child: Banner(
                         message: banner.toUpperCase(),
                         location: BannerLocation.topStart,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.primary,
                         child: const SizedBox(),
                       ),
                     ),

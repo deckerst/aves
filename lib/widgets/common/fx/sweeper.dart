@@ -114,14 +114,12 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
       setState(() {});
       await Future.delayed(ADurations.sweeperOpacityAnimation * timeDilation);
       _isAppearing = false;
-      if (mounted) {
-        _angleAnimationController.reset();
-        unawaited(_angleAnimationController.forward());
-      }
+      if (!mounted) return;
+      _angleAnimationController.reset();
+      unawaited(_angleAnimationController.forward());
     }
-    if (mounted) {
-      setState(() {});
-    }
+    if (!mounted) return;
+    setState(() {});
   }
 }
 

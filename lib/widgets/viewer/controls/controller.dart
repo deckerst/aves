@@ -3,12 +3,14 @@ import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/viewer/controls/cast.dart';
 import 'package:aves/widgets/viewer/controls/events.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-class ViewerController {
+class ViewerController with CastMixin {
   final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
   final ViewerTransition transition;
   final Duration? autopilotInterval;
@@ -47,6 +49,13 @@ class ViewerController {
     this.autopilotInterval,
     this.autopilotAnimatedZoom = false,
   }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$ViewerController',
+        object: this,
+      );
+    }
     _initialScale = initialScale;
     _autopilotNotifier = ValueNotifier(autopilot);
     _autopilotNotifier.addListener(_onAutopilotChanged);
@@ -54,7 +63,10 @@ class ViewerController {
   }
 
   void dispose() {
-    _autopilotNotifier.removeListener(_onAutopilotChanged);
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    _autopilotNotifier.dispose();
     _clearAutopilotAnimations();
     _stopPlayTimer();
     _streamController.close();

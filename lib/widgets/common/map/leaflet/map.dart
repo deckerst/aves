@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
-import 'package:aves/widgets/common/map/leaflet/latlng_tween.dart';
+import 'package:aves/widgets/common/map/leaflet/latlng_tween.dart' as llt;
 import 'package:aves/widgets/common/map/leaflet/scale_layer.dart';
 import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -137,7 +138,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
           // marker tap handling prevents the default handling of focal zoom on double tap,
           // so we reimplement the double tap gesture here
           onDoubleTap: interactive ? () => _zoomBy(1, focalPoint: latLng) : null,
-          onLongPress: () => widget.onMarkerLongPress?.call(geoEntry, LatLng(geoEntry.latitude!, geoEntry.longitude!)),
+          onLongPress: Feedback.wrapForLongPress(() => widget.onMarkerLongPress?.call(geoEntry, LatLng(geoEntry.latitude!, geoEntry.longitude!)), context),
           child: widget.markerWidgetBuilder(markerKey),
         ),
         width: markerSize.width,
@@ -172,8 +173,8 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
           rotate: true,
           alignment: Alignment.bottomCenter,
         ),
-        ValueListenableBuilder<LatLng?>(
-          valueListenable: widget.dotLocationNotifier ?? ValueNotifier(null),
+        NullableValueListenableBuilder<LatLng?>(
+          valueListenable: widget.dotLocationNotifier,
           builder: (context, dotLocation, child) => MarkerLayer(
             markers: [
               if (dotLocation != null)
@@ -214,9 +215,10 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     final corner2 = overlayEntry.bottomRight;
     if (corner1 == null || corner2 == null) return const SizedBox();
 
-    return ValueListenableBuilder<double>(
-      valueListenable: widget.overlayOpacityNotifier ?? ValueNotifier(1),
-      builder: (context, overlayOpacity, child) {
+    return NullableValueListenableBuilder<double>(
+      valueListenable: widget.overlayOpacityNotifier,
+      builder: (context, value, child) {
+        final double overlayOpacity = value ?? 1.0;
         return OverlayImageLayer(
           overlayImages: [
             OverlayImage(
@@ -267,7 +269,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     widget.onUserZoomChange?.call(endZoom);
 
     final center = camera.center;
-    final centerTween = LatLngTween(begin: center, end: focalPoint ?? center);
+    final centerTween = llt.LatLngTween(begin: center, end: focalPoint ?? center);
 
     final zoomTween = Tween<double>(begin: camera.zoom, end: endZoom);
     await _animateCamera((animation) => _leafletMapController.move(centerTween.evaluate(animation)!, zoomTween.evaluate(animation)));
@@ -275,7 +277,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
 
   Future<void> _moveTo(LatLng point) async {
     final camera = _leafletMapController.camera;
-    final centerTween = LatLngTween(begin: camera.center, end: point);
+    final centerTween = llt.LatLngTween(begin: camera.center, end: point);
     await _animateCamera((animation) => _leafletMapController.move(centerTween.evaluate(animation)!, camera.zoom));
   }
 

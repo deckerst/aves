@@ -23,7 +23,7 @@ class FilterChipSectionHeader<T> extends StatelessWidget {
   }
 
   static double getPreferredHeight(BuildContext context) {
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    return SectionHeader.leadingSize.height * textScaleFactor + SectionHeader.padding.vertical + SectionHeader.margin.vertical;
+    final textScaler = MediaQuery.textScalerOf(context);
+    return textScaler.scale(SectionHeader.leadingSize.height) + SectionHeader.padding.vertical + SectionHeader.margin.vertical;
   }
 }

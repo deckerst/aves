@@ -74,6 +74,12 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   }
 
   @override
+  void dispose() {
+    _columnCountNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
@@ -194,8 +200,8 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
       dropdownColor: Themes.thirdLayerColor(context),
     );
 
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final iconSize = IconTheme.of(context).size! * textScaleFactor;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final iconSize = textScaler.scale(IconTheme.of(context).size!);
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
     final child = isPortrait
         ? Column(

@@ -2,24 +2,32 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 abstract class AvesSearchDelegate extends SearchDelegate {
   final String routeName;
   final bool canPop;
+  final TextEditingController queryTextController = TextEditingController();
+  final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);
 
   AvesSearchDelegate({
     required this.routeName,
     this.canPop = true,
     String? initialQuery,
     required super.searchFieldLabel,
+    required super.searchFieldStyle,
   }) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$AvesSearchDelegate',
+        object: this,
+      );
+    }
     query = initialQuery ?? '';
   }
-
-  @mustCallSuper
-  void dispose() {}
 
   @override
   Widget? buildLeading(BuildContext context) {
@@ -101,8 +109,6 @@ abstract class AvesSearchDelegate extends SearchDelegate {
 
   ScrollController? get suggestionsScrollController => null;
 
-  final TextEditingController queryTextController = TextEditingController();
-
   final ProxyAnimation proxyAnimation = ProxyAnimation(kAlwaysDismissedAnimation);
 
   @override
@@ -116,8 +122,6 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     }
   }
 
-  final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);
-
   SearchBody? get currentBody => currentBodyNotifier.value;
 
   set currentBody(SearchBody? value) {
@@ -125,4 +129,17 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   }
 
   SearchPageRoute? route;
+
+  /// Releases the resources.
+  @override
+  @mustCallSuper
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    currentBodyNotifier.dispose();
+    queryTextController.dispose();
+    proxyAnimation.parent = null;
+    super.dispose();
+  }
 }

@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.0"></a>[v1.10.0] - 2023-12-02
+
+### Added
+
+- Viewer / Slideshow: cast images via DLNA/UPnP
+- Icelandic translation (thanks Sveinn í Felli)
+
+### Changed
+
+- long press actions trigger haptic feedback according to OS settings
+- target Android 14 (API 34)
+- upgraded Flutter to stable v3.16.2
+
+### Fixed
+
+- temporary files remaining in the cache directory forever
+- detecting motion photos with more items in the XMP Container directory
+- parsing EXIF date written as epoch time
+
 ## <a id="v1.9.7"></a>[v1.9.7] - 2023-10-17
 
 ### Added
@@ -15,12 +34,12 @@ All notable changes to this project will be documented in this file.
 
 - mosaic layout: clamp ratio to 32/9
 - Video: disable subtitles by default
-- Map: Stamen Watercolor layer (no longer served for free by Stamen) now served by Smithsonian Institution
+- Map: Stamen Watercolor layer (no longer hosted for free by Stamen) now hosted by Smithsonian Institution
 - upgraded Flutter to stable v3.13.7
 
 ### Removed
 
-- Map: Stamen Toner layer (no longer served for free by Stamen)
+- Map: Stamen Toner layer (no longer hosted for free by Stamen)
 
 ### Fixed
 

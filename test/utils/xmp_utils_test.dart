@@ -146,7 +146,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           null,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {'one', 'two'}),
           modifyDate: modifyDate,
         )),
@@ -177,7 +177,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inMultiDescriptionRatings,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {'one', 'two'}),
           modifyDate: modifyDate,
         )),
@@ -212,7 +212,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inSubjects,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {'one', 'two'}),
           modifyDate: modifyDate,
         )),
@@ -240,7 +240,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inSubjects,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {}),
         )),
         _toExpect(null));
@@ -253,7 +253,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inSubjectsCreator,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {}),
           modifyDate: modifyDate,
         )),
@@ -283,7 +283,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           null,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
         )),
@@ -307,7 +307,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inMultiDescriptionRatings,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
         )),
@@ -333,7 +333,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inRatingAttribute,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
         )),
@@ -357,7 +357,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inRatingElement,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
         )),
@@ -381,7 +381,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inSubjects,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
         )),
@@ -411,7 +411,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inSubjects,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, null),
           modifyDate: modifyDate,
         )),
@@ -424,7 +424,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inMotionPhotoMicroVideo,
-          () async => toolkit,
+          toolkit,
           ExtraAvesEntryMetadataEdition.removeContainerXmp,
           modifyDate: modifyDate,
         )),
@@ -437,7 +437,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inMotionPhotoContainer,
-          () async => toolkit,
+          toolkit,
           ExtraAvesEntryMetadataEdition.removeContainerXmp,
           modifyDate: modifyDate,
         )),
@@ -450,7 +450,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inSubjects,
-          () async => toolkit,
+          toolkit,
           ExtraAvesEntryMetadataEdition.removeContainerXmp,
           modifyDate: modifyDate,
         )),
@@ -463,7 +463,7 @@ void main() {
     expect(
         _toExpect(await XMP.edit(
           inMultiDescriptionRatings,
-          () async => toolkit,
+          toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, null),
           modifyDate: modifyDate,
         )),

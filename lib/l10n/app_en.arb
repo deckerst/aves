@@ -112,6 +112,7 @@
   "entryActionEdit": "Edit",
   "entryActionOpen": "Open with",
   "entryActionSetAs": "Set as",
+  "entryActionCast": "Cast",
   "entryActionOpenMap": "Show in map app",
   "entryActionRotateScreen": "Rotate screen",
   "entryActionAddFavourite": "Add to favorites",
@@ -518,6 +519,8 @@
   "tileLayoutGrid": "Grid",
   "tileLayoutList": "List",
 
+  "castDialogTitle": "Cast Devices",
+
   "coverDialogTabCover": "Cover",
   "coverDialogTabApp": "App",
   "coverDialogTabColor": "Color",
@@ -543,6 +546,7 @@
   "aboutDataUsageMisc": "Misc",
   "aboutDataUsageInternal": "Internal",
   "aboutDataUsageExternal": "External",
+  "aboutDataUsageClearCache": "Clear Cache",
 
   "aboutCreditsSectionTitle": "Credits",
   "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",

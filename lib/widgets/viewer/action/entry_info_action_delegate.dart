@@ -271,7 +271,6 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         ),
       ),
     );
-    mapCollection.dispose();
   }
 
   void _goToDebug(BuildContext context, AvesEntry targetEntry) {

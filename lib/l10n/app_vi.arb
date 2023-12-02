@@ -1512,5 +1512,11 @@
   "settingsVideoPlaybackTile": "Phát lại",
   "@settingsVideoPlaybackTile": {},
   "exportEntryDialogWriteMetadata": "Viết metadata",
-  "@exportEntryDialogWriteMetadata": {}
+  "@exportEntryDialogWriteMetadata": {},
+  "aboutDataUsageClearCache": "Xóa bộ nhớ đệm",
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Truyền",
+  "@entryActionCast": {},
+  "castDialogTitle": "Thiết bị truyền",
+  "@castDialogTitle": {}
 }

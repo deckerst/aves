@@ -14,7 +14,6 @@ import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:aves/widgets/settings/common/quick_actions/quick_actions.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -104,6 +103,13 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
 
   @override
   void dispose() {
+    _draggedQuickAction.dispose();
+    _draggedAvailableAction.dispose();
+    _quickActionHighlight.dispose();
+    _availableActionHighlight.dispose();
+    _quickActionsChangeNotifier.dispose();
+    _availableActionPageController.dispose();
+
     _stopLeavingTimer();
     super.dispose();
   }
@@ -141,11 +147,9 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
       removeAction: _removeQuickAction,
       onTargetLeave: _onQuickActionTargetLeave,
     );
-    return WillPopScope(
-      onWillPop: () {
-        widget.save(_quickActions);
-        return SynchronousFuture(true);
-      },
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) => widget.save(_quickActions),
       child: ListView(
         children: [
           Padding(
@@ -272,7 +276,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                             dotWidth: 8,
                             dotHeight: 8,
                             dotColor: colorScheme.onPrimary.withOpacity(.3),
-                            activeDotColor: colorScheme.secondary,
+                            activeDotColor: colorScheme.primary,
                           ),
                         ),
                       ),

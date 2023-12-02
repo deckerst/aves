@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
@@ -91,10 +92,9 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onQueryChanged() {
     _debouncer(() {
-      if (mounted) {
-        // rebuild ourselves because query changed.
-        setState(() {});
-      }
+      if (!mounted) return;
+      // rebuild ourselves because query changed.
+      setState(() {});
     });
   }
 
@@ -143,7 +143,7 @@ class _SearchPageState extends State<SearchPage> {
                 hintStyle: theme.inputDecorationTheme.hintStyle,
               ),
               textInputAction: TextInputAction.search,
-              style: theme.textTheme.titleLarge,
+              style: Themes.searchFieldStyle(context),
               onSubmitted: (_) => widget.delegate.showResults(context),
             ),
           ),

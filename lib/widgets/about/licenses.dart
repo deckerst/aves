@@ -32,6 +32,12 @@ class _LicensesState extends State<Licenses> {
     _sortPackages();
   }
 
+  @override
+  void dispose() {
+    _expandedNotifier.dispose();
+    super.dispose();
+  }
+
   void _sortPackages() {
     int compare(Dependency a, Dependency b) => compareAsciiUpperCase(a.name, b.name);
     _platform.sort(compare);
@@ -82,7 +88,7 @@ class _LicensesState extends State<Licenses> {
                     builder: (context) => Theme(
                       data: Theme.of(context).copyWith(
                         // as of Flutter v3.7.8, `cardColor` is used as a background color by `LicensePage`
-                        cardColor: Theme.of(context).scaffoldBackgroundColor,
+                        cardColor: Theme.of(context).colorScheme.background,
                       ),
                       child: const LicensePage(),
                     ),
@@ -121,29 +127,12 @@ class _LicenseRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final bodyTextStyle = textTheme.bodyMedium!;
-    final subColor = bodyTextStyle.color!.withOpacity(.6);
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LinkChip(
-            text: package.name,
-            urlString: package.sourceUrl,
-            textStyle: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Padding(
-            padding: const EdgeInsetsDirectional.only(start: 16),
-            child: LinkChip(
-              text: package.license,
-              urlString: package.licenseUrl,
-              color: subColor,
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: LinkChip(
+        text: package.name,
+        urlString: package.sourceUrl,
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }

@@ -24,7 +24,7 @@ class LinearPercentIndicatorText extends StatelessWidget {
           ),
         )
       ],
-      outlineColor: theme.scaffoldBackgroundColor,
+      outlineColor: theme.colorScheme.background,
     );
   }
 }
