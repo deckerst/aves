@@ -192,17 +192,7 @@ class Themes {
   static final _darkLabelColor = _darkThemeTypo.labelMedium!.color!;
   static const _darkOnSurface = Colors.white;
 
-  static ThemeData darkTheme(Color accentColor, bool deviceInitialized) {
-    final colors = ColorScheme.fromSeed(
-      seedColor: accentColor,
-      brightness: Brightness.dark,
-      primary: accentColor,
-      onPrimary: _darkBodyColor,
-      secondary: accentColor,
-      onSecondary: _darkBodyColor,
-      onSurface: _darkOnSurface,
-      // onSurfaceVariant: Colors.red,
-    );
+  static ThemeData _baseDarkTheme(ColorScheme colors, bool deviceInitialized) {
     final textTheme = _darkThemeTypo;
     return _baseTheme(colors, deviceInitialized).copyWith(
       // TYPOGRAPHY & ICONOGRAPHY
@@ -236,25 +226,37 @@ class Themes {
     );
   }
 
+  static ThemeData darkTheme(Color accentColor, bool deviceInitialized) {
+    final colors = ColorScheme.fromSeed(
+      seedColor: accentColor,
+      brightness: Brightness.dark,
+      primary: accentColor,
+      onPrimary: _darkBodyColor,
+      secondary: accentColor,
+      onSecondary: _darkBodyColor,
+      onSurface: _darkOnSurface,
+    );
+    return _baseDarkTheme(colors, deviceInitialized);
+  }
+
   // black
 
-  static const _blackFirstLayer = Colors.black;
-  static const _blackSecondLayer = Color(0xFF212121); // aka `Colors.grey[900]`
-
   static ThemeData blackTheme(Color accentColor, bool deviceInitialized) {
-    final baseTheme = darkTheme(accentColor, deviceInitialized);
+    final colors = ColorScheme.fromSeed(
+      seedColor: accentColor,
+      brightness: Brightness.dark,
+      primary: accentColor,
+      onPrimary: _darkBodyColor,
+      secondary: accentColor,
+      onSecondary: _darkBodyColor,
+      onSurface: _darkOnSurface,
+    ).copyWith(
+      background: Colors.black,
+    );
+    final baseTheme = _baseDarkTheme(colors, deviceInitialized);
     return baseTheme.copyWith(
-      // `canvasColor` is used by `Drawer`, `DropdownButton` and `ExpansionTileCard`
-      canvasColor: _blackSecondLayer,
-      scaffoldBackgroundColor: _blackFirstLayer,
-      // `cardColor` is used by `ExpansionPanel`
-      cardColor: _blackSecondLayer,
-      dialogBackgroundColor: _blackSecondLayer,
       appBarTheme: baseTheme.appBarTheme.copyWith(
-        backgroundColor: _blackFirstLayer,
-      ),
-      popupMenuTheme: baseTheme.popupMenuTheme.copyWith(
-        color: _blackSecondLayer,
+        backgroundColor: colors.background,
       ),
     );
   }
