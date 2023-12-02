@@ -1346,5 +1346,9 @@
   "aboutDataUsageExternal": "Extern",
   "@aboutDataUsageExternal": {},
   "aboutDataUsageDatabase": "Datenbank",
-  "@aboutDataUsageDatabase": {}
+  "@aboutDataUsageDatabase": {},
+  "overlayHistogramLuminance": "Leuchtdichte",
+  "@overlayHistogramLuminance": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {}
 }

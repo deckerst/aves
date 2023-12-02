@@ -17,7 +17,7 @@
   "@settingsEnableBinSubtitle": {},
   "viewerInfoPageTitle": "Upplýsingar",
   "@viewerInfoPageTitle": {},
-  "mapAttributionStamen": "Kortagögn frá © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Kortatíglar frá [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Kortagögn frá © [OpenStreetMap](https://www.openstreetmap.org/copyright) þátttakendum • Kortatíglar frá [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "widgetOpenPageViewer": "Opna skoðara",
   "@widgetOpenPageViewer": {},
@@ -187,7 +187,7 @@
   "@welcomeTermsToggle": {},
   "newAlbumDialogStorageLabel": "Geymslurými:",
   "@newAlbumDialogStorageLabel": {},
-  "doubleBackExitMessage": "Ýttu aftur á \"Til baka\" til að hætta.",
+  "doubleBackExitMessage": "Ýttu aftur á „Til baka“ til að hætta.",
   "@doubleBackExitMessage": {},
   "settingsSubtitleThemeBackgroundColor": "Litur bakgrunns",
   "@settingsSubtitleThemeBackgroundColor": {},
@@ -469,7 +469,7 @@
   "@entryActionViewMotionPhotoVideo": {},
   "videoControlsNone": "Ekkert",
   "@videoControlsNone": {},
-  "otherDirectoryDescription": "“{name}” möppu",
+  "otherDirectoryDescription": "„{name}“ möppu",
   "@otherDirectoryDescription": {
     "placeholders": {
       "name": {
@@ -585,7 +585,7 @@
   "@searchCollectionFieldHint": {},
   "viewerActionUnlock": "Aflæsa skoðara",
   "@viewerActionUnlock": {},
-  "settingsDoubleBackExit": "Ýttu tvisvar á \"Til baka\" til að hætta",
+  "settingsDoubleBackExit": "Ýttu tvisvar á „Til baka“ til að hætta",
   "@settingsDoubleBackExit": {},
   "entryActionShare": "Deila",
   "@entryActionShare": {},
@@ -840,7 +840,7 @@
   "@albumMimeTypeMixed": {},
   "settingsViewerQuickActionEditorAvailableButtonsSectionTitle": "Tiltækir hnappar",
   "@settingsViewerQuickActionEditorAvailableButtonsSectionTitle": {},
-  "itemCount": "{count, plural, =1{1 atriði} other{{count} atriði}}",
+  "itemCount": "{count, plural, =1{1 atriði} other{{count} atriðum}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
@@ -1056,7 +1056,7 @@
   "@cropAspectRatioSquare": {},
   "collectionActionRescan": "Endurskanna",
   "@collectionActionRescan": {},
-  "collectionCopySuccessFeedback": "{count, plural, =1{Afritaði 1 atriði} other{Afritaði {count} atriði}}",
+  "collectionCopySuccessFeedback": "{count, plural, =1{Afritaði 1 atriði} other{Afritaði {count} atriðum}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {}
@@ -1170,7 +1170,7 @@
   "@viewDialogLayoutSectionTitle": {},
   "chipActionUnpin": "Losa af efri hluta",
   "@chipActionUnpin": {},
-  "searchStatesSectionTitle": "Stöður",
+  "searchStatesSectionTitle": "Héruð",
   "@searchStatesSectionTitle": {},
   "chipActionGoToTagPage": "Birta í Merki",
   "@chipActionGoToTagPage": {},
@@ -1346,7 +1346,7 @@
   "@settingsVideoBackgroundModeDialogTitle": {},
   "binPageTitle": "Ruslmappa",
   "@binPageTitle": {},
-  "tagPlaceholderState": "Hérað/Fylki",
+  "tagPlaceholderState": "Hérað",
   "@tagPlaceholderState": {},
   "sortByAlbumFileName": "Eftir heiti albúma og skráa",
   "@sortByAlbumFileName": {},
@@ -1454,7 +1454,7 @@
   "@newVaultDialogTitle": {},
   "missingSystemFilePickerDialogMessage": "Skráaveljari kerfisins er óvirkur eða hann vantar. Virkjaðu hann og reydu síðan aftur.",
   "@missingSystemFilePickerDialogMessage": {},
-  "storageAccessDialogMessage": "Veldu {directory} á “{volume}” í næsta skjá til að gefa forritinu aðgang að henni.",
+  "storageAccessDialogMessage": "Veldu {directory} á „{volume}“ í næsta skjá til að gefa forritinu aðgang að henni.",
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -1468,11 +1468,11 @@
       }
     }
   },
-  "hideFilterConfirmationDialogMessage": "Samsvarandi ljósmyndir og myndskeið verða falin frá safninu þínu. Þú getur látið þetta birtast aftur með því að fara í “Persónuvernd”-stillingarnar.\n\nErtu viss um að þú viljir fela þetta?",
+  "hideFilterConfirmationDialogMessage": "Samsvarandi ljósmyndir og myndskeið verða falin frá safninu þínu. Þú getur látið þetta birtast aftur með því að fara í „Persónuvernd“-stillingarnar.\n\nErtu viss um að þú viljir fela þetta?",
   "@hideFilterConfirmationDialogMessage": {},
   "settingsViewerGestureSideTapNext": "Ýttu á skjájaðra til að birta fyrra/næsta atriði",
   "@settingsViewerGestureSideTapNext": {},
-  "restrictedAccessDialogMessage": "Þessu forriti er ekki heimilt að breyta skrám í {directory} á “{volume}”.\n\nNotaðu for-uppsettan skráastjóra eða myndasafnsforrit til að færa atriðin í aðra möppu.",
+  "restrictedAccessDialogMessage": "Þessu forriti er ekki heimilt að breyta skrám í {directory} á „{volume}“.\n\nNotaðu for-uppsettan skráastjóra eða myndasafnsforrit til að færa atriðin í aðra möppu.",
   "@restrictedAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -1497,7 +1497,7 @@
       }
     }
   },
-  "notEnoughSpaceDialogMessage": "Þessi aðgerð þarfnast {neededSize} af lausu plássi á “{volume}” til að geta klárað, en einungis {freeSize} eru eftir.",
+  "notEnoughSpaceDialogMessage": "Þessi aðgerð þarfnast {neededSize} af lausu plássi á „{volume}“ til að geta klárað, en einungis {freeSize} eru eftir.",
   "@notEnoughSpaceDialogMessage": {
     "placeholders": {
       "neededSize": {

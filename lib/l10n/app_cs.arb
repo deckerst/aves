@@ -1514,5 +1514,9 @@
   "overlayHistogramLuminance": "Světelnost",
   "@overlayHistogramLuminance": {},
   "aboutDataUsageClearCache": "Vymazat mezipaměť",
-  "@aboutDataUsageClearCache": {}
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Promítat",
+  "@entryActionCast": {},
+  "castDialogTitle": "Zařízení pro promítání",
+  "@castDialogTitle": {}
 }
