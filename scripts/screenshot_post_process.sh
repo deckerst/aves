@@ -69,6 +69,9 @@ for source in framed/*/*; do
     convert "$source" -gravity center -background transparent -extent $PLAY_SIZE "$target"
   fi
 done
+mv play/nb play/no-NO
+mv play/zh play/zh-CN
+mv play/zh_Hant play/zh-TW
 
 # readme: scale down
 for source in framed/en/*; do
