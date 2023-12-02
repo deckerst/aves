@@ -1,5 +1,0 @@
-In v1.9.2:
-- play your animated AVIF, AV1, and HDR videos
-- filter by rating ranges
-- judge tonal distributions with the viewer histogram
-Full changelog available on GitHub
