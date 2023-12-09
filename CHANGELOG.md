@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 - Cataloguing: detect/filter `Ultra HDR`
 - Info: show metadata from JPEG MPF
+- Info: open images embedded via JPEG MPF
 
 ### Changed
 

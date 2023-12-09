@@ -13,9 +13,10 @@ class MetadataDirectory {
   // special directory names
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
   static const xmpDirectory = 'XMP'; // from metadata-extractor
-  static const mediaDirectory = 'Media'; // custom
   static const coverDirectory = 'Cover'; // custom
   static const geoTiffDirectory = 'GeoTIFF'; // custom
+  static const mediaDirectory = 'Media'; // custom
+  static const mpfImageDirectoryPrefix = 'MPF Image #'; // custom
 
   const MetadataDirectory(
     this.name,

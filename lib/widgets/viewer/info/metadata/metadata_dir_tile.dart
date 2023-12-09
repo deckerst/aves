@@ -6,6 +6,7 @@ import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/metadata/geotiff.dart';
@@ -109,6 +110,19 @@ class MetadataDirTileBody extends StatelessWidget {
 
       children = [
         if (showThumbnails && dirName == MetadataDirectory.exifThumbnailDirectory) MetadataThumbnails(entry: entry),
+        if (dirName.startsWith(MetadataDirectory.mpfImageDirectoryPrefix))
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: AvesOutlinedButton(
+              label: context.l10n.viewerInfoOpenLinkText,
+              onPressed: () {
+                final id = int.tryParse(dirName.substring(MetadataDirectory.mpfImageDirectoryPrefix.length));
+                if (id != null) {
+                  OpenEmbeddedDataNotification.mpf(id).dispatch(context);
+                }
+              },
+            ),
+          ),
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(
