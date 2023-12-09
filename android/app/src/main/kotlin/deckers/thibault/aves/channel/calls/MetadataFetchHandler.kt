@@ -57,6 +57,7 @@ import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeInt
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.metadata.XMP.getSafeString
+import deckers.thibault.aves.metadata.XMP.hasHdrGainMap
 import deckers.thibault.aves.metadata.XMP.isMotionPhoto
 import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.metadata.metadataextractor.Helper
@@ -76,6 +77,8 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeRational
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
 import deckers.thibault.aves.metadata.metadataextractor.PngActlDirectory
+import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
+import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfDirectory
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
@@ -225,7 +228,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     foundMp4Uuid = metadata.directories.any { it is Mp4UuidBoxDirectory && it.tagCount > 0 }
 
                     val dirByName = metadata.directories.filter {
-                        (it.tagCount > 0 || it.errorCount > 0)
+                        (it.tagCount > 0 || it.errorCount > 0 || it is MpEntryDirectory)
                                 && it !is FileTypeDirectory
                                 && it !is AviDirectory
                     }.groupBy { dir -> dir.name }
@@ -342,6 +345,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                                 dirMap[tag.tagName] = tag.description
                                             }
                                         }
+                                    }
+
+                                    dir is MpEntryDirectory -> {
+                                        dirMap.putAll(dir.describe())
                                     }
 
                                     else -> dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
@@ -551,6 +558,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 if (xmpMeta.isMotionPhoto()) {
                     flags = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
                 }
+
+                // identification of embedded gain map
+                if (xmpMeta.hasHdrGainMap()) {
+                    flags = flags or MASK_HAS_HDR_GAIN_MAP
+                }
             } catch (e: XMPException) {
                 Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
             }
@@ -620,6 +632,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         if (geoLocation != null) {
                             metadataMap[KEY_LATITUDE] = geoLocation.latitude
                             metadataMap[KEY_LONGITUDE] = geoLocation.longitude
+                        }
+                    }
+
+                    // JPEG Multi-Picture Format
+                    for (dir in metadata.getDirectoriesOfType(MpfDirectory::class.java)) {
+                        val imageCount = dir.getNumberOfImages()
+                        if (imageCount > 1) {
+                            flags = flags or MASK_IS_MULTIPAGE
                         }
                     }
 
@@ -1297,6 +1317,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_360 = 1 shl 3
         private const val MASK_IS_MULTIPAGE = 1 shl 4
         private const val MASK_IS_MOTION_PHOTO = 1 shl 5
+        private const val MASK_HAS_HDR_GAIN_MAP = 1 shl 6
         private const val XMP_SUBJECTS_SEPARATOR = ";"
 
         // overlay metadata

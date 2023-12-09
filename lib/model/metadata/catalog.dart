@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class CatalogMetadata {
   final int id;
   final int? dateMillis;
-  final bool isAnimated, isGeotiff, is360, isMultiPage, isMotionPhoto;
+  final bool isAnimated, isGeotiff, is360, isMultiPage, isMotionPhoto, hasHdrGainMap;
   bool isFlipped;
   int? rotationDegrees;
   final String? mimeType, xmpSubjects, xmpTitle;
@@ -19,6 +19,7 @@ class CatalogMetadata {
   static const _is360Mask = 1 << 3;
   static const _isMultiPageMask = 1 << 4;
   static const _isMotionPhotoMask = 1 << 5;
+  static const _hasHdrGainMapMask = 1 << 6;
 
   CatalogMetadata({
     required this.id,
@@ -30,6 +31,7 @@ class CatalogMetadata {
     this.is360 = false,
     this.isMultiPage = false,
     this.isMotionPhoto = false,
+    this.hasHdrGainMap = false,
     this.rotationDegrees,
     this.xmpSubjects,
     this.xmpTitle,
@@ -71,6 +73,7 @@ class CatalogMetadata {
       is360: is360,
       isMultiPage: isMultiPage ?? this.isMultiPage,
       isMotionPhoto: isMotionPhoto,
+      hasHdrGainMap: hasHdrGainMap,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitle: xmpTitle,
@@ -92,6 +95,7 @@ class CatalogMetadata {
       is360: flags & _is360Mask != 0,
       isMultiPage: flags & _isMultiPageMask != 0,
       isMotionPhoto: flags & _isMotionPhotoMask != 0,
+      hasHdrGainMap: flags & _hasHdrGainMapMask != 0,
       // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
       rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
@@ -106,7 +110,7 @@ class CatalogMetadata {
         'id': id,
         'mimeType': mimeType,
         'dateMillis': dateMillis,
-        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0) | (isMotionPhoto ? _isMotionPhotoMask : 0),
+        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0) | (isMotionPhoto ? _isMotionPhotoMask : 0) | (hasHdrGainMap ? _hasHdrGainMapMask : 0),
         'rotationDegrees': rotationDegrees,
         'xmpSubjects': xmpSubjects,
         'xmpTitle': xmpTitle,

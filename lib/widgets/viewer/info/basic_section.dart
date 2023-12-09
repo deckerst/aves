@@ -122,6 +122,7 @@ class _BasicSectionState extends State<BasicSection> {
       MimeFilter(entry.mimeType),
       if (entry.isAnimated) TypeFilter.animated,
       if (entry.isGeotiff) TypeFilter.geotiff,
+      if (entry.isHdr) TypeFilter.hdr,
       if (entry.isMotionPhoto) TypeFilter.motionPhoto,
       if (entry.isRaw) TypeFilter.raw,
       if (entry.isImage && entry.is360) TypeFilter.panorama,

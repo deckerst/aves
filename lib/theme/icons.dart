@@ -169,6 +169,7 @@ class AIcons {
   // thumbnail overlay
   static const animated = Icons.slideshow;
   static const geo = Icons.language_outlined;
+  static const hdr = Icons.hdr_on_outlined;
   static const motionPhoto = Icons.motion_photos_on_outlined;
   static const multiPage = Icons.burst_mode_outlined;
   static const panorama = Icons.vrpano_outlined;

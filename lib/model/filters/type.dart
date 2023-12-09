@@ -13,7 +13,8 @@ class TypeFilter extends CollectionFilter {
 
   static const _animated = 'animated'; // subset of `image/gif` and `image/webp`
   static const _geotiff = 'geotiff'; // subset of `image/tiff`
-  static const _motionPhoto = 'motion_photo'; // subset of `image/jpeg`
+  static const _hdr = 'hdr'; // subset of `image/jpeg`
+  static const _motionPhoto = 'motion_photo'; // subset of images (jpeg, heic)
   static const _panorama = 'panorama'; // subset of images
   static const _raw = 'raw'; // specific image formats
   static const _sphericalVideo = 'spherical_video'; // subset of videos
@@ -24,6 +25,7 @@ class TypeFilter extends CollectionFilter {
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);
+  static final hdr = TypeFilter._private(_hdr);
   static final motionPhoto = TypeFilter._private(_motionPhoto);
   static final panorama = TypeFilter._private(_panorama);
   static final raw = TypeFilter._private(_raw);
@@ -40,6 +42,9 @@ class TypeFilter extends CollectionFilter {
       case _geotiff:
         _test = (entry) => entry.isGeotiff;
         _icon = AIcons.geo;
+      case _hdr:
+        _test = (entry) => entry.isHdr;
+        _icon = AIcons.hdr;
       case _motionPhoto:
         _test = (entry) => entry.isMotionPhoto;
         _icon = AIcons.motionPhoto;
@@ -83,11 +88,12 @@ class TypeFilter extends CollectionFilter {
     final l10n = context.l10n;
     return switch (itemType) {
       _animated => l10n.filterTypeAnimatedLabel,
+      _geotiff => l10n.filterTypeGeotiffLabel,
+      _hdr => 'HDR',
       _motionPhoto => l10n.filterTypeMotionPhotoLabel,
       _panorama => l10n.filterTypePanoramaLabel,
       _raw => l10n.filterTypeRawLabel,
       _sphericalVideo => l10n.filterTypeSphericalVideoLabel,
-      _geotiff => l10n.filterTypeGeotiffLabel,
       _ => itemType,
     };
   }

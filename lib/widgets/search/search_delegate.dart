@@ -58,6 +58,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     TypeFilter.panorama,
     TypeFilter.sphericalVideo,
     TypeFilter.geotiff,
+    TypeFilter.hdr,
     TypeFilter.raw,
     MimeFilter(MimeTypes.svg),
   ];

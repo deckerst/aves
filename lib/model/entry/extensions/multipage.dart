@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/ref/bursts.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 
@@ -12,10 +11,7 @@ extension ExtraAvesEntryMultipage on AvesEntry {
 
   bool get isBurst => burstEntries?.isNotEmpty == true;
 
-  // for backward compatibility
-  bool get _isMotionPhotoLegacy => isMultiPage && !isBurst && mimeType == MimeTypes.jpeg;
-
-  bool get isMotionPhoto => (catalogMetadata?.isMotionPhoto ?? false) || _isMotionPhotoLegacy;
+  bool get isMotionPhoto => catalogMetadata?.isMotionPhoto ?? false;
 
   String? getBurstKey(List<String> patterns) {
     final key = BurstPatterns.getKeyForName(filenameWithoutExtension, patterns);
