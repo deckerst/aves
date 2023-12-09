@@ -74,6 +74,8 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get is360 => catalogMetadata?.is360 ?? false;
 
+  bool get isHdr => (catalogMetadata?.hasHdrGainMap ?? false);
+
   // trash
 
   bool get isExpiredTrash {

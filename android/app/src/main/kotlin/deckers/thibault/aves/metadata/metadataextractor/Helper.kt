@@ -27,6 +27,7 @@ import com.drew.metadata.xmp.XmpReader
 import deckers.thibault.aves.metadata.ExifGeoTiffTags
 import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
 import deckers.thibault.aves.utils.LogUtils
 import java.io.BufferedInputStream
 import java.io.IOException
@@ -97,6 +98,7 @@ object Helper {
         val readers = ArrayList<JpegSegmentMetadataReader>().apply {
             addAll(JpegMetadataReader.ALL_READERS.filter { it !is XmpReader })
             add(SafeXmpReader())
+            add(MpfReader())
         }
 
         val metadata = com.drew.metadata.Metadata()

@@ -65,6 +65,17 @@ class GeoTiffIcon extends StatelessWidget {
   }
 }
 
+class HdrIcon extends StatelessWidget {
+  const HdrIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.hdr,
+    );
+  }
+}
+
 class PanoramaIcon extends StatelessWidget {
   const PanoramaIcon({super.key});
 

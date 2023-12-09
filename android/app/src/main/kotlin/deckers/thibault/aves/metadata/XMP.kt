@@ -49,6 +49,7 @@ object XMP {
     private const val GDEVICE_ITEM_NS_URI = "http://ns.google.com/photos/dd/1.0/item/"
     private const val GIMAGE_NS_URI = "http://ns.google.com/photos/1.0/image/"
     private const val GPANO_NS_URI = "http://ns.google.com/photos/1.0/panorama/"
+    private const val HDRGM_NS_URI = "http://ns.adobe.com/hdr-gain-map/1.0/"
     private const val PMTM_NS_URI = "http://www.hdrsoft.com/photomatix_settings01"
 
     val DC_SUBJECT_PROP_NAME = XMPPropName(DC_NS_URI, "subject")
@@ -83,13 +84,20 @@ object XMP {
     val GDEVICE_CONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Length")
     val GDEVICE_CONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Mime")
 
-    // motion photo
+    // container
 
     val GCAMERA_VIDEO_OFFSET_PROP_NAME = XMPPropName(GCAMERA_NS_URI, "MicroVideoOffset")
     val GCONTAINER_DIRECTORY_PROP_NAME = XMPPropName(GCONTAINER_NS_URI, "Directory")
     val GCONTAINER_ITEM_PROP_NAME = XMPPropName(GCONTAINER_NS_URI, "Item")
     val GCONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Length")
     val GCONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Mime")
+    private val GCONTAINER_ITEM_SEMANTIC_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Semantic")
+
+    private const val ITEM_SEMANTIC_GAIN_MAP = "GainMap"
+
+    // HDR gain map
+
+    private val HDRGM_VERSION_PROP_NAME = XMPPropName(HDRGM_NS_URI, "Version")
 
     // panorama
     // cf https://developers.google.com/streetview/spherical-metadata
@@ -179,6 +187,35 @@ object XMP {
     }
 
     // extensions
+
+    fun XMPMeta.hasHdrGainMap(): Boolean {
+        try {
+            // standard HDR gain map
+            if (doesPropExist(HDRGM_VERSION_PROP_NAME)) {
+                return true
+            }
+
+            // `Ultra HDR`
+            if (doesPropExist(GCONTAINER_DIRECTORY_PROP_NAME)) {
+                val count = countPropArrayItems(GCONTAINER_DIRECTORY_PROP_NAME)
+                for (i in 1 until count + 1) {
+                    val semantic = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_SEMANTIC_PROP_NAME))?.value
+                    if (semantic == ITEM_SEMANTIC_GAIN_MAP) {
+                        return true
+                    }
+                }
+            }
+
+            return false
+        } catch (e: XMPException) {
+            if (e.errorCode != XMPError.BADSCHEMA) {
+                // `BADSCHEMA` code is reported when we check a property
+                // from a non standard namespace, and that namespace is not declared in the XMP
+                Log.w(LOG_TAG, "failed to check HDR props from XMP", e)
+            }
+        }
+        return false
+    }
 
     fun XMPMeta.isMotionPhoto(): Boolean {
         try {

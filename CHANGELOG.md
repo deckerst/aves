@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+- Cataloguing: detect/filter `Ultra HDR`
+- Info: show metadata from JPEG MPF
+
 ### Changed
 
 - upgraded Flutter to stable v3.16.3
