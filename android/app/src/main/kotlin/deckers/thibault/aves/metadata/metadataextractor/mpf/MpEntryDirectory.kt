@@ -47,10 +47,7 @@ class MpEntryDescriptor(directory: MpEntryDirectory?) : TagDescriptor<MpEntryDir
     }
 
     fun getFormatDescription(format: Int): String {
-        return when (format) {
-            0 -> MimeTypes.JPEG
-            else -> "Unknown ($format)"
-        }
+        return MpEntry.getMimeType(format) ?: "Unknown ($format)"
     }
 
     fun getTypeDescription(type: Int): String {
@@ -73,4 +70,13 @@ class MpEntryDescriptor(directory: MpEntryDirectory?) : TagDescriptor<MpEntryDir
     }
 }
 
-class MpEntry(val flags: Int, val format: Int, val type: Int, val size: Long, val dataOffset: Long, val dep1: Short, val dep2: Short)
+class MpEntry(val flags: Int, val format: Int, val type: Int, val size: Long, val dataOffset: Long, val dep1: Short, val dep2: Short) {
+    companion object {
+        fun getMimeType(format: Int): String? {
+            return when (format) {
+                0 -> MimeTypes.JPEG
+                else -> null
+            }
+        }
+    }
+}

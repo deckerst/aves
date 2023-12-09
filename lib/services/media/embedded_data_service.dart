@@ -12,6 +12,8 @@ abstract class EmbeddedDataService {
 
   Future<Map> extractMotionPhotoVideo(AvesEntry entry);
 
+  Future<Map> extractJpegMultiPictureFormat(AvesEntry entry, int index);
+
   Future<Map> extractVideoEmbeddedPicture(AvesEntry entry);
 
   Future<Map> extractXmpDataProp(AvesEntry entry, List<dynamic>? props, String? propMimeType);
@@ -76,6 +78,23 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
         'displayName': ['${entry.bestTitle}', 'Video'].join(AText.separator),
+      });
+      if (result != null) return result as Map;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
+
+  @override
+  Future<Map> extractJpegMultiPictureFormat(AvesEntry entry, int id) async {
+    try {
+      final result = await _platform.invokeMethod('extractJpegMultiPictureFormat', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+        'displayName': ['${entry.bestTitle}', 'MPF #$id'].join(AText.separator),
+        'id': id,
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {

@@ -340,6 +340,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
         theme.textTheme.bodyMedium!.copyWith(
           color: colorScheme.onInverseSurface,
         );
+    final contentTextFontSize = contentTextStyle.fontSize ?? theme.textTheme.bodyMedium!.fontSize!;
     final timerChangeShadowColor = colorScheme.primary;
 
     return Row(
@@ -347,7 +348,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
         if (widget.type == FeedbackType.warn) ...[
           CustomPaint(
             painter: const _WarnIndicator(AColors.warning),
-            size: Size(4, textScaler.scale(contentTextStyle.fontSize!)),
+            size: Size(4, textScaler.scale(contentTextFontSize)),
           ),
           const SizedBox(width: 8),
         ],

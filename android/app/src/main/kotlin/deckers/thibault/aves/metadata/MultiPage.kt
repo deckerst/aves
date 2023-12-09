@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.adobe.internal.xmp.XMPMeta
+import com.drew.imaging.jpeg.JpegSegmentType
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.XMP.countPropArrayItems
 import deckers.thibault.aves.metadata.XMP.doesPropExist
@@ -201,6 +202,36 @@ object MultiPage {
         XMP.checkHeic(context, mimeType, uri, foundXmp, ::processXmp)
 
         return offsetFromEnd
+    }
+
+    // starts after `[APP2 marker (1 byte)] [segment size (2 bytes)] [MPF marker (4 bytes)]`
+    fun getJpegMultiPictureFormatBaseOffset(context: Context, uri: Uri, sizeBytes: Long): Int? {
+        val app2Marker = JpegSegmentType.APP2.byteValue
+        val mpfMarker = "MPF".toByteArray() + 0x00
+
+        try {
+            Metadata.openSafeInputStream(context, uri, MimeTypes.JPEG, sizeBytes)?.use { input ->
+                var offset = 0
+                while (true) {
+                    do {
+                        val b = input.read().toByte()
+                        offset++
+                    } while (b != app2Marker)
+                    // skip 2 bytes for segment size
+                    input.skip(2)
+                    offset += 2
+                    val marker = ByteArray(4)
+                    input.read(marker, 0, marker.size)
+                    offset += 4
+                    if (marker.contentEquals(mpfMarker)) {
+                        return offset
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get MPF base offset from uri=$uri", e)
+        }
+        return null
     }
 
     fun getTiffPages(context: Context, uri: Uri): ArrayList<FieldMap> {
