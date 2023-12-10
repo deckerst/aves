@@ -32,7 +32,11 @@ class AIcons {
   static const folder = Icons.folder_outlined;
   static const grid = Icons.grid_on_outlined;
   static const home = Icons.home_outlined;
-  static const important = Icons.label_important_outline;
+
+  // as of Flutter v3.16.3,
+  // `label_important_outlined` matches text direction but is filled
+  // `label_important_outline` is outlined but does not match text direction
+  static final important = Icons.label_important_outline.copyWith(matchTextDirection: true);
   static const language = Icons.translate_outlined;
   static const location = Icons.place_outlined;
   static const locationUnlocated = Icons.location_off_outlined;
@@ -180,4 +184,18 @@ class AIcons {
 
   static final github = MdiIcons.github;
   static final legal = MdiIcons.scaleBalance;
+}
+
+extension ExtraIconData on IconData {
+  IconData copyWith({
+    bool? matchTextDirection,
+  }) {
+    return IconData(
+      codePoint,
+      fontFamily: fontFamily,
+      fontPackage: fontPackage,
+      matchTextDirection: matchTextDirection ?? this.matchTextDirection,
+      fontFamilyFallback: fontFamilyFallback,
+    );
+  }
 }
