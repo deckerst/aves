@@ -66,6 +66,7 @@ class Contributors {
     Contributor('Fqwe1', 'Fqwe1@users.noreply.hosted.weblate.org'),
     Contributor('Reza Almanda', 'rezaalmanda27@gmail.com'),
     Contributor('Sveinn í Felli', 'sv1@fellsnet.is'),
+    Contributor('Henning Bunk', 'henningtbunk@gmail.com'),
     // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
     // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
     // Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'), // Arabic

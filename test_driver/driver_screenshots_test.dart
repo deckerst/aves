@@ -44,8 +44,8 @@ void main() {
       await driver.scanMediaDir(screenshotsTargetDirAndroid);
       // recent heavy images may delay cataloguing because of thumbnail loading precedence
       // so we wait enough to avoid cataloguing progress subtitle in app bar when taking screenshots
-      await Future.delayed(const Duration(seconds: 20));
-    });
+      await Future.delayed(const Duration(seconds: 30));
+    }, timeout: const Timeout(Duration(minutes: 1)));
 
     languageCodes.forEach((languageCode) {
       setLanguage(languageCode);
