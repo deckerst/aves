@@ -19,25 +19,36 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.decoder.SvgImage
 import deckers.thibault.aves.decoder.TiffImage
-import deckers.thibault.aves.metadata.*
+import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
 import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
 import deckers.thibault.aves.metadata.Metadata.TYPE_MP4
 import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
+import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.Mp4ParserHelper.updateLocation
 import deckers.thibault.aves.metadata.Mp4ParserHelper.updateRotation
 import deckers.thibault.aves.metadata.Mp4ParserHelper.updateXmp
+import deckers.thibault.aves.metadata.MultiPage
+import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
+import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.metadataextractor.Helper
-import deckers.thibault.aves.model.*
-import deckers.thibault.aves.utils.*
+import deckers.thibault.aves.model.AvesEntry
+import deckers.thibault.aves.model.ExifOrientationOp
+import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.NameConflictStrategy
+import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.BmpWriter
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.FileUtils.transferTo
+import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditIptc
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
@@ -46,13 +57,19 @@ import deckers.thibault.aves.utils.MimeTypes.canReadWithPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.StorageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pixy.meta.meta.Metadata
 import pixy.meta.meta.MetadataType
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.nio.channels.Channels
-import java.util.*
+import java.util.Date
+import java.util.TimeZone
 import kotlin.math.absoluteValue
 
 abstract class ImageProvider {
@@ -291,8 +308,8 @@ abstract class ImageProvider {
                     targetHeightPx = sourceEntry.height * targetHeightPx / 100
                 }
 
-                val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
-                    MultiTrackImage(activity, sourceUri, pageId)
+                val model: Any = if (pageId != null && MultiPageImage.isSupported(sourceMimeType)) {
+                    MultiPageImage(activity, sourceUri, sourceMimeType, pageId)
                 } else if (sourceMimeType == MimeTypes.TIFF) {
                     TiffImage(activity, sourceUri, pageId)
                 } else if (sourceMimeType == MimeTypes.SVG) {

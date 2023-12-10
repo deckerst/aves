@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
@@ -18,7 +18,6 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canDecodeWithFlutter
-import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
@@ -131,8 +130,8 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         rotationDegrees: Int,
         isFlipped: Boolean,
     ) {
-        val model: Any = if (isHeic(mimeType) && pageId != null) {
-            MultiTrackImage(context, uri, pageId)
+        val model: Any = if (pageId != null && MultiPageImage.isSupported(mimeType)) {
+            MultiPageImage(context, uri, mimeType, pageId)
         } else if (mimeType == MimeTypes.TIFF) {
             TiffImage(context, uri, pageId)
         } else {

@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
@@ -40,10 +40,10 @@ class RegionFetcher internal constructor(
         imageHeight: Int,
         result: MethodChannel.Result,
     ) {
-        if (MimeTypes.isHeic(mimeType) && pageId != null) {
+        if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             val id = Pair(uri, pageId)
             fetch(
-                uri = pageTempUris.getOrPut(id) { createJpegForPage(uri, pageId) },
+                uri = pageTempUris.getOrPut(id) { createJpegForPage(uri, mimeType, pageId) },
                 mimeType = MimeTypes.JPEG,
                 pageId = null,
                 sampleSize = sampleSize,
@@ -104,11 +104,11 @@ class RegionFetcher internal constructor(
         }
     }
 
-    private fun createJpegForPage(sourceUri: Uri, pageId: Int): Uri {
+    private fun createJpegForPage(sourceUri: Uri, mimeType: String, pageId: Int): Uri {
         val target = Glide.with(context)
             .asBitmap()
             .apply(multiTrackGlideOptions)
-            .load(MultiTrackImage(context, sourceUri, pageId))
+            .load(MultiPageImage(context, sourceUri, mimeType, pageId))
             .submit()
         try {
             val bitmap = target.get()

@@ -12,7 +12,7 @@ abstract class EmbeddedDataService {
 
   Future<Map> extractMotionPhotoVideo(AvesEntry entry);
 
-  Future<Map> extractJpegMultiPictureFormat(AvesEntry entry, int index);
+  Future<Map> extractJpegMpfItem(AvesEntry entry, int index);
 
   Future<Map> extractVideoEmbeddedPicture(AvesEntry entry);
 
@@ -87,9 +87,9 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   }
 
   @override
-  Future<Map> extractJpegMultiPictureFormat(AvesEntry entry, int id) async {
+  Future<Map> extractJpegMpfItem(AvesEntry entry, int id) async {
     try {
-      final result = await _platform.invokeMethod('extractJpegMultiPictureFormat', <String, dynamic>{
+      final result = await _platform.invokeMethod('extractJpegMpfItem', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,

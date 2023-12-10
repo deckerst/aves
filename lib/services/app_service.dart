@@ -38,7 +38,7 @@ class PlatformAppService implements AppService {
     'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
     'nekox.messenger': {'NekoX'},
     'org.telegram.messenger': {'Telegram Images', 'Telegram Video'},
-    'com.whatsapp': {'Whatsapp', 'WhatsApp Animated Gifs', 'WhatsApp Images', 'WhatsApp Video'}
+    'com.whatsapp': {'Whatsapp', 'WhatsApp Animated Gifs', 'WhatsApp Documents', 'WhatsApp Images', 'WhatsApp Video'}
   };
 
   @override
