@@ -113,17 +113,22 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
     final thumbnailHeight = rowLayout.height - spacing;
     size = Size(constraints.maxWidth, rowLayout.height);
     final flipMainAxis = textDirection == TextDirection.rtl;
-    final sign = (flipMainAxis ? -1.0 : 1.0);
     var i = 0;
-    var offset = Offset(flipMainAxis ? size.width - rowLayout.itemWidths[i] : 0, 0);
+    double offsetX = flipMainAxis ? size.width : 0;
     while (child != null) {
       final thumbnailWidth = rowLayout.itemWidths[i];
       final childConstraints = BoxConstraints.tight(Size(thumbnailWidth, thumbnailHeight));
       child.layout(childConstraints, parentUsesSize: false);
       final childParentData = child.parentData! as _GridRowParentData;
-      childParentData.offset = offset;
-      final dx = sign * (thumbnailWidth + spacing);
-      offset += Offset(dx, 0);
+      if (flipMainAxis) {
+        offsetX -= thumbnailWidth;
+      }
+      childParentData.offset = Offset(offsetX, 0);
+      if (flipMainAxis) {
+        offsetX -= spacing;
+      } else {
+        offsetX += thumbnailWidth + spacing;
+      }
       child = childParentData.nextSibling;
       i++;
     }

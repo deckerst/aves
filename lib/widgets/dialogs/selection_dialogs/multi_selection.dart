@@ -64,7 +64,7 @@ class _AvesMultiSelectionDialogState<T> extends State<AvesMultiSelectionDialog<T
               setState(() {});
             },
             title: Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Text(title),
             ),
             subtitle: subtitle != null
