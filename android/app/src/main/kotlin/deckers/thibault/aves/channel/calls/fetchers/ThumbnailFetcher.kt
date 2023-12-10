@@ -12,7 +12,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
-import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.decoder.SvgImage
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.decoder.VideoThumbnail
@@ -20,7 +20,6 @@ import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.SVG
-import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
@@ -47,8 +46,8 @@ class ThumbnailFetcher internal constructor(
     private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
     private val svgFetch = mimeType == SVG
     private val tiffFetch = mimeType == MimeTypes.TIFF
-    private val multiTrackFetch = isHeic(mimeType) && pageId != null
-    private val customFetch = svgFetch || tiffFetch || multiTrackFetch
+    private val multiPageFetch = pageId != null && MultiPageImage.isSupported(mimeType)
+    private val customFetch = svgFetch || tiffFetch || multiPageFetch
 
     suspend fun fetch() {
         var bitmap: Bitmap? = null
@@ -135,7 +134,7 @@ class ThumbnailFetcher internal constructor(
             val model: Any = when {
                 svgFetch -> SvgImage(context, uri)
                 tiffFetch -> TiffImage(context, uri, pageId)
-                multiTrackFetch -> MultiTrackImage(context, uri, pageId)
+                multiPageFetch -> MultiPageImage(context, uri, mimeType, pageId)
                 else -> StorageUtils.getGlideSafeUri(context, uri, mimeType)
             }
             Glide.with(context)

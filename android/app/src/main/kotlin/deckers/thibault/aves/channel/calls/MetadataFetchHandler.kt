@@ -933,10 +933,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         val pages: ArrayList<FieldMap>? = if (isMotionPhoto) {
-            MultiPage.getMotionPhotoPages(context, uri, mimeType, sizeBytes = sizeBytes)
+            MultiPage.getMotionPhotoPages(context, uri, mimeType, sizeBytes)
         } else {
             when (mimeType) {
                 MimeTypes.HEIC, MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
+                MimeTypes.JPEG -> MultiPage.getJpegMpfPages(context, uri)
                 MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
                 else -> null
             }

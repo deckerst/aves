@@ -20,7 +20,6 @@ import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.XMPPropName
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
-import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
@@ -51,7 +50,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
             "extractGoogleDeviceItem" -> ioScope.launch { safe(call, result, ::extractGoogleDeviceItem) }
-            "extractJpegMultiPictureFormat" -> ioScope.launch { safe(call, result, ::extractJpegMultiPictureFormat) }
+            "extractJpegMpfItem" -> ioScope.launch { safe(call, result, ::extractJpegMpfItem) }
             "extractMotionPhotoImage" -> ioScope.launch { safe(call, result, ::extractMotionPhotoImage) }
             "extractMotionPhotoVideo" -> ioScope.launch { safe(call, result, ::extractMotionPhotoVideo) }
             "extractVideoEmbeddedPicture" -> ioScope.launch { safe(call, result, ::extractVideoEmbeddedPicture) }
@@ -151,48 +150,38 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         result.error("extractGoogleDeviceItem-empty", "failed to extract item from Google Device XMP at uri=$uri dataUri=$dataUri", null)
     }
 
-    private fun extractJpegMultiPictureFormat(call: MethodCall, result: MethodChannel.Result) {
+    private fun extractJpegMpfItem(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
         val id = call.argument<Int>("id")
         if (mimeType == null || uri == null || sizeBytes == null || id == null) {
-            result.error("extractJpegMultiPictureFormat-args", "missing arguments", null)
+            result.error("extractJpegMpfItem-args", "missing arguments", null)
             return
         }
 
-        if (canReadWithMetadataExtractor(mimeType)) {
-            try {
-                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input)
-                    metadata.getDirectoriesOfType(MpEntryDirectory::class.java).first { it.id == id }?.let { dir ->
-                        val mpEntry = dir.entry
-                        MpEntry.getMimeType(dir.entry.format)?.let { embedMimeType ->
-                            var dataOffset = mpEntry.dataOffset
-                            if (dataOffset > 0) {
-                                val baseOffset = MultiPage.getJpegMultiPictureFormatBaseOffset(context, uri, sizeBytes)
-                                if (baseOffset != null) {
-                                    dataOffset += baseOffset
-                                }
-                            }
-                            StorageUtils.openInputStream(context, uri)?.let { input ->
-                                input.skip(dataOffset)
-                                copyEmbeddedBytes(result, embedMimeType, displayName, input, mpEntry.size)
-                            }
-                            return
-                        }
+        val pageIndex = id - 1
+        val mpEntries = MultiPage.getJpegMpfEntries(context, uri)
+        if (mpEntries != null && pageIndex < mpEntries.size) {
+            val mpEntry = mpEntries[pageIndex]
+            MpEntry.getMimeType(mpEntry.format)?.let { embedMimeType ->
+                var dataOffset = mpEntry.dataOffset
+                if (dataOffset > 0) {
+                    val baseOffset = MultiPage.getJpegMpfBaseOffset(context, uri)
+                    if (baseOffset != null) {
+                        dataOffset += baseOffset
                     }
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to extract file from MPF", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to extract file from MPF", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to extract file from MPF", e)
+                StorageUtils.openInputStream(context, uri)?.let { input ->
+                    input.skip(dataOffset)
+                    copyEmbeddedBytes(result, embedMimeType, displayName, input, mpEntry.size)
+                }
+                return
             }
         }
-        result.error("extractJpegMultiPictureFormat-empty", "failed to extract file index=$id from MPF at uri=$uri", null)
+
+        result.error("extractJpegMpfItem-empty", "failed to extract file index=$id from MPF at uri=$uri", null)
     }
 
     private fun extractMotionPhotoImage(call: MethodCall, result: MethodChannel.Result) {

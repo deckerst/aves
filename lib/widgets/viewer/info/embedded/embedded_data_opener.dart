@@ -45,7 +45,7 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
       case EmbeddedDataSource.motionPhotoVideo:
         fields = await embeddedDataService.extractMotionPhotoVideo(entry);
       case EmbeddedDataSource.mpf:
-        fields = await embeddedDataService.extractJpegMultiPictureFormat(entry, notification.mpfId!);
+        fields = await embeddedDataService.extractJpegMpfItem(entry, notification.mpfId!);
       case EmbeddedDataSource.videoCover:
         fields = await embeddedDataService.extractVideoEmbeddedPicture(entry);
       case EmbeddedDataSource.xmp:
