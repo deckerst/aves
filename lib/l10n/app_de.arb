@@ -1350,5 +1350,9 @@
   "overlayHistogramLuminance": "Leuchtdichte",
   "@overlayHistogramLuminance": {},
   "overlayHistogramRGB": "RGB",
-  "@overlayHistogramRGB": {}
+  "@overlayHistogramRGB": {},
+  "aboutDataUsageClearCache": "Cache leeren",
+  "@aboutDataUsageClearCache": {},
+  "settingsViewerShowHistogram": "Histogramm anzeigen",
+  "@settingsViewerShowHistogram": {}
 }
