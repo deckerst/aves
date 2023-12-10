@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
@@ -98,6 +99,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
                         // as of Flutter v3.0.0, `SelectableText` does not allow passing the `scrollController`
                         child: SelectableText(
                           info,
+                          textDirection: ui.TextDirection.ltr,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),

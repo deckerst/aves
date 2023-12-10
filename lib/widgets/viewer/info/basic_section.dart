@@ -360,7 +360,7 @@ class _BasicInfoState extends State<_BasicInfo> {
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 4),
+              padding: const EdgeInsetsDirectional.only(start: 2, end: 4),
               child: ConstrainedBox(
                 // use constraints instead of sizing `Image`,
                 // so that it can collapse when handling an empty image

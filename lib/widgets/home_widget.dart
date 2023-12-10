@@ -15,8 +15,8 @@ class HomeWidgetPainter {
   final double devicePixelRatio;
 
   static const backgroundGradient = LinearGradient(
-    begin: Alignment.bottomLeft,
-    end: Alignment.topRight,
+    begin: AlignmentDirectional.bottomStart,
+    end: AlignmentDirectional.topEnd,
     colors: AColors.boraBoraGradient,
   );
 
