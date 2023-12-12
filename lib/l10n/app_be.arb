@@ -1494,5 +1494,29 @@
   "settingsViewerShowHistogram": "Паказаць гістаграму",
   "@settingsViewerShowHistogram": {},
   "settingsVideoPlaybackTile": "Прайграванне",
-  "@settingsVideoPlaybackTile": {}
+  "@settingsVideoPlaybackTile": {},
+  "columnCount": "{count, plural, =1{1 слупок} few{{count} слупкі} other{{count} слупкоў}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "timeDays": "{days, plural, =1{1 дзень} few{{days} дні} other{{days} дзён}}",
+  "@timeDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "timeMinutes": "{minutes, plural, =1{1 хвіліна} few{{minutes} хвіліны} other{{minutes} хвілін}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  }
 }
