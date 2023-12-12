@@ -27,7 +27,7 @@
   "@doNotAskAgain": {},
   "welcomeTermsToggle": "أوافق على الشروط",
   "@welcomeTermsToggle": {},
-  "doubleBackExitMessage": "اضغط على \"رجوع\" مرة أخرى للخروج.",
+  "doubleBackExitMessage": "اضغط على «رجوع» مرة أخرى للخروج.",
   "@doubleBackExitMessage": {},
   "hideButtonLabel": "إخفاء",
   "@hideButtonLabel": {},
@@ -547,7 +547,7 @@
   "@entryActionViewMotionPhotoVideo": {},
   "videoControlsNone": "لا شيء",
   "@videoControlsNone": {},
-  "otherDirectoryDescription": "دليل \"{name}\"",
+  "otherDirectoryDescription": "دليل «{name}»",
   "@otherDirectoryDescription": {
     "placeholders": {
       "name": {
@@ -635,7 +635,7 @@
   "@searchDateSectionTitle": {},
   "viewerErrorUnknown": "آسف!",
   "@viewerErrorUnknown": {},
-  "storageAccessDialogMessage": "يرجى تحديد {directory} لـ ”{volume}“ في الشاشة التالية لمنح هذا التطبيق حق الوصول إليه.",
+  "storageAccessDialogMessage": "يرجى تحديد {directory} لـ «{volume}» في الشاشة التالية لمنح هذا التطبيق حق الوصول إليه.",
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -671,7 +671,7 @@
   "@searchCollectionFieldHint": {},
   "viewerActionUnlock": "إلغاء قفل المعاينة",
   "@viewerActionUnlock": {},
-  "settingsDoubleBackExit": "اضغط على \"رجوع\" مرتين للخروج",
+  "settingsDoubleBackExit": "اضغط على «رجوع» مرتين للخروج",
   "@settingsDoubleBackExit": {},
   "entryActionShare": "مشاركة",
   "@entryActionShare": {},
@@ -749,7 +749,7 @@
   "@settingsHomeTile": {},
   "entryActionOpenMap": "عرض في تطبيق الخرائط",
   "@entryActionOpenMap": {},
-  "hideFilterConfirmationDialogMessage": "سيتم إخفاء الصور ومقاطع الفيديو المطابقة من مجموعتك. ويمكنك إظهارها مرة أخرى من إعدادات \"الخصوصية\".\n\nهل أنت متأكد أنك تريد إخفاءهم؟",
+  "hideFilterConfirmationDialogMessage": "سيتم إخفاء الصور ومقاطع الفيديو المطابقة من مجموعتك. ويمكنك إظهارها مرة أخرى من إعدادات «الخصوصية».\n\nهل أنت متأكد أنك تريد إخفاءهم؟",
   "@hideFilterConfirmationDialogMessage": {},
   "settingsViewerGestureSideTapNext": "اضغط على حواف الشاشة لإظهار العنصر السابق/التالي",
   "@settingsViewerGestureSideTapNext": {},
@@ -798,7 +798,7 @@
   "@newAlbumDialogNameLabelAlreadyExistsHelper": {},
   "patternDialogConfirm": "تأكيد النمط",
   "@patternDialogConfirm": {},
-  "restrictedAccessDialogMessage": "لا يُسمح لهذا التطبيق بتعديل الملفات في {directory} لـ ”{volume}“\n\nالرجاء استخدام مدير الملفات أو تطبيق المعرض المثبت مسبقًا لنقل العناصر إلى دليل آخر.",
+  "restrictedAccessDialogMessage": "لا يُسمح لهذا التطبيق بتعديل الملفات في {directory} لـ «{volume}»\n\nالرجاء استخدام مدير الملفات أو تطبيق المعرض المثبت مسبقًا لنقل العناصر إلى دليل آخر.",
   "@restrictedAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -963,7 +963,7 @@
   "@filterTypeSphericalVideoLabel": {},
   "slideshowActionShowInCollection": "عرض في المجموعة",
   "@slideshowActionShowInCollection": {},
-  "notEnoughSpaceDialogMessage": "تحتاج هذه العملية إلى {neededSize} من المساحة الحرة على ”{volume}“ لإكمالها، ولكن لم يتبق سوى {freeSize}.",
+  "notEnoughSpaceDialogMessage": "تحتاج هذه العملية إلى {neededSize} من المساحة الحرة على «{volume}» لإكمالها، ولكن لم يتبق سوى {freeSize}.",
   "@notEnoughSpaceDialogMessage": {
     "placeholders": {
       "neededSize": {
