@@ -132,7 +132,6 @@ class _LicenseRow extends StatelessWidget {
       child: LinkChip(
         text: package.name,
         urlString: package.sourceUrl,
-        textStyle: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
