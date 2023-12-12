@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:aves/model/view_state.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/editor/transform/controller.dart';
 import 'package:aves/widgets/editor/transform/transformation.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
@@ -36,6 +38,7 @@ class Minimap extends StatelessWidget {
                   contentSize: contentSize,
                   viewCenterOffset: viewState.position,
                   viewScale: viewState.scale!,
+                  alignmentX: context.isRtl ? 1 : 0,
                   transformation: transformation,
                   minimapBorderColor: ViewerTopOverlay.componentBorderColor,
                 ),
@@ -52,7 +55,7 @@ class Minimap extends StatelessWidget {
 class _MinimapPainter extends CustomPainter {
   final Size contentSize, viewportSize;
   final Offset viewCenterOffset;
-  final double viewScale;
+  final double viewScale, alignmentX;
   final Transformation? transformation;
   final Color minimapBorderColor;
 
@@ -63,6 +66,7 @@ class _MinimapPainter extends CustomPainter {
     required this.contentSize,
     required this.viewCenterOffset,
     required this.viewScale,
+    required this.alignmentX,
     this.transformation,
     this.minimapBorderColor = Colors.white,
   }) {
@@ -102,6 +106,8 @@ class _MinimapPainter extends CustomPainter {
       width: min(scaledContentSize.width, scaledViewportSize.width),
       height: min(scaledContentSize.height, scaledViewportSize.height),
     );
+
+    canvas.translate(lerpDouble(0, size.width - contentRect.width, alignmentX)!, 0);
 
     Matrix4? transformMatrix;
     if (transformation != null) {

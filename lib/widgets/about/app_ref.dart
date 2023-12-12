@@ -48,7 +48,12 @@ class AppReference extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Text(
-          '${context.l10n.appName} ${device.packageVersion}',
+          context.l10n.appName,
+          style: _appTitleStyle,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          device.packageVersion,
           style: _appTitleStyle,
         ),
       ],

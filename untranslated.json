@@ -1,11 +1,4 @@
 {
-  "be": [
-    "columnCount",
-    "timeSeconds",
-    "timeMinutes",
-    "timeDays"
-  ],
-
   "bn": [
     "itemCount",
     "columnCount",
