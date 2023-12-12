@@ -2,4 +2,4 @@
 
 <b>Navigering og søk</b> har mykje å sei i <i>Aves</i>. Målet er at ein skal lett kunne gå ifrå album, til bilete, til merkelappar, til kart, osv.
 
-<i>Aves</i> integrates with Android (from KitKat to Android 13, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> integrates with Android (from KitKat to Android 14, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
