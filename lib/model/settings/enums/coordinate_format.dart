@@ -1,12 +1,19 @@
 import 'package:aves/l10n/l10n.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 extension ExtraCoordinateFormat on CoordinateFormat {
   static const _separator = ', ';
 
-  String format(AppLocalizations l10n, LatLng latLng, {bool minuteSecondPadding = false, int dmsSecondDecimals = 2}) {
+  String format(BuildContext context, LatLng latLng, {bool minuteSecondPadding = false, int dmsSecondDecimals = 2}) {
+    final text = formatWithoutDirectionality(context.l10n, latLng, minuteSecondPadding: minuteSecondPadding, dmsSecondDecimals: dmsSecondDecimals);
+    return context.applyDirectionality(text);
+  }
+
+  String formatWithoutDirectionality(AppLocalizations l10n, LatLng latLng, {bool minuteSecondPadding = false, int dmsSecondDecimals = 2}) {
     switch (this) {
       case CoordinateFormat.dms:
         return toDMS(l10n, latLng, minuteSecondPadding: minuteSecondPadding, secondDecimals: dmsSecondDecimals).join(_separator);

@@ -7,7 +7,6 @@ import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 import 'info_row.dart';
@@ -65,7 +64,7 @@ class _MapAddressRowState extends State<MapAddressRow> {
                   ? AText.valueNotAvailable
                   : entry.hasAddress
                       ? entry.shortAddress
-                      : settings.coordinateFormat.format(context.l10n, entry.latLng!));
+                      : settings.coordinateFormat.format(context, entry.latLng!));
           return Text.rich(
             TextSpan(
               children: [
