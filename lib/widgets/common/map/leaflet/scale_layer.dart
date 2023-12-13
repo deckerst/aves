@@ -123,7 +123,9 @@ class ScaleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: AlignmentDirectional.bottomStart,
+      // keep `left` (and not `start`) because zoom buttons are kept right
+      // because `Google` logo on Google layers are always in the bottom left
+      alignment: Alignment.bottomLeft,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
