@@ -43,6 +43,9 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
     final textStyle = TextStyle(
       shadows: brightness == Brightness.dark ? AStyles.embossShadows : null,
     );
+    const strutStyle = StrutStyle(
+      forceStrutHeight: true,
+    );
     return SizeTransition(
       sizeFactor: widget.scale,
       child: BlurredRRect.all(
@@ -90,12 +93,14 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                               return Text(
                                 formatFriendlyDuration(Duration(milliseconds: position)),
                                 style: textStyle,
+                                strutStyle: strutStyle,
                               );
                             }),
                         const Spacer(),
                         Text(
                           formatFriendlyDuration(Duration(milliseconds: controller?.duration ?? 0)),
                           style: textStyle,
+                          strutStyle: strutStyle,
                         ),
                       ],
                     ),
@@ -125,6 +130,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                           // fake text below to match the height of the text above and center the whole thing
                           '',
                           style: textStyle,
+                          strutStyle: strutStyle,
                         ),
                       ],
                     ),
