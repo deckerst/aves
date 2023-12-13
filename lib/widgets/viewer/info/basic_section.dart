@@ -330,8 +330,8 @@ class _BasicInfoState extends State<_BasicInfo> {
                 l10n.viewerInfoLabelTitle: title,
                 l10n.viewerInfoLabelDate: dateText,
                 if (entry.isVideo) ..._buildVideoRows(context),
-                if (showResolution) l10n.viewerInfoLabelResolution: _forceDirectionality(rasterResolutionText),
-                l10n.viewerInfoLabelSize: _forceDirectionality(sizeText),
+                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(rasterResolutionText),
+                l10n.viewerInfoLabelSize: context.applyDirectionality(sizeText),
                 if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
                 if (path != null) l10n.viewerInfoLabelPath: path,
                 if (ownerPackage != null) l10n.viewerInfoLabelOwner: ownerPackage,
@@ -383,6 +383,4 @@ class _BasicInfoState extends State<_BasicInfo> {
           ),
         ];
   }
-
-  String _forceDirectionality(String text) => context.isRtl ? '${Unicode.RLI}$text${Unicode.PDI}' : '${Unicode.LRI}$text${Unicode.PDI}';
 }

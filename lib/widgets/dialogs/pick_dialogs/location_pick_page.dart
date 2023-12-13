@@ -330,7 +330,7 @@ class _CoordinateRow extends StatelessWidget {
         const SizedBox(width: _LocationInfo.iconPadding),
         Expanded(
           child: Text(
-            location != null ? settings.coordinateFormat.format(context.l10n, location!) : AText.valueNotAvailable,
+            location != null ? settings.coordinateFormat.format(context, location!) : AText.valueNotAvailable,
             strutStyle: AStyles.overflowStrut,
             softWrap: false,
             overflow: TextOverflow.fade,

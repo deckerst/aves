@@ -97,7 +97,7 @@ class EntryListDetails extends StatelessWidget {
   }
 
   Widget _buildLocationRow(BuildContext context, TextStyle style) {
-    final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(context.l10n, entry.latLng!);
+    final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(context, entry.latLng!);
 
     return _buildRow(
       [
