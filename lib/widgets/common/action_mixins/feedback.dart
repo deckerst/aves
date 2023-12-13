@@ -213,6 +213,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
           final processedCount = processed.length.toDouble();
           final total = widget.itemCount;
           final percent = total == null || total == 0 ? 0.0 : min(1.0, processedCount / total);
+          final percentFormat = NumberFormat.percentPattern();
           return FadeTransition(
             opacity: _animation,
             child: Stack(
@@ -245,7 +246,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   animation: animate,
                   center: total != null
                       ? Text(
-                          NumberFormat.percentPattern().format(percent),
+                          percentFormat.format(percent),
                           style: const TextStyle(fontSize: fontSize),
                         )
                       : null,
