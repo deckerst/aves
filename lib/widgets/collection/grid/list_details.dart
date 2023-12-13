@@ -85,14 +85,18 @@ class EntryListDetails extends StatelessWidget {
     final size = entry.burstEntries?.map((v) => v.sizeBytes).sum ?? entry.sizeBytes;
     final sizeText = size != null ? formatFileSize(locale, size) : AText.valueNotAvailable;
 
-    return _buildRow(
-      [
-        _buildIconSpan(AIcons.date),
-        TextSpan(text: dateText),
-        _buildIconSpan(AIcons.size, padding: const EdgeInsetsDirectional.only(start: 8)),
-        TextSpan(text: sizeText),
+    return Wrap(
+      spacing: 8,
+      children: [
+        _buildRow(
+          [_buildIconSpan(AIcons.date), TextSpan(text: dateText)],
+          style,
+        ),
+        _buildRow(
+          [_buildIconSpan(AIcons.size), TextSpan(text: sizeText)],
+          style,
+        ),
       ],
-      style,
     );
   }
 
@@ -100,10 +104,7 @@ class EntryListDetails extends StatelessWidget {
     final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(context, entry.latLng!);
 
     return _buildRow(
-      [
-        _buildIconSpan(AIcons.location),
-        TextSpan(text: location),
-      ],
+      [_buildIconSpan(AIcons.location), TextSpan(text: location)],
       style,
     );
   }
