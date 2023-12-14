@@ -2,4 +2,4 @@
 
 <b>Navigace a vyhledávání</b> jsou důležitou součástí aplikace <i>Aves</i>. Cílem je, aby uživatelé jednoduše přecházeli z alb k fotografiím, albům, mapám, atd.
 
-<i>Aves</i> podporuje Android (od verze KitKat po Android 13, včetně Android TV) s funkcemi jako jsou <b>widgety</b>, <b>zkratky aplikací</b>, <b>spořič displeje</b> a <b>globální vyhledávání</b>. Rovněž jej lze použít pro <b>prohlížení a výběr médií</b>.
+<i>Aves</i> podporuje Android (od verze KitKat po Android 14, včetně Android TV) s funkcemi jako jsou <b>widgety</b>, <b>zkratky aplikací</b>, <b>spořič displeje</b> a <b>globální vyhledávání</b>. Rovněž jej lze použít pro <b>prohlížení a výběr médií</b>.
