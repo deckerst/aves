@@ -2,4 +2,4 @@
 
 <b>Nabigazioa eta bilaketa</b> <i>Aves</i> aplikazioaren zati garrantzitsu bat da. Helburua, erabiltzaileek albumetatik argazkietara, etiketetara, mapetara, etab. modu errazean mugi ahal izatea da.
 
-<i>Aves</i> Androidera (KitKatetik Android 13ra, Android TV barne) egiten da ezaugarri ugarirekin: <b>widgetak</b>, <b>aplikazioko lasterbideak</b>, <b>pantaila-babeslea</b> eta <b>bilaketa globala</b>. Baita ere, <b>media-bisore edo -hautagailu</b> bezala erabil daiteke.
+<i>Aves</i> Androidera (KitKatetik Android 14ra, Android TV barne) egiten da ezaugarri ugarirekin: <b>widgetak</b>, <b>aplikazioko lasterbideak</b>, <b>pantaila-babeslea</b> eta <b>bilaketa globala</b>. Baita ere, <b>media-bisore edo -hautagailu</b> bezala erabil daiteke.
