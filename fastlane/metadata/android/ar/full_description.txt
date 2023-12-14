@@ -2,4 +2,4 @@
 
 <b>الملاحة والبحث</b> جزء مهم من <i>Aves</i>الهدف هو أن يكون بإمكان المستخدمين التنقل بسهولة من الألبومات إلى الصور إلى الوسوم إلى الخرائط، وما إلى ذلك..
 
-<i>Aves</i>تتكامل مع نظام Android (من KitKat إلى Android 14، بما في ذلك Android TV) مع ميزات مثلs <b>الودجتس</b>, <b>اختصارات التطبيق</b>, <b>حافظة الشاشة</b> و<b>البحث العالمي</b> التعامل معه. كما أنه يعمل كـ <b>عارض واختار لوسائط (ملفات الوسائط).</b>.
+<i>Aves</i> integrates with Android (from KitKat to Android 14, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
