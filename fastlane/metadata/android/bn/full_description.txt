@@ -2,4 +2,4 @@
 
 <b>নেভিগেশন এবং সার্চ</b> <i>আভেস</i> এর একটি গুরুত্বপূর্ণ অংশ। লক্ষ্য হল ইউসার যাতে সহজেই অ্যালবাম, ফটো, ট্যাগ, ম্যাপ ইত্যাদিতে স্থানান্তর করতে পারে।
 
-<b>উইজেট</b>, <b>অ্যাপ শর্টকাট</b>, <b>স্ক্রিন সেভারের</b> এবং <b>গ্লোবাল সার্চ</b> এর মতো বৈশিষ্ট্য সহ, <i>আভেস</i> অ্যান্ড্রয়েড এর সাথে সংহত হতে পারে (কিট ক্যাট থেকে অ্যান্ড্রয়েড ১৩, অ্যান্ড্রয়েড টিভি সহ)। এটি একটি <b>মিডিয়া উপস্থাপক এবং বাছাইকারী</b> হিসেবেও কাজ করে।
+<i>Aves</i> integrates with Android (from KitKat to Android 14, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
