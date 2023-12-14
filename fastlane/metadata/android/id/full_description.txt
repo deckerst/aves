@@ -2,4 +2,4 @@
 
 <b>Navigasi dan pencarian</b> merupakan bagian penting dari <i>Aves</i>. Tujuannya adalah agar pengguna dengan mudah mengalir dari album ke foto ke tag ke peta, dll.
 
-<i>Aves</i> mengintegrasi dengan Android (dari Kitkat ke Android 14) dengan fitur-fitur seperti <b>pintasan aplikasi</b>, <b>jalan pintas aplikasi</b>, <b>screen saver</b> dan <b>pencarian global</b> penanganan. Ini juga berfungsi sebagai <b>penampil dan pemilih media</b>.
+<i>Aves</i> mengintegrasi dengan Android (dari Kitkat ke Android 13) dengan fitur-fitur seperti <b>pintasan aplikasi</b>, <b>jalan pintas aplikasi</b>, <b>screen saver</b> dan <b>pencarian global</b> penanganan. Ini juga berfungsi sebagai <b>penampil dan pemilih media</b>.
