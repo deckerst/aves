@@ -2,4 +2,4 @@
 
 <b>瀏覽和搜尋</b> 是 <i>Aves</i>重要的一部份. 目的是為了讓使用者能夠輕易的從相簿, 相片, 標籤, 地圖, 等等之間順暢切換.
 
-<i>Aves</i> 與 Android (從 KitKat 到 Android 14, 包括 Android TV) 整合, 具有特色像是 <b>小工具</b>, <b>app 捷徑</b>, <b>螢幕保護程式</b> 和 <b>全域搜尋</b> 等功能. 還可以當成 <b>媒體檢視和選擇器</b>.
+<i>Aves</i> integrates with Android (from KitKat to Android 14, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.

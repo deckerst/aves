@@ -818,7 +818,7 @@
   "@settingsAllowErrorReporting": {},
   "settingsVideoLoopModeTile": "وضع التكرار",
   "@settingsVideoLoopModeTile": {},
-  "unsupportedTypeDialogMessage": "{count, plural, =1{هذه العملية غير مدعومة للعناصر من النوع التالي: {types}.} other{هذه العملية غير مدعومة لعناصر the following types: {types}.}}",
+  "unsupportedTypeDialogMessage": "{count, plural, =1{هذه العملية غير مدعومة للعناصر من النوع التالي: {types}.} other{هذه العملية غير معتمدة لعناصر الأنواع التالية: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
       "count": {},
