@@ -2,4 +2,4 @@
 
 <b>Điều hướng và tìm kiếm</b> là một phần quan trọng của <i>Aves</i>. Mục tiêu là để người dùng dễ dàng chuyển từ album sang ảnh sang thẻ sang bản đồ, v.v.
 
-<i>Aves</i> tương thích với Android (từ KitKat đến Android 14, bao gồm cả Android TV) với các tính năng như <b>widget</b>, <b>phím tắt ứng dụng</b>, <b>trình bảo vệ màn hình</b> và xử lý <b>tìm kiếm toàn hệ thống</b>. Nó cũng hoạt động như một <b>trình xem và lựa chọn phương tiện</b>.
+<i>Aves</i> tương thích với Android (từ KitKat đến Android 13, bao gồm cả Android TV) với các tính năng như <b>widget</b>, <b>phím tắt ứng dụng</b>, <b>trình bảo vệ màn hình</b> và xử lý <b>tìm kiếm toàn hệ thống</b>. Nó cũng hoạt động như một <b>trình xem và lựa chọn phương tiện</b>.
