@@ -116,7 +116,7 @@ class _CaptionedButtonState extends State<CaptionedButton> {
                   return AnimatedDefaultTextStyle(
                     style: focused
                         ? style.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: Theme.of(context).colorScheme.primary,
                           )
                         : style,
                     duration: const Duration(milliseconds: 200),
