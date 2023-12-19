@@ -11,11 +11,13 @@ class FilterBar extends StatefulWidget {
   static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
 
   final List<CollectionFilter> filters;
+  final bool interactive;
   final FilterCallback? onTap, onRemove;
 
   FilterBar({
     super.key,
     required Set<CollectionFilter> filters,
+    this.interactive = true,
     this.onTap,
     this.onRemove,
   }) : filters = List<CollectionFilter>.from(filters)..sort();
@@ -111,6 +113,7 @@ class _FilterBarState extends State<FilterBar> {
     return _Chip(
       filter: filter,
       single: filters.length == 1,
+      interactive: widget.interactive,
       onTap: onTap,
       onRemove: onRemove,
     );
@@ -119,12 +122,13 @@ class _FilterBarState extends State<FilterBar> {
 
 class _Chip extends StatelessWidget {
   final CollectionFilter filter;
-  final bool single;
+  final bool single, interactive;
   final FilterCallback? onTap, onRemove;
 
   const _Chip({
     required this.filter,
     required this.single,
+    required this.interactive,
     required this.onTap,
     required this.onRemove,
   });
@@ -148,6 +152,7 @@ class _Chip extends StatelessWidget {
           heroType: HeroType.always,
           onTap: onTap,
           onRemove: onRemove,
+          onLongPress: interactive ? AvesFilterChip.showDefaultLongPressMenu : null,
         ),
       ),
     );

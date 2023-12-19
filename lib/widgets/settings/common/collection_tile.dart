@@ -61,7 +61,11 @@ class SettingsCollectionTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (filters.isNotEmpty) FilterBar(filters: filters),
+            if (filters.isNotEmpty)
+              FilterBar(
+                filters: filters,
+                interactive: false,
+              ),
           ],
         ),
       ),

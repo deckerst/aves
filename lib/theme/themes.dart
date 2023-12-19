@@ -58,6 +58,7 @@ class Themes {
       typography: _typography,
       // COMPONENT THEMES
       checkboxTheme: _checkboxTheme(colors),
+      floatingActionButtonTheme: _floatingActionButtonTheme(colors),
       radioTheme: _radioTheme(colors),
       sliderTheme: _sliderTheme(colors),
       tooltipTheme: _tooltipTheme,
@@ -83,6 +84,13 @@ class Themes {
         return style.apply(color: colors.onSurface);
       }),
       iconColor: colors.onSurface,
+    );
+  }
+
+  static FloatingActionButtonThemeData _floatingActionButtonTheme(ColorScheme colors) {
+    return FloatingActionButtonThemeData(
+      foregroundColor: colors.onPrimary,
+      backgroundColor: colors.primary,
     );
   }
 
