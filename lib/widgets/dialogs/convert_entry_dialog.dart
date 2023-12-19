@@ -99,12 +99,12 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
     const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: AvesDialog.defaultHorizontalContentPadding);
     final colorScheme = Theme.of(context).colorScheme;
     final trailingStyle = TextStyle(color: colorScheme.onSurfaceVariant);
-    final trailingChangeShadowColor = colorScheme.onPrimary;
+    final trailingChangeShadowColor = colorScheme.onBackground;
 
     // used by the drop down to match input decoration
     final textFieldDecorationBorder = Border(
       bottom: BorderSide(
-        color: colorScheme.onSurface.withOpacity(0.38), //Color(0xFFBDBDBD),
+        color: colorScheme.onSurface.withOpacity(0.38),
         width: 1.0,
       ),
     );
