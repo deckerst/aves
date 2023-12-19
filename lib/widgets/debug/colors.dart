@@ -1,4 +1,5 @@
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 
 class DebugColorSection extends StatefulWidget {
@@ -58,6 +59,11 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
                 children: [
                   Text(text),
                   const Spacer(),
+                  Text(
+                    color.hex,
+                    style: const TextStyle(fontFamily: 'monospace'),
+                  ),
+                  const SizedBox(width: 4),
                   Container(
                     width: 20,
                     height: 20,
