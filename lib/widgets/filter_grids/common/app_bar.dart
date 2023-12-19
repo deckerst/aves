@@ -437,9 +437,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   void _onActionSelected(BuildContext context, ChipSetAction action, ChipSetActionDelegate<T> actionDelegate) {
-    final selection = context.read<Selection<FilterGridItem<T>>>();
-    final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
-    actionDelegate.onActionSelected(context, selectedFilters, action);
+    actionDelegate.onActionSelected(context, action);
   }
 
   void _goToSearch() {

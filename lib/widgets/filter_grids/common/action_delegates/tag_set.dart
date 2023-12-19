@@ -64,19 +64,21 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
   }
 
   @override
-  void onActionSelected(BuildContext context, Set<TagFilter> filters, ChipSetAction action) {
+  void onActionSelected(BuildContext context, ChipSetAction action) {
     reportService.log('$action');
     switch (action) {
       // single/multiple filters
       case ChipSetAction.delete:
-        _delete(context, filters);
+        _delete(context);
       default:
         break;
     }
-    super.onActionSelected(context, filters, action);
+    super.onActionSelected(context, action);
   }
 
-  Future<void> _delete(BuildContext context, Set<TagFilter> filters) async {
+  Future<void> _delete(BuildContext context) async {
+    final filters = getSelectedFilters(context);
+
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoTags = filters.map((v) => v.tag).toSet();

@@ -141,7 +141,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
   }
 
   @override
-  void onActionSelected(BuildContext context, Set<AlbumFilter> filters, ChipSetAction action) {
+  void onActionSelected(BuildContext context, ChipSetAction action) {
     reportService.log('$action');
     switch (action) {
       // general
@@ -151,19 +151,19 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         _createAlbum(context, locked: true);
       // single/multiple filters
       case ChipSetAction.delete:
-        _delete(context, filters);
+        _delete(context);
       case ChipSetAction.lockVault:
-        lockFilters(filters);
+        lockFilters(getSelectedFilters(context));
         browse(context);
       // single filter
       case ChipSetAction.rename:
-        _rename(context, filters.first);
+        _rename(context);
       case ChipSetAction.configureVault:
-        _configureVault(context, filters.first);
+        _configureVault(context);
       default:
         break;
     }
-    super.onActionSelected(context, filters, action);
+    super.onActionSelected(context, action);
   }
 
   @override
@@ -259,7 +259,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
   }
 
-  Future<void> _delete(BuildContext context, Set<AlbumFilter> filters) async {
+  Future<void> _delete(BuildContext context) async {
+    final filters = getSelectedFilters(context);
     final byBinUsage = groupBy<AlbumFilter, bool>(filters, (filter) {
       final details = vaults.getVault(filter.album);
       return details?.useBin ?? settings.enableBin;
@@ -373,7 +374,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     );
   }
 
-  Future<void> _rename(BuildContext context, AlbumFilter filter) async {
+  Future<void> _rename(BuildContext context) async {
+    final filters = getSelectedFilters(context);
+    if (filters.isEmpty) return;
+
+    final filter = filters.first;
     if (!await unlockFilter(context, filter)) return;
 
     final album = filter.album;
@@ -454,7 +459,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     );
   }
 
-  Future<void> _configureVault(BuildContext context, AlbumFilter filter) async {
+  Future<void> _configureVault(BuildContext context) async {
+    final filters = getSelectedFilters(context);
+    if (filters.isEmpty) return;
+
+    final filter = filters.first;
     if (!await unlockFilter(context, filter)) return;
 
     final oldDetails = vaults.getVault(filter.album);
