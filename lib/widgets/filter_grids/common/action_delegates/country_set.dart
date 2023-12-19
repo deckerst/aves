@@ -80,20 +80,21 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
   }
 
   @override
-  void onActionSelected(BuildContext context, Set<LocationFilter> filters, ChipSetAction action) {
+  void onActionSelected(BuildContext context, ChipSetAction action) {
     reportService.log('$action');
     switch (action) {
       // single/multiple filters
       case ChipSetAction.showCountryStates:
-        _showStates(context, filters);
+        _showStates(context);
         browse(context);
       default:
         break;
     }
-    super.onActionSelected(context, filters, action);
+    super.onActionSelected(context, action);
   }
 
-  void _showStates(BuildContext context, Set<LocationFilter> filters) {
+  void _showStates(BuildContext context) {
+    final filters = getSelectedFilters(context);
     final countryCodes = filters.map((v) => v.code).where(GeoStates.stateCountryCodes.contains).whereNotNull().toSet();
     Navigator.maybeOf(context)?.push(
       MaterialPageRoute(

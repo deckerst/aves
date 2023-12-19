@@ -167,7 +167,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
         case ChipSetAction.createVault:
           _createVault();
         default:
-          actionDelegate.onActionSelected(context, {}, action);
+          actionDelegate.onActionSelected(context, action);
       }
     }
 
@@ -282,10 +282,10 @@ class _AlbumChipSetPickActionDelegate extends AlbumChipSetActionDelegate {
   _AlbumChipSetPickActionDelegate(super.items);
 
   @override
-  void onActionSelected(BuildContext context, Set<AlbumFilter> filters, ChipSetAction action) {
+  void onActionSelected(BuildContext context, ChipSetAction action) {
     if (action == ChipSetAction.toggleTitleSearch) {
       settings.showAlbumPickQuery = !settings.showAlbumPickQuery;
     }
-    super.onActionSelected(context, filters, action);
+    super.onActionSelected(context, action);
   }
 }
