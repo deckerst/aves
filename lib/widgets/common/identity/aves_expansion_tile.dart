@@ -57,7 +57,7 @@ class AvesExpansionTile extends StatelessWidget {
       initiallyExpanded: initiallyExpanded,
       finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
       baseColor: theme.colorScheme.background,
-      expandedTextColor: colorScheme.onBackground,
+      expandedTextColor: colorScheme.onSurface,
       duration: animationDuration,
       shadowColor: theme.shadowColor,
       child: Column(

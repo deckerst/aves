@@ -10,17 +10,6 @@ class Themes {
     fontFeatures: [FontFeature.enable('smcp')],
   );
 
-  // adapted from M3 defaults
-  static MaterialStateProperty<TextStyle?> _popupMenuTextStyle(ColorScheme colors, TextTheme textTheme) {
-    return MaterialStateProperty.resolveWith((states) {
-      final TextStyle style = textTheme.labelLarge!;
-      if (states.contains(MaterialState.disabled)) {
-        return style.apply(color: colors.onSurface.withOpacity(0.38));
-      }
-      return style.apply(color: colors.onSurface);
-    });
-  }
-
   static TextStyle searchFieldStyle(BuildContext context) => Theme.of(context).textTheme.bodyLarge!;
 
   static Color overlayBackgroundColor({
@@ -82,6 +71,20 @@ class Themes {
   static const _listTileTheme = ListTileThemeData(
     contentPadding: EdgeInsets.symmetric(horizontal: 16),
   );
+
+  static PopupMenuThemeData _popupMenuTheme(ColorScheme colors, TextTheme textTheme) {
+    return PopupMenuThemeData(
+      labelTextStyle: MaterialStateProperty.resolveWith((states) {
+        // adapted from M3 defaults
+        final TextStyle style = textTheme.labelLarge!;
+        if (states.contains(MaterialState.disabled)) {
+          return style.apply(color: colors.onSurface.withOpacity(0.38));
+        }
+        return style.apply(color: colors.onSurface);
+      }),
+      iconColor: colors.onSurface,
+    );
+  }
 
   // adapted from M3 defaults
   static RadioThemeData _radioTheme(ColorScheme colors) => RadioThemeData(
@@ -158,9 +161,7 @@ class Themes {
       listTileTheme: _listTileTheme.copyWith(
         iconColor: _lightActionIconColor,
       ),
-      popupMenuTheme: PopupMenuThemeData(
-        labelTextStyle: _popupMenuTextStyle(colors, textTheme),
-      ),
+      popupMenuTheme: _popupMenuTheme(colors, textTheme),
       snackBarTheme: _snackBarTheme(colors),
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -209,9 +210,7 @@ class Themes {
         titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
       ),
       listTileTheme: _listTileTheme,
-      popupMenuTheme: PopupMenuThemeData(
-        labelTextStyle: _popupMenuTextStyle(colors, textTheme),
-      ),
+      popupMenuTheme: _popupMenuTheme(colors, textTheme),
       snackBarTheme: _snackBarTheme(colors).copyWith(
         backgroundColor: _schemeSecondLayer(colors),
         contentTextStyle: TextStyle(
