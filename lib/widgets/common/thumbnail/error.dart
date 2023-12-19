@@ -32,7 +32,8 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
   @override
   void initState() {
     super.initState();
-    _exists = entry.path != null ? File(entry.path!).exists() : SynchronousFuture(true);
+    final path = entry.trashDetails?.path ?? entry.path;
+    _exists = path != null ? File(path).exists() : SynchronousFuture(true);
   }
 
   @override
