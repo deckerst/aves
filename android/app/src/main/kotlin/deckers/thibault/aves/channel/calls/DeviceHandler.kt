@@ -9,6 +9,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
+import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
 import io.flutter.plugin.common.MethodCall
@@ -18,7 +19,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
 class DeviceHandler(private val context: Context) : MethodCallHandler {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -52,7 +54,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
                 "canUseCrypto" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "hasGeocoder" to Geocoder.isPresent(),
-                "isDynamicColorAvailable" to (sdkInt >= Build.VERSION_CODES.S),
+                "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )
