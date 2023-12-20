@@ -1,5 +1,7 @@
 import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +30,12 @@ class EntryListDetailsTheme extends StatelessWidget {
         final textScaler = mq.textScaler;
 
         final textTheme = Theme.of(context).textTheme;
+        var titleStyle = textTheme.bodyMedium!;
+        var captionStyle = textTheme.bodySmall!;
         // specify `height` for accurate paragraph height measurement
         final defaultTextHeight = DefaultTextStyle.of(context).style.height;
-        final titleStyle = textTheme.bodyMedium!.copyWith(height: defaultTextHeight);
-        final captionStyle = textTheme.bodySmall!.copyWith(height: defaultTextHeight);
+        titleStyle = titleStyle.copyWith(height: titleStyle.height ?? defaultTextHeight);
+        captionStyle = captionStyle.copyWith(height: captionStyle.height ?? defaultTextHeight);
 
         final titleLineHeightParagraph = RenderParagraph(
           TextSpan(
@@ -58,6 +62,9 @@ class EntryListDetailsTheme extends StatelessWidget {
         var showDate = false;
         var showLocation = false;
 
+        final gridExtentMin = context.read<TileExtentController>().effectiveExtentMin;
+        final isMinExtent = (extent - gridExtentMin).abs() < precisionErrorTolerance;
+
         var availableHeight = extent - contentMargin.vertical - contentPadding.vertical;
         if (availableHeight >= titleLineHeight + titleDetailPadding + captionLineHeight) {
           showDate = true;
@@ -72,6 +79,7 @@ class EntryListDetailsTheme extends StatelessWidget {
         return EntryListDetailsThemeData(
           extent: extent,
           titleMaxLines: titleMaxLines,
+          isMinExtent: isMinExtent,
           showDate: showDate,
           showLocation: showLocation,
           titleStyle: titleStyle,
@@ -90,13 +98,14 @@ class EntryListDetailsTheme extends StatelessWidget {
 class EntryListDetailsThemeData {
   final double extent;
   final int titleMaxLines;
-  final bool showDate, showLocation;
+  final bool isMinExtent, showDate, showLocation;
   final TextStyle titleStyle, captionStyle;
   final IconThemeData iconTheme;
 
   const EntryListDetailsThemeData({
     required this.extent,
     required this.titleMaxLines,
+    required this.isMinExtent,
     required this.showDate,
     required this.showLocation,
     required this.titleStyle,

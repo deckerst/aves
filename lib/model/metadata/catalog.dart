@@ -12,7 +12,9 @@ class CatalogMetadata {
   Address? address;
   int rating;
 
+  // less lenient than Flutter's `precisionErrorTolerance` (1e-10)
   static const double _precisionErrorTolerance = 1e-9;
+
   static const _isAnimatedMask = 1 << 0;
   static const _isFlippedMask = 1 << 1;
   static const _isGeotiffMask = 1 << 2;
