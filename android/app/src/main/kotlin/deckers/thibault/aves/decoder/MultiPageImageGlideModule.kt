@@ -29,6 +29,8 @@ class MultiPageImageGlideModule : LibraryGlideModule() {
 }
 
 class MultiPageImage(val context: Context, val uri: Uri, val mimeType: String, val pageId: Int?) {
+    override fun toString(): String = "MultiPageImage#${hashCode()}{uri=$uri, mimeType=$mimeType, pageId=$pageId}"
+
     companion object {
         fun isSupported(mimeType: String) = MimeTypes.isHeic(mimeType) || mimeType == MimeTypes.JPEG
     }

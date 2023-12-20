@@ -99,7 +99,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 
         if (isVideo(mimeType)) {
             streamVideoByGlide(uri, mimeType, sizeBytes)
-        } else if (!canDecodeWithFlutter(mimeType, rotationDegrees, isFlipped)) {
+        } else if (!canDecodeWithFlutter(mimeType, pageId, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
             streamImageByGlide(uri, pageId, mimeType, sizeBytes, rotationDegrees, isFlipped)
         } else {
