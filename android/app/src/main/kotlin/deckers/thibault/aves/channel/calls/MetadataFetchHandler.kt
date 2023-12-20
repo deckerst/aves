@@ -78,7 +78,6 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
 import deckers.thibault.aves.metadata.metadataextractor.PngActlDirectory
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
-import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfDirectory
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
@@ -636,11 +635,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
 
                     // JPEG Multi-Picture Format
-                    for (dir in metadata.getDirectoriesOfType(MpfDirectory::class.java)) {
-                        val imageCount = dir.getNumberOfImages()
-                        if (imageCount > 1) {
-                            flags = flags or MASK_IS_MULTIPAGE
-                        }
+                    if (metadata.getDirectoriesOfType(MpEntryDirectory::class.java).count { !it.entry.isThumbnail } > 1) {
+                        flags = flags or MASK_IS_MULTIPAGE
                     }
 
                     // XMP

@@ -137,7 +137,7 @@ object MultiPage {
         val mpEntries = getJpegMpfEntries(context, uri)
         if (mpEntries != null && baseOffset != null) {
             for ((pageIndex, mpEntry) in mpEntries.withIndex()) {
-                MpEntry.getMimeType(mpEntry.format)?.let { embedMimeType ->
+                mpEntry.mimeType?.let { embedMimeType ->
                     val page = hashMapOf<String, Any?>(
                         KEY_PAGE to pageIndex,
                         KEY_MIME_TYPE to embedMimeType,
