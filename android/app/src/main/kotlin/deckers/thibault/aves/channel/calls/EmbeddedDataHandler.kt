@@ -19,7 +19,6 @@ import deckers.thibault.aves.metadata.XMP.doesPropPathExist
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.XMPPropName
 import deckers.thibault.aves.metadata.metadataextractor.Helper
-import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
@@ -165,7 +164,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val mpEntries = MultiPage.getJpegMpfEntries(context, uri)
         if (mpEntries != null && pageIndex < mpEntries.size) {
             val mpEntry = mpEntries[pageIndex]
-            MpEntry.getMimeType(mpEntry.format)?.let { embedMimeType ->
+            mpEntry.mimeType?.let { embedMimeType ->
                 var dataOffset = mpEntry.dataOffset
                 if (dataOffset > 0) {
                     val baseOffset = MultiPage.getJpegMpfBaseOffset(context, uri)
