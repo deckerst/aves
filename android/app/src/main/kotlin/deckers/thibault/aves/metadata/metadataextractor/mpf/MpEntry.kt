@@ -12,6 +12,8 @@ class MpEntry(val flags: Int, val format: Int, val type: Int, val size: Long, va
             else -> false
         }
 
+    override fun toString(): String = "MpEntry#${hashCode()}{flags=$flags, format=$format, type=$type, size=$size, dataOffset=$dataOffset, dep1=$dep1, dep2=$dep2}"
+
     companion object {
         const val FLAG_REPRESENTATIVE = 1 shl 2
         const val FLAG_DEPENDENT_CHILD = 1 shl 3
