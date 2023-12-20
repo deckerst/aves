@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:aves/theme/format.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +33,10 @@ class FilterListDetailsTheme extends StatelessWidget {
 
         final textTheme = Theme.of(context).textTheme;
         final titleStyleBase = textTheme.bodyMedium!;
-        final titleStyle = titleStyleBase.copyWith(fontSize: textScaler.scale(titleStyleBase.fontSize!));
-        final captionStyle = textTheme.bodySmall!;
+        // specify `height` for accurate paragraph height measurement
+        final defaultTextHeight = DefaultTextStyle.of(context).style.height;
+        final titleStyle = titleStyleBase.copyWith(fontSize: textScaler.scale(titleStyleBase.fontSize!), height: defaultTextHeight);
+        final captionStyle = textTheme.bodySmall!.copyWith(height: defaultTextHeight);
 
         final titleIconSize = textScaler.scale(AvesFilterChip.iconSize);
         final titleLineHeightParagraph = RenderParagraph(
@@ -50,7 +51,6 @@ class FilterListDetailsTheme extends StatelessWidget {
           TextSpan(text: formatDateTime(DateTime.now(), locale, use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
           textScaler: textScaler,
-          strutStyle: AStyles.overflowStrut,
         )..layout(const BoxConstraints(), parentUsesSize: true);
         final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
         captionLineHeightParagraph.dispose();

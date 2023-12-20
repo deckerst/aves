@@ -5,7 +5,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:flutter/material.dart';
 
@@ -78,7 +77,6 @@ class _MapAddressRowState extends State<MapAddressRow> {
                 TextSpan(text: location),
               ],
             ),
-            strutStyle: AStyles.overflowStrut,
             softWrap: false,
             overflow: TextOverflow.fade,
             maxLines: 1,

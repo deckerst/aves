@@ -3,10 +3,6 @@ import 'dart:ui';
 import 'package:flutter/painting.dart';
 
 class AStyles {
-  // as of Flutter v2.8.0, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
-  // so we give it a `strutStyle` with a slightly larger height
-  static const overflowStrut = StrutStyle(height: 1.3);
-
   static const knownTitleText = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w300,

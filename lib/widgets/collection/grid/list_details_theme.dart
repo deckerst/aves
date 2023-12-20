@@ -1,5 +1,4 @@
 import 'package:aves/theme/format.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -29,11 +28,16 @@ class EntryListDetailsTheme extends StatelessWidget {
         final textScaler = mq.textScaler;
 
         final textTheme = Theme.of(context).textTheme;
-        final titleStyle = textTheme.bodyMedium!;
-        final captionStyle = textTheme.bodySmall!;
+        // specify `height` for accurate paragraph height measurement
+        final defaultTextHeight = DefaultTextStyle.of(context).style.height;
+        final titleStyle = textTheme.bodyMedium!.copyWith(height: defaultTextHeight);
+        final captionStyle = textTheme.bodySmall!.copyWith(height: defaultTextHeight);
 
         final titleLineHeightParagraph = RenderParagraph(
-          TextSpan(text: 'Fake Title', style: titleStyle),
+          TextSpan(
+            text: 'Fake Title',
+            style: titleStyle,
+          ),
           textDirection: TextDirection.ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);
@@ -41,10 +45,12 @@ class EntryListDetailsTheme extends StatelessWidget {
         titleLineHeightParagraph.dispose();
 
         final captionLineHeightParagraph = RenderParagraph(
-          TextSpan(text: formatDateTime(DateTime.now(), locale, use24hour), style: captionStyle),
+          TextSpan(
+            text: formatDateTime(DateTime.now(), locale, use24hour),
+            style: captionStyle,
+          ),
           textDirection: TextDirection.ltr,
           textScaler: textScaler,
-          strutStyle: AStyles.overflowStrut,
         )..layout(const BoxConstraints(), parentUsesSize: true);
         final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
 

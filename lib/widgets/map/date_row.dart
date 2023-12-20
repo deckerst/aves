@@ -1,7 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/map/info_row.dart';
@@ -35,7 +34,6 @@ class MapDateRow extends StatelessWidget {
           TextSpan(text: dateText),
         ],
       ),
-      strutStyle: AStyles.overflowStrut,
       softWrap: false,
       overflow: TextOverflow.fade,
       maxLines: 1,

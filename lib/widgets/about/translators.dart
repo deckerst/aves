@@ -112,7 +112,6 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
               ])
         ],
       ),
-      strutStyle: const StrutStyle(height: 1.5, forceStrutHeight: true),
     );
   }
 }

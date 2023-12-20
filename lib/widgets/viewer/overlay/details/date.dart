@@ -2,7 +2,6 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
@@ -37,8 +36,8 @@ class OverlayDateRow extends StatelessWidget {
       children: [
         DecoratedIcon(AIcons.date, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
         const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
-        Expanded(flex: 3, child: Text(dateText, strutStyle: AStyles.overflowStrut)),
-        Expanded(flex: 2, child: Text(resolutionText, strutStyle: AStyles.overflowStrut)),
+        Expanded(flex: 3, child: Text(dateText)),
+        Expanded(flex: 2, child: Text(resolutionText)),
       ],
     );
   }

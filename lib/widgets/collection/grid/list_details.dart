@@ -4,7 +4,6 @@ import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -60,7 +59,6 @@ class EntryListDetails extends StatelessWidget {
         children: spans,
       ),
       style: style,
-      strutStyle: AStyles.overflowStrut,
       softWrap: false,
       overflow: TextOverflow.fade,
     );
