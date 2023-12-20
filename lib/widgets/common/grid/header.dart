@@ -68,7 +68,7 @@ class SectionHeader<T> extends StatelessWidget {
                     sectionKey: sectionKey,
                     browsingBuilder: leading != null
                         ? (context) => Container(
-                              padding: const EdgeInsetsDirectional.only(end: 8, bottom: 4),
+                              padding: const EdgeInsetsDirectional.only(end: 8),
                               width: leadingSize.width,
                               height: leadingSize.height,
                               child: leading,
@@ -80,7 +80,7 @@ class SectionHeader<T> extends StatelessWidget {
               ),
               TextSpan(
                 text: title,
-                style: AStyles.unknownTitleText,
+                style: _headerTextStyle(context),
               ),
               if (trailing != null)
                 WidgetSpan(
@@ -152,7 +152,7 @@ class SectionHeader<T> extends StatelessWidget {
           if (hasTrailing) TextSpan(text: '\u200A' * 17),
           TextSpan(
             text: title,
-            style: AStyles.unknownTitleText,
+            style: _headerTextStyle(context),
           ),
         ],
       ),
@@ -162,6 +162,12 @@ class SectionHeader<T> extends StatelessWidget {
     final height = paragraph.getMaxIntrinsicHeight(maxContentWidth);
     paragraph.dispose();
     return height;
+  }
+
+  static TextStyle _headerTextStyle(BuildContext context) {
+    // specify `height` for accurate paragraph height measurement
+    final defaultTextHeight = DefaultTextStyle.of(context).style.height;
+    return AStyles.unknownTitleText.copyWith(height: defaultTextHeight);
   }
 }
 

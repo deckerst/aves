@@ -1,6 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
@@ -57,7 +56,6 @@ class OverlayRatingTagsRow extends AnimatedWidget {
           ]
         ],
       ),
-      strutStyle: AStyles.overflowStrut,
     );
   }
 }
