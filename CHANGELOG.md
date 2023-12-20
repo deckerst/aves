@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- upgraded Flutter to stable v3.16.4
+- upgraded Flutter to stable v3.16.5
 
 ## <a id="v1.10.0"></a>[v1.10.0] - 2023-12-02
 
