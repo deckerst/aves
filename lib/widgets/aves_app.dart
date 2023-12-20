@@ -260,34 +260,38 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         // KEYCODE_ENTER, KEYCODE_BUTTON_A, KEYCODE_NUMPAD_ENTER
                         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
                       },
-                      child: MediaQuery(
-                        data: MediaQuery.of(context).copyWith(
-                          // disable accessible navigation, as it impacts snack bar action timer
-                          // for all users of apps registered as accessibility services,
-                          // even though they are not for accessibility purposes (like TalkBack is)
-                          accessibleNavigation: false,
-                        ),
-                        child: MaterialApp(
-                          navigatorKey: _navigatorKey,
-                          home: home,
-                          navigatorObservers: _navigatorObservers,
-                          builder: (context, child) => _decorateAppChild(
-                            context: context,
-                            initialized: initialized,
-                            child: child,
-                          ),
-                          onGenerateTitle: (context) => context.l10n.appName,
-                          theme: lightTheme,
-                          darkTheme: darkTheme,
-                          themeMode: themeBrightness.appThemeMode,
-                          locale: settingsLocale,
-                          localizationsDelegates: const [
-                            ...AppLocalizations.localizationsDelegates,
-                            ...LocalizationsNn.delegates,
-                          ],
-                          supportedLocales: AvesApp.supportedLocales,
-                          scrollBehavior: AvesScrollBehavior(),
-                        ),
+                      child: Builder(
+                        builder: (context) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              // disable accessible navigation, as it impacts snack bar action timer
+                              // for all users of apps registered as accessibility services,
+                              // even though they are not for accessibility purposes (like TalkBack is)
+                              accessibleNavigation: false,
+                            ),
+                            child: MaterialApp(
+                              navigatorKey: _navigatorKey,
+                              home: home,
+                              navigatorObservers: _navigatorObservers,
+                              builder: (context, child) => _decorateAppChild(
+                                context: context,
+                                initialized: initialized,
+                                child: child,
+                              ),
+                              onGenerateTitle: (context) => context.l10n.appName,
+                              theme: lightTheme,
+                              darkTheme: darkTheme,
+                              themeMode: themeBrightness.appThemeMode,
+                              locale: settingsLocale,
+                              localizationsDelegates: const [
+                                ...AppLocalizations.localizationsDelegates,
+                                ...LocalizationsNn.delegates,
+                              ],
+                              supportedLocales: AvesApp.supportedLocales,
+                              scrollBehavior: AvesScrollBehavior(),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },
