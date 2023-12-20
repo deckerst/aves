@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -32,11 +34,15 @@ class FilterListDetailsTheme extends StatelessWidget {
         final textScaler = mq.textScaler;
 
         final textTheme = Theme.of(context).textTheme;
-        final titleStyleBase = textTheme.bodyMedium!;
+        var titleStyle = textTheme.bodyMedium!;
+        var captionStyle = textTheme.bodySmall!;
         // specify `height` for accurate paragraph height measurement
         final defaultTextHeight = DefaultTextStyle.of(context).style.height;
-        final titleStyle = titleStyleBase.copyWith(fontSize: textScaler.scale(titleStyleBase.fontSize!), height: defaultTextHeight);
-        final captionStyle = textTheme.bodySmall!.copyWith(height: defaultTextHeight);
+        titleStyle = titleStyle.copyWith(
+          fontSize: textScaler.scale(titleStyle.fontSize!),
+          height: titleStyle.height ?? defaultTextHeight,
+        );
+        captionStyle = captionStyle.copyWith(height: captionStyle.height ?? defaultTextHeight);
 
         final titleIconSize = textScaler.scale(AvesFilterChip.iconSize);
         final titleLineHeightParagraph = RenderParagraph(
@@ -59,6 +65,9 @@ class FilterListDetailsTheme extends StatelessWidget {
         var showCount = false;
         var showDate = false;
 
+        final gridExtentMin = context.read<TileExtentController>().effectiveExtentMin;
+        final isMinExtent = (extent - gridExtentMin).abs() < precisionErrorTolerance;
+
         var availableHeight = extent - contentMargin.vertical - contentPadding.vertical;
         final firstTitleLineHeight = max(titleLineHeight, titleIconSize);
         if (availableHeight >= firstTitleLineHeight + titleDetailPadding + captionLineHeight) {
@@ -74,6 +83,7 @@ class FilterListDetailsTheme extends StatelessWidget {
         return FilterListDetailsThemeData(
           extent: extent,
           titleMaxLines: titleMaxLines,
+          isMinExtent: isMinExtent,
           showCount: showCount,
           showDate: showDate,
           titleStyle: titleStyle,
@@ -93,7 +103,7 @@ class FilterListDetailsTheme extends StatelessWidget {
 class FilterListDetailsThemeData {
   final double extent;
   final int titleMaxLines;
-  final bool showCount, showDate;
+  final bool isMinExtent, showCount, showDate;
   final TextStyle titleStyle, captionStyle;
   final double titleIconSize;
   final IconThemeData captionIconTheme;
@@ -101,6 +111,7 @@ class FilterListDetailsThemeData {
   const FilterListDetailsThemeData({
     required this.extent,
     required this.titleMaxLines,
+    required this.isMinExtent,
     required this.showCount,
     required this.showDate,
     required this.titleStyle,

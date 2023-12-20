@@ -4,6 +4,7 @@ import 'package:aves/widgets/common/grid/sections/fixed/scale_overlay.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_overlay.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
+import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
@@ -151,17 +152,20 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       case TileLayout.list:
         final tileCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
         _overlayEntry = OverlayEntry(
-          builder: (context) => FixedExtentScaleOverlay(
-            tileLayout: tileLayout,
-            tileCenter: tileCenter,
-            contentRect: contentRect,
-            scaledSizeNotifier: _scaledSizeNotifier!,
-            gridBuilder: widget.gridBuilder,
-            builder: (scaledTileSize) => SizedBox.fromSize(
-              size: scaledTileSize,
-              child: GridTheme(
-                extent: tileLayout == TileLayout.grid ? scaledTileSize.width : scaledTileSize.height,
-                child: widget.scaledItemBuilder(_metadata!.item, scaledTileSize),
+          builder: (context) => TileExtentControllerProvider(
+            controller: tileExtentController,
+            child: FixedExtentScaleOverlay(
+              tileLayout: tileLayout,
+              tileCenter: tileCenter,
+              contentRect: contentRect,
+              scaledSizeNotifier: _scaledSizeNotifier!,
+              gridBuilder: widget.gridBuilder,
+              builder: (scaledTileSize) => SizedBox.fromSize(
+                size: scaledTileSize,
+                child: GridTheme(
+                  extent: tileLayout == TileLayout.grid ? scaledTileSize.width : scaledTileSize.height,
+                  child: widget.scaledItemBuilder(_metadata!.item, scaledTileSize),
+                ),
               ),
             ),
           ),
