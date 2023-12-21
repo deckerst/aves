@@ -71,6 +71,7 @@ class Contributors {
     Contributor('Salih Ail', 'rrrfff444@gmail.com'),
     Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'),
     Contributor('Mohamed Zeroug', 'mzeroug19@gmail.com'),
+    Contributor('ssantos', 'ssantos@web.de'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
