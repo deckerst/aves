@@ -55,7 +55,7 @@ class MediaEditHandler(private val contextWrapper: ContextWrapper) : MethodCallH
             return
         }
 
-        val provider = getProvider(uri)
+        val provider = getProvider(contextWrapper, uri)
         if (provider == null) {
             result.error("captureFrame-provider", "failed to find provider for uri=$uri", null)
             return

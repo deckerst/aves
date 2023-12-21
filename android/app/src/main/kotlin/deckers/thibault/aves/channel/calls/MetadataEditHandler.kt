@@ -62,7 +62,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(uri)
+        val provider = getProvider(contextWrapper, uri)
         if (provider == null) {
             result.error("editOrientation-provider", "failed to find provider for uri=$uri", null)
             return
@@ -90,7 +90,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(uri)
+        val provider = getProvider(contextWrapper, uri)
         if (provider == null) {
             result.error("editDate-provider", "failed to find provider for uri=$uri", null)
             return
@@ -117,7 +117,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(uri)
+        val provider = getProvider(contextWrapper, uri)
         if (provider == null) {
             result.error("editMetadata-provider", "failed to find provider for uri=$uri", null)
             return
@@ -142,7 +142,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(uri)
+        val provider = getProvider(contextWrapper, uri)
         if (provider == null) {
             result.error("removeTrailerVideo-provider", "failed to find provider for uri=$uri", null)
             return
@@ -168,7 +168,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(uri)
+        val provider = getProvider(contextWrapper, uri)
         if (provider == null) {
             result.error("removeTypes-provider", "failed to find provider for uri=$uri", null)
             return

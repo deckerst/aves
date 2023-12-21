@@ -107,7 +107,7 @@ class ImageOpStreamHandler(private val activity: FragmentActivity, private val a
                 result["skipped"] = true
             } else {
                 result["success"] = false
-                getProvider(uri)?.let { provider ->
+                getProvider(activity, uri)?.let { provider ->
                     try {
                         provider.delete(activity, uri, path, mimeType)
                         result["success"] = true
@@ -142,7 +142,7 @@ class ImageOpStreamHandler(private val activity: FragmentActivity, private val a
 
         // assume same provider for all entries
         val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
+        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(activity, it) }
         if (provider == null) {
             error("convert-provider", "failed to find provider for entry=$firstEntry", null)
             return
@@ -231,7 +231,7 @@ class ImageOpStreamHandler(private val activity: FragmentActivity, private val a
             entriesToNewName[AvesEntry(rawEntry)] = newName
         }
 
-        val byProvider = entriesToNewName.entries.groupBy { kv -> getProvider(kv.key.uri) }
+        val byProvider = entriesToNewName.entries.groupBy { kv -> getProvider(activity, kv.key.uri) }
         for ((provider, entryList) in byProvider) {
             if (provider == null) {
                 error("rename-provider", "failed to find provider for entry=${entryList.firstOrNull()}", null)

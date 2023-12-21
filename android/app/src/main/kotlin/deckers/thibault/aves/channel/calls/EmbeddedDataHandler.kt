@@ -20,8 +20,8 @@ import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.XMPPropName
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
+import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.FileUtils.transferFrom
@@ -341,8 +341,14 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             "mimeType" to mimeType,
         )
         if (isImage(mimeType) || isVideo(mimeType)) {
+            val provider = getProvider(context, uri)
+            if (provider == null) {
+                result.error("copyEmbeddedBytes-provider", "failed to find provider for uri=$uri", null)
+                return
+            }
+
             ioScope.launch {
-                ContentImageProvider().fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback {
+                provider.fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback {
                     override fun onSuccess(fields: FieldMap) {
                         resultFields.putAll(fields)
                         result.success(resultFields)
