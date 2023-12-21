@@ -9,6 +9,7 @@ class MultiPageInfo {
   final AvesEntry mainEntry;
   final List<SinglePageInfo> _pages;
   final Map<SinglePageInfo, AvesEntry> _pageEntries = {};
+  final Set<AvesEntry> _transientEntries = <AvesEntry>{};
 
   int get pageCount => _pages.length;
 
@@ -16,6 +17,13 @@ class MultiPageInfo {
     required this.mainEntry,
     required List<SinglePageInfo> pages,
   }) : _pages = pages {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectCreated(
+        library: 'aves',
+        className: '$MultiPageInfo',
+        object: this,
+      );
+    }
     if (_pages.isNotEmpty) {
       _pages.sort();
       // make sure there is a page marked as default
@@ -32,6 +40,13 @@ class MultiPageInfo {
         }));
       }
     }
+  }
+
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    }
+    _transientEntries.forEach((entry) => entry.dispose());
   }
 
   factory MultiPageInfo.fromPageMaps(AvesEntry mainEntry, List<Map> pageMaps) {
@@ -91,7 +106,7 @@ class MultiPageInfo {
     // dynamically extracted video is not in the trash like the original motion photo
     final trashed = (mainEntry.isMotionPhoto && pageInfo.isVideo) ? false : mainEntry.trashed;
 
-    return AvesEntry(
+    final pageEntry = AvesEntry(
       id: mainEntry.id,
       uri: pageInfo.uri ?? mainEntry.uri,
       path: mainEntry.path,
@@ -117,6 +132,8 @@ class MultiPageInfo {
       )
       ..addressDetails = mainEntry.addressDetails?.copyWith()
       ..trashDetails = trashed ? mainEntry.trashDetails : null;
+    _transientEntries.add(pageEntry);
+    return pageEntry;
   }
 
   @override
