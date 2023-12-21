@@ -1354,5 +1354,7 @@
   "overlayHistogramRGB": "RGB",
   "@overlayHistogramRGB": {},
   "settingsViewerShowHistogram": "Mostrar histograma",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "aboutDataUsageClearCache": "Limpar o cache",
+  "@aboutDataUsageClearCache": {}
 }
