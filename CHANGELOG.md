@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.1"></a>[v1.10.1] - 2023-12-21
+
 - Cataloguing: detect/filter `Ultra HDR`
+- Viewer: show JPEG MPF dependent images (except thumbnails and HDR gain maps)
 - Info: show metadata from JPEG MPF
 - Info: open images embedded via JPEG MPF
 - Arabic translation (thanks Mohamed Zeroug)
