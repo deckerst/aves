@@ -7,11 +7,13 @@ import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 
 extension ExtraAvesEntryMultipage on AvesEntry {
-  bool get isMultiPage => (catalogMetadata?.isMultiPage ?? false) || isBurst;
+  bool get isMultiPage => isBurst || ((catalogMetadata?.isMultiPage ?? false) && (isMotionPhoto || !isHdr));
 
   bool get isBurst => burstEntries?.isNotEmpty == true;
 
   bool get isMotionPhoto => catalogMetadata?.isMotionPhoto ?? false;
+
+  bool get isHdr => catalogMetadata?.hasHdrGainMap ?? false;
 
   String? getBurstKey(List<String> patterns) {
     final key = BurstPatterns.getKeyForName(filenameWithoutExtension, patterns);
