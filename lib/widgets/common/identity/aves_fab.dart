@@ -20,9 +20,6 @@ class AvesFab extends StatelessWidget {
       child: FloatingActionButton(
         tooltip: tooltip,
         onPressed: onPressed,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-        ),
         child: const Icon(AIcons.apply),
       ),
     );

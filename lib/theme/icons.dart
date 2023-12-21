@@ -32,7 +32,12 @@ class AIcons {
   static const folder = Icons.folder_outlined;
   static const grid = Icons.grid_on_outlined;
   static const home = Icons.home_outlined;
-  static const important = Icons.label_important_outline;
+
+  // as of Flutter v3.16.3,
+  // `label_important_outlined` matches text direction but is filled
+  // `label_important_outline` is outlined but does not match text direction
+  static const important = IconData(labelImportantOutlineCodePoint, fontFamily: materialIconsFontFamily, matchTextDirection: true);
+
   static const language = Icons.translate_outlined;
   static const location = Icons.place_outlined;
   static const locationUnlocated = Icons.location_off_outlined;
@@ -169,6 +174,7 @@ class AIcons {
   // thumbnail overlay
   static const animated = Icons.slideshow;
   static const geo = Icons.language_outlined;
+  static const hdr = Icons.hdr_on_outlined;
   static const motionPhoto = Icons.motion_photos_on_outlined;
   static const multiPage = Icons.burst_mode_outlined;
   static const panorama = Icons.vrpano_outlined;
@@ -179,4 +185,9 @@ class AIcons {
 
   static final github = MdiIcons.github;
   static final legal = MdiIcons.scaleBalance;
+
+  // Material Icons references to make constant instances of `IconData`
+  // as non-constant instances of `IconData` prevent icon font tree shaking
+  static const labelImportantOutlineCodePoint = 0xe362;
+  static const materialIconsFontFamily = 'MaterialIcons';
 }

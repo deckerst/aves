@@ -4,7 +4,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -107,7 +106,6 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
             child: Text(
               dateText,
               style: detailsTheme.captionStyle,
-              strutStyle: AStyles.overflowStrut,
               softWrap: false,
               overflow: TextOverflow.fade,
             ),
@@ -158,7 +156,6 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
           Text(
             '${l10n.itemCount(source.count(filter))} • ${formatFileSize(locale, source.size(filter))}',
             style: detailsTheme.captionStyle,
-            strutStyle: AStyles.overflowStrut,
             softWrap: false,
             overflow: TextOverflow.fade,
           ),

@@ -128,6 +128,8 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
           : null,
       onTapUp: selectable && context.select<Selection<T>, bool>((selection) => selection.isSelecting)
           ? (details) {
+              if (_isScrolling) return;
+
               final item = _getItemAt(details.localPosition);
               if (item == null) return;
 

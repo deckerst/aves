@@ -66,10 +66,12 @@ class Contributors {
     Contributor('Fqwe1', 'Fqwe1@users.noreply.hosted.weblate.org'),
     Contributor('Reza Almanda', 'rezaalmanda27@gmail.com'),
     Contributor('Sveinn í Felli', 'sv1@fellsnet.is'),
-    // Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'), // Arabic
-    // Contributor('Salih Ail', 'rrrfff444@gmail.com'), // Arabic
-    // Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'), // Arabic
-    // Contributor('Mohamed Zeroug', 'mzeroug19@gmail.com'), // Arabic
+    Contributor('Henning Bunk', 'henningtbunk@gmail.com'),
+    Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'),
+    Contributor('Salih Ail', 'rrrfff444@gmail.com'),
+    Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'),
+    Contributor('Mohamed Zeroug', 'mzeroug19@gmail.com'),
+    Contributor('ssantos', 'ssantos@web.de'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese

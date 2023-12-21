@@ -56,7 +56,7 @@ class SettingsTileLanguageCoordinateFormat extends SettingsTile {
         onSelection: (v) => settings.coordinateFormat = v,
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsCoordinateFormatDialogTitle,
-        optionSubtitleBuilder: (value) => value.format(context.l10n, PointsOfInterest.pointNemo),
+        optionSubtitleBuilder: (value) => value.format(context, PointsOfInterest.pointNemo),
       );
 }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_chooser.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 class RateQuickChooser extends StatefulWidget {
@@ -92,8 +93,7 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
     final contentWidth = chooserSize.width - padding;
 
     final local = chooserBox.globalToLocal(globalPosition);
-    final dx = local.dx - padding / 2;
-
-    valueNotifier.value = (5 * dx / contentWidth).ceil().clamp(0, 5);
+    final t = (local.dx - padding / 2) / contentWidth;
+    valueNotifier.value = (5 * (context.isRtl ? 1 - t : t)).ceil().clamp(0, 5);
   }
 }

@@ -30,7 +30,7 @@ class AboutTranslators extends StatelessWidget {
   static Widget buildBody(BuildContext context) {
     return _RandomTextSpanHighlighter(
       spans: Contributors.translators.map((v) => v.name).toList(),
-      color: Theme.of(context).colorScheme.onPrimary,
+      color: Theme.of(context).colorScheme.onBackground,
     );
   }
 }
@@ -112,7 +112,6 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
               ])
         ],
       ),
-      strutStyle: const StrutStyle(height: 1.5, forceStrutHeight: true),
     );
   }
 }

@@ -8,4 +8,5 @@
     <string name="analysis_channel_name">Medya tarama</string>
     <string name="analysis_notification_default_title">Medya taranıyor</string>
     <string name="analysis_notification_action_stop">Durdur</string>
+    <string name="safe_mode_shortcut_short_label">Güvenli mod</string>
 </resources>

@@ -1,6 +1,8 @@
 package deckers.thibault.aves.metadata
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.net.Uri
@@ -8,15 +10,19 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.adobe.internal.xmp.XMPMeta
+import com.drew.imaging.jpeg.JpegSegmentType
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.XMP.countPropArrayItems
 import deckers.thibault.aves.metadata.XMP.doesPropExist
 import deckers.thibault.aves.metadata.XMP.getSafeLong
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
+import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.indexOfBytes
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.DataInputStream
@@ -47,13 +53,13 @@ object MultiPage {
         val tracks = ArrayList<FieldMap>()
         val extractor = MediaExtractor()
         extractor.setDataSource(context, uri, null)
-        for (i in 0 until extractor.trackCount) {
+        for (pageIndex in 0 until extractor.trackCount) {
             try {
-                val format = extractor.getTrackFormat(i)
+                val format = extractor.getTrackFormat(pageIndex)
                 format.getString(MediaFormat.KEY_MIME)?.let { mime ->
                     val trackMime = if (mime == MediaFormat.MIMETYPE_IMAGE_ANDROID_HEIC) MimeTypes.HEIC else mime
                     val track: FieldMap = hashMapOf(
-                        KEY_PAGE to i,
+                        KEY_PAGE to pageIndex,
                         KEY_MIME_TYPE to trackMime,
                     )
 
@@ -72,11 +78,113 @@ object MultiPage {
                     tracks.add(track)
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get HEIC track information for uri=$uri, track num=$i", e)
+                Log.w(LOG_TAG, "failed to get HEIC track information for uri=$uri, pageIndex=$pageIndex", e)
             }
         }
         extractor.release()
         return tracks
+    }
+
+    // starts after `[APP2 marker (1 byte)] [segment size (2 bytes)] [MPF marker (4 bytes)]`
+    fun getJpegMpfBaseOffset(context: Context, uri: Uri): Int? {
+        val app2Marker = JpegSegmentType.APP2.byteValue
+        val mpfMarker = "MPF".toByteArray() + 0x00
+
+        try {
+            Metadata.openSafeInputStream(context, uri, MimeTypes.JPEG, null)?.use { input ->
+                var offset = 0
+                while (true) {
+                    do {
+                        val b = input.read().toByte()
+                        offset++
+                    } while (b != app2Marker)
+                    // skip 2 bytes for segment size
+                    input.skip(2)
+                    offset += 2
+                    val marker = ByteArray(4)
+                    input.read(marker, 0, marker.size)
+                    offset += 4
+                    if (marker.contentEquals(mpfMarker)) {
+                        return offset
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get MPF base offset from uri=$uri", e)
+        }
+        return null
+    }
+
+    fun getJpegMpfEntries(context: Context, uri: Uri): List<MpEntry>? {
+        try {
+            Metadata.openSafeInputStream(context, uri, MimeTypes.JPEG, null)?.use { input ->
+                val metadata = Helper.safeRead(input)
+                return metadata.getDirectoriesOfType(MpEntryDirectory::class.java).map { it.entry }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to find MPF entries", e)
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to find MPF entries", e)
+        } catch (e: AssertionError) {
+            Log.w(LOG_TAG, "failed to find MPF entries", e)
+        }
+        return null
+    }
+
+    fun getJpegMpfPages(context: Context, uri: Uri): ArrayList<FieldMap> {
+        val pages = ArrayList<FieldMap>()
+        val baseOffset = getJpegMpfBaseOffset(context, uri)
+        val mpEntries = getJpegMpfEntries(context, uri)
+        if (mpEntries != null && baseOffset != null) {
+            for ((pageIndex, mpEntry) in mpEntries.withIndex()) {
+                mpEntry.mimeType?.let { embedMimeType ->
+                    val page = hashMapOf<String, Any?>(
+                        KEY_PAGE to pageIndex,
+                        KEY_MIME_TYPE to embedMimeType,
+                        KEY_IS_DEFAULT to (pageIndex == 0),
+                        // TODO TLAD [MPF] page[KEY_ROTATION_DEGREES] = same as primary
+                        KEY_ROTATION_DEGREES to 0,
+                    )
+
+                    var dataOffset = mpEntry.dataOffset
+                    if (dataOffset > 0) {
+                        dataOffset += baseOffset
+                    }
+                    StorageUtils.openInputStream(context, uri)?.let { input ->
+                        input.skip(dataOffset)
+                        val options = BitmapFactory.Options().apply {
+                            inJustDecodeBounds = true
+                        }
+                        BitmapFactory.decodeStream(input, null, options)
+                        options.outWidth.takeIf { it >= 0 }?.let { page[KEY_WIDTH] = it }
+                        options.outHeight.takeIf { it >= 0 }?.let { page[KEY_HEIGHT] = it }
+
+                        pages.add(page)
+                    }
+                }
+            }
+        }
+
+        return pages
+    }
+
+    fun getJpegMpfBitmap(context: Context, uri: Uri, pageIndex: Int): Bitmap? {
+        val mpEntries = getJpegMpfEntries(context, uri)
+        if (mpEntries != null && pageIndex < mpEntries.size) {
+            val mpEntry = mpEntries[pageIndex]
+            var dataOffset = mpEntry.dataOffset
+            if (dataOffset > 0) {
+                val baseOffset = getJpegMpfBaseOffset(context, uri)
+                if (baseOffset != null) {
+                    dataOffset += baseOffset
+                }
+            }
+            StorageUtils.openInputStream(context, uri)?.let { input ->
+                input.skip(dataOffset)
+                return BitmapFactory.decodeStream(input)
+            }
+        }
+        return null
     }
 
     fun getMotionPhotoPages(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): ArrayList<FieldMap> {
@@ -88,7 +196,7 @@ object MultiPage {
             if (this.containsKey(key)) save(this.getLong(key))
         }
 
-        val tracks = ArrayList<FieldMap>()
+        val pages = ArrayList<FieldMap>()
         val extractor = MediaExtractor()
         var pfd: ParcelFileDescriptor? = null
         try {
@@ -98,10 +206,10 @@ object MultiPage {
                 pfd?.fileDescriptor?.let { fd ->
                     extractor.setDataSource(fd, videoStartOffset, videoSizeBytes)
                     // set the original image as the first and default track
-                    var trackCount = 0
-                    tracks.add(
+                    var pageIndex = 0
+                    pages.add(
                         hashMapOf(
-                            KEY_PAGE to trackCount++,
+                            KEY_PAGE to pageIndex++,
                             KEY_MIME_TYPE to mimeType,
                             KEY_IS_DEFAULT to true,
                         )
@@ -114,18 +222,18 @@ object MultiPage {
                             val format = extractor.getTrackFormat(trackIndex)
                             format.getString(MediaFormat.KEY_MIME)?.let { mime ->
                                 if (MimeTypes.isVideo(mime)) {
-                                    val track: FieldMap = hashMapOf(
-                                        KEY_PAGE to trackCount++,
+                                    val page: FieldMap = hashMapOf(
+                                        KEY_PAGE to pageIndex++,
                                         KEY_MIME_TYPE to MimeTypes.MP4,
                                         KEY_IS_DEFAULT to false,
                                     )
-                                    format.getSafeInt(MediaFormat.KEY_WIDTH) { track[KEY_WIDTH] = it }
-                                    format.getSafeInt(MediaFormat.KEY_HEIGHT) { track[KEY_HEIGHT] = it }
+                                    format.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
+                                    format.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        format.getSafeInt(MediaFormat.KEY_ROTATION) { track[KEY_ROTATION_DEGREES] = it }
+                                        format.getSafeInt(MediaFormat.KEY_ROTATION) { page[KEY_ROTATION_DEGREES] = it }
                                     }
-                                    format.getSafeLong(MediaFormat.KEY_DURATION) { track[KEY_DURATION] = it / 1000 }
-                                    tracks.add(track)
+                                    format.getSafeLong(MediaFormat.KEY_DURATION) { page[KEY_DURATION] = it / 1000 }
+                                    pages.add(page)
                                 }
                             }
                         } catch (e: Exception) {
@@ -140,7 +248,7 @@ object MultiPage {
             extractor.release()
             pfd?.close()
         }
-        return tracks
+        return pages
     }
 
     fun getMotionPhotoOffset(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
@@ -204,9 +312,9 @@ object MultiPage {
     }
 
     fun getTiffPages(context: Context, uri: Uri): ArrayList<FieldMap> {
-        fun toMap(page: Int, options: TiffBitmapFactory.Options): FieldMap {
+        fun toMap(pageIndex: Int, options: TiffBitmapFactory.Options): FieldMap {
             return hashMapOf(
-                KEY_PAGE to page,
+                KEY_PAGE to pageIndex,
                 KEY_MIME_TYPE to MimeTypes.TIFF,
                 KEY_WIDTH to options.outWidth,
                 KEY_HEIGHT to options.outHeight,
@@ -217,8 +325,8 @@ object MultiPage {
         getTiffPageInfo(context, uri, 0)?.let { first ->
             pages.add(toMap(0, first))
             val pageCount = first.outDirectoryCount
-            for (i in 1 until pageCount) {
-                getTiffPageInfo(context, uri, i)?.let { pages.add(toMap(i, it)) }
+            for (pageIndex in 1 until pageCount) {
+                getTiffPageInfo(context, uri, pageIndex)?.let { pages.add(toMap(pageIndex, it)) }
             }
         }
         return pages

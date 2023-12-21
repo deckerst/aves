@@ -11,21 +11,28 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
-import deckers.thibault.aves.metadata.*
+import deckers.thibault.aves.metadata.GoogleDeviceContainer
+import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.MultiPage
+import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.doesPropPathExist
 import deckers.thibault.aves.metadata.XMP.getSafeStructField
+import deckers.thibault.aves.metadata.XMPPropName
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
-import deckers.thibault.aves.utils.*
+import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.FileUtils.transferFrom
+import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -42,6 +49,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
             "extractGoogleDeviceItem" -> ioScope.launch { safe(call, result, ::extractGoogleDeviceItem) }
+            "extractJpegMpfItem" -> ioScope.launch { safe(call, result, ::extractJpegMpfItem) }
             "extractMotionPhotoImage" -> ioScope.launch { safe(call, result, ::extractMotionPhotoImage) }
             "extractMotionPhotoVideo" -> ioScope.launch { safe(call, result, ::extractMotionPhotoVideo) }
             "extractVideoEmbeddedPicture" -> ioScope.launch { safe(call, result, ::extractVideoEmbeddedPicture) }
@@ -139,6 +147,40 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         }
 
         result.error("extractGoogleDeviceItem-empty", "failed to extract item from Google Device XMP at uri=$uri dataUri=$dataUri", null)
+    }
+
+    private fun extractJpegMpfItem(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        val displayName = call.argument<String>("displayName")
+        val id = call.argument<Int>("id")
+        if (mimeType == null || uri == null || sizeBytes == null || id == null) {
+            result.error("extractJpegMpfItem-args", "missing arguments", null)
+            return
+        }
+
+        val pageIndex = id - 1
+        val mpEntries = MultiPage.getJpegMpfEntries(context, uri)
+        if (mpEntries != null && pageIndex < mpEntries.size) {
+            val mpEntry = mpEntries[pageIndex]
+            mpEntry.mimeType?.let { embedMimeType ->
+                var dataOffset = mpEntry.dataOffset
+                if (dataOffset > 0) {
+                    val baseOffset = MultiPage.getJpegMpfBaseOffset(context, uri)
+                    if (baseOffset != null) {
+                        dataOffset += baseOffset
+                    }
+                }
+                StorageUtils.openInputStream(context, uri)?.let { input ->
+                    input.skip(dataOffset)
+                    copyEmbeddedBytes(result, embedMimeType, displayName, input, mpEntry.size)
+                }
+                return
+            }
+        }
+
+        result.error("extractJpegMpfItem-empty", "failed to extract file index=$id from MPF at uri=$uri", null)
     }
 
     private fun extractMotionPhotoImage(call: MethodCall, result: MethodChannel.Result) {
@@ -299,8 +341,14 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             "mimeType" to mimeType,
         )
         if (isImage(mimeType) || isVideo(mimeType)) {
+            val provider = getProvider(context, uri)
+            if (provider == null) {
+                result.error("copyEmbeddedBytes-provider", "failed to find provider for uri=$uri", null)
+                return
+            }
+
             ioScope.launch {
-                ContentImageProvider().fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback {
+                provider.fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback {
                     override fun onSuccess(fields: FieldMap) {
                         resultFields.putAll(fields)
                         result.success(resultFields)

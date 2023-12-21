@@ -4,7 +4,6 @@ import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -60,7 +59,6 @@ class EntryListDetails extends StatelessWidget {
         children: spans,
       ),
       style: style,
-      strutStyle: AStyles.overflowStrut,
       softWrap: false,
       overflow: TextOverflow.fade,
     );
@@ -85,25 +83,26 @@ class EntryListDetails extends StatelessWidget {
     final size = entry.burstEntries?.map((v) => v.sizeBytes).sum ?? entry.sizeBytes;
     final sizeText = size != null ? formatFileSize(locale, size) : AText.valueNotAvailable;
 
-    return _buildRow(
-      [
-        _buildIconSpan(AIcons.date),
-        TextSpan(text: dateText),
-        _buildIconSpan(AIcons.size, padding: const EdgeInsetsDirectional.only(start: 8)),
-        TextSpan(text: sizeText),
+    return Wrap(
+      spacing: 8,
+      children: [
+        _buildRow(
+          [_buildIconSpan(AIcons.date), TextSpan(text: dateText)],
+          style,
+        ),
+        _buildRow(
+          [_buildIconSpan(AIcons.size), TextSpan(text: sizeText)],
+          style,
+        ),
       ],
-      style,
     );
   }
 
   Widget _buildLocationRow(BuildContext context, TextStyle style) {
-    final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(context.l10n, entry.latLng!);
+    final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(context, entry.latLng!);
 
     return _buildRow(
-      [
-        _buildIconSpan(AIcons.location),
-        TextSpan(text: location),
-      ],
+      [_buildIconSpan(AIcons.location), TextSpan(text: location)],
       style,
     );
   }

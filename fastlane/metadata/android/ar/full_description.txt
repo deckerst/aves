@@ -1,5 +1,5 @@
 <i>أيفيس</i> يمكنه التعامل مع جميع أنواع الصور ومقاطع الفيديو ، بما في ذلك ملفات JPEG و MP4 النموذجية ، ولكن أيضًا أشياء أكثر غرابة مثل <b>ملفات TIFF و SVG و AVI القديمة متعددة الصفحات والمزيد</b>! يقوم بمسح مجموعة الوسائط الخاصة بك لتحديد <b> الصور المتحركة</b>, <b>الإستعراضات</b> (المعروف أيضًا باسم الصور البانورامية), <b>360 درجة مقاطع الفيديو</b>, إلى جانب <b>GeoTIFF</b> الملفات.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>الملاحة والبحث</b> جزء مهم من <i>Aves</i>الهدف هو أن يكون بإمكان المستخدمين التنقل بسهولة من الألبومات إلى الصور إلى الوسوم إلى الخرائط، وما إلى ذلك..
 
-<i>Aves</i> integrates with Android (from KitKat to Android 13, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i>تتكامل مع نظام Android (من KitKat إلى Android 14، بما في ذلك Android TV) مع ميزات مثلs <b>الودجتس</b>, <b>اختصارات التطبيق</b>, <b>حافظة الشاشة</b> و<b>البحث العالمي</b> التعامل معه. كما أنه يعمل كـ <b>عارض واختار لوسائط (ملفات الوسائط)</b>.

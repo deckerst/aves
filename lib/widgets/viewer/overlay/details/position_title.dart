@@ -1,6 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:flutter/foundation.dart';
@@ -25,12 +24,12 @@ class OverlayPositionTitleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Text toText({String? pagePosition}) => Text(
-        [
-          if (collectionPosition != null) collectionPosition,
-          if (pagePosition != null) pagePosition,
-          if (title != null) '${Unicode.FSI}$title${Unicode.PDI}',
-        ].join(AText.separator),
-        strutStyle: AStyles.overflowStrut);
+          [
+            if (collectionPosition != null) collectionPosition,
+            if (pagePosition != null) pagePosition,
+            if (title != null) '${Unicode.FSI}$title${Unicode.PDI}',
+          ].join(AText.separator),
+        );
 
     if (multiPageController == null) return toText();
 

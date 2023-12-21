@@ -122,6 +122,7 @@ class _BasicSectionState extends State<BasicSection> {
       MimeFilter(entry.mimeType),
       if (entry.isAnimated) TypeFilter.animated,
       if (entry.isGeotiff) TypeFilter.geotiff,
+      if (entry.isHdr) TypeFilter.hdr,
       if (entry.isMotionPhoto) TypeFilter.motionPhoto,
       if (entry.isRaw) TypeFilter.raw,
       if (entry.isImage && entry.is360) TypeFilter.panorama,
@@ -329,8 +330,8 @@ class _BasicInfoState extends State<_BasicInfo> {
                 l10n.viewerInfoLabelTitle: title,
                 l10n.viewerInfoLabelDate: dateText,
                 if (entry.isVideo) ..._buildVideoRows(context),
-                if (showResolution) l10n.viewerInfoLabelResolution: rasterResolutionText,
-                l10n.viewerInfoLabelSize: sizeText,
+                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(rasterResolutionText),
+                l10n.viewerInfoLabelSize: context.applyDirectionality(sizeText),
                 if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
                 if (path != null) l10n.viewerInfoLabelPath: path,
                 if (ownerPackage != null) l10n.viewerInfoLabelOwner: ownerPackage,
@@ -359,7 +360,7 @@ class _BasicInfoState extends State<_BasicInfo> {
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 4),
+              padding: const EdgeInsetsDirectional.only(start: 2, end: 4),
               child: ConstrainedBox(
                 // use constraints instead of sizing `Image`,
                 // so that it can collapse when handling an empty image

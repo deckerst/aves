@@ -29,6 +29,14 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
   late final Animation<double> _animation;
   final List<_TextDiff> _diffs = [];
 
+  TextStyle get _textStyle {
+    final style = widget.textStyle ?? const TextStyle();
+    // specify `height` for accurate paragraph height measurement
+    return style.copyWith(height: style.height ?? DefaultTextStyle.of(context).style.height);
+  }
+
+  StrutStyle? get _strutStyle => widget.strutStyle;
+
   @override
   void initState() {
     super.initState();
@@ -101,24 +109,25 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
                     child: Text(
                       text,
                       key: Key(text),
+                      style: _textStyle,
                     ),
                   ),
                 ),
               );
             }).toList(),
           ),
-          strutStyle: widget.strutStyle,
+          strutStyle: _strutStyle,
         );
       },
     );
   }
 
-  Size textSize(String text) {
+  Size _textSize(String text) {
     final paragraph = RenderParagraph(
-      TextSpan(text: text, style: widget.textStyle),
+      TextSpan(text: text, style: _textStyle),
       textDirection: Directionality.of(context),
       textScaler: MediaQuery.textScalerOf(context),
-      strutStyle: widget.strutStyle,
+      strutStyle: _strutStyle,
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final width = paragraph.getMaxIntrinsicWidth(double.infinity);
     final height = paragraph.getMaxIntrinsicHeight(double.infinity);
@@ -140,7 +149,7 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
       ..clear()
       ..addAll(d.map((diff) {
         final text = diff.text;
-        final size = textSize(text);
+        final size = _textSize(text);
         return switch (diff.operation) {
           Operation.delete => (text, null, size, Size.zero),
           Operation.insert => (null, text, Size.zero, size),

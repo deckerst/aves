@@ -34,6 +34,8 @@ class SectionHeader<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final onTap = selectable ? () => _toggleSectionSelection(context) : null;
 
+    final theme = Theme.of(context);
+
     Widget child = Container(
       padding: padding,
       constraints: BoxConstraints(minHeight: leadingSize.height),
@@ -55,23 +57,30 @@ class SectionHeader<T> extends StatelessWidget {
             children: [
               WidgetSpan(
                 alignment: widgetSpanAlignment,
-                child: _SectionSelectableLeading<T>(
-                  selectable: selectable,
-                  sectionKey: sectionKey,
-                  browsingBuilder: leading != null
-                      ? (context) => Container(
-                            padding: const EdgeInsetsDirectional.only(end: 8, bottom: 4),
-                            width: leadingSize.width,
-                            height: leadingSize.height,
-                            child: leading,
-                          )
-                      : null,
-                  onPressed: onTap,
+                child: Theme(
+                  data: theme.copyWith(
+                    iconTheme: theme.iconTheme.copyWith(
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  child: _SectionSelectableLeading<T>(
+                    selectable: selectable,
+                    sectionKey: sectionKey,
+                    browsingBuilder: leading != null
+                        ? (context) => Container(
+                              padding: const EdgeInsetsDirectional.only(end: 8),
+                              width: leadingSize.width,
+                              height: leadingSize.height,
+                              child: leading,
+                            )
+                        : null,
+                    onPressed: onTap,
+                  ),
                 ),
               ),
               TextSpan(
                 text: title,
-                style: AStyles.unknownTitleText,
+                style: _headerTextStyle(context),
               ),
               if (trailing != null)
                 WidgetSpan(
@@ -143,7 +152,7 @@ class SectionHeader<T> extends StatelessWidget {
           if (hasTrailing) TextSpan(text: '\u200A' * 17),
           TextSpan(
             text: title,
-            style: AStyles.unknownTitleText,
+            style: _headerTextStyle(context),
           ),
         ],
       ),
@@ -153,6 +162,12 @@ class SectionHeader<T> extends StatelessWidget {
     final height = paragraph.getMaxIntrinsicHeight(maxContentWidth);
     paragraph.dispose();
     return height;
+  }
+
+  static TextStyle _headerTextStyle(BuildContext context) {
+    // specify `height` for accurate paragraph height measurement
+    final defaultTextHeight = DefaultTextStyle.of(context).style.height;
+    return AStyles.unknownTitleText.copyWith(height: defaultTextHeight);
   }
 }
 

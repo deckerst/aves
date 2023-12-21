@@ -1,6 +1,5 @@
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
@@ -33,10 +32,10 @@ class OverlayShootingRow extends StatelessWidget {
       children: [
         DecoratedIcon(AIcons.shooting, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
         const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
-        Expanded(child: Text(apertureText, strutStyle: AStyles.overflowStrut)),
-        Expanded(child: Text(details.exposureTime ?? AText.valueNotAvailable, strutStyle: AStyles.overflowStrut)),
-        Expanded(child: Text(focalLengthText, strutStyle: AStyles.overflowStrut)),
-        Expanded(child: Text(isoText, strutStyle: AStyles.overflowStrut)),
+        Expanded(child: Text(apertureText)),
+        Expanded(child: Text(details.exposureTime ?? AText.valueNotAvailable)),
+        Expanded(child: Text(focalLengthText)),
+        Expanded(child: Text(isoText)),
       ],
     );
   }

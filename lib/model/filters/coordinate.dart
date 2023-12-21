@@ -4,12 +4,10 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 
 class CoordinateFilter extends CollectionFilter {
   static const type = 'coordinate';
@@ -45,24 +43,30 @@ class CoordinateFilter extends CollectionFilter {
   @override
   EntryFilter get positiveTest => _test;
 
-  String _formatBounds(AppLocalizations l10n, CoordinateFormat format) {
-    String s(LatLng latLng) => format.format(
-          l10n,
-          latLng,
-          minuteSecondPadding: minuteSecondPadding,
-          dmsSecondDecimals: 0,
-        );
-    return '${s(ne)}\n${s(sw)}';
-  }
+  String _formatBounds(String Function(LatLng latLng) s) => '${s(ne)}\n${s(sw)}';
 
   @override
   bool get exclusiveProp => false;
 
   @override
-  String get universalLabel => _formatBounds(lookupAppLocalizations(AppLocalizations.supportedLocales.first), CoordinateFormat.decimal);
+  String get universalLabel {
+    return _formatBounds((latLng) => CoordinateFormat.decimal.formatWithoutDirectionality(
+          lookupAppLocalizations(AppLocalizations.supportedLocales.first),
+          latLng,
+          minuteSecondPadding: minuteSecondPadding,
+          dmsSecondDecimals: 0,
+        ));
+  }
 
   @override
-  String getLabel(BuildContext context) => _formatBounds(context.l10n, context.read<Settings>().coordinateFormat);
+  String getLabel(BuildContext context) {
+    return _formatBounds((latLng) => settings.coordinateFormat.format(
+          context,
+          latLng,
+          minuteSecondPadding: minuteSecondPadding,
+          dmsSecondDecimals: 0,
+        ));
+  }
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.geoBounds, size: size);

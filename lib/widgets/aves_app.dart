@@ -45,7 +45,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localization_nn/flutter_localization_nn.dart';
-import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -58,8 +57,6 @@ class AvesApp extends StatefulWidget {
   // temporary exclude locales not ready yet for prime time
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
   static final _unsupportedLocales = {
-    'ar', // Arabic
-    'be', // Belarusian
     'bn', // Bengali
     'ckb', // Kurdish (Central)
     'fa', // Persian
@@ -153,7 +150,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final List<StreamSubscription> _subscriptions = [];
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
-  late final Future<CorePalette?> _dynamicColorPaletteLoader;
   final TvRailController _tvRailController = TvRailController();
   final CollectionSource _mediaStoreSource = MediaStoreSource();
   final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
@@ -185,7 +181,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     EquatableConfig.stringify = true;
     _appSetup = _setup();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
-    _dynamicColorPaletteLoader = DynamicColorPlugin.getCorePalette();
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChanged(event as String?)));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
@@ -248,18 +243,13 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
                 AStyles.updateStylesForLocale(settings.appliedLocale);
 
-                return FutureBuilder<CorePalette?>(
-                  future: _dynamicColorPaletteLoader,
-                  builder: (context, snapshot) {
+                return DynamicColorBuilder(
+                  builder: (lightScheme, darkScheme) {
                     const defaultAccent = AvesColorsData.defaultAccent;
                     Color lightAccent = defaultAccent, darkAccent = defaultAccent;
                     if (enableDynamicColor) {
-                      // `DynamicColorBuilder` from package `dynamic_color` provides light/dark
-                      // palettes with a primary color from tones too dark/light (40/80),
-                      // so we derive the color with adjusted tones (60/70)
-                      final tonalPalette = snapshot.data?.primary;
-                      lightAccent = Color(tonalPalette?.get(60) ?? defaultAccent.value);
-                      darkAccent = Color(tonalPalette?.get(70) ?? defaultAccent.value);
+                      lightAccent = lightScheme?.primary ?? lightAccent;
+                      darkAccent = darkScheme?.primary ?? darkAccent;
                     }
                     final lightTheme = Themes.lightTheme(lightAccent, initialized);
                     final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
@@ -270,34 +260,38 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         // KEYCODE_ENTER, KEYCODE_BUTTON_A, KEYCODE_NUMPAD_ENTER
                         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
                       },
-                      child: MediaQuery(
-                        data: MediaQuery.of(context).copyWith(
-                          // disable accessible navigation, as it impacts snack bar action timer
-                          // for all users of apps registered as accessibility services,
-                          // even though they are not for accessibility purposes (like TalkBack is)
-                          accessibleNavigation: false,
-                        ),
-                        child: MaterialApp(
-                          navigatorKey: _navigatorKey,
-                          home: home,
-                          navigatorObservers: _navigatorObservers,
-                          builder: (context, child) => _decorateAppChild(
-                            context: context,
-                            initialized: initialized,
-                            child: child,
-                          ),
-                          onGenerateTitle: (context) => context.l10n.appName,
-                          theme: lightTheme,
-                          darkTheme: darkTheme,
-                          themeMode: themeBrightness.appThemeMode,
-                          locale: settingsLocale,
-                          localizationsDelegates: const [
-                            ...AppLocalizations.localizationsDelegates,
-                            ...LocalizationsNn.delegates,
-                          ],
-                          supportedLocales: AvesApp.supportedLocales,
-                          scrollBehavior: AvesScrollBehavior(),
-                        ),
+                      child: Builder(
+                        builder: (context) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(
+                              // disable accessible navigation, as it impacts snack bar action timer
+                              // for all users of apps registered as accessibility services,
+                              // even though they are not for accessibility purposes (like TalkBack is)
+                              accessibleNavigation: false,
+                            ),
+                            child: MaterialApp(
+                              navigatorKey: _navigatorKey,
+                              home: home,
+                              navigatorObservers: _navigatorObservers,
+                              builder: (context, child) => _decorateAppChild(
+                                context: context,
+                                initialized: initialized,
+                                child: child,
+                              ),
+                              onGenerateTitle: (context) => context.l10n.appName,
+                              theme: lightTheme,
+                              darkTheme: darkTheme,
+                              themeMode: themeBrightness.appThemeMode,
+                              locale: settingsLocale,
+                              localizationsDelegates: const [
+                                ...AppLocalizations.localizationsDelegates,
+                                ...LocalizationsNn.delegates,
+                              ],
+                              supportedLocales: AvesApp.supportedLocales,
+                              scrollBehavior: AvesScrollBehavior(),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },

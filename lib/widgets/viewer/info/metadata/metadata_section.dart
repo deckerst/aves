@@ -98,6 +98,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
                     ),
                     children: settings.useTvLayout
                         ? [
+                            const SizedBox(height: 16),
                             AvesOutlinedButton(
                               label: MaterialLocalizations.of(context).moreButtonTooltip,
                               onPressed: () {

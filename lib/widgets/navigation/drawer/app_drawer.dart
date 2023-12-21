@@ -14,6 +14,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
+import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -120,17 +121,21 @@ class _AppDrawerState extends State<AppDrawer> {
       ));
     }
 
+    final colorScheme = Theme.of(context).colorScheme;
+    final onPrimary = colorScheme.onPrimary;
+
     final drawerButtonStyle = ButtonStyle(
       padding: MaterialStateProperty.all(const EdgeInsetsDirectional.only(start: 12, end: 16)),
     );
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      color: Theme.of(context).colorScheme.primary,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      color: colorScheme.primary,
       child: SafeArea(
         bottom: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 6),
             Align(
               alignment: AlignmentDirectional.centerStart,
               child: Wrap(
@@ -138,15 +143,19 @@ class _AppDrawerState extends State<AppDrawer> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   const AvesLogo(size: 48),
-                  Text(
-                    context.l10n.appName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 38,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 1.0,
-                      fontFeatures: [FontFeature.enable('smcp')],
-                    ),
+                  OutlinedText(
+                    textSpans: [
+                      TextSpan(
+                        text: context.l10n.appName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 38,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 1.0,
+                          fontFeatures: [FontFeature.enable('smcp')],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -155,9 +164,9 @@ class _AppDrawerState extends State<AppDrawer> {
             OutlinedButtonTheme(
               data: OutlinedButtonThemeData(
                 style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                  overlayColor: MaterialStateProperty.all<Color>(Colors.white24),
-                  side: MaterialStateProperty.all<BorderSide>(BorderSide(width: 1, color: Colors.white.withOpacity(0.12))),
+                  foregroundColor: MaterialStateProperty.all<Color>(onPrimary),
+                  overlayColor: MaterialStateProperty.all<Color>(onPrimary.withOpacity(.12)),
+                  side: MaterialStateProperty.all<BorderSide>(BorderSide(width: 1, color: onPrimary.withOpacity(.24))),
                 ),
               ),
               child: Wrap(
@@ -181,7 +190,8 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                 ],
               ),
-            )
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       ),

@@ -74,7 +74,7 @@ class _XmpCardState extends State<XmpCard> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).colorScheme.onPrimary.withOpacity(.2),
+          color: Theme.of(context).dividerColor,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(4)),
       ),

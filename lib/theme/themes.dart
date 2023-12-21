@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 
 class Themes {
@@ -9,17 +10,6 @@ class Themes {
     fontWeight: FontWeight.normal,
     fontFeatures: [FontFeature.enable('smcp')],
   );
-
-  // adapted from M3 defaults
-  static MaterialStateProperty<TextStyle?> _popupMenuTextStyle(ColorScheme colors, TextTheme textTheme) {
-    return MaterialStateProperty.resolveWith((states) {
-      final TextStyle style = textTheme.labelLarge!;
-      if (states.contains(MaterialState.disabled)) {
-        return style.apply(color: colors.onSurface.withOpacity(0.38));
-      }
-      return style.apply(color: colors.onSurface);
-    });
-  }
 
   static TextStyle searchFieldStyle(BuildContext context) => Theme.of(context).textTheme.bodyLarge!;
 
@@ -69,6 +59,7 @@ class Themes {
       typography: _typography,
       // COMPONENT THEMES
       checkboxTheme: _checkboxTheme(colors),
+      floatingActionButtonTheme: _floatingActionButtonTheme(colors),
       radioTheme: _radioTheme(colors),
       sliderTheme: _sliderTheme(colors),
       tooltipTheme: _tooltipTheme,
@@ -82,6 +73,27 @@ class Themes {
   static const _listTileTheme = ListTileThemeData(
     contentPadding: EdgeInsets.symmetric(horizontal: 16),
   );
+
+  static PopupMenuThemeData _popupMenuTheme(ColorScheme colors, TextTheme textTheme) {
+    return PopupMenuThemeData(
+      labelTextStyle: MaterialStateProperty.resolveWith((states) {
+        // adapted from M3 defaults
+        final TextStyle style = textTheme.labelLarge!;
+        if (states.contains(MaterialState.disabled)) {
+          return style.apply(color: colors.onSurface.withOpacity(0.38));
+        }
+        return style.apply(color: colors.onSurface);
+      }),
+      iconColor: colors.onSurface,
+    );
+  }
+
+  static FloatingActionButtonThemeData _floatingActionButtonTheme(ColorScheme colors) {
+    return FloatingActionButtonThemeData(
+      foregroundColor: colors.onPrimary,
+      backgroundColor: colors.primary,
+    );
+  }
 
   // adapted from M3 defaults
   static RadioThemeData _radioTheme(ColorScheme colors) => RadioThemeData(
@@ -125,19 +137,19 @@ class Themes {
 
   static final _lightThemeTypo = _typography.black;
   static final _lightTitleColor = _lightThemeTypo.titleMedium!.color!;
-  static final _lightBodyColor = _lightThemeTypo.bodyMedium!.color!;
   static final _lightLabelColor = _lightThemeTypo.labelMedium!.color!;
   static const _lightActionIconColor = Color(0xAA000000);
   static const _lightOnSurface = Colors.black;
 
   static ThemeData lightTheme(Color accentColor, bool deviceInitialized) {
+    final onAccent = ColorUtils.textColorOn(accentColor);
     final colors = ColorScheme.fromSeed(
       seedColor: accentColor,
       brightness: Brightness.light,
       primary: accentColor,
-      onPrimary: _lightBodyColor,
+      onPrimary: onAccent,
       secondary: accentColor,
-      onSecondary: _lightBodyColor,
+      onSecondary: onAccent,
       onSurface: _lightOnSurface,
     );
     final textTheme = _lightThemeTypo;
@@ -158,24 +170,8 @@ class Themes {
       listTileTheme: _listTileTheme.copyWith(
         iconColor: _lightActionIconColor,
       ),
-      popupMenuTheme: PopupMenuThemeData(
-        labelTextStyle: _popupMenuTextStyle(colors, textTheme),
-      ),
+      popupMenuTheme: _popupMenuTheme(colors, textTheme),
       snackBarTheme: _snackBarTheme(colors),
-      switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-          final active = states.contains(MaterialState.selected);
-          return active ? Colors.white : Colors.grey.shade600;
-        }),
-        trackColor: MaterialStateProperty.resolveWith<Color>((states) {
-          final active = states.contains(MaterialState.selected);
-          return colors.primary.withOpacity(active ? 1 : .1);
-        }),
-        trackOutlineColor: MaterialStateProperty.resolveWith<Color>((states) {
-          final active = states.contains(MaterialState.selected);
-          return active ? colors.primary : colors.onPrimary.withOpacity(.5);
-        }),
-      ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: _lightLabelColor,
@@ -191,6 +187,20 @@ class Themes {
   static final _darkBodyColor = _darkThemeTypo.bodyMedium!.color!;
   static final _darkLabelColor = _darkThemeTypo.labelMedium!.color!;
   static const _darkOnSurface = Colors.white;
+
+  static ColorScheme _darkColorScheme(Color accentColor) {
+    final onAccent = ColorUtils.textColorOn(accentColor);
+    final colors = ColorScheme.fromSeed(
+      seedColor: accentColor,
+      brightness: Brightness.dark,
+      primary: accentColor,
+      onPrimary: onAccent,
+      secondary: accentColor,
+      onSecondary: onAccent,
+      onSurface: _darkOnSurface,
+    );
+    return colors;
+  }
 
   static ThemeData _baseDarkTheme(ColorScheme colors, bool deviceInitialized) {
     final textTheme = _darkThemeTypo;
@@ -209,9 +219,7 @@ class Themes {
         titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
       ),
       listTileTheme: _listTileTheme,
-      popupMenuTheme: PopupMenuThemeData(
-        labelTextStyle: _popupMenuTextStyle(colors, textTheme),
-      ),
+      popupMenuTheme: _popupMenuTheme(colors, textTheme),
       snackBarTheme: _snackBarTheme(colors).copyWith(
         backgroundColor: _schemeSecondLayer(colors),
         contentTextStyle: TextStyle(
@@ -227,30 +235,14 @@ class Themes {
   }
 
   static ThemeData darkTheme(Color accentColor, bool deviceInitialized) {
-    final colors = ColorScheme.fromSeed(
-      seedColor: accentColor,
-      brightness: Brightness.dark,
-      primary: accentColor,
-      onPrimary: _darkBodyColor,
-      secondary: accentColor,
-      onSecondary: _darkBodyColor,
-      onSurface: _darkOnSurface,
-    );
+    final colors = _darkColorScheme(accentColor);
     return _baseDarkTheme(colors, deviceInitialized);
   }
 
   // black
 
   static ThemeData blackTheme(Color accentColor, bool deviceInitialized) {
-    final colors = ColorScheme.fromSeed(
-      seedColor: accentColor,
-      brightness: Brightness.dark,
-      primary: accentColor,
-      onPrimary: _darkBodyColor,
-      secondary: accentColor,
-      onSecondary: _darkBodyColor,
-      onSurface: _darkOnSurface,
-    ).copyWith(
+    final colors = _darkColorScheme(accentColor).copyWith(
       background: Colors.black,
     );
     final baseTheme = _baseDarkTheme(colors, deviceInitialized);

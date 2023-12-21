@@ -34,7 +34,7 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
             return
         }
 
-        val provider = getProvider(uri)
+        val provider = getProvider(context, uri)
         if (provider == null) {
             result.error("getEntry-provider", "failed to find provider for uri=$uri", null)
             return

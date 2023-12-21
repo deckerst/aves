@@ -201,7 +201,7 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
         final l10n = context.l10n;
         return InfoRowGroup(
           info: {
-            l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(l10n, entry.latLng!),
+            l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(context, entry.latLng!),
             if (address.isNotEmpty) l10n.viewerInfoLabelAddress: address,
           },
         );

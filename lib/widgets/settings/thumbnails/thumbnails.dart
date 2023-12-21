@@ -8,6 +8,7 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/thumbnails/collection_actions_editor_page.dart';
 import 'package:aves/widgets/settings/thumbnails/overlay.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,6 +69,6 @@ class SettingsTileBurstPatterns extends SettingsTile {
         onSelection: (v) => settings.collectionBurstPatterns = v,
         tileTitle: title(context),
         noneSubtitle: context.l10n.settingsCollectionBurstPatternsNone,
-        optionSubtitleBuilder: BurstPatterns.getExample,
+        optionSubtitleBuilder: (value) => '${Unicode.FSI}${BurstPatterns.getExample(value)}${Unicode.PDI}',
       );
 }

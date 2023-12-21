@@ -158,7 +158,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  void onActionSelected(BuildContext context, Set<T> filters, ChipSetAction action) {
+  void onActionSelected(BuildContext context, ChipSetAction action) {
     reportService.log('$action');
     switch (action) {
       // general
@@ -180,19 +180,19 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         break;
       // browsing or selecting
       case ChipSetAction.map:
-        _goToMap(context, filters);
+        _goToMap(context);
       case ChipSetAction.slideshow:
-        _goToSlideshow(context, filters);
+        _goToSlideshow(context);
       case ChipSetAction.stats:
-        _goToStats(context, filters);
+        _goToStats(context);
       // selecting (single/multiple filters)
       case ChipSetAction.hide:
-        _hide(context, filters);
+        _hide(context);
       case ChipSetAction.pin:
-        settings.pinnedFilters = settings.pinnedFilters..addAll(filters);
+        settings.pinnedFilters = settings.pinnedFilters..addAll(getSelectedFilters(context));
         browse(context);
       case ChipSetAction.unpin:
-        settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
+        settings.pinnedFilters = settings.pinnedFilters..removeAll(getSelectedFilters(context));
         browse(context);
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
@@ -200,7 +200,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         break;
       // selecting (single filter)
       case ChipSetAction.setCover:
-        _setCover(context, filters.first);
+        _setCover(context);
       case ChipSetAction.rename:
       case ChipSetAction.configureVault:
         break;
@@ -209,9 +209,15 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   void browse(BuildContext context) => context.read<Selection<FilterGridItem<T>>?>()?.browse();
 
-  Iterable<AvesEntry> _selectedEntries(BuildContext context, Set<dynamic> filters) {
+  Set<T> getSelectedFilters(BuildContext context) {
+    final selection = context.read<Selection<FilterGridItem<T>>>();
+    return selection.isSelecting ? selection.selectedItems.map((v) => v.filter).toSet() : {};
+  }
+
+  Iterable<AvesEntry> _selectedEntries(BuildContext context) {
     final source = context.read<CollectionSource>();
     final visibleEntries = source.visibleEntries;
+    final filters = getSelectedFilters(context);
     return filters.isEmpty ? visibleEntries : visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
   }
 
@@ -245,10 +251,10 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  Future<void> _goToMap(BuildContext context, Set<T> filters) async {
+  Future<void> _goToMap(BuildContext context) async {
     final mapCollection = CollectionLens(
       source: context.read<CollectionSource>(),
-      fixedSelection: _selectedEntries(context, filters).where((entry) => entry.hasGps).toList(),
+      fixedSelection: _selectedEntries(context).where((entry) => entry.hasGps).toList(),
     );
     await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
@@ -258,7 +264,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
   }
 
-  void _goToSlideshow(BuildContext context, Set<T> filters) {
+  void _goToSlideshow(BuildContext context) {
+    final entries = _selectedEntries(context).toList();
     Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
@@ -266,7 +273,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
           return SlideshowPage(
             collection: CollectionLens(
               source: context.read<CollectionSource>(),
-              fixedSelection: _selectedEntries(context, filters).toList(),
+              fixedSelection: entries,
             ),
           );
         },
@@ -274,13 +281,14 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
   }
 
-  void _goToStats(BuildContext context, Set<T> filters) {
+  void _goToStats(BuildContext context) {
+    final entries = _selectedEntries(context).toSet();
     Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) {
           return StatsPage(
-            entries: _selectedEntries(context, filters).toSet(),
+            entries: entries,
             source: context.read<CollectionSource>(),
           );
         },
@@ -300,7 +308,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
   }
 
-  Future<void> _hide(BuildContext context, Set<T> filters) async {
+  Future<void> _hide(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AvesDialog(
@@ -317,12 +325,17 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
     if (confirmed == null || !confirmed) return;
 
+    final filters = getSelectedFilters(context);
     settings.changeFilterVisibility(filters, false);
 
     browse(context);
   }
 
-  void _setCover(BuildContext context, T filter) async {
+  void _setCover(BuildContext context) async {
+    final filters = getSelectedFilters(context);
+    if (filters.isEmpty) return;
+
+    final filter = filters.first;
     if (!await unlockFilter(context, filter)) return;
 
     final existingCover = covers.of(filter);

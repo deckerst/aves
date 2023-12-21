@@ -39,7 +39,7 @@ class CaptionedButton extends StatefulWidget {
     var height = width;
     if (showCaption) {
       final paragraph = RenderParagraph(
-        TextSpan(text: text, style: CaptionedButtonText.textStyle(context)),
+        TextSpan(text: text, style: CaptionedButtonText._textStyle(context)),
         textDirection: TextDirection.ltr,
         textScaler: MediaQuery.textScalerOf(context),
         maxLines: CaptionedButtonText.maxLines,
@@ -112,11 +112,11 @@ class _CaptionedButtonState extends State<CaptionedButton> {
               child: ValueListenableBuilder<bool>(
                 valueListenable: _focusedNotifier,
                 builder: (context, focused, child) {
-                  final style = CaptionedButtonText.textStyle(context);
+                  final style = CaptionedButtonText._textStyle(context);
                   return AnimatedDefaultTextStyle(
                     style: focused
                         ? style.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: Theme.of(context).colorScheme.primary,
                           )
                         : style,
                     duration: const Duration(milliseconds: 200),
@@ -176,5 +176,9 @@ class CaptionedButtonText extends StatelessWidget {
     );
   }
 
-  static TextStyle textStyle(BuildContext context) => Theme.of(context).textTheme.bodySmall!;
+  static TextStyle _textStyle(BuildContext context) {
+    // specify `height` for accurate paragraph height measurement
+    final defaultTextHeight = DefaultTextStyle.of(context).style.height;
+    return Theme.of(context).textTheme.bodySmall!.copyWith(height: defaultTextHeight);
+  }
 }
