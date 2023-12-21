@@ -66,6 +66,9 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
         ElevatedButton(
           onPressed: () => LeakTracking.collectLeaks().then((leaks) {
             leaks.byType.forEach((type, reports) {
+              // ignore `notGCed` and `gcedLate` for now
+              if (type != LeakType.notDisposed) return;
+
               debugPrint('* leak type=$type');
               groupBy(reports, (report) => report.type).forEach((reportType, typedReports) {
                 debugPrint('  * report type=$reportType');

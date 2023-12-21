@@ -79,6 +79,7 @@ class _VideoCoverState extends State<VideoCover> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _dismissedCoverMagnifierController?.dispose();
     _videoCoverInfoNotifier.dispose();
     super.dispose();
   }

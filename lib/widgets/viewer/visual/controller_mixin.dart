@@ -26,7 +26,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   ValueNotifier<AvesEntry?> get entryNotifier;
 
   Future<void> initEntryControllers(AvesEntry? entry) async {
-    if (entry == null) return;
+    if (!mounted || entry == null) return;
 
     if (entry.isVideo) {
       await _initVideoController(entry);
