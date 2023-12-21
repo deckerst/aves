@@ -9,6 +9,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -49,11 +50,13 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     if (!await checkFreeSpaceForMove(context, targetEntries, destinationAlbum, MoveType.export)) return;
 
+    final transientMultiPageInfo = <MultiPageInfo>{};
     final selection = <AvesEntry>{};
     await Future.forEach(targetEntries, (targetEntry) async {
       if (targetEntry.isMultiPage) {
         final multiPageInfo = await targetEntry.getMultiPageInfo();
         if (multiPageInfo != null) {
+          transientMultiPageInfo.add(multiPageInfo);
           if (targetEntry.isMotionPhoto) {
             await multiPageInfo.extractMotionPhotoVideo();
           }
@@ -130,6 +133,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         }
       },
     );
+    transientMultiPageInfo.forEach((v) => v.dispose());
   }
 
   Future<void> doQuickMove(

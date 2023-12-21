@@ -50,6 +50,7 @@ class MultiPageController {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
+    _info?.dispose();
     _disposed = true;
     pageNotifier.dispose();
   }
