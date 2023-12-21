@@ -97,11 +97,9 @@ class GridThemeData {
           if (entry.isRaw && showRaw) const RawIcon(),
           if (entry.is360) const PanoramaIcon(),
         ],
-        if (entry.isMultiPage) ...[
-          if (entry.isHdr) const HdrIcon(),
-          if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
-          if (!entry.isHdr && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
-        ],
+        if (entry.isHdr) const HdrIcon(),
+        if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
+        if (entry.isMultiPage && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
         if (entry.isGeotiff) const GeoTiffIcon(),
         if (entry.trashed && showTrash) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
       ];
