@@ -1271,7 +1271,7 @@
   "@entryActionCast": {},
   "vaultLockTypePin": "PIN",
   "@vaultLockTypePin": {},
-  "editorTransformCrop": "剪裁",
+  "editorTransformCrop": "裁剪",
   "@editorTransformCrop": {},
   "filterTaggedLabel": "已标记",
   "@filterTaggedLabel": {},
