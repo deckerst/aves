@@ -219,9 +219,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
       return true;
     }());
     for (final LicenseEntry license in widget.licenseEntries) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       assert(() {
         Timeline.timeSync('_initLicenses()', () {}, flow: Flow.step(debugFlowId));
         return true;
@@ -231,9 +229,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
         Priority.animation,
         debugLabel: 'License',
       );
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       setState(() {
         _licenses.add(const Padding(
           padding: EdgeInsets.all(18.0),
