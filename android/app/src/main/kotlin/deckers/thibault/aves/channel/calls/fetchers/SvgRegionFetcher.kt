@@ -25,6 +25,7 @@ class SvgRegionFetcher internal constructor(
     suspend fun fetch(
         uri: Uri,
         sizeBytes: Long?,
+        scale: Int,
         regionRect: Rect,
         imageWidth: Int,
         imageHeight: Int,
@@ -32,7 +33,7 @@ class SvgRegionFetcher internal constructor(
     ) {
         if (!MemoryUtils.canAllocate(sizeBytes)) {
             // opening an SVG that large would yield an OOM during parsing from `com.caverock.androidsvg.SVGParser`
-            result.error("fetch-read-large", "SVG too large at $sizeBytes bytes, for uri=$uri regionRect=$regionRect", null)
+            result.error("fetch-read-large-file", "SVG too large at $sizeBytes bytes, for uri=$uri regionRect=$regionRect", null)
             return
         }
 
@@ -67,8 +68,8 @@ class SvgRegionFetcher internal constructor(
             val viewBox = svg.documentViewBox
             val svgWidth = viewBox.width()
             val svgHeight = viewBox.height()
-            val xf = imageWidth / ceil(svgWidth)
-            val yf = imageHeight / ceil(svgHeight)
+            val xf = imageWidth / scale / ceil(svgWidth)
+            val yf = imageHeight / scale / ceil(svgHeight)
             // some SVG paths do not respect the rendering viewbox and do not reach its edges
             // so we render to a slightly larger bitmap, using a slightly larger viewbox,
             // and crop that bitmap to the target region size
@@ -87,6 +88,15 @@ class SvgRegionFetcher internal constructor(
 
             val targetBitmapWidth = regionRect.width()
             val targetBitmapHeight = regionRect.height()
+
+            // use `Long` as rect size could be unexpectedly large and go beyond `Int` max
+            val targetBitmapSizeBytes: Long = ARGB_8888_BYTE_SIZE.toLong() * targetBitmapWidth * targetBitmapHeight
+            if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
+                // decoding a region that large would yield an OOM when creating the bitmap
+                result.error("fetch-read-large-region", "SVG region too large for uri=$uri regionRect=$regionRect", null)
+                return
+            }
+
             var bitmap = Bitmap.createBitmap(
                 targetBitmapWidth + bleedX * 2,
                 targetBitmapHeight + bleedY * 2,
@@ -106,4 +116,8 @@ class SvgRegionFetcher internal constructor(
         val uri: Uri,
         val svg: SVG,
     )
+
+    companion object {
+        const val ARGB_8888_BYTE_SIZE = 4
+    }
 }

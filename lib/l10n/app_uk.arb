@@ -249,7 +249,7 @@
   "@subtitlePositionBottom": {},
   "videoPlaybackSkip": "Пропустити",
   "@videoPlaybackSkip": {},
-  "videoPlaybackMuted": "Відтворити з вимкненим звуком",
+  "videoPlaybackMuted": "Відтворити без звуку",
   "@videoPlaybackMuted": {},
   "videoPlaybackWithSound": "Відтворити зі звуком",
   "@videoPlaybackWithSound": {},

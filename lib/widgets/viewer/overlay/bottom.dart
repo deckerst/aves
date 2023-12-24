@@ -186,41 +186,45 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
       builder: (context, child) {
         final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
         final selection = context.read<Selection<AvesEntry>?>();
-        final viewerButtonRow = (selection?.isSelecting ?? false)
-            ? SelectionButton(
-                mainEntry: mainEntry,
-                scale: _buttonScale,
-              )
-            : FocusableActionDetector(
-                focusNode: _buttonRowFocusScopeNode,
-                shortcuts: settings.useTvLayout
-                    ? const {
-                        SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent(),
-                      }
-                    : null,
-                actions: {
-                  TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
-                },
-                child: SafeArea(
-                  top: false,
-                  bottom: false,
-                  minimum: EdgeInsets.only(
-                    left: viewInsetsPadding.left,
-                    right: viewInsetsPadding.right,
+        final viewerButtonRow = Directionality(
+          // always keep action buttons in the lower right corner, even with RTL locales
+          textDirection: TextDirection.ltr,
+          child: (selection?.isSelecting ?? false)
+              ? SelectionButton(
+                  mainEntry: mainEntry,
+                  scale: _buttonScale,
+                )
+              : FocusableActionDetector(
+                  focusNode: _buttonRowFocusScopeNode,
+                  shortcuts: settings.useTvLayout
+                      ? const {
+                          SingleActivator(LogicalKeyboardKey.arrowUp): TvShowLessInfoIntent(),
+                        }
+                      : null,
+                  actions: {
+                    TvShowLessInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowLessInfoNotification().dispatch(context)),
+                  },
+                  child: SafeArea(
+                    top: false,
+                    bottom: false,
+                    minimum: EdgeInsets.only(
+                      left: viewInsetsPadding.left,
+                      right: viewInsetsPadding.right,
+                    ),
+                    child: isWallpaperMode
+                        ? WallpaperButtons(
+                            entry: pageEntry,
+                            scale: _buttonScale,
+                          )
+                        : ViewerButtons(
+                            mainEntry: mainEntry,
+                            pageEntry: pageEntry,
+                            collection: widget.collection,
+                            scale: _buttonScale,
+                          ),
                   ),
-                  child: isWallpaperMode
-                      ? WallpaperButtons(
-                          entry: pageEntry,
-                          scale: _buttonScale,
-                        )
-                      : ViewerButtons(
-                          mainEntry: mainEntry,
-                          pageEntry: pageEntry,
-                          collection: widget.collection,
-                          scale: _buttonScale,
-                        ),
                 ),
-              );
+        );
 
         final showMultiPageOverlay = mainEntry.isMultiPage && multiPageController != null;
         final collapsedPageScroller = mainEntry.isMotionPhoto;
@@ -247,6 +251,8 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
               (showMultiPageOverlay && collapsedPageScroller)
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
+                      // always keep action buttons in the lower right corner, even with RTL locales
+                      textDirection: TextDirection.ltr,
                       children: [
                         SafeArea(
                           top: false,

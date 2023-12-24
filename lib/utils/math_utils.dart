@@ -3,7 +3,9 @@ import 'dart:ui';
 
 int highestPowerOf2(num x) => x < 1 ? 0 : pow(2, (log(x) / ln2).floor()).toInt();
 
-int smallestPowerOf2(num x) => x < 1 ? 1 : pow(2, (log(x) / ln2).ceil()).toInt();
+num smallestPowerOf2(num x, {bool allowNegativePower = false}) {
+  return x < 1 && !allowNegativePower ? 1 : pow(2, (log(x) / ln2).ceil());
+}
 
 double roundToPrecision(final double value, {required final int decimals}) => (value * pow(10, decimals)).round() / pow(10, decimals);
 
