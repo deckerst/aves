@@ -601,7 +601,7 @@
   "@collectionEmptyFavourites": {},
   "collectionEmptyVideos": "Nenhum video",
   "@collectionEmptyVideos": {},
-  "collectionEmptyImages": "Nenhuma image",
+  "collectionEmptyImages": "Nenhuma imagem",
   "@collectionEmptyImages": {},
   "collectionEmptyGrantAccessButtonLabel": "Garantir acesso",
   "@collectionEmptyGrantAccessButtonLabel": {},
@@ -1356,5 +1356,9 @@
   "settingsViewerShowHistogram": "Mostrar histograma",
   "@settingsViewerShowHistogram": {},
   "aboutDataUsageClearCache": "Limpar o cache",
-  "@aboutDataUsageClearCache": {}
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Transmitir",
+  "@entryActionCast": {},
+  "castDialogTitle": "Dispositivos para Transmitir",
+  "@castDialogTitle": {}
 }
