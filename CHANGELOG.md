@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- Viewer: keep controls in the lower right corner even with RTL locales
+
 ### Fixed
 
 - crash when loading SVG defined with large dimensions
