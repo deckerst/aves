@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- crash when loading SVG defined with large dimensions
+
 ## <a id="v1.10.1"></a>[v1.10.1] - 2023-12-21
 
 - Cataloguing: detect/filter `Ultra HDR`

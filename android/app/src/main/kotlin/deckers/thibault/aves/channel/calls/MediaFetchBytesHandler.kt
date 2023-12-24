@@ -89,6 +89,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
             MimeTypes.SVG -> SvgRegionFetcher(context).fetch(
                 uri = uri,
                 sizeBytes = sizeBytes,
+                scale = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
                 imageHeight = imageHeight,
