@@ -40,44 +40,48 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<VideoStatus>(
-      stream: statusStream,
-      builder: (context, snapshot) {
-        // do not use stream snapshot because it is obsolete when switching between videos
-        final status = controller?.status ?? VideoStatus.idle;
+    return Directionality(
+      // always keep action buttons in the lower right corner, even with RTL locales
+      textDirection: TextDirection.ltr,
+      child: StreamBuilder<VideoStatus>(
+        stream: statusStream,
+        builder: (context, snapshot) {
+          // do not use stream snapshot because it is obsolete when switching between videos
+          final status = controller?.status ?? VideoStatus.idle;
 
-        if (status == VideoStatus.error) {
-          const action = EntryAction.openVideo;
-          return Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: OverlayButton(
-              scale: scale,
-              child: IconButton(
-                icon: action.getIcon(),
-                onPressed: entry.trashed ? null : () => widget.onActionSelected(action),
-                tooltip: action.getText(context),
+          if (status == VideoStatus.error) {
+            const action = EntryAction.openVideo;
+            return Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: OverlayButton(
+                scale: scale,
+                child: IconButton(
+                  icon: action.getIcon(),
+                  onPressed: entry.trashed ? null : () => widget.onActionSelected(action),
+                  tooltip: action.getText(context),
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        return Row(
-          children: [
-            Expanded(
-              child: VideoProgressBar(
+          return Row(
+            children: [
+              Expanded(
+                child: VideoProgressBar(
+                  controller: controller,
+                  scale: scale,
+                ),
+              ),
+              VideoControlRow(
+                entry: entry,
                 controller: controller,
                 scale: scale,
+                onActionSelected: widget.onActionSelected,
               ),
-            ),
-            VideoControlRow(
-              entry: entry,
-              controller: controller,
-              scale: scale,
-              onActionSelected: widget.onActionSelected,
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 }
