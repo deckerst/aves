@@ -286,7 +286,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     required double scale,
     required double devicePixelRatio,
   }) =>
-      smallestPowerOf2(scale * devicePixelRatio).toDouble();
+      smallestPowerOf2(scale * devicePixelRatio, allowNegativePower: true).toDouble();
 }
 
 typedef _BackgroundFrameBuilder = Widget Function(Widget child, int? frame, Rect tileRect);
