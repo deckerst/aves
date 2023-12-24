@@ -32,7 +32,15 @@ class SvgRegionFetcher internal constructor(
     ) {
         if (!MemoryUtils.canAllocate(sizeBytes)) {
             // opening an SVG that large would yield an OOM during parsing from `com.caverock.androidsvg.SVGParser`
-            result.error("fetch-read-large", "SVG too large at $sizeBytes bytes, for uri=$uri regionRect=$regionRect", null)
+            result.error("fetch-read-large-file", "SVG too large at $sizeBytes bytes, for uri=$uri regionRect=$regionRect", null)
+            return
+        }
+
+        // use `Long` as rect size could be unexpectedly large and go beyond `Int` max
+        val targetBitmapSizeBytes: Long = ARGB_8888_BYTE_SIZE.toLong() * regionRect.width() * regionRect.height()
+        if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
+            // decoding a region that large would yield an OOM when creating the bitmap
+            result.error("fetch-read-large-region", "SVG region too large for uri=$uri regionRect=$regionRect", null)
             return
         }
 
@@ -106,4 +114,8 @@ class SvgRegionFetcher internal constructor(
         val uri: Uri,
         val svg: SVG,
     )
+
+    companion object {
+        const val ARGB_8888_BYTE_SIZE = 4
+    }
 }
