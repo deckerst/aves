@@ -50,24 +50,27 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace 'deckers.thibault.aves'
     compileSdk 34
-    ndkVersion flutter.ndkVersion
+    // cf https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
+    ndkVersion '25.1.8937393'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
+    lint {
         checkAllWarnings true
         warningsAsErrors true
         disable 'InvalidPackage'
     }
 
     packagingOptions {
-        // The Amazon Developer console mistakenly considers the app to not be 64-bit compatible
-        // if there are some libs in `lib/armeabi-v7a` unmatched by libs in `lib/arm64-v8a`,
-        // so we exclude the extra `neon` libs bundled by `FFmpegKit`.
-        exclude 'lib/armeabi-v7a/*_neon.so'
+        jniLibs {
+            // The Amazon Developer console mistakenly considers the app to not be 64-bit compatible
+            // if there are some libs in `lib/armeabi-v7a` unmatched by libs in `lib/arm64-v8a`,
+            // so we exclude the extra `neon` libs bundled by `FFmpegKit`.
+            excludes += ['lib/armeabi-v7a/*_neon.so']
+        }
     }
 
     sourceSets {
@@ -77,12 +80,9 @@ android {
     defaultConfig {
         applicationId packageName
         // minSdk constraints:
-        // - Flutter & other plugins: 16
+        // - Flutter & other plugins: 19 (cf `flutter.minSdkVersion`)
         // - google_maps_flutter v2.1.1: 20
-        // - to build XML documents from XMP data, `metadata-extractor` and `PixyMeta` rely on `DocumentBuilder`,
-        // which implementation `DocumentBuilderImpl` is provided by the OS and is not customizable on Android,
-        // but the implementation on API <19 is not robust enough and fails to build XMP documents
-        minSdk 19
+        minSdk flutter.minSdkVersion
         targetSdk 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
