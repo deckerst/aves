@@ -388,6 +388,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.setMetadataDateBeforeFileOpKey:
             case SettingKeys.collectionSortReverseKey:
             case SettingKeys.showThumbnailFavouriteKey:
+            case SettingKeys.showThumbnailHdrKey:
             case SettingKeys.showThumbnailMotionPhotoKey:
             case SettingKeys.showThumbnailRatingKey:
             case SettingKeys.showThumbnailRawKey:

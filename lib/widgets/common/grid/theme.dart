@@ -40,6 +40,7 @@ class GridTheme extends StatelessWidget {
           highlightBorderWidth: highlightBorderWidth,
           interactiveDimension: interactiveDimension,
           showFavourite: settings.showThumbnailFavourite,
+          showHdr: settings.showThumbnailHdr,
           locationIcon: showLocation ? settings.thumbnailLocationIcon : ThumbnailOverlayLocationIcon.none,
           tagIcon: settings.thumbnailTagIcon,
           showMotionPhoto: settings.showThumbnailMotionPhoto,
@@ -58,7 +59,7 @@ typedef GridThemeIconBuilder = List<Widget> Function(BuildContext context, AvesE
 
 class GridThemeData {
   final double iconSize, fontSize, highlightBorderWidth, interactiveDimension;
-  final bool showFavourite, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
+  final bool showFavourite, showHdr, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
   final bool showLocated, showUnlocated, showTagged, showUntagged;
   late final GridThemeIconBuilder iconBuilder;
 
@@ -68,6 +69,7 @@ class GridThemeData {
     required this.highlightBorderWidth,
     required this.interactiveDimension,
     required this.showFavourite,
+    required this.showHdr,
     required ThumbnailOverlayLocationIcon locationIcon,
     required ThumbnailOverlayTagIcon tagIcon,
     required this.showMotionPhoto,
@@ -97,7 +99,7 @@ class GridThemeData {
           if (entry.isRaw && showRaw) const RawIcon(),
           if (entry.is360) const PanoramaIcon(),
         ],
-        if (entry.isHdr) const HdrIcon(),
+        if (entry.isHdr && showHdr) const HdrIcon(),
         if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
         if (entry.isMultiPage && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
         if (entry.isGeotiff) const GeoTiffIcon(),

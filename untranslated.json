@@ -1,4 +1,12 @@
 {
+  "ar": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "be": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
   "bn": [
     "itemCount",
     "columnCount",
@@ -460,6 +468,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -996,6 +1005,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -1192,10 +1202,15 @@
     "filePickerUseThisFolder"
   ],
 
+  "cs": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
   "de": [
     "entryActionCast",
     "overlayHistogramNone",
-    "castDialogTitle"
+    "castDialogTitle",
+    "settingsThumbnailShowHdrIcon"
   ],
 
   "el": [
@@ -1212,7 +1227,16 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram"
+  ],
+
+  "es": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "eu": [
+    "settingsThumbnailShowHdrIcon"
   ],
 
   "fa": [
@@ -1473,6 +1497,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -2012,6 +2037,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -2206,6 +2232,10 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "fr": [
+    "settingsThumbnailShowHdrIcon"
   ],
 
   "gl": [
@@ -2562,6 +2592,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -3240,6 +3271,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -3898,6 +3930,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -4094,9 +4127,22 @@
     "filePickerUseThisFolder"
   ],
 
+  "hu": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
   "id": [
     "entryActionCast",
-    "castDialogTitle"
+    "castDialogTitle",
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "is": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "it": [
+    "settingsThumbnailShowHdrIcon"
   ],
 
   "ja": [
@@ -4145,6 +4191,7 @@
     "settingsAskEverytime",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
@@ -4619,6 +4666,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -4815,6 +4863,10 @@
     "filePickerUseThisFolder"
   ],
 
+  "ko": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
   "lt": [
     "columnCount",
     "saveCopyButtonLabel",
@@ -4886,6 +4938,7 @@
     "settingsAskEverytime",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
@@ -5391,6 +5444,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -5605,6 +5659,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsViewerEnableOverlayBlurEffect",
     "settingsHiddenItemsTabFilters",
     "settingsHiddenFiltersBanner",
@@ -5716,6 +5771,7 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
@@ -5786,6 +5842,7 @@
     "settingsAskEverytime",
     "settingsModificationWarningDialogMessage",
     "settingsConfirmationVaultDataLoss",
+    "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
@@ -5836,6 +5893,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "drawerCollectionAnimated",
+    "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram",
     "settingsSlideshowAnimatedZoomEffect",
     "settingsHiddenItemsTabFilters",
@@ -6264,6 +6322,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -6457,6 +6516,14 @@
     "filePickerUseThisFolder"
   ],
 
+  "pl": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "pt": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
   "ro": [
     "saveCopyButtonLabel",
     "applyTooltip",
@@ -6486,12 +6553,21 @@
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
     "settingsAskEverytime",
+    "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
     "settingsVideoResumptionModeTile",
     "settingsVideoResumptionModeDialogTitle",
     "tagEditorDiscardDialogMessage"
+  ],
+
+  "ru": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "sk": [
+    "settingsThumbnailShowHdrIcon"
   ],
 
   "sl": [
@@ -6976,6 +7052,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -7378,6 +7455,7 @@
     "settingsThumbnailSectionTitle",
     "settingsThumbnailOverlayTile",
     "settingsThumbnailOverlayPageTitle",
+    "settingsThumbnailShowHdrIcon",
     "settingsThumbnailShowFavouriteIcon",
     "settingsThumbnailShowTagIcon",
     "settingsThumbnailShowLocationIcon",
@@ -7639,6 +7717,7 @@
     "searchStatesSectionTitle",
     "settingsAskEverytime",
     "settingsConfirmationVaultDataLoss",
+    "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
@@ -7654,6 +7733,18 @@
     "tagPlaceholderState"
   ],
 
+  "uk": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "vi": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
+  "zh": [
+    "settingsThumbnailShowHdrIcon"
+  ],
+
   "zh_Hant": [
     "entryActionCast",
     "overlayHistogramNone",
@@ -7667,6 +7758,7 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram"
   ]
 }

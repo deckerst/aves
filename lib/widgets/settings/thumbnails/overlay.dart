@@ -67,6 +67,16 @@ class ThumbnailOverlayPage extends StatelessWidget {
               ),
             ),
             SettingsSwitchListTile(
+              selector: (context, s) => s.showThumbnailHdr,
+              onChanged: (v) => settings.showThumbnailHdr = v,
+              title: context.l10n.settingsThumbnailShowHdrIcon,
+              trailing: Icon(
+                AIcons.hdr,
+                size: iconSize,
+                color: iconColor,
+              ),
+            ),
+            SettingsSwitchListTile(
               selector: (context, s) => s.showThumbnailRaw,
               onChanged: (v) => settings.showThumbnailRaw = v,
               title: context.l10n.settingsThumbnailShowRawIcon,

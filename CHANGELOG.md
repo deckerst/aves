@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Collection: allow hiding thumbnail overlay HDR icon
+
 ## <a id="v1.10.2"></a>[v1.10.2] - 2023-12-24
 
 ### Changed
@@ -15,6 +19,8 @@ All notable changes to this project will be documented in this file.
 - crash when loading SVG defined with large dimensions
 
 ## <a id="v1.10.1"></a>[v1.10.1] - 2023-12-21
+
+### Added
 
 - Cataloguing: detect/filter `Ultra HDR`
 - Viewer: show JPEG MPF dependent images (except thumbnails and HDR gain maps)
