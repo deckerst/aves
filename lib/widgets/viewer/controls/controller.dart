@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/viewer/controls/cast.dart';
 import 'package:aves/widgets/viewer/controls/events.dart';
@@ -57,6 +59,7 @@ class ViewerController with CastMixin {
       );
     }
     _initialScale = initialScale;
+    entryNotifier.addListener(_onEntryChanged);
     _autopilotNotifier = ValueNotifier(autopilot);
     _autopilotNotifier.addListener(_onAutopilotChanged);
     _onAutopilotChanged();
@@ -66,10 +69,19 @@ class ViewerController with CastMixin {
     if (kFlutterMemoryAllocationsEnabled) {
       MemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
+    entryNotifier.removeListener(_onEntryChanged);
+    windowService.setHdrColorMode(false);
     _autopilotNotifier.dispose();
     _clearAutopilotAnimations();
     _stopPlayTimer();
     _streamController.close();
+  }
+
+  Future<void> _onEntryChanged() async {
+    if (await windowService.supportsHdr()) {
+      final enabled = entryNotifier.value?.isHdr ?? false;
+      await windowService.setHdrColorMode(enabled);
+    }
   }
 
   void _onAutopilotChanged() {
@@ -114,80 +126,4 @@ class ViewerController with CastMixin {
     _autopilotAnimationControllers[vsync] = animationController;
     Future.delayed(ADurations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimationControllers[vsync]?.forward());
   }
-}
-
-class PageTransitionEffects {
-  static TransitionBuilder fade(
-    PageController pageController,
-    int index, {
-    required bool zoomIn,
-  }) =>
-      (context, child) {
-        double opacity = 0;
-        double dx = 0;
-        double scale = 1;
-        if (pageController.hasClients && pageController.position.haveDimensions) {
-          final position = (pageController.page! - index).clamp(-1.0, 1.0);
-          final width = pageController.position.viewportDimension;
-          opacity = (1 - position.abs()).clamp(0, 1);
-          dx = position * width;
-          if (zoomIn) {
-            scale = 1 + position;
-          }
-        }
-        return Opacity(
-          opacity: opacity,
-          child: Transform.translate(
-            offset: Offset(dx, 0),
-            child: Transform.scale(
-              scale: scale,
-              child: child,
-            ),
-          ),
-        );
-      };
-
-  static TransitionBuilder slide(
-    PageController pageController,
-    int index, {
-    required bool parallax,
-  }) =>
-      (context, child) {
-        double dx = 0;
-        if (pageController.hasClients && pageController.position.haveDimensions) {
-          final position = (pageController.page! - index).clamp(-1.0, 1.0);
-          final width = pageController.position.viewportDimension;
-          if (parallax) {
-            dx = position * width / 2;
-          }
-        }
-        return ClipRect(
-          child: Transform.translate(
-            offset: Offset(dx, 0),
-            child: child,
-          ),
-        );
-      };
-
-  static TransitionBuilder none(
-    PageController pageController,
-    int index,
-  ) =>
-      (context, child) {
-        double opacity = 0;
-        double dx = 0;
-        if (pageController.hasClients && pageController.position.haveDimensions) {
-          final position = (pageController.page! - index).clamp(-1.0, 1.0);
-          final width = pageController.position.viewportDimension;
-          opacity = (1 - position.abs()).roundToDouble().clamp(0, 1);
-          dx = position * width;
-        }
-        return Opacity(
-          opacity: opacity,
-          child: Transform.translate(
-            offset: Offset(dx, 0),
-            child: child,
-          ),
-        );
-      };
 }

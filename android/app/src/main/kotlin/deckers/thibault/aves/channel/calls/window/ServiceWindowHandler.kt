@@ -28,4 +28,12 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
     override fun getCutoutInsets(call: MethodCall, result: MethodChannel.Result) {
         result.success(HashMap<String, Any>())
     }
+
+    override fun supportsHdr(call: MethodCall, result: MethodChannel.Result) {
+        result.success(false)
+    }
+
+    override fun setHdrColorMode(call: MethodCall, result: MethodChannel.Result) {
+        result.success(null)
+    }
 }

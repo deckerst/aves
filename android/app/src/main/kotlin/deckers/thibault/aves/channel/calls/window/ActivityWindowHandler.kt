@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls.window
 
 import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.view.WindowManager
 import deckers.thibault.aves.utils.getDisplayCompat
@@ -74,5 +75,22 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
                 "bottom" to (cutout?.safeInsetBottom ?: 0) / density,
             )
         )
+    }
+
+    override fun supportsHdr(call: MethodCall, result: MethodChannel.Result) {
+        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getDisplayCompat()?.isHdr ?: false)
+    }
+
+    override fun setHdrColorMode(call: MethodCall, result: MethodChannel.Result) {
+        val on = call.argument<Boolean>("on")
+        if (on == null) {
+            result.error("setHdrColorMode-args", "missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity.window.colorMode = if (on) ActivityInfo.COLOR_MODE_HDR else ActivityInfo.COLOR_MODE_DEFAULT
+        }
+        result.success(null)
     }
 }

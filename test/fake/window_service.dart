@@ -21,4 +21,10 @@ class FakeWindowService extends Fake implements WindowService {
 
   @override
   Future<EdgeInsets> getCutoutInsets() => SynchronousFuture(EdgeInsets.zero);
+
+  @override
+  Future<bool> supportsHdr() => SynchronousFuture(false);
+
+  @override
+  Future<void> setHdrColorMode(bool on) => SynchronousFuture(null);
 }

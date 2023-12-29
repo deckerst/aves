@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/widgets/viewer/controls/controller.dart';
+import 'package:aves/widgets/viewer/controls/transitions.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';

@@ -96,10 +96,10 @@ class GridThemeData {
         else if (entry.isAnimated)
           const AnimatedImageIcon()
         else ...[
+          if (entry.isHdr && showHdr) const HdrIcon(),
           if (entry.isRaw && showRaw) const RawIcon(),
           if (entry.is360) const PanoramaIcon(),
         ],
-        if (entry.isHdr && showHdr) const HdrIcon(),
         if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
         if (entry.isMultiPage && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
         if (entry.isGeotiff) const GeoTiffIcon(),
