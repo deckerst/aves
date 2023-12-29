@@ -74,9 +74,9 @@ class Dependencies {
       sourceUrl: 'https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color',
     ),
     Dependency(
-      name: 'FFmpegKit',
+      name: 'FFmpegKit (Aves fork)',
       license: lgpl3,
-      sourceUrl: 'https://github.com/arthenica/ffmpeg-kit',
+      sourceUrl: 'https://github.com/deckerst/ffmpeg-kit',
     ),
     Dependency(
       name: 'Floating',
@@ -207,9 +207,9 @@ class Dependencies {
 
   static const List<Dependency> flutterPackages = [
     Dependency(
-      name: 'Charts (fzyzcjy fork)',
+      name: 'Charts (Aves fork)',
       license: apache2,
-      sourceUrl: 'https://github.com/fzyzcjy/charts',
+      sourceUrl: 'https://github.com/deckerst/flutter_google_charts',
     ),
     Dependency(
       name: 'Custom rounded rectangle border',
@@ -271,7 +271,7 @@ class Dependencies {
     Dependency(
       name: 'Panorama (Aves fork)',
       license: apache2,
-      sourceUrl: 'https://github.com/zesage/panorama',
+      sourceUrl: 'https://github.com/deckerst/aves_panorama',
     ),
     Dependency(
       name: 'Pattern Lock',

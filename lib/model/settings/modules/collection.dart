@@ -30,6 +30,10 @@ mixin CollectionSettings on SettingsAccess {
 
   set showThumbnailFavourite(bool newValue) => set(SettingKeys.showThumbnailFavouriteKey, newValue);
 
+  bool get showThumbnailHdr => getBool(SettingKeys.showThumbnailHdrKey) ?? SettingsDefaults.showThumbnailHdr;
+
+  set showThumbnailHdr(bool newValue) => set(SettingKeys.showThumbnailHdrKey, newValue);
+
   ThumbnailOverlayLocationIcon get thumbnailLocationIcon => getEnumOrDefault(SettingKeys.thumbnailLocationIconKey, SettingsDefaults.thumbnailLocationIcon, ThumbnailOverlayLocationIcon.values);
 
   set thumbnailLocationIcon(ThumbnailOverlayLocationIcon newValue) => set(SettingKeys.thumbnailLocationIconKey, newValue.toString());

@@ -60,6 +60,7 @@ class SettingKeys {
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
+  static const showThumbnailHdrKey = 'show_thumbnail_hdr';
   static const thumbnailLocationIconKey = 'thumbnail_location_icon';
   static const thumbnailTagIconKey = 'thumbnail_tag_icon';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
