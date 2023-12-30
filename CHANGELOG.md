@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Collection: allow hiding thumbnail overlay HDR icon
 
+### Changed
+
+- Info: strip `unlocated` filter from context collection when editing location via map
+
 ## <a id="v1.10.2"></a>[v1.10.2] - 2023-12-24
 
 ### Changed
