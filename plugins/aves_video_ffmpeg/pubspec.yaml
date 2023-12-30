@@ -14,12 +14,7 @@ dependencies:
     path: ../aves_video
 #  `video` version is necessary, as some videos make the app crash
 #  when using only `min` or `https` (the default)
-#  ffmpeg_kit_flutter_video: 6.0.2-LTS
-#  ffmpeg_kit_flutter:
-#    git:
-#      url: https://github.com/arthenica/ffmpeg-kit.git
-#      ref: development-flutter
-#      path: flutter/flutter
+#  ffmpeg_kit_flutter_video: 6.0.3-LTS
   ffmpeg_kit_flutter:
     git:
       url: https://github.com/deckerst/ffmpeg-kit.git
