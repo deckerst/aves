@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -18,6 +19,7 @@ import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
@@ -172,8 +174,10 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     final mapCollection = baseCollection != null
         ? CollectionLens(
             source: baseCollection.source,
-            filters: baseCollection.filters,
-            fixedSelection: baseCollection.sortedEntries.where((entry) => entry.hasGps).toList(),
+            filters: {
+              ...baseCollection.filters.whereNot((filter) => filter == LocationFilter.unlocated),
+              LocationFilter.located,
+            },
           )
         : null;
     final latLng = await Navigator.maybeOf(context)?.push(

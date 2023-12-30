@@ -279,7 +279,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
       title: context.l10n.searchMetadataSectionTitle,
       filters: [
         MissingFilter.date,
-        LocationFilter(LocationLevel.place, ''),
+        LocationFilter.unlocated,
         MissingFilter.fineAddress,
         TagFilter(''),
         RatingFilter(0),

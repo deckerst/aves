@@ -15,6 +15,11 @@ class LocationFilter extends CoveredCollectionFilter {
   late final String? _code;
   late final EntryFilter _test;
 
+  static final unlocated = LocationFilter(LocationLevel.place, '');
+  static final located = unlocated.reverse();
+
+  bool get _isUnlocated => _location.isEmpty;
+
   @override
   List<Object?> get props => [level, _location, _code, reversed];
 
@@ -23,7 +28,7 @@ class LocationFilter extends CoveredCollectionFilter {
     _location = split.isNotEmpty ? split[0] : location;
     _code = split.length > 1 ? split[1] : null;
 
-    if (_location.isEmpty) {
+    if (_isUnlocated) {
       _test = (entry) => !entry.hasGps;
     } else {
       switch (level) {
@@ -81,11 +86,11 @@ class LocationFilter extends CoveredCollectionFilter {
   String get universalLabel => _location;
 
   @override
-  String getLabel(BuildContext context) => _location.isEmpty ? context.l10n.filterNoLocationLabel : _location;
+  String getLabel(BuildContext context) => _isUnlocated ? context.l10n.filterNoLocationLabel : _location;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
-    if (_location.isEmpty) {
+    if (_isUnlocated) {
       return Icon(AIcons.locationUnlocated, size: size);
     }
     switch (level) {
