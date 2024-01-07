@@ -8,6 +8,7 @@ enum EntrySetAction {
   searchCollection,
   toggleTitleSearch,
   addShortcut,
+  setHome,
   emptyBin,
   // browsing or selecting
   map,
@@ -47,6 +48,7 @@ class EntrySetActions {
     EntrySetAction.searchCollection,
     EntrySetAction.toggleTitleSearch,
     EntrySetAction.addShortcut,
+    EntrySetAction.setHome,
     null,
     EntrySetAction.map,
     EntrySetAction.slideshow,
@@ -60,11 +62,9 @@ class EntrySetActions {
   static const collectionEditorBrowsing = [
     EntrySetAction.searchCollection,
     EntrySetAction.toggleTitleSearch,
-    EntrySetAction.addShortcut,
     EntrySetAction.map,
     EntrySetAction.slideshow,
     EntrySetAction.stats,
-    EntrySetAction.rescan,
   ];
 
   // `null` items are converted to dividers
@@ -98,7 +98,6 @@ class EntrySetActions {
     EntrySetAction.map,
     EntrySetAction.slideshow,
     EntrySetAction.stats,
-    EntrySetAction.rescan,
     // editing actions are in their subsection
   ];
 

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: allow hiding thumbnail overlay HDR icon
+- Collection: allow setting any filtered collection as home page
 
 ### Changed
 

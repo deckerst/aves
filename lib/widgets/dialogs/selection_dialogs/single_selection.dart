@@ -3,6 +3,8 @@ import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/radio_list_tile.dart';
 import 'package:flutter/material.dart';
 
+// do not use as `T` a record containing a collection
+// because radio value comparison will fail without deep equality
 class AvesSingleSelectionDialog<T> extends StatefulWidget {
   static const routeName = '/dialog/selection';
 

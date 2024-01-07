@@ -17,6 +17,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
         // different data depending on toggle state
         context.l10n.collectionActionShowTitleSearch,
       EntrySetAction.addShortcut => context.l10n.collectionActionAddShortcut,
+      EntrySetAction.setHome => context.l10n.collectionActionSetHome,
       EntrySetAction.emptyBin => context.l10n.collectionActionEmptyBin,
       // browsing or selecting
       EntrySetAction.map => context.l10n.menuActionMap,
@@ -61,6 +62,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
         // different data depending on toggle state
         AIcons.filter,
       EntrySetAction.addShortcut => AIcons.addShortcut,
+      EntrySetAction.setHome => AIcons.home,
       EntrySetAction.emptyBin => AIcons.emptyBin,
       // browsing or selecting
       EntrySetAction.map => AIcons.map,

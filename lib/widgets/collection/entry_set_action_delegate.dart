@@ -75,7 +75,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.toggleTitleSearch:
         return !useTvLayout && !isSelecting;
       case EntrySetAction.addShortcut:
-        return isMain && !isSelecting && device.canPinShortcut && !isTrash;
+        return isMain && !isSelecting && !isTrash && device.canPinShortcut;
+      case EntrySetAction.setHome:
+        return isMain && !isSelecting && !isTrash && !useTvLayout;
       case EntrySetAction.emptyBin:
         return canWrite && isMain && isTrash;
       // browsing or selecting
@@ -131,6 +133,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.searchCollection:
       case EntrySetAction.toggleTitleSearch:
       case EntrySetAction.addShortcut:
+      case EntrySetAction.setHome:
         return true;
       case EntrySetAction.emptyBin:
         return !isSelecting && hasItems;
@@ -177,6 +180,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         context.read<Query>().toggle();
       case EntrySetAction.addShortcut:
         _addShortcut(context);
+      case EntrySetAction.setHome:
+        _setHome(context);
       // browsing or selecting
       case EntrySetAction.map:
         _goToMap(context);
@@ -726,5 +731,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }
+  }
+
+  void _setHome(BuildContext context) async {
+    settings.homeCustomCollection = context.read<CollectionLens>().filters;
+    settings.homePage = HomePageSetting.collection;
+    showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
   }
 }

@@ -1,9 +1,13 @@
 {
   "ar": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "be": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -333,6 +337,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -447,6 +452,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -870,6 +876,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -984,6 +991,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -1203,6 +1211,8 @@
   ],
 
   "cs": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -1210,6 +1220,8 @@
     "entryActionCast",
     "overlayHistogramNone",
     "castDialogTitle",
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -1227,15 +1239,21 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram"
   ],
 
   "es": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "eu": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -1370,6 +1388,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -1476,6 +1495,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -1902,6 +1922,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -2016,6 +2037,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -2235,6 +2257,8 @@
   ],
 
   "fr": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -2457,6 +2481,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -2571,6 +2596,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -3136,6 +3162,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -3250,6 +3277,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -3795,6 +3823,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -3909,6 +3938,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -4128,20 +4158,28 @@
   ],
 
   "hu": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "id": [
     "entryActionCast",
     "castDialogTitle",
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "is": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "it": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -4185,11 +4223,13 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
     "stateEmpty",
     "placeEmpty",
     "searchStatesSectionTitle",
     "settingsAskEverytime",
     "settingsModificationWarningDialogMessage",
+    "setHomeCustomCollection",
     "settingsConfirmationVaultDataLoss",
     "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
@@ -4531,6 +4571,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -4645,6 +4686,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -4864,6 +4906,8 @@
   ],
 
   "ko": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -4929,6 +4973,7 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -4937,6 +4982,7 @@
     "searchStatesSectionTitle",
     "settingsAskEverytime",
     "settingsModificationWarningDialogMessage",
+    "setHomeCustomCollection",
     "settingsConfirmationVaultDataLoss",
     "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
@@ -5309,6 +5355,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -5423,6 +5470,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -5652,8 +5700,10 @@
     "menuActionConfigureView",
     "castDialogTitle",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
     "newFilterBanner",
     "settingsDefault",
+    "setHomeCustomCollection",
     "settingsNavigationDrawerTile",
     "settingsNavigationDrawerEditorPageTitle",
     "settingsThumbnailSectionTitle",
@@ -5771,6 +5821,8 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
@@ -5833,6 +5885,7 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -5841,6 +5894,7 @@
     "searchStatesSectionTitle",
     "settingsAskEverytime",
     "settingsModificationWarningDialogMessage",
+    "setHomeCustomCollection",
     "settingsConfirmationVaultDataLoss",
     "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
@@ -5892,7 +5946,9 @@
     "aboutLicensesAndroidLibrariesSectionTitle",
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
+    "collectionActionSetHome",
     "drawerCollectionAnimated",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram",
     "settingsSlideshowAnimatedZoomEffect",
@@ -6210,6 +6266,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -6301,6 +6358,7 @@
     "appExportCovers",
     "appExportFavourites",
     "settingsNavigationSectionTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -6517,10 +6575,14 @@
   ],
 
   "pl": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "pt": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -6552,7 +6614,9 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
     "settingsAskEverytime",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram",
     "settingsVideoPlaybackTile",
@@ -6563,10 +6627,14 @@
   ],
 
   "ru": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "sk": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -6917,6 +6985,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -7031,6 +7100,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -7320,6 +7390,7 @@
     "collectionActionShowTitleSearch",
     "collectionActionHideTitleSearch",
     "collectionActionAddShortcut",
+    "collectionActionSetHome",
     "collectionActionEmptyBin",
     "collectionActionCopy",
     "collectionActionMove",
@@ -7434,6 +7505,7 @@
     "settingsNavigationSectionTitle",
     "settingsHomeTile",
     "settingsHomeDialogTitle",
+    "setHomeCustomCollection",
     "settingsShowBottomNavigationBar",
     "settingsKeepScreenOnTile",
     "settingsKeepScreenOnDialogTitle",
@@ -7709,6 +7781,7 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
     "drawerPlacePage",
     "statePageTitle",
     "stateEmpty",
@@ -7716,6 +7789,7 @@
     "placeEmpty",
     "searchStatesSectionTitle",
     "settingsAskEverytime",
+    "setHomeCustomCollection",
     "settingsConfirmationVaultDataLoss",
     "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
@@ -7734,14 +7808,20 @@
   ],
 
   "uk": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "vi": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
   "zh": [
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
   ],
 
@@ -7758,6 +7838,8 @@
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
     "aboutDataUsageClearCache",
+    "collectionActionSetHome",
+    "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
     "settingsViewerShowHistogram"
   ]
