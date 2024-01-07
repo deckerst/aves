@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
@@ -11,6 +12,7 @@ import 'package:aves/widgets/settings/navigation/confirmation_dialogs.dart';
 import 'package:aves/widgets/settings/navigation/drawer.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,16 +40,47 @@ class NavigationSection extends SettingsSection {
       ];
 }
 
+class _HomeOption {
+  final HomePageSetting page;
+  final Set<CollectionFilter> customCollection;
+
+  const _HomeOption(
+    this.page, {
+    this.customCollection = const {},
+  });
+
+  String getName(BuildContext context) {
+    if (page == HomePageSetting.collection && customCollection.isNotEmpty) {
+      return context.l10n.setHomeCustomCollection;
+    }
+    return page.getName(context);
+  }
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is _HomeOption && runtimeType == other.runtimeType && page == other.page && const DeepCollectionEquality().equals(customCollection, other.customCollection);
+
+  @override
+  int get hashCode => page.hashCode ^ customCollection.hashCode;
+}
+
 class SettingsTileNavigationHomePage extends SettingsTile {
   @override
   String title(BuildContext context) => context.l10n.settingsHomeTile;
 
   @override
-  Widget build(BuildContext context) => SettingsSelectionListTile<HomePageSetting>(
-        values: HomePageSetting.values,
+  Widget build(BuildContext context) => SettingsSelectionListTile<_HomeOption>(
+        values: [
+          const _HomeOption(HomePageSetting.collection),
+          const _HomeOption(HomePageSetting.albums),
+          const _HomeOption(HomePageSetting.tags),
+          if (settings.homeCustomCollection.isNotEmpty) _HomeOption(HomePageSetting.collection, customCollection: settings.homeCustomCollection),
+        ],
         getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.homePage,
-        onSelection: (v) => settings.homePage = v,
+        selector: (context, s) => _HomeOption(s.homePage, customCollection: s.homeCustomCollection),
+        onSelection: (v) {
+          settings.homePage = v.page;
+          settings.homeCustomCollection = v.customCollection;
+        },
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsHomeDialogTitle,
       );

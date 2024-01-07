@@ -618,6 +618,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case EntrySetAction.searchCollection:
       case EntrySetAction.toggleTitleSearch:
       case EntrySetAction.addShortcut:
+      case EntrySetAction.setHome:
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.slideshow:
