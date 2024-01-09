@@ -44,10 +44,9 @@ class ViewerDetailOverlay extends StatefulWidget {
 class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
   List<AvesEntry> get entries => widget.entries;
 
-  AvesEntry? get entry {
-    final index = widget.index;
-    return index < entries.length ? entries[index] : null;
-  }
+  AvesEntry? get entry => entryForIndex(widget.index);
+
+  AvesEntry? entryForIndex(int index) => index < entries.length ? entries[index] : null;
 
   late Future<List<dynamic>?> _detailLoader;
   AvesEntry? _lastEntry;
@@ -62,7 +61,8 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
   @override
   void didUpdateWidget(covariant ViewerDetailOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (entry != _lastEntry) {
+    final newEntry = entryForIndex(widget.index);
+    if (newEntry != entryForIndex(oldWidget.index) && newEntry != _lastEntry) {
       _initDetailLoader();
     }
   }
