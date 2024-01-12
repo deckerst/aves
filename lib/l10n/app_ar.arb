@@ -1518,5 +1518,7 @@
   "filterNoDateLabel": "غير مؤرخ",
   "@filterNoDateLabel": {},
   "exportEntryDialogWriteMetadata": "كتابة البيانات الوصفية",
-  "@exportEntryDialogWriteMetadata": {}
+  "@exportEntryDialogWriteMetadata": {},
+  "settingsThumbnailShowHdrIcon": "إظهار أيقونة HDR",
+  "@settingsThumbnailShowHdrIcon": {}
 }

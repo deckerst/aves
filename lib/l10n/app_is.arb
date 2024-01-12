@@ -1518,5 +1518,7 @@
   "settingsStorageAccessBanner": "Sumar möppur krefjast þess að gefin sé sérstök heimild til að breyta skrám í þeim. Þú getur yfirfarið hér þær möppur sem þú hefur gefið aðgangaheimildir fyrir.",
   "@settingsStorageAccessBanner": {},
   "settingsCollectionBurstPatternsTile": "Mynstur runu",
-  "@settingsCollectionBurstPatternsTile": {}
+  "@settingsCollectionBurstPatternsTile": {},
+  "settingsThumbnailShowHdrIcon": "Birta HDR-táknmynd",
+  "@settingsThumbnailShowHdrIcon": {}
 }
