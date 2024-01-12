@@ -1360,5 +1360,11 @@
   "entryActionCast": "전송",
   "@entryActionCast": {},
   "castDialogTitle": "전송 대상",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "settingsThumbnailShowHdrIcon": "HDR 아이콘 표시",
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "홈으로 설정",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "지정 미디어",
+  "@setHomeCustomCollection": {}
 }

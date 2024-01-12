@@ -1360,5 +1360,11 @@
   "entryActionCast": "Echar",
   "@entryActionCast": {},
   "castDialogTitle": "Dispositivos Cast",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "settingsThumbnailShowHdrIcon": "Mostrar el icono del HDR",
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "Fijar como inicio",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Colección personalizada",
+  "@setHomeCustomCollection": {}
 }

@@ -1518,5 +1518,11 @@
   "entryActionCast": "Cast",
   "@entryActionCast": {},
   "castDialogTitle": "Urządzenia Cast",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "settingsThumbnailShowHdrIcon": "Pokaż ikonę HDR",
+  "@settingsThumbnailShowHdrIcon": {},
+  "setHomeCustomCollection": "Własna kolekcja",
+  "@setHomeCustomCollection": {},
+  "collectionActionSetHome": "Ustaw jako stronę główną",
+  "@collectionActionSetHome": {}
 }

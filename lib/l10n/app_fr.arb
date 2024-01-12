@@ -1360,5 +1360,11 @@
   "entryActionCast": "Caster",
   "@entryActionCast": {},
   "castDialogTitle": "Appareils",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "collectionActionSetHome": "Définir comme page d’accueil",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Collection personnalisée",
+  "@setHomeCustomCollection": {},
+  "settingsThumbnailShowHdrIcon": "Afficher l’icône HDR",
+  "@settingsThumbnailShowHdrIcon": {}
 }

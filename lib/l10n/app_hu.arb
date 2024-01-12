@@ -1518,5 +1518,11 @@
   "entryActionCast": "Kivetítés",
   "@entryActionCast": {},
   "castDialogTitle": "Kivetítő eszközök",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "settingsThumbnailShowHdrIcon": "HDR ikon megjelenítése",
+  "@settingsThumbnailShowHdrIcon": {},
+  "setHomeCustomCollection": "Egyéni gyűjtemény",
+  "@setHomeCustomCollection": {},
+  "collectionActionSetHome": "Kezdőlapnak beállít",
+  "@collectionActionSetHome": {}
 }
