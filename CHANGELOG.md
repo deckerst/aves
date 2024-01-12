@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 - Info: strip `unlocated` filter from context collection when editing location via map
 - Slideshow: keep playing when losing focus but app is still visible (e.g. split screen)
+- upgraded Flutter to stable v3.16.7
 
 ## <a id="v1.10.2"></a>[v1.10.2] - 2023-12-24
 
