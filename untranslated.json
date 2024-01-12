@@ -1,8 +1,7 @@
 {
   "ar": [
     "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
+    "setHomeCustomCollection"
   ],
 
   "be": [
@@ -1245,16 +1244,9 @@
     "settingsViewerShowHistogram"
   ],
 
-  "es": [
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
-  ],
-
   "eu": [
     "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
+    "setHomeCustomCollection"
   ],
 
   "fa": [
@@ -2254,12 +2246,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
   ],
 
   "gl": [
@@ -4157,12 +4143,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "hu": [
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
-  ],
-
   "id": [
     "entryActionCast",
     "castDialogTitle",
@@ -4173,8 +4153,7 @@
 
   "is": [
     "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
+    "setHomeCustomCollection"
   ],
 
   "it": [
@@ -4903,12 +4882,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "ko": [
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
   ],
 
   "lt": [
@@ -6574,12 +6547,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "pl": [
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
-  ],
-
   "pt": [
     "collectionActionSetHome",
     "setHomeCustomCollection",
@@ -6628,8 +6595,7 @@
 
   "ru": [
     "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
+    "setHomeCustomCollection"
   ],
 
   "sk": [
@@ -7724,95 +7690,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "tr": [
-    "saveCopyButtonLabel",
-    "applyTooltip",
-    "chipActionGoToPlacePage",
-    "chipActionLock",
-    "chipActionShowCountryStates",
-    "chipActionCreateVault",
-    "chipActionConfigureVault",
-    "entryActionCast",
-    "viewerActionLock",
-    "viewerActionUnlock",
-    "editorActionTransform",
-    "editorTransformCrop",
-    "editorTransformRotate",
-    "cropAspectRatioFree",
-    "cropAspectRatioOriginal",
-    "cropAspectRatioSquare",
-    "albumTierVaults",
-    "lengthUnitPixel",
-    "lengthUnitPercent",
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
-    "overlayHistogramNone",
-    "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "vaultLockTypePattern",
-    "vaultLockTypePin",
-    "vaultLockTypePassword",
-    "settingsVideoEnablePip",
-    "videoResumptionModeNever",
-    "videoResumptionModeAlways",
-    "widgetTapUpdateWidget",
-    "newVaultWarningDialogMessage",
-    "newVaultDialogTitle",
-    "configureVaultDialogTitle",
-    "vaultDialogLockModeWhenScreenOff",
-    "vaultDialogLockTypeLabel",
-    "patternDialogEnter",
-    "patternDialogConfirm",
-    "pinDialogEnter",
-    "pinDialogConfirm",
-    "passwordDialogEnter",
-    "passwordDialogConfirm",
-    "authenticateToConfigureVault",
-    "authenticateToUnlockVault",
-    "vaultBinUsageDialogMessage",
-    "exportEntryDialogQuality",
-    "exportEntryDialogWriteMetadata",
-    "castDialogTitle",
-    "aboutDataUsageSectionTitle",
-    "aboutDataUsageData",
-    "aboutDataUsageCache",
-    "aboutDataUsageDatabase",
-    "aboutDataUsageMisc",
-    "aboutDataUsageInternal",
-    "aboutDataUsageExternal",
-    "aboutDataUsageClearCache",
-    "collectionActionSetHome",
-    "drawerPlacePage",
-    "statePageTitle",
-    "stateEmpty",
-    "placePageTitle",
-    "placeEmpty",
-    "searchStatesSectionTitle",
-    "settingsAskEverytime",
-    "setHomeCustomCollection",
-    "settingsConfirmationVaultDataLoss",
-    "settingsThumbnailShowHdrIcon",
-    "settingsCollectionBurstPatternsTile",
-    "settingsCollectionBurstPatternsNone",
-    "settingsViewerShowHistogram",
-    "settingsVideoPlaybackTile",
-    "settingsVideoPlaybackPageTitle",
-    "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle",
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle",
-    "settingsDisablingBinWarningDialogMessage",
-    "statsTopStatesSectionTitle",
-    "tagEditorDiscardDialogMessage",
-    "tagPlaceholderState"
-  ],
-
-  "uk": [
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
-  ],
-
   "vi": [
     "collectionActionSetHome",
     "setHomeCustomCollection",
@@ -7821,8 +7698,7 @@
 
   "zh": [
     "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
+    "setHomeCustomCollection"
   ],
 
   "zh_Hant": [
