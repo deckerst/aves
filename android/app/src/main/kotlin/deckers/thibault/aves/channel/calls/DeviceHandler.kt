@@ -12,6 +12,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.MimeTypes
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -55,6 +56,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canUseCrypto" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
+                "regionDecodableMimeTypes" to MimeTypes.supportedByBitmapRegionDecoder,
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )
