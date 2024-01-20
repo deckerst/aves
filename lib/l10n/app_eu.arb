@@ -1520,5 +1520,9 @@
   "castDialogTitle": "Igortzeko gailuak",
   "@castDialogTitle": {},
   "settingsThumbnailShowHdrIcon": "Erakutsi HDR ikonoa",
-  "@settingsThumbnailShowHdrIcon": {}
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "Ezarri hasiera gisa",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Bilduma pertsonalizatua",
+  "@setHomeCustomCollection": {}
 }

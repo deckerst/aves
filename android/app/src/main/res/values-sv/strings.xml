@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">Foto Ram</string>
+    <string name="wallpaper">Bakgrund</string>
+    <string name="safe_mode_shortcut_short_label">Felsäkert läge</string>
+    <string name="videos_shortcut_short_label">Videor</string>
+    <string name="analysis_channel_name">Media scanning</string>
+    <string name="analysis_notification_default_title">Scannar media</string>
+    <string name="analysis_notification_action_stop">Stop</string>
+    <string name="search_shortcut_short_label">Sök</string>
+</resources>

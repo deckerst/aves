@@ -145,7 +145,7 @@
   "@filterNoLocationLabel": {},
   "videoActionPlay": "Phát",
   "@videoActionPlay": {},
-  "entryActionSetAs": "Thiết lập như",
+  "entryActionSetAs": "Đặt làm",
   "@entryActionSetAs": {},
   "filterLocatedLabel": "Đã định vị",
   "@filterLocatedLabel": {},
@@ -1518,5 +1518,11 @@
   "entryActionCast": "Truyền",
   "@entryActionCast": {},
   "castDialogTitle": "Thiết bị truyền",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "setHomeCustomCollection": "Bộ sưu tập tùy chỉnh",
+  "@setHomeCustomCollection": {},
+  "settingsThumbnailShowHdrIcon": "Hiển thị biểu tượng HDR",
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "Đặt làm nhà",
+  "@collectionActionSetHome": {}
 }

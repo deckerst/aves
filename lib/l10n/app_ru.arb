@@ -1362,5 +1362,9 @@
   "castDialogTitle": "Устройства трансляции",
   "@castDialogTitle": {},
   "settingsThumbnailShowHdrIcon": "Показать значок HDR",
-  "@settingsThumbnailShowHdrIcon": {}
+  "@settingsThumbnailShowHdrIcon": {},
+  "setHomeCustomCollection": "Собственная коллекция",
+  "@setHomeCustomCollection": {},
+  "collectionActionSetHome": "Установить как главную",
+  "@collectionActionSetHome": {}
 }
