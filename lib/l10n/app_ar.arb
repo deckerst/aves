@@ -1520,5 +1520,9 @@
   "exportEntryDialogWriteMetadata": "كتابة البيانات الوصفية",
   "@exportEntryDialogWriteMetadata": {},
   "settingsThumbnailShowHdrIcon": "إظهار أيقونة HDR",
-  "@settingsThumbnailShowHdrIcon": {}
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "تعيين كخلفية",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "مجموعة مخصصة",
+  "@setHomeCustomCollection": {}
 }

@@ -1520,5 +1520,9 @@
   "settingsCollectionBurstPatternsTile": "Mynstur runu",
   "@settingsCollectionBurstPatternsTile": {},
   "settingsThumbnailShowHdrIcon": "Birta HDR-táknmynd",
-  "@settingsThumbnailShowHdrIcon": {}
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "Setja sem upphaf",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Sérsniðið safn",
+  "@setHomeCustomCollection": {}
 }
