@@ -163,13 +163,4 @@ object MimeTypes {
     }
 
     val TIFF_EXTENSION_PATTERN = Regex(".*\\.tiff?", RegexOption.IGNORE_CASE)
-
-    val supportedByBitmapRegionDecoder: List<String> = listOf(
-        // Android's `BitmapRegionDecoder` documentation states that "only the JPEG and PNG formats are supported"
-        // but in practice (tested on API 25, 27, 29), it successfully decodes the formats listed below,
-        // and it actually fails to decode GIF, DNG and animated WEBP. Other formats were not tested.
-        HEIC, HEIF, JPEG, PNG, WEBP, ARW, CR2, NEF, NRW, ORF, PEF, RAF, RW2, SRW,
-        // custom support
-        TIFF,
-    )
 }

@@ -56,7 +56,6 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canUseCrypto" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
-                "regionDecodableMimeTypes" to MimeTypes.supportedByBitmapRegionDecoder,
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )
