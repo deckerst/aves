@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Viewer: optional histogram (for real this time)
 - Collection: allow hiding thumbnail overlay HDR icon
 - Collection: allow setting any filtered collection as home page
 
