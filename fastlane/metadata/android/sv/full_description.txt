@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> kan hantera alla typer av bilder och videor, inklusive vanliga JPEG- och MP4-filer, men även mer exotiska filer som <b>flersidiga TIFF-filer, SVG-filer, gamla AVI-filer och mycket mer</b>! Den skannar din mediasamling för att identifiera <b>rörelsefoton</b>, <b>panoramor</b> (även kallade fotosfärer), <b>360° videor</b>, samnt <b>GeoTIFF</b> filer.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>Navigering och sökhantering</b> är än viktigt del av <i>Aves</i>. Målet är att användarna på ett smidigt sätt ska kunna gå från album till foton till taggar till kartor, osv.
 
-<i>Aves</i> integrates with Android (from KitKat to Android 14, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> integrerar med Android (från KitKat till Android 14, inklusive Android TV) med funktioner som <b>widgetar</b>, <b>appgenvägar</b>, <b>skärmsläckare</b> och <b>global sökhantering.</b> Den fungerar också som en <b>mediavisare och mediaväljare</b>.
