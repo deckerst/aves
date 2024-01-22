@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:aves/model/app/support.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/trash.dart';
@@ -33,7 +32,7 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // size
 
-  bool get useTiles => canDecodeRegion && (width > 4096 || height > 4096);
+  bool get useTiles => (width > 4096 || height > 4096) && !isAnimated;
 
   bool get isSized => width > 0 && height > 0;
 
@@ -127,8 +126,6 @@ extension ExtraAvesEntryProps on AvesEntry {
   // app support
 
   bool get canDecode => AppSupport.canDecode(mimeType);
-
-  bool get canDecodeRegion => device.canDecodeRegion(mimeType) && !isAnimated;
 
   bool get canEditExif => AppSupport.canEditExif(mimeType);
 

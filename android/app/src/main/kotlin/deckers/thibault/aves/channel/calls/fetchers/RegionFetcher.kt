@@ -18,6 +18,9 @@ import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
 import kotlin.math.roundToInt
 
+// As of Android 14 (API 34), `BitmapRegionDecoder` documentation states
+// that "only the JPEG, PNG, WebP and HEIF formats are supported"
+// but in practice it successfully decodes some others.
 class RegionFetcher internal constructor(
     private val context: Context,
 ) {

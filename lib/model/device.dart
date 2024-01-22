@@ -12,7 +12,6 @@ class Device {
   late final bool _canAuthenticateUser, _canGrantDirectoryAccess, _canPinShortcut;
   late final bool _canRenderFlagEmojis, _canRenderSubdivisionFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper, _canUseCrypto;
   late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
-  late final List<String> _regionDecodableMimeTypes;
 
   String get packageName => _packageName;
 
@@ -50,8 +49,6 @@ class Device {
 
   bool get supportPictureInPicture => _supportPictureInPicture;
 
-  bool canDecodeRegion(String mimeType) => _regionDecodableMimeTypes.contains(mimeType);
-
   Device._private();
 
   Future<void> init() async {
@@ -85,7 +82,6 @@ class Device {
     _canUseCrypto = capabilities['canUseCrypto'] ?? false;
     _hasGeocoder = capabilities['hasGeocoder'] ?? false;
     _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] ?? false;
-    _regionDecodableMimeTypes = (capabilities['regionDecodableMimeTypes'] ?? []).cast<String>();
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;
     _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] ?? false;
   }
