@@ -35,3 +35,7 @@ abstract class ReportService {
         .join('\n'));
   }
 }
+
+class UnreportedStateError extends StateError {
+  UnreportedStateError(super.message);
+}
