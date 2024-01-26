@@ -90,6 +90,7 @@ class Contributors {
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
     // Contributor('slasb37', 'p84haghi@gmail.com'), // Persian
     // Contributor('mimvahedi', 'vahedi0vahedi@gmail.com'), // Persian
+    // Contributor('Prasanta-Hembram', 'Prasantahembram720@gmail.com'), // Santali
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('Shift18', 'bribable.lawyer@posteo.net'), // Swedish
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
