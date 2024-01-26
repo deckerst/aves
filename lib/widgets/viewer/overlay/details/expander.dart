@@ -22,7 +22,7 @@ class OverlayRowExpander extends StatelessWidget {
           textAlign: parent.textAlign,
           softWrap: expanded,
           overflow: parent.overflow,
-          maxLines: expanded ? null : 42,
+          maxLines: expanded ? 16 : 1,
           textWidthBasis: parent.textWidthBasis,
           child: child!,
         );
