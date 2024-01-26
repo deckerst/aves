@@ -15,6 +15,7 @@ import 'package:aves/widgets/viewer/overlay/details/position_title.dart';
 import 'package:aves/widgets/viewer/overlay/details/rating_tags.dart';
 import 'package:aves/widgets/viewer/overlay/details/shooting.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,9 +49,9 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
 
   AvesEntry? entryForIndex(int index) => index < entries.length ? entries[index] : null;
 
-  late Future<List<dynamic>?> _detailLoader;
+  late Future<OverlayMetadata> _detailLoader;
   AvesEntry? _lastEntry;
-  List<dynamic>? _lastDetails;
+  OverlayMetadata _lastDetails = const OverlayMetadata();
 
   @override
   void initState() {
@@ -70,12 +71,17 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
   void _initDetailLoader() {
     final requestEntry = entry;
     if (requestEntry == null) {
-      _detailLoader = SynchronousFuture(null);
+      _detailLoader = SynchronousFuture(const OverlayMetadata());
     } else {
-      _detailLoader = Future.wait([
-        settings.showOverlayShootingDetails ? metadataFetchService.getOverlayMetadata(requestEntry) : Future.value(null),
-        settings.showOverlayDescription ? metadataFetchService.getDescription(requestEntry) : Future.value(null),
-      ]);
+      _detailLoader = metadataFetchService.getFields(requestEntry, {
+        if (settings.showOverlayShootingDetails) ...{
+          MetadataSyntheticField.aperture,
+          MetadataSyntheticField.exposureTime,
+          MetadataSyntheticField.focalLength,
+          MetadataSyntheticField.iso,
+        },
+        if (settings.showOverlayDescription) MetadataSyntheticField.description,
+      });
     }
   }
 
@@ -84,24 +90,20 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
     return SafeArea(
       top: false,
       bottom: false,
-      child: FutureBuilder<List<dynamic>?>(
+      child: FutureBuilder<OverlayMetadata>(
         future: _detailLoader,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-            _lastDetails = snapshot.data;
+            _lastDetails = snapshot.data!;
             _lastEntry = entry;
           }
           if (_lastEntry == null) return const SizedBox();
           final mainEntry = _lastEntry!;
 
-          final shootingDetails = _lastDetails![0];
-          final description = _lastDetails![1];
-
           final multiPageController = widget.multiPageController;
           Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
                 pageEntry: pageEntry ?? mainEntry,
-                shootingDetails: shootingDetails,
-                description: description,
+                details: _lastDetails,
                 position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
                 availableWidth: widget.availableSize.width,
                 multiPageController: multiPageController,
@@ -122,8 +124,7 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
 
 class ViewerDetailOverlayContent extends StatelessWidget {
   final AvesEntry pageEntry;
-  final OverlayMetadata? shootingDetails;
-  final String? description;
+  final OverlayMetadata details;
   final String? position;
   final double availableWidth;
   final MultiPageController? multiPageController;
@@ -140,8 +141,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   const ViewerDetailOverlayContent({
     super.key,
     required this.pageEntry,
-    required this.shootingDetails,
-    required this.description,
+    required this.details,
     required this.position,
     required this.availableWidth,
     required this.multiPageController,
@@ -244,27 +244,27 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
   Widget _buildDescriptionFullRow(BuildContext context) => _buildFullRowSwitcher(
         context: context,
-        visible: description != null,
+        visible: details.description != null,
         builder: (context) => OverlayRowExpander(
           expandedNotifier: expandedNotifier,
-          child: OverlayDescriptionRow(description: description!),
+          child: OverlayDescriptionRow(description: details.description!),
         ),
       );
 
   Widget _buildShootingFullRow(BuildContext context, double subRowWidth) => _buildFullRowSwitcher(
         context: context,
-        visible: shootingDetails != null && shootingDetails!.isNotEmpty,
+        visible: details.hasShootingDetails,
         builder: (context) => SizedBox(
           width: subRowWidth,
-          child: OverlayShootingRow(details: shootingDetails!),
+          child: OverlayShootingRow(details: details),
         ),
       );
 
   Widget _buildShootingSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
         context: context,
         subRowWidth: subRowWidth,
-        visible: shootingDetails != null && shootingDetails!.isNotEmpty,
-        builder: (context) => OverlayShootingRow(details: shootingDetails!),
+        visible: details.hasShootingDetails,
+        builder: (context) => OverlayShootingRow(details: details),
       );
 
   Widget _buildLocationFullRow(BuildContext context) => _buildFullRowSwitcher(

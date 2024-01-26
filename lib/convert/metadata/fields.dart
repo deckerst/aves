@@ -1,5 +1,9 @@
 import 'package:aves_model/aves_model.dart';
 
+extension ExtraMetadataSyntheticFieldConvert on MetadataSyntheticField {
+  String? get toPlatform => name;
+}
+
 extension ExtraMetadataFieldConvert on MetadataField {
   MetadataType get type {
     switch (this) {
