@@ -22,7 +22,7 @@ abstract class MetadataFetchService {
 
   Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false});
 
-  Future<OverlayMetadata?> getOverlayMetadata(AvesEntry entry);
+  Future<OverlayMetadata> getFields(AvesEntry entry, Set<MetadataSyntheticField> fields);
 
   Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry);
 
@@ -39,8 +39,6 @@ abstract class MetadataFetchService {
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 
   Future<DateTime?> getDate(AvesEntry entry, MetadataField field);
-
-  Future<String?> getDescription(AvesEntry entry);
 }
 
 class PlatformMetadataFetchService implements MetadataFetchService {
@@ -112,23 +110,29 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   }
 
   @override
-  Future<OverlayMetadata?> getOverlayMetadata(AvesEntry entry) async {
-    if (entry.isSvg) return null;
-
-    try {
-      // returns map with values for: 'aperture' (double), 'exposureTime' (description), 'focalLength' (double), 'iso' (int)
-      final result = await _platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-      }) as Map;
-      return OverlayMetadata.fromMap(result);
-    } on PlatformException catch (e, stack) {
-      if (entry.isValid) {
-        await reportService.recordError(e, stack);
+  Future<OverlayMetadata> getFields(AvesEntry entry, Set<MetadataSyntheticField> fields) async {
+    if (fields.isNotEmpty && !entry.isSvg) {
+      try {
+        // returns fields on demand, with various value types:
+        // 'aperture' (double),
+        // 'description' (string)
+        // 'exposureTime' (string),
+        // 'focalLength' (double),
+        // 'iso' (int),
+        final result = await _platform.invokeMethod('getFields', <String, dynamic>{
+          'mimeType': entry.mimeType,
+          'uri': entry.uri,
+          'sizeBytes': entry.sizeBytes,
+          'fields': fields.map((v) => v.toPlatform).toList(),
+        }) as Map;
+        return OverlayMetadata.fromMap(result);
+      } on PlatformException catch (e, stack) {
+        if (entry.isValid) {
+          await reportService.recordError(e, stack);
+        }
       }
     }
-    return null;
+    return const OverlayMetadata();
   }
 
   @override
@@ -273,22 +277,6 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       if (result is int) {
         return dateTimeFromMillis(result, isUtc: false);
       }
-    } on PlatformException catch (e, stack) {
-      if (entry.isValid) {
-        await reportService.recordError(e, stack);
-      }
-    }
-    return null;
-  }
-
-  @override
-  Future<String?> getDescription(AvesEntry entry) async {
-    try {
-      return await _platform.invokeMethod('getDescription', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-      });
     } on PlatformException catch (e, stack) {
       if (entry.isValid) {
         await reportService.recordError(e, stack);
