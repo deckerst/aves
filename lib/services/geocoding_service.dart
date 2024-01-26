@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:aves/services/common/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -22,14 +21,8 @@ class GeocodingService {
         'maxResults': 2,
       });
       return (result as List).cast<Map>().map(Address.fromMap).toList();
-    } on PlatformException catch (e, stack) {
-      if (!{
-        'getAddress-empty',
-        'getAddress-network',
-        'getAddress-unavailable',
-      }.contains(e.code)) {
-        await reportService.recordError(e, stack);
-      }
+    } on PlatformException catch (_) {
+      // do not report
     }
     return [];
   }
