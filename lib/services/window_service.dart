@@ -140,12 +140,13 @@ class PlatformWindowService implements WindowService {
 
   @override
   Future<void> setHdrColorMode(bool on) async {
-    try {
-      await _platform.invokeMethod('setHdrColorMode', <String, dynamic>{
-        'on': on,
-      });
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
+    // TODO TLAD [hdr] enable when ready
+    // try {
+    //   await _platform.invokeMethod('setHdrColorMode', <String, dynamic>{
+    //     'on': on,
+    //   });
+    // } on PlatformException catch (e, stack) {
+    //   await reportService.recordError(e, stack);
+    // }
   }
 }
