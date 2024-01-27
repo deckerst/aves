@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 
 - crash when loading some large DNG in viewer
 - searching from drawer on mobile
+- resizing TIFF during conversion
 
 ## <a id="v1.10.2"></a>[v1.10.2] - 2023-12-24
 

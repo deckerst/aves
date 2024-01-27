@@ -48,7 +48,8 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
         val page = model.page ?: 0
 
         var sampleSize = 1
-        if (width > 0 && height > 0) {
+        val customSize = width > 0 && height > 0
+        if (customSize) {
             // determine sample size
             val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
             if (fd == null) {
@@ -63,7 +64,7 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             val imageWidth = options.outWidth
             val imageHeight = options.outHeight
             if (imageHeight > height || imageWidth > width) {
-                while (imageHeight / (sampleSize * 2) > height && imageWidth / (sampleSize * 2) > width) {
+                while (imageHeight / (sampleSize * 2) >= height && imageWidth / (sampleSize * 2) >= width) {
                     sampleSize *= 2
                 }
             }
@@ -84,6 +85,8 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
             if (bitmap == null) {
                 callback.onLoadFailed(Exception("Decoding full TIFF yielded null bitmap"))
+            } else if (customSize) {
+                callback.onDataReady(Bitmap.createScaledBitmap(bitmap, width, height, true))
             } else {
                 callback.onDataReady(bitmap)
             }
