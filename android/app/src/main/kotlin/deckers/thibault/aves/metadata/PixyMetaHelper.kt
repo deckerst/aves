@@ -1,5 +1,7 @@
 package deckers.thibault.aves.metadata
 
+import android.content.Context
+import android.net.Uri
 import deckers.thibault.aves.metadata.Metadata.TYPE_COMMENT
 import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
 import deckers.thibault.aves.metadata.Metadata.TYPE_ICC_PROFILE
@@ -10,6 +12,8 @@ import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_DUCKY
 import deckers.thibault.aves.metadata.Metadata.TYPE_PHOTOSHOP_IRB
 import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.StorageUtils
 import pixy.meta.meta.Metadata
 import pixy.meta.meta.MetadataEntry
 import pixy.meta.meta.MetadataType
@@ -19,6 +23,7 @@ import pixy.meta.meta.iptc.IPTCRecord
 import pixy.meta.meta.jpeg.JPGMeta
 import pixy.meta.meta.xmp.XMP
 import pixy.meta.string.XMLUtils
+import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -104,6 +109,48 @@ object PixyMetaHelper {
     fun XMP.xmpDocString(): String = XMLUtils.serializeToString(xmpDocument)
 
     fun XMP.extendedXmpDocString(): String = XMLUtils.serializeToString(extendedXmpDocument)
+
+    fun copyIptcXmp(
+        context: Context,
+        sourceMimeType: String,
+        sourceUri: Uri,
+        targetMimeType: String,
+        targetUri: Uri,
+        editableFile: File,
+    ) {
+        var pixyIptc: IPTC? = null
+        var pixyXmp: XMP? = null
+        if (MimeTypes.canReadWithPixyMeta(sourceMimeType)) {
+            StorageUtils.openInputStream(context, sourceUri)?.use { input ->
+                val metadata = Metadata.readMetadata(input)
+                if (MimeTypes.canEditIptc(targetMimeType)) {
+                    pixyIptc = metadata[MetadataType.IPTC] as IPTC?
+                }
+                if (MimeTypes.canEditXmp(targetMimeType)) {
+                    pixyXmp = metadata[MetadataType.XMP] as XMP?
+                }
+            }
+        }
+        if (pixyIptc != null || pixyXmp != null) {
+            editableFile.outputStream().use { output ->
+                if (pixyIptc != null) {
+                    // reopen input to read from start
+                    StorageUtils.openInputStream(context, targetUri)?.use { input ->
+                        val iptcs = pixyIptc!!.dataSets.flatMap { it.value }
+                        Metadata.insertIPTC(input, output, iptcs)
+                    }
+                }
+                if (pixyXmp != null) {
+                    // reopen input to read from start
+                    StorageUtils.openInputStream(context, targetUri)?.use { input ->
+                        val xmpString = pixyXmp!!.xmpDocString()
+                        val extendedXmp = if (pixyXmp!!.hasExtendedXmp()) pixyXmp!!.extendedXmpDocString() else null
+                        setXmp(input, output, xmpString, if (targetMimeType == MimeTypes.JPEG) extendedXmp else null)
+                    }
+                }
+            }
+        }
+    }
 
     fun removeMetadata(input: InputStream, output: OutputStream, metadataTypes: Set<String>) {
         val types = metadataTypes.map(::toMetadataType).toTypedArray()
