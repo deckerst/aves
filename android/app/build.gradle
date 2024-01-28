@@ -236,7 +236,7 @@ dependencies {
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:90c06eebf4'
     implementation 'com.github.deckerst.mp4parser:isoparser:4cc0c5d06c'
     implementation 'com.github.deckerst.mp4parser:muxer:4cc0c5d06c'
-    implementation 'com.github.deckerst:pixymeta-android:706bd73d6e'
+    implementation 'com.github.deckerst:pixymeta-android:9ec7097f17'
 
     // huawei flavor only
     huaweiImplementation "com.huawei.agconnect:agconnect-core:$huawei_agconnect_version"
