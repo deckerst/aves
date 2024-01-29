@@ -50,7 +50,7 @@ class PageNavTile extends StatelessWidget {
             : null,
         onTap: () {
           Navigator.maybeOf(context)?.pop();
-          final route = routeBuilder(context, routeName);
+          final route = routeBuilder(context, routeName, topLevel);
           if (topLevel) {
             Navigator.maybeOf(context)?.pushAndRemoveUntil(
               route,
@@ -65,7 +65,7 @@ class PageNavTile extends StatelessWidget {
     );
   }
 
-  static Route routeBuilder(BuildContext context, String routeName) {
+  static Route routeBuilder(BuildContext context, String routeName, bool topLevel) {
     switch (routeName) {
       case SearchPage.routeName:
         final currentCollection = context.read<CollectionLens?>();
@@ -74,7 +74,7 @@ class PageNavTile extends StatelessWidget {
             searchFieldLabel: context.l10n.searchCollectionFieldHint,
             searchFieldStyle: Themes.searchFieldStyle(context),
             source: context.read<CollectionSource>(),
-            parentCollection: currentCollection?.copyWith(),
+            parentCollection: topLevel ? currentCollection?.copyWith() : currentCollection,
           ),
         );
       default:

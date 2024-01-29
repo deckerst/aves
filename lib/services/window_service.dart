@@ -17,10 +17,16 @@ abstract class WindowService {
   Future<bool> isCutoutAware();
 
   Future<EdgeInsets> getCutoutInsets();
+
+  Future<bool> supportsHdr();
+
+  Future<void> setHdrColorMode(bool on);
 }
 
 class PlatformWindowService implements WindowService {
   static const _platform = MethodChannel('deckers.thibault/aves/window');
+
+  bool? _isCutoutAware, _supportsHdr;
 
   @override
   Future<bool> isActivity() async {
@@ -90,8 +96,6 @@ class PlatformWindowService implements WindowService {
     }
   }
 
-  bool? _isCutoutAware;
-
   @override
   Future<bool> isCutoutAware() async {
     if (_isCutoutAware != null) return SynchronousFuture(_isCutoutAware!);
@@ -120,5 +124,29 @@ class PlatformWindowService implements WindowService {
       await reportService.recordError(e, stack);
     }
     return EdgeInsets.zero;
+  }
+
+  @override
+  Future<bool> supportsHdr() async {
+    if (_supportsHdr != null) return SynchronousFuture(_supportsHdr!);
+    try {
+      final result = await _platform.invokeMethod('supportsHdr');
+      _supportsHdr = result as bool?;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return _supportsHdr ?? false;
+  }
+
+  @override
+  Future<void> setHdrColorMode(bool on) async {
+    // TODO TLAD [hdr] enable when ready
+    // try {
+    //   await _platform.invokeMethod('setHdrColorMode', <String, dynamic>{
+    //     'on': on,
+    //   });
+    // } on PlatformException catch (e, stack) {
+    //   await reportService.recordError(e, stack);
+    // }
   }
 }

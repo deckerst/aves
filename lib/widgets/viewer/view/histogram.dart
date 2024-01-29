@@ -42,16 +42,13 @@ mixin HistogramMixin {
     final blueLevels = List.filled(bins, 0);
 
     final view = Uint8List.view(data.buffer);
-    final pixelCount = view.length / 4;
-    for (var i = 0; i < pixelCount; i += 4) {
+    final viewSize = view.length;
+    for (var i = 0; i < viewSize; i += 4) {
       final a = view[i + 3];
       if (a > 0) {
-        final r = view[i + 0];
-        final g = view[i + 1];
-        final b = view[i + 2];
-        redLevels[r]++;
-        greenLevels[g]++;
-        blueLevels[b]++;
+        redLevels[view[i + 0]]++;
+        greenLevels[view[i + 1]]++;
+        blueLevels[view[i + 2]]++;
       }
     }
 
@@ -75,14 +72,17 @@ mixin HistogramMixin {
     const normMax = bins - 1;
 
     final view = Uint8List.view(data.buffer);
-    final pixelCount = view.length / 4;
-    for (var i = 0; i < pixelCount; i += 4) {
+    final viewSize = view.length;
+    for (var i = 0; i < viewSize; i += 4) {
       final a = view[i + 3];
       if (a > 0) {
         final r = view[i + 0];
         final g = view[i + 1];
         final b = view[i + 2];
-        lumLevels[(Color.fromARGB(a, r, g, b).computeLuminance() * normMax).round()]++;
+        // `Color.computeLuminance()` is more accurate, but slower
+        // and photo software typically use the simpler formula
+        final luminance = (r * 0.3 + g * 0.59 + b * 0.11) / 255;
+        lumLevels[(luminance * normMax).round()]++;
       }
     }
 

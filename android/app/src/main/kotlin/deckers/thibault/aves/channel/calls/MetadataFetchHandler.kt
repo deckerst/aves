@@ -109,7 +109,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getAllMetadata" -> ioScope.launch { safe(call, result, ::getAllMetadata) }
             "getCatalogMetadata" -> ioScope.launch { safe(call, result, ::getCatalogMetadata) }
-            "getOverlayMetadata" -> ioScope.launch { safe(call, result, ::getOverlayMetadata) }
+            "getFields" -> ioScope.launch { safe(call, result, ::getFields) }
             "getGeoTiffInfo" -> ioScope.launch { safe(call, result, ::getGeoTiffInfo) }
             "getMultiPageInfo" -> ioScope.launch { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> ioScope.launch { safe(call, result, ::getPanoramaInfo) }
@@ -118,7 +118,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentProp) }
             "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentPropValue) }
             "getDate" -> ioScope.launch { safe(call, result, ::getDate) }
-            "getDescription" -> ioScope.launch { safe(call, result, ::getDescription) }
             else -> result.notImplemented()
         }
     }
@@ -807,17 +806,18 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getOverlayMetadata(call: MethodCall, result: MethodChannel.Result) {
+    private fun getFields(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        val fields = call.argument<List<String>>("fields")
+        if (mimeType == null || uri == null || fields == null) {
             result.error("getOverlayMetadata-args", "missing arguments", null)
             return
         }
 
         val metadataMap = HashMap<String, Any>()
-        if (isVideo(mimeType)) {
+        if (fields.isEmpty() || isVideo(mimeType)) {
             result.success(metadataMap)
             return
         }
@@ -842,10 +842,21 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     val metadata = Helper.safeRead(input)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
-                        dir.getSafeRational(ExifDirectoryBase.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
-                        dir.getSafeRational(ExifDirectoryBase.TAG_EXPOSURE_TIME, saveExposureTime)
-                        dir.getSafeRational(ExifDirectoryBase.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
-                        dir.getSafeInt(ExifDirectoryBase.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = it }
+                        if (fields.contains(KEY_APERTURE)) {
+                            dir.getSafeRational(ExifDirectoryBase.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
+                        }
+                        if (fields.contains(KEY_DESCRIPTION)) {
+                            getDescriptionByMetadataExtractor(metadata)?.let { metadataMap[KEY_DESCRIPTION] = it }
+                        }
+                        if (fields.contains(KEY_EXPOSURE_TIME)) {
+                            dir.getSafeRational(ExifDirectoryBase.TAG_EXPOSURE_TIME, saveExposureTime)
+                        }
+                        if (fields.contains(KEY_FOCAL_LENGTH)) {
+                            dir.getSafeRational(ExifDirectoryBase.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
+                        }
+                        if (fields.contains(KEY_ISO)) {
+                            dir.getSafeInt(ExifDirectoryBase.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = it }
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -862,10 +873,18 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val exif = ExifInterface(input)
-                    exif.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
-                    exif.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
-                    exif.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
-                    exif.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[KEY_ISO] = it }
+                    if (fields.contains(KEY_APERTURE)) {
+                        exif.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
+                    }
+                    if (fields.contains(KEY_EXPOSURE_TIME)) {
+                        exif.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
+                    }
+                    if (fields.contains(KEY_FOCAL_LENGTH)) {
+                        exif.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
+                    }
+                    if (fields.contains(KEY_ISO)) {
+                        exif.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[KEY_ISO] = it }
+                    }
                 }
             } catch (e: Exception) {
                 // ExifInterface initialization can fail with a RuntimeException
@@ -875,6 +894,47 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         result.success(metadataMap)
+    }
+
+    // return description from these fields (by precedence):
+    // - XMP / dc:description
+    // - IPTC / caption-abstract
+    // - Exif / UserComment
+    // - Exif / ImageDescription
+    private fun getDescriptionByMetadataExtractor(metadata: com.drew.metadata.Metadata): String? {
+        var description: String? = null
+        for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
+            val xmpMeta = dir.xmpMeta
+            try {
+                if (xmpMeta.doesPropExist(XMP.DC_DESCRIPTION_PROP_NAME)) {
+                    xmpMeta.getSafeLocalizedText(XMP.DC_DESCRIPTION_PROP_NAME, acceptBlank = false) { description = it }
+                }
+            } catch (e: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory", e)
+            }
+        }
+        if (description == null) {
+            for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
+                dir.getSafeString(IptcDirectory.TAG_CAPTION, acceptBlank = false) { description = it }
+            }
+        }
+        if (description == null) {
+            for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
+                // user comment field specifies encoding, unlike other string fields
+                if (dir.containsTag(ExifSubIFDDirectory.TAG_USER_COMMENT)) {
+                    val string = dir.getDescription(ExifSubIFDDirectory.TAG_USER_COMMENT)
+                    if (string.isNotBlank()) {
+                        description = string
+                    }
+                }
+            }
+        }
+        if (description == null) {
+            for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
+                dir.getSafeString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION, acceptBlank = false) { description = it }
+            }
+        }
+        return description
     }
 
     private fun getGeoTiffInfo(call: MethodCall, result: MethodChannel.Result) {
@@ -1191,70 +1251,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.success(dateMillis)
     }
 
-    // return description from these fields (by precedence):
-    // - XMP / dc:description
-    // - IPTC / caption-abstract
-    // - Exif / UserComment
-    // - Exif / ImageDescription
-    private fun getDescription(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
-            result.error("getDescription-args", "missing arguments", null)
-            return
-        }
-
-        var description: String? = null
-        if (canReadWithMetadataExtractor(mimeType)) {
-            try {
-                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input)
-
-                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
-                        val xmpMeta = dir.xmpMeta
-                        try {
-                            if (xmpMeta.doesPropExist(XMP.DC_DESCRIPTION_PROP_NAME)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DC_DESCRIPTION_PROP_NAME, acceptBlank = false) { description = it }
-                            }
-                        } catch (e: XMPException) {
-                            Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
-                        }
-                    }
-                    if (description == null) {
-                        for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
-                            dir.getSafeString(IptcDirectory.TAG_CAPTION, acceptBlank = false) { description = it }
-                        }
-                    }
-                    if (description == null) {
-                        for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                            // user comment field specifies encoding, unlike other string fields
-                            if (dir.containsTag(ExifSubIFDDirectory.TAG_USER_COMMENT)) {
-                                val string = dir.getDescription(ExifSubIFDDirectory.TAG_USER_COMMENT)
-                                if (string.isNotBlank()) {
-                                    description = string
-                                }
-                            }
-                        }
-                    }
-                    if (description == null) {
-                        for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                            dir.getSafeString(ExifIFD0Directory.TAG_IMAGE_DESCRIPTION, acceptBlank = false) { description = it }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
-            }
-        }
-
-        result.success(description)
-    }
-
     companion object {
         private val LOG_TAG = LogUtils.createTag<MetadataFetchHandler>()
         const val CHANNEL = "deckers.thibault/aves/metadata_fetch"
@@ -1319,6 +1315,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         // overlay metadata
         private const val KEY_APERTURE = "aperture"
+        private const val KEY_DESCRIPTION = "description"
         private const val KEY_EXPOSURE_TIME = "exposureTime"
         private const val KEY_FOCAL_LENGTH = "focalLength"
         private const val KEY_ISO = "iso"

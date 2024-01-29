@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
+import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -46,14 +47,14 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
         taskKey: key,
       );
       if (bytes.isEmpty) {
-        throw StateError('$uri ($mimeType) loading failed');
+        throw UnreportedStateError('$uri ($mimeType) loading failed');
       }
       final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
       return await decode(buffer);
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw StateError('$mimeType decoding failed (page $pageId)');
+      throw UnreportedStateError('$mimeType decoding failed (page $pageId)');
     }
   }
 

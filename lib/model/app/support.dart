@@ -20,28 +20,6 @@ class AppSupport {
 
   static bool canDecode(String mimeType) => !undecodableImages.contains(mimeType);
 
-  // Android's `BitmapRegionDecoder` documentation states that "only the JPEG and PNG formats are supported"
-  // but in practice (tested on API 25, 27, 29), it successfully decodes the formats listed below,
-  // and it actually fails to decode GIF, DNG and animated WEBP. Other formats were not tested.
-  static bool _supportedByBitmapRegionDecoder(String mimeType) => [
-        MimeTypes.heic,
-        MimeTypes.heif,
-        MimeTypes.jpeg,
-        MimeTypes.png,
-        MimeTypes.webp,
-        MimeTypes.arw,
-        MimeTypes.cr2,
-        MimeTypes.nef,
-        MimeTypes.nrw,
-        MimeTypes.orf,
-        MimeTypes.pef,
-        MimeTypes.raf,
-        MimeTypes.rw2,
-        MimeTypes.srw,
-      ].contains(mimeType);
-
-  static bool canDecodeRegion(String mimeType) => _supportedByBitmapRegionDecoder(mimeType) || mimeType == MimeTypes.tiff;
-
   // `exifinterface` v1.3.3 declared support for DNG, but it strips non-standard Exif tags when saving attributes,
   // and DNG requires DNG-specific tags saved along standard Exif. So it was actually breaking DNG files.
   static bool canEditExif(String mimeType) {

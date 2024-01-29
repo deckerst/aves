@@ -34,7 +34,7 @@ class Contributors {
     Contributor('Tijolinho', 'pedrohenrique29.alfenas@gmail.com'),
     Contributor('Piotr K', '1337.kelt@gmail.com'),
     Contributor('rehork', 'cooky@e.email'),
-    Contributor('Eric', 'hamburger2048@users.noreply.hosted.weblate.org'),
+    Contributor('Eric', 'zxmegaxqug@hldrive.com'), // @hamburger2048 / 大王叫我来巡山
     Contributor('Aitor Salaberria', 'trslbrr@gmail.com'),
     Contributor('Felipe Nogueira', 'contato.fnog@gmail.com'),
     Contributor('kaajjo', 'claymanoff@gmail.com'),
@@ -67,11 +67,15 @@ class Contributors {
     Contributor('Reza Almanda', 'rezaalmanda27@gmail.com'),
     Contributor('Sveinn í Felli', 'sv1@fellsnet.is'),
     Contributor('Henning Bunk', 'henningtbunk@gmail.com'),
-    Contributor('SAMIRAH AIL', 'samiratalzahrani@gmail.com'),
+    Contributor('Samirah Ail', 'samiratalzahrani@gmail.com'),
     Contributor('Salih Ail', 'rrrfff444@gmail.com'),
     Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'),
     Contributor('Mohamed Zeroug', 'mzeroug19@gmail.com'),
     Contributor('ssantos', 'ssantos@web.de'),
+    Contributor('Сергій', 'sergiy.goncharuk.1@gmail.com'),
+    Contributor('v1s7', 'v1s7@users.noreply.hosted.weblate.org'),
+    Contributor('fuzfyy', 'egeozce35@gmail.com'),
+    Contributor('minh', 'teaminh@skiff.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
@@ -86,7 +90,9 @@ class Contributors {
     // Contributor('امیر جهانگرد', 'ijahangard.a@gmail.com'), // Persian
     // Contributor('slasb37', 'p84haghi@gmail.com'), // Persian
     // Contributor('mimvahedi', 'vahedi0vahedi@gmail.com'), // Persian
+    // Contributor('Prasanta-Hembram', 'Prasantahembram720@gmail.com'), // Santali
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
+    // Contributor('Shift18', 'bribable.lawyer@posteo.net'), // Swedish
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
   };
 }

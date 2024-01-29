@@ -51,10 +51,10 @@ packages:
     description:
       path: "flutter/flutter"
       ref: background-lts
-      resolved-ref: "8eb0534b9f74d7242adf68e22a3578d235911466"
+      resolved-ref: "3fc7325f89225110b725cfbbb5e2560542a62e2e"
       url: "https://github.com/deckerst/ffmpeg-kit.git"
     source: git
-    version: "6.0.2"
+    version: "6.0.3"
   ffmpeg_kit_flutter_platform_interface:
     dependency: transitive
     description:
@@ -104,10 +104,10 @@ packages:
     dependency: transitive
     description:
       name: plugin_platform_interface
-      sha256: f4f88d4a900933e7267e2b353594774fc0d07fb072b47eedcd5b54e1ea3269f8
+      sha256: "4820fbfdb9478b1ebae27888254d445073732dae3d6ea81f0b7e06d5dedc3f02"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.7"
+    version: "2.1.8"
   sky_engine:
     dependency: transitive
     description: flutter

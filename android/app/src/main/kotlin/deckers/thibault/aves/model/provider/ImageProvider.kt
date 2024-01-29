@@ -53,15 +53,12 @@ import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditIptc
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
-import deckers.thibault.aves.utils.MimeTypes.canReadWithPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import pixy.meta.meta.Metadata
-import pixy.meta.meta.MetadataType
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -301,11 +298,18 @@ abstract class ImageProvider {
                     sourceDocFile.copyTo(output)
                 }
             } else {
-                var targetWidthPx: Int = if (sourceEntry.isRotated) height else width
-                var targetHeightPx: Int = if (sourceEntry.isRotated) width else height
-                if (lengthUnit == LENGTH_UNIT_PERCENT) {
-                    targetWidthPx = sourceEntry.width * targetWidthPx / 100
-                    targetHeightPx = sourceEntry.height * targetHeightPx / 100
+                val targetWidthPx: Int
+                val targetHeightPx: Int
+                when (lengthUnit) {
+                    LENGTH_UNIT_PERCENT -> {
+                        targetWidthPx = sourceEntry.displayWidth * width / 100
+                        targetHeightPx = sourceEntry.displayHeight * height / 100
+                    }
+
+                    else -> {
+                        targetWidthPx = width
+                        targetHeightPx = height
+                    }
                 }
 
                 val model: Any = if (pageId != null && MultiPageImage.isSupported(sourceMimeType)) {
@@ -405,39 +409,7 @@ abstract class ImageProvider {
         }
 
         // copy IPTC / XMP via PixyMeta
-
-        var pixyIptc: pixy.meta.meta.iptc.IPTC? = null
-        var pixyXmp: pixy.meta.meta.xmp.XMP? = null
-        if (canReadWithPixyMeta(sourceMimeType)) {
-            StorageUtils.openInputStream(context, sourceUri)?.use { input ->
-                val metadata = Metadata.readMetadata(input)
-                if (canEditIptc(targetMimeType)) {
-                    pixyIptc = metadata[MetadataType.IPTC] as pixy.meta.meta.iptc.IPTC?
-                }
-                if (canEditXmp(targetMimeType)) {
-                    pixyXmp = metadata[MetadataType.XMP] as pixy.meta.meta.xmp.XMP?
-                }
-            }
-        }
-        if (pixyIptc != null || pixyXmp != null) {
-            editableFile.outputStream().use { output ->
-                if (pixyIptc != null) {
-                    // reopen input to read from start
-                    StorageUtils.openInputStream(context, targetUri)?.use { input ->
-                        val iptcs = pixyIptc!!.dataSets.flatMap { it.value }
-                        Metadata.insertIPTC(input, output, iptcs)
-                    }
-                }
-                if (pixyXmp != null) {
-                    // reopen input to read from start
-                    StorageUtils.openInputStream(context, targetUri)?.use { input ->
-                        val xmpString = pixyXmp!!.xmpDocString()
-                        val extendedXmp = if (pixyXmp!!.hasExtendedXmp()) pixyXmp!!.extendedXmpDocString() else null
-                        PixyMetaHelper.setXmp(input, output, xmpString, if (targetMimeType == MimeTypes.JPEG) extendedXmp else null)
-                    }
-                }
-            }
-        }
+        PixyMetaHelper.copyIptcXmp(context, sourceMimeType, sourceUri, targetMimeType, targetUri, editableFile)
 
         // copy Exif via ExifInterface
 

@@ -12,6 +12,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.MimeTypes
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler

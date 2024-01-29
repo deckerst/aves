@@ -1,3 +1,11 @@
+enum MetadataSyntheticField {
+  aperture,
+  description,
+  exposureTime,
+  focalLength,
+  iso,
+}
+
 enum MetadataField {
   exifDate,
   exifDateOriginal,

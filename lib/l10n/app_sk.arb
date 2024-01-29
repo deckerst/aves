@@ -1518,5 +1518,11 @@
   "aboutDataUsageClearCache": "Vymazať cache",
   "@aboutDataUsageClearCache": {},
   "castDialogTitle": "Cast zariadenia",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "collectionActionSetHome": "Nastaviť ako doma",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Kolekcia na mieru",
+  "@setHomeCustomCollection": {},
+  "settingsThumbnailShowHdrIcon": "Zobraziť ikonu HDR",
+  "@settingsThumbnailShowHdrIcon": {}
 }

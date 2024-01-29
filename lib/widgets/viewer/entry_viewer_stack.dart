@@ -290,19 +290,24 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void _onAppLifecycleStateChanged() {
     switch (AvesApp.lifecycleStateNotifier.value) {
       case AppLifecycleState.inactive:
+        // inactive: when losing focus
         _onAppInactive();
-      case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
+        // paused: when switching to another app
+        // detached: when app is without a view
+        viewerController.autopilot = false;
         pauseVideoControllers();
       case AppLifecycleState.resumed:
         availability.onResume();
+      case AppLifecycleState.hidden:
+        // hidden: transient state between `inactive` and `paused`
+        break;
     }
   }
 
   Future<void> _onAppInactive() async {
     final playingController = context.read<VideoConductor>().getPlayingController();
-    viewerController.autopilot = false;
     bool enabledPip = false;
     if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
       enabledPip |= await _enablePictureInPicture();

@@ -32,7 +32,7 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // size
 
-  bool get useTiles => canDecodeRegion && (width > 4096 || height > 4096);
+  bool get useTiles => (width > 4096 || height > 4096) && !isAnimated;
 
   bool get isSized => width > 0 && height > 0;
 
@@ -126,8 +126,6 @@ extension ExtraAvesEntryProps on AvesEntry {
   // app support
 
   bool get canDecode => AppSupport.canDecode(mimeType);
-
-  bool get canDecodeRegion => AppSupport.canDecodeRegion(mimeType) && !isAnimated;
 
   bool get canEditExif => AppSupport.canEditExif(mimeType);
 

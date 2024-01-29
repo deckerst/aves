@@ -41,6 +41,7 @@ class SettingKeys {
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
+  static const homeCustomCollectionKey = 'home_custom_collection';
   static const enableBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmCreateVaultKey = 'confirm_create_vault';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
@@ -60,6 +61,7 @@ class SettingKeys {
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';
+  static const showThumbnailHdrKey = 'show_thumbnail_hdr';
   static const thumbnailLocationIconKey = 'thumbnail_location_icon';
   static const thumbnailTagIconKey = 'thumbnail_tag_icon';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';

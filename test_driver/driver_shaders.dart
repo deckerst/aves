@@ -27,6 +27,7 @@ Future<void> configureAndLaunch() async {
     // navigation
     ..keepScreenOn = KeepScreenOn.always
     ..homePage = HomePageSetting.collection
+    ..homeCustomCollection = {}
     ..enableBottomNavigationBar = true
     // collection
     ..collectionSectionFactor = EntryGroupFactor.album

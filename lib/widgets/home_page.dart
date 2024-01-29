@@ -196,7 +196,7 @@ class _HomePageState extends State<HomePage> {
         unawaited(AnalysisService.registerCallback());
         final source = context.read<CollectionSource>();
         await source.init(
-          loadTopEntriesFirst: settings.homePage == HomePageSetting.collection,
+          loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
           canAnalyze: !safeMode,
         );
       case AppMode.screenSaver:
@@ -338,7 +338,7 @@ class _HomePageState extends State<HomePage> {
       case AppMode.screenSaver:
       case AppMode.slideshow:
         routeName = _initialRouteName ?? settings.homePage.routeName;
-        filters = _initialFilters ?? {};
+        filters = _initialFilters ?? (settings.homePage == HomePageSetting.collection ? settings.homeCustomCollection : {});
     }
     Route buildRoute(WidgetBuilder builder) => DirectMaterialPageRoute(
           settings: RouteSettings(name: routeName),

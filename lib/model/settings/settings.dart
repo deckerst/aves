@@ -388,6 +388,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.setMetadataDateBeforeFileOpKey:
             case SettingKeys.collectionSortReverseKey:
             case SettingKeys.showThumbnailFavouriteKey:
+            case SettingKeys.showThumbnailHdrKey:
             case SettingKeys.showThumbnailMotionPhotoKey:
             case SettingKeys.showThumbnailRatingKey:
             case SettingKeys.showThumbnailRawKey:
@@ -471,6 +472,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not a string');
               }
+            case SettingKeys.homeCustomCollectionKey:
             case SettingKeys.drawerTypeBookmarksKey:
             case SettingKeys.drawerAlbumBookmarksKey:
             case SettingKeys.drawerPageBookmarksKey:

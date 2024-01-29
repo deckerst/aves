@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.3"></a>[v1.10.3] - 2024-01-29
+
+### Added
+
+- Viewer: optional histogram (for real this time)
+- Collection: allow hiding thumbnail overlay HDR icon
+- Collection: allow setting any filtered collection as home page
+
+### Changed
+
+- Viewer: lift format control for tiling, allowing large DNG tiling if supported
+- Info: strip `unlocated` filter from context collection when editing location via map
+- Slideshow: keep playing when losing focus but app is still visible (e.g. split screen)
+- upgraded Flutter to stable v3.16.9
+
+### Fixed
+
+- crash when loading some large DNG in viewer
+- searching from drawer on mobile
+- resizing TIFF during conversion
+
 ## <a id="v1.10.2"></a>[v1.10.2] - 2023-12-24
 
 ### Changed
@@ -15,6 +36,8 @@ All notable changes to this project will be documented in this file.
 - crash when loading SVG defined with large dimensions
 
 ## <a id="v1.10.1"></a>[v1.10.1] - 2023-12-21
+
+### Added
 
 - Cataloguing: detect/filter `Ultra HDR`
 - Viewer: show JPEG MPF dependent images (except thumbnails and HDR gain maps)
