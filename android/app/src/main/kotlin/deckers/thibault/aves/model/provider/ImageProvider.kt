@@ -298,11 +298,18 @@ abstract class ImageProvider {
                     sourceDocFile.copyTo(output)
                 }
             } else {
-                var targetWidthPx: Int = if (sourceEntry.isRotated) height else width
-                var targetHeightPx: Int = if (sourceEntry.isRotated) width else height
-                if (lengthUnit == LENGTH_UNIT_PERCENT) {
-                    targetWidthPx = sourceEntry.width * targetWidthPx / 100
-                    targetHeightPx = sourceEntry.height * targetHeightPx / 100
+                val targetWidthPx: Int
+                val targetHeightPx: Int
+                when (lengthUnit) {
+                    LENGTH_UNIT_PERCENT -> {
+                        targetWidthPx = sourceEntry.displayWidth * width / 100
+                        targetHeightPx = sourceEntry.displayHeight * height / 100
+                    }
+
+                    else -> {
+                        targetWidthPx = width
+                        targetHeightPx = height
+                    }
                 }
 
                 val model: Any = if (pageId != null && MultiPageImage.isSupported(sourceMimeType)) {
