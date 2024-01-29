@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.3"></a>[v1.10.3] - 2024-01-29
+
 ### Added
 
 - Viewer: optional histogram (for real this time)
