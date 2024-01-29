@@ -86,7 +86,17 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             if (bitmap == null) {
                 callback.onLoadFailed(Exception("Decoding full TIFF yielded null bitmap"))
             } else if (customSize) {
-                callback.onDataReady(Bitmap.createScaledBitmap(bitmap, width, height, true))
+                val dstWidth: Int
+                val dstHeight: Int
+                val aspectRatio = bitmap.width.toFloat() / bitmap.height
+                if (aspectRatio > 1) {
+                    dstWidth = (height * aspectRatio).toInt()
+                    dstHeight = height
+                } else {
+                    dstWidth = width
+                    dstHeight = (width / aspectRatio).toInt()
+                }
+                callback.onDataReady(Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, true))
             } else {
                 callback.onDataReady(bitmap)
             }
