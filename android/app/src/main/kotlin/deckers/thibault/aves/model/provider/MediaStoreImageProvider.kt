@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.RecoverableSecurityException
 import android.content.*
+import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -31,6 +32,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.OutputStream
 import java.io.SyncFailedException
 import java.util.*
@@ -214,8 +216,8 @@ class MediaStoreImageProvider : ImageProvider() {
                         // `mimeType` can be registered as null for file media URIs with unsupported media types (e.g. TIFF on old devices)
                         // in that case we try to use the MIME type provided along the URI
                         val mimeType: String? = cursor.getString(mimeTypeColumn) ?: fileMimeType
-                        val width = cursor.getInt(widthColumn)
-                        val height = cursor.getInt(heightColumn)
+                        var width = cursor.getInt(widthColumn)
+                        var height = cursor.getInt(heightColumn)
                         val durationMillis = if (durationColumn != -1) cursor.getLong(durationColumn) else 0L
 
                         if (mimeType == null) {
@@ -237,6 +239,28 @@ class MediaStoreImageProvider : ImageProvider() {
                                 // only for map export
                                 "contentId" to contentId,
                             )
+
+                            if (MimeTypes.isHeic(mimeType)) {
+                                // The reported size for some HEIC images is simply incorrect.
+                                try {
+                                    StorageUtils.openInputStream(context, itemUri)?.use { input ->
+                                        val options = BitmapFactory.Options().apply {
+                                            inJustDecodeBounds = true
+                                        }
+                                        BitmapFactory.decodeStream(input, null, options)
+                                        val outWidth = options.outWidth
+                                        val outHeight = options.outHeight
+                                        if (outWidth > 0 && outHeight > 0) {
+                                            width = outWidth
+                                            height = outHeight
+                                            entryMap["width"] = width
+                                            entryMap["height"] = height
+                                        }
+                                    }
+                                } catch (e: IOException) {
+                                    // ignore
+                                }
+                            }
 
                             if (MimeTypes.isRaw(mimeType)
                                 || (width <= 0 || height <= 0) && needSize(mimeType)
