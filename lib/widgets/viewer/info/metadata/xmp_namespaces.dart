@@ -90,7 +90,11 @@ class XmpNamespace extends Equatable {
   List<Widget> buildNamespaceSection(BuildContext context) {
     final props = rawProps.entries
         .map((kv) {
-          final prop = XmpProp(kv.key, kv.value);
+          final key = kv.key;
+          if (skippedProps.any((pattern) => pattern.allMatches(key).isNotEmpty)) {
+            return null;
+          }
+          final prop = XmpProp(key, kv.value);
           var extracted = false;
           cards.forEach((card) => extracted |= card.extract(prop));
           return extracted ? null : prop;
@@ -133,6 +137,8 @@ class XmpNamespace extends Equatable {
           ]
         : [];
   }
+
+  Set<RegExp> get skippedProps => {};
 
   List<XmpCardData> get cards => [];
 

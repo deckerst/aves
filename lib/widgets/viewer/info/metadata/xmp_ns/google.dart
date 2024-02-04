@@ -73,11 +73,26 @@ class XmpGCameraNamespace extends XmpGoogleNamespace {
 }
 
 class XmpGContainer extends XmpNamespace {
-  XmpGContainer({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gContainer);
+  late final String _gContainerItemNsPrefix;
+  late final String _rdfNsPrefix;
+
+  XmpGContainer({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gContainer) {
+    _gContainerItemNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, XmpNamespaces.gContainerItem);
+    _rdfNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, XmpNamespaces.rdf);
+  }
+
+  @override
+  late final Set<RegExp> skippedProps = {
+    // variant of `Container:Item` with `<rdf:li>`
+    RegExp(nsPrefix + r'Directory\[(\d+)\]/' + _rdfNsPrefix + r'type'),
+  };
 
   @override
   late final List<XmpCardData> cards = [
+    // variant of `Container:Item` with `<rdf:li rdf:parseType="Resource">`
     XmpCardData(RegExp(nsPrefix + r'Directory\[(\d+)\]/' + nsPrefix + r'Item/(.*)'), title: 'Directory Item'),
+    // variant of `Container:Item` with `<rdf:li>`
+    XmpCardData(RegExp(nsPrefix + r'Directory\[(\d+)\]/(' + _gContainerItemNsPrefix + r'.*)'), title: 'Directory Item'),
   ];
 }
 

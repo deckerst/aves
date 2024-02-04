@@ -274,7 +274,7 @@ object MultiPage {
         var foundXmp = false
 
         fun processXmp(xmpMeta: XMPMeta) {
-            offsetFromEnd = GoogleXMP.getTrailingVideoOffsetFromEnd(xmpMeta)
+            offsetFromEnd = offsetFromEnd ?: GoogleXMP.getTrailingVideoOffsetFromEnd(xmpMeta)
         }
 
         try {

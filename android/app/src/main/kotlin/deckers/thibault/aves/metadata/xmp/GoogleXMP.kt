@@ -109,10 +109,11 @@ object GoogleXMP {
                 var hasImage = false
                 var hasVideo = false
                 for (i in 1 until count + 1) {
-                    val mime = meta.getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_MIME_PROP_NAME))?.value
-                    val length = meta.getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
-                    hasImage = hasImage || MimeTypes.isImage(mime) && length != null
-                    hasVideo = hasVideo || MimeTypes.isVideo(mime) && length != null
+                    val mime = getContainerItemAttribute(meta, i, GCONTAINER_ITEM_MIME_PROP_NAME)
+                    val length = getContainerItemAttribute(meta, i, GCONTAINER_ITEM_LENGTH_PROP_NAME)
+                    // `length` is not always provided for the image item
+                    hasImage = hasImage || MimeTypes.isImage(mime)
+                    hasVideo = hasVideo || (MimeTypes.isVideo(mime) && length != null)
                 }
                 if (hasImage && hasVideo) return true
             }
@@ -126,6 +127,13 @@ object GoogleXMP {
             }
         }
         return false
+    }
+
+    private fun getContainerItemAttribute(meta: XMPMeta, i: Int, attribute: XMPPropName): String? {
+        // variant of `Container:Item` with `<rdf:li rdf:parseType="Resource">`
+        val mime = meta.getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, attribute))?.value
+        // variant of `Container:Item` with `<rdf:li>`
+        return mime ?: meta.getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, attribute))?.value
     }
 
     fun isPanorama(meta: XMPMeta): Boolean {
@@ -166,10 +174,9 @@ object GoogleXMP {
             // `Container` motion photo
             val count = meta.countPropArrayItems(GCONTAINER_DIRECTORY_PROP_NAME)
             for (i in 1 until count + 1) {
-                val mime = meta.getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_MIME_PROP_NAME))?.value
-                val length = meta.getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
-                if (MimeTypes.isVideo(mime) && length != null) {
-                    offsetFromEnd = length.toLong()
+                val mime = getContainerItemAttribute(meta, i, GCONTAINER_ITEM_MIME_PROP_NAME)
+                if (MimeTypes.isVideo(mime)) {
+                    getContainerItemAttribute(meta, i, GCONTAINER_ITEM_LENGTH_PROP_NAME)?.let { offsetFromEnd = it.toLong() }
                 }
             }
         }
