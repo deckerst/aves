@@ -24,6 +24,7 @@ class XmpNamespaces {
   static const gAudio = 'http://ns.google.com/photos/1.0/audio/';
   static const gCamera = 'http://ns.google.com/photos/1.0/camera/';
   static const gContainer = 'http://ns.google.com/photos/1.0/container/';
+  static const gContainerItem = 'http://ns.google.com/photos/1.0/container/item/';
   static const gCreations = 'http://ns.google.com/photos/1.0/creations/';
   static const gDepth = 'http://ns.google.com/photos/1.0/depthmap/';
   static const gDevice = 'http://ns.google.com/photos/dd/1.0/device/';
