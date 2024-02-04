@@ -3,6 +3,7 @@ package deckers.thibault.aves.metadata
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import deckers.thibault.aves.metadata.xmp.XMP
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
