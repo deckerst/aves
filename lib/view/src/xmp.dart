@@ -7,6 +7,7 @@ class XmpNamespaceView {
     XmpNamespaces.adsmlat: 'AdsML',
     XmpNamespaces.exifAux: 'Exif Aux',
     XmpNamespaces.avm: 'Astronomy Visualization',
+    XmpNamespaces.appleDesktop: 'Apple Desktop',
     XmpNamespaces.camera: 'Pix4D Camera',
     XmpNamespaces.cc: 'Creative Commons',
     XmpNamespaces.crd: 'Camera Raw Defaults',
