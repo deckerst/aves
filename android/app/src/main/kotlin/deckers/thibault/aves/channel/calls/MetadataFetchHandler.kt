@@ -50,16 +50,6 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.QuickTimeMetadata
-import deckers.thibault.aves.metadata.XMP
-import deckers.thibault.aves.metadata.XMP.doesPropExist
-import deckers.thibault.aves.metadata.XMP.getPropArrayItemValues
-import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
-import deckers.thibault.aves.metadata.XMP.getSafeInt
-import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
-import deckers.thibault.aves.metadata.XMP.getSafeString
-import deckers.thibault.aves.metadata.XMP.hasHdrGainMap
-import deckers.thibault.aves.metadata.XMP.isMotionPhoto
-import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_ITXT_DIR_NAME
 import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_LAST_MODIFICATION_TIME_FORMAT
@@ -78,6 +68,16 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
 import deckers.thibault.aves.metadata.metadataextractor.PngActlDirectory
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
+import deckers.thibault.aves.metadata.xmp.GoogleXMP
+import deckers.thibault.aves.metadata.xmp.XMP
+import deckers.thibault.aves.metadata.xmp.XMP.doesPropExist
+import deckers.thibault.aves.metadata.xmp.XMP.getPropArrayItemValues
+import deckers.thibault.aves.metadata.xmp.XMP.getSafeDateMillis
+import deckers.thibault.aves.metadata.xmp.XMP.getSafeInt
+import deckers.thibault.aves.metadata.xmp.XMP.getSafeLocalizedText
+import deckers.thibault.aves.metadata.xmp.XMP.hasHdrGainMap
+import deckers.thibault.aves.metadata.xmp.XMP.isMotionPhoto
+import deckers.thibault.aves.metadata.xmp.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
@@ -1020,17 +1020,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
             if (foundXmp && !allowMultiple) return
             foundXmp = true
-            try {
-                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
-                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME) { fields["croppedAreaTop"] = it }
-                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME) { fields["croppedAreaWidth"] = it }
-                xmpMeta.getSafeInt(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME) { fields["croppedAreaHeight"] = it }
-                xmpMeta.getSafeInt(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
-                xmpMeta.getSafeInt(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
-                xmpMeta.getSafeString(XMP.GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
-            } catch (e: XMPException) {
-                Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
-            }
+            fields.putAll(GoogleXMP.getPanoramaInfo(xmpMeta))
         }
 
         if (canReadWithMetadataExtractor(mimeType) && !isLargeMp4(mimeType, sizeBytes)) {
@@ -1062,7 +1052,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (fields.isEmpty()) {
             result.error("getPanoramaInfo-empty", "failed to get info for mimeType=$mimeType uri=$uri", null)
         } else {
-            fields["projectionType"] = fields["projectionType"] ?: XMP.GPANO_PROJECTION_TYPE_DEFAULT
+            fields["projectionType"] = fields["projectionType"] ?: GoogleXMP.GPANO_PROJECTION_TYPE_DEFAULT
             result.success(fields)
         }
     }

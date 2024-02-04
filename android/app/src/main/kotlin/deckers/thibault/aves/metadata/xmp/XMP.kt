@@ -1,4 +1,4 @@
-package deckers.thibault.aves.metadata
+package deckers.thibault.aves.metadata.xmp
 
 import android.content.Context
 import android.net.Uri
@@ -11,6 +11,7 @@ import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
 import com.adobe.internal.xmp.properties.XMPProperty
 import com.drew.metadata.Directory
+import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.Mp4ParserHelper.processBoxes
 import deckers.thibault.aves.metadata.Mp4ParserHelper.toBytes
 import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
@@ -39,16 +40,6 @@ object XMP {
     private const val XMP_NS_URI = "http://ns.adobe.com/xap/1.0/"
 
     // other namespaces
-    private const val GAUDIO_NS_URI = "http://ns.google.com/photos/1.0/audio/"
-    private const val GCAMERA_NS_URI = "http://ns.google.com/photos/1.0/camera/"
-    private const val GCONTAINER_NS_URI = "http://ns.google.com/photos/1.0/container/"
-    private const val GCONTAINER_ITEM_NS_URI = "http://ns.google.com/photos/1.0/container/item/"
-    private const val GDEPTH_NS_URI = "http://ns.google.com/photos/1.0/depthmap/"
-    private const val GDEVICE_NS_URI = "http://ns.google.com/photos/dd/1.0/device/"
-    private const val GDEVICE_CONTAINER_NS_URI = "http://ns.google.com/photos/dd/1.0/container/"
-    private const val GDEVICE_ITEM_NS_URI = "http://ns.google.com/photos/dd/1.0/item/"
-    private const val GIMAGE_NS_URI = "http://ns.google.com/photos/1.0/image/"
-    private const val GPANO_NS_URI = "http://ns.google.com/photos/1.0/panorama/"
     private const val HDRGM_NS_URI = "http://ns.adobe.com/hdr-gain-map/1.0/"
     private const val PMTM_NS_URI = "http://www.hdrsoft.com/photomatix_settings01"
 
@@ -63,65 +54,15 @@ object XMP {
     private const val GENERIC_LANG = ""
     private const val SPECIFIC_LANG = "en-US"
 
-    // embedded media data properties
-    // cf https://developers.google.com/depthmap-metadata
-    // cf https://developers.google.com/vr/reference/cardboard-camera-vr-photo-format
-    private val knownDataProps = listOf(
-        XMPPropName(GAUDIO_NS_URI, "Data"),
-        XMPPropName(GCAMERA_NS_URI, "RelitInputImageData"),
-        XMPPropName(GIMAGE_NS_URI, "Data"),
-        XMPPropName(GDEPTH_NS_URI, "Data"),
-        XMPPropName(GDEPTH_NS_URI, "Confidence"),
-    )
-
-    fun isDataPath(path: String) = knownDataProps.map { it.toString() }.any { path == it }
-
-    // google portrait
-
-    val GDEVICE_CONTAINER_PROP_NAME = XMPPropName(GDEVICE_NS_URI, "Container")
-    val GDEVICE_CONTAINER_DIRECTORY_PROP_NAME = XMPPropName(GDEVICE_CONTAINER_NS_URI, "Directory")
-    val GDEVICE_CONTAINER_ITEM_DATA_URI_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "DataURI")
-    val GDEVICE_CONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Length")
-    val GDEVICE_CONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(GDEVICE_ITEM_NS_URI, "Mime")
-
-    // container
-
-    val GCAMERA_VIDEO_OFFSET_PROP_NAME = XMPPropName(GCAMERA_NS_URI, "MicroVideoOffset")
-    val GCONTAINER_DIRECTORY_PROP_NAME = XMPPropName(GCONTAINER_NS_URI, "Directory")
-    val GCONTAINER_ITEM_PROP_NAME = XMPPropName(GCONTAINER_NS_URI, "Item")
-    val GCONTAINER_ITEM_LENGTH_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Length")
-    val GCONTAINER_ITEM_MIME_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Mime")
-    private val GCONTAINER_ITEM_SEMANTIC_PROP_NAME = XMPPropName(GCONTAINER_ITEM_NS_URI, "Semantic")
-
-    private const val ITEM_SEMANTIC_GAIN_MAP = "GainMap"
+    fun isDataPath(path: String) = GoogleXMP.isDataPath(path)
 
     // HDR gain map
 
     private val HDRGM_VERSION_PROP_NAME = XMPPropName(HDRGM_NS_URI, "Version")
 
     // panorama
-    // cf https://developers.google.com/streetview/spherical-metadata
-
-    val GPANO_CROPPED_AREA_HEIGHT_PROP_NAME = XMPPropName(GPANO_NS_URI, "CroppedAreaImageHeightPixels")
-    val GPANO_CROPPED_AREA_WIDTH_PROP_NAME = XMPPropName(GPANO_NS_URI, "CroppedAreaImageWidthPixels")
-    val GPANO_CROPPED_AREA_LEFT_PROP_NAME = XMPPropName(GPANO_NS_URI, "CroppedAreaLeftPixels")
-    val GPANO_CROPPED_AREA_TOP_PROP_NAME = XMPPropName(GPANO_NS_URI, "CroppedAreaTopPixels")
-    val GPANO_FULL_PANO_HEIGHT_PROP_NAME = XMPPropName(GPANO_NS_URI, "FullPanoHeightPixels")
-    val GPANO_FULL_PANO_WIDTH_PROP_NAME = XMPPropName(GPANO_NS_URI, "FullPanoWidthPixels")
-    val GPANO_PROJECTION_TYPE_PROP_NAME = XMPPropName(GPANO_NS_URI, "ProjectionType")
-    const val GPANO_PROJECTION_TYPE_DEFAULT = "equirectangular"
 
     private val PMTM_IS_PANO360_PROP_NAME = XMPPropName(PMTM_NS_URI, "IsPano360")
-
-    // `GPano:ProjectionType` is required by spec but it is sometimes missing, assuming default
-    // `GPano:FullPanoHeightPixels` is required by spec but it is sometimes missing (e.g. Samsung Camera app panorama mode)
-    private val gpanoRequiredProps = listOf(
-        GPANO_CROPPED_AREA_HEIGHT_PROP_NAME,
-        GPANO_CROPPED_AREA_WIDTH_PROP_NAME,
-        GPANO_CROPPED_AREA_LEFT_PROP_NAME,
-        GPANO_CROPPED_AREA_TOP_PROP_NAME,
-        GPANO_FULL_PANO_WIDTH_PROP_NAME,
-    )
 
     // as of `metadata-extractor` v2.18.0, XMP is not discovered in HEIC images,
     // so we fall back to the native content resolver, if possible
@@ -191,20 +132,10 @@ object XMP {
     fun XMPMeta.hasHdrGainMap(): Boolean {
         try {
             // standard HDR gain map
-            if (doesPropExist(HDRGM_VERSION_PROP_NAME)) {
-                return true
-            }
+            if (doesPropExist(HDRGM_VERSION_PROP_NAME)) return true
 
             // `Ultra HDR`
-            if (doesPropExist(GCONTAINER_DIRECTORY_PROP_NAME)) {
-                val count = countPropArrayItems(GCONTAINER_DIRECTORY_PROP_NAME)
-                for (i in 1 until count + 1) {
-                    val semantic = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_SEMANTIC_PROP_NAME))?.value
-                    if (semantic == ITEM_SEMANTIC_GAIN_MAP) {
-                        return true
-                    }
-                }
-            }
+            if (GoogleXMP.isUltraHdPhoto(this)) return true
 
             return false
         } catch (e: XMPException) {
@@ -217,47 +148,11 @@ object XMP {
         return false
     }
 
-    fun XMPMeta.isMotionPhoto(): Boolean {
-        try {
-            // GCamera motion photo
-            if (doesPropExist(GCAMERA_VIDEO_OFFSET_PROP_NAME)) return true
-
-            // Container motion photo
-            if (doesPropExist(GCONTAINER_DIRECTORY_PROP_NAME)) {
-                val count = countPropArrayItems(GCONTAINER_DIRECTORY_PROP_NAME)
-                var hasImage = false
-                var hasVideo = false
-                for (i in 1 until count + 1) {
-                    val mime = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_MIME_PROP_NAME))?.value
-                    val length = getSafeStructField(listOf(GCONTAINER_DIRECTORY_PROP_NAME, i, GCONTAINER_ITEM_PROP_NAME, GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
-                    hasImage = hasImage || MimeTypes.isImage(mime) && length != null
-                    hasVideo = hasVideo || MimeTypes.isVideo(mime) && length != null
-                }
-                if (hasImage && hasVideo) return true
-            }
-
-            return false
-        } catch (e: XMPException) {
-            if (e.errorCode != XMPError.BADSCHEMA) {
-                // `BADSCHEMA` code is reported when we check a property
-                // from a non standard namespace, and that namespace is not declared in the XMP
-                Log.w(LOG_TAG, "failed to check Google motion photo props from XMP", e)
-            }
-        }
-        return false
-    }
+    fun XMPMeta.isMotionPhoto() = GoogleXMP.isMotionPhoto(this)
 
     fun XMPMeta.isPanorama(): Boolean {
         // Google
-        try {
-            if (gpanoRequiredProps.all { doesPropExist(it) }) return true
-        } catch (e: XMPException) {
-            if (e.errorCode != XMPError.BADSCHEMA) {
-                // `BADSCHEMA` code is reported when we check a property
-                // from a non standard namespace, and that namespace is not declared in the XMP
-                Log.w(LOG_TAG, "failed to check Google panorama props from XMP", e)
-            }
-        }
+        if (GoogleXMP.isPanorama(this)) return true
 
         // Photomatix
         try {

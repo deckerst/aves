@@ -11,14 +11,13 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
-import deckers.thibault.aves.metadata.GoogleDeviceContainer
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MultiPage
-import deckers.thibault.aves.metadata.XMP
-import deckers.thibault.aves.metadata.XMP.doesPropPathExist
-import deckers.thibault.aves.metadata.XMP.getSafeStructField
-import deckers.thibault.aves.metadata.XMPPropName
 import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.xmp.GoogleDeviceContainer
+import deckers.thibault.aves.metadata.xmp.GoogleXMP
+import deckers.thibault.aves.metadata.xmp.XMP.getSafeStructField
+import deckers.thibault.aves.metadata.xmp.XMPPropName
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -108,14 +107,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
                     try {
-                        container = xmpDirs.firstNotNullOfOrNull {
-                            val xmpMeta = it.xmpMeta
-                            if (xmpMeta.doesPropPathExist(listOf(XMP.GDEVICE_CONTAINER_PROP_NAME, XMP.GDEVICE_CONTAINER_DIRECTORY_PROP_NAME))) {
-                                GoogleDeviceContainer().apply { findItems(xmpMeta) }
-                            } else {
-                                null
-                            }
-                        }
+                        container = xmpDirs.firstNotNullOfOrNull { GoogleXMP.getDeviceContainer(it.xmpMeta) }
                     } catch (e: XMPException) {
                         result.error("extractGoogleDeviceItem-xmp", "failed to read XMP directory for uri=$uri dataUri=$dataUri", e.message)
                         return
