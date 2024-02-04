@@ -78,6 +78,8 @@ class PlatformReportService extends ReportService {
 
   @override
   Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails) async {
-    return _instance?.recordFlutterError(flutterErrorDetails);
+    if (!flutterErrorDetails.silent) {
+      return _instance?.recordFlutterError(flutterErrorDetails);
+    }
   }
 }
