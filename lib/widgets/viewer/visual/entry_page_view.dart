@@ -12,6 +12,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -420,11 +421,12 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
   }
 
   void _onFling(AxisDirection direction) {
+    const animate = true;
     switch (direction) {
       case AxisDirection.left:
-        const ShowPreviousEntryNotification(animate: true).dispatch(context);
+        (context.isRtl ? const ShowNextEntryNotification(animate: animate) : const ShowPreviousEntryNotification(animate: animate)).dispatch(context);
       case AxisDirection.right:
-        const ShowNextEntryNotification(animate: true).dispatch(context);
+        (context.isRtl ? const ShowPreviousEntryNotification(animate: animate) : const ShowNextEntryNotification(animate: animate)).dispatch(context);
       case AxisDirection.up:
         PopVisualNotification().dispatch(context);
       case AxisDirection.down:
@@ -437,11 +439,12 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       final x = alignment.x;
       final sideRatio = _getSideRatio();
       if (sideRatio != null) {
+        const animate = false;
         if (x < sideRatio) {
-          const ShowPreviousEntryNotification(animate: false).dispatch(context);
+          (context.isRtl ? const ShowNextEntryNotification(animate: animate) : const ShowPreviousEntryNotification(animate: animate)).dispatch(context);
           return;
         } else if (x > 1 - sideRatio) {
-          const ShowNextEntryNotification(animate: false).dispatch(context);
+          (context.isRtl ? const ShowPreviousEntryNotification(animate: animate) : const ShowNextEntryNotification(animate: animate)).dispatch(context);
           return;
         }
       }
