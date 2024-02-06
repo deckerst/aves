@@ -1332,5 +1332,11 @@
   "cropAspectRatioSquare": "Τετράγωνο",
   "@cropAspectRatioSquare": {},
   "widgetTapUpdateWidget": "Ενημέρωση γραφικού στοιχείου",
-  "@widgetTapUpdateWidget": {}
+  "@widgetTapUpdateWidget": {},
+  "overlayHistogramNone": "Τίποτα",
+  "@overlayHistogramNone": {},
+  "overlayHistogramRGB": "RGB",
+  "@overlayHistogramRGB": {},
+  "overlayHistogramLuminance": "Φωτεινότητα",
+  "@overlayHistogramLuminance": {}
 }
