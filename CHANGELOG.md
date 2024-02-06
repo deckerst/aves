@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - motion photo detection for xml variant of google container item
+- HEIF size detection for some corrupted files
+- viewer transition direction for RTL locales
 
 ## <a id="v1.10.3"></a>[v1.10.3] - 2024-01-29
 
