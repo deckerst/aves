@@ -59,6 +59,7 @@ class AvesApp extends StatefulWidget {
   static final _unsupportedLocales = {
     'bn', // Bengali
     'ckb', // Kurdish (Central)
+    'da', // Danish
     'fa', // Persian
     'fi', // Finnish
     'gl', // Galician

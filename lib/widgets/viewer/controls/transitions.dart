@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 class PageTransitionEffects {
@@ -14,7 +15,7 @@ class PageTransitionEffects {
           final position = (pageController.page! - index).clamp(-1.0, 1.0);
           final width = pageController.position.viewportDimension;
           opacity = (1 - position.abs()).clamp(0, 1);
-          dx = position * width;
+          dx = position * width * (context.isRtl ? -1 : 1);
           if (zoomIn) {
             scale = 1 + position;
           }
@@ -42,7 +43,7 @@ class PageTransitionEffects {
           final position = (pageController.page! - index).clamp(-1.0, 1.0);
           final width = pageController.position.viewportDimension;
           if (parallax) {
-            dx = position * width / 2;
+            dx = position * width / 2 * (context.isRtl ? -1 : 1);
           }
         }
         return ClipRect(
@@ -64,7 +65,7 @@ class PageTransitionEffects {
           final position = (pageController.page! - index).clamp(-1.0, 1.0);
           final width = pageController.position.viewportDimension;
           opacity = (1 - position.abs()).roundToDouble().clamp(0, 1);
-          dx = position * width;
+          dx = position * width * (context.isRtl ? -1 : 1);
         }
         return Opacity(
           opacity: opacity,

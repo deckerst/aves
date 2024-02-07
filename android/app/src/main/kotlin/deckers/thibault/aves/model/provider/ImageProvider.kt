@@ -36,8 +36,8 @@ import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
-import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
@@ -982,15 +982,7 @@ abstract class ImageProvider {
         )
         val newTrailerOffset = trailerOffset + diff
         return editXmp(context, path, uri, mimeType, callback, trailerDiff = diff, editCoreXmp = { xmp ->
-            xmp.replace(
-                // GCamera motion photo
-                "${XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME}=\"$trailerOffset\"",
-                "${XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME}=\"$newTrailerOffset\"",
-            ).replace(
-                // Container motion photo
-                "${XMP.GCONTAINER_ITEM_LENGTH_PROP_NAME}=\"$trailerOffset\"",
-                "${XMP.GCONTAINER_ITEM_LENGTH_PROP_NAME}=\"$newTrailerOffset\"",
-            )
+            GoogleXMP.updateTrailingVideoOffset(xmp, trailerOffset, newTrailerOffset)
         })
     }
 

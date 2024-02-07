@@ -12,13 +12,11 @@ import android.util.Log
 import com.adobe.internal.xmp.XMPMeta
 import com.drew.imaging.jpeg.JpegSegmentType
 import com.drew.metadata.xmp.XmpDirectory
-import deckers.thibault.aves.metadata.XMP.countPropArrayItems
-import deckers.thibault.aves.metadata.XMP.doesPropExist
-import deckers.thibault.aves.metadata.XMP.getSafeLong
-import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
+import deckers.thibault.aves.metadata.xmp.GoogleXMP
+import deckers.thibault.aves.metadata.xmp.XMP
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -276,20 +274,7 @@ object MultiPage {
         var foundXmp = false
 
         fun processXmp(xmpMeta: XMPMeta) {
-            if (xmpMeta.doesPropExist(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME)) {
-                // `GCamera` motion photo
-                xmpMeta.getSafeLong(XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
-            } else if (xmpMeta.doesPropExist(XMP.GCONTAINER_DIRECTORY_PROP_NAME)) {
-                // `Container` motion photo
-                val count = xmpMeta.countPropArrayItems(XMP.GCONTAINER_DIRECTORY_PROP_NAME)
-                for (i in 1 until count + 1) {
-                    val mime = xmpMeta.getSafeStructField(listOf(XMP.GCONTAINER_DIRECTORY_PROP_NAME, i, XMP.GCONTAINER_ITEM_PROP_NAME, XMP.GCONTAINER_ITEM_MIME_PROP_NAME))?.value
-                    val length = xmpMeta.getSafeStructField(listOf(XMP.GCONTAINER_DIRECTORY_PROP_NAME, i, XMP.GCONTAINER_ITEM_PROP_NAME, XMP.GCONTAINER_ITEM_LENGTH_PROP_NAME))?.value
-                    if (MimeTypes.isVideo(mime) && length != null) {
-                        offsetFromEnd = length.toLong()
-                    }
-                }
-            }
+            offsetFromEnd = offsetFromEnd ?: GoogleXMP.getTrailingVideoOffsetFromEnd(xmpMeta)
         }
 
         try {

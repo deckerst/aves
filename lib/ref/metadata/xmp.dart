@@ -1,6 +1,7 @@
 class XmpNamespaces {
   static const acdsee = 'http://ns.acdsee.com/iptc/1.0/';
   static const adsmlat = 'http://adsml.org/xmlns/';
+  static const appleDesktop = 'http://ns.apple.com/namespace/1.0/';
   static const avm = 'http://www.communicatingastronomy.org/avm/1.0/';
   static const camera = 'http://pix4d.com/camera/1.0/';
   static const cc = 'http://creativecommons.org/ns#';
@@ -24,6 +25,7 @@ class XmpNamespaces {
   static const gAudio = 'http://ns.google.com/photos/1.0/audio/';
   static const gCamera = 'http://ns.google.com/photos/1.0/camera/';
   static const gContainer = 'http://ns.google.com/photos/1.0/container/';
+  static const gContainerItem = 'http://ns.google.com/photos/1.0/container/item/';
   static const gCreations = 'http://ns.google.com/photos/1.0/creations/';
   static const gDepth = 'http://ns.google.com/photos/1.0/depthmap/';
   static const gDevice = 'http://ns.google.com/photos/dd/1.0/device/';

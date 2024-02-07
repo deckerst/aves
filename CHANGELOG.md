@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07
+
+### Fixed
+
+- motion photo detection for xml variant of google container item
+- HEIF size detection for some corrupted files
+- viewer transition direction & effects for RTL locales
+
 ## <a id="v1.10.3"></a>[v1.10.3] - 2024-01-29
 
 ### Added
