@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07
+
 ### Fixed
 
 - motion photo detection for xml variant of google container item
