@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Catalan translation (thanks Marc Amorós)
+
 ## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07
 
 ### Fixed
