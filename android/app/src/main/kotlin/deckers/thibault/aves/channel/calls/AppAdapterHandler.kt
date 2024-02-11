@@ -52,7 +52,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             "getPackages" -> ioScope.launch { safe(call, result, ::getPackages) }
             "getAppIcon" -> ioScope.launch { safeSuspend(call, result, ::getAppIcon) }
             "copyToClipboard" -> ioScope.launch { safe(call, result, ::copyToClipboard) }
-            "edit" -> safe(call, result, ::edit)
             "open" -> safe(call, result, ::open)
             "openMap" -> safe(call, result, ::openMap)
             "setAs" -> safe(call, result, ::setAs)
@@ -205,22 +204,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 result.error("copyToClipboard-exception", "failed to set clip", e.message)
             }
         }
-    }
-
-    private fun edit(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        val mimeType = call.argument<String>("mimeType")
-        if (uri == null) {
-            result.error("edit-args", "missing arguments", null)
-            return
-        }
-
-        val intent = Intent(Intent.ACTION_EDIT)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .setDataAndType(getShareableUri(context, uri), mimeType)
-        val started = safeStartActivity(intent)
-
-        result.success(started)
     }
 
     private fun open(call: MethodCall, result: MethodChannel.Result) {
@@ -404,6 +387,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
                 // so we use a joined `String` as fallback
                 .putExtra(EXTRA_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
+
             else -> {
                 result.error("pin-intent", "failed to build intent", null)
                 return
@@ -434,6 +418,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                         FileProvider.getUriForFile(context, authority, File(path))
                     }
                 }
+
                 else -> uri
             }
         }

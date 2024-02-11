@@ -242,8 +242,16 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           ).dispatch(context);
         }
       case EntryAction.edit:
-        appService.edit(targetEntry.uri, targetEntry.mimeType).then((success) {
-          if (!success) showNoMatchingAppDialog(context);
+        appService.edit(targetEntry.uri, targetEntry.mimeType).then((fields) {
+          final error = fields['error'] as String?;
+          if (error == null) {
+            final uri = fields['uri'] as String?;
+            if (uri != null) {
+              debugPrint('TLAD uri=$uri');
+            }
+          } else if (error == 'edit-resolve') {
+            showNoMatchingAppDialog(context);
+          }
         });
       case EntryAction.open:
         appService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {

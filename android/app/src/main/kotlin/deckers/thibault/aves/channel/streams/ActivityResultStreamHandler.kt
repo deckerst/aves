@@ -9,6 +9,7 @@ import android.os.Looper
 import android.util.Log
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
+import deckers.thibault.aves.channel.calls.AppAdapterHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
@@ -47,6 +48,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             "requestMediaFileAccess" -> ioScope.launch { requestMediaFileAccess() }
             "createFile" -> ioScope.launch { createFile() }
             "openFile" -> ioScope.launch { openFile() }
+            "edit" -> edit()
             "pickCollectionFilters" -> pickCollectionFilters()
             else -> endOfStream()
         }
@@ -100,10 +102,13 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         endOfStream()
     }
 
-    private suspend fun safeStartActivityForResult(intent: Intent, requestCode: Int, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+    private suspend fun safeStartActivityForStorageAccessResult(intent: Intent, requestCode: Int, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         if (intent.resolveActivity(activity.packageManager) != null) {
             MainActivity.pendingStorageAccessResultHandlers[requestCode] = PendingStorageAccessResultHandler(null, onGranted, onDenied)
-            activity.startActivityForResult(intent, requestCode)
+            if (!safeStartActivityForResult(intent, requestCode)) {
+                MainActivity.notifyError("failed to start activity for intent=$intent extras=${intent.extras}")
+                onDenied()
+            }
         } else {
             MainActivity.notifyError("failed to resolve activity for intent=$intent extras=${intent.extras}")
             onDenied()
@@ -144,7 +149,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             type = mimeType
             putExtra(Intent.EXTRA_TITLE, name)
         }
-        safeStartActivityForResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
+        safeStartActivityForStorageAccessResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
     private suspend fun openFile() {
@@ -177,7 +182,33 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             addCategory(Intent.CATEGORY_OPENABLE)
             setTypeAndNormalize(mimeType ?: MimeTypes.ANY)
         }
-        safeStartActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST, ::onGranted, ::onDenied)
+        safeStartActivityForStorageAccessResult(intent, MainActivity.OPEN_FILE_REQUEST, ::onGranted, ::onDenied)
+    }
+
+    private fun edit() {
+        val uri = args["uri"] as String?
+        val mimeType = args["mimeType"] as String? // optional
+        if (uri == null) {
+            error("edit-args", "missing arguments", null)
+            return
+        }
+
+        val intent = Intent(Intent.ACTION_EDIT)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            .setDataAndType(AppAdapterHandler.getShareableUri(activity, Uri.parse(uri)), mimeType)
+
+        if (intent.resolveActivity(activity.packageManager) == null) {
+            error("edit-resolve", "cannot resolve activity for this intent", null)
+            return
+        }
+
+        MainActivity.pendingEditIntentHandler = { fields ->
+            success(fields)
+            endOfStream()
+        }
+        if (!safeStartActivityForResult(intent, MainActivity.EDIT_REQUEST)) {
+            error("edit-start", "cannot start activity for this intent", null)
+        }
     }
 
     private fun pickCollectionFilters() {
@@ -190,6 +221,24 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             endOfStream()
         }
         activity.startActivityForResult(intent, MainActivity.PICK_COLLECTION_FILTERS_REQUEST)
+    }
+
+    private fun safeStartActivityForResult(intent: Intent, requestCode: Int): Boolean {
+        return try {
+            activity.startActivityForResult(intent, requestCode)
+            true
+        } catch (e: SecurityException) {
+            if (intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
+                // in some environments, providing the write flag yields a `SecurityException`:
+                // "UID XXXX does not have permission to content://XXXX"
+                // so we retry without it
+                Log.i(LOG_TAG, "retry intent=$intent without FLAG_GRANT_WRITE_URI_PERMISSION")
+                intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
+                safeStartActivityForResult(intent, requestCode)
+            } else {
+                false
+            }
+        }
     }
 
     override fun onCancel(arguments: Any?) {
