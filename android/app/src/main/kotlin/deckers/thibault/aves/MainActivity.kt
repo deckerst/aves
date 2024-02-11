@@ -21,6 +21,7 @@ import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.*
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import deckers.thibault.aves.utils.FlutterUtils.isSoftwareRenderingRequired
 import deckers.thibault.aves.utils.LogUtils
@@ -218,12 +219,21 @@ open class MainActivity : FlutterFragmentActivity() {
             OPEN_FILE_REQUEST -> onStorageAccessResult(requestCode, data?.data)
 
             PICK_COLLECTION_FILTERS_REQUEST -> onCollectionFiltersPickResult(resultCode, data)
+            EDIT_REQUEST -> onEditResult(resultCode, data)
         }
     }
 
     private fun onCollectionFiltersPickResult(resultCode: Int, intent: Intent?) {
         val filters = if (resultCode == RESULT_OK) extractFiltersFromIntent(intent) else null
         pendingCollectionFilterPickHandler?.let { it(filters) }
+    }
+
+    private fun onEditResult(resultCode: Int, intent: Intent?) {
+        val fields: FieldMap? = if (resultCode == RESULT_OK) hashMapOf(
+            "uri" to intent?.data.toString(),
+            "mimeType" to intent?.type,
+        ) else null
+        pendingEditIntentHandler?.let { it(fields) }
     }
 
     private fun onDocumentTreeAccessResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -458,6 +468,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val DELETE_SINGLE_PERMISSION_REQUEST = 5
         const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 6
         const val PICK_COLLECTION_FILTERS_REQUEST = 7
+        const val EDIT_REQUEST = 8
 
         const val INTENT_ACTION_EDIT = "edit"
         const val INTENT_ACTION_PICK_ITEMS = "pick_items"
@@ -492,6 +503,8 @@ open class MainActivity : FlutterFragmentActivity() {
         var pendingScopedStoragePermissionCompleter: CompletableFuture<Boolean>? = null
 
         var pendingCollectionFilterPickHandler: ((filters: List<String>?) -> Unit)? = null
+
+        var pendingEditIntentHandler: ((fields: FieldMap?) -> Unit)? = null
 
         private fun onStorageAccessResult(requestCode: Int, uri: Uri?) {
             Log.i(LOG_TAG, "onStorageAccessResult with requestCode=$requestCode, uri=$uri")

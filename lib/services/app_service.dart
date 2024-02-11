@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/apps.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -7,6 +9,7 @@ import 'package:aves/utils/math_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:streams_channel/streams_channel.dart';
 
 abstract class AppService {
   Future<Set<Package>> getPackages();
@@ -15,7 +18,7 @@ abstract class AppService {
 
   Future<bool> copyToClipboard(String uri, String? label);
 
-  Future<bool> edit(String uri, String mimeType);
+  Future<Map<String, dynamic>> edit(String uri, String mimeType);
 
   Future<bool> open(String uri, String mimeType, {required bool forceChooser});
 
@@ -32,6 +35,7 @@ abstract class AppService {
 
 class PlatformAppService implements AppService {
   static const _platform = MethodChannel('deckers.thibault/aves/app');
+  static final _stream = StreamsChannel('deckers.thibault/aves/activity_result_stream');
 
   static final _knownAppDirs = {
     'com.kakao.talk': {'KakaoTalkDownload'},
@@ -89,17 +93,29 @@ class PlatformAppService implements AppService {
   }
 
   @override
-  Future<bool> edit(String uri, String mimeType) async {
+  Future<Map<String, dynamic>> edit(String uri, String mimeType) async {
     try {
-      final result = await _platform.invokeMethod('edit', <String, dynamic>{
+      final completer = Completer<Map?>();
+      _stream.receiveBroadcastStream(<String, dynamic>{
+        'op': 'edit',
         'uri': uri,
         'mimeType': mimeType,
-      });
-      if (result != null) return result as bool;
+      }).listen(
+        (data) => completer.complete(data as Map?),
+        onError: completer.completeError,
+        onDone: () {
+          if (!completer.isCompleted) completer.complete({'error': 'cancelled'});
+        },
+        cancelOnError: true,
+      );
+      // `await` here, so that `completeError` will be caught below
+      final result = await completer.future;
+      if (result == null) return {'error': 'cancelled'};
+      return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
+      return {'error': e.code};
     }
-    return false;
   }
 
   @override
