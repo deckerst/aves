@@ -86,7 +86,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                   const CancelButton(),
                   TextButton(
                     onPressed: () => Navigator.maybeOf(context)?.pop(true),
-                    child: Text(MaterialLocalizations.of(context).okButtonLabel.toUpperCase()),
+                    child: Text(Themes.asButtonLabel(MaterialLocalizations.of(context).okButtonLabel)),
                   ),
                 ],
               ),

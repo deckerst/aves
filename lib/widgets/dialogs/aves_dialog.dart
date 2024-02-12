@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
@@ -165,7 +166,7 @@ class CancelButton extends StatelessWidget {
     return TextButton(
       onPressed: () => Navigator.maybeOf(context)?.pop(),
       // MD2 button labels were upper case but they are lower case in MD3
-      child: Text(MaterialLocalizations.of(context).cancelButtonLabel.toUpperCase()),
+      child: Text(Themes.asButtonLabel(context.l10n.cancelTooltip)),
     );
   }
 }
@@ -178,7 +179,7 @@ class OkButton extends StatelessWidget {
     return TextButton(
       onPressed: () => Navigator.maybeOf(context)?.pop(),
       // MD2 button labels were upper case but they are lower case in MD3
-      child: Text(MaterialLocalizations.of(context).okButtonLabel.toUpperCase()),
+      child: Text(Themes.asButtonLabel(MaterialLocalizations.of(context).okButtonLabel)),
     );
   }
 }
