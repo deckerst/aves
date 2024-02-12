@@ -301,7 +301,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       initialDate: _customDateTime,
       firstDate: DateTime(0),
       lastDate: DateTime(2100),
-      cancelText: MaterialLocalizations.of(context).cancelButtonLabel.toUpperCase(),
+      cancelText: Themes.asButtonLabel(context.l10n.cancelTooltip),
       confirmText: context.l10n.nextButtonLabel,
     );
     if (_date == null) return;
@@ -309,7 +309,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final _time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_customDateTime),
-      cancelText: MaterialLocalizations.of(context).cancelButtonLabel.toUpperCase(),
+      cancelText: Themes.asButtonLabel(context.l10n.cancelTooltip),
     );
     if (_time == null) return;
 

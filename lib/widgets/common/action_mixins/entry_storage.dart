@@ -18,6 +18,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
@@ -250,8 +251,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
             if (toBin) {
               if (movedEntries.isNotEmpty) {
                 action = SnackBarAction(
-                  // TODO TLAD [l10n] key for "RESTORE"
-                  label: l10n.entryActionRestore.toUpperCase(),
+                  label: Themes.asButtonLabel(l10n.entryActionRestore),
                   onPressed: () {
                     if (navigator != null) {
                       doMove(

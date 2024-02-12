@@ -11,6 +11,8 @@ class Themes {
     fontFeatures: [FontFeature.enable('smcp')],
   );
 
+  static String asButtonLabel(String s) => s.toUpperCase();
+
   static TextStyle searchFieldStyle(BuildContext context) => Theme.of(context).textTheme.bodyLarge!;
 
   static Color overlayBackgroundColor({
