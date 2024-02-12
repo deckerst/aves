@@ -274,12 +274,9 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
 
   // widget
 
-  Color? getWidgetOutline(int widgetId) {
-    final value = getInt('${SettingKeys.widgetOutlinePrefixKey}$widgetId');
-    return value != null ? Color(value) : null;
-  }
+  WidgetOutline getWidgetOutline(int widgetId) => getEnumOrDefault('${SettingKeys.widgetOutlinePrefixKey}$widgetId', WidgetOutline.none, WidgetOutline.values);
 
-  void setWidgetOutline(int widgetId, Color? newValue) => set('${SettingKeys.widgetOutlinePrefixKey}$widgetId', newValue?.value);
+  void setWidgetOutline(int widgetId, WidgetOutline newValue) => set('${SettingKeys.widgetOutlinePrefixKey}$widgetId', newValue.toString());
 
   WidgetShape getWidgetShape(int widgetId) => getEnumOrDefault('${SettingKeys.widgetShapePrefixKey}$widgetId', SettingsDefaults.widgetShape, WidgetShape.values);
 

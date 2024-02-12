@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: prompt to show newly edited item
+- Widget: outline color options according to device theme
 - Catalan translation (thanks Marc Amorós)
 
 ## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07

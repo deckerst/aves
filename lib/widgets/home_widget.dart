@@ -14,9 +14,10 @@ class HomeWidgetPainter {
   final AvesEntry? entry;
   final double devicePixelRatio;
 
+  // do not use `AlignmentDirectional` as there is no `TextDirection` in context
   static const backgroundGradient = LinearGradient(
-    begin: AlignmentDirectional.bottomStart,
-    end: AlignmentDirectional.topEnd,
+    begin: Alignment.bottomLeft,
+    end: Alignment.topRight,
     colors: AColors.boraBoraGradient,
   );
 

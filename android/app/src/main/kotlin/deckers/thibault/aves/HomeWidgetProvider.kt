@@ -87,6 +87,8 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val (widthPx, heightPx) = getWidgetSizePx(context, widgetInfo)
         if (widthPx == 0 || heightPx == 0) return null
 
+        val isNightModeOn = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
         initFlutterEngine(context)
         val messenger = flutterEngine!!.dartExecutor
         val channel = MethodChannel(messenger, WIDGET_DRAW_CHANNEL)
@@ -101,6 +103,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
                             "devicePixelRatio" to getDevicePixelRatio(),
                             "drawEntryImage" to drawEntryImage,
                             "reuseEntry" to reuseEntry,
+                            "isSystemThemeDark" to isNightModeOn,
                         ), object : MethodChannel.Result {
                             override fun success(result: Any?) {
                                 cont.resume(result)

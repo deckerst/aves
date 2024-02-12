@@ -48,4 +48,6 @@ enum WidgetDisplayedItem { random, mostRecent }
 
 enum WidgetOpenPage { home, collection, viewer, updateWidget }
 
+enum WidgetOutline { none, black, white, systemBlackAndWhite, systemDynamic }
+
 enum WidgetShape { rrect, circle, heart }
