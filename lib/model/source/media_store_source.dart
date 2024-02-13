@@ -218,6 +218,7 @@ class MediaStoreSource extends CollectionSource {
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
   @override
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController}) async {
+    debugPrint('TLAD $runtimeType refreshUris _initState=$_initState isMonitoring=$isMonitoring isReady=$isReady');
     if (_initState == SourceInitializationState.none || !isMonitoring || !isReady) return changedUris;
 
     state = SourceState.loading;

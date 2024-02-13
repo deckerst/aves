@@ -28,6 +28,7 @@ import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -71,10 +72,17 @@ class _CollectionPageState extends State<CollectionPage> {
       }
     }));
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
+
+    _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) => _timerNotifier.notify());
   }
+
+  Timer? _timer;
+  final AChangeNotifier _timerNotifier = AChangeNotifier();
 
   @override
   void dispose() {
+    _timer?.cancel();
+
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -210,7 +218,34 @@ class _CollectionPageState extends State<CollectionPage> {
       case AppMode.slideshow:
       case AppMode.view:
       case AppMode.edit:
-        return null;
+        return Container(
+          color: Colors.black,
+          padding: const EdgeInsets.all(8),
+          child: AnimatedBuilder(
+            animation: _timerNotifier,
+            builder: (context, child) {
+              String _threeDigits(int n) {
+                if (n >= 100) return '$n';
+                if (n >= 10) return '0$n';
+                return '00$n';
+              }
+
+              String _twoDigits(int n) {
+                if (n >= 10) return '$n';
+                return '0$n';
+              }
+
+              final time = DateTime.now();
+              String min = _twoDigits(time.minute);
+              String sec = _twoDigits(time.second);
+              String ms = _threeDigits(time.millisecond);
+              return Text(
+                '$min:$sec.$ms',
+                style: const TextStyle(color: Colors.white),
+              );
+            },
+          ),
+        );
     }
   }
 

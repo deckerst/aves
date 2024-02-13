@@ -615,13 +615,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _onMediaStoreChanged(String? uri) {
+    debugPrint('TLAD $runtimeType _onMediaStoreChanged 1 uri=$uri');
     if (uri != null) _changedUris.add(uri);
     if (_changedUris.isNotEmpty) {
       _mediaStoreChangeDebouncer(() async {
+        debugPrint('TLAD $runtimeType _onMediaStoreChanged 2 _changedUris=$_changedUris');
         final todo = _changedUris.toSet();
         _changedUris.clear();
         final tempUris = await _mediaStoreSource.refreshUris(todo);
         if (tempUris.isNotEmpty) {
+          debugPrint('TLAD $runtimeType _onMediaStoreChanged 3 tempUris=$tempUris');
           _changedUris.addAll(tempUris);
           _onMediaStoreChanged(null);
         }
