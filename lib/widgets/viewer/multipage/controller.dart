@@ -25,7 +25,7 @@ class MultiPageController {
 
   MultiPageController(this.entry) {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$MultiPageController',
         object: this,
@@ -48,7 +48,7 @@ class MultiPageController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _info?.dispose();
     _disposed = true;

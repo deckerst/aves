@@ -14,7 +14,7 @@ class ViewStateConductor {
 
   ViewStateConductor() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$ViewStateConductor',
         object: this,
@@ -24,7 +24,7 @@ class ViewStateConductor {
 
   Future<void> dispose() async {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _controllers.forEach((v) => v.dispose());
     _controllers.clear();

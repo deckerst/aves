@@ -31,7 +31,7 @@ abstract class AvesVideoController {
     required this.settings,
   }) : _entry = entry {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesVideoController',
         object: this,
@@ -45,7 +45,7 @@ abstract class AvesVideoController {
     assert(!_disposed);
     _disposed = true;
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();

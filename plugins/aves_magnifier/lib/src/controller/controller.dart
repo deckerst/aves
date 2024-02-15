@@ -21,7 +21,7 @@ class AvesMagnifierController {
     MagnifierState? initialState,
   }) : super() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesMagnifierController',
         object: this,
@@ -41,7 +41,7 @@ class AvesMagnifierController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _disposed = true;
     _stateStreamController.close();

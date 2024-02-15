@@ -13,7 +13,7 @@ class DoubleBackPopHandler {
 
   DoubleBackPopHandler() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$DoubleBackPopHandler',
         object: this,
@@ -23,7 +23,7 @@ class DoubleBackPopHandler {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _stopBackTimer();
   }

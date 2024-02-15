@@ -21,7 +21,7 @@ class VideoConductor {
 
   VideoConductor({CollectionLens? collection}) : _collection = collection {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$VideoConductor',
         object: this,
@@ -31,7 +31,7 @@ class VideoConductor {
 
   Future<void> dispose() async {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _subscriptions
       ..forEach((sub) => sub.cancel())

@@ -36,7 +36,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DragTarget<T>(
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (details) {
         if (draggedQuickAction.value != null) {
           _setPanelHighlight(true);
         }

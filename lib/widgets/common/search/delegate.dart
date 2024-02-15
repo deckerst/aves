@@ -20,7 +20,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     required super.searchFieldStyle,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesSearchDelegate',
         object: this,
@@ -135,7 +135,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   @mustCallSuper
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     currentBodyNotifier.dispose();
     queryTextController.dispose();

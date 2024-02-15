@@ -16,7 +16,7 @@ class ViewStateController with HistogramMixin {
     required this.viewStateNotifier,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$ViewStateController',
         object: this,
@@ -26,7 +26,7 @@ class ViewStateController with HistogramMixin {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     viewStateNotifier.dispose();
     fullImageNotifier.dispose();

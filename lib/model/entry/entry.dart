@@ -72,7 +72,7 @@ class AvesEntry with AvesEntryBase {
     this.burstEntries,
   }) : id = id ?? 0 {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesEntry',
         object: this,
@@ -188,7 +188,7 @@ class AvesEntry with AvesEntryBase {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     visualChangeNotifier.dispose();
     metadataChangeNotifier.dispose();

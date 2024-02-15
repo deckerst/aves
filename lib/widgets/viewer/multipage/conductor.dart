@@ -12,7 +12,7 @@ class MultiPageConductor {
 
   MultiPageConductor() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$MultiPageConductor',
         object: this,
@@ -22,7 +22,7 @@ class MultiPageConductor {
 
   Future<void> dispose() async {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     await _disposeAll();
     _controllers.clear();
