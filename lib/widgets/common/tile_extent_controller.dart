@@ -28,7 +28,7 @@ class TileExtentController {
     required this.horizontalPadding,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$TileExtentController',
         object: this,
@@ -42,7 +42,7 @@ class TileExtentController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _subscriptions
       ..forEach((sub) => sub.cancel())

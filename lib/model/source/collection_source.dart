@@ -62,7 +62,7 @@ mixin SourceBase {
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
   CollectionSource() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$CollectionSource',
         object: this,
@@ -86,7 +86,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   @mustCallSuper
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _rawEntries.forEach((v) => v.dispose());
   }

@@ -15,7 +15,7 @@ class AnalysisController {
     this.progressOffset = 0,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$AnalysisController',
         object: this,
@@ -25,7 +25,7 @@ class AnalysisController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _stopSignal.dispose();
   }

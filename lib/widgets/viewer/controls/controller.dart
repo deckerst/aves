@@ -52,7 +52,7 @@ class ViewerController with CastMixin {
     this.autopilotAnimatedZoom = false,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$ViewerController',
         object: this,
@@ -67,7 +67,7 @@ class ViewerController with CastMixin {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     entryNotifier.removeListener(_onEntryChanged);
     windowService.setHdrColorMode(false);

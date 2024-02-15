@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - Widget: outline color options according to device theme
 - Catalan translation (thanks Marc Amorós)
 
+### Changed
+
+- upgraded Flutter to stable v3.19.0
+
 ## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07
 
 ### Fixed

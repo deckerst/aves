@@ -42,7 +42,7 @@ class QuickActionButton<T extends Object> extends StatelessWidget {
 
   DragTarget<T> _buildDragTarget(Widget? child) {
     return DragTarget<T>(
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (details) {
         if (draggedQuickAction.value != null) {
           insertAction(draggedQuickAction.value!, placement, action);
         }
