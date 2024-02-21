@@ -24,3 +24,4 @@ assert(flutterSdkPath != null) { "flutter.sdk not set in local.properties" }
 apply {
     from("$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle")
 }
+include(":exifinterface")
