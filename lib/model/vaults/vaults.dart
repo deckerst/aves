@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/origins.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_screen_state/aves_screen_state.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 final Vaults vaults = Vaults._private();
 
@@ -13,6 +17,8 @@ class Vaults extends ChangeNotifier {
   final List<StreamSubscription> _subscriptions = [];
   Set<VaultDetails> _rows = {};
   final Set<String> _unlockedDirPaths = {};
+
+  static const _fileScheme = 'file';
 
   Vaults._private();
 
@@ -118,7 +124,7 @@ class Vaults extends ChangeNotifier {
 
   bool isVaultEntryUri(String uriString) {
     final uri = Uri.parse(uriString);
-    if (uri.scheme != 'file') return false;
+    if (uri.scheme != _fileScheme) return false;
 
     final path = uri.pathSegments.fold('', (prev, v) => '$prev${pContext.separator}$v');
     return vaultDirectories.any(path.startsWith);
@@ -132,11 +138,45 @@ class Vaults extends ChangeNotifier {
     _onLockStateChanged();
   }
 
-  void unlock(String dirPath) {
+  Future<void> unlock(BuildContext context, String dirPath) async {
     if (!vaults.isVault(dirPath) || !vaults.isLocked(dirPath)) return;
+
+    // recover untracked vault items
+    final source = context.read<CollectionSource>();
+    final newEntries = await recoverUntrackedItems(source, dirPath);
+    if (newEntries.isNotEmpty) {
+      source.addEntries(newEntries);
+      await metadataDb.saveEntries(newEntries);
+      unawaited(source.analyze(null, entries: newEntries));
+    }
 
     _unlockedDirPaths.add(dirPath);
     _onLockStateChanged();
+  }
+
+  Future<Set<AvesEntry>> recoverUntrackedItems(CollectionSource source, String dirPath) async {
+    final newEntries = <AvesEntry>{};
+
+    final vaultName = detailsForPath(dirPath)?.name;
+    if (vaultName == null) return newEntries;
+
+    final knownPaths = source.allEntries.where((v) => v.origin == EntryOrigins.vault && v.directory == dirPath).map((v) => v.path).whereNotNull().toSet();
+    final untrackedPaths = await storageService.getUntrackedVaultPaths(vaultName, knownPaths);
+    if (untrackedPaths.isNotEmpty) {
+      debugPrint('Recovering ${untrackedPaths.length} untracked vault items');
+      await Future.forEach(untrackedPaths, (untrackedPath) async {
+        final uri = Uri.file(untrackedPath).toString();
+        final sourceEntry = await mediaFetchService.getEntry(uri, null);
+        if (sourceEntry != null) {
+          sourceEntry.id = metadataDb.nextId;
+          sourceEntry.origin = EntryOrigins.vault;
+          newEntries.add(sourceEntry);
+        } else {
+          await reportService.recordError('Failed to recover untracked vault item at uri=$uri', null);
+        }
+      });
+    }
+    return newEntries;
   }
 
   void _onScreenOff() => lock(all.where((v) => v.autoLockScreenOff).map((v) => v.path).toSet());

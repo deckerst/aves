@@ -14,6 +14,8 @@ abstract class StorageService {
 
   Future<Set<String>> getUntrackedTrashPaths(Iterable<String> knownPaths);
 
+  Future<Set<String>> getUntrackedVaultPaths(String vaultName, Iterable<String> knownPaths);
+
   Future<String> getVaultRoot();
 
   Future<int?> getFreeSpace(StorageVolume volume);
@@ -77,6 +79,20 @@ class PlatformStorageService implements StorageService {
   Future<Set<String>> getUntrackedTrashPaths(Iterable<String> knownPaths) async {
     try {
       final result = await _platform.invokeMethod('getUntrackedTrashPaths', <String, dynamic>{
+        'knownPaths': knownPaths.toList(),
+      });
+      return (result as List).cast<String>().toSet();
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
+
+  @override
+  Future<Set<String>> getUntrackedVaultPaths(String vaultName, Iterable<String> knownPaths) async {
+    try {
+      final result = await _platform.invokeMethod('getUntrackedVaultPaths', <String, dynamic>{
+        'vault': vaultName,
         'knownPaths': knownPaths.toList(),
       });
       return (result as List).cast<String>().toSet();

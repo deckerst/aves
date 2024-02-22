@@ -16,7 +16,7 @@ import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
 
 mixin VaultAwareMixin on FeedbackMixin {
-  Future<bool> _tryUnlock(String dirPath, BuildContext context) async {
+  Future<bool> _tryUnlock(BuildContext context, String dirPath) async {
     if (!vaults.isVault(dirPath) || !vaults.isLocked(dirPath)) return true;
 
     final details = vaults.detailsForPath(dirPath);
@@ -67,12 +67,12 @@ mixin VaultAwareMixin on FeedbackMixin {
 
     if (confirmed == null || !confirmed) return false;
 
-    vaults.unlock(dirPath);
+    await vaults.unlock(context, dirPath);
     return true;
   }
 
   Future<bool> unlockAlbum(BuildContext context, String dirPath) async {
-    final success = await _tryUnlock(dirPath, context);
+    final success = await _tryUnlock(context, dirPath);
     if (!success) {
       showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
     }
