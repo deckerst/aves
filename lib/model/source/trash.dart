@@ -38,10 +38,11 @@ mixin TrashMixin on SourceBase {
     return await completer.future;
   }
 
-  Future<Set<AvesEntry>> recoverLostTrashItems() async {
+  Future<Set<AvesEntry>> recoverUntrackedTrashItems() async {
+    final newEntries = <AvesEntry>{};
+
     final knownPaths = allEntries.map((v) => v.trashDetails?.path).whereNotNull().toSet();
     final untrackedPaths = await storageService.getUntrackedTrashPaths(knownPaths);
-    final newEntries = <AvesEntry>{};
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked bin items');
       final recoveryPath = pContext.join(androidFileUtils.picturesPath, AndroidFileUtils.recoveryDir);
@@ -75,7 +76,7 @@ mixin TrashMixin on SourceBase {
             sourceEntry.trashDetails = _buildTrashDetails(id);
             newEntries.add(sourceEntry);
           } else {
-            debugPrint('Failed to recover untracked bin item at uri=$uri');
+            await reportService.recordError('Failed to recover untracked bin item at uri=$uri', null);
           }
         }
       });
