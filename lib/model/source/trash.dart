@@ -1,9 +1,14 @@
 import 'dart:async';
 
+import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 mixin TrashMixin on SourceBase {
   static const Duration binKeepDuration = Duration(days: 30);
@@ -31,5 +36,50 @@ mixin TrashMixin on SourceBase {
       },
     );
     return await completer.future;
+  }
+
+  Future<Set<AvesEntry>> recoverLostTrashItems() async {
+    final knownPaths = allEntries.map((v) => v.trashDetails?.path).whereNotNull().toSet();
+    final untrackedPaths = await storageService.getUntrackedTrashPaths(knownPaths);
+    final newEntries = <AvesEntry>{};
+    if (untrackedPaths.isNotEmpty) {
+      debugPrint('Recovering ${untrackedPaths.length} untracked bin items');
+      final recoveryPath = pContext.join(androidFileUtils.picturesPath, AndroidFileUtils.recoveryDir);
+      await Future.forEach(untrackedPaths, (untrackedPath) async {
+        TrashDetails _buildTrashDetails(int id) => TrashDetails(
+              id: id,
+              path: untrackedPath,
+              dateMillis: DateTime.now().millisecondsSinceEpoch,
+            );
+
+        final uri = Uri.file(untrackedPath).toString();
+        final entry = allEntries.firstWhereOrNull((v) => v.uri == uri);
+        if (entry != null) {
+          // there is already a matching entry
+          // but missing trash details, and possibly not marked as trash
+          final id = entry.id;
+          entry.contentId = null;
+          entry.trashed = true;
+          entry.trashDetails = _buildTrashDetails(id);
+          // persist
+          await metadataDb.updateEntry(id, entry);
+          await metadataDb.updateTrash(id, entry.trashDetails);
+        } else {
+          // there is no matching entry
+          final sourceEntry = await mediaFetchService.getEntry(uri, null);
+          if (sourceEntry != null) {
+            final id = metadataDb.nextId;
+            sourceEntry.id = id;
+            sourceEntry.path = pContext.join(recoveryPath, pContext.basename(untrackedPath));
+            sourceEntry.trashed = true;
+            sourceEntry.trashDetails = _buildTrashDetails(id);
+            newEntries.add(sourceEntry);
+          } else {
+            debugPrint('Failed to recover untracked bin item at uri=$uri');
+          }
+        }
+      });
+    }
+    return newEntries;
   }
 }
