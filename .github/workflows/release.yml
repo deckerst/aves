@@ -16,7 +16,7 @@ jobs:
           java-version: '17'
 
       - name: Clone the repository.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get packages for the Flutter project.
         run: scripts/pub_get_all.sh
