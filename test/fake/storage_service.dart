@@ -29,5 +29,8 @@ class FakeStorageService extends Fake implements StorageService {
       });
 
   @override
+  Future<Set<String>> getUntrackedTrashPaths(Iterable<String> knownPaths) => SynchronousFuture({});
+
+  @override
   Future<String> getVaultRoot() => SynchronousFuture('/vault/');
 }

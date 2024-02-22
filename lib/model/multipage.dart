@@ -18,7 +18,7 @@ class MultiPageInfo {
     required List<SinglePageInfo> pages,
   }) : _pages = pages {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$MultiPageInfo',
         object: this,
@@ -44,7 +44,7 @@ class MultiPageInfo {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _transientEntries.forEach((entry) => entry.dispose());
   }

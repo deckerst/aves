@@ -38,6 +38,8 @@ mixin SourceBase {
 
   Map<int, AvesEntry> get entryById;
 
+  Set<AvesEntry> get allEntries;
+
   Set<AvesEntry> get visibleEntries;
 
   Set<AvesEntry> get trashedEntries;
@@ -62,7 +64,7 @@ mixin SourceBase {
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
   CollectionSource() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$CollectionSource',
         object: this,
@@ -86,7 +88,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   @mustCallSuper
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _rawEntries.forEach((v) => v.dispose());
   }
@@ -103,6 +105,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   final Set<AvesEntry> _rawEntries = {};
 
+  @override
   Set<AvesEntry> get allEntries => Set.unmodifiable(_rawEntries);
 
   Set<AvesEntry>? _visibleEntries, _trashedEntries;
@@ -261,8 +264,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       }
     });
     if (entry.trashed) {
-      entry.contentId = null;
-      entry.uri = 'file://${entry.trashDetails?.path}';
+      final trashPath = entry.trashDetails?.path;
+      if (trashPath != null) {
+        entry.contentId = null;
+        entry.uri = Uri.file(trashPath).toString();
+      } else {
+        debugPrint('failed to update uri from unknown trash path for uri=${entry.uri}');
+      }
     }
 
     if (persist) {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/sort.dart';
+import 'package:aves/model/settings/enums/widget_outline.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/media_store_source.dart';
@@ -20,6 +21,7 @@ void widgetMainCommon(AppFlavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
   await settings.init(monitorPlatformSettings: false);
+  await reportService.init();
 
   _widgetDrawChannel.setMethodCallHandler((call) async {
     // widget settings may be modified in a different process after channel setup
@@ -41,6 +43,10 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final devicePixelRatio = args['devicePixelRatio'] as double;
   final drawEntryImage = args['drawEntryImage'] as bool;
   final reuseEntry = args['reuseEntry'] as bool;
+  final isSystemThemeDark = args['isSystemThemeDark'] as bool;
+
+  final brightness = isSystemThemeDark ? Brightness.dark : Brightness.light;
+  final outline = await settings.getWidgetOutline(widgetId).color(brightness);
 
   final entry = drawEntryImage ? await _getWidgetEntry(widgetId, reuseEntry) : null;
   final painter = HomeWidgetPainter(
@@ -50,7 +56,7 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final bytes = await painter.drawWidget(
     widthPx: widthPx,
     heightPx: heightPx,
-    outline: settings.getWidgetOutline(widgetId),
+    outline: outline,
     shape: settings.getWidgetShape(widgetId),
   );
   return {

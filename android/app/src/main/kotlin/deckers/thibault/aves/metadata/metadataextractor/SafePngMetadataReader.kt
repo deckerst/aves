@@ -159,7 +159,7 @@ object SafePngMetadataReader {
             // Only compression method allowed by the spec is zero: deflate
             if (compressionMethod.toInt() == 0) {
                 // bytes left for compressed text is:
-                // total bytes length - (profilenamebytes length + null byte + compression method byte)
+                // total bytes length - (profileNameBytes length + null byte + compression method byte)
                 val bytesLeft = bytes.size - (profileNameBytes.size + 1 + 1)
                 val compressedProfile = reader.getBytes(bytesLeft)
                 try {

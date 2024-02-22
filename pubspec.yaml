@@ -7,14 +7,14 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.10.4+113
+version: 1.10.5+114
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.16.9
-  sdk: '>=3.2.0 <4.0.0'
+  flutter: 3.19.1
+  sdk: '>=3.3.0 <4.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
@@ -119,6 +119,11 @@ dependencies:
   vector_math:
   volume_controller:
   xml:
+
+dependency_overrides:
+  # media_kit_video v1.2.4 depends on a specific old version of screen_brightness
+  media_kit_video: ^1.0.0
+  screen_brightness: ^1.0.0
 
 dev_dependencies:
   flutter_test:

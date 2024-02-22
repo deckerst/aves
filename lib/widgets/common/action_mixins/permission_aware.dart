@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -61,7 +62,7 @@ mixin PermissionAwareMixin {
               TextButton(
                 onPressed: () => Navigator.maybeOf(context)?.pop(true),
                 // MD2 button labels were upper case but they are lower case in MD3
-                child: Text(MaterialLocalizations.of(context).okButtonLabel.toUpperCase()),
+                child: Text(Themes.asButtonLabel(MaterialLocalizations.of(context).okButtonLabel)),
               ),
             ],
           );

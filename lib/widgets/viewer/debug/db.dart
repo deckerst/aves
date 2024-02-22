@@ -2,11 +2,13 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DbTab extends StatefulWidget {
   final AvesEntry entry;
@@ -83,7 +85,14 @@ class _DbTabState extends State<DbTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('DB entry:${data == null ? ' no row' : ''}'),
-                if (data != null)
+                if (data != null) ...[
+                  ElevatedButton(
+                    onPressed: () async {
+                      final source = context.read<CollectionSource>();
+                      await source.removeEntries({entry.uri}, includeTrash: true);
+                    },
+                    child: const Text('Untrack entry'),
+                  ),
                   InfoRowGroup(
                     info: {
                       'uri': data.uri,
@@ -101,6 +110,7 @@ class _DbTabState extends State<DbTab> {
                       'trashed': '${data.trashed}',
                     },
                   ),
+                ],
               ],
             );
           },
@@ -170,13 +180,22 @@ class _DbTabState extends State<DbTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('DB trash details:${data == null ? ' no row' : ''}'),
-                if (data != null)
+                if (data != null) ...[
+                  ElevatedButton(
+                    onPressed: () async {
+                      entry.trashDetails = null;
+                      await metadataDb.updateTrash(entry.id, entry.trashDetails);
+                      _loadDatabase();
+                    },
+                    child: const Text('Remove details'),
+                  ),
                   InfoRowGroup(
                     info: {
                       'dateMillis': '${data.dateMillis}',
                       'path': data.path,
                     },
                   ),
+                ],
               ],
             );
           },

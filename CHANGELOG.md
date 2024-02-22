@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.5"></a>[v1.10.5] - 2024-02-22
+
+### Added
+
+- Viewer: prompt to show newly edited item
+- Widget: outline color options according to device theme
+- Catalan translation (thanks Marc Amorós)
+
+### Changed
+
+- upgraded Flutter to stable v3.19.1
+
+### Fixed
+
+- untracked binned items recovery
+- untracked vault items recovery
+
 ## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07
 
 ### Fixed

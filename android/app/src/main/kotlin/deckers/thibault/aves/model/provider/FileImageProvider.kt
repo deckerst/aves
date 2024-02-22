@@ -16,8 +16,16 @@ internal class FileImageProvider : ImageProvider() {
         var mimeType = sourceMimeType
 
         if (mimeType == null) {
-            val extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
-            if (extension != null) {
+            var extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
+            if (extension.isEmpty()) {
+                uri.path?.let { path ->
+                    val lastDotIndex = path.lastIndexOf('.')
+                    if (lastDotIndex >= 0) {
+                        extension = path.substring(lastDotIndex + 1)
+                    }
+                }
+            }
+            if (extension.isNotEmpty()) {
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
             }
         }

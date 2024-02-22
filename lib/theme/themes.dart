@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -10,6 +9,8 @@ class Themes {
     fontWeight: FontWeight.normal,
     fontFeatures: [FontFeature.enable('smcp')],
   );
+
+  static String asButtonLabel(String s) => s.toUpperCase();
 
   static TextStyle searchFieldStyle(BuildContext context) => Theme.of(context).textTheme.bodyLarge!;
 

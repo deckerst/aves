@@ -94,7 +94,7 @@ class Analyzer {
   Analyzer() {
     debugPrint('$runtimeType create');
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$Analyzer',
         object: this,
@@ -107,7 +107,7 @@ class Analyzer {
   void dispose() {
     debugPrint('$runtimeType dispose');
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     _stopUpdateTimer();
     _controller?.dispose();

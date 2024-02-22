@@ -16,6 +16,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -242,8 +243,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           ).dispatch(context);
         }
       case EntryAction.edit:
-        appService.edit(targetEntry.uri, targetEntry.mimeType).then((success) {
-          if (!success) showNoMatchingAppDialog(context);
+        appService.edit(targetEntry.uri, targetEntry.mimeType).then((fields) async {
+          final error = fields['error'] as String?;
+          if (error == null) {
+            final resultUri = fields['uri'] as String?;
+            final mimeType = fields['mimeType'] as String?;
+            await _handleEditResult(context, resultUri, mimeType);
+          } else if (error == 'edit-resolve') {
+            await showNoMatchingAppDialog(context);
+          }
         });
       case EntryAction.open:
         appService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {
@@ -278,6 +286,42 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.debug:
         _goToDebug(context, targetEntry);
     }
+  }
+
+  Future<void> _handleEditResult(BuildContext context, String? resultUri, String? mimeType) async {
+    final _collection = collection;
+    if (_collection == null || resultUri == null) return;
+
+    final editedEntry = await mediaFetchService.getEntry(resultUri, mimeType);
+    if (editedEntry == null) return;
+
+    final editedUri = editedEntry.uri;
+    final matchCurrentFilters = _collection.filters.every((filter) => filter.test(editedEntry));
+
+    final l10n = context.l10n;
+    // get navigator beforehand because
+    // local context may be deactivated when action is triggered after navigation
+    final navigator = Navigator.maybeOf(context);
+    final showAction = SnackBarAction(
+      label: l10n.showButtonLabel,
+      onPressed: () {
+        if (navigator != null) {
+          final source = _collection.source;
+          navigator.pushAndRemoveUntil(
+            MaterialPageRoute(
+              settings: const RouteSettings(name: CollectionPage.routeName),
+              builder: (context) => CollectionPage(
+                source: source,
+                filters: matchCurrentFilters ? _collection.filters : {},
+                highlightTest: (entry) => entry.uri == editedUri,
+              ),
+            ),
+            (route) => false,
+          );
+        }
+      },
+    );
+    showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
   }
 
   Future<void> quickMove(BuildContext context, String album, {required bool copy}) async {

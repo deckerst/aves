@@ -34,7 +34,7 @@ class TransformController {
 
   TransformController(this.displaySize) {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectCreated(
+      FlutterMemoryAllocations.instance.dispatchObjectCreated(
         library: 'aves',
         className: '$TransformController',
         object: this,
@@ -46,7 +46,7 @@ class TransformController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
     aspectRatioNotifier.dispose();
   }
