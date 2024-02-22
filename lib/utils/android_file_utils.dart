@@ -20,7 +20,8 @@ class AndroidFileUtils {
   static const mediaStoreUriRoot = '$contentScheme://$mediaStoreAuthority/';
   static const mediaUriPathRoots = {'/$externalVolume/images/', '/$externalVolume/video/'};
 
-  static const String trashDirPath = '#trash';
+  static const recoveryDir = 'Lost & Found';
+  static const trashDirPath = '#trash';
 
   late final String separator, vaultRoot, primaryStorage;
   late final String dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;

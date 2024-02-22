@@ -148,12 +148,21 @@ class MediaStoreSource extends CollectionSource {
       knownDateByContentId[contentId] = 0;
     });
 
+    // items to add to the collection
+    final pendingNewEntries = <AvesEntry>{};
+
+    // recover untracked trash items
+    debugPrint('$runtimeType refresh ${stopwatch.elapsed} recover untracked entries');
+    if (directory == null) {
+      pendingNewEntries.addAll(await recoverLostTrashItems());
+    }
+
     // fetch new & modified entries
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} fetch new entries');
     // refresh after the first 10 entries, then after 100 more, then every 1000 entries
     var refreshCount = 10;
     const refreshCountMax = 1000;
-    final allNewEntries = <AvesEntry>{}, pendingNewEntries = <AvesEntry>{};
+    final allNewEntries = <AvesEntry>{};
     void addPendingEntries() {
       allNewEntries.addAll(pendingNewEntries);
       addEntries(pendingNewEntries);

@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.19.1
 
+### Fixed
+
+- untracked binned items recovery
+
 ## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07
 
 ### Fixed
