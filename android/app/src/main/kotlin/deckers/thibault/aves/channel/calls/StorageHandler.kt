@@ -30,6 +30,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getDataUsage" -> ioScope.launch { safe(call, result, ::getDataUsage) }
             "getStorageVolumes" -> ioScope.launch { safe(call, result, ::getStorageVolumes) }
             "getUntrackedTrashPaths" -> ioScope.launch { safe(call, result, ::getUntrackedTrashPaths) }
+            "getUntrackedVaultPaths" -> ioScope.launch { safe(call, result, ::getUntrackedVaultPaths) }
             "getVaultRoot" -> ioScope.launch { safe(call, result, ::getVaultRoot) }
             "getFreeSpace" -> ioScope.launch { safe(call, result, ::getFreeSpace) }
             "getGrantedDirectories" -> ioScope.launch { safe(call, result, ::getGrantedDirectories) }
@@ -129,13 +130,28 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun getUntrackedTrashPaths(call: MethodCall, result: MethodChannel.Result) {
         val knownPaths = call.argument<List<String>>("knownPaths")
         if (knownPaths == null) {
-            result.error("getUntrackedBinPaths-args", "missing arguments", null)
+            result.error("getUntrackedTrashPaths-args", "missing arguments", null)
             return
         }
 
         val trashDirs = context.getExternalFilesDirs(null).mapNotNull { StorageUtils.trashDirFor(context, it.path) }
-        val trashPaths = trashDirs.flatMap { dir -> dir.listFiles()?.map { file -> file.path } ?: listOf() }
-        val untrackedPaths = trashPaths.filter { !knownPaths.contains(it) }.toList()
+        val trashItemPaths = trashDirs.flatMap { dir -> dir.listFiles()?.map { file -> file.path } ?: listOf() }
+        val untrackedPaths = trashItemPaths.filterNot(knownPaths::contains).toList()
+
+        result.success(untrackedPaths)
+    }
+
+    private fun getUntrackedVaultPaths(call: MethodCall, result: MethodChannel.Result) {
+        val vault = call.argument<String>("vault")
+        val knownPaths = call.argument<List<String>>("knownPaths")
+        if (vault == null || knownPaths == null) {
+            result.error("getUntrackedVaultPaths-args", "missing arguments", null)
+            return
+        }
+
+        val vaultDir = File(StorageUtils.getVaultRoot(context), vault)
+        val vaultItemPaths = vaultDir.listFiles()?.map { file -> file.path } ?: listOf()
+        val untrackedPaths = vaultItemPaths.filterNot(knownPaths::contains).toList()
 
         result.success(untrackedPaths)
     }

@@ -85,7 +85,14 @@ class _DbTabState extends State<DbTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('DB entry:${data == null ? ' no row' : ''}'),
-                if (data != null)
+                if (data != null) ...[
+                  ElevatedButton(
+                    onPressed: () async {
+                      final source = context.read<CollectionSource>();
+                      await source.removeEntries({entry.uri}, includeTrash: true);
+                    },
+                    child: const Text('Untrack entry'),
+                  ),
                   InfoRowGroup(
                     info: {
                       'uri': data.uri,
@@ -103,6 +110,7 @@ class _DbTabState extends State<DbTab> {
                       'trashed': '${data.trashed}',
                     },
                   ),
+                ],
               ],
             );
           },
@@ -180,13 +188,6 @@ class _DbTabState extends State<DbTab> {
                       _loadDatabase();
                     },
                     child: const Text('Remove details'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final source = context.read<CollectionSource>();
-                      await source.removeEntries({entry.uri}, includeTrash: true);
-                    },
-                    child: const Text('Untrack entry'),
                   ),
                   InfoRowGroup(
                     info: {

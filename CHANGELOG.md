@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - untracked binned items recovery
+- untracked vault items recovery
 
 ## <a id="v1.10.4"></a>[v1.10.4] - 2024-02-07
 

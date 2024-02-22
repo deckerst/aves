@@ -154,7 +154,7 @@ class MediaStoreSource extends CollectionSource {
     // recover untracked trash items
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} recover untracked entries');
     if (directory == null) {
-      pendingNewEntries.addAll(await recoverLostTrashItems());
+      pendingNewEntries.addAll(await recoverUntrackedTrashItems());
     }
 
     // fetch new & modified entries
