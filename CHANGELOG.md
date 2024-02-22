@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.5"></a>[v1.10.5] - 2024-02-22
+
 ### Added
 
 - Viewer: prompt to show newly edited item
