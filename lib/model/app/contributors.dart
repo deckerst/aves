@@ -85,6 +85,7 @@ class Contributors {
     // Contributor('Åzze', 'laitinen.jere222@gmail.com'), // Finnish
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
+    // Contributor('AJ07', 'ajaykumarmeena676@gmail.com'), // Hindi
     // Contributor('Chethan', 'chethan@users.noreply.hosted.weblate.org'), // Kannada
     // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
     // Contributor('Rasti K5', 'rasti.khdhr@gmail.com'), // Kurdish (Central)
