@@ -135,7 +135,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         }
 
         val trashDirs = context.getExternalFilesDirs(null).mapNotNull { StorageUtils.trashDirFor(context, it.path) }
-        val trashItemPaths = trashDirs.flatMap { dir -> dir.listFiles()?.map { file -> file.path } ?: listOf() }
+        val trashItemPaths = trashDirs.flatMap { dir -> dir.listFiles()?.mapNotNull { file -> file?.path } ?: listOf() }
         val untrackedPaths = trashItemPaths.filterNot(knownPaths::contains).toList()
 
         result.success(untrackedPaths)
@@ -150,7 +150,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         }
 
         val vaultDir = File(StorageUtils.getVaultRoot(context), vault)
-        val vaultItemPaths = vaultDir.listFiles()?.map { file -> file.path } ?: listOf()
+        val vaultItemPaths = vaultDir.listFiles()?.mapNotNull { file -> file?.path } ?: listOf()
         val untrackedPaths = vaultItemPaths.filterNot(knownPaths::contains).toList()
 
         result.success(untrackedPaths)
