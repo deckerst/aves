@@ -19,13 +19,12 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
-    private var knownEntries: Map<Int?, Int?>? = null
+    private var knownEntries: Map<Long?, Int?>? = null
     private var directory: String? = null
 
     init {
         if (arguments is Map<*, *>) {
-            @Suppress("unchecked_cast")
-            knownEntries = arguments["knownEntries"] as Map<Int?, Int?>?
+            knownEntries = (arguments["knownEntries"] as? Map<*, *>?)?.map { (it.key as Number?)?.toLong() to it.value as Int? }?.toMap()
             directory = arguments["directory"] as String?
         }
     }

@@ -10,6 +10,10 @@ abstract class MediaStoreService {
 
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById);
 
+  Future<List<String>> getChangedUris(int sinceGeneration);
+
+  Future<int?> getGeneration();
+
   // knownEntries: map of contentId -> dateModifiedSecs
   Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory});
 
@@ -45,6 +49,29 @@ class PlatformMediaStoreService implements MediaStoreService {
       await reportService.recordError(e, stack);
     }
     return [];
+  }
+
+  @override
+  Future<List<String>> getChangedUris(int sinceGeneration) async {
+    try {
+      final result = await _platform.invokeMethod('getChangedUris', <String, dynamic>{
+        'sinceGeneration': sinceGeneration,
+      });
+      return (result as List).cast<String>();
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return [];
+  }
+
+  @override
+  Future<int?> getGeneration() async {
+    try {
+      return await _platform.invokeMethod('getGeneration');
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
   }
 
   @override
