@@ -27,6 +27,12 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
   }
 
   @override
+  Future<int?> getGeneration() async {
+    if (latency != null) await Future.delayed(latency!);
+    return 0;
+  }
+
+  @override
   Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) => Stream.fromIterable(entries);
 
   static var _lastId = 1;
