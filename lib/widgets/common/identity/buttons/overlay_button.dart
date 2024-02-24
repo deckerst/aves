@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
@@ -174,7 +175,7 @@ class OverlayTextButton extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
           foregroundColor: MaterialStateProperty.all<Color>(theme.colorScheme.onSurface),
-          overlayColor: theme.brightness == Brightness.dark ? MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
+          overlayColor: theme.isDark ? MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
           minimumSize: _minSize,
           side: MaterialStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
           shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(

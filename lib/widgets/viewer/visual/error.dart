@@ -4,6 +4,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +41,7 @@ class _ErrorViewState extends State<ErrorView> {
       // use container to expand constraints, so that the user can tap anywhere
       child: Container(
         // opaque to cover potential lower quality layer below
-        color: Colors.black,
+        color: EntryViewerPage.getBackground(context),
         child: FutureBuilder<bool>(
             future: _exists,
             builder: (context, snapshot) {

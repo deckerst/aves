@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
@@ -26,6 +27,8 @@ class EntryViewerPage extends StatefulWidget {
   static EdgeInsets snackBarMargin(BuildContext context) {
     return EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
   }
+
+  static Color getBackground(BuildContext context) => Theme.of(context).isDark ? Colors.black : Colors.white;
 }
 
 class _EntryViewerPageState extends State<EntryViewerPage> {
@@ -56,11 +59,7 @@ class _EntryViewerPageState extends State<EntryViewerPage> {
           viewerController: _viewerController,
         ),
       ),
-      backgroundColor: Navigator.canPop(context)
-          ? Colors.transparent
-          : Theme.of(context).brightness == Brightness.dark
-              ? Colors.black
-              : Colors.white,
+      backgroundColor: Navigator.canPop(context) ? Colors.transparent : EntryViewerPage.getBackground(context),
       resizeToAvoidBottomInset: false,
     );
   }

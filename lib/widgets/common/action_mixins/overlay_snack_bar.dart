@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:flutter/material.dart';
 
 // adapted from Flutter `SnackBar` in `/material/snack_bar.dart`
@@ -115,7 +116,7 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
     final SnackBarThemeData snackBarTheme = theme.snackBarTheme;
-    final bool isThemeDark = theme.brightness == Brightness.dark;
+    final bool isThemeDark = theme.isDark;
     final Color buttonColor = isThemeDark ? colorScheme.primary : colorScheme.secondary;
     final SnackBarThemeData defaults = _SnackbarDefaultsM3(context);
 

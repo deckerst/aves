@@ -1,5 +1,6 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -99,7 +100,7 @@ class _OverlayBackgroundState extends State<_OverlayBackground> {
   }
 
   BoxDecoration _buildBackgroundDecoration(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).isDark;
     final gradientCenter = widget.gradientCenter;
     return _initialized
         ? BoxDecoration(

@@ -1,7 +1,8 @@
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:flutter/material.dart';
 
 class AvesBorder {
-  static Color _borderColor(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? Colors.white30 : Colors.black26;
+  static Color _borderColor(BuildContext context) => Theme.of(context).isDark ? Colors.white30 : Colors.black26;
 
   // 1 device pixel for straight lines is fine
   static double straightBorderWidth(BuildContext context) => 1 / View.of(context).devicePixelRatio;

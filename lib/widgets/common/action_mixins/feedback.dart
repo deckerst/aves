@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/action_mixins/overlay_snack_bar.dart';
 import 'package:aves/widgets/common/basic/circle.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -202,7 +203,8 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final progressColor = colorScheme.primary;
     final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
     return PopScope(
@@ -223,7 +225,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   width: diameter + 2,
                   height: diameter + 2,
                   decoration: BoxDecoration(
-                    color: colorScheme.brightness == Brightness.dark ? const Color(0xBB000000) : const Color(0xEEFFFFFF),
+                    color: theme.isDark ? const Color(0xBB000000) : const Color(0xEEFFFFFF),
                     shape: BoxShape.circle,
                   ),
                 ),

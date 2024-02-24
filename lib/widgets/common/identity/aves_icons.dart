@@ -6,6 +6,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
@@ -295,7 +296,7 @@ class OverlayIcon extends StatelessWidget {
       margin: margin,
       padding: text != null ? EdgeInsetsDirectional.only(end: size / 4) : null,
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
+        color: Theme.of(context).isDark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
         borderRadius: BorderRadius.all(Radius.circular(size)),
       ),
       child: text == null

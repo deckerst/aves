@@ -6,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/details/date.dart';
 import 'package:aves/widgets/viewer/overlay/details/description.dart';
@@ -136,7 +137,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   static const double iconPadding = 8.0;
   static const double iconSize = 16.0;
 
-  static List<Shadow>? shadows(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? AStyles.embossShadows : null;
+  static List<Shadow>? shadows(BuildContext context) => Theme.of(context).isDark ? AStyles.embossShadows : null;
 
   const ViewerDetailOverlayContent({
     super.key,

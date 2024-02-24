@@ -1,4 +1,5 @@
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_grid.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -104,7 +105,7 @@ class _OverlayBackgroundState extends State<_OverlayBackground> {
   }
 
   BoxDecoration _buildBackgroundDecoration(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).isDark;
     return _initialized
         ? BoxDecoration(
             color: isDark ? Colors.black87 : const Color(0xDDFFFFFF),

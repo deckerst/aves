@@ -2,6 +2,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class HighlightTitle extends StatelessWidget {
 
   static List<Shadow> shadows(BuildContext context) => [
         Shadow(
-          color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+          color: Theme.of(context).isDark ? Colors.black : Colors.white,
           offset: const Offset(0, 1),
           blurRadius: 2,
         )

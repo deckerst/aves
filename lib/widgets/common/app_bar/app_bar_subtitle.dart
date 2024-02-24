@@ -4,6 +4,7 @@ import 'package:aves/model/source/events.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
@@ -77,7 +78,7 @@ class SourceStateSubtitle extends StatelessWidget {
                   const WidgetSpan(child: SizedBox(width: 8)),
                   TextSpan(
                     text: '${progress.done}/${progress.total}',
-                    style: TextStyle(color: theme.brightness == Brightness.dark ? Colors.white30 : Colors.black26),
+                    style: TextStyle(color: theme.isDark ? Colors.white30 : Colors.black26),
                   ),
                 ]
               ],
