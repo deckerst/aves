@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/naming_pattern.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
@@ -14,8 +14,10 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class RenameEntrySetPage extends StatefulWidget {
   static const routeName = '/rename_entry_set';
@@ -62,6 +64,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     final l10n = context.l10n;
     final textScaler = MediaQuery.textScalerOf(context);
     final effectiveThumbnailExtent = max(thumbnailExtent, textScaler.scale(thumbnailExtent));
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.renameEntrySetPageTitle),
@@ -104,11 +107,12 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                       },
                       onSelected: (key) async {
                         // wait for the popup menu to hide before proceeding with the action
-                        await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+                        await Future.delayed(animations.popUpAnimationDelay * timeDilation);
                         _insertProcessor(key);
                       },
                       tooltip: l10n.renameEntrySetPageInsertTooltip,
                       icon: const Icon(AIcons.add),
+                      popUpAnimationStyle: animations.popUpAnimationStyle,
                     ),
                   ),
                 ],

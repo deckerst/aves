@@ -7,6 +7,7 @@ import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/geotiff.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -462,6 +463,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   ) async {
     final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
+    final animations = context.read<Settings>().accessibilityAnimations;
     final selectedAction = await showMenu<MapClusterAction>(
       context: context,
       position: RelativeRect.fromRect(tapLocalPosition & touchArea, Offset.zero & overlay.size),
@@ -482,10 +484,11 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           MapClusterAction.removeLocation,
         ].map(_buildMenuItem),
       ],
+      popUpAnimationStyle: animations.popUpAnimationStyle,
     );
     if (selectedAction != null) {
       // wait for the popup menu to hide before proceeding with the action
-      await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+      await Future.delayed(animations.popUpAnimationDelay * timeDilation);
       final delegate = EntrySetActionDelegate();
       switch (selectedAction) {
         case MapClusterAction.editLocation:

@@ -11,7 +11,6 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
@@ -117,6 +116,7 @@ class AvesFilterChip extends StatefulWidget {
       final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
       const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
       final actionDelegate = ChipActionDelegate();
+      final animations = context.read<Settings>().accessibilityAnimations;
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
@@ -149,10 +149,11 @@ class AvesFilterChip extends StatefulWidget {
             );
           }),
         ],
+        popUpAnimationStyle: animations.popUpAnimationStyle,
       );
       if (selectedAction != null) {
         // wait for the popup menu to hide before proceeding with the action
-        await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+        await Future.delayed(animations.popUpAnimationDelay * timeDilation);
         actionDelegate.onActionSelected(context, filter, selectedAction);
       }
     }

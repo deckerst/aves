@@ -1,5 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/widgets.dart';
 
 extension ExtraAccessibilityAnimations on AccessibilityAnimations {
   bool get animate {
@@ -13,5 +15,18 @@ extension ExtraAccessibilityAnimations on AccessibilityAnimations {
       case AccessibilityAnimations.enabled:
         return true;
     }
+  }
+
+  Duration get popUpAnimationDuration => animate ? ADurations.popupMenuAnimation : Duration.zero;
+
+  Duration get popUpAnimationDelay => popUpAnimationDuration + const Duration(milliseconds: ADurations.transitionMarginMillis);
+
+  AnimationStyle get popUpAnimationStyle {
+    return animate
+        ? AnimationStyle(
+            curve: Curves.easeInOutCubic,
+            duration: popUpAnimationDuration,
+          )
+        : AnimationStyle.noAnimation;
   }
 }

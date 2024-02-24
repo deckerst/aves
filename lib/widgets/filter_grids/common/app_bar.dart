@@ -4,6 +4,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
@@ -329,6 +330,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           (action) => _buildButtonIcon(context, actionDelegate, action, enabled: canApply(action)),
         );
 
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return [
       ...quickActionButtons,
       PopupMenuButton<ChipSetAction>(
@@ -366,9 +368,10 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
           _onActionSelected(context, action, actionDelegate);
         },
+        popUpAnimationStyle: animations.popUpAnimationStyle,
       ),
     ];
   }

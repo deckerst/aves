@@ -2,6 +2,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -205,6 +206,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     required bool Function(ChipSetAction action) isVisible,
     required void Function(ChipSetAction action) onActionSelected,
   }) {
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return [
       if (widget.moveType != null)
         ..._quickActions.where(isVisible).map(
@@ -227,9 +229,10 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
           onActionSelected(action);
         },
+        popUpAnimationStyle: animations.popUpAnimationStyle,
       ),
     ];
   }

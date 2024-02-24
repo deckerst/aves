@@ -21,6 +21,7 @@ class AvesPopupMenuButton<T> extends PopupMenuButton<T> {
     super.enableFeedback,
     super.iconSize,
     this.onMenuOpened,
+    super.popUpAnimationStyle,
   });
 
   @override
