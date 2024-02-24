@@ -30,10 +30,24 @@ class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel
     }
 
     init {
+        onAppResume()
+    }
+
+    fun dispose() {
+        onAppPause()
+    }
+
+    fun onAppResume() {
+        Log.i(LOG_TAG, "start listening to Media Store")
         context.contentResolver.apply {
             registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
             registerContentObserver(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
         }
+    }
+
+    fun onAppPause() {
+        Log.i(LOG_TAG, "stop listening to Media Store")
+        context.contentResolver.unregisterContentObserver(contentObserver)
     }
 
     override fun onListen(arguments: Any?, eventSink: EventSink) {
@@ -43,10 +57,6 @@ class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel
 
     override fun onCancel(arguments: Any?) {
         Log.i(LOG_TAG, "onCancel arguments=$arguments")
-    }
-
-    fun dispose() {
-        context.contentResolver.unregisterContentObserver(contentObserver)
     }
 
     private fun success(uri: String?) {
