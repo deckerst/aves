@@ -4,9 +4,9 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -25,6 +25,7 @@ import 'package:aves/widgets/debug/media_store_scan_dialog.dart';
 import 'package:aves/widgets/debug/report.dart';
 import 'package:aves/widgets/debug/settings.dart';
 import 'package:aves/widgets/debug/storage.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,7 @@ class AppDebugPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return Directionality(
       textDirection: TextDirection.ltr,
       child: AvesScaffold(
@@ -56,9 +58,10 @@ class AppDebugPage extends StatelessWidget {
                     .toList(),
                 onSelected: (action) async {
                   // wait for the popup menu to hide before proceeding with the action
-                  await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+                  await Future.delayed(animations.popUpAnimationDelay * timeDilation);
                   unawaited(_onActionSelected(context, action));
                 },
+                popUpAnimationStyle: animations.popUpAnimationStyle,
               ),
             ),
           ],

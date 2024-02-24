@@ -2,9 +2,9 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
@@ -49,6 +49,7 @@ class InfoAppBar extends StatelessWidget {
     final commonActions = EntryActions.commonMetadataActions.where(isVisible);
     final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where(isVisible);
     final useTvLayout = settings.useTvLayout;
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return SliverAppBar(
       leading: useTvLayout
           ? null
@@ -91,9 +92,10 @@ class InfoAppBar extends StatelessWidget {
                   ],
                   onSelected: (action) async {
                     // wait for the popup menu to hide before proceeding with the action
-                    await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+                    await Future.delayed(animations.popUpAnimationDelay * timeDilation);
                     actionDelegate.onActionSelected(context, entry, collection, action);
                   },
+                  popUpAnimationStyle: animations.popUpAnimationStyle,
                 ),
             ].map((v) => FontSizeIconTheme(child: v)).toList(),
       floating: true,

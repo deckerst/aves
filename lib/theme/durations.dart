@@ -2,12 +2,13 @@ import 'package:flutter/foundation.dart';
 
 class ADurations {
   // Flutter animations (with margin)
-  static const popupMenuAnimation = Duration(milliseconds: 300 + 20); // ref `_kMenuDuration` used in `_PopupMenuRoute`
+  static const transitionMarginMillis = 20;
+
   // page transition duration also available via `ModalRoute.of(context)!.transitionDuration * timeDilation`
-  static const pageTransitionAnimation = Duration(milliseconds: 300 + 20); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
-  static const dialogTransitionAnimation = Duration(milliseconds: 150 + 20); // ref `transitionDuration` used in `DialogRoute`
-  static const drawerTransitionAnimation = Duration(milliseconds: 246 + 20); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
-  static const toggleableTransitionAnimation = Duration(milliseconds: 200 + 20); // ref `_kToggleDuration` used in `ToggleableStateMixin`
+  static const pageTransitionAnimation = Duration(milliseconds: 300 + transitionMarginMillis); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
+  static const dialogTransitionAnimation = Duration(milliseconds: 150 + transitionMarginMillis); // ref `transitionDuration` used in `DialogRoute`
+  static const drawerTransitionAnimation = Duration(milliseconds: 246 + transitionMarginMillis); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
+  static const toggleableTransitionAnimation = Duration(milliseconds: 200 + transitionMarginMillis); // ref `_kToggleDuration` used in `ToggleableStateMixin`
 
   // common animations
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
@@ -16,6 +17,7 @@ class ADurations {
 
   static const appBarTitleAnimation = Duration(milliseconds: 300);
   static const appBarActionChangeAnimation = Duration(milliseconds: 200);
+  static const popupMenuAnimation = Duration(milliseconds: 300);
 
   // filter grids animations
   static const chipDecorationAnimation = Duration(milliseconds: 200);

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -18,6 +19,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class FilePickerPage extends StatefulWidget {
   static const routeName = '/file_picker';
@@ -57,6 +59,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
         return !isHidden;
       }
     }).toList();
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return PopScope(
       canPop: _directory.relativeDir.isEmpty,
       onPopInvoked: (didPop) {
@@ -82,13 +85,14 @@ class _FilePickerPageState extends State<FilePickerPage> {
                 },
                 onSelected: (action) async {
                   // wait for the popup menu to hide before proceeding with the action
-                  await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+                  await Future.delayed(animations.popUpAnimationDelay * timeDilation);
                   switch (action) {
                     case _PickerAction.toggleHiddenView:
                       settings.filePickerShowHiddenFiles = !showHidden;
                       setState(() {});
                   }
                 },
+                popUpAnimationStyle: animations.popUpAnimationStyle,
               ),
             ),
           ],

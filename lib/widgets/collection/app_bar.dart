@@ -7,6 +7,7 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -382,6 +383,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return [
       ...quickActionButtons,
       PopupMenuButton<EntrySetAction>(
@@ -432,9 +434,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         },
         onSelected: (action) async {
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
           await _onActionSelected(action);
         },
+        popUpAnimationStyle: animations.popUpAnimationStyle,
       ),
     ];
   }
