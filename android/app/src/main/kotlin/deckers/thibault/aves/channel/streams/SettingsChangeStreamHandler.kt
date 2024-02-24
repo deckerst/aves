@@ -62,9 +62,21 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
     }
 
     init {
-        context.contentResolver.apply {
-            registerContentObserver(Settings.System.CONTENT_URI, true, contentObserver)
-        }
+        onAppResume()
+    }
+
+    fun dispose() {
+        onAppPause()
+    }
+
+    fun onAppResume() {
+        Log.i(LOG_TAG, "start listening to system settings")
+        context.contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, contentObserver)
+    }
+
+    fun onAppPause() {
+        Log.i(LOG_TAG, "stop listening to system settings")
+        context.contentResolver.unregisterContentObserver(contentObserver)
     }
 
     override fun onListen(arguments: Any?, eventSink: EventSink) {
@@ -74,10 +86,6 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
 
     override fun onCancel(arguments: Any?) {
         Log.i(LOG_TAG, "onCancel arguments=$arguments")
-    }
-
-    fun dispose() {
-        context.contentResolver.unregisterContentObserver(contentObserver)
     }
 
     private fun success(settings: FieldMap) {
