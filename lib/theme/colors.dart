@@ -1,6 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class AvesColorsProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProxyProvider<Settings, AvesColorsData>(
       update: (context, settings, __) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final isDark = Theme.of(context).isDark;
         var mode = settings.themeColorMode;
         if (!allowMonochrome && mode == AvesThemeColorMode.monochrome) {
           mode = AvesThemeColorMode.polychrome;

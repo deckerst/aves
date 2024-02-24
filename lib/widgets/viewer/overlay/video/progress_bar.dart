@@ -5,6 +5,7 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_video/aves_video.dart';
@@ -39,9 +40,9 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   @override
   Widget build(BuildContext context) {
     final blurred = settings.enableBlurEffect;
-    final brightness = Theme.of(context).brightness;
+    final theme = Theme.of(context);
     final textStyle = TextStyle(
-      shadows: brightness == Brightness.dark ? AStyles.embossShadows : null,
+      shadows: theme.isDark ? AStyles.embossShadows : null,
     );
     const strutStyle = StrutStyle(
       forceStrutHeight: true,
@@ -71,7 +72,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
               decoration: BoxDecoration(
-                color: Themes.overlayBackgroundColor(brightness: brightness, blurred: blurred),
+                color: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
                 border: AvesBorder.border(context),
                 borderRadius: const BorderRadius.all(Radius.circular(radius)),
               ),
