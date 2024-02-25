@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Cataloguing: detect/filter HDR videos
+
 ### Changed
 
 - check Media Store changes when resuming app
