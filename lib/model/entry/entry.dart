@@ -242,6 +242,11 @@ class AvesEntry with AvesEntryBase {
     return _bestDate;
   }
 
+  @override
+  bool get isAnimated => catalogMetadata?.isAnimated ?? false;
+
+  bool get isHdr => _catalogMetadata?.isHdr ?? false;
+
   int get rating => _catalogMetadata?.rating ?? 0;
 
   @override
@@ -302,9 +307,6 @@ class AvesEntry with AvesEntryBase {
     final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month, d.day);
   }
-
-  @override
-  bool get isAnimated => catalogMetadata?.isAnimated ?? false;
 
   @override
   int? get durationMillis => _durationMillis;

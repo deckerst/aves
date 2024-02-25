@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -559,7 +560,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                 // identification of embedded gain map
                 if (xmpMeta.hasHdrGainMap()) {
-                    flags = flags or MASK_HAS_HDR_GAIN_MAP
+                    flags = flags or MASK_IS_HDR
                 }
             } catch (e: XMPException) {
                 Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
@@ -794,6 +795,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             if (isHeic(mimeType)) {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS) {
                     if (it > 1) flags = flags or MASK_IS_MULTIPAGE
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER) {
+                    if (it == MediaFormat.COLOR_TRANSFER_ST2084 || it == MediaFormat.COLOR_TRANSFER_HLG) {
+                        flags = flags or MASK_IS_HDR
+                    }
                 }
             }
 
@@ -1300,7 +1309,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_360 = 1 shl 3
         private const val MASK_IS_MULTIPAGE = 1 shl 4
         private const val MASK_IS_MOTION_PHOTO = 1 shl 5
-        private const val MASK_HAS_HDR_GAIN_MAP = 1 shl 6
+        private const val MASK_IS_HDR = 1 shl 6 // for images: embedded HDR gainmap, for videos: HDR color transfer
         private const val XMP_SUBJECTS_SEPARATOR = ";"
 
         // overlay metadata
