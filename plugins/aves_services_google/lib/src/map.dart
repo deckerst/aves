@@ -53,7 +53,7 @@ class EntryGoogleMap<T> extends StatefulWidget {
   State<StatefulWidget> createState() => _EntryGoogleMapState<T>();
 }
 
-class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindingObserver {
+class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
   GoogleMapController? _serviceMapController;
   final List<StreamSubscription> _subscriptions = [];
   Map<MarkerKey<T>, GeoEntry<T>> _geoEntryByMarkerKey = {};
@@ -72,7 +72,6 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _sizeNotifier.addListener(_onSizeChanged);
     _registerWidget(widget);
   }
@@ -88,7 +87,6 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
   void dispose() {
     _unregisterWidget(widget);
     _serviceMapController?.dispose();
-    WidgetsBinding.instance.removeObserver(this);
     _sizeNotifier.dispose();
     super.dispose();
   }
@@ -107,15 +105,6 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> with WidgetsBindi
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      // workaround for blank map when resuming app
-      // cf https://github.com/flutter/flutter/issues/40284
-      _serviceMapController?.setMapStyle(null);
-    }
   }
 
   @override
