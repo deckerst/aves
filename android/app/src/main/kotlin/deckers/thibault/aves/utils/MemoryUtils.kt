@@ -7,11 +7,13 @@ object MemoryUtils {
 
     fun canAllocate(byteSize: Number?): Boolean {
         byteSize ?: return true
-        val availableHeapSize = Runtime.getRuntime().let { it.maxMemory() - (it.totalMemory() - it.freeMemory()) }
+        val availableHeapSize = getAvailableHeapSize()
         val danger = byteSize.toLong() > availableHeapSize
         if (danger) {
             Log.e(LOG_TAG, "trying to handle $byteSize bytes, with only $availableHeapSize free bytes")
         }
         return !danger
     }
+
+    fun getAvailableHeapSize() = Runtime.getRuntime().let { it.maxMemory() - (it.totalMemory() - it.freeMemory()) }
 }
