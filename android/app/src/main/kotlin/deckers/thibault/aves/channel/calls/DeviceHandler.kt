@@ -12,7 +12,7 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MemoryUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -35,6 +35,8 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             "requestMediaManagePermission" -> safe(call, result, ::requestMediaManagePermission)
+            "getAvailableHeapSize" -> safe(call, result, ::getAvailableHeapSize)
+            "requestGarbageCollection" -> safe(call, result, ::requestGarbageCollection)
             else -> result.notImplemented()
         }
     }
@@ -120,6 +122,15 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
 
         val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, Uri.parse("package:${context.packageName}"))
         context.startActivity(intent)
+        result.success(true)
+    }
+
+    private fun getAvailableHeapSize(@Suppress("unused_parameter") methodCall: MethodCall, result: MethodChannel.Result) {
+        result.success(MemoryUtils.getAvailableHeapSize())
+    }
+
+    private fun requestGarbageCollection(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        Runtime.getRuntime().gc()
         result.success(true)
     }
 
