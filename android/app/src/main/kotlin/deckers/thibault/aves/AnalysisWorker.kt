@@ -14,7 +14,6 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.calls.DebugHandler
 import deckers.thibault.aves.channel.calls.DeviceHandler
 import deckers.thibault.aves.channel.calls.GeocodingHandler
 import deckers.thibault.aves.channel.calls.MediaStoreHandler
@@ -98,7 +97,6 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
 
         // dart -> platform -> dart
         // - need Context
-        MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(context))
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(context))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(context))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(context))

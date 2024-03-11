@@ -46,16 +46,6 @@ class AndroidDebugService {
     }
   }
 
-  static Future<int> getAvailableHeapSize() async {
-    try {
-      final result = await _platform.invokeMethod('getAvailableHeapSize');
-      if (result != null) return result as int;
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return 0;
-  }
-
   static Future<Map> getContextDirs() async {
     try {
       final result = await _platform.invokeMethod('getContextDirs');
