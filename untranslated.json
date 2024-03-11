@@ -1889,15 +1889,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "de": [
-    "entryActionCast",
-    "overlayHistogramNone",
-    "castDialogTitle",
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
-  ],
-
   "el": [
     "entryActionCast",
     "castDialogTitle",
@@ -1916,37 +1907,19 @@
   ],
 
   "fa": [
-    "filterLocatedLabel",
-    "filterTaggedLabel",
-    "filterRatingRejectedLabel",
-    "albumTierSpecial",
     "coordinateFormatDms",
-    "coordinateFormatDecimal",
     "coordinateDms",
     "coordinateDmsNorth",
     "coordinateDmsSouth",
     "coordinateDmsEast",
     "coordinateDmsWest",
-    "overlayHistogramNone",
     "overlayHistogramRGB",
-    "overlayHistogramLuminance",
-    "videoPlaybackSkip",
-    "viewerTransitionParallax",
-    "missingSystemFilePickerDialogMessage",
     "unsupportedTypeDialogMessage",
-    "nameConflictDialogSingleSourceMessage",
-    "nameConflictDialogMultipleSourceMessage",
-    "addShortcutDialogLabel",
-    "addShortcutButtonLabel",
-    "noMatchingAppDialogMessage",
     "binEntriesConfirmationDialogMessage",
     "deleteEntriesConfirmationDialogMessage",
     "moveUndatedConfirmationDialogMessage",
     "moveUndatedConfirmationDialogSetDate",
-    "videoResumeButtonLabel",
     "setCoverDialogLatest",
-    "setCoverDialogAuto",
-    "setCoverDialogCustom",
     "hideFilterConfirmationDialogMessage",
     "newAlbumDialogTitle",
     "newAlbumDialogNameLabel",
@@ -4795,14 +4768,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "id": [
-    "entryActionCast",
-    "castDialogTitle",
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
-  ],
-
   "it": [
     "collectionActionSetHome",
     "setHomeCustomCollection",
@@ -4810,18 +4775,13 @@
   ],
 
   "ja": [
-    "columnCount",
-    "saveCopyButtonLabel",
     "applyTooltip",
-    "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
-    "entryActionCast",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
     "editorTransformCrop",
-    "editorTransformRotate",
     "cropAspectRatioFree",
     "cropAspectRatioOriginal",
     "cropAspectRatioSquare",
@@ -9274,24 +9234,5 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "zh_Hant": [
-    "entryActionCast",
-    "overlayHistogramNone",
-    "overlayHistogramLuminance",
-    "castDialogTitle",
-    "aboutDataUsageSectionTitle",
-    "aboutDataUsageData",
-    "aboutDataUsageCache",
-    "aboutDataUsageDatabase",
-    "aboutDataUsageMisc",
-    "aboutDataUsageInternal",
-    "aboutDataUsageExternal",
-    "aboutDataUsageClearCache",
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon",
-    "settingsViewerShowHistogram"
   ]
 }
