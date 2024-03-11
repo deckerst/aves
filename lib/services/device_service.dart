@@ -17,6 +17,10 @@ abstract class DeviceService {
   Future<bool> isSystemFilePickerEnabled();
 
   Future<void> requestMediaManagePermission();
+
+  Future<int> getAvailableHeapSize();
+
+  Future<void> requestGarbageCollection();
 }
 
 class PlatformDeviceService implements DeviceService {
@@ -100,6 +104,26 @@ class PlatformDeviceService implements DeviceService {
   Future<void> requestMediaManagePermission() async {
     try {
       await _platform.invokeMethod('requestMediaManagePermission');
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+  }
+
+  @override
+  Future<int> getAvailableHeapSize() async {
+    try {
+      final result = await _platform.invokeMethod('getAvailableHeapSize');
+      if (result != null) return result as int;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return 0;
+  }
+
+  @override
+  Future<void> requestGarbageCollection() async {
+    try {
+      await _platform.invokeMethod('requestGarbageCollection');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

@@ -15,12 +15,15 @@ import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.*
+import deckers.thibault.aves.metadata.ExifInterfaceHelper
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
+import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.Mp4ParserHelper.dumpBoxes
+import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
@@ -53,7 +56,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "exceptionInCoroutine" -> ioScope.launch { throw TestException() }
             "safeExceptionInCoroutine" -> ioScope.launch { safe(call, result) { _, _ -> throw TestException() } }
 
-            "getAvailableHeapSize" -> safe(call, result, ::getAvailableHeapSize)
             "getContextDirs" -> ioScope.launch { safe(call, result, ::getContextDirs) }
             "getCodecs" -> safe(call, result, ::getCodecs)
             "getEnv" -> safe(call, result, ::getEnv)
@@ -68,10 +70,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "getTiffStructure" -> ioScope.launch { safe(call, result, ::getTiffStructure) }
             else -> result.notImplemented()
         }
-    }
-
-    private fun getAvailableHeapSize(@Suppress("unused_parameter") methodCall: MethodCall, result: MethodChannel.Result) {
-        result.success(MemoryUtils.getAvailableHeapSize())
     }
 
     private fun getContextDirs(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

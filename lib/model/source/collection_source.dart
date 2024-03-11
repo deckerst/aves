@@ -449,6 +449,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     }
 
     if (dataTypes.contains(EntryDataType.catalog)) {
+      // explicit GC before cataloguing multiple items
+      await deviceService.requestGarbageCollection();
       await Future.forEach(entries, (entry) async {
         await entry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
         await metadataDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
@@ -499,6 +501,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           entryIds: entries?.map((entry) => entry.id).toList(),
         );
       } else {
+        // explicit GC before cataloguing multiple items
+        await deviceService.requestGarbageCollection();
         await catalogEntries(_analysisController, todoEntries);
         updateDerivedFilters(todoEntries);
         await locateEntries(_analysisController, todoEntries);

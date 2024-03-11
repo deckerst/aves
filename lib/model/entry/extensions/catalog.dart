@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/geotiff.dart';
@@ -6,10 +8,14 @@ import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
+import 'package:flutter/foundation.dart';
 
 extension ExtraAvesEntryCatalog on AvesEntry {
   Future<void> catalog({required bool background, required bool force, required bool persist}) async {
     if (isCatalogued && !force) return;
+
+    final beforeAvailableHeapSize = await deviceService.getAvailableHeapSize();
+
     if (isSvg) {
       // vector image sizing is not essential, so we should not spend time for it during loading
       // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
@@ -52,6 +58,15 @@ extension ExtraAvesEntryCatalog on AvesEntry {
           }
         }
       }
+    }
+
+    final afterAvailableHeapSize = await deviceService.getAvailableHeapSize();
+    final diff = beforeAvailableHeapSize - afterAvailableHeapSize;
+    const largeHeapUsageThreshold = 15 * (1 << 20); // MB
+
+    if (diff > largeHeapUsageThreshold) {
+      debugPrint('Large heap usage (${diff}B) from cataloguing entry=$this size=$sizeBytes');
+      await deviceService.requestGarbageCollection();
     }
   }
 }
