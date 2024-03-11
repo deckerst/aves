@@ -11,12 +11,17 @@ import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/debouncer.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 class MediaStoreSource extends CollectionSource {
+  final Debouncer _changeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
+  final Set<String> _changedUris = {};
+  int? _lastGeneration;
   SourceInitializationState _initState = SourceInitializationState.none;
 
   @override
@@ -36,6 +41,7 @@ class MediaStoreSource extends CollectionSource {
       _initState = directory != null ? SourceInitializationState.directory : SourceInitializationState.full;
     }
     addDirectories(albums: settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).toSet());
+    await updateGeneration();
     unawaited(_loadEntries(
       analysisController: analysisController,
       directory: directory,
@@ -303,6 +309,34 @@ class MediaStoreSource extends CollectionSource {
     }
 
     return tempUris;
+  }
+
+  void onStoreChanged(String? uri) {
+    if (uri != null) _changedUris.add(uri);
+    if (_changedUris.isNotEmpty) {
+      _changeDebouncer(() async {
+        final todo = _changedUris.toSet();
+        _changedUris.clear();
+        final tempUris = await refreshUris(todo);
+        if (tempUris.isNotEmpty) {
+          _changedUris.addAll(tempUris);
+          onStoreChanged(null);
+        }
+      });
+    }
+  }
+
+  Future<void> checkForChanges() async {
+    final sinceGeneration = _lastGeneration;
+    if (sinceGeneration != null) {
+      _changedUris.addAll(await mediaStoreService.getChangedUris(sinceGeneration));
+      onStoreChanged(null);
+    }
+    await updateGeneration();
+  }
+
+  Future<void> updateGeneration() async {
+    _lastGeneration = await mediaStoreService.getGeneration();
   }
 
   // vault

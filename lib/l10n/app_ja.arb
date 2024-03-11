@@ -1232,5 +1232,19 @@
   "lengthUnitPixel": "px",
   "@lengthUnitPixel": {},
   "lengthUnitPercent": "%",
-  "@lengthUnitPercent": {}
+  "@lengthUnitPercent": {},
+  "saveCopyButtonLabel": "コピーを保存",
+  "@saveCopyButtonLabel": {},
+  "columnCount": "{count, plural, =1{1 列} other{{count} 列}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "chipActionShowCountryStates": "地域を表示",
+  "@chipActionShowCountryStates": {},
+  "entryActionCast": "キャスト",
+  "@entryActionCast": {},
+  "editorTransformRotate": "回転",
+  "@editorTransformRotate": {}
 }

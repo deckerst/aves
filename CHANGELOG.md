@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.6"></a>[v1.10.6] - 2024-03-11
+
+### Added
+
+- Cataloguing: detect/filter HDR videos
+
+### Changed
+
+- check Media Store changes when resuming app
+- disabling animations also applies to pop up menus
+- upgraded Flutter to stable v3.19.3
+
+### Fixed
+
+- engine leak from analysis worker
+
 ## <a id="v1.10.5"></a>[v1.10.5] - 2024-02-22
 
 ### Added

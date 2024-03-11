@@ -19,11 +19,9 @@ import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -154,9 +152,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
   final TvRailController _tvRailController = TvRailController();
-  final CollectionSource _mediaStoreSource = MediaStoreSource();
-  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
-  final Set<String> _changedUris = {};
+  final MediaStoreSource _mediaStoreSource = MediaStoreSource();
   Size? _screenSize;
 
   final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(defaultPageTransitionsBuilder);
@@ -184,7 +180,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     EquatableConfig.stringify = true;
     _appSetup = _setup();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
-    _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChanged(event as String?)));
+    _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _mediaStoreSource.onStoreChanged(event as String?)));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
     _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
@@ -399,6 +395,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         }
       case AppLifecycleState.resumed:
         RecentlyAddedFilter.updateNow();
+        _mediaStoreSource.checkForChanges();
         break;
       default:
         break;
@@ -612,21 +609,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     await _mediaStoreSource.loadCatalogMetadata();
     await _mediaStoreSource.loadAddresses();
     _mediaStoreSource.updateDerivedFilters();
-  }
-
-  void _onMediaStoreChanged(String? uri) {
-    if (uri != null) _changedUris.add(uri);
-    if (_changedUris.isNotEmpty) {
-      _mediaStoreChangeDebouncer(() async {
-        final todo = _changedUris.toSet();
-        _changedUris.clear();
-        final tempUris = await _mediaStoreSource.refreshUris(todo);
-        if (tempUris.isNotEmpty) {
-          _changedUris.addAll(tempUris);
-          _onMediaStoreChanged(null);
-        }
-      });
-    }
   }
 
   void _onError(String? error) => reportService.recordError(error, null);

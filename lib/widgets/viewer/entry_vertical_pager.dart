@@ -11,6 +11,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/springy_scroll_physics.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/intents.dart';
@@ -171,7 +172,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         return ValueListenableBuilder<double>(
           valueListenable: widget.overlayOpacity,
           builder: (context, overlayOpacity, child) {
-            final background = Theme.of(context).brightness == Brightness.dark ? Colors.black : Color.lerp(Colors.black, Colors.white, overlayOpacity)!;
+            final background = Theme.of(context).isDark ? Colors.black : Color.lerp(Colors.black, Colors.white, overlayOpacity)!;
             return Container(
               color: background.withOpacity(backgroundOpacity),
               child: child,

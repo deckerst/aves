@@ -4,9 +4,9 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
@@ -250,6 +250,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
     final exportActions = widget.exportActions;
     final videoActions = widget.videoActions;
     final hasOverflowMenu = pageEntry.canRotate || pageEntry.canFlip || topLevelActions.isNotEmpty || exportActions.isNotEmpty || videoActions.isNotEmpty;
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return Selector<VideoConductor, AvesVideoController?>(
       selector: (context, vc) => vc.getController(pageEntry),
       builder: (context, videoController, child) {
@@ -301,10 +302,11 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                             ]
                           ];
                         },
-                        onSelected: (action) {
+                        onSelected: (action) async {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
-                          Future.delayed(ADurations.popupMenuAnimation * timeDilation, () => widget.actionDelegate.onActionSelected(context, action));
+                          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+                          widget.actionDelegate.onActionSelected(context, action);
                         },
                         onCanceled: () {
                           _popupExpandedNotifier.value = null;
@@ -316,6 +318,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                           // so we make sure overlay stays visible
                           const ToggleOverlayNotification(visible: true).dispatch(context);
                         },
+                        popUpAnimationStyle: animations.popUpAnimationStyle,
                       ),
                     ),
                   ),

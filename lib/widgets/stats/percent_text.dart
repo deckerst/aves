@@ -1,5 +1,6 @@
 import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +21,7 @@ class LinearPercentIndicatorText extends StatelessWidget {
         TextSpan(
           text: percentFormat.format(percent),
           style: TextStyle(
-            shadows: theme.brightness == Brightness.dark ? AStyles.embossShadows : null,
+            shadows: theme.isDark ? AStyles.embossShadows : null,
           ),
         )
       ],

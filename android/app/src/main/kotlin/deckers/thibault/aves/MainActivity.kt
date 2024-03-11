@@ -175,6 +175,18 @@ open class MainActivity : FlutterFragmentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mediaStoreChangeStreamHandler.onAppResume()
+        settingsChangeStreamHandler.onAppResume()
+    }
+
+    override fun onPause() {
+        mediaStoreChangeStreamHandler.onAppPause()
+        settingsChangeStreamHandler.onAppPause()
+        super.onPause()
+    }
+
     override fun onStop() {
         Log.i(LOG_TAG, "onStop")
         super.onStop()

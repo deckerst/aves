@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -45,6 +46,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
 
   @override
   Widget build(BuildContext context) {
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return AvesScaffold(
       appBar: AppBar(
         title: InteractiveAppBarTitle(
@@ -72,9 +74,10 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             },
             onSelected: (action) async {
               // wait for the popup menu to hide before proceeding with the action
-              await Future.delayed(ADurations.popupMenuAnimation * timeDilation);
+              await Future.delayed(animations.popUpAnimationDelay * timeDilation);
               _onActionSelected(action);
             },
+            popUpAnimationStyle: animations.popUpAnimationStyle,
           ),
         ].map((v) => FontSizeIconTheme(child: v)).toList(),
       ),

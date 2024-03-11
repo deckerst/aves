@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class ItemPicker extends StatelessWidget {
                     bottom: -1,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
+                        color: Theme.of(context).isDark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
                         border: AvesBorder.border(context),
                         borderRadius: actionBoxBorderRadius,
                       ),

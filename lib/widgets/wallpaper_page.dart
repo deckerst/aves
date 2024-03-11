@@ -7,6 +7,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/action/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
@@ -50,7 +51,7 @@ class WallpaperPage extends StatelessWidget {
               ),
             )
           : const SizedBox(),
-      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).isDark ? Colors.black : Colors.white,
       resizeToAvoidBottomInset: false,
     );
   }

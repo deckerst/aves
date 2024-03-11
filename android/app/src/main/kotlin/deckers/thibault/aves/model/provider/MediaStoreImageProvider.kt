@@ -3,7 +3,11 @@ package deckers.thibault.aves.model.provider
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.RecoverableSecurityException
-import android.content.*
+import android.content.ContentResolver
+import android.content.ContentUris
+import android.content.ContentValues
+import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -35,7 +39,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.io.SyncFailedException
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -45,11 +49,11 @@ import kotlin.coroutines.suspendCoroutine
 class MediaStoreImageProvider : ImageProvider() {
     fun fetchAll(
         context: Context,
-        knownEntries: Map<Int?, Int?>,
+        knownEntries: Map<Long?, Int?>,
         directory: String?,
         handleNewEntry: NewEntryHandler,
     ) {
-        val isModified = fun(contentId: Int, dateModifiedSecs: Int): Boolean {
+        val isModified = fun(contentId: Long, dateModifiedSecs: Int): Boolean {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
         }
@@ -89,7 +93,7 @@ class MediaStoreImageProvider : ImageProvider() {
         var found = false
         val fetched = arrayListOf<FieldMap>()
         val id = uri.tryParseId()
-        val alwaysValid: NewEntryChecker = fun(_: Int, _: Int): Boolean = true
+        val alwaysValid: NewEntryChecker = fun(_: Long, _: Int): Boolean = true
         val onSuccess: NewEntryHandler = fun(entry: FieldMap) { fetched.add(entry) }
         if (id != null) {
             if (sourceMimeType == null || isImage(sourceMimeType)) {
@@ -119,8 +123,8 @@ class MediaStoreImageProvider : ImageProvider() {
         }
     }
 
-    fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int?>): List<Int> {
-        val foundContentIds = HashSet<Int>()
+    fun checkObsoleteContentIds(context: Context, knownContentIds: List<Long?>): List<Long> {
+        val foundContentIds = HashSet<Long>()
         fun check(context: Context, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID)
             try {
@@ -128,7 +132,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 if (cursor != null) {
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
                     while (cursor.moveToNext()) {
-                        foundContentIds.add(cursor.getInt(idColumn))
+                        foundContentIds.add(cursor.getLong(idColumn))
                     }
                     cursor.close()
                 }
@@ -141,8 +145,8 @@ class MediaStoreImageProvider : ImageProvider() {
         return knownContentIds.subtract(foundContentIds).filterNotNull().toList()
     }
 
-    fun checkObsoletePaths(context: Context, knownPathById: Map<Int?, String?>): List<Int> {
-        val obsoleteIds = ArrayList<Int>()
+    fun checkObsoletePaths(context: Context, knownPathById: Map<Long?, String?>): List<Long> {
+        val obsoleteIds = ArrayList<Long>()
         fun check(context: Context, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATA)
             try {
@@ -151,7 +155,7 @@ class MediaStoreImageProvider : ImageProvider() {
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
                     val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
                     while (cursor.moveToNext()) {
-                        val id = cursor.getInt(idColumn)
+                        val id = cursor.getLong(idColumn)
                         val path = cursor.getString(pathColumn)
                         if (knownPathById.containsKey(id) && knownPathById[id] != path) {
                             obsoleteIds.add(id)
@@ -166,6 +170,31 @@ class MediaStoreImageProvider : ImageProvider() {
         check(context, IMAGE_CONTENT_URI)
         check(context, VIDEO_CONTENT_URI)
         return obsoleteIds
+    }
+
+    fun getChangedUris(context: Context, sinceGeneration: Int): List<String> {
+        val changedUris = ArrayList<String>()
+        fun check(context: Context, contentUri: Uri) {
+            val projection = arrayOf(MediaStore.MediaColumns._ID)
+            val selection = "${MediaStore.MediaColumns.GENERATION_MODIFIED} > ?"
+            val selectionArgs = arrayOf(sinceGeneration.toString())
+            try {
+                val cursor = context.contentResolver.query(contentUri, projection, selection, selectionArgs, null)
+                if (cursor != null) {
+                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
+                    while (cursor.moveToNext()) {
+                        val id = cursor.getLong(idColumn)
+                        changedUris.add(ContentUris.withAppendedId(contentUri, id).toString())
+                    }
+                    cursor.close()
+                }
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", e)
+            }
+        }
+        check(context, IMAGE_CONTENT_URI)
+        check(context, VIDEO_CONTENT_URI)
+        return changedUris
     }
 
     private fun fetchFrom(
@@ -207,12 +236,12 @@ class MediaStoreImageProvider : ImageProvider() {
                 val needDuration = projection.contentEquals(VIDEO_PROJECTION)
 
                 while (cursor.moveToNext()) {
-                    val contentId = cursor.getInt(idColumn)
+                    val id = cursor.getLong(idColumn)
                     val dateModifiedSecs = cursor.getInt(dateModifiedColumn)
-                    if (isValidEntry(contentId, dateModifiedSecs)) {
+                    if (isValidEntry(id, dateModifiedSecs)) {
                         // for multiple items, `contentUri` is the root without ID,
                         // but for single items, `contentUri` already contains the ID
-                        val itemUri = if (contentUriContainsId) contentUri else ContentUris.withAppendedId(contentUri, contentId.toLong())
+                        val itemUri = if (contentUriContainsId) contentUri else ContentUris.withAppendedId(contentUri, id)
                         // `mimeType` can be registered as null for file media URIs with unsupported media types (e.g. TIFF on old devices)
                         // in that case we try to use the MIME type provided along the URI
                         val mimeType: String? = cursor.getString(mimeTypeColumn) ?: fileMimeType
@@ -237,7 +266,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                 "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
                                 "durationMillis" to durationMillis,
                                 // only for map export
-                                "contentId" to contentId,
+                                "contentId" to id,
                             )
 
                             if (MimeTypes.isHeic(mimeType)) {
@@ -930,8 +959,10 @@ class MediaStoreImageProvider : ImageProvider() {
             try {
                 val cursor = context.contentResolver.query(contentUri, projection, selection, selectionArgs, null)
                 if (cursor != null && cursor.moveToFirst()) {
-                    cursor.getColumnIndex(MediaStore.MediaColumns._ID).let {
-                        if (it != -1) mediaContentUri = ContentUris.withAppendedId(contentUri, cursor.getLong(it))
+                    val idColumn = cursor.getColumnIndex(MediaStore.MediaColumns._ID)
+                    if (idColumn != -1) {
+                        val id = cursor.getLong(idColumn)
+                        mediaContentUri = ContentUris.withAppendedId(contentUri, id)
                     }
                     cursor.close()
                 }
@@ -994,4 +1025,4 @@ object MediaColumns {
 
 typealias NewEntryHandler = (entry: FieldMap) -> Unit
 
-private typealias NewEntryChecker = (contentId: Int, dateModifiedSecs: Int) -> Boolean
+private typealias NewEntryChecker = (contentId: Long, dateModifiedSecs: Int) -> Boolean
