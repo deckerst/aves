@@ -1354,5 +1354,17 @@
   "aboutDataUsageClearCache": "Cache leeren",
   "@aboutDataUsageClearCache": {},
   "settingsViewerShowHistogram": "Histogramm anzeigen",
-  "@settingsViewerShowHistogram": {}
+  "@settingsViewerShowHistogram": {},
+  "overlayHistogramNone": "Keines",
+  "@overlayHistogramNone": {},
+  "collectionActionSetHome": "Als Startseite setzen",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Benutzerdefinierte Sammlung",
+  "@setHomeCustomCollection": {},
+  "settingsThumbnailShowHdrIcon": "HDR-Symbol anzeigen",
+  "@settingsThumbnailShowHdrIcon": {},
+  "entryActionCast": "Übertragen",
+  "@entryActionCast": {},
+  "castDialogTitle": "Geräte zur Übertragung",
+  "@castDialogTitle": {}
 }

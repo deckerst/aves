@@ -1356,5 +1356,15 @@
   "settingsViewerShowHistogram": "Tampilkan histogram",
   "@settingsViewerShowHistogram": {},
   "aboutDataUsageClearCache": "Bersihkan cache",
-  "@aboutDataUsageClearCache": {}
+  "@aboutDataUsageClearCache": {},
+  "entryActionCast": "Siarkan",
+  "@entryActionCast": {},
+  "setHomeCustomCollection": "Koleksi kustom",
+  "@setHomeCustomCollection": {},
+  "collectionActionSetHome": "Tetapkan sebagai beranda",
+  "@collectionActionSetHome": {},
+  "settingsThumbnailShowHdrIcon": "Tampilkan ikon HDR",
+  "@settingsThumbnailShowHdrIcon": {},
+  "castDialogTitle": "Siarkan Perangkat",
+  "@castDialogTitle": {}
 }
