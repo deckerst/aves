@@ -45,11 +45,22 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             workCont = cont
             onStart()
         }
+        dispose()
         return Result.success()
     }
 
+    private suspend fun dispose() {
+        Log.i(LOG_TAG, "Clean analysis worker $id")
+        flutterEngine?.let {
+            FlutterUtils.runOnUiThread {
+                it.destroy()
+            }
+            flutterEngine = null
+        }
+    }
+
     private fun onStart() {
-        Log.i(LOG_TAG, "Start analysis worker")
+        Log.i(LOG_TAG, "Start analysis worker $id")
         runBlocking {
             FlutterUtils.initFlutterEngine(applicationContext, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
                 flutterEngine = it
