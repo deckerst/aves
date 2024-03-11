@@ -166,7 +166,7 @@ object Helper {
 
     // This seems to cover all known Exif and Xmp date strings
     // Note that "    :  :     :  :  " is a valid date string according to the Exif spec (which means 'unknown date'): http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/datetimeoriginal.html
-    private val datePatterns = arrayOf(
+    private val dateFormats = arrayOf(
         "yyyy:MM:dd HH:mm:ss",
         "yyyy:MM:dd HH:mm",
         "yyyy-MM-dd HH:mm:ss",
@@ -179,7 +179,7 @@ object Helper {
         "yyyy-MM",
         "yyyyMMdd",  // as used in IPTC data
         "yyyy"
-    )
+    ).map { SimpleDateFormat(it, Locale.ROOT) }.toTypedArray()
     private val subsecondPattern = Pattern.compile("(\\d\\d:\\d\\d:\\d\\d)(\\.\\d+)")
     private val timeZonePattern = Pattern.compile("(Z|[+-]\\d\\d:\\d\\d|[+-]\\d\\d\\d\\d)$")
     private val calendar: Calendar = GregorianCalendar()
@@ -210,11 +210,10 @@ object Helper {
                 effectiveTimeZone = TimeZone.getTimeZone("GMT" + timeZoneMatcher.group().replace("Z".toRegex(), ""))
                 dateString = timeZoneMatcher.replaceAll("")
             }
-            for (datePattern in datePatterns) {
+            for (dateFormat in dateFormats) {
                 try {
-                    val parsed = SimpleDateFormat(datePattern, Locale.ROOT).apply {
-                        this.timeZone = effectiveTimeZone ?: TimeZone.getTimeZone("GMT") // don't interpret zone time
-                    }.parse(dateString)
+                    dateFormat.timeZone = effectiveTimeZone ?: TimeZone.getTimeZone("GMT") // don't interpret zone time
+                    val parsed = dateFormat.parse(dateString)
                     if (parsed != null) {
                         calendar.time = parsed
                         if (calendar.get(Calendar.YEAR) < PARSED_DATE_YEAR_MAX) {
