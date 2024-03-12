@@ -15,9 +15,6 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 [<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/huawei-appgallery-badge-english-black.png"
       alt='Get it on Huawei AppGallery'
       height="80">](https://appgallery.huawei.com/app/C106014023)
-[<img src="https://raw.githubusercontent.com/deckerst/common/main/assets/amazon-appstore-badge-english-black.png"
-      alt='Get it on Amazon Appstore'
-      height="80">](https://www.amazon.com/dp/B09XQHQQ72)
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
       alt='Get it on IzzyOnDroid'
       height="80">](https://apt.izzysoft.de/fdroid/index/apk/deckers.thibault.aves)
