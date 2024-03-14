@@ -242,7 +242,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     private fun onEditResult(resultCode: Int, intent: Intent?) {
         val fields: FieldMap? = if (resultCode == RESULT_OK) hashMapOf(
-            "uri" to intent?.data.toString(),
+            "uri" to intent?.data?.toString(),
             "mimeType" to intent?.type,
         ) else null
         pendingEditIntentHandler?.let { it(fields) }
