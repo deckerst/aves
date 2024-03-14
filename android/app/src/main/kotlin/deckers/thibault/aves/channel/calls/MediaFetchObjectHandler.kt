@@ -36,13 +36,13 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
 
         val provider = getProvider(context, uri)
         if (provider == null) {
-            result.error("getEntry-provider", "failed to find provider for uri=$uri", null)
+            result.error("getEntry-provider", "failed to find provider for uri=$uri mimeType=$mimeType", null)
             return
         }
 
         provider.fetchSingle(context, uri, mimeType, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri mimeType=$mimeType", throwable.message)
         })
     }
 
