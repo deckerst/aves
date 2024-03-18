@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- crash when decoding large region
+
 ## <a id="v1.10.7"></a>[v1.10.7] - 2024-03-12
 
 ### Added

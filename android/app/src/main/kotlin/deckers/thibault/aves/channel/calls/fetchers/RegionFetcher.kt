@@ -12,7 +12,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
+import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
@@ -73,7 +75,7 @@ class RegionFetcher internal constructor(
                     BitmapRegionDecoderCompat.newInstance(input)
                 }
                 if (newDecoder == null) {
-                    result.error("getRegion-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
+                    result.error("fetch-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
                     return
                 }
                 currentDecoderRef = LastDecoderRef(uri, newDecoder)
@@ -96,14 +98,22 @@ class RegionFetcher internal constructor(
                 regionRect
             }
 
+            // use `Long` as rect size could be unexpectedly large and go beyond `Int` max
+            val targetBitmapSizeBytes: Long = ARGB_8888_BYTE_SIZE.toLong() * effectiveRect.width() * effectiveRect.height() / sampleSize
+            if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
+                // decoding a region that large would yield an OOM when creating the bitmap
+                result.error("fetch-large-region", "Region too large for uri=$uri regionRect=$regionRect", null)
+                return
+            }
+
             val bitmap = decoder.decodeRegion(effectiveRect, options)
             if (bitmap != null) {
                 result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = true))
             } else {
-                result.error("getRegion-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
+                result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
             }
         } catch (e: Exception) {
-            result.error("getRegion-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
+            result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
         }
     }
 
