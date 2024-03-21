@@ -210,7 +210,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
 
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation 'androidx.core:core-ktx:1.12.0'
@@ -226,7 +226,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation 'com.google.android.material:material:1.11.0'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.11'
+    implementation 'org.slf4j:slf4j-simple:2.0.12'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
@@ -240,7 +240,7 @@ dependencies {
     // huawei flavor only
     huaweiImplementation "com.huawei.agconnect:agconnect-core:$huawei_agconnect_version"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 
     kapt 'androidx.annotation:annotation:1.7.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
