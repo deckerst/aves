@@ -14,6 +14,7 @@ import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import deckers.thibault.aves.utils.LogUtils
@@ -25,7 +26,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class WallpaperActivity : FlutterFragmentActivity() {
-    private lateinit var intentDataMap: MutableMap<String, Any?>
+    private lateinit var intentDataMap: FieldMap
     private lateinit var mediaSessionHandler: MediaSessionHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +104,7 @@ class WallpaperActivity : FlutterFragmentActivity() {
         }
     }
 
-    private fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
+    private fun extractIntentData(intent: Intent?): FieldMap {
         when (intent?.action) {
             Intent.ACTION_ATTACH_DATA, Intent.ACTION_SET_WALLPAPER -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->

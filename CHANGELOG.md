@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- opening app from launcher always show home page
 - upgraded Flutter to stable v3.19.4
 
 ### Fixed
