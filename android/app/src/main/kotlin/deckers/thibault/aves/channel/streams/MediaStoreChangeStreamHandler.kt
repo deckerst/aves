@@ -30,14 +30,6 @@ class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel
     }
 
     init {
-        onAppResume()
-    }
-
-    fun dispose() {
-        onAppPause()
-    }
-
-    fun onAppResume() {
         Log.i(LOG_TAG, "start listening to Media Store")
         context.contentResolver.apply {
             registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
@@ -45,7 +37,7 @@ class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel
         }
     }
 
-    fun onAppPause() {
+    fun dispose() {
         Log.i(LOG_TAG, "stop listening to Media Store")
         context.contentResolver.unregisterContentObserver(contentObserver)
     }

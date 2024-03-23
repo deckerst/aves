@@ -1,3 +1,4 @@
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -26,6 +27,7 @@ class AvesPopScope extends StatelessWidget {
             Navigator.maybeOf(context)?.pop();
           } else {
             // exit
+            reportService.log('Exit by pop');
             SystemNavigator.pop();
           }
         }

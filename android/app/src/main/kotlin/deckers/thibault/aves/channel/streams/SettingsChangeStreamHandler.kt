@@ -62,19 +62,11 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
     }
 
     init {
-        onAppResume()
-    }
-
-    fun dispose() {
-        onAppPause()
-    }
-
-    fun onAppResume() {
         Log.i(LOG_TAG, "start listening to system settings")
         context.contentResolver.registerContentObserver(Settings.System.CONTENT_URI, true, contentObserver)
     }
 
-    fun onAppPause() {
+    fun dispose() {
         Log.i(LOG_TAG, "stop listening to system settings")
         context.contentResolver.unregisterContentObserver(contentObserver)
     }

@@ -3,6 +3,7 @@ package deckers.thibault.aves
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import io.flutter.embedding.engine.FlutterEngine
@@ -56,7 +57,7 @@ class HomeWidgetSettingsActivity : MainActivity() {
         finish()
     }
 
-    override fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
+    override fun extractIntentData(intent: Intent?): FieldMap {
         return hashMapOf(
             INTENT_DATA_KEY_ACTION to INTENT_ACTION_WIDGET_SETTINGS,
             INTENT_DATA_KEY_WIDGET_ID to appWidgetId,
