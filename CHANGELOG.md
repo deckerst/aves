@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Collection: support for Fairphone burst pattern
+
 ### Changed
 
 - upgraded Flutter to stable v3.19.4
