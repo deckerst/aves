@@ -43,6 +43,8 @@ extension ExtraMetadataFieldConvert on MetadataField {
       case MetadataField.exifGpsTrackRef:
       case MetadataField.exifGpsVersionId:
       case MetadataField.exifImageDescription:
+      case MetadataField.exifMake:
+      case MetadataField.exifModel:
       case MetadataField.exifUserComment:
         return MetadataType.exif;
       case MetadataField.mp4GpsCoordinates:
@@ -145,6 +147,10 @@ extension ExtraMetadataFieldConvert on MetadataField {
         return 'GPSVersionID';
       case MetadataField.exifImageDescription:
         return 'ImageDescription';
+      case MetadataField.exifMake:
+        return 'Make';
+      case MetadataField.exifModel:
+        return 'Model';
       case MetadataField.exifUserComment:
         return 'UserComment';
       default:

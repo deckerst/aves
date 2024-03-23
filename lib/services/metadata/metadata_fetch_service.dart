@@ -22,7 +22,7 @@ abstract class MetadataFetchService {
 
   Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false});
 
-  Future<OverlayMetadata> getFields(AvesEntry entry, Set<MetadataSyntheticField> fields);
+  Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry, Set<MetadataSyntheticField> fields);
 
   Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry);
 
@@ -39,6 +39,8 @@ abstract class MetadataFetchService {
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 
   Future<DateTime?> getDate(AvesEntry entry, MetadataField field);
+
+  Future<Map<String, dynamic>> getFields(AvesEntry entry, Set<MetadataField> fields);
 }
 
 class PlatformMetadataFetchService implements MetadataFetchService {
@@ -110,7 +112,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   }
 
   @override
-  Future<OverlayMetadata> getFields(AvesEntry entry, Set<MetadataSyntheticField> fields) async {
+  Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry, Set<MetadataSyntheticField> fields) async {
     if (fields.isNotEmpty && !entry.isSvg) {
       try {
         // returns fields on demand, with various value types:
@@ -119,7 +121,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'exposureTime' (string),
         // 'focalLength' (double),
         // 'iso' (int),
-        final result = await _platform.invokeMethod('getFields', <String, dynamic>{
+        final result = await _platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
           'mimeType': entry.mimeType,
           'uri': entry.uri,
           'sizeBytes': entry.sizeBytes,
@@ -283,5 +285,25 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       }
     }
     return null;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getFields(AvesEntry entry, Set<MetadataField> fields) async {
+    if (fields.isNotEmpty && !entry.isSvg) {
+      try {
+        final result = await _platform.invokeMethod('getFields', <String, dynamic>{
+          'mimeType': entry.mimeType,
+          'uri': entry.uri,
+          'sizeBytes': entry.sizeBytes,
+          'fields': fields.map((v) => v.toPlatform).toList(),
+        });
+        if (result != null) return (result as Map).cast<String, dynamic>();
+      } on PlatformException catch (e, stack) {
+        if (entry.isValid) {
+          await reportService.recordError(e, stack);
+        }
+      }
+    }
+    return {};
   }
 }

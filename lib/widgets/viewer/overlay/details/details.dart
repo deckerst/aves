@@ -74,7 +74,7 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
     if (requestEntry == null) {
       _detailLoader = SynchronousFuture(const OverlayMetadata());
     } else {
-      _detailLoader = metadataFetchService.getFields(requestEntry, {
+      _detailLoader = metadataFetchService.getOverlayMetadata(requestEntry, {
         if (settings.showOverlayShootingDetails) ...{
           MetadataSyntheticField.aperture,
           MetadataSyntheticField.exposureTime,

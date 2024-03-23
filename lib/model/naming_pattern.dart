@@ -1,4 +1,8 @@
+import 'package:aves/convert/metadata/fields.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -37,6 +41,12 @@ class NamingPattern {
         case DateNamingProcessor.key:
           if (processorOptions != null) {
             processors.add(DateNamingProcessor(processorOptions.trim()));
+          }
+        case TagsNamingProcessor.key:
+          processors.add(TagsNamingProcessor(processorOptions?.trim() ?? ''));
+        case MetadataFieldNamingProcessor.key:
+          if (processorOptions != null) {
+            processors.add(MetadataFieldNamingProcessor(processorOptions.trim()));
           }
         case NameNamingProcessor.key:
           processors.add(const NameNamingProcessor());
@@ -95,21 +105,33 @@ class NamingPattern {
     switch (processorKey) {
       case DateNamingProcessor.key:
         return '<$processorKey, yyyyMMdd-HHmmss>';
+      case TagsNamingProcessor.key:
+        return '<$processorKey, ->';
       case CounterNamingProcessor.key:
       case NameNamingProcessor.key:
       default:
+        if (processorKey.startsWith(MetadataFieldNamingProcessor.key)) {
+          final field = MetadataFieldNamingProcessor.fieldFromKey(processorKey);
+          return '<${MetadataFieldNamingProcessor.key}, $field>';
+        }
         return '<$processorKey>';
     }
   }
 
-  String apply(AvesEntry entry, int index) => processors.map((v) => v.process(entry, index) ?? '').join().trimLeft();
+  Future<String> apply(AvesEntry entry, int index) async {
+    final fields = processors.expand((v) => v.getRequiredFields()).toSet();
+    final fieldValues = await metadataFetchService.getFields(entry, fields);
+    return processors.map((v) => v.process(entry, index, fieldValues) ?? '').join().trim();
+  }
 }
 
 @immutable
 abstract class NamingProcessor extends Equatable {
   const NamingProcessor();
 
-  String? process(AvesEntry entry, int index);
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues);
+
+  Set<MetadataField> getRequiredFields() => {};
 }
 
 @immutable
@@ -122,7 +144,7 @@ class LiteralNamingProcessor extends NamingProcessor {
   const LiteralNamingProcessor(this.text);
 
   @override
-  String? process(AvesEntry entry, int index) => text;
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => text;
 }
 
 @immutable
@@ -137,9 +159,57 @@ class DateNamingProcessor extends NamingProcessor {
   DateNamingProcessor(String pattern) : format = DateFormat(pattern);
 
   @override
-  String? process(AvesEntry entry, int index) {
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
     final date = entry.bestDate;
     return date != null ? format.format(date) : null;
+  }
+}
+
+@immutable
+class TagsNamingProcessor extends NamingProcessor {
+  static const key = 'tags';
+  static const defaultSeparator = ' ';
+
+  final String separator;
+
+  @override
+  List<Object?> get props => [separator];
+
+  TagsNamingProcessor(String separator) : separator = separator.isEmpty ? defaultSeparator : separator;
+
+  @override
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+    return entry.tags.join(separator);
+  }
+}
+
+@immutable
+class MetadataFieldNamingProcessor extends NamingProcessor {
+  static const key = 'field';
+
+  static String keyWithField(MetadataField field) => '$key-${field.name}';
+
+  // loose, for user to see and later parse
+  static String fieldFromKey(String keyWithField) => keyWithField.substring(key.length + 1);
+
+  late final MetadataField? field;
+
+  @override
+  List<Object?> get props => [field];
+
+  MetadataFieldNamingProcessor(String field) {
+    final lowerField = field.toLowerCase();
+    this.field = MetadataField.values.firstWhereOrNull((v) => v.name.toLowerCase() == lowerField);
+  }
+
+  @override
+  Set<MetadataField> getRequiredFields() {
+    return {field}.whereNotNull().toSet();
+  }
+
+  @override
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+    return fieldValues[field?.toPlatform]?.toString();
   }
 }
 
@@ -153,7 +223,7 @@ class NameNamingProcessor extends NamingProcessor {
   const NameNamingProcessor();
 
   @override
-  String? process(AvesEntry entry, int index) => entry.filenameWithoutExtension;
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => entry.filenameWithoutExtension;
 }
 
 @immutable
@@ -174,5 +244,5 @@ class CounterNamingProcessor extends NamingProcessor {
   });
 
   @override
-  String? process(AvesEntry entry, int index) => '${index + start}'.padLeft(padding, '0');
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => '${index + start}'.padLeft(padding, '0');
 }

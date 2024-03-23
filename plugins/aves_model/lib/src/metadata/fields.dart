@@ -43,6 +43,8 @@ enum MetadataField {
   exifGpsTrackRef,
   exifGpsVersionId,
   exifImageDescription,
+  exifMake,
+  exifModel,
   exifUserComment,
   mp4GpsCoordinates,
   mp4RotationDegrees,

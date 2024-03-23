@@ -105,6 +105,7 @@ class AIcons {
   static const info = Icons.info_outlined;
   static const layers = Icons.layers_outlined;
   static const map = Icons.map_outlined;
+  static const more = Icons.more_horiz_outlined;
   static final move = MdiIcons.fileMoveOutline;
   static const mute = Icons.volume_off_outlined;
   static const unmute = Icons.volume_up_outlined;

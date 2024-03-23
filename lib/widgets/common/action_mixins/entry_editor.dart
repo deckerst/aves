@@ -55,7 +55,7 @@ mixin EntryEditorMixin {
 
     final entry = entries.first;
     final initialTitle = entry.catalogMetadata?.xmpTitle ?? '';
-    final fields = await metadataFetchService.getFields(entry, {MetadataSyntheticField.description});
+    final fields = await metadataFetchService.getOverlayMetadata(entry, {MetadataSyntheticField.description});
     final initialDescription = fields.description ?? '';
 
     return showDialog<Map<DescriptionField, String?>>(
