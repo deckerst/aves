@@ -83,7 +83,8 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
     enableBlurEffect = performanceClass >= 29;
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    final pattern = BurstPatterns.byManufacturer[androidInfo.manufacturer];
+    final manufacturer = androidInfo.manufacturer.toLowerCase();
+    final pattern = BurstPatterns.byManufacturer[manufacturer];
     collectionBurstPatterns = pattern != null ? [pattern] : [];
 
     // availability
