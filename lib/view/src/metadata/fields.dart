@@ -11,6 +11,10 @@ extension ExtraMetadataFieldView on MetadataField {
         return 'Exif digitized date';
       case MetadataField.exifGpsDatestamp:
         return 'Exif GPS date';
+      case MetadataField.exifMake:
+        return 'Exif make';
+      case MetadataField.exifModel:
+        return 'Exif model';
       case MetadataField.xmpXmpCreateDate:
         return 'XMP xmp:CreateDate';
       default:

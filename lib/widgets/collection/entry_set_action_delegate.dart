@@ -356,10 +356,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
     if (pattern == null) return;
 
-    final entriesToNewName = Map.fromEntries(entries.mapIndexed((index, entry) {
-      final newName = pattern.apply(entry, index);
+    final namingFutures = entries.mapIndexed((index, entry) async {
+      final newName = await pattern.apply(entry, index);
       return MapEntry(entry, '$newName${entry.extension}');
-    })).whereNotNullValue();
+    });
+    final entriesToNewName = Map.fromEntries(await Future.wait(namingFutures)).whereNotNullValue();
     await rename(context, entriesToNewName: entriesToNewName, persist: true);
 
     _browse(context);
