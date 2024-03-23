@@ -58,50 +58,77 @@ class _HiddenFilters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool filterPredicate(CollectionFilter v) => v is! PathFilter;
     return Selector<Settings, Set<CollectionFilter>>(
-      selector: (context, s) => settings.hiddenFilters.where((v) => v is! PathFilter).toSet(),
-      builder: (context, hiddenFilters, child) {
-        if (hiddenFilters.isEmpty) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Banner(bannerText: context.l10n.settingsHiddenFiltersBanner),
-              const Divider(height: 0),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: EmptyContent(
-                    icon: AIcons.hide,
-                    text: context.l10n.settingsHiddenFiltersEmpty,
+      selector: (context, s) => settings.hiddenFilters.where(filterPredicate).toSet(),
+      builder: (context, activatedHiddenFilters, child) {
+        return Selector<Settings, Set<CollectionFilter>>(
+          selector: (context, s) => settings.deactivatedHiddenFilters.where(filterPredicate).toSet(),
+          builder: (context, deactivatedHiddenFilters, child) {
+            final allHiddenFilters = {
+              ...activatedHiddenFilters,
+              ...deactivatedHiddenFilters,
+            };
+            if (allHiddenFilters.isEmpty) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Banner(bannerText: context.l10n.settingsHiddenFiltersBanner),
+                  const Divider(height: 0),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: EmptyContent(
+                        icon: AIcons.hide,
+                        text: context.l10n.settingsHiddenFiltersEmpty,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
-          );
-        }
+                ],
+              );
+            }
 
-        final filterList = hiddenFilters.toList()..sort();
-        return ListView(
-          children: [
-            _Banner(bannerText: context.l10n.settingsHiddenFiltersBanner),
-            const Divider(height: 0),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: filterList.map((filter) {
+            final filterList = allHiddenFilters.toList()..sort();
+            return ListView(
+              children: [
+                _Banner(bannerText: context.l10n.settingsHiddenFiltersBanner),
+                const Divider(height: 0),
+                const SizedBox(height: 8),
+                ...filterList.map((filter) {
                   void onRemove(CollectionFilter filter) => settings.changeFilterVisibility({filter}, true);
-                  return AvesFilterChip(
-                    filter: filter,
-                    onTap: onRemove,
-                    onRemove: onRemove,
-                    onLongPress: null,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            debugPrint('TLAD constraints=$constraints');
+                            return Row(
+                              children: [
+                                AvesFilterChip(
+                                  filter: filter,
+                                  maxWidth: constraints.maxWidth,
+                                  onTap: onRemove,
+                                  onRemove: onRemove,
+                                  onLongPress: null,
+                                ),
+                                const Spacer(),
+                              ],
+                            );
+                          }),
+                        ),
+                        const SizedBox(width: 8),
+                        Switch(
+                          value: activatedHiddenFilters.contains(filter),
+                          onChanged: (v) => settings.activateHiddenFilter(filter, v),
+                        ),
+                      ],
+                    ),
                   );
-                }).toList(),
-              ),
-            ),
-          ],
+                }),
+              ],
+            );
+          },
         );
       },
     );
@@ -114,7 +141,10 @@ class _HiddenPaths extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<Settings, Set<PathFilter>>(
-      selector: (context, s) => settings.hiddenFilters.whereType<PathFilter>().toSet(),
+      selector: (context, s) => {
+        ...settings.hiddenFilters,
+        ...settings.deactivatedHiddenFilters,
+      }.whereType<PathFilter>().toSet(),
       builder: (context, hiddenPaths, child) {
         final pathList = hiddenPaths.toList()..sort();
         return Column(

@@ -15,6 +15,7 @@ import 'package:aves/model/settings/modules/display.dart';
 import 'package:aves/model/settings/modules/filter_grids.dart';
 import 'package:aves/model/settings/modules/info.dart';
 import 'package:aves/model/settings/modules/navigation.dart';
+import 'package:aves/model/settings/modules/privacy.dart';
 import 'package:aves/model/settings/modules/search.dart';
 import 'package:aves/model/settings/modules/viewer.dart';
 import 'package:aves/ref/bursts.dart';
@@ -37,7 +38,7 @@ import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
 
-class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings, NavigationSettings, SearchSettings, CollectionSettings, FilterGridsSettings, ViewerSettings, VideoSettings, SubtitlesSettings, InfoSettings {
+class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings, NavigationSettings, SearchSettings, CollectionSettings, FilterGridsSettings, PrivacySettings, ViewerSettings, VideoSettings, SubtitlesSettings, InfoSettings {
   final List<StreamSubscription> _subscriptions = [];
   final EventChannel _platformSettingsChangeChannel = const OptionalEventChannel('deckers.thibault/aves/settings_change');
   final StreamController<SettingsChangedEvent> _updateStreamController = StreamController.broadcast();
