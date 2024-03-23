@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: support for Fairphone burst pattern
+- Settings: hidden items can be toggled
 
 ### Changed
 

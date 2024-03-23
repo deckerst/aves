@@ -69,6 +69,7 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
                   'drawerPageBookmarks': toMultiline(settings.drawerPageBookmarks),
                   'pinnedFilters': toMultiline(settings.pinnedFilters),
                   'hiddenFilters': toMultiline(settings.hiddenFilters),
+                  'deactivatedHiddenFilters': toMultiline(settings.deactivatedHiddenFilters),
                   'searchHistory': toMultiline(settings.searchHistory),
                   'recentDestinationAlbums': toMultiline(settings.recentDestinationAlbums),
                   'recentTags': toMultiline(settings.recentTags),
