@@ -220,12 +220,16 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
       newScale = boundaries.clampScale(newScale);
     }
     newScale = max(0, newScale);
+    // focal point is in viewport coordinates
     final scaleFocalPoint = _doubleTap ? _startFocalPoint! : details.localFocalPoint;
 
+    final viewportCenter = boundaries.viewportCenter;
+    final centerContentPosition = boundaries.viewportToContentPosition(controller, viewportCenter);
+    final scalePositionDelta = (scaleFocalPoint - viewportCenter) * (scale! / newScale - 1);
     final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition!;
-    final scalePositionDelta = boundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale! / newScale - 1);
+
     final newPosition = boundaries.clampPosition(
-      position: position + panPositionDelta + scalePositionDelta,
+      position: boundaries.contentToStatePosition(newScale, centerContentPosition) + scalePositionDelta + panPositionDelta,
       scale: newScale,
     );
 

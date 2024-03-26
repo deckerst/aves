@@ -90,16 +90,12 @@ class ScaleBoundaries extends Equatable {
 
   double get initialScale => scaleForLevel(_initialScale);
 
-  Offset get _viewportCenter => viewportSize.center(Offset.zero);
+  Offset get viewportCenter => viewportSize.center(Offset.zero);
 
   Offset get _contentCenter => contentSize.center(Offset.zero);
 
-  Offset viewportToStatePosition(AvesMagnifierController controller, Offset viewportPosition) {
-    return viewportPosition - _viewportCenter - controller.position;
-  }
-
   Offset viewportToContentPosition(AvesMagnifierController controller, Offset viewportPosition) {
-    return viewportToStatePosition(controller, viewportPosition) / controller.scale! + _contentCenter;
+    return (viewportPosition - viewportCenter - controller.position) / controller.scale! + _contentCenter;
   }
 
   Offset contentToStatePosition(double scale, Offset contentPosition) {
