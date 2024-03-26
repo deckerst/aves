@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when decoding large region
+- viewer position drift during scale
 
 ## <a id="v1.10.7"></a>[v1.10.7] - 2024-03-12
 
