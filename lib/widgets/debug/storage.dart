@@ -1,3 +1,4 @@
+import 'package:aves/ref/locales.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -47,7 +48,7 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
                   'isPrimary': '${v.isPrimary}',
                   'isRemovable': '${v.isRemovable}',
                   'state': v.state,
-                  if (freeSpace != null) 'freeSpace': formatFileSize('en_US', freeSpace),
+                  if (freeSpace != null) 'freeSpace': formatFileSize(asciiLocale, freeSpace),
                 },
               ),
             ),

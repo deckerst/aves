@@ -16,6 +16,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
@@ -37,12 +38,14 @@ import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localization_nn/flutter_localization_nn.dart';
+import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -158,6 +161,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(defaultPageTransitionsBuilder);
   final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.main);
+  final ValueNotifier<LocaleOverrides> _localeOverridesNotifier = ValueNotifier(LocaleOverrides.none);
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -217,6 +221,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         Provider<TvRailController>.value(value: _tvRailController),
         DurationsProvider(),
         HighlightInfoProvider(),
+        ListenableProvider<ValueNotifier<LocaleOverrides>>.value(value: _localeOverridesNotifier),
       ],
       child: OverlaySupport(
         child: FutureBuilder<void>(
@@ -239,9 +244,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
               ),
               builder: (context, s, child) {
                 final (settingsLocale, themeBrightness, enableDynamicColor) = s;
-
-                AStyles.updateStylesForLocale(settings.appliedLocale);
-
                 return DynamicColorBuilder(
                   builder: (lightScheme, darkScheme) {
                     const defaultAccent = AvesColorsData.defaultAccent;
@@ -411,6 +413,33 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     }
   }
 
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    _applyLocale();
+  }
+
+  void _applyLocale() {
+    settings.resetAppliedLocale();
+
+    final appliedLocale = settings.appliedLocale;
+    AStyles.updateStylesForLocale(appliedLocale);
+
+    Locale? countrifiedLocale;
+    if (appliedLocale.countryCode == null) {
+      final languageCode = appliedLocale.languageCode;
+      countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageCode);
+    }
+
+    if (appliedLocale.languageCode == 'ar') {
+      final useNativeDigits = shouldUseNativeDigits(countrifiedLocale);
+      DateFormat.useNativeDigitsByDefaultFor(appliedLocale.toString(), useNativeDigits);
+      DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toString(), useNativeDigits);
+    }
+    _localeOverridesNotifier.value = LocaleOverrides(
+      countrifiedLocale: countrifiedLocale,
+    );
+  }
+
   Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
   Size? _getScreenSize(BuildContext context) {
@@ -504,7 +533,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _monitorSettings() {
-    void applyIsInstalledAppAccessAllowed() {
+    void _applyIsInstalledAppAccessAllowed() {
       if (settings.isInstalledAppAccessAllowed) {
         appInventory.initAppNames();
       } else {
@@ -512,9 +541,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    void applyDisplayRefreshRateMode() => settings.displayRefreshRateMode.apply();
+    void _applyDisplayRefreshRateMode() => settings.displayRefreshRateMode.apply();
 
-    void applyMaxBrightness() {
+    void _applyMaxBrightness() {
       switch (settings.maxBrightness) {
         case MaxBrightness.never:
         case MaxBrightness.viewerOnly:
@@ -524,9 +553,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    void applyKeepScreenOn() => settings.keepScreenOn.apply();
+    void _applyKeepScreenOn() => settings.keepScreenOn.apply();
 
-    void applyIsRotationLocked() {
+    void _applyIsRotationLocked() {
       if (!settings.isRotationLocked && !settings.useTvLayout) {
         windowService.requestOrientation();
       }
@@ -545,20 +574,22 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     final settingStream = settings.updateStream;
     // app
-    settingStream.where((event) => event.key == SettingKeys.isInstalledAppAccessAllowedKey).listen((_) => applyIsInstalledAppAccessAllowed());
+    settingStream.where((event) => event.key == SettingKeys.isInstalledAppAccessAllowedKey).listen((_) => _applyIsInstalledAppAccessAllowed());
+    settingStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => _applyLocale());
     // display
-    settingStream.where((event) => event.key == SettingKeys.displayRefreshRateModeKey).listen((_) => applyDisplayRefreshRateMode());
-    settingStream.where((event) => event.key == SettingKeys.maxBrightnessKey).listen((_) => applyMaxBrightness());
+    settingStream.where((event) => event.key == SettingKeys.displayRefreshRateModeKey).listen((_) => _applyDisplayRefreshRateMode());
+    settingStream.where((event) => event.key == SettingKeys.maxBrightnessKey).listen((_) => _applyMaxBrightness());
     settingStream.where((event) => event.key == SettingKeys.forceTvLayoutKey).listen((_) => applyForceTvLayout());
     // navigation
-    settingStream.where((event) => event.key == SettingKeys.keepScreenOnKey).listen((_) => applyKeepScreenOn());
+    settingStream.where((event) => event.key == SettingKeys.keepScreenOnKey).listen((_) => _applyKeepScreenOn());
     // platform settings
-    settingStream.where((event) => event.key == SettingKeys.platformAccelerometerRotationKey).listen((_) => applyIsRotationLocked());
+    settingStream.where((event) => event.key == SettingKeys.platformAccelerometerRotationKey).listen((_) => _applyIsRotationLocked());
 
-    applyDisplayRefreshRateMode();
-    applyMaxBrightness();
-    applyKeepScreenOn();
-    applyIsRotationLocked();
+    _applyLocale();
+    _applyDisplayRefreshRateMode();
+    _applyMaxBrightness();
+    _applyKeepScreenOn();
+    _applyIsRotationLocked();
   }
 
   Future<void> _setupErrorReporting() async {
@@ -632,3 +663,18 @@ class AvesScrollBehavior extends MaterialScrollBehavior {
 }
 
 typedef TvMediaQueryModifier = MediaQueryData Function(MediaQueryData);
+
+class LocaleOverrides extends Equatable {
+  final Locale? countrifiedLocale;
+
+  @override
+  List<Object?> get props => [countrifiedLocale];
+
+  const LocaleOverrides({
+    required this.countrifiedLocale,
+  });
+
+  static const LocaleOverrides none = LocaleOverrides(
+    countrifiedLocale: null,
+  );
+}

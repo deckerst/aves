@@ -7,6 +7,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/metadata/exif.dart';
 import 'package:aves/ref/metadata/iptc.dart';
 import 'package:aves/ref/metadata/xmp.dart';
@@ -121,7 +122,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       if (latLng != null && latLng != removalLocation) {
         final latitude = latLng.latitude;
         final longitude = latLng.longitude;
-        const locale = 'en_US';
+        const locale = asciiLocale;
         final isoLat = '${latitude >= 0 ? '+' : '-'}${NumberFormat('00.0000', locale).format(latitude.abs())}';
         final isoLon = '${longitude >= 0 ? '+' : '-'}${NumberFormat('000.0000', locale).format(longitude.abs())}';
         iso6709String = '$isoLat$isoLon/';

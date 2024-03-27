@@ -20,6 +20,7 @@ class NamingPattern {
   factory NamingPattern.from({
     required String userPattern,
     required int entryCount,
+    required String locale,
   }) {
     final processors = <NamingProcessor>[];
 
@@ -40,7 +41,7 @@ class NamingPattern {
       switch (processorKey) {
         case DateNamingProcessor.key:
           if (processorOptions != null) {
-            processors.add(DateNamingProcessor(processorOptions.trim()));
+            processors.add(DateNamingProcessor(processorOptions.trim(), locale));
           }
         case TagsNamingProcessor.key:
           processors.add(TagsNamingProcessor(processorOptions?.trim() ?? ''));
@@ -156,7 +157,7 @@ class DateNamingProcessor extends NamingProcessor {
   @override
   List<Object?> get props => [format.pattern];
 
-  DateNamingProcessor(String pattern) : format = DateFormat(pattern);
+  DateNamingProcessor(String pattern, String locale) : format = DateFormat(pattern, locale);
 
   @override
   String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
