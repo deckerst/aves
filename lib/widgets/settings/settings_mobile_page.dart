@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
@@ -117,7 +118,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
         final allJsonString = jsonEncode(allMap);
 
         final success = await storageService.createFile(
-          'aves-settings-${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.json',
+          'aves-settings-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.json',
           MimeTypes.json,
           Uint8List.fromList(utf8.encode(allJsonString)),
         );
