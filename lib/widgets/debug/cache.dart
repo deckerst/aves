@@ -1,3 +1,4 @@
+import 'package:aves/ref/locales.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -15,6 +16,8 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
   Widget build(BuildContext context) {
     super.build(context);
 
+    final currentSizeBytes = formatFileSize(asciiLocale, imageCache.currentSizeBytes);
+    final maxSizeBytes = formatFileSize(asciiLocale, imageCache.maximumSizeBytes);
     return AvesExpansionTile(
       title: 'Cache',
       children: [
@@ -25,7 +28,7 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
               Row(
                 children: [
                   Expanded(
-                    child: Text('Image cache:\n\t${imageCache.currentSize}/${imageCache.maximumSize} items\n\t${formatFileSize('en_US', imageCache.currentSizeBytes)}/${formatFileSize('en_US', imageCache.maximumSizeBytes)}'),
+                    child: Text('Image cache:\n\t${imageCache.currentSize}/${imageCache.maximumSize} items\n\t$currentSizeBytes/$maxSizeBytes'),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(

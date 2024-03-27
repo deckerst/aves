@@ -6,6 +6,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/flutter_version.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
@@ -176,7 +177,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final result = await Process.run('logcat', ['-d']);
     final logs = result.stdout;
     final success = await storageService.createFile(
-      'aves-logs-${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.txt',
+      'aves-logs-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.txt',
       MimeTypes.plainText,
       Uint8List.fromList(utf8.encode(logs)),
     );

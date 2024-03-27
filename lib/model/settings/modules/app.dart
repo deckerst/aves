@@ -50,7 +50,7 @@ mixin AppSettings on SettingsAccess {
       ].join(localeSeparator);
     }
     set(SettingKeys.localeKey, tag);
-    _appliedLocale = null;
+    resetAppliedLocale();
   }
 
   List<Locale> _systemLocalesFallback = [];
