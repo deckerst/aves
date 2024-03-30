@@ -1,4 +1,18 @@
 {
+  "ar": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "be": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "bn": [
     "itemCount",
     "columnCount",
@@ -7,6 +21,7 @@
     "timeDays",
     "focalLength",
     "resetTooltip",
+    "stopTooltip",
     "doubleBackExitMessage",
     "sourceStateLocatingCountries",
     "sourceStateLocatingPlaces",
@@ -62,6 +77,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -659,7 +677,15 @@
     "filePickerUseThisFolder"
   ],
 
+  "ca": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "ckb": [
+    "stopTooltip",
     "chipActionGoToPlacePage",
     "chipActionShowCountryStates",
     "entryActionFlip",
@@ -668,6 +694,9 @@
     "entryActionCast",
     "videoActionCaptureFrame",
     "videoActionSelectStreams",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionLock",
     "viewerActionUnlock",
     "slideshowActionResume",
@@ -1199,6 +1228,10 @@
   ],
 
   "cs": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "collectionActionSetHome",
     "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
@@ -1233,6 +1266,7 @@
     "actionRemove",
     "resetTooltip",
     "saveTooltip",
+    "stopTooltip",
     "pickTooltip",
     "doubleBackExitMessage",
     "doNotAskAgain",
@@ -1292,6 +1326,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -1889,8 +1926,19 @@
     "filePickerUseThisFolder"
   ],
 
+  "de": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "el": [
+    "stopTooltip",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
@@ -1906,7 +1954,25 @@
     "settingsViewerShowHistogram"
   ],
 
+  "es": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "eu": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "fa": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "coordinateFormatDms",
     "coordinateDms",
     "coordinateDmsNorth",
@@ -2346,11 +2412,15 @@
   "fi": [
     "focalLength",
     "clearTooltip",
+    "stopTooltip",
     "chipActionFilterIn",
     "entryActionSetAs",
     "entryActionCast",
     "videoActionUnmute",
     "videoActionSelectStreams",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "filterTypeRawLabel",
     "filterTypeSphericalVideoLabel",
     "filterTypeGeotiffLabel",
@@ -2887,10 +2957,18 @@
     "filePickerUseThisFolder"
   ],
 
+  "fr": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "gl": [
     "columnCount",
     "saveCopyButtonLabel",
     "applyTooltip",
+    "stopTooltip",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
@@ -2899,6 +2977,9 @@
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionLock",
     "viewerActionUnlock",
     "entryInfoActionExportMetadata",
@@ -3465,6 +3546,7 @@
     "actionRemove",
     "resetTooltip",
     "saveTooltip",
+    "stopTooltip",
     "pickTooltip",
     "doubleBackExitMessage",
     "doNotAskAgain",
@@ -3524,6 +3606,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -4122,6 +4207,7 @@
   ],
 
   "hi": [
+    "stopTooltip",
     "sourceStateCataloguing",
     "sourceStateLocatingCountries",
     "sourceStateLocatingPlaces",
@@ -4171,6 +4257,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -4768,7 +4857,32 @@
     "filePickerUseThisFolder"
   ],
 
+  "hu": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "id": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "is": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "it": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "collectionActionSetHome",
     "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
@@ -4776,8 +4890,12 @@
 
   "ja": [
     "applyTooltip",
+    "stopTooltip",
     "chipActionCreateVault",
     "chipActionConfigureVault",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -4844,6 +4962,7 @@
     "timeMinutes",
     "timeDays",
     "focalLength",
+    "stopTooltip",
     "chipActionGoToCountryPage",
     "chipActionGoToPlacePage",
     "chipActionGoToTagPage",
@@ -4894,6 +5013,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -5491,16 +5613,27 @@
     "filePickerUseThisFolder"
   ],
 
+  "ko": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "lt": [
     "columnCount",
     "saveCopyButtonLabel",
     "applyTooltip",
+    "stopTooltip",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -5613,6 +5746,7 @@
     "actionRemove",
     "resetTooltip",
     "saveTooltip",
+    "stopTooltip",
     "pickTooltip",
     "doubleBackExitMessage",
     "doNotAskAgain",
@@ -5672,6 +5806,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -6270,7 +6407,11 @@
   ],
 
   "my": [
+    "stopTooltip",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "accessibilityAnimationsRemove",
     "accessibilityAnimationsKeep",
     "overlayHistogramLuminance",
@@ -6385,7 +6526,11 @@
   ],
 
   "nb": [
+    "stopTooltip",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -6412,12 +6557,16 @@
 
   "nl": [
     "columnCount",
+    "stopTooltip",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
     "entryActionShareImageOnly",
     "entryActionShareVideoOnly",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -6500,8 +6649,12 @@
   ],
 
   "nn": [
+    "stopTooltip",
     "sourceStateCataloguing",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "accessibilityAnimationsKeep",
     "overlayHistogramNone",
     "overlayHistogramRGB",
@@ -6566,6 +6719,7 @@
     "actionRemove",
     "resetTooltip",
     "saveTooltip",
+    "stopTooltip",
     "pickTooltip",
     "doubleBackExitMessage",
     "doNotAskAgain",
@@ -6621,6 +6775,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -7154,10 +7311,35 @@
     "filePickerUseThisFolder"
   ],
 
+  "pl": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "pt": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "collectionActionSetHome",
     "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon"
+  ],
+
+  "ro": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "ru": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
   ],
 
   "sat": [
@@ -7187,6 +7369,7 @@
     "actionRemove",
     "resetTooltip",
     "saveTooltip",
+    "stopTooltip",
     "pickTooltip",
     "doubleBackExitMessage",
     "doNotAskAgain",
@@ -7246,6 +7429,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -7843,6 +8029,13 @@
     "filePickerUseThisFolder"
   ],
 
+  "sk": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
   "sl": [
     "itemCount",
     "columnCount",
@@ -7868,6 +8061,7 @@
     "actionRemove",
     "resetTooltip",
     "saveTooltip",
+    "stopTooltip",
     "pickTooltip",
     "doubleBackExitMessage",
     "doNotAskAgain",
@@ -7927,6 +8121,9 @@
     "videoActionSkip10",
     "videoActionSelectStreams",
     "videoActionSetSpeed",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionSettings",
     "viewerActionLock",
     "viewerActionUnlock",
@@ -8525,6 +8722,10 @@
   ],
 
   "sv": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "widgetOpenPageViewer",
     "rootDirectoryDescription",
     "restrictedAccessDialogMessage",
@@ -8841,12 +9042,16 @@
     "applyButtonLabel",
     "saveCopyButtonLabel",
     "applyTooltip",
+    "stopTooltip",
     "chipActionGoToPlacePage",
     "chipActionLock",
     "chipActionShowCountryStates",
     "chipActionCreateVault",
     "chipActionConfigureVault",
     "entryActionCast",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd",
     "viewerActionLock",
     "viewerActionUnlock",
     "editorActionTransform",
@@ -9234,5 +9439,40 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "tr": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "uk": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "vi": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "zh": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
+  ],
+
+  "zh_Hant": [
+    "stopTooltip",
+    "videoActionABRepeat",
+    "videoRepeatActionSetStart",
+    "videoRepeatActionSetEnd"
   ]
 }

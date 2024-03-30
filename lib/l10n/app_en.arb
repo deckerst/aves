@@ -63,6 +63,7 @@
   "actionRemove": "Remove",
   "resetTooltip": "Reset",
   "saveTooltip": "Save",
+  "stopTooltip": "Stop",
   "pickTooltip": "Pick",
 
   "doubleBackExitMessage": "Tap “back” again to exit.",
@@ -127,6 +128,10 @@
   "videoActionSkip10": "Seek forward 10 seconds",
   "videoActionSelectStreams": "Select tracks",
   "videoActionSetSpeed": "Playback speed",
+  "videoActionABRepeat": "A-B repeat",
+
+  "videoRepeatActionSetStart": "Set start",
+  "videoRepeatActionSetEnd": "Set end",
 
   "viewerActionSettings": "Settings",
   "viewerActionLock": "Lock viewer",
