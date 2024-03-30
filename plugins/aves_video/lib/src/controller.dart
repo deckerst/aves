@@ -15,7 +15,7 @@ abstract class AvesVideoControllerFactory {
   });
 }
 
-abstract class AvesVideoController {
+abstract class AvesVideoController with ABRepeatMixin {
   final AvesEntryBase _entry;
   final PlaybackStateHandler playbackStateHandler;
   final VideoSettings settings;
@@ -96,6 +96,7 @@ abstract class AvesVideoController {
 
   int get duration;
 
+  @override
   int get currentPosition;
 
   double get progress {

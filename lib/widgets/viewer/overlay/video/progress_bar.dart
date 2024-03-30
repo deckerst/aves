@@ -37,6 +37,8 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
 
   bool get isPlaying => controller?.isPlaying ?? false;
 
+  ValueNotifier<ABRepeat?> get abRepeatNotifier => controller?.abRepeatNotifier ?? ValueNotifier(null);
+
   @override
   Widget build(BuildContext context) {
     final blurred = settings.enableBlurEffect;
@@ -69,8 +71,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
                 border: AvesBorder.border(context),
@@ -80,66 +81,98 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                 data: MediaQuery.of(context).copyWith(
                   textScaler: TextScaler.noScaling,
                 ),
-                child: Column(
-                  key: _progressBarKey,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+                child: ValueListenableBuilder<ABRepeat?>(
+                  valueListenable: abRepeatNotifier,
+                  builder: (context, abRepeat, child) {
+                    return Stack(
+                      fit: StackFit.passthrough,
                       children: [
-                        StreamBuilder<int>(
-                            stream: positionStream,
-                            builder: (context, snapshot) {
-                              // do not use stream snapshot because it is obsolete when switching between videos
-                              final position = controller?.currentPosition.floor() ?? 0;
-                              return Text(
-                                formatFriendlyDuration(Duration(milliseconds: position)),
-                                style: textStyle,
-                                strutStyle: strutStyle,
-                              );
-                            }),
-                        const Spacer(),
-                        Text(
-                          formatFriendlyDuration(Duration(milliseconds: controller?.duration ?? 0)),
-                          style: textStyle,
-                          strutStyle: strutStyle,
+                        if (abRepeat != null) ...[
+                          _buildABRepeatMark(context, abRepeat.start),
+                          _buildABRepeatMark(context, abRepeat.end),
+                        ],
+                        Container(
+                          key: _progressBarKey,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                children: [
+                                  StreamBuilder<int>(
+                                      stream: positionStream,
+                                      builder: (context, snapshot) {
+                                        // do not use stream snapshot because it is obsolete when switching between videos
+                                        final position = controller?.currentPosition.floor() ?? 0;
+                                        return Text(
+                                          formatFriendlyDuration(Duration(milliseconds: position)),
+                                          style: textStyle,
+                                          strutStyle: strutStyle,
+                                        );
+                                      }),
+                                  const Spacer(),
+                                  Text(
+                                    formatFriendlyDuration(Duration(milliseconds: controller?.duration ?? 0)),
+                                    style: textStyle,
+                                    strutStyle: strutStyle,
+                                  ),
+                                ],
+                              ),
+                              ClipRRect(
+                                borderRadius: const BorderRadius.all(Radius.circular(4)),
+                                child: Directionality(
+                                  // force directionality for `LinearProgressIndicator`
+                                  textDirection: TextDirection.ltr,
+                                  child: StreamBuilder<int>(
+                                      stream: positionStream,
+                                      builder: (context, snapshot) {
+                                        // do not use stream snapshot because it is obsolete when switching between videos
+                                        var progress = controller?.progress ?? 0.0;
+                                        if (!progress.isFinite) progress = 0.0;
+                                        return LinearProgressIndicator(
+                                          value: progress,
+                                          backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
+                                        );
+                                      }),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  _buildSpeedIndicator(),
+                                  _buildMuteIndicator(),
+                                  Text(
+                                    // fake text below to match the height of the text above and center the whole thing
+                                    '',
+                                    style: textStyle,
+                                    strutStyle: strutStyle,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
-                    ),
-                    ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(4)),
-                      child: Directionality(
-                        // force directionality for `LinearProgressIndicator`
-                        textDirection: TextDirection.ltr,
-                        child: StreamBuilder<int>(
-                            stream: positionStream,
-                            builder: (context, snapshot) {
-                              // do not use stream snapshot because it is obsolete when switching between videos
-                              var progress = controller?.progress ?? 0.0;
-                              if (!progress.isFinite) progress = 0.0;
-                              return LinearProgressIndicator(
-                                value: progress,
-                                backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
-                              );
-                            }),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        _buildSpeedIndicator(),
-                        _buildMuteIndicator(),
-                        Text(
-                          // fake text below to match the height of the text above and center the whole thing
-                          '',
-                          style: textStyle,
-                          strutStyle: strutStyle,
-                        ),
-                      ],
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildABRepeatMark(BuildContext context, int? position) {
+    if (controller == null || position == null) return const SizedBox();
+    return Positioned(
+      left: _progressToDx(position / controller!.duration),
+      top: 0,
+      bottom: 0,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(left: AvesBorder.straightSide(context, width: 2)),
         ),
       ),
     );
@@ -175,11 +208,20 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
         },
       );
 
+  RenderBox? _getProgressBarRenderBox() {
+    return _progressBarKey.currentContext?.findRenderObject() as RenderBox?;
+  }
+
   void _seekFromTap(Offset globalPosition) async {
-    if (controller == null) return;
-    final keyContext = _progressBarKey.currentContext!;
-    final box = keyContext.findRenderObject() as RenderBox;
-    final localPosition = box.globalToLocal(globalPosition);
-    await controller!.seekToProgress(localPosition.dx / box.size.width);
+    final box = _getProgressBarRenderBox();
+    if (controller == null || box == null) return;
+
+    final dx = box.globalToLocal(globalPosition).dx;
+    await controller!.seekToProgress(dx / box.size.width);
+  }
+
+  double? _progressToDx(double progress) {
+    final box = _getProgressBarRenderBox();
+    return box == null ? null : progress * box.size.width;
   }
 }
