@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 
 - crash when decoding large region
 - viewer position drift during scale
+- viewer side gesture precedence (next entry by single tap vs zoom by double tap)
 
 ## <a id="v1.10.7"></a>[v1.10.7] - 2024-03-12
 
