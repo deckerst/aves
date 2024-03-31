@@ -1366,5 +1366,13 @@
   "collectionActionSetHome": "홈으로 설정",
   "@collectionActionSetHome": {},
   "setHomeCustomCollection": "지정 미디어",
-  "@setHomeCustomCollection": {}
+  "@setHomeCustomCollection": {},
+  "videoRepeatActionSetStart": "시작 지점 설정",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "종료 지점 설정",
+  "@videoRepeatActionSetEnd": {},
+  "stopTooltip": "취소",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "A-B 반복",
+  "@videoActionABRepeat": {}
 }

@@ -1366,5 +1366,13 @@
   "setHomeCustomCollection": "Collection personnalisée",
   "@setHomeCustomCollection": {},
   "settingsThumbnailShowHdrIcon": "Afficher l’icône HDR",
-  "@settingsThumbnailShowHdrIcon": {}
+  "@settingsThumbnailShowHdrIcon": {},
+  "videoRepeatActionSetEnd": "Définir la fin",
+  "@videoRepeatActionSetEnd": {},
+  "stopTooltip": "Arrêter",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Lecture répétée A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Définir le début",
+  "@videoRepeatActionSetStart": {}
 }

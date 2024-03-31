@@ -1524,5 +1524,13 @@
   "setHomeCustomCollection": "Власна колекція",
   "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Встановити як головну",
-  "@collectionActionSetHome": {}
+  "@collectionActionSetHome": {},
+  "videoRepeatActionSetStart": "Змінити початок",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "Змінити кінець",
+  "@videoRepeatActionSetEnd": {},
+  "stopTooltip": "Зупинити",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Повторити від А до Б",
+  "@videoActionABRepeat": {}
 }

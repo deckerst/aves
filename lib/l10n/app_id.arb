@@ -1366,5 +1366,13 @@
   "settingsThumbnailShowHdrIcon": "Tampilkan ikon HDR",
   "@settingsThumbnailShowHdrIcon": {},
   "castDialogTitle": "Siarkan Perangkat",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "stopTooltip": "Berhenti",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Ulang A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Tetapkan awal",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "Tetapkan akhir",
+  "@videoRepeatActionSetEnd": {}
 }

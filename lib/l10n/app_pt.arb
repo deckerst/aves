@@ -1360,5 +1360,11 @@
   "entryActionCast": "Transmitir",
   "@entryActionCast": {},
   "castDialogTitle": "Dispositivos para Transmitir",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "settingsThumbnailShowHdrIcon": "Mostrar ícone HDR",
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "Definir como início",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Coleção personalizada",
+  "@setHomeCustomCollection": {}
 }

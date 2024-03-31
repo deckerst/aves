@@ -1366,5 +1366,13 @@
   "setHomeCustomCollection": "Собственная коллекция",
   "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Установить как главную",
-  "@collectionActionSetHome": {}
+  "@collectionActionSetHome": {},
+  "videoRepeatActionSetStart": "Установить начало",
+  "@videoRepeatActionSetStart": {},
+  "stopTooltip": "Остановить",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Повторить от А до Б",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "Установить конец",
+  "@videoRepeatActionSetEnd": {}
 }
