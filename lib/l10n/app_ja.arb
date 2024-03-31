@@ -1235,7 +1235,7 @@
   "@lengthUnitPercent": {},
   "saveCopyButtonLabel": "コピーを保存",
   "@saveCopyButtonLabel": {},
-  "columnCount": "{count, plural, =1{1 列} other{{count} 列}}",
+  "columnCount": "{count, plural, other{{count} 列}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1246,5 +1246,23 @@
   "entryActionCast": "キャスト",
   "@entryActionCast": {},
   "editorTransformRotate": "回転",
-  "@editorTransformRotate": {}
+  "@editorTransformRotate": {},
+  "settingsVideoResumptionModeTile": "前回の位置からの再生",
+  "@settingsVideoResumptionModeTile": {},
+  "settingsAskEverytime": "都度選択",
+  "@settingsAskEverytime": {},
+  "maxBrightnessNever": "無効",
+  "@maxBrightnessNever": {},
+  "settingsVideoResumptionModeDialogTitle": "前回の位置からの再生",
+  "@settingsVideoResumptionModeDialogTitle": {},
+  "settingsVideoBackgroundMode": "バックグラウンド再生",
+  "@settingsVideoBackgroundMode": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "左右で上下にスワイプして輝度と音量を調節",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {},
+  "settingsViewerShowHistogram": "ヒストグラムを表示",
+  "@settingsViewerShowHistogram": {},
+  "settingsVideoBackgroundModeDialogTitle": "バックグラウンド再生",
+  "@settingsVideoBackgroundModeDialogTitle": {},
+  "maxBrightnessAlways": "常時有効",
+  "@maxBrightnessAlways": {}
 }
