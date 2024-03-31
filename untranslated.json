@@ -6,13 +6,6 @@
     "videoRepeatActionSetEnd"
   ],
 
-  "be": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
   "bn": [
     "itemCount",
     "columnCount",
@@ -1954,13 +1947,6 @@
     "settingsViewerShowHistogram"
   ],
 
-  "es": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
   "eu": [
     "stopTooltip",
     "videoActionABRepeat",
@@ -2955,13 +2941,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "fr": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
   ],
 
   "gl": [
@@ -4864,13 +4843,6 @@
     "videoRepeatActionSetEnd"
   ],
 
-  "id": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
   "is": [
     "stopTooltip",
     "videoActionABRepeat",
@@ -4906,8 +4878,6 @@
     "filterLocatedLabel",
     "filterTaggedLabel",
     "albumTierVaults",
-    "maxBrightnessNever",
-    "maxBrightnessAlways",
     "overlayHistogramNone",
     "overlayHistogramRGB",
     "overlayHistogramLuminance",
@@ -4931,22 +4901,15 @@
     "stateEmpty",
     "placeEmpty",
     "searchStatesSectionTitle",
-    "settingsAskEverytime",
     "settingsModificationWarningDialogMessage",
     "setHomeCustomCollection",
     "settingsConfirmationVaultDataLoss",
     "settingsThumbnailShowHdrIcon",
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
-    "settingsViewerShowHistogram",
     "settingsViewerShowDescription",
     "settingsVideoPlaybackTile",
     "settingsVideoPlaybackPageTitle",
-    "settingsVideoResumptionModeTile",
-    "settingsVideoResumptionModeDialogTitle",
-    "settingsVideoBackgroundMode",
-    "settingsVideoBackgroundModeDialogTitle",
-    "settingsVideoGestureVerticalDragBrightnessVolume",
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
@@ -5611,13 +5574,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "ko": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
   ],
 
   "lt": [
@@ -7311,31 +7267,14 @@
     "filePickerUseThisFolder"
   ],
 
-  "pl": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
   "pt": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd",
-    "collectionActionSetHome",
-    "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
-  ],
-
-  "ro": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd"
   ],
 
-  "ru": [
+  "ro": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
@@ -9442,13 +9381,6 @@
   ],
 
   "tr": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
-  "uk": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
