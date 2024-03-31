@@ -405,6 +405,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       controller: controller ?? _magnifierController,
       contentSize: displaySize ?? entry.displaySize,
       allowOriginalScaleBeyondRange: !isWallpaperMode,
+      allowDoubleTap: _allowDoubleTap,
       minScale: minScale,
       maxScale: maxScale,
       initialScale: viewerController.initialScale,
@@ -434,22 +435,34 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     }
   }
 
-  void _onTap({Alignment? alignment}) {
+  Notification? _handleSideSingleTap(Alignment? alignment) {
     if (settings.viewerGestureSideTapNext && alignment != null) {
       final x = alignment.x;
       final sideRatio = _getSideRatio();
       if (sideRatio != null) {
         const animate = false;
         if (x < sideRatio) {
-          (context.isRtl ? const ShowNextEntryNotification(animate: animate) : const ShowPreviousEntryNotification(animate: animate)).dispatch(context);
-          return;
+          return context.isRtl ? const ShowNextEntryNotification(animate: animate) : const ShowPreviousEntryNotification(animate: animate);
         } else if (x > 1 - sideRatio) {
-          (context.isRtl ? const ShowPreviousEntryNotification(animate: animate) : const ShowNextEntryNotification(animate: animate)).dispatch(context);
-          return;
+          return context.isRtl ? const ShowPreviousEntryNotification(animate: animate) : const ShowNextEntryNotification(animate: animate);
         }
       }
     }
-    const ToggleOverlayNotification().dispatch(context);
+    return null;
+  }
+
+  void _onTap({Alignment? alignment}) => (_handleSideSingleTap(alignment) ?? const ToggleOverlayNotification()).dispatch(context);
+
+  // side gesture handling by precedence:
+  // - seek in video by side double tap (if enabled)
+  // - go to previous/next entry by side single tap (if enabled)
+  // - zoom in/out by double tap
+  bool _allowDoubleTap(Alignment alignment) {
+    if (entry.isVideo && settings.videoGestureSideDoubleTapSeek) {
+      return true;
+    }
+    final actionNotification = _handleSideSingleTap(alignment);
+    return actionNotification == null;
   }
 
   void _onMediaCommand(MediaCommandEvent event) {
