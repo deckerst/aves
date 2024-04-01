@@ -1,3 +1,0 @@
-In v1.9.7:
-- enjoy the app in Slovak & Vietnamese
-Full changelog available on GitHub

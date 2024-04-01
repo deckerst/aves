@@ -1,11 +1,4 @@
 {
-  "ar": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
   "bn": [
     "itemCount",
     "columnCount",
