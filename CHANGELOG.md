@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.8"></a>[v1.10.8] - 2024-04-01
+
 ### Added
 
 - Collection: support for Fairphone burst pattern

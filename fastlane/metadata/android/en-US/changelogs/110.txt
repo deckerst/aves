@@ -1,4 +1,0 @@
-In v1.10.1:
-- JPEG MPF support
-- enjoy the app in Arabic & Belarusian
-Full changelog available on GitHub

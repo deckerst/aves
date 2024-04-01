@@ -1,4 +1,0 @@
-In v1.10.0:
-- cast images via DLNA/UPnP
-- enjoy the app in Icelandic
-Full changelog available on GitHub

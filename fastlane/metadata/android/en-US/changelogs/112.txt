@@ -1,4 +1,0 @@
-In v1.10.3:
-- customize your home page
-- analyze your images with the histogram (for real this time)
-Full changelog available on GitHub

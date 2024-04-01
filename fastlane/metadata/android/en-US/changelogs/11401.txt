@@ -1,3 +1,0 @@
-In v1.10.5:
-- enjoy the app in Catalan
-Full changelog available on GitHub
