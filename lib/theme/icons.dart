@@ -105,6 +105,7 @@ class AIcons {
   static const info = Icons.info_outlined;
   static const layers = Icons.layers_outlined;
   static const map = Icons.map_outlined;
+  static const more = Icons.more_horiz_outlined;
   static final move = MdiIcons.fileMoveOutline;
   static const mute = Icons.volume_off_outlined;
   static const unmute = Icons.volume_up_outlined;
@@ -118,7 +119,10 @@ class AIcons {
   static const pause = Icons.pause;
   static const print = Icons.print_outlined;
   static const refresh = Icons.refresh_outlined;
+  static const repeat = Icons.repeat_outlined;
+  static final repeatOff = MdiIcons.repeatOff;
   static const replay10 = Icons.replay_10_outlined;
+  static final resetBounds = MdiIcons.rayStartEnd;
   static const reverse = Icons.invert_colors_outlined;
   static const skip10 = Icons.forward_10_outlined;
   static const reset = Icons.restart_alt_outlined;
@@ -130,6 +134,8 @@ class AIcons {
   static const select = Icons.select_all_outlined;
   static const setAs = Icons.wallpaper_outlined;
   static final setCover = MdiIcons.imageEditOutline;
+  static final setEnd = MdiIcons.rayEnd;
+  static final setStart = MdiIcons.rayStart;
   static const share = Icons.share_outlined;
   static const show = Icons.visibility_outlined;
   static final showFullscreen = MdiIcons.arrowExpand;

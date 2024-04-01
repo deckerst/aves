@@ -175,18 +175,6 @@ open class MainActivity : FlutterFragmentActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        mediaStoreChangeStreamHandler.onAppResume()
-        settingsChangeStreamHandler.onAppResume()
-    }
-
-    override fun onPause() {
-        mediaStoreChangeStreamHandler.onAppPause()
-        settingsChangeStreamHandler.onAppPause()
-        super.onPause()
-    }
-
     override fun onStop() {
         Log.i(LOG_TAG, "onStop")
         super.onStop()
@@ -242,7 +230,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     private fun onEditResult(resultCode: Int, intent: Intent?) {
         val fields: FieldMap? = if (resultCode == RESULT_OK) hashMapOf(
-            "uri" to intent?.data.toString(),
+            "uri" to intent?.data?.toString(),
             "mimeType" to intent?.type,
         ) else null
         pendingEditIntentHandler?.let { it(fields) }
@@ -279,21 +267,19 @@ open class MainActivity : FlutterFragmentActivity() {
         }
     }
 
-    open fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
+    open fun extractIntentData(intent: Intent?): FieldMap {
         when (val action = intent?.action) {
             Intent.ACTION_MAIN -> {
-                if (intent.getBooleanExtra(EXTRA_KEY_SAFE_MODE, false)) {
-                    return hashMapOf(
-                        INTENT_DATA_KEY_SAFE_MODE to true,
-                    )
-                }
+                val fields = hashMapOf<String, Any?>(
+                    INTENT_DATA_KEY_LAUNCHER to intent.hasCategory(Intent.CATEGORY_LAUNCHER),
+                    INTENT_DATA_KEY_SAFE_MODE to intent.getBooleanExtra(EXTRA_KEY_SAFE_MODE, false),
+                )
                 intent.getStringExtra(EXTRA_KEY_PAGE)?.let { page ->
                     val filters = extractFiltersFromIntent(intent)
-                    return hashMapOf(
-                        INTENT_DATA_KEY_PAGE to page,
-                        INTENT_DATA_KEY_FILTERS to filters,
-                    )
+                    fields[INTENT_DATA_KEY_PAGE] = page
+                    fields[INTENT_DATA_KEY_FILTERS] = filters
                 }
+                return fields
             }
 
             Intent.ACTION_VIEW,
@@ -496,6 +482,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_ACTION = "action"
         const val INTENT_DATA_KEY_ALLOW_MULTIPLE = "allowMultiple"
         const val INTENT_DATA_KEY_FILTERS = "filters"
+        const val INTENT_DATA_KEY_LAUNCHER = "launcher"
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_QUERY = "query"

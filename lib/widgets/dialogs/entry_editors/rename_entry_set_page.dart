@@ -6,8 +6,10 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/view/src/metadata/fields.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
+import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -36,6 +38,7 @@ class RenameEntrySetPage extends StatefulWidget {
 class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
   final TextEditingController _patternTextController = TextEditingController();
   final ValueNotifier<NamingPattern> _namingPatternNotifier = ValueNotifier<NamingPattern>(const NamingPattern([]));
+  late final String locale;
 
   static const int previewMax = 10;
   static const double thumbnailExtent = 48;
@@ -49,7 +52,11 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     super.initState();
     _patternTextController.text = settings.entryRenamingPattern;
     _patternTextController.addListener(_onUserPatternChanged);
-    _onUserPatternChanged();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      locale = context.l10n.localeName;
+      _onUserPatternChanged();
+    });
   }
 
   @override
@@ -92,16 +99,34 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                       itemBuilder: (context) {
                         return [
                           PopupMenuItem(
-                            value: DateNamingProcessor.key,
-                            child: MenuRow(text: l10n.viewerInfoLabelDate, icon: const Icon(AIcons.date)),
-                          ),
-                          PopupMenuItem(
                             value: NameNamingProcessor.key,
                             child: MenuRow(text: l10n.renameProcessorName, icon: const Icon(AIcons.name)),
                           ),
                           PopupMenuItem(
                             value: CounterNamingProcessor.key,
                             child: MenuRow(text: l10n.renameProcessorCounter, icon: const Icon(AIcons.counter)),
+                          ),
+                          PopupMenuItem(
+                            value: DateNamingProcessor.key,
+                            child: MenuRow(text: l10n.viewerInfoLabelDate, icon: const Icon(AIcons.date)),
+                          ),
+                          PopupMenuItem(
+                            value: TagsNamingProcessor.key,
+                            child: MenuRow(text: l10n.tagPageTitle, icon: const Icon(AIcons.tag)),
+                          ),
+                          PopupMenuExpansionPanel<String>(
+                            value: MetadataFieldNamingProcessor.key,
+                            icon: AIcons.more,
+                            title: MaterialLocalizations.of(context).moreButtonTooltip,
+                            items: [
+                              MetadataField.exifMake,
+                              MetadataField.exifModel,
+                            ]
+                                .map((field) => PopupMenuItem(
+                                      value: MetadataFieldNamingProcessor.keyWithField(field),
+                                      child: MenuRow(text: field.title),
+                                    ))
+                                .toList(),
                           ),
                         ];
                       },
@@ -159,11 +184,17 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                               ValueListenableBuilder<NamingPattern>(
                                 valueListenable: _namingPatternNotifier,
                                 builder: (context, pattern, child) {
-                                  return Text(
-                                    pattern.apply(entry, index),
-                                    softWrap: false,
-                                    overflow: TextOverflow.fade,
-                                    maxLines: 1,
+                                  return FutureBuilder<String>(
+                                    future: pattern.apply(entry, index),
+                                    builder: (context, snapshot) {
+                                      final info = snapshot.data;
+                                      return Text(
+                                        info ?? '…',
+                                        softWrap: false,
+                                        overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                      );
+                                    },
                                   );
                                 },
                               ),
@@ -203,6 +234,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     _namingPatternNotifier.value = NamingPattern.from(
       userPattern: _patternTextController.text,
       entryCount: entryCount,
+      locale: locale,
     );
   }
 

@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.8"></a>[v1.10.8] - 2024-04-01
+
+### Added
+
+- Collection: support for Fairphone burst pattern
+- Collection: allow using tags/make/model when bulk renaming
+- Video: A-B repeat
+- Settings: hidden items can be toggled
+
+### Changed
+
+- opening app from launcher always show home page
+- use dates with western arabic numerals for maghreb arabic locales
+- album unique names are case insensitive
+- upgraded Flutter to stable v3.19.5
+
+### Fixed
+
+- crash when decoding large region
+- viewer position drift during scale
+- viewer side gesture precedence (next entry by single tap vs zoom by double tap)
+
 ## <a id="v1.10.7"></a>[v1.10.7] - 2024-03-12
 
 ### Added

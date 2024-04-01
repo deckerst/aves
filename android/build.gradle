@@ -1,8 +1,5 @@
 buildscript {
     ext {
-        kotlin_version = '1.9.21'
-        ksp_version = "$kotlin_version-1.0.15"
-        agp_version = '8.2.2'
         glide_version = '4.16.0'
         // AppGallery Connect plugin versions: https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-sdk-changenotes-0000001058732550
         huawei_agconnect_version = '1.9.1.300'
@@ -22,9 +19,6 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$agp_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
         if (useCrashlytics) {
             // GMS & Firebase Crashlytics (used by some flavors only)
             classpath 'com.google.gms:google-services:4.4.0'

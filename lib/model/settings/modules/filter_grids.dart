@@ -1,10 +1,9 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/model/settings/modules/search.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 
-mixin FilterGridsSettings on SettingsAccess, SearchSettings {
+mixin FilterGridsSettings on SettingsAccess {
   AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(SettingKeys.albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipGroupFactor.values);
 
   set albumGroupFactor(AlbumChipGroupFactor newValue) => set(SettingKeys.albumGroupFactorKey, newValue.toString());
@@ -52,21 +51,6 @@ mixin FilterGridsSettings on SettingsAccess, SearchSettings {
   Set<CollectionFilter> get pinnedFilters => (getStringList(SettingKeys.pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => set(SettingKeys.pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
-
-  Set<CollectionFilter> get hiddenFilters => (getStringList(SettingKeys.hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
-
-  set hiddenFilters(Set<CollectionFilter> newValue) => set(SettingKeys.hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
-
-  void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
-    final _hiddenFilters = hiddenFilters;
-    if (visible) {
-      _hiddenFilters.removeAll(filters);
-    } else {
-      _hiddenFilters.addAll(filters);
-      searchHistory = searchHistory..removeWhere(filters.contains);
-    }
-    hiddenFilters = _hiddenFilters;
-  }
 
   bool get showAlbumPickQuery => getBool(SettingKeys.showAlbumPickQueryKey) ?? false;
 

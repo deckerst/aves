@@ -20,6 +20,8 @@ object BitmapUtils {
     private val freeBaos = ArrayList<ByteArrayOutputStream>()
     private val mutex = Mutex()
 
+    const val ARGB_8888_BYTE_SIZE = 4
+
     suspend fun Bitmap.getBytes(canHaveAlpha: Boolean = false, quality: Int = 100, recycle: Boolean): ByteArray? {
         val stream: ByteArrayOutputStream
         mutex.withLock {

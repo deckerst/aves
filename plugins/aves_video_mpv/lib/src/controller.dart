@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
+import 'package:aves_video_mpv/src/tracks.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 class MpvVideoController extends AvesVideoController {
   late Player _instance;
   late VideoStatus _status;
-  bool _firstFrameRendered = false;
+  bool _firstFrameRendered = false, _abRepeatSeeking = false;
   final ValueNotifier<VideoController?> _controllerNotifier = ValueNotifier(null);
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
@@ -82,22 +83,41 @@ class MpvVideoController extends AvesVideoController {
 
   void _startListening() {
     _subscriptions.add(statusStream.listen((v) => _status = v));
-    _subscriptions.add(_instance.stream.completed.listen((v) {
-      if (v) {
+
+    final playerStream = _instance.stream;
+    _subscriptions.add(playerStream.completed.listen((completed) {
+      if (completed) {
         _statusStreamController.add(VideoStatus.completed);
         _completedNotifier.notify();
       }
     }));
-    _subscriptions.add(_instance.stream.playing.listen((v) {
+    _subscriptions.add(playerStream.playing.listen((playing) {
       if (status == VideoStatus.idle) return;
-      _statusStreamController.add(v ? VideoStatus.playing : VideoStatus.paused);
+      _statusStreamController.add(playing ? VideoStatus.playing : VideoStatus.paused);
     }));
-    _subscriptions.add(_instance.stream.subtitle.listen((v) => _timedTextStreamController.add(v.isEmpty ? null : v[0])));
-    _subscriptions.add(_instance.stream.videoParams.listen((v) => sarNotifier.value = v.par));
-    _subscriptions.add(_instance.stream.log.listen((v) => debugPrint('libmpv log: $v')));
-    _subscriptions.add(_instance.stream.error.listen((v) => debugPrint('libmpv error: $v')));
-    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.enableVideoHardwareAccelerationKey).listen((_) => _initController()));
-    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.videoLoopModeKey).listen((_) => _applyLoop()));
+    _subscriptions.add(playerStream.position.listen((v) {
+      final abRepeat = abRepeatNotifier.value;
+      if (abRepeat != null && status == VideoStatus.playing) {
+        final start = abRepeat.start;
+        final end = abRepeat.end;
+        if (start != null && end != null) {
+          if (v.inMilliseconds < end) {
+            _abRepeatSeeking = false;
+          } else if (!_abRepeatSeeking) {
+            _abRepeatSeeking = true;
+            _instance.seek(Duration(milliseconds: start));
+          }
+        }
+      }
+    }));
+    _subscriptions.add(playerStream.subtitle.listen((v) => _timedTextStreamController.add(v.isEmpty ? null : v[0])));
+    _subscriptions.add(playerStream.videoParams.listen((v) => sarNotifier.value = v.par));
+    _subscriptions.add(playerStream.log.listen((v) => debugPrint('libmpv log: $v')));
+    _subscriptions.add(playerStream.error.listen((v) => debugPrint('libmpv error: $v')));
+
+    final settingsStream = settings.updateStream;
+    _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.enableVideoHardwareAccelerationKey).listen((_) => _initController()));
+    _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.videoLoopModeKey).listen((_) => _applyLoop()));
   }
 
   void _stopListening() {
@@ -160,6 +180,7 @@ class MpvVideoController extends AvesVideoController {
       // and `PlayerConfiguration.ready` hook is useless.
       await Future.delayed(const Duration(milliseconds: 500));
     }
+    targetMillis = abRepeatNotifier.value?.clamp(targetMillis) ?? targetMillis;
     await _instance.seek(Duration(milliseconds: targetMillis));
   }
 
@@ -353,47 +374,5 @@ class MpvVideoController extends AvesVideoController {
           break;
       }
     }
-  }
-}
-
-extension ExtraVideoTrack on VideoTrack {
-  MediaStreamSummary toAves(int index) {
-    return MediaStreamSummary(
-      type: MediaStreamType.video,
-      index: index,
-      codecName: null,
-      language: language,
-      title: title,
-      width: null,
-      height: null,
-    );
-  }
-}
-
-extension ExtraAudioTrack on AudioTrack {
-  MediaStreamSummary toAves(int index) {
-    return MediaStreamSummary(
-      type: MediaStreamType.audio,
-      index: index,
-      codecName: null,
-      language: language,
-      title: title,
-      width: null,
-      height: null,
-    );
-  }
-}
-
-extension ExtraSubtitleTrack on SubtitleTrack {
-  MediaStreamSummary toAves(int index) {
-    return MediaStreamSummary(
-      type: MediaStreamType.text,
-      index: index,
-      codecName: null,
-      language: language,
-      title: title,
-      width: null,
-      height: null,
-    );
   }
 }

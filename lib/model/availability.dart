@@ -33,8 +33,8 @@ class LiveAvesAvailability implements AvesAvailability {
     return _isConnected!;
   }
 
-  void _updateConnectivityFromResult(ConnectivityResult result) {
-    final newValue = result != ConnectivityResult.none;
+  void _updateConnectivityFromResult(List<ConnectivityResult> result) {
+    final newValue = result.isNotEmpty && !result.contains(ConnectivityResult.none);
     if (_isConnected != newValue) {
       _isConnected = newValue;
       debugPrint('Device is connected=$_isConnected');

@@ -7,13 +7,13 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.10.7+116
+version: 1.10.8+117
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.19.3
+  flutter: 3.19.5
   sdk: '>=3.3.0 <4.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
@@ -40,8 +40,6 @@ dependencies:
     path: plugins/aves_services_google
   aves_video:
     path: plugins/aves_video
-#  aves_video_ijk:
-#    path: plugins/aves_video_ijk
   aves_video_ffmpeg:
     path: plugins/aves_video_ffmpeg
   aves_video_mpv:
@@ -52,10 +50,8 @@ dependencies:
     path: plugins/aves_utils
   charts_flutter:
     git:
-      #url: https://github.com/fzyzcjy/charts.git
-      #ref: master
+      # https://github.com/fzyzcjy/charts.git master commit de76a46 (Sep 26, 2022) is incompatible with Flutter v3.10
       url: https://github.com/deckerst/flutter_google_charts.git
-      # fzyzcjy's master commit de76a46 (Sep 26, 2022) is incompatible with Flutter v3.10
       ref: aves
       path: charts_flutter
   collection:

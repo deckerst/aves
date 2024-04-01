@@ -1,10 +1,23 @@
-import 'package:aves_magnifier/src/core/scale_gesture_recognizer.dart';
+import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
-import 'package:aves_magnifier/src/pan/gesture_detector_scope.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 class MagnifierGestureDetector extends StatefulWidget {
+  final EdgeHitDetector hitDetector;
+
+  final void Function(ScaleStartDetails details, bool doubleTap)? onScaleStart;
+  final GestureScaleUpdateCallback? onScaleUpdate;
+  final GestureScaleEndCallback? onScaleEnd;
+
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapDownCallback? onDoubleTap;
+
+  final MagnifierDoubleTapPredicate? allowDoubleTap;
+  final HitTestBehavior? behavior;
+  final Widget? child;
+
   const MagnifierGestureDetector({
     super.key,
     required this.hitDetector,
@@ -14,21 +27,10 @@ class MagnifierGestureDetector extends StatefulWidget {
     this.onTapDown,
     this.onTapUp,
     this.onDoubleTap,
+    this.allowDoubleTap,
     this.behavior,
     this.child,
   });
-
-  final EdgeHitDetector hitDetector;
-  final void Function(ScaleStartDetails details, bool doubleTap)? onScaleStart;
-  final GestureScaleUpdateCallback? onScaleUpdate;
-  final GestureScaleEndCallback? onScaleEnd;
-
-  final GestureTapDownCallback? onTapDown;
-  final GestureTapUpCallback? onTapUp;
-  final GestureTapDownCallback? onDoubleTap;
-
-  final HitTestBehavior? behavior;
-  final Widget? child;
 
   @override
   State<MagnifierGestureDetector> createState() => _MagnifierGestureDetectorState();
@@ -78,8 +80,11 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
       );
     }
 
-    gestures[DoubleTapGestureRecognizer] = GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
-      () => DoubleTapGestureRecognizer(debugOwner: this),
+    gestures[MagnifierDoubleTapGestureRecognizer] = GestureRecognizerFactoryWithHandlers<MagnifierDoubleTapGestureRecognizer>(
+      () => MagnifierDoubleTapGestureRecognizer(
+        debugOwner: this,
+        allowDoubleTap: widget.allowDoubleTap ?? (_) => true,
+      ),
       (instance) {
         final onDoubleTap = widget.onDoubleTap;
         instance
@@ -87,8 +92,11 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
           ..onDoubleTapDown = _onDoubleTapDown
           ..onDoubleTap = onDoubleTap != null
               ? () {
-                  onDoubleTap(doubleTapDetails.value!);
-                  doubleTapDetails.value = null;
+                  final details = doubleTapDetails.value;
+                  if (details != null) {
+                    onDoubleTap(details);
+                    doubleTapDetails.value = null;
+                  }
                 }
               : null;
       },
@@ -103,5 +111,28 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
 
   void _onDoubleTapCancel() => doubleTapDetails.value = null;
 
-  void _onDoubleTapDown(TapDownDetails details) => doubleTapDetails.value = details;
+  void _onDoubleTapDown(TapDownDetails details) {
+    if (widget.allowDoubleTap?.call(details.localPosition) ?? true) {
+      doubleTapDetails.value = details;
+    }
+  }
+}
+
+class MagnifierDoubleTapGestureRecognizer extends DoubleTapGestureRecognizer {
+  final MagnifierDoubleTapPredicate allowDoubleTap;
+
+  MagnifierDoubleTapGestureRecognizer({
+    super.debugOwner,
+    super.supportedDevices,
+    super.allowedButtonsFilter,
+    required this.allowDoubleTap,
+  });
+
+  @override
+  bool isPointerAllowed(PointerDownEvent event) {
+    if (!allowDoubleTap(event.localPosition)) {
+      return false;
+    }
+    return super.isPointerAllowed(event);
+  }
 }

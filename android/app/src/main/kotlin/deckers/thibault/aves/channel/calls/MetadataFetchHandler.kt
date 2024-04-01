@@ -29,6 +29,7 @@ import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifGeoTiffTags
+import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDouble
@@ -110,7 +111,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getAllMetadata" -> ioScope.launch { safe(call, result, ::getAllMetadata) }
             "getCatalogMetadata" -> ioScope.launch { safe(call, result, ::getCatalogMetadata) }
-            "getFields" -> ioScope.launch { safe(call, result, ::getFields) }
+            "getOverlayMetadata" -> ioScope.launch { safe(call, result, ::getOverlayMetadata) }
             "getGeoTiffInfo" -> ioScope.launch { safe(call, result, ::getGeoTiffInfo) }
             "getMultiPageInfo" -> ioScope.launch { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> ioScope.launch { safe(call, result, ::getPanoramaInfo) }
@@ -119,6 +120,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "hasContentResolverProp" -> ioScope.launch { safe(call, result, ::hasContentProp) }
             "getContentResolverProp" -> ioScope.launch { safe(call, result, ::getContentPropValue) }
             "getDate" -> ioScope.launch { safe(call, result, ::getDate) }
+            "getFields" -> ioScope.launch { safe(call, result, ::getFields) }
             else -> result.notImplemented()
         }
     }
@@ -815,7 +817,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getFields(call: MethodCall, result: MethodChannel.Result) {
+    private fun getOverlayMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
@@ -1248,6 +1250,71 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         result.success(dateMillis)
+    }
+
+    private fun getFields(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        val fields = call.argument<List<String>>("fields")
+        if (mimeType == null || uri == null || fields == null) {
+            result.error("getFields-args", "missing arguments", null)
+            return
+        }
+
+        val metadataMap = HashMap<String, Any>()
+        if (fields.isEmpty() || isVideo(mimeType)) {
+            result.success(metadataMap)
+            return
+        }
+
+        var foundExif = false
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = Helper.safeRead(input)
+                    for (dir in metadata.getDirectoriesOfType(ExifDirectoryBase::class.java)) {
+                        foundExif = true
+                        val allTags = ExifInterfaceHelper.allTags
+                        fields.forEach { tag ->
+                            allTags[tag]?.let { mapper ->
+                                val tagType = mapper.type
+                                dir.getDescription(tagType)?.let { value -> metadataMap[tag] = value }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+
+        if (!foundExif && canReadWithExifInterface(mimeType)) {
+            // fallback to read EXIF via ExifInterface
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val exif = ExifInterface(input)
+                    fields.forEach { tag ->
+                        if (exif.hasAttribute(tag)) {
+                            val value = exif.getAttribute(tag)
+                            if (value != null) {
+                                metadataMap[tag] = value
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+
+        result.success(metadataMap)
     }
 
     companion object {

@@ -1524,5 +1524,13 @@
   "setHomeCustomCollection": "Własna kolekcja",
   "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Ustaw jako stronę główną",
-  "@collectionActionSetHome": {}
+  "@collectionActionSetHome": {},
+  "videoRepeatActionSetStart": "Ustaw początek",
+  "@videoRepeatActionSetStart": {},
+  "stopTooltip": "Zatrzymaj",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Powtarzanie A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "Ustaw koniec",
+  "@videoRepeatActionSetEnd": {}
 }

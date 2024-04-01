@@ -356,10 +356,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
     if (pattern == null) return;
 
-    final entriesToNewName = Map.fromEntries(entries.mapIndexed((index, entry) {
-      final newName = pattern.apply(entry, index);
+    final namingFutures = entries.mapIndexed((index, entry) async {
+      final newName = await pattern.apply(entry, index);
       return MapEntry(entry, '$newName${entry.extension}');
-    })).whereNotNullValue();
+    });
+    final entriesToNewName = Map.fromEntries(await Future.wait(namingFutures)).whereNotNullValue();
     await rename(context, entriesToNewName: entriesToNewName, persist: true);
 
     _browse(context);
@@ -555,15 +556,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> removeLocation(BuildContext context, Set<AvesEntry> entries) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AvesDialog(
-        content: Text(context.l10n.genericDangerWarningDialogMessage),
+        content: Text(l10n.genericDangerWarningDialogMessage),
         actions: [
           const CancelButton(),
           TextButton(
             onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(context.l10n.applyButtonLabel),
+            child: Text(l10n.applyButtonLabel),
           ),
         ],
       ),

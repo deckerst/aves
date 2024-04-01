@@ -36,6 +36,7 @@ class AvesMagnifier extends StatefulWidget {
 
   final bool allowOriginalScaleBeyondRange;
   final bool allowGestureScaleBeyondRange;
+  final MagnifierDoubleTapCallback? allowDoubleTap;
   final double panInertia;
 
   // Defines the minimum size in which the image will be allowed to assume, it is proportional to the original image size.
@@ -64,6 +65,7 @@ class AvesMagnifier extends StatefulWidget {
     this.viewportPadding = EdgeInsets.zero,
     this.allowOriginalScaleBeyondRange = true,
     this.allowGestureScaleBeyondRange = true,
+    this.allowDoubleTap,
     this.minScale = const ScaleLevel(factor: .0),
     this.maxScale = const ScaleLevel(factor: double.infinity),
     this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
@@ -220,12 +222,16 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
       newScale = boundaries.clampScale(newScale);
     }
     newScale = max(0, newScale);
+    // focal point is in viewport coordinates
     final scaleFocalPoint = _doubleTap ? _startFocalPoint! : details.localFocalPoint;
 
+    final viewportCenter = boundaries.viewportCenter;
+    final centerContentPosition = boundaries.viewportToContentPosition(controller, viewportCenter);
+    final scalePositionDelta = (scaleFocalPoint - viewportCenter) * (scale! / newScale - 1);
     final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition!;
-    final scalePositionDelta = boundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale! / newScale - 1);
+
     final newPosition = boundaries.clampPosition(
-      position: position + panPositionDelta + scalePositionDelta,
+      position: boundaries.contentToStatePosition(newScale, centerContentPosition) + scalePositionDelta + panPositionDelta,
       scale: newScale,
     );
 
@@ -352,35 +358,55 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
     return Duration(milliseconds: gestureVelocity != 0 ? (animationVelocity / gestureVelocity * 1000).round() : 0);
   }
 
-  void onTap(TapUpDetails details) {
+  Alignment? _getTapAlignment(Offset viewportTapPosition) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return null;
+
+    final viewportSize = boundaries.viewportSize;
+    return Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
+  }
+
+  Offset? _getChildTapPosition(Offset viewportTapPosition) {
+    final boundaries = scaleBoundaries;
+    if (boundaries == null) return null;
+
+    return boundaries.viewportToContentPosition(controller, viewportTapPosition);
+  }
+
+  void _onTapUp(TapUpDetails details) {
     final onTap = widget.onTap;
     if (onTap == null) return;
 
-    final boundaries = scaleBoundaries;
-    if (boundaries == null) return;
-
     final viewportTapPosition = details.localPosition;
-    final viewportSize = boundaries.viewportSize;
-    final alignment = Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
-    final childTapPosition = boundaries.viewportToContentPosition(controller, viewportTapPosition);
-
-    onTap(context, controller.currentState, alignment, childTapPosition);
+    final alignment = _getTapAlignment(viewportTapPosition);
+    final childTapPosition = _getChildTapPosition(viewportTapPosition);
+    if (alignment != null && childTapPosition != null) {
+      onTap(context, controller.currentState, alignment, childTapPosition);
+    }
   }
 
-  void onDoubleTap(TapDownDetails details) {
-    final boundaries = scaleBoundaries;
-    if (boundaries == null) return;
+  bool _allowDoubleTap(Offset localPosition) {
+    final allowDoubleTap = widget.allowDoubleTap;
+    if (allowDoubleTap != null) {
+      final alignment = _getTapAlignment(localPosition);
+      if (alignment != null) {
+        return allowDoubleTap(alignment);
+      }
+    }
+    return true;
+  }
 
-    final viewportTapPosition = details.localPosition;
+  void _onDoubleTap(TapDownDetails details) {
     final onDoubleTap = widget.onDoubleTap;
     if (onDoubleTap != null) {
-      final viewportSize = boundaries.viewportSize;
-      final alignment = Alignment(viewportTapPosition.dx / viewportSize.width, viewportTapPosition.dy / viewportSize.height);
-      if (onDoubleTap(alignment) == true) return;
+      final alignment = _getTapAlignment(details.localPosition);
+      if (alignment != null && onDoubleTap(alignment)) return;
     }
 
-    final childTapPosition = boundaries.viewportToContentPosition(controller, viewportTapPosition);
-    nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
+    final childTapPosition = _getChildTapPosition(details.localPosition);
+    if (childTapPosition != null) {
+      nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
+    }
   }
 
   void animateScale(double? from, double? to) {
@@ -450,8 +476,9 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
           onScaleStart: onScaleStart,
           onScaleUpdate: onScaleUpdate,
           onScaleEnd: onScaleEnd,
-          onTapUp: widget.onTap == null ? null : onTap,
-          onDoubleTap: onDoubleTap,
+          onTapUp: widget.onTap == null ? null : _onTapUp,
+          onDoubleTap: _onDoubleTap,
+          allowDoubleTap: _allowDoubleTap,
           child: Padding(
             padding: widget.viewportPadding,
             child: LayoutBuilder(
@@ -529,6 +556,7 @@ typedef MagnifierTapCallback = Function(
   Alignment alignment,
   Offset childTapPosition,
 );
+typedef MagnifierDoubleTapPredicate = bool Function(Offset localPosition);
 typedef MagnifierDoubleTapCallback = bool Function(Alignment alignment);
 typedef MagnifierGestureScaleStartCallback = void Function(ScaleStartDetails details, bool doubleTap, ScaleBoundaries boundaries);
 typedef MagnifierGestureScaleUpdateCallback = bool Function(ScaleUpdateDetails details);

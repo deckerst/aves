@@ -94,6 +94,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           return !settings.useTvLayout && targetEntry.isPureVideo;
         case EntryAction.videoSelectStreams:
         case EntryAction.videoSetSpeed:
+        case EntryAction.videoABRepeat:
         case EntryAction.videoSettings:
         case EntryAction.videoTogglePlay:
         case EntryAction.videoReplay10:
@@ -229,6 +230,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoToggleMute:
       case EntryAction.videoSelectStreams:
       case EntryAction.videoSetSpeed:
+      case EntryAction.videoABRepeat:
       case EntryAction.videoSettings:
       case EntryAction.videoTogglePlay:
       case EntryAction.videoReplay10:

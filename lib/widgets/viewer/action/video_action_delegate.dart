@@ -64,6 +64,8 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await _showStreamSelectionDialog(context, controller);
       case EntryAction.videoSetSpeed:
         await _showSpeedDialog(context, controller);
+      case EntryAction.videoABRepeat:
+        controller.toggleABRepeat();
       case EntryAction.videoSettings:
         await _showSettings(context, controller);
       case EntryAction.videoTogglePlay:

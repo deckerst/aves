@@ -11,6 +11,7 @@ import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
+import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils
@@ -116,8 +117,4 @@ class SvgRegionFetcher internal constructor(
         val uri: Uri,
         val svg: SVG,
     )
-
-    companion object {
-        const val ARGB_8888_BYTE_SIZE = 4
-    }
 }

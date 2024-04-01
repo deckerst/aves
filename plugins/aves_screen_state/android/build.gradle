@@ -4,7 +4,7 @@ version '1.0-SNAPSHOT'
 buildscript {
     ext {
         kotlin_version = '1.8.21'
-        agp_version = '8.1.2'
+        agp_version = '8.3.1'
     }
 
     repositories {
@@ -33,18 +33,14 @@ android {
     compileSdk 34
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     lintOptions {
         checkAllWarnings true
         warningsAsErrors true
         disable 'InvalidPackage'
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 
     sourceSets {

@@ -8,6 +8,7 @@ import 'package:aves/model/video/profiles/aac.dart';
 import 'package:aves/model/video/profiles/h264.dart';
 import 'package:aves/model/video/profiles/hevc.dart';
 import 'package:aves/ref/languages.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/mp4.dart';
 import 'package:aves/services/common/services.dart';
@@ -453,7 +454,7 @@ class VideoMetadataFormatter {
 
   static String _formatFilesize(dynamic value) {
     final size = value is int ? value : int.tryParse(value);
-    return size != null ? formatFileSize('en_US', size) : value;
+    return size != null ? formatFileSize(asciiLocale, size) : value;
   }
 
   static String _formatLanguage(String value) {
