@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 - opening app from launcher always show home page
 - use dates with western arabic numerals for maghreb arabic locales
+- album unique names are case insensitive
 - upgraded Flutter to stable v3.19.5
 
 ### Fixed

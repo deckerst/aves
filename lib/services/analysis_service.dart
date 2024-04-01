@@ -76,7 +76,7 @@ Future<void> _init() async {
 
 enum AnalyzerState { running, stopping, stopped }
 
-class Analyzer {
+class Analyzer with WidgetsBindingObserver {
   late AppLocalizations _l10n;
   final ValueNotifier<AnalyzerState> _serviceStateNotifier = ValueNotifier<AnalyzerState>(AnalyzerState.stopped);
   AnalysisController? _controller;
@@ -102,6 +102,7 @@ class Analyzer {
     }
     _serviceStateNotifier.addListener(_onServiceStateChanged);
     _source.stateNotifier.addListener(_onSourceStateChanged);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void dispose() {
@@ -111,9 +112,16 @@ class Analyzer {
     }
     _stopUpdateTimer();
     _controller?.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     _serviceStateNotifier.removeListener(_onServiceStateChanged);
     _source.stateNotifier.removeListener(_onSourceStateChanged);
     _source.dispose();
+  }
+
+  @override
+  void didHaveMemoryPressure() {
+    super.didHaveMemoryPressure();
+    reportService.log('Analyzer memory pressure');
   }
 
   Future<void> start(dynamic args) async {
@@ -126,7 +134,7 @@ class Analyzer {
       progressTotal = args['progressTotal'];
       progressOffset = args['progressOffset'];
     }
-    debugPrint('$runtimeType start for ${entryIds?.length ?? 'all'} entries, at $progressOffset/$progressTotal');
+    await reportService.log('Analyzer start for ${entryIds?.length ?? 'all'} entries, at $progressOffset/$progressTotal');
     _controller?.dispose();
     _controller = AnalysisController(
       canStartService: false,
@@ -147,8 +155,8 @@ class Analyzer {
     });
   }
 
-  void stop() {
-    debugPrint('$runtimeType stop');
+  Future<void> stop() async {
+    await reportService.log('Analyzer stop');
     _serviceStateNotifier.value = AnalyzerState.stopped;
   }
 

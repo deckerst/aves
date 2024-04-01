@@ -196,19 +196,19 @@ mixin AlbumMixin on SourceBase {
       final parts = pContext.split(dirPath);
       for (var i = parts.length - 1; i > 0; i--) {
         final name = pContext.joinAll(['', ...parts.skip(i)]);
-        final testName = '$separator$name';
+        final testName = '$separator${name.toLowerCase()}';
         if (others.every((item) => !item.endsWith(testName))) return name;
       }
       return dirPath;
     }
 
-    final otherAlbumsOnDevice = _directories.whereNotNull().where((item) => item != dirPath).toSet();
+    final otherAlbumsOnDevice = _directories.whereNotNull().where((item) => item != dirPath).map((v) => v.toLowerCase()).toSet();
     final uniqueNameInDevice = unique(dirPath, otherAlbumsOnDevice);
     if (uniqueNameInDevice.length <= relativeDir.length) {
       return uniqueNameInDevice;
     }
 
-    final volumePath = dir.volumePath;
+    final volumePath = dir.volumePath.toLowerCase();
     String trimVolumePath(String? path) => path!.substring(dir.volumePath.length);
     final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path.startsWith(volumePath)).map(trimVolumePath).toSet();
     final uniqueNameInVolume = unique(trimVolumePath(dirPath), otherAlbumsOnVolume);
