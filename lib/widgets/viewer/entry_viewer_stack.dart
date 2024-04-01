@@ -63,7 +63,7 @@ class EntryViewerStack extends StatefulWidget {
   State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
 
-class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, TickerProviderStateMixin {
+class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, TickerProviderStateMixin, RouteAware {
   final Floating _floating = Floating();
   late int _currentEntryIndex;
   late ValueNotifier<int> _currentVerticalPage;
@@ -184,6 +184,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   @override
   void dispose() {
+    AvesApp.pageRouteObserver.unsubscribe(this);
     _floating.dispose();
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
@@ -286,6 +287,41 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       ),
     );
   }
+
+  // route aware
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      AvesApp.pageRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPopNext() => _overrideSnackBarMargin();
+
+  @override
+  void didPush() => _overrideSnackBarMargin();
+
+  @override
+  void didPop() => _resetSnackBarMargin();
+
+  @override
+  void didPushNext() => _resetSnackBarMargin();
+
+  void _overrideSnackBarMargin() {
+    if (isViewingImage) {
+      FeedbackMixin.snackBarMarginOverrideNotifier.value = EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
+    } else {
+      FeedbackMixin.snackBarMarginOverrideNotifier.value = FeedbackMixin.snackBarMarginDefault(context);
+    }
+  }
+
+  void _resetSnackBarMargin() => FeedbackMixin.snackBarMarginOverrideNotifier.value = null;
+
+  // lifecycle
 
   void _onAppLifecycleStateChanged() {
     switch (AvesApp.lifecycleStateNotifier.value) {
@@ -662,6 +698,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
+    _overrideSnackBarMargin();
     switch (page) {
       case transitionPage:
         dismissFeedback(context);

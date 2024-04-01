@@ -11,8 +11,8 @@ import 'package:aves/widgets/common/action_mixins/overlay_snack_bar.dart';
 import 'package:aves/widgets/common/basic/circle.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -22,6 +22,13 @@ import 'package:provider/provider.dart';
 enum FeedbackType { info, warn }
 
 mixin FeedbackMixin {
+  static final ValueNotifier<EdgeInsets?> snackBarMarginOverrideNotifier = ValueNotifier(null);
+
+  static EdgeInsets snackBarMarginDefault(BuildContext context) {
+    final mq = context.read<MediaQueryData>();
+    return EdgeInsets.only(bottom: max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom));
+  }
+
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
   void showFeedback(BuildContext context, FeedbackType type, String message, [SnackBarAction? action]) {
@@ -53,10 +60,7 @@ mixin FeedbackMixin {
         stop: action != null ? start.add(duration) : null,
       );
 
-      if (context.currentRouteName == EntryViewerPage.routeName) {
-        // avoid interactive widgets at the bottom of the page
-        final margin = EntryViewerPage.snackBarMargin(context);
-
+      if (snackBarMarginOverrideNotifier.value != null) {
         // as of Flutter v2.10.4, `SnackBar` can only be positioned at the bottom,
         // and space under the snack bar `margin` does not receive gestures
         // (because it is used by the `Dismissible` wrapping the snack bar)
@@ -65,8 +69,15 @@ mixin FeedbackMixin {
         notificationOverlayEntry = showOverlayNotification(
           (context) => SafeArea(
             bottom: false,
-            child: Padding(
-              padding: margin,
+            child: ValueListenableBuilder<EdgeInsets?>(
+              valueListenable: snackBarMarginOverrideNotifier,
+              builder: (context, margin, child) {
+                return AnimatedPadding(
+                  padding: margin ?? snackBarMarginDefault(context),
+                  duration: ADurations.pageTransitionAnimation,
+                  child: child,
+                );
+              },
               child: OverlaySnackBar(
                 content: snackBarContent,
                 action: action != null
@@ -346,6 +357,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
     final contentTextFontSize = contentTextStyle.fontSize ?? theme.textTheme.bodyMedium!.fontSize!;
     final timerChangeShadowColor = colorScheme.primary;
 
+    final remainingDurationAnimation = _remainingDurationMillis;
     return Row(
       children: [
         if (widget.type == FeedbackType.warn) ...[
@@ -356,16 +368,17 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
           const SizedBox(width: 8),
         ],
         Expanded(child: Text(widget.message)),
-        if (_remainingDurationMillis != null) ...[
+        if (remainingDurationAnimation != null) ...[
           const SizedBox(width: 16),
           AnimatedBuilder(
-            animation: _remainingDurationMillis!,
+            animation: remainingDurationAnimation,
             builder: (context, child) {
-              final remainingDurationMillis = _remainingDurationMillis!.value;
+              final remainingDurationMillis = remainingDurationAnimation.value;
+              final totalDurationMillis = _totalDurationMillis;
               return CircularIndicator(
                 radius: 16,
                 lineWidth: 2,
-                percent: remainingDurationMillis / _totalDurationMillis!,
+                percent: totalDurationMillis != null && totalDurationMillis > 0 ? remainingDurationMillis / totalDurationMillis : 0,
                 background: Colors.grey,
                 // progress color is provided by the caller,
                 // because we cannot use the app context theme here
