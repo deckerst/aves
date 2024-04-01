@@ -1524,5 +1524,13 @@
   "collectionActionSetHome": "تعيين كخلفية",
   "@collectionActionSetHome": {},
   "setHomeCustomCollection": "مجموعة مخصصة",
-  "@setHomeCustomCollection": {}
+  "@setHomeCustomCollection": {},
+  "videoActionABRepeat": "تكرار A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "تعيين نهاية التشغيل",
+  "@videoRepeatActionSetEnd": {},
+  "stopTooltip": "توقف",
+  "@stopTooltip": {},
+  "videoRepeatActionSetStart": "تعيين بداية التشغيل",
+  "@videoRepeatActionSetStart": {}
 }
