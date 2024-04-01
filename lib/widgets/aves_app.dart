@@ -405,6 +405,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   @override
+  void didHaveMemoryPressure() {
+    super.didHaveMemoryPressure();
+    reportService.log('App memory pressure');
+  }
+
+  @override
   void didChangeMetrics() => _updateCutoutInsets();
 
   Future<void> _updateCutoutInsets() async {

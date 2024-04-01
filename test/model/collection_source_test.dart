@@ -366,6 +366,8 @@ void main() {
       FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Marcus Aurelius', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Hannah Arendt', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Arendt', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Something', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Movies/SomeThing', '1'),
     };
 
     final source = await _initSource();
@@ -387,6 +389,8 @@ void main() {
             expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
             expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Hannah Arendt'), 'Hannah Arendt');
             expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Arendt'), 'Arendt');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Something'), 'Pictures/Something');
+            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Movies/SomeThing'), 'Movies/SomeThing');
             return const Placeholder();
           },
         ),
