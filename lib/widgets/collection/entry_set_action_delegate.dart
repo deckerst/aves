@@ -556,15 +556,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> removeLocation(BuildContext context, Set<AvesEntry> entries) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AvesDialog(
-        content: Text(context.l10n.genericDangerWarningDialogMessage),
+        content: Text(l10n.genericDangerWarningDialogMessage),
         actions: [
           const CancelButton(),
           TextButton(
             onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(context.l10n.applyButtonLabel),
+            child: Text(l10n.applyButtonLabel),
           ),
         ],
       ),

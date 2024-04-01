@@ -12,10 +12,10 @@ abstract class SettingsSection {
 
   FutureOr<List<SettingsTile>> tiles(BuildContext context);
 
-  Widget build(BuildContext context, ValueNotifier<String?> expandedNotifier) {
+  Widget build(BuildContext sectionContext, ValueNotifier<String?> expandedNotifier) {
     return FutureBuilder<List<SettingsTile>>(
-      future: Future.value(tiles(context)),
-      builder: (context, snapshot) {
+      future: Future.value(tiles(sectionContext)),
+      builder: (tileContext, snapshot) {
         final tiles = snapshot.data;
         if (tiles == null) return const SizedBox();
 
@@ -25,11 +25,12 @@ abstract class SettingsSection {
           // use a fixed value instead of the title to identify this expansion tile
           // so that the tile state is kept when the language is modified
           value: key,
-          leading: icon(context),
-          title: title(context),
+          leading: icon(tileContext),
+          title: title(tileContext),
           expandedNotifier: expandedNotifier,
           showHighlight: false,
-          children: tiles.map((v) => v.build(context)).toList(),
+          // reuse section context so that dialogs opened from tiles have the right text theme
+          children: tiles.map((v) => v.build(sectionContext)).toList(),
         );
       },
     );
