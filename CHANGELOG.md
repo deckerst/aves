@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="v1.10.8"></a>[v1.10.8] - 2024-04-01
 
+### Fixed
+
+- rendering of SVG with viewbox offset
+
 ### Added
 
 - Collection: support for Fairphone burst pattern
