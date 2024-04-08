@@ -124,6 +124,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
               source: _collection.source,
               filters: pickFilters,
             ),
+            canRemoveFilters: false,
           );
         },
         fullscreenDialog: true,

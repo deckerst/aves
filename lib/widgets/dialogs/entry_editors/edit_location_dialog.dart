@@ -169,9 +169,9 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     );
   }
 
-  Future<void> _pickLocation() async {
+  CollectionLens? _createPickCollection() {
     final baseCollection = widget.collection;
-    final mapCollection = baseCollection != null
+    return baseCollection != null
         ? CollectionLens(
             source: baseCollection.source,
             filters: {
@@ -180,17 +180,21 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
             },
           )
         : null;
+  }
+
+  Future<void> _pickLocation() async {
+    final pickCollection = _createPickCollection();
     final latLng = await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) => LocationPickPage(
-          collection: mapCollection,
+          collection: pickCollection,
           initialLocation: _mapCoordinates,
         ),
         fullscreenDialog: true,
       ),
     );
-    mapCollection?.dispose();
+    pickCollection?.dispose();
     if (latLng != null) {
       settings.mapDefaultCenter = latLng;
       setState(() {
@@ -218,20 +222,20 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   }
 
   Future<void> _pickCopyItemSource() async {
-    final _collection = widget.collection;
-    if (_collection == null) return;
+    final pickCollection = _createPickCollection();
+    if (pickCollection == null) return;
 
     final entry = await Navigator.maybeOf(context)?.push<AvesEntry>(
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickPage.routeName),
         builder: (context) => ItemPickPage(
-          collection: CollectionLens(
-            source: _collection.source,
-          ),
+          collection: pickCollection,
+          canRemoveFilters: true,
         ),
         fullscreenDialog: true,
       ),
     );
+    pickCollection.dispose();
     if (entry != null) {
       setState(() {
         _copyItemSource = entry;

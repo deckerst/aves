@@ -322,21 +322,31 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         ));
   }
 
+  CollectionLens? _createPickCollection() {
+    final baseCollection = widget.collection;
+    return baseCollection != null
+        ? CollectionLens(
+            source: baseCollection.source,
+            filters: baseCollection.filters,
+          )
+        : null;
+  }
+
   Future<void> _pickCopyItemSource() async {
-    final _collection = widget.collection;
-    if (_collection == null) return;
+    final pickCollection = _createPickCollection();
+    if (pickCollection == null) return;
 
     final entry = await Navigator.maybeOf(context)?.push<AvesEntry>(
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickPage.routeName),
         builder: (context) => ItemPickPage(
-          collection: CollectionLens(
-            source: _collection.source,
-          ),
+          collection: pickCollection,
+          canRemoveFilters: true,
         ),
         fullscreenDialog: true,
       ),
     );
+    pickCollection.dispose();
     if (entry != null) {
       setState(() => _copyItemSource = entry);
     }

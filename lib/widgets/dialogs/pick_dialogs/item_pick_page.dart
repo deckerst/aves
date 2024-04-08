@@ -16,10 +16,12 @@ class ItemPickPage extends StatefulWidget {
   static const routeName = '/item_pick';
 
   final CollectionLens collection;
+  final bool canRemoveFilters;
 
   const ItemPickPage({
     super.key,
     required this.collection,
+    required this.canRemoveFilters,
   });
 
   @override
@@ -38,8 +40,9 @@ class _ItemPickPageState extends State<ItemPickPage> {
   @override
   Widget build(BuildContext context) {
     final liveFilter = collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
+    final mode = widget.canRemoveFilters ? AppMode.pickUnfilteredMediaInternal : AppMode.pickFilteredMediaInternal;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(AppMode.pickMediaInternal),
+      value: ValueNotifier(mode),
       child: AvesScaffold(
         body: SelectionProvider<AvesEntry>(
           child: QueryProvider(

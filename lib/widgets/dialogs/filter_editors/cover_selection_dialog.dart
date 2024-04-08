@@ -344,6 +344,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
             source: context.read<CollectionSource>(),
             filters: {filter},
           ),
+          canRemoveFilters: false,
         ),
         fullscreenDialog: true,
       ),
