@@ -251,7 +251,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
           if (selection.isSelecting) {
             child = MultiProvider(
               providers: [
-                ListenableProvider<ValueNotifier<AppMode>>.value(value: ValueNotifier(AppMode.pickMediaInternal)),
+                ListenableProvider<ValueNotifier<AppMode>>.value(value: ValueNotifier(AppMode.pickFilteredMediaInternal)),
                 ChangeNotifierProvider<Selection<AvesEntry>>.value(value: selection),
               ],
               child: child,

@@ -221,9 +221,7 @@ class _HomePageState extends State<HomePage> {
       case AppMode.edit:
       case AppMode.setWallpaper:
         await _initViewerEssentials();
-      case AppMode.pickMediaInternal:
-      case AppMode.pickFilterInternal:
-      case AppMode.slideshow:
+      default:
         break;
     }
 
@@ -331,12 +329,7 @@ class _HomePageState extends State<HomePage> {
             );
           },
         );
-      case AppMode.main:
-      case AppMode.pickCollectionFiltersExternal:
-      case AppMode.pickMediaInternal:
-      case AppMode.pickFilterInternal:
-      case AppMode.screenSaver:
-      case AppMode.slideshow:
+      default:
         routeName = _initialRouteName ?? settings.homePage.routeName;
         filters = _initialFilters ?? (settings.homePage == HomePageSetting.collection ? settings.homeCustomCollection : {});
     }

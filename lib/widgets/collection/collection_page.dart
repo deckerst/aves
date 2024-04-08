@@ -201,15 +201,7 @@ class _CollectionPageState extends State<CollectionPage> {
             IntentService.submitPickedCollectionFilters(filters);
           },
         );
-      case AppMode.main:
-      case AppMode.pickSingleMediaExternal:
-      case AppMode.pickMediaInternal:
-      case AppMode.pickFilterInternal:
-      case AppMode.screenSaver:
-      case AppMode.setWallpaper:
-      case AppMode.slideshow:
-      case AppMode.view:
-      case AppMode.edit:
+      default:
         return null;
     }
   }

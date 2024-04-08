@@ -46,7 +46,8 @@ class InteractiveTile extends StatelessWidget {
           case AppMode.pickMultipleMediaExternal:
             final selection = context.read<Selection<AvesEntry>>();
             selection.toggleSelection(entry);
-          case AppMode.pickMediaInternal:
+          case AppMode.pickFilteredMediaInternal:
+          case AppMode.pickUnfilteredMediaInternal:
             Navigator.maybeOf(context)?.pop(entry);
           case AppMode.pickCollectionFiltersExternal:
           case AppMode.pickFilterInternal:
