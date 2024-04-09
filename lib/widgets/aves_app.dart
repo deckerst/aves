@@ -619,14 +619,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _onNewIntent(Map? intentData) {
-    debugPrint('$runtimeType onNewIntent with intentData=$intentData');
-
-    // do not reset when relaunching the app
-    if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) {
-      reportService.log('Relaunch');
-      return;
-    }
-
     reportService.log('New intent data=$intentData');
     _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),
