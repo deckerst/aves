@@ -195,10 +195,12 @@ class _HomePageState extends State<HomePage> {
         unawaited(GlobalSearch.registerCallback());
         unawaited(AnalysisService.registerCallback());
         final source = context.read<CollectionSource>();
-        await source.init(
-          loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
-          canAnalyze: !safeMode,
-        );
+        if (source.initState != SourceInitializationState.full) {
+          await source.init(
+            loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
+            canAnalyze: !safeMode,
+          );
+        }
       case AppMode.screenSaver:
         final source = context.read<CollectionSource>();
         await source.init(
