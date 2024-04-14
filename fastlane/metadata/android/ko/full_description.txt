@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i>는 일반적인 JPEG 및 MP4를 포함한 모든 종류의 사진과 비디오를 처리할 수 있지만, <b>다중 페이지 TIFF, SVG, 오래된 AVI 등</b>과 같은 보다 이국적인 것도 처리할 수 있습니다! 미디어 컬렉션을 스캔하여 <b>모션 사진</b>, <b>파노라마</b>, <b>360° 비디오</b> 및 <b>GeoTIFF</b> 파일을 식별합니다.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>네비게이션과 검색</b>은 <i>Aves</i>의 중요한 부분입니다. 사용자가 앨범에서 사진, 태그에서 지도 등으로 쉽게 흘러갈 수 있도록 하는 것이 목표입니다.
 
-<i>Aves</i> integrates with Android (from KitKat to Android 14, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i>는 Android(KitKat에서 Android 14까지)에서 사용할 수 있습니다. <b>앱 바로 가기</b> 및 <b>글로벌 검색</b>과 같은 기능과 통합됩니다. 또한 <b>미디어 뷰어 및 선택기</b>로도 작동합니다.

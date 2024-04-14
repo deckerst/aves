@@ -82,6 +82,7 @@ class SvgRegionFetcher internal constructor(
                 (regionRect.right + bleedX) / xf,
                 (regionRect.bottom + bleedY) / yf,
             )
+            effectiveRect.offset(viewBox.left, viewBox.top)
 
             val renderOptions = RenderOptions()
             renderOptions.viewBox(effectiveRect.left, effectiveRect.top, effectiveRect.width(), effectiveRect.height())

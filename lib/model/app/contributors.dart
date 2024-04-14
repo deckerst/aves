@@ -80,6 +80,8 @@ class Contributors {
     Contributor('Marc Amorós', 'marquitus99@gmail.com'),
     Contributor('elea11', 'p.manuel.warnecke@gmail.com'),
     Contributor('しいたけ', 'Shiitake@users.noreply.hosted.weblate.org'),
+    Contributor('wanzh', 'wanzh66666@gmail.com'),
+    Contributor('ID J', 'tabby4442@gmail.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese

@@ -163,7 +163,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       child: AnimatedBuilder(
         animation: collection.filterChangeNotifier,
         builder: (context, child) {
-          final removableFilters = appMode != AppMode.pickMediaInternal;
+          final canRemoveFilters = appMode != AppMode.pickFilteredMediaInternal;
           return Selector<Query, bool>(
             selector: (context, query) => query.enabled,
             builder: (context, queryEnabled, child) {
@@ -172,7 +172,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 builder: (context, _, child) {
                   final useTvLayout = settings.useTvLayout;
                   final actions = _buildActions(context, selection);
-                  final onFilterTap = removableFilters ? collection.removeFilter : null;
+                  final onFilterTap = canRemoveFilters ? collection.removeFilter : null;
                   return AvesAppBar(
                     contentHeight: appBarContentHeight,
                     pinned: context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting),

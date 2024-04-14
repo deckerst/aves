@@ -4829,13 +4829,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "hu": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
   "is": [
     "stopTooltip",
     "videoActionABRepeat",
@@ -7260,13 +7253,6 @@
     "filePickerUseThisFolder"
   ],
 
-  "pt": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
-  ],
-
   "ro": [
     "stopTooltip",
     "videoActionABRepeat",
@@ -9371,13 +9357,6 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
-  ],
-
-  "tr": [
-    "stopTooltip",
-    "videoActionABRepeat",
-    "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
   ],
 
   "vi": [

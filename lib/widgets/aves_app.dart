@@ -385,14 +385,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
             break;
-          case AppMode.pickCollectionFiltersExternal:
-          case AppMode.pickMediaInternal:
-          case AppMode.pickFilterInternal:
-          case AppMode.screenSaver:
-          case AppMode.setWallpaper:
-          case AppMode.slideshow:
-          case AppMode.view:
-          case AppMode.edit:
+          default:
             break;
         }
       case AppLifecycleState.resumed:
@@ -626,14 +619,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _onNewIntent(Map? intentData) {
-    debugPrint('$runtimeType onNewIntent with intentData=$intentData');
-
-    // do not reset when relaunching the app
-    if (_appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) {
-      reportService.log('Relaunch');
-      return;
-    }
-
     reportService.log('New intent data=$intentData');
     _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
       settings: const RouteSettings(name: HomePage.routeName),

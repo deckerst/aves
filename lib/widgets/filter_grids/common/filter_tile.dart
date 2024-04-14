@@ -67,13 +67,7 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
           }
         case AppMode.pickFilterInternal:
           Navigator.maybeOf(context)?.pop<T>(filter);
-        case AppMode.pickMediaInternal:
-        case AppMode.screenSaver:
-        case AppMode.setWallpaper:
-        case AppMode.slideshow:
-        case AppMode.view:
-        case AppMode.edit:
-        case null:
+        default:
           break;
       }
     }

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.10.9"></a>[v1.10.9] - 2024-04-14
+
+### Fixed
+
+- rendering of SVG with viewbox offset
+- superfluous media store reinitialization when relaunching app from launcher
+
 ## <a id="v1.10.8"></a>[v1.10.8] - 2024-04-01
 
 ### Added

@@ -3,7 +3,8 @@ enum AppMode {
   pickCollectionFiltersExternal,
   pickSingleMediaExternal,
   pickMultipleMediaExternal,
-  pickMediaInternal,
+  pickFilteredMediaInternal,
+  pickUnfilteredMediaInternal,
   pickFilterInternal,
   screenSaver,
   setWallpaper,
@@ -40,6 +41,7 @@ extension ExtraAppMode on AppMode {
   bool get isPickingMedia => {
         AppMode.pickSingleMediaExternal,
         AppMode.pickMultipleMediaExternal,
-        AppMode.pickMediaInternal,
+        AppMode.pickFilteredMediaInternal,
+        AppMode.pickUnfilteredMediaInternal,
       }.contains(this);
 }
