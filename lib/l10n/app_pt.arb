@@ -1366,5 +1366,13 @@
   "collectionActionSetHome": "Definir como início",
   "@collectionActionSetHome": {},
   "setHomeCustomCollection": "Coleção personalizada",
-  "@setHomeCustomCollection": {}
+  "@setHomeCustomCollection": {},
+  "videoActionABRepeat": "Repetição A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "Definir fim",
+  "@videoRepeatActionSetEnd": {},
+  "stopTooltip": "Parar",
+  "@stopTooltip": {},
+  "videoRepeatActionSetStart": "Definir início",
+  "@videoRepeatActionSetStart": {}
 }

@@ -1524,5 +1524,13 @@
   "setHomeCustomCollection": "Egyéni gyűjtemény",
   "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Kezdőlapnak beállít",
-  "@collectionActionSetHome": {}
+  "@collectionActionSetHome": {},
+  "stopTooltip": "Állj",
+  "@stopTooltip": {},
+  "videoRepeatActionSetStart": "Kezdőpont beállítása",
+  "@videoRepeatActionSetStart": {},
+  "videoActionABRepeat": "A-B ismétlés",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "Végpont beállítása",
+  "@videoRepeatActionSetEnd": {}
 }

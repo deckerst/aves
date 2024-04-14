@@ -1366,5 +1366,13 @@
   "newVaultWarningDialogMessage": "Kilitli albümlere yalnızca bu uygulama erişebilir, başka herhangi bir uygulama erişemez.\n\nBu uygulamayı kaldırır veya verilerini silerseniz kilitli albümlerdeki bütün ögeleri kaybedersiniz.",
   "@newVaultWarningDialogMessage": {},
   "castDialogTitle": "Yakındaki Cihazlar",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "stopTooltip": "Bitir",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "A-B döngü",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Başlangıç noktası seç",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "Bitiş noktası seç",
+  "@videoRepeatActionSetEnd": {}
 }
