@@ -1004,7 +1004,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         } else {
             when (mimeType) {
                 MimeTypes.HEIC, MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
-                MimeTypes.JPEG -> MultiPage.getJpegMpfPages(context, uri)
+                MimeTypes.JPEG -> MultiPage.getJpegMpfPages(context, uri, sizeBytes)
                 MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
                 else -> null
             }

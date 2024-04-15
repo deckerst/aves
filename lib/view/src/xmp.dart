@@ -8,6 +8,8 @@ class XmpNamespaceView {
     XmpNamespaces.exifAux: 'Exif Aux',
     XmpNamespaces.avm: 'Astronomy Visualization',
     XmpNamespaces.appleDesktop: 'Apple Desktop',
+    XmpNamespaces.appleHDRGainMap: 'Apple HDR Gain Map',
+    XmpNamespaces.applePixelDataInfo: 'Apple Pixel Data Info',
     XmpNamespaces.camera: 'Pix4D Camera',
     XmpNamespaces.cc: 'Creative Commons',
     XmpNamespaces.crd: 'Camera Raw Defaults',
