@@ -153,13 +153,13 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         }
 
         val pageIndex = id - 1
-        val mpEntries = MultiPage.getJpegMpfEntries(context, uri)
+        val mpEntries = MultiPage.getJpegMpfEntries(context, uri, sizeBytes)
         if (mpEntries != null && pageIndex < mpEntries.size) {
             val mpEntry = mpEntries[pageIndex]
             mpEntry.mimeType?.let { embedMimeType ->
                 var dataOffset = mpEntry.dataOffset
                 if (dataOffset > 0) {
-                    val baseOffset = MultiPage.getJpegMpfBaseOffset(context, uri)
+                    val baseOffset = MultiPage.getJpegMpfBaseOffset(context, uri, sizeBytes)
                     if (baseOffset != null) {
                         dataOffset += baseOffset
                     }
