@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Cataloguing: identify Apple variant of HDR images
+
 ## <a id="v1.10.9"></a>[v1.10.9] - 2024-04-14
 
 ### Fixed
