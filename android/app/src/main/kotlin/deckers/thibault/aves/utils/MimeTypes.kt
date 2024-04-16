@@ -2,6 +2,7 @@ package deckers.thibault.aves.utils
 
 import android.webkit.MimeTypeMap
 import androidx.exifinterface.media.ExifInterface
+import deckers.thibault.aves.decoder.MultiPageImage
 
 object MimeTypes {
     const val ANY = "*/*"
@@ -137,9 +138,13 @@ object MimeTypes {
     // but we need to rotate the decoded bitmap for the other formats
     // maybe related to ExifInterface version used by Glide:
     // https://github.com/bumptech/glide/blob/master/gradle.properties#L21
-    fun needRotationAfterGlide(mimeType: String) = when (mimeType) {
-        DNG, HEIC, HEIF, PNG, WEBP -> true
-        else -> false
+    fun needRotationAfterGlide(mimeType: String, pageId: Int?): Boolean {
+        return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
+            true
+        } else when (mimeType) {
+            DNG, HEIC, HEIF, PNG, WEBP -> true
+            else -> false
+        }
     }
 
     // Thumbnails obtained from the Media Store are automatically rotated

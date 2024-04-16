@@ -145,7 +145,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             .submit()
         try {
             var bitmap = withContext(Dispatchers.IO) { target.get() }
-            if (needRotationAfterGlide(mimeType)) {
+            if (needRotationAfterGlide(mimeType, pageId)) {
                 bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }
             if (bitmap != null) {
