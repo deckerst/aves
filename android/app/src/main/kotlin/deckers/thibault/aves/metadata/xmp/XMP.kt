@@ -40,6 +40,7 @@ object XMP {
     private const val XMP_NS_URI = "http://ns.adobe.com/xap/1.0/"
 
     // other namespaces
+    private const val APPLE_HDRGM_NS_URI = "http://ns.apple.com/HDRGainMap/1.0/"
     private const val HDRGM_NS_URI = "http://ns.adobe.com/hdr-gain-map/1.0/"
     private const val PMTM_NS_URI = "http://www.hdrsoft.com/photomatix_settings01"
 
@@ -59,6 +60,7 @@ object XMP {
     // HDR gain map
 
     private val HDRGM_VERSION_PROP_NAME = XMPPropName(HDRGM_NS_URI, "Version")
+    private val APPLE_HDRGM_VERSION_PROP_NAME = XMPPropName(APPLE_HDRGM_NS_URI, "HDRGainMapVersion")
 
     // panorama
 
@@ -136,6 +138,9 @@ object XMP {
 
             // `Ultra HDR`
             if (GoogleXMP.isUltraHdPhoto(this)) return true
+
+            // Apple HDR gain map
+            if (doesPropExist(APPLE_HDRGM_VERSION_PROP_NAME)) return true
 
             return false
         } catch (e: XMPException) {
