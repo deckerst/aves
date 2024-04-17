@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: args
-      sha256: eef6c46b622e0494a36c5a12d10d77fb4e855501a91c1b9ef9339326e58f0596
+      sha256: "7cf60b9f0cc88203c5a190b4cd62a99feea42759a7fa695010eb5de1c0b2252a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.5.0"
   async:
     dependency: transitive
     description:
@@ -54,6 +54,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  clock:
+    dependency: transitive
+    description:
+      name: clock
+      sha256: cb6d7f03e1de671e34607e909a7213e31d7752be4fb66a86d29fe1eb14bfb5cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   collection:
     dependency: "direct main"
     description:
@@ -220,18 +228,18 @@ packages:
     dependency: transitive
     description:
       name: package_info_plus
-      sha256: cb44f49b6e690fa766f023d5b22cac6b9affe741dd792b6ac7ad4fabe0d7b097
+      sha256: "2c582551839386fa7ddbc7770658be7c0f87f388a4bff72066478f597c34d17f"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "7.0.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
       name: package_info_plus_platform_interface
-      sha256: "9bc8ba46813a4cc42c66ab781470711781940780fd8beddd0c3da62506d3a6c6"
+      sha256: f49918f3433a3146047372f9d4f1f847511f2acd5cd030e1f44fe5a50036b70e
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "3.0.0"
   path:
     dependency: transitive
     description:
@@ -260,10 +268,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: "43ac87de6e10afabc85c445745a7b799e04de84cebaa4fd7bf55a5e1e9604d29"
+      sha256: "70fe966348fe08c34bf929582f1d8247d9d9408130723206472b4687227e4333"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.4"
+    version: "3.8.0"
   safe_local_storage:
     dependency: transitive
     description:
@@ -393,10 +401,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: cd210a09f7c18cbe5a02511718e0334de6559871052c90a90c0cca46a4aa81c8
+      sha256: "814e9e88f21a176ae1359149021870e87f7cddaf633ab678a5d2b0bff7fd1ba8"
       url: "https://pub.dev"
     source: hosted
-    version: "4.3.3"
+    version: "4.4.0"
   vector_math:
     dependency: transitive
     description:
@@ -417,18 +425,18 @@ packages:
     dependency: transitive
     description:
       name: wakelock_plus
-      sha256: "104d94837bb28c735894dcd592877e990149c380e6358b00c04398ca1426eed4"
+      sha256: c8b7cc80f045533b40a0e6c9109905494e3cf32c0fbd5c62616998e0de44003f
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.2.4"
   wakelock_plus_platform_interface:
     dependency: transitive
     description:
       name: wakelock_plus_platform_interface
-      sha256: "582f2f7aecc7376332d961a0dd1efa9378ce117657e0ade55d9ff72699a55e82"
+      sha256: "422d1cdbb448079a8a62a5a770b69baa489f8f7ca21aef47800c726d404f9d16"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   web:
     dependency: transitive
     description:

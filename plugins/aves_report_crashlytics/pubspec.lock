@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: "53d06f578b8e988f60324f46fcd6ab919ccdc2dc8cbf0cd4161829b1dba7a62b"
+      sha256: "99b5dec989287c1aca71bf27339e0022b4dc3679225f442fb75790ef44535bf8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.27"
+    version: "1.3.30"
   async:
     dependency: transitive
     description:
@@ -68,10 +68,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_core
-      sha256: "4e8728edb3053ffcc194315cb0c10f4676947db793581409e36040065918c94f"
+      sha256: "6b1152a5af3b1cfe7e45309e96fc1aa14873f410f7aadb3878aa7812acfa7531"
       url: "https://pub.dev"
     source: hosted
-    version: "2.27.2"
+    version: "2.30.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -84,26 +84,26 @@ packages:
     dependency: transitive
     description:
       name: firebase_core_web
-      sha256: "6afef1b46818eabdc6058df1148307f80e5653c0eaf26beeec693c89154752d4"
+      sha256: c8b02226e548f35aace298e2bb2e6c24e34e8a203d614e742bb1146e5a4ad3c8
       url: "https://pub.dev"
     source: hosted
-    version: "2.13.0"
+    version: "2.15.0"
   firebase_crashlytics:
     dependency: "direct main"
     description:
       name: firebase_crashlytics
-      sha256: "7ba408d144ebd2d6426fe9830536db7c94809521956e695f21c6a245fea10a33"
+      sha256: c39ad1df819130dbb3468e1ad4e6fcd09fa37f8bc1581e8881d515a54a181757
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.20"
+    version: "3.5.2"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
-      sha256: "206dde24e1e69250df19d8a3120566581066a862a75ce2ed6a09c822d9ef9228"
+      sha256: "22492a34fa1405b57a6eb37c251434c38f780b88c9e87a9f35fa41189b2b2b61"
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.27"
+    version: "3.6.30"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -127,14 +127,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.7"
   leak_tracker:
     dependency: transitive
     description:

@@ -81,10 +81,10 @@ packages:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "50fb435ed30c6d2525cbfaaa0f46851ea6131315f213c0d921b0e407b34e3b84"
+      sha256: eead12d1a1ed83d8283ab4c2f3fca23ac4082f29f25f29dff0f758f57d06ec91
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.1"
+    version: "10.1.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -150,10 +150,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: b068ffc46f82a55844acfa4fdbb61fad72fa2aef0905548419d97f0f95c456da
+      sha256: "8cf40eebf5dec866a6d1956ad7b4f7016e6c0cc69847ab946833b7d43743809f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.17"
+    version: "2.0.19"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -195,10 +195,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_maps_flutter
-      sha256: "982c2e22ec78d32701bfbd351311e8579a4952035381ac66462c0af11003107b"
+      sha256: c1972cbad779bc5346c49045f26ae45550a0958b1cbca5b524dd3c8954995d28
       url: "https://pub.dev"
     source: hosted
-    version: "2.6.0"
+    version: "2.6.1"
   google_maps_flutter_android:
     dependency: "direct main"
     description:
@@ -211,10 +211,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
-      sha256: "6c50bce26ff73079b4401de5bfe77e89d89138897b9dcc6bdfbc7ada842f2bc1"
+      sha256: e5132d17f051600d90d79d9f574b177c24231da702453a036db2490f9ced4646
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.2"
+    version: "2.6.0"
   google_maps_flutter_platform_interface:
     dependency: "direct main"
     description:
@@ -472,10 +472,10 @@ packages:
     dependency: transitive
     description:
       name: win32_registry
-      sha256: "41fd8a189940d8696b1b810efb9abcf60827b6cbfab90b0c43e8439e3a39d85a"
+      sha256: "10589e0d7f4e053f2c61023a31c9ce01146656a70b7b7f0828c0b46d7da2a9bb"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.3"
   wkt_parser:
     dependency: transitive
     description:
