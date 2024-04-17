@@ -10,6 +10,7 @@ import com.caverock.androidsvg.PreserveAspectRatio
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
+import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
@@ -47,7 +48,7 @@ class SvgRegionFetcher internal constructor(
             if (currentSvgRef == null) {
                 val newSvg = StorageUtils.openInputStream(context, uri)?.use { input ->
                     try {
-                        SVG.getFromInputStream(input)
+                        SVG.getFromInputStream(SVGParserBufferedInputStream(input))
                     } catch (ex: SVGParseException) {
                         result.error("fetch-parse", "failed to parse SVG for uri=$uri regionRect=$regionRect", null)
                         return

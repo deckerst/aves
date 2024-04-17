@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Cataloguing: identify Apple variant of HDR images
 
+### Fixed
+
+- rendering of SVG with large header
+
 ## <a id="v1.10.9"></a>[v1.10.9] - 2024-04-14
 
 ### Fixed
