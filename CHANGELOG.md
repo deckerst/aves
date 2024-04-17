@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Cataloguing: identify Apple variant of HDR images
 
+### Changed
+
+- upgraded Flutter to stable v3.19.6
+
 ### Fixed
 
 - rendering of SVG with large header
