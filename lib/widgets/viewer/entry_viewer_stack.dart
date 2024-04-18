@@ -312,11 +312,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void didPushNext() => _resetSnackBarMargin();
 
   void _overrideSnackBarMargin() {
+    MarginComputer marginComputer;
     if (isViewingImage) {
-      FeedbackMixin.snackBarMarginOverrideNotifier.value = EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
+      marginComputer = (context) => EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
     } else {
-      FeedbackMixin.snackBarMarginOverrideNotifier.value = FeedbackMixin.snackBarMarginDefault(context);
+      marginComputer = FeedbackMixin.snackBarMarginDefault;
     }
+    FeedbackMixin.snackBarMarginOverrideNotifier.value = marginComputer;
   }
 
   void _resetSnackBarMargin() => FeedbackMixin.snackBarMarginOverrideNotifier.value = null;
