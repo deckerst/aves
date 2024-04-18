@@ -24,10 +24,6 @@ class EntryViewerPage extends StatefulWidget {
   @override
   State<EntryViewerPage> createState() => _EntryViewerPageState();
 
-  static EdgeInsets snackBarMargin(BuildContext context) {
-    return EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
-  }
-
   static Color getBackground(BuildContext context) => Theme.of(context).isDark ? Colors.black : Colors.white;
 }
 
