@@ -70,6 +70,7 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeRational
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
 import deckers.thibault.aves.metadata.metadataextractor.PngActlDirectory
+import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
@@ -394,6 +395,21 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         // do not overwrite XMP parsed by metadata-extractor
                         // with raw XMP found by ExifInterface
                         allTags.remove(Metadata.DIR_XMP)
+                    } else {
+                        val xmpTags = allTags[Metadata.DIR_XMP]
+                        if (xmpTags != null) {
+                            val xmpRaw = xmpTags[ExifInterface.TAG_XMP]
+                            if (xmpRaw != null) {
+                                val metadata = com.drew.metadata.Metadata()
+                                val xmpBytes = xmpRaw.toByteArray(Charsets.UTF_8)
+                                SafeXmpReader().extract(xmpBytes, 0, xmpBytes.size, metadata, null)
+                                metadata.getFirstDirectoryOfType(XmpDirectory::class.java)?.let { xmpDir ->
+                                    val dirMap = HashMap<String, String>()
+                                    processXmp(xmpDir.xmpMeta, dirMap, allowMultiple = true)
+                                    allTags[Metadata.DIR_XMP] = dirMap
+                                }
+                            }
+                        }
                     }
                     metadataMap.putAll(allTags.mapValues { it.value.toMutableMap() })
                 }
