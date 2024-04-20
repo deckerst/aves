@@ -7,6 +7,7 @@ class XmpNamespaceView {
     XmpNamespaces.adsmlat: 'AdsML',
     XmpNamespaces.exifAux: 'Exif Aux',
     XmpNamespaces.avm: 'Astronomy Visualization',
+    XmpNamespaces.appleDepthData: 'Apple Depth Data',
     XmpNamespaces.appleDesktop: 'Apple Desktop',
     XmpNamespaces.appleHDRGainMap: 'Apple HDR Gain Map',
     XmpNamespaces.applePixelDataInfo: 'Apple Pixel Data Info',

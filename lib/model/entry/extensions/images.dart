@@ -17,7 +17,8 @@ extension ExtraAvesEntryImages on AvesEntry {
   }
 
   ThumbnailProviderKey _getThumbnailProviderKey(double extent) {
-    EntryCache.markThumbnailExtent(extent);
+    final requestExtent = extent.roundToDouble();
+    EntryCache.markThumbnailExtent(requestExtent);
     return ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
@@ -25,7 +26,7 @@ extension ExtraAvesEntryImages on AvesEntry {
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       dateModifiedSecs: dateModifiedSecs ?? -1,
-      extent: extent,
+      extent: requestExtent,
     );
   }
 
