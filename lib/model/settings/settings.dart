@@ -375,6 +375,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
               }
             case SettingKeys.isInstalledAppAccessAllowedKey:
             case SettingKeys.isErrorReportingAllowedKey:
+            case SettingKeys.forceWesternArabicNumeralsKey:
             case SettingKeys.enableDynamicColorKey:
             case SettingKeys.enableBlurEffectKey:
             case SettingKeys.enableBottomNavigationBarKey:

@@ -1,4 +1,12 @@
 {
+  "ar": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
+  "be": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
   "bn": [
     "itemCount",
     "columnCount",
@@ -593,6 +601,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -667,7 +676,8 @@
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "ckb": [
@@ -1143,6 +1153,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -1220,7 +1231,8 @@
     "videoRepeatActionSetEnd",
     "collectionActionSetHome",
     "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
+    "settingsThumbnailShowHdrIcon",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "da": [
@@ -1842,6 +1854,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -1916,7 +1929,8 @@
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "el": [
@@ -1937,14 +1951,20 @@
     "collectionActionSetHome",
     "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
-    "settingsViewerShowHistogram"
+    "settingsViewerShowHistogram",
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
+  "es": [
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "eu": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "fa": [
@@ -2320,6 +2340,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -2866,6 +2887,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -2934,6 +2956,10 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "fr": [
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "gl": [
@@ -3423,6 +3449,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -4108,6 +4135,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -4759,6 +4787,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -4829,11 +4858,20 @@
     "filePickerUseThisFolder"
   ],
 
+  "hu": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
+  "id": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
   "is": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "it": [
@@ -4843,7 +4881,8 @@
     "videoRepeatActionSetEnd",
     "collectionActionSetHome",
     "setHomeCustomCollection",
-    "settingsThumbnailShowHdrIcon"
+    "settingsThumbnailShowHdrIcon",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "ja": [
@@ -4899,6 +4938,7 @@
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsWidgetDisplayedItem",
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage"
@@ -5492,6 +5532,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -5560,6 +5601,10 @@
     "filePickerOpenFrom",
     "filePickerNoItems",
     "filePickerUseThisFolder"
+  ],
+
+  "ko": [
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "lt": [
@@ -5654,6 +5699,7 @@
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
+    "settingsForceWesternArabicNumeralsTile",
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage",
     "tagPlaceholderState"
@@ -6278,6 +6324,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -6397,6 +6444,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -6494,6 +6542,7 @@
     "settingsCollectionBurstPatternsTile",
     "settingsCollectionBurstPatternsNone",
     "settingsViewerShowHistogram",
+    "settingsForceWesternArabicNumeralsTile",
     "statsTopStatesSectionTitle"
   ],
 
@@ -6585,6 +6634,7 @@
     "settingsDisablingBinWarningDialogMessage",
     "settingsAccessibilityShowPinchGestureAlternatives",
     "settingsDisplayUseTvInterface",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsWidgetDisplayedItem",
     "statsTopStatesSectionTitle",
     "tagEditorDiscardDialogMessage"
@@ -6632,6 +6682,7 @@
     "settingsHiddenFiltersEmpty",
     "settingsRemoveAnimationsTile",
     "settingsRemoveAnimationsDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsWidgetOpenPage",
     "viewerInfoSearchSuggestionDimensions",
     "wallpaperUseScrollEffect"
@@ -7183,6 +7234,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -7253,11 +7305,24 @@
     "filePickerUseThisFolder"
   ],
 
+  "pl": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
+  "pt": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
   "ro": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
+  "ru": [
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "sat": [
@@ -7877,6 +7942,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -7951,7 +8017,8 @@
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "sl": [
@@ -8569,6 +8636,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -8881,6 +8949,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -9289,6 +9358,7 @@
     "settingsCoordinateFormatDialogTitle",
     "settingsUnitSystemTile",
     "settingsUnitSystemDialogTitle",
+    "settingsForceWesternArabicNumeralsTile",
     "settingsScreenSaverPageTitle",
     "settingsWidgetPageTitle",
     "settingsWidgetShowOutline",
@@ -9359,24 +9429,35 @@
     "filePickerUseThisFolder"
   ],
 
+  "tr": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
+  "uk": [
+    "settingsForceWesternArabicNumeralsTile"
+  ],
+
   "vi": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "zh": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ],
 
   "zh_Hant": [
     "stopTooltip",
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
-    "videoRepeatActionSetEnd"
+    "videoRepeatActionSetEnd",
+    "settingsForceWesternArabicNumeralsTile"
   ]
 }
