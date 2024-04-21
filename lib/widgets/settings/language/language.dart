@@ -33,6 +33,7 @@ class LanguageSection extends SettingsSection {
         SettingsTileLanguageLocale(),
         SettingsTileLanguageCoordinateFormat(),
         SettingsTileLanguageUnitSystem(),
+        SettingsTileLanguageNumerals(),
       ];
 }
 
@@ -73,4 +74,16 @@ class SettingsTileLanguageUnitSystem extends SettingsTile {
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsUnitSystemDialogTitle,
       );
+}
+
+class SettingsTileLanguageNumerals extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsForceWesternArabicNumeralsTile;
+
+  @override
+  Widget build(BuildContext context) => SettingsSwitchListTile(
+    selector: (context, s) => s.forceWesternArabicNumerals,
+    onChanged: (v) => settings.forceWesternArabicNumerals = v,
+    title: title(context),
+  );
 }
