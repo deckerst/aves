@@ -20,6 +20,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
@@ -116,7 +117,7 @@ class _BasicSectionState extends State<BasicSection> {
   Widget _buildChips(BuildContext context) {
     final entry = widget.entry;
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
-    final date = entry.bestDate;
+    final dateTime = entry.bestDate;
     final album = entry.directory;
     final filters = {
       MimeFilter(entry.mimeType),
@@ -128,7 +129,7 @@ class _BasicSectionState extends State<BasicSection> {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
-      if (date != null) DateFilter(DateLevel.ymd, date),
+      if (dateTime != null) DateFilter(DateLevel.ymd, dateTime.date),
       if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
       if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map(TagFilter.new),
