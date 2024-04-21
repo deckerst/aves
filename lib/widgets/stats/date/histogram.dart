@@ -5,6 +5,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -56,7 +57,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     var firstDate = entriesByDateDescending.lastWhereOrNull((entry) => entry.bestDate != null)?.bestDate;
 
     if (lastDate != null && firstDate != null) {
-      final rangeDays = lastDate.difference(firstDate).inDays;
+      final rangeDays = lastDate.difference(firstDate).inHumanDays;
       if (rangeDays > 1) {
         if (rangeDays <= 31) {
           _level = DateLevel.ymd;
@@ -113,10 +114,10 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     late DateTime Function(DateTime date) incrementDate;
     switch (level) {
       case DateLevel.ymd:
-        xCount = xRange.inDays;
+        xCount = xRange.inHumanDays;
         incrementDate = (date) => DateTime(date.year, date.month, date.day + 1);
       case DateLevel.ym:
-        xCount = (xRange.inDays / 30.5).round();
+        xCount = (xRange.inHumanDays / 30.5).round();
         incrementDate = (date) => DateTime(date.year, date.month + 1);
       default:
         xCount = lastDate.year - firstDate.year;
