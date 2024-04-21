@@ -14,6 +14,7 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
@@ -673,7 +674,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
               final oldest = lastKey.date;
               if (newest != null && oldest != null) {
                 final locale = context.l10n.localeName;
-                final dateFormat = (newest.difference(oldest).inDays).abs() > 365 ? DateFormat.y(locale) : DateFormat.MMM(locale);
+                final dateFormat = (newest.difference(oldest).inHumanDays).abs() > 365 ? DateFormat.y(locale) : DateFormat.MMM(locale);
                 String? lastLabel;
                 sectionLayouts.forEach((section) {
                   final date = (section.sectionKey as EntryDateSectionKey).date;

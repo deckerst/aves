@@ -34,7 +34,7 @@ class TimeAxisSpec {
 
     first = first.date;
     last = last.date;
-    final rangeDays = last.difference(first).inDays;
+    final rangeDays = last.difference(first).inHumanDays;
     final delta = max(1, (rangeDays / 5).ceil());
 
     List<charts.TickSpec<DateTime>> ticks = [];
