@@ -39,18 +39,6 @@ class NamingPattern {
       final processorKey = match.group(1);
       final processorOptions = match.group(3);
       switch (processorKey) {
-        case DateNamingProcessor.key:
-          if (processorOptions != null) {
-            processors.add(DateNamingProcessor(processorOptions.trim(), locale));
-          }
-        case TagsNamingProcessor.key:
-          processors.add(TagsNamingProcessor(processorOptions?.trim() ?? ''));
-        case MetadataFieldNamingProcessor.key:
-          if (processorOptions != null) {
-            processors.add(MetadataFieldNamingProcessor(processorOptions.trim()));
-          }
-        case NameNamingProcessor.key:
-          processors.add(const NameNamingProcessor());
         case CounterNamingProcessor.key:
           int? start, padding;
           _applyProcessorOptions(processorOptions, (key, value) {
@@ -65,6 +53,22 @@ class NamingPattern {
             }
           });
           processors.add(CounterNamingProcessor(start: start ?? defaultCounterStart, padding: padding ?? defaultCounterPadding));
+        case DateNamingProcessor.key:
+          if (processorOptions != null) {
+            processors.add(DateNamingProcessor(processorOptions.trim(), locale));
+          }
+        case HashNamingProcessor.key:
+          if (processorOptions != null) {
+            processors.add(HashNamingProcessor(processorOptions.trim()));
+          }
+        case MetadataFieldNamingProcessor.key:
+          if (processorOptions != null) {
+            processors.add(MetadataFieldNamingProcessor(processorOptions.trim()));
+          }
+        case NameNamingProcessor.key:
+          processors.add(const NameNamingProcessor());
+        case TagsNamingProcessor.key:
+          processors.add(TagsNamingProcessor(processorOptions?.trim() ?? ''));
         default:
           debugPrint('unsupported naming processor: ${match.group(0)}');
       }
@@ -106,6 +110,8 @@ class NamingPattern {
     switch (processorKey) {
       case DateNamingProcessor.key:
         return '<$processorKey, yyyyMMdd-HHmmss>';
+      case HashNamingProcessor.key:
+        return '<$processorKey, md5>';
       case TagsNamingProcessor.key:
         return '<$processorKey, ->';
       case CounterNamingProcessor.key:
@@ -204,9 +210,7 @@ class MetadataFieldNamingProcessor extends NamingProcessor {
   }
 
   @override
-  Set<MetadataField> getRequiredFields() {
-    return {field}.whereNotNull().toSet();
-  }
+  Set<MetadataField> getRequiredFields() => {field}.whereNotNull().toSet();
 
   @override
   String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
@@ -246,4 +250,28 @@ class CounterNamingProcessor extends NamingProcessor {
 
   @override
   String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => '${index + start}'.padLeft(padding, '0');
+}
+
+@immutable
+class HashNamingProcessor extends NamingProcessor {
+  static const key = 'hash';
+  static const optionFunction = 'function';
+
+  late final MetadataField? function;
+
+  @override
+  List<Object?> get props => [function];
+
+  HashNamingProcessor(String function) {
+    final lowerField = 'hash${function.toLowerCase()}';
+    this.function = MetadataField.values.firstWhereOrNull((v) => v.name.toLowerCase() == lowerField);
+  }
+
+  @override
+  Set<MetadataField> getRequiredFields() => {function}.whereNotNull().toSet();
+
+  @override
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+    return fieldValues[function?.toPlatform]?.toString();
+  }
 }

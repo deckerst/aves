@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Cataloguing: identify Apple variant of HDR images
+- Collection: allow using hash (md5/sha1/sha256) when bulk renaming
 - option to force using western arabic numerals for dates
 
 ### Changed
