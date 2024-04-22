@@ -1,9 +1,11 @@
 {
   "ar": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
   "be": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -241,6 +243,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -677,6 +680,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -793,6 +797,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -1229,6 +1234,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "collectionActionSetHome",
     "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
@@ -1494,6 +1500,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -1930,6 +1937,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -1939,6 +1947,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "castDialogTitle",
     "aboutDataUsageSectionTitle",
     "aboutDataUsageData",
@@ -1956,6 +1965,7 @@
   ],
 
   "es": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -1964,6 +1974,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -2011,6 +2022,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -2527,6 +2539,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -2959,6 +2972,7 @@
   ],
 
   "fr": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -3089,6 +3103,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -3775,6 +3790,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -4427,6 +4443,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -4859,10 +4876,12 @@
   ],
 
   "hu": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
   "id": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -4871,6 +4890,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -4879,6 +4899,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "collectionActionSetHome",
     "setHomeCustomCollection",
     "settingsThumbnailShowHdrIcon",
@@ -4911,6 +4932,7 @@
     "videoResumptionModeAlways",
     "widgetTapUpdateWidget",
     "vaultBinUsageDialogMessage",
+    "renameProcessorHash",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "castDialogTitle",
@@ -5172,6 +5194,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -5604,6 +5627,7 @@
   ],
 
   "ko": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -5661,6 +5685,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "renameProcessorHash",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
@@ -5964,6 +5989,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -6407,6 +6433,7 @@
     "widgetOpenPageHome",
     "widgetOpenPageCollection",
     "widgetOpenPageViewer",
+    "renameProcessorHash",
     "menuActionConfigureView",
     "castDialogTitle",
     "aboutDataUsageClearCache",
@@ -6532,6 +6559,7 @@
     "settingsVideoEnablePip",
     "widgetTapUpdateWidget",
     "patternDialogEnter",
+    "renameProcessorHash",
     "castDialogTitle",
     "aboutDataUsageInternal",
     "aboutDataUsageExternal",
@@ -6593,6 +6621,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "renameProcessorHash",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "tooManyItemsErrorDialogMessage",
@@ -6655,6 +6684,7 @@
     "widgetTapUpdateWidget",
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
+    "renameProcessorHash",
     "viewDialogSortSectionTitle",
     "viewDialogReverseSortOrder",
     "castDialogTitle",
@@ -6922,6 +6952,7 @@
     "renameEntrySetPagePatternFieldLabel",
     "renameEntrySetPageInsertTooltip",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
     "exportEntryDialogFormat",
@@ -7306,10 +7337,12 @@
   ],
 
   "pl": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
   "pt": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -7318,10 +7351,12 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
   "ru": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -7582,6 +7617,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -8018,6 +8054,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -8276,6 +8313,7 @@
     "renameEntrySetPageInsertTooltip",
     "renameEntrySetPagePreviewSectionTitle",
     "renameProcessorCounter",
+    "renameProcessorHash",
     "renameProcessorName",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
@@ -8727,6 +8765,7 @@
     "renameAlbumDialogLabel",
     "renameAlbumDialogLabelAlreadyExistsHelper",
     "renameEntrySetPageTitle",
+    "renameProcessorHash",
     "deleteSingleAlbumConfirmationDialogMessage",
     "deleteMultiAlbumConfirmationDialogMessage",
     "editEntryDialogTargetFieldsHeader",
@@ -9076,6 +9115,7 @@
     "authenticateToConfigureVault",
     "authenticateToUnlockVault",
     "vaultBinUsageDialogMessage",
+    "renameProcessorHash",
     "exportEntryDialogQuality",
     "exportEntryDialogWriteMetadata",
     "editEntryDateDialogExtractFromTitle",
@@ -9430,10 +9470,12 @@
   ],
 
   "tr": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
   "uk": [
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -9442,6 +9484,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -9450,6 +9493,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ],
 
@@ -9458,6 +9502,7 @@
     "videoActionABRepeat",
     "videoRepeatActionSetStart",
     "videoRepeatActionSetEnd",
+    "renameProcessorHash",
     "settingsForceWesternArabicNumeralsTile"
   ]
 }

@@ -85,6 +85,7 @@ import deckers.thibault.aves.metadata.xmp.XMP.isMotionPhoto
 import deckers.thibault.aves.metadata.xmp.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
+import deckers.thibault.aves.utils.HashUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
@@ -104,6 +105,7 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 import java.text.ParseException
+import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -1307,10 +1309,36 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val metadataMap = HashMap<String, Any>()
+        val metadataMap = HashMap<String, Any?>()
+
+        val hashFields = fields.filter { it.startsWith(HASH_FIELD_PREFIX) }.toSet()
+        metadataMap.putAll(getHashFields(uri, mimeType, sizeBytes, hashFields))
+
+        val exifFields = fields.filterNot { hashFields.contains(it) }.toSet()
+        metadataMap.putAll(getExifFields(uri, mimeType, sizeBytes, exifFields))
+
+        result.success(metadataMap)
+    }
+
+    private fun getHashFields(uri: Uri, mimeType: String, sizeBytes: Long?, fields: Set<String>): FieldMap {
+        val metadataMap = HashMap<String, Any?>()
+        fields.forEach { field ->
+            val function = field.substringAfter(HASH_FIELD_PREFIX).lowercase(Locale.ROOT)
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    metadataMap[field] = HashUtils.getHash(input, function)
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get hash for mimeType=$mimeType uri=$uri function=$function", e)
+            }
+        }
+        return metadataMap
+    }
+
+    private fun getExifFields(uri: Uri, mimeType: String, sizeBytes: Long?, fields: Set<String>): FieldMap {
+        val metadataMap = HashMap<String, Any?>()
         if (fields.isEmpty() || isVideo(mimeType)) {
-            result.success(metadataMap)
-            return
+            return metadataMap
         }
 
         var foundExif = false
@@ -1359,7 +1387,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        result.success(metadataMap)
+        return metadataMap
     }
 
     companion object {
@@ -1434,6 +1462,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         // additional media key
         private const val KEY_HAS_EMBEDDED_PICTURE = "Has Embedded Picture"
 
+        private const val HASH_FIELD_PREFIX = "hash"
         private const val VALUE_SKIPPED_DATA = "[skipped]"
     }
 }

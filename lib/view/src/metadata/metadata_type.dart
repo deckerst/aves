@@ -14,6 +14,7 @@ extension ExtraMetadataTypeView on MetadataType {
       MetadataType.mp4 => 'MP4',
       MetadataType.photoshopIrb => 'Photoshop',
       MetadataType.xmp => 'XMP',
+      MetadataType.file => 'File',
     };
   }
 }

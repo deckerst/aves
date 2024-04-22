@@ -23,6 +23,8 @@ extension ExtraMetadataTypeConvert on MetadataType {
         return 'photoshop_irb';
       case MetadataType.xmp:
         return 'xmp';
+      case MetadataType.file:
+        return 'file';
     }
   }
 }

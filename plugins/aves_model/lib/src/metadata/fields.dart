@@ -7,6 +7,7 @@ enum MetadataSyntheticField {
 }
 
 enum MetadataField {
+  // exif
   exifDate,
   exifDateOriginal,
   exifDateDigitized,
@@ -46,10 +47,16 @@ enum MetadataField {
   exifMake,
   exifModel,
   exifUserComment,
+  // mp4
   mp4GpsCoordinates,
   mp4RotationDegrees,
   mp4Xmp,
+  // xmp
   xmpXmpCreateDate,
+  // file
+  hashMd5,
+  hashSha1,
+  hashSha256,
 }
 
 class MetadataFields {

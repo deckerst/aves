@@ -53,23 +53,30 @@ extension ExtraMetadataFieldConvert on MetadataField {
         return MetadataType.mp4;
       case MetadataField.xmpXmpCreateDate:
         return MetadataType.xmp;
+      case MetadataField.hashMd5:
+      case MetadataField.hashSha1:
+      case MetadataField.hashSha256:
+        return MetadataType.file;
     }
   }
 
   String? get toPlatform {
-    if (type == MetadataType.exif) {
-      return _toExifInterfaceTag();
-    } else {
-      switch (this) {
-        case MetadataField.mp4GpsCoordinates:
-          return 'gpsCoordinates';
-        case MetadataField.mp4RotationDegrees:
-          return 'rotationDegrees';
-        case MetadataField.mp4Xmp:
-          return 'xmp';
-        default:
-          return null;
-      }
+    switch (type) {
+      case MetadataType.exif:
+        return _toExifInterfaceTag();
+      case MetadataType.file:
+        return name;
+      default:
+        switch (this) {
+          case MetadataField.mp4GpsCoordinates:
+            return 'gpsCoordinates';
+          case MetadataField.mp4RotationDegrees:
+            return 'rotationDegrees';
+          case MetadataField.mp4Xmp:
+            return 'xmp';
+          default:
+            return null;
+        }
     }
   }
 
