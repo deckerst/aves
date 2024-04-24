@@ -387,6 +387,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             break;
         }
       case AppLifecycleState.resumed:
+        availability.onResume();
         RecentlyAddedFilter.updateNow();
         _mediaStoreSource.checkForChanges();
         break;
