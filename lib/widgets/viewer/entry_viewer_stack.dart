@@ -80,7 +80,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late VideoActionDelegate _videoActionDelegate;
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
-  Timer? _overlayHidingTimer;
+  Timer? _overlayHidingTimer, _videoPauseTimer;
 
   @override
   bool get isViewingImage => _currentVerticalPage.value == imagePage;
@@ -199,6 +199,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _verticalScrollNotifier.dispose();
     _heroInfoNotifier.dispose();
     _stopOverlayHidingTimer();
+    _stopVideoPauseTimer();
     AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);
     _unregisterWidget(widget);
     super.dispose();
@@ -335,9 +336,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         // paused: when switching to another app
         // detached: when app is without a view
         viewerController.autopilot = false;
+        _stopVideoPauseTimer();
         pauseVideoControllers();
       case AppLifecycleState.resumed:
-        availability.onResume();
+        _stopVideoPauseTimer();
       case AppLifecycleState.hidden:
         // hidden: transient state between `inactive` and `paused`
         break;
@@ -354,9 +356,16 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       // ensure playback, in case lifecycle paused/resumed events happened when switching to PiP
       await playingController?.play();
     } else {
-      await pauseVideoControllers();
+      _startVideoPauseTimer();
     }
   }
+
+  void _startVideoPauseTimer() {
+    _stopVideoPauseTimer();
+    _videoPauseTimer = Timer(ADurations.videoPauseAppInactiveDelay, pauseVideoControllers);
+  }
+
+  void _stopVideoPauseTimer() => _videoPauseTimer?.cancel();
 
   Widget _decorateOverlay(Widget overlay) {
     return ValueListenableBuilder<double>(

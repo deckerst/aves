@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - rendering of SVG with large header
+- stopping video playback when changing device orientation on Android >=13
 
 ## <a id="v1.10.9"></a>[v1.10.9] - 2024-04-14
 
