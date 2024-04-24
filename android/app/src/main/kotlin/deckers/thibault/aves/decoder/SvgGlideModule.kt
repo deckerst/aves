@@ -61,7 +61,7 @@ internal class SvgFetcher(val model: SvgImage, val width: Int, val height: Int) 
 
                     val bitmapWidth: Int
                     val bitmapHeight: Int
-                    if (width / height > svgWidth / svgHeight) {
+                    if (width / height.toFloat() > svgWidth / svgHeight) {
                         bitmapWidth = ceil(svgWidth * height / svgHeight).toInt()
                         bitmapHeight = height
                     } else {
