@@ -134,7 +134,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val trashDirs = context.getExternalFilesDirs(null).mapNotNull { StorageUtils.trashDirFor(context, it.path) }
+        val trashDirs = context.getExternalFilesDirs(null).filterNotNull().mapNotNull { StorageUtils.trashDirFor(context, it.path) }
         val trashItemPaths = trashDirs.flatMap { dir -> dir.listFiles()?.filterNotNull()?.mapNotNull { file -> file.path } ?: listOf() }
         val untrackedPaths = trashItemPaths.filterNot(knownPaths::contains).toList()
 
