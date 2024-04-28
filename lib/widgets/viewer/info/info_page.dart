@@ -17,6 +17,7 @@ import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
+import 'package:aves/widgets/viewer/info/color_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
@@ -233,10 +234,6 @@ class _InfoPageContentState extends State<_InfoPageContent> {
               ],
             ),
           );
-    final metadataSliver = MetadataSectionSliver(
-      entry: entry,
-      metadataNotifier: _metadataNotifier,
-    );
 
     return NotificationListener<FilterNotification>(
       onNotification: (notification) {
@@ -262,7 +259,14 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           ),
           SliverPadding(
             padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
-            sliver: metadataSliver,
+            sliver: MetadataSectionSliver(
+              entry: entry,
+              metadataNotifier: _metadataNotifier,
+            ),
+          ),
+          SliverPadding(
+            padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
+            sliver: ColorSectionSliver(entry: entry),
           ),
           const BottomPaddingSliver(),
         ],
