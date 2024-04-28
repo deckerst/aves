@@ -1524,5 +1524,13 @@
   "entryActionCast": "投放",
   "@entryActionCast": {},
   "castDialogTitle": "投放裝置",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "stopTooltip": "停止",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "A-B 重複播放",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "設置起點",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "設置終點",
+  "@videoRepeatActionSetEnd": {}
 }

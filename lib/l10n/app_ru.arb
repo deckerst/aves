@@ -1374,5 +1374,9 @@
   "videoActionABRepeat": "Повторить от А до Б",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "Установить конец",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "renameProcessorHash": "Хэш",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Принудительные арабские цифры",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }
