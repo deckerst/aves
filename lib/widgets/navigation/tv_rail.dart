@@ -116,16 +116,18 @@ class _TvRailState extends State<TvRail> {
                 )
               : logo;
 
+          final railTheme = Theme.of(context).navigationRailTheme;
+          const double labelFontSize = 16;
           final rail = Focus(
             focusNode: _focusNode,
             skipTraversal: true,
             child: NavigationRail(
-              backgroundColor: Theme.of(context).colorScheme.background,
               extended: extended,
               destinations: navEntries
                   .map((v) => NavigationRailDestination(
                         icon: v.icon,
                         label: v.label,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                       ))
                   .toList(),
               selectedIndex: max(0, navEntries.indexWhere(((v) => v.isSelected))),
@@ -133,6 +135,8 @@ class _TvRailState extends State<TvRail> {
                 controller.focusedIndex = index;
                 navEntries[index].onSelection();
               },
+              unselectedLabelTextStyle: railTheme.unselectedLabelTextStyle?.copyWith(fontSize: labelFontSize),
+              selectedLabelTextStyle: railTheme.selectedLabelTextStyle?.copyWith(fontSize: labelFontSize),
               minExtendedWidth: TvRail.minExtendedWidth,
             ),
           );
