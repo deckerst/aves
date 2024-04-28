@@ -1524,5 +1524,17 @@
   "settingsThumbnailShowHdrIcon": "Hiển thị biểu tượng HDR",
   "@settingsThumbnailShowHdrIcon": {},
   "collectionActionSetHome": "Đặt làm nhà",
-  "@collectionActionSetHome": {}
+  "@collectionActionSetHome": {},
+  "stopTooltip": "Dừng",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Lặp lại A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "Đặt kết thúc",
+  "@videoRepeatActionSetEnd": {},
+  "videoRepeatActionSetStart": "Đặt bắt đầu",
+  "@videoRepeatActionSetStart": {},
+  "renameProcessorHash": "Băm",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Buộc chữ số Ả Rập",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }
