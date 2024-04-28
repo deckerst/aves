@@ -1518,5 +1518,19 @@
   "entryActionCast": "Promítat",
   "@entryActionCast": {},
   "castDialogTitle": "Zařízení pro promítání",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "setHomeCustomCollection": "Vlastní sbírka",
+  "@setHomeCustomCollection": {},
+  "settingsThumbnailShowHdrIcon": "Zobrazit ikonu HDR",
+  "@settingsThumbnailShowHdrIcon": {},
+  "settingsForceWesternArabicNumeralsTile": "Vynutit arabské číslice",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "stopTooltip": "Zastavit",
+  "@stopTooltip": {},
+  "videoRepeatActionSetStart": "Nastavit začátek",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "Nastavit konec",
+  "@videoRepeatActionSetEnd": {},
+  "videoActionABRepeat": "Opakování A-B",
+  "@videoActionABRepeat": {}
 }

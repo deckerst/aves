@@ -717,9 +717,9 @@
   "@settingsHomeDialogTitle": {},
   "settingsShowBottomNavigationBar": "Mostrar barra de navegación inferior",
   "@settingsShowBottomNavigationBar": {},
-  "settingsKeepScreenOnTile": "Mantener pantalla encendida",
+  "settingsKeepScreenOnTile": "Mantener la pantalla encendida",
   "@settingsKeepScreenOnTile": {},
-  "settingsKeepScreenOnDialogTitle": "Mantener pantalla encendida",
+  "settingsKeepScreenOnDialogTitle": "Mantener la pantalla encendida",
   "@settingsKeepScreenOnDialogTitle": {},
   "settingsDoubleBackExit": "Presione «atrás» dos veces para salir",
   "@settingsDoubleBackExit": {},
@@ -1374,5 +1374,9 @@
   "videoActionABRepeat": "Repetir de A a B",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "Fijar el fin",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "settingsForceWesternArabicNumeralsTile": "Forzar números arábigos",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {}
 }

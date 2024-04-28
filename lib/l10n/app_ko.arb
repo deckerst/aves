@@ -1374,5 +1374,9 @@
   "stopTooltip": "취소",
   "@stopTooltip": {},
   "videoActionABRepeat": "A-B 반복",
-  "@videoActionABRepeat": {}
+  "@videoActionABRepeat": {},
+  "renameProcessorHash": "해시",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "아라비아 숫자 항상 사용",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }

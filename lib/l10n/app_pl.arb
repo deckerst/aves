@@ -1532,5 +1532,9 @@
   "videoActionABRepeat": "Powtarzanie A-B",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "Ustaw koniec",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "settingsForceWesternArabicNumeralsTile": "Wymuszaj cyfry arabskie",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "renameProcessorHash": "Skrót",
+  "@renameProcessorHash": {}
 }

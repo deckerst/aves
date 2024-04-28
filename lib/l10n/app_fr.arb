@@ -1374,5 +1374,9 @@
   "videoActionABRepeat": "Lecture répétée A-B",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetStart": "Définir le début",
-  "@videoRepeatActionSetStart": {}
+  "@videoRepeatActionSetStart": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Toujours utiliser les chiffres arabes",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }

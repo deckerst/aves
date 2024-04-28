@@ -1360,5 +1360,19 @@
   "aboutDataUsageClearCache": "Pulisci Cache",
   "@aboutDataUsageClearCache": {},
   "castDialogTitle": "Dispositivi per Cast",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "stopTooltip": "Ferma",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Ripeti A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Imposta inizio",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "Imposta fine",
+  "@videoRepeatActionSetEnd": {},
+  "settingsThumbnailShowHdrIcon": "Mostra icona HDR",
+  "@settingsThumbnailShowHdrIcon": {},
+  "collectionActionSetHome": "Imposta come pagina iniziale",
+  "@collectionActionSetHome": {},
+  "setHomeCustomCollection": "Collezione personalizzata",
+  "@setHomeCustomCollection": {}
 }

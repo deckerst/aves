@@ -1374,5 +1374,9 @@
   "videoRepeatActionSetStart": "Tetapkan awal",
   "@videoRepeatActionSetStart": {},
   "videoRepeatActionSetEnd": "Tetapkan akhir",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "settingsForceWesternArabicNumeralsTile": "Paksa angka Arab",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {}
 }

@@ -1366,5 +1366,13 @@
   "collectionActionSetHome": "设置为首页",
   "@collectionActionSetHome": {},
   "setHomeCustomCollection": "自定义媒体集",
-  "@setHomeCustomCollection": {}
+  "@setHomeCustomCollection": {},
+  "videoRepeatActionSetStart": "设置起点",
+  "@videoRepeatActionSetStart": {},
+  "stopTooltip": "停止",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "A-B 循环播放",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "设置终点",
+  "@videoRepeatActionSetEnd": {}
 }
