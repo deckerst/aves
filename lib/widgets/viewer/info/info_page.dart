@@ -5,6 +5,7 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/events.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -264,10 +265,11 @@ class _InfoPageContentState extends State<_InfoPageContent> {
               metadataNotifier: _metadataNotifier,
             ),
           ),
-          SliverPadding(
-            padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
-            sliver: ColorSectionSliver(entry: entry),
-          ),
+          if (!settings.useTvLayout)
+            SliverPadding(
+              padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
+              sliver: ColorSectionSliver(entry: entry),
+            ),
           const BottomPaddingSliver(),
         ],
       ),

@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- logo
 - upgraded Flutter to stable v3.19.6
 
 ### Fixed

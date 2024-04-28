@@ -61,6 +61,13 @@ class Themes {
       // COMPONENT THEMES
       checkboxTheme: _checkboxTheme(colors),
       floatingActionButtonTheme: _floatingActionButtonTheme(colors),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: colors.background,
+        selectedIconTheme: IconThemeData(color: colors.primary),
+        unselectedIconTheme: IconThemeData(color: _unselectedWidgetColor(colors)),
+        selectedLabelTextStyle: TextStyle(color: colors.primary),
+        unselectedLabelTextStyle: TextStyle(color: _unselectedWidgetColor(colors)),
+      ),
       radioTheme: _radioTheme(colors),
       sliderTheme: _sliderTheme(colors),
       tooltipTheme: _tooltipTheme,
