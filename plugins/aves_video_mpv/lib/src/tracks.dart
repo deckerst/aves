@@ -36,7 +36,7 @@ extension ExtraSubtitleTrack on SubtitleTrack {
       index: index,
       codecName: null,
       language: language,
-      title: title,
+      title: title ?? '$index ($codec)',
       width: null,
       height: null,
     );

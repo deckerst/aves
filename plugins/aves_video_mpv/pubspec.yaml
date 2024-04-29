@@ -19,6 +19,7 @@ dependencies:
   media_kit_libs_android_video:
   media_kit_native_event_loop:
   media_kit_video:
+  path:
 
 dev_dependencies:
   flutter_lints:
