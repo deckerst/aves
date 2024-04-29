@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Cataloguing: identify Apple variant of HDR images
 - Collection: allow using hash (md5/sha1/sha256) when bulk renaming
 - Info: color palette
+- Video: external subtitle support (SRT)
 - option to force using western arabic numerals for dates
 
 ### Changed
