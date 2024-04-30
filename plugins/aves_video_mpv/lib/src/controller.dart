@@ -128,6 +128,7 @@ class MpvVideoController extends AvesVideoController {
     if (path != null) {
       final videoBasename = _pContext.basenameWithoutExtension(path);
       // list subtitle files in the same directory
+      // some files may be visible to the app (e.g. SRT) while others may not (e.g. SUB, VTT)
       _subscriptions.add(File(path).parent.list().where((v) => v is File && _isSubtitle(v.path)).listen((v) {
         final subtitleBasename = _pContext.basename(v.path);
         if (subtitleBasename.startsWith(videoBasename)) {
@@ -403,12 +404,7 @@ class MpvVideoController extends AvesVideoController {
     }
   }
 
-  static bool _isSubtitle(String path) {
-    switch (_pContext.extension(path)) {
-      case '.srt':
-        return true;
-      default:
-        return false;
-    }
-  }
+  static const Set<String> _subtitleExtensions = {'.srt', '.sub', '.vtt'};
+
+  static bool _isSubtitle(String path) => _subtitleExtensions.contains(_pContext.extension(path));
 }
