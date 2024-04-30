@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
@@ -9,44 +10,65 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdf;
 import 'package:printing/printing.dart';
 
 class EntryPrinter with FeedbackMixin {
   final AvesEntry entry;
 
+  static const _fit = pdf.BoxFit.contain;
+
   EntryPrinter(this.entry);
 
   Future<void> print(BuildContext context) async {
     final documentName = entry.bestTitle ?? context.l10n.appName;
-    final doc = pdf.Document(title: documentName);
 
-    final pages = await _buildPages(context);
-    if (pages.isNotEmpty) {
-      pages.forEach(doc.addPage);
+    final imageWidgets = await _buildImageWidgets(context);
+    if (imageWidgets.isNotEmpty) {
       unawaited(Printing.layoutPdf(
-        onLayout: (format) => doc.save(),
+        onLayout: (pageFormat) {
+          final doc = pdf.Document(title: documentName);
+          imageWidgets.map((v) => _buildPdfPage(v, pageFormat)).forEach(doc.addPage);
+          return doc.save();
+        },
         name: documentName,
       ));
     }
   }
 
-  Future<List<pdf.Page>> _buildPages(BuildContext context) async {
-    final pages = <pdf.Page>[];
-
-    void _addPdfPage(pdf.Widget? pdfChild) {
-      if (pdfChild == null) return;
-      final displaySize = entry.displaySize;
-      pages.add(pdf.Page(
-        orientation: displaySize.height > displaySize.width ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
-        build: (context) => pdf.FullPage(
-          ignoreMargins: true,
-          child: pdf.Center(
-            child: pdfChild,
+  pdf.Page _buildPdfPage(pdf.Widget imageWidget, PdfPageFormat pageFormat) {
+    final displaySize = entry.displaySize;
+    final pageTheme = pdf.PageTheme(
+      pageFormat: pageFormat,
+      orientation: displaySize.height > displaySize.width ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
+      margin: pdf.EdgeInsets.zero,
+      theme: null,
+      clip: false,
+      textDirection: null,
+    );
+    final mustRotate = pageTheme.mustRotate;
+    final childSize = mustRotate ? Size(displaySize.height, displaySize.width) : displaySize;
+    return pdf.Page(
+      pageTheme: pageTheme,
+      build: (context) => pdf.FullPage(
+        ignoreMargins: true,
+        child: pdf.Center(
+          child: pdf.Transform.scale(
+            scale: min(pageFormat.availableWidth / childSize.width, pageFormat.availableHeight / childSize.height),
+            child: pdf.Transform.rotateBox(
+              angle: pageTheme.mustRotate ? -0.5 * pi : 0,
+              unconstrained: true,
+              child: imageWidget,
+            ),
           ),
         ),
-      ));
-    }
+      ),
+    );
+  }
+
+  Future<List<pdf.Widget>> _buildImageWidgets(BuildContext context) async {
+    final widgets = <pdf.Widget>[];
 
     if (entry.isMultiPage && !entry.isMotionPhoto) {
       final multiPageInfo = await entry.getMultiPageInfo();
@@ -61,17 +83,25 @@ class EntryPrinter with FeedbackMixin {
           ));
           for (var page = 0; page < pageCount; page++) {
             final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-            _addPdfPage(await _buildPageImage(pageEntry));
+            final widget = await _buildPageImage(pageEntry);
+            if (widget != null) {
+              widgets.add(widget);
+            }
             streamController.add(pageEntry);
           }
           await streamController.close();
         }
       }
     }
-    if (pages.isEmpty) {
-      _addPdfPage(await _buildPageImage(entry));
+
+    if (widgets.isEmpty) {
+      final widget = await _buildPageImage(entry);
+      if (widget != null) {
+        widgets.add(widget);
+      }
     }
-    return pages;
+
+    return widgets;
   }
 
   Future<pdf.Widget?> _buildPageImage(AvesEntry entry) async {
@@ -82,10 +112,16 @@ class EntryPrinter with FeedbackMixin {
         sizeBytes: entry.sizeBytes,
       );
       if (data.isNotEmpty) {
-        return pdf.SvgImage(svg: utf8.decode(data));
+        return pdf.SvgImage(
+          svg: utf8.decode(data),
+          fit: _fit,
+        );
       }
     } else {
-      return pdf.Image(await flutterImageProvider(entry.uriImage));
+      return pdf.Image(
+        await flutterImageProvider(entry.uriImage),
+        fit: _fit,
+      );
     }
     return null;
   }
