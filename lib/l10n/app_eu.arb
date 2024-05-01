@@ -1524,5 +1524,17 @@
   "collectionActionSetHome": "Ezarri hasiera gisa",
   "@collectionActionSetHome": {},
   "setHomeCustomCollection": "Bilduma pertsonalizatua",
-  "@setHomeCustomCollection": {}
+  "@setHomeCustomCollection": {},
+  "renameProcessorHash": "Hash-a",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Behartu arabiar zifrak",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "videoRepeatActionSetStart": "Ezarri hasiera",
+  "@videoRepeatActionSetStart": {},
+  "stopTooltip": "Gelditu",
+  "@stopTooltip": {},
+  "videoActionABRepeat": "Atik Brako errepikapena",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "Ezarri amaiera",
+  "@videoRepeatActionSetEnd": {}
 }
