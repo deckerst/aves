@@ -146,7 +146,7 @@ class ThumbnailFetcher internal constructor(
 
         return try {
             var bitmap = target.get()
-            if (needRotationAfterGlide(mimeType)) {
+            if (needRotationAfterGlide(mimeType, pageId)) {
                 bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }
             bitmap

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:path/path.dart' as p;
 
 class MpvVideoController extends AvesVideoController {
   late Player _instance;
@@ -19,6 +21,9 @@ class MpvVideoController extends AvesVideoController {
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
+  final List<SubtitleTrack> _externalSubtitleTracks = [];
+
+  static final _pContext = p.Context();
 
   @override
   double get minSpeed => .25;
@@ -118,6 +123,23 @@ class MpvVideoController extends AvesVideoController {
     final settingsStream = settings.updateStream;
     _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.enableVideoHardwareAccelerationKey).listen((_) => _initController()));
     _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.videoLoopModeKey).listen((_) => _applyLoop()));
+
+    final path = entry.path;
+    if (path != null) {
+      final videoBasename = _pContext.basenameWithoutExtension(path);
+      // list subtitle files in the same directory
+      // some files may be visible to the app (e.g. SRT) while others may not (e.g. SUB, VTT)
+      _subscriptions.add(File(path).parent.list().where((v) => v is File && _isSubtitle(v.path)).listen((v) {
+        final subtitleBasename = _pContext.basename(v.path);
+        if (subtitleBasename.startsWith(videoBasename)) {
+          _externalSubtitleTracks.add(SubtitleTrack.uri(
+            v.uri.toString(),
+            title: 'File ${subtitleBasename.substring(videoBasename.length)}',
+          ));
+          _externalSubtitleTracks.sort((a, b) => a.title!.compareTo(b.title!));
+        }
+      }));
+    }
   }
 
   void _stopListening() {
@@ -280,7 +302,13 @@ class MpvVideoController extends AvesVideoController {
 
   List<AudioTrack> get _audioTracks => _tracks.audio.skip(fakeTrackCount).toList();
 
-  List<SubtitleTrack> get _subtitleTracks => _tracks.subtitle.skip(fakeTrackCount).toList();
+  List<SubtitleTrack> get _subtitleTracks {
+    final externalTitles = _externalSubtitleTracks.map((v) => v.title).toSet();
+    return [
+      ..._tracks.subtitle.skip(fakeTrackCount).where((v) => !externalTitles.contains(v.title)),
+      ..._externalSubtitleTracks,
+    ];
+  }
 
   @override
   List<MediaStreamSummary> get streams {
@@ -375,4 +403,8 @@ class MpvVideoController extends AvesVideoController {
       }
     }
   }
+
+  static const Set<String> _subtitleExtensions = {'.srt', '.sub', '.vtt'};
+
+  static bool _isSubtitle(String path) => _subtitleExtensions.contains(_pContext.extension(path));
 }

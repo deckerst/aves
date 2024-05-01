@@ -47,6 +47,7 @@ class AIcons {
   static const mainStorage = Icons.smartphone_outlined;
   static const mimeType = Icons.code_outlined;
   static const opacity = Icons.opacity;
+  static const palette = Icons.palette_outlined;
   static final privacy = MdiIcons.shieldAccountOutline;
   static const rating = Icons.star_border_outlined;
   static const ratingFull = Icons.star;

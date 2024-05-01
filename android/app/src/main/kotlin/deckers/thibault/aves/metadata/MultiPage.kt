@@ -9,10 +9,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPMeta
 import com.drew.imaging.jpeg.JpegSegmentType
+import com.drew.metadata.exif.ExifDirectoryBase
+import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.xmp.XmpDirectory
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
@@ -20,6 +25,7 @@ import deckers.thibault.aves.metadata.xmp.XMP
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.indexOfBytes
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
@@ -83,13 +89,58 @@ object MultiPage {
         return tracks
     }
 
+    private fun getJpegMpfPrimaryRotation(context: Context, uri: Uri, sizeBytes: Long): Int {
+        val mimeType = MimeTypes.JPEG
+        var rotationDegrees = 0
+
+        var foundExif = false
+        if (canReadWithMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = Helper.safeRead(input)
+                    foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
+                    for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
+                        dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
+                            rotationDegrees = Metadata.getRotationDegreesForExifCode(it)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+
+        if (!foundExif) {
+            // fallback to read EXIF via ExifInterface
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val exif = ExifInterface(input)
+                    exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
+                        rotationDegrees = exif.rotationDegrees
+                    }
+                }
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
+            }
+        }
+
+        return rotationDegrees
+    }
+
     // starts after `[APP2 marker (1 byte)] [segment size (2 bytes)] [MPF marker (4 bytes)]`
-    fun getJpegMpfBaseOffset(context: Context, uri: Uri): Int? {
+    fun getJpegMpfBaseOffset(context: Context, uri: Uri, sizeBytes: Long?): Int? {
+        val mimeType = MimeTypes.JPEG
         val app2Marker = JpegSegmentType.APP2.byteValue
         val mpfMarker = "MPF".toByteArray() + 0x00
 
         try {
-            Metadata.openSafeInputStream(context, uri, MimeTypes.JPEG, null)?.use { input ->
+            Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                 var offset = 0
                 while (true) {
                     do {
@@ -113,9 +164,10 @@ object MultiPage {
         return null
     }
 
-    fun getJpegMpfEntries(context: Context, uri: Uri): List<MpEntry>? {
+    fun getJpegMpfEntries(context: Context, uri: Uri, sizeBytes: Long?): List<MpEntry>? {
+        val mimeType = MimeTypes.JPEG
         try {
-            Metadata.openSafeInputStream(context, uri, MimeTypes.JPEG, null)?.use { input ->
+            Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                 val metadata = Helper.safeRead(input)
                 return metadata.getDirectoriesOfType(MpEntryDirectory::class.java).map { it.entry }
             }
@@ -129,10 +181,12 @@ object MultiPage {
         return null
     }
 
-    fun getJpegMpfPages(context: Context, uri: Uri): ArrayList<FieldMap> {
+    fun getJpegMpfPages(context: Context, uri: Uri, sizeBytes: Long): ArrayList<FieldMap> {
+        val primaryRotation = getJpegMpfPrimaryRotation(context, uri, sizeBytes)
+
         val pages = ArrayList<FieldMap>()
-        val baseOffset = getJpegMpfBaseOffset(context, uri)
-        val mpEntries = getJpegMpfEntries(context, uri)
+        val baseOffset = getJpegMpfBaseOffset(context, uri, sizeBytes)
+        val mpEntries = getJpegMpfEntries(context, uri, sizeBytes)
         if (mpEntries != null && baseOffset != null) {
             for ((pageIndex, mpEntry) in mpEntries.withIndex()) {
                 mpEntry.mimeType?.let { embedMimeType ->
@@ -140,8 +194,7 @@ object MultiPage {
                         KEY_PAGE to pageIndex,
                         KEY_MIME_TYPE to embedMimeType,
                         KEY_IS_DEFAULT to (pageIndex == 0),
-                        // TODO TLAD [MPF] page[KEY_ROTATION_DEGREES] = same as primary
-                        KEY_ROTATION_DEGREES to 0,
+                        KEY_ROTATION_DEGREES to primaryRotation,
                     )
 
                     var dataOffset = mpEntry.dataOffset
@@ -167,12 +220,12 @@ object MultiPage {
     }
 
     fun getJpegMpfBitmap(context: Context, uri: Uri, pageIndex: Int): Bitmap? {
-        val mpEntries = getJpegMpfEntries(context, uri)
+        val mpEntries = getJpegMpfEntries(context, uri, null)
         if (mpEntries != null && pageIndex < mpEntries.size) {
             val mpEntry = mpEntries[pageIndex]
             var dataOffset = mpEntry.dataOffset
             if (dataOffset > 0) {
-                val baseOffset = getJpegMpfBaseOffset(context, uri)
+                val baseOffset = getJpegMpfBaseOffset(context, uri, null)
                 if (baseOffset != null) {
                     dataOffset += baseOffset
                 }

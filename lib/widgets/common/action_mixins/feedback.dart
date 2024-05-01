@@ -21,12 +21,15 @@ import 'package:provider/provider.dart';
 
 enum FeedbackType { info, warn }
 
+typedef MarginComputer = EdgeInsets Function(BuildContext context);
+
 mixin FeedbackMixin {
-  static final ValueNotifier<EdgeInsets?> snackBarMarginOverrideNotifier = ValueNotifier(null);
+  static final ValueNotifier<MarginComputer?> snackBarMarginOverrideNotifier = ValueNotifier(null);
 
   static EdgeInsets snackBarMarginDefault(BuildContext context) {
-    final mq = context.read<MediaQueryData>();
-    return EdgeInsets.only(bottom: max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom));
+    return EdgeInsets.only(
+      bottom: context.select<MediaQueryData, double>((mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom)),
+    );
   }
 
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -69,11 +72,12 @@ mixin FeedbackMixin {
         notificationOverlayEntry = showOverlayNotification(
           (context) => SafeArea(
             bottom: false,
-            child: ValueListenableBuilder<EdgeInsets?>(
+            child: ValueListenableBuilder<MarginComputer?>(
               valueListenable: snackBarMarginOverrideNotifier,
-              builder: (context, margin, child) {
+              builder: (context, marginComputer, child) {
+                final margin = (marginComputer ?? snackBarMarginDefault).call(context);
                 return AnimatedPadding(
-                  padding: margin ?? snackBarMarginDefault(context),
+                  padding: margin,
                   duration: ADurations.pageTransitionAnimation,
                   child: child,
                 );

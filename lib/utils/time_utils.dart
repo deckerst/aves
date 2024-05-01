@@ -26,6 +26,12 @@ extension ExtraDateTime on DateTime {
   DateTime addDays(int days) => DateTime(year, month, day + days, hour, minute, second, millisecond, microsecond);
 }
 
+extension ExtraDuration on Duration {
+  // using `Duration.inDays` may yield surprising results when crossing DST boundaries
+  // because a day will not have 24 hours, so we use the following approximation instead
+  int get inHumanDays => (inMicroseconds / Duration.microsecondsPerDay).round();
+}
+
 final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
 
 // Overflowing timestamps that are supposed to be in milliseconds

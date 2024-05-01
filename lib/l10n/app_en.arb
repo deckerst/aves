@@ -440,6 +440,7 @@
   "renameEntrySetPagePreviewSectionTitle": "Preview",
 
   "renameProcessorCounter": "Counter",
+  "renameProcessorHash": "Hash",
   "renameProcessorName": "Name",
 
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and the item in it?} other{Delete this album and the {count} items in it?}}",
@@ -933,6 +934,7 @@
   "settingsCoordinateFormatDialogTitle": "Coordinate Format",
   "settingsUnitSystemTile": "Units",
   "settingsUnitSystemDialogTitle": "Units",
+  "settingsForceWesternArabicNumeralsTile": "Force Arabic numerals",
 
   "settingsScreenSaverPageTitle": "Screen Saver",
 

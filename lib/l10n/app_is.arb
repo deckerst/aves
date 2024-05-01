@@ -1524,5 +1524,17 @@
   "collectionActionSetHome": "Setja sem upphafsskjá",
   "@collectionActionSetHome": {},
   "setHomeCustomCollection": "Sérsniðið safn",
-  "@setHomeCustomCollection": {}
+  "@setHomeCustomCollection": {},
+  "renameProcessorHash": "Tætigildi",
+  "@renameProcessorHash": {},
+  "videoRepeatActionSetStart": "Stilla byrjun",
+  "@videoRepeatActionSetStart": {},
+  "stopTooltip": "Stöðva",
+  "@stopTooltip": {},
+  "settingsForceWesternArabicNumeralsTile": "Þvinga arabískar tölur",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "videoActionABRepeat": "Endurtekning A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetEnd": "Stilla endi",
+  "@videoRepeatActionSetEnd": {}
 }

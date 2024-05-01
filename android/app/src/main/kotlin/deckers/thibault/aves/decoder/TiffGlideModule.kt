@@ -63,7 +63,7 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             TiffBitmapFactory.decodeFileDescriptor(fd, options)
             val imageWidth = options.outWidth
             val imageHeight = options.outHeight
-            if (imageHeight > height || imageWidth > width) {
+            if (imageWidth > width || imageHeight > height) {
                 while (imageHeight / (sampleSize * 2) >= height && imageWidth / (sampleSize * 2) >= width) {
                     sampleSize *= 2
                 }

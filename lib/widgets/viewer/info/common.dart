@@ -77,7 +77,12 @@ class InfoRowGroup extends StatefulWidget {
       // `colorScheme.secondary` is overridden upstream as an `ExpansionTileCard` theming workaround,
       // so we use `colorScheme.primary` instead
       final linkColor = Theme.of(context).colorScheme.primary;
-      final style = InfoRowGroup.valueStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
+      final style = InfoRowGroup.valueStyle.copyWith(
+        color: linkColor,
+        decoration: TextDecoration.underline,
+        decorationColor: linkColor,
+        decorationStyle: TextDecorationStyle.solid,
+      );
 
       return [TextSpan(text: '${Unicode.FSI}$value${Unicode.PDI}', style: style, recognizer: recognizer)];
     };

@@ -4,7 +4,6 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
-import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,10 +22,6 @@ class EntryViewerPage extends StatefulWidget {
 
   @override
   State<EntryViewerPage> createState() => _EntryViewerPageState();
-
-  static EdgeInsets snackBarMargin(BuildContext context) {
-    return EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
-  }
 
   static Color getBackground(BuildContext context) => Theme.of(context).isDark ? Colors.black : Colors.white;
 }

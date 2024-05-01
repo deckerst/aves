@@ -161,7 +161,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(defaultPageTransitionsBuilder);
   final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.main);
-  final ValueNotifier<LocaleOverrides> _localeOverridesNotifier = ValueNotifier(LocaleOverrides.none);
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -221,7 +220,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         Provider<TvRailController>.value(value: _tvRailController),
         DurationsProvider(),
         HighlightInfoProvider(),
-        ListenableProvider<ValueNotifier<LocaleOverrides>>.value(value: _localeOverridesNotifier),
       ],
       child: OverlaySupport(
         child: FutureBuilder<void>(
@@ -389,6 +387,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             break;
         }
       case AppLifecycleState.resumed:
+        availability.onResume();
         RecentlyAddedFilter.updateNow();
         _mediaStoreSource.checkForChanges();
         break;
@@ -429,14 +428,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageCode);
     }
 
-    if (appliedLocale.languageCode == 'ar') {
-      final useNativeDigits = shouldUseNativeDigits(countrifiedLocale);
-      DateFormat.useNativeDigitsByDefaultFor(appliedLocale.toString(), useNativeDigits);
-      DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toString(), useNativeDigits);
-    }
-    _localeOverridesNotifier.value = LocaleOverrides(
-      countrifiedLocale: countrifiedLocale,
-    );
+    final useNativeDigits = !settings.forceWesternArabicNumerals && shouldUseNativeDigits(countrifiedLocale);
+    DateFormat.useNativeDigitsByDefaultFor(appliedLocale.toString(), useNativeDigits);
+    DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toString(), useNativeDigits);
   }
 
   Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
@@ -574,7 +568,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final settingStream = settings.updateStream;
     // app
     settingStream.where((event) => event.key == SettingKeys.isInstalledAppAccessAllowedKey).listen((_) => _applyIsInstalledAppAccessAllowed());
-    settingStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => _applyLocale());
+    settingStream.where((event) => event.key == SettingKeys.localeKey || event.key == SettingKeys.forceWesternArabicNumeralsKey).listen((_) => _applyLocale());
     // display
     settingStream.where((event) => event.key == SettingKeys.displayRefreshRateModeKey).listen((_) => _applyDisplayRefreshRateMode());
     settingStream.where((event) => event.key == SettingKeys.maxBrightnessKey).listen((_) => _applyMaxBrightness());
@@ -654,18 +648,3 @@ class AvesScrollBehavior extends MaterialScrollBehavior {
 }
 
 typedef TvMediaQueryModifier = MediaQueryData Function(MediaQueryData);
-
-class LocaleOverrides extends Equatable {
-  final Locale? countrifiedLocale;
-
-  @override
-  List<Object?> get props => [countrifiedLocale];
-
-  const LocaleOverrides({
-    required this.countrifiedLocale,
-  });
-
-  static const LocaleOverrides none = LocaleOverrides(
-    countrifiedLocale: null,
-  );
-}

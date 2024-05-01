@@ -334,7 +334,7 @@ abstract class ImageProvider {
                     .load(model)
                     .submit(targetWidthPx, targetHeightPx)
                 var bitmap = withContext(Dispatchers.IO) { target.get() }
-                if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
+                if (MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")

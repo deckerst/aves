@@ -279,6 +279,6 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     companion object {
         private val LOG_TAG = LogUtils.createTag<ActivityResultStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/activity_result_stream"
-        private const val BUFFER_SIZE = 2 shl 17 // 256kB
+        private const val BUFFER_SIZE = 1 shl 18 // 256kB
     }
 }

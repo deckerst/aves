@@ -1374,5 +1374,7 @@
   "videoRepeatActionSetStart": "Başlangıç noktası seç",
   "@videoRepeatActionSetStart": {},
   "videoRepeatActionSetEnd": "Bitiş noktası seç",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "settingsForceWesternArabicNumeralsTile": "Arap rakamlarını zorla",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }

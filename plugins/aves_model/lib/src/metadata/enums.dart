@@ -45,6 +45,8 @@ enum MetadataType {
   photoshopIrb,
   // XMP: https://en.wikipedia.org/wiki/Extensible_Metadata_Platform
   xmp,
+  // others (hash, etc.)
+  file,
 }
 
 class MetadataTypes {

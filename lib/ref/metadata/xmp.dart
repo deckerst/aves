@@ -1,7 +1,10 @@
 class XmpNamespaces {
   static const acdsee = 'http://ns.acdsee.com/iptc/1.0/';
   static const adsmlat = 'http://adsml.org/xmlns/';
+  static const appleDepthData = 'http://ns.apple.com/depthData/1.0/';
   static const appleDesktop = 'http://ns.apple.com/namespace/1.0/';
+  static const appleHDRGainMap = 'http://ns.apple.com/HDRGainMap/1.0/';
+  static const applePixelDataInfo = 'http://ns.apple.com/pixeldatainfo/1.0/';
   static const avm = 'http://www.communicatingastronomy.org/avm/1.0/';
   static const camera = 'http://pix4d.com/camera/1.0/';
   static const cc = 'http://creativecommons.org/ns#';

@@ -1532,5 +1532,9 @@
   "stopTooltip": "توقف",
   "@stopTooltip": {},
   "videoRepeatActionSetStart": "تعيين بداية التشغيل",
-  "@videoRepeatActionSetStart": {}
+  "@videoRepeatActionSetStart": {},
+  "settingsForceWesternArabicNumeralsTile": "فرض الأرقام العربية",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "renameProcessorHash": "تجزئة",
+  "@renameProcessorHash": {}
 }

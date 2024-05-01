@@ -20,6 +20,7 @@ import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.exif.GpsDirectory
+import com.drew.metadata.exif.makernotes.AppleMakernoteDirectory
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
@@ -69,6 +70,8 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeRational
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeString
 import deckers.thibault.aves.metadata.metadataextractor.Helper.isPngTextDir
 import deckers.thibault.aves.metadata.metadataextractor.PngActlDirectory
+import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
+import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP
@@ -82,6 +85,7 @@ import deckers.thibault.aves.metadata.xmp.XMP.isMotionPhoto
 import deckers.thibault.aves.metadata.xmp.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
+import deckers.thibault.aves.utils.HashUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
@@ -101,6 +105,7 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 import java.text.ParseException
+import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -392,6 +397,21 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         // do not overwrite XMP parsed by metadata-extractor
                         // with raw XMP found by ExifInterface
                         allTags.remove(Metadata.DIR_XMP)
+                    } else {
+                        val xmpTags = allTags[Metadata.DIR_XMP]
+                        if (xmpTags != null) {
+                            val xmpRaw = xmpTags[ExifInterface.TAG_XMP]
+                            if (xmpRaw != null) {
+                                val metadata = com.drew.metadata.Metadata()
+                                val xmpBytes = xmpRaw.toByteArray(Charsets.UTF_8)
+                                SafeXmpReader().extract(xmpBytes, 0, xmpBytes.size, metadata, null)
+                                metadata.getFirstDirectoryOfType(XmpDirectory::class.java)?.let { xmpDir ->
+                                    val dirMap = HashMap<String, String>()
+                                    processXmp(xmpDir.xmpMeta, dirMap, allowMultiple = true)
+                                    allTags[Metadata.DIR_XMP] = dirMap
+                                }
+                            }
+                        }
                     }
                     metadataMap.putAll(allTags.mapValues { it.value.toMutableMap() })
                 }
@@ -639,6 +659,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     // JPEG Multi-Picture Format
                     if (metadata.getDirectoriesOfType(MpEntryDirectory::class.java).count { !it.entry.isThumbnail } > 1) {
                         flags = flags or MASK_IS_MULTIPAGE
+
+                        if (hasAppleHdrGainMap(uri, sizeBytes, metadata)) {
+                            flags = flags or MASK_IS_HDR
+                        }
                     }
 
                     // XMP
@@ -763,6 +787,29 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (mimeType == MimeTypes.TIFF && MultiPage.isMultiPageTiff(context, uri)) flags = flags or MASK_IS_MULTIPAGE
 
         metadataMap[KEY_FLAGS] = flags
+    }
+
+    private fun hasAppleHdrGainMap(uri: Uri, sizeBytes: Long?, primaryMetadata: com.drew.metadata.Metadata): Boolean {
+        if (!primaryMetadata.containsDirectoryOfType(AppleMakernoteDirectory::class.java)) return false
+
+        val mpEntries = MultiPage.getJpegMpfEntries(context, uri, sizeBytes) ?: return false
+        mpEntries.filter { it.type == MpEntry.TYPE_UNDEFINED }.forEach { mpEntry ->
+            var dataOffset = mpEntry.dataOffset
+            if (dataOffset > 0) {
+                val baseOffset = MultiPage.getJpegMpfBaseOffset(context, uri, sizeBytes)
+                if (baseOffset != null) {
+                    dataOffset += baseOffset
+                }
+            }
+            StorageUtils.openInputStream(context, uri)?.let { input ->
+                input.skip(dataOffset)
+                val pageMetadata = Helper.safeRead(input)
+                if (pageMetadata.getDirectoriesOfType(XmpDirectory::class.java).any { it.xmpMeta.hasHdrGainMap() }) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     private fun getMultimediaCatalogMetadataByMediaMetadataRetriever(
@@ -1004,7 +1051,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         } else {
             when (mimeType) {
                 MimeTypes.HEIC, MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
-                MimeTypes.JPEG -> MultiPage.getJpegMpfPages(context, uri)
+                MimeTypes.JPEG -> MultiPage.getJpegMpfPages(context, uri, sizeBytes)
                 MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
                 else -> null
             }
@@ -1262,10 +1309,36 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val metadataMap = HashMap<String, Any>()
+        val metadataMap = HashMap<String, Any?>()
+
+        val hashFields = fields.filter { it.startsWith(HASH_FIELD_PREFIX) }.toSet()
+        metadataMap.putAll(getHashFields(uri, mimeType, sizeBytes, hashFields))
+
+        val exifFields = fields.filterNot { hashFields.contains(it) }.toSet()
+        metadataMap.putAll(getExifFields(uri, mimeType, sizeBytes, exifFields))
+
+        result.success(metadataMap)
+    }
+
+    private fun getHashFields(uri: Uri, mimeType: String, sizeBytes: Long?, fields: Set<String>): FieldMap {
+        val metadataMap = HashMap<String, Any?>()
+        fields.forEach { field ->
+            val function = field.substringAfter(HASH_FIELD_PREFIX).lowercase(Locale.ROOT)
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    metadataMap[field] = HashUtils.getHash(input, function)
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get hash for mimeType=$mimeType uri=$uri function=$function", e)
+            }
+        }
+        return metadataMap
+    }
+
+    private fun getExifFields(uri: Uri, mimeType: String, sizeBytes: Long?, fields: Set<String>): FieldMap {
+        val metadataMap = HashMap<String, Any?>()
         if (fields.isEmpty() || isVideo(mimeType)) {
-            result.success(metadataMap)
-            return
+            return metadataMap
         }
 
         var foundExif = false
@@ -1314,7 +1387,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        result.success(metadataMap)
+        return metadataMap
     }
 
     companion object {
@@ -1389,6 +1462,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         // additional media key
         private const val KEY_HAS_EMBEDDED_PICTURE = "Has Embedded Picture"
 
+        private const val HASH_FIELD_PREFIX = "hash"
         private const val VALUE_SKIPPED_DATA = "[skipped]"
     }
 }

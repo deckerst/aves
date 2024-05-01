@@ -79,6 +79,10 @@ mixin AppSettings on SettingsAccess {
     return _appliedLocale!;
   }
 
+  bool get forceWesternArabicNumerals => getBool(SettingKeys.forceWesternArabicNumeralsKey) ?? false;
+
+  set forceWesternArabicNumerals(bool newValue) => set(SettingKeys.forceWesternArabicNumeralsKey, newValue);
+
   int get catalogTimeZoneRawOffsetMillis => getInt(SettingKeys.catalogTimeZoneRawOffsetMillisKey) ?? 0;
 
   set catalogTimeZoneRawOffsetMillis(int newValue) => set(SettingKeys.catalogTimeZoneRawOffsetMillisKey, newValue);

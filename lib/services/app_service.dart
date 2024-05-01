@@ -38,6 +38,7 @@ class PlatformAppService implements AppService {
   static final _stream = StreamsChannel('deckers.thibault/aves/activity_result_stream');
 
   static final _knownAppDirs = {
+    'com.google.android.apps.photos': {'Google Photos'},
     'com.kakao.talk': {'KakaoTalkDownload'},
     'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
     'nekox.messenger': {'NekoX'},
