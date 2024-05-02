@@ -28,12 +28,15 @@ class Selection<T> extends ChangeNotifier {
 
   void addToSelection(Iterable<T> items) {
     if (items.isEmpty) return;
+
+    select();
     _selectedItems.addAll(items);
     notifyListeners();
   }
 
   void removeFromSelection(Iterable<T> items) {
     if (items.isEmpty) return;
+
     _selectedItems.removeAll(items);
     notifyListeners();
   }

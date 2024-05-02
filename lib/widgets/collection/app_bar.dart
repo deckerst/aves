@@ -379,7 +379,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
-    final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
+    final quickActions = isSelecting ? selectionQuickActions : browsingQuickActions;
+    final quickActionButtons = quickActions.where(isVisible).map(
           (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
@@ -390,13 +391,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         // key is expected by test driver
         key: const Key('appbar-menu-button'),
         itemBuilder: (context) {
-          final generalMenuItems = EntrySetActions.general.where(isVisible).map(
+          bool _isValidForMenu(EntrySetAction? v) => v == null || (!quickActions.contains(v) && isVisible(v));
+          final generalMenuItems = EntrySetActions.general.where(_isValidForMenu).map(
                 (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
               );
 
-          final browsingMenuActions = EntrySetActions.pageBrowsing.where((v) => !browsingQuickActions.contains(v));
-          final selectionMenuActions = EntrySetActions.pageSelection.where((v) => !selectionQuickActions.contains(v));
-          final contextualMenuActions = (isSelecting ? selectionMenuActions : browsingMenuActions).where((v) => v == null || isVisible(v)).fold(<EntrySetAction?>[], (prev, v) {
+          final allContextualActions = isSelecting ? EntrySetActions.pageSelection: EntrySetActions.pageBrowsing;
+          final contextualMenuActions = allContextualActions.where(_isValidForMenu).fold(<EntrySetAction?>[], (prev, v) {
             if (v == null && (prev.isEmpty || prev.last == null)) return prev;
             return [...prev, v];
           });

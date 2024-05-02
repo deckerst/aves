@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Collection: `select all` available as quick action
+
 ## <a id="v1.11.0"></a>[v1.11.0] - 2024-05-01
 
 ### Added
