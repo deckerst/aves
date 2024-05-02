@@ -7,7 +7,6 @@ fi
 # - scaled down versions for IzzyOnDroid
 # - framed versions for Google Play
 # - framed and scaled down versions for README (English only)
-# - framed and scaled down versions for Amazon (English only)
 
 # expects:
 # - ImageMagick 6
@@ -80,15 +79,5 @@ for source in framed/en/*; do
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
     convert -resize 250x "$source" "$target"
-  fi
-done
-
-# amazon: scale down
-for source in framed/en/*; do
-  if [[ -f "$source" ]]; then
-    target=${source/framed/amazon}
-    echo "$source -> $target"
-    mkdir -p "$(dirname "$target")"
-    convert -resize x1920 "$source" -gravity center -background transparent -extent 1200x1920 "$target"
   fi
 done
