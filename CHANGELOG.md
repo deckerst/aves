@@ -4,20 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-### Added
-
-- Collection: `select all` available as quick action
-- Persian translation (thanks امیر جهانگرد, slasb37, mimvahedi, Alireza Rashidi)
-
-## <a id="v1.11.0"></a>[v1.11.0] - 2024-05-01
+## <a id="v1.11.1"></a>[v1.11.1] - 2024-05-03
 
 ### Added
 
 - Cataloguing: identify Apple variant of HDR images
+- Collection: `select all` available as quick action
 - Collection: allow using hash (md5/sha1/sha256) when bulk renaming
 - Info: color palette
 - Video: external subtitle support (SRT)
 - option to force using western arabic numerals for dates
+- Persian translation (thanks امیر جهانگرد, slasb37, mimvahedi, Alireza Rashidi)
 
 ### Changed
 
@@ -29,6 +26,8 @@ All notable changes to this project will be documented in this file.
 - rendering of SVG with large header
 - stopping video playback when changing device orientation on Android >=13
 - printing content orientation according to page format
+
+## <a id="v1.11.0"></a>[v1.11.0] - 2024-05-01 [YANKED]
 
 ## <a id="v1.10.9"></a>[v1.10.9] - 2024-04-14
 
