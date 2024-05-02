@@ -6,6 +6,7 @@ import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AboutTranslators extends StatelessWidget {
@@ -108,7 +109,7 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
         children: [
           ...widget.spans.expandIndexed((i, v) => [
                 if (i != 0) const TextSpan(text: AText.separator),
-                TextSpan(text: v, style: i == _highlightedIndex ? _animatedStyle.value : _baseStyle),
+                TextSpan(text: '${Unicode.FSI}$v${Unicode.PDI}', style: i == _highlightedIndex ? _animatedStyle.value : _baseStyle),
               ])
         ],
       ),

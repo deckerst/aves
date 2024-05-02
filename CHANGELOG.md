@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: `select all` available as quick action
+- Persian translation (thanks امیر جهانگرد, slasb37, mimvahedi, Alireza Rashidi)
 
 ## <a id="v1.11.0"></a>[v1.11.0] - 2024-05-01
 
