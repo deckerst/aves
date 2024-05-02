@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>اِیوْز</i> می تواند انواع تصاویر و ویدیوها، از جمله JPEG ها و MP4 های عادی شما را مدیریت کند، اما همچنین چیزهای عجیب و غریب تری مانند <b> TIFF های چند صفحه ای، SVG ها، AVI های قدیمی و بیشتر</b>! این مجموعه رسانه های شما را بررسی می کند تا پرونده های <b>تصویر متحرک</b>، <b>پانوراما</b> (معروف به تصاویر کروی)، <b>360° ویدیو ها</b>، و همچنین <b>geoTIFF</b> را شناسایی کند.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>پیمایش و جستجو</b>یک بخش مهم از <i>اِیوْز</i> است. هدف این است که کاربران به راحتی از آلبوم ها به عکس ها به برچسب ها به نقشه ها و غیره دست پیدا کنند.
 
-<i>Aves</i> integrates with Android (from KitKat to Android 14, including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>اِیوْز</i> با اندروید سازگار است (از نسخه KitKat تا اندروید 14, شامل تلوزیون اندرویدی) با قابلیت هایی مانند <b>ابزارک ها</b>, <b>میانبر ها</b>, <b>ذخیره نیرو</b> و <b>جستجو عمومی</b> و همچنین میتوان از آن به عنوان <b>نمایشگر و انتخابگز رسانه</b> استفاده کرد.
