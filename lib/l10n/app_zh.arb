@@ -1374,5 +1374,9 @@
   "videoActionABRepeat": "A-B 循环播放",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "设置终点",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "renameProcessorHash": "哈希",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "强制阿拉伯数数字",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }

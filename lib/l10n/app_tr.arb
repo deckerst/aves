@@ -841,7 +841,7 @@
   "@settingsVideoButtonsTile": {},
   "settingsVideoGestureDoubleTapTogglePlay": "Oynatmak/duraklatmak için çift dokunun",
   "@settingsVideoGestureDoubleTapTogglePlay": {},
-  "settingsVideoGestureSideDoubleTapSeek": "Geri/ileri aramak için ekran kenarlarına çift dokunun",
+  "settingsVideoGestureSideDoubleTapSeek": "İleri/geri gitmek için ekran kenarlarına çift dokunun",
   "@settingsVideoGestureSideDoubleTapSeek": {},
   "settingsPrivacySectionTitle": "Gizlilik",
   "@settingsPrivacySectionTitle": {},
@@ -1376,5 +1376,7 @@
   "videoRepeatActionSetEnd": "Bitiş noktası seç",
   "@videoRepeatActionSetEnd": {},
   "settingsForceWesternArabicNumeralsTile": "Arap rakamlarını zorla",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "renameProcessorHash": "Sağlama",
+  "@renameProcessorHash": {}
 }

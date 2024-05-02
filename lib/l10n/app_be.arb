@@ -1532,5 +1532,9 @@
   "videoActionABRepeat": "Паўтарыць ад А да Б",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetStart": "Ўсталяваць пачатак",
-  "@videoRepeatActionSetStart": {}
+  "@videoRepeatActionSetStart": {},
+  "renameProcessorHash": "Хэш",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Прымусовыя арабскія лічбы",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }

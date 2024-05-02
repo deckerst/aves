@@ -12,6 +12,7 @@ class SupportedLocales {
     'en': 'English',
     'es': 'Español (México)',
     'eu': 'Euskara',
+    'fa': 'فارسی',
     'fr': 'Français',
     'hu': 'Magyar',
     'id': 'Bahasa Indonesia',
