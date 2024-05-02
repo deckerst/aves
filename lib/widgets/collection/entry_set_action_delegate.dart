@@ -66,7 +66,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.select:
         return appMode.canSelectMedia && !isSelecting;
       case EntrySetAction.selectAll:
-        return isSelecting && selectedItemCount < itemCount;
+        return (isSelecting && selectedItemCount < itemCount) || (!isSelecting && settings.collectionBrowsingQuickActions.contains(action));
       case EntrySetAction.selectNone:
         return isSelecting && selectedItemCount == itemCount;
       // browsing
@@ -127,7 +127,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.select:
         return hasItems;
       case EntrySetAction.selectAll:
-        return selectedItemCount < itemCount;
+        return selectedItemCount < itemCount || (!isSelecting && settings.collectionBrowsingQuickActions.contains(action));
       case EntrySetAction.selectNone:
         return hasSelection;
       case EntrySetAction.searchCollection:

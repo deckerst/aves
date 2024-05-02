@@ -102,7 +102,6 @@ class _HiddenFilters extends StatelessWidget {
                       children: [
                         Expanded(
                           child: LayoutBuilder(builder: (context, constraints) {
-                            debugPrint('TLAD constraints=$constraints');
                             return Row(
                               children: [
                                 AvesFilterChip(

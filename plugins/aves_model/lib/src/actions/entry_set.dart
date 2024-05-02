@@ -65,6 +65,8 @@ class EntrySetActions {
     EntrySetAction.map,
     EntrySetAction.slideshow,
     EntrySetAction.stats,
+    // only available as a quick action
+    EntrySetAction.selectAll,
   ];
 
   // `null` items are converted to dividers
@@ -98,6 +100,7 @@ class EntrySetActions {
     EntrySetAction.map,
     EntrySetAction.slideshow,
     EntrySetAction.stats,
+    EntrySetAction.selectAll,
     // editing actions are in their subsection
   ];
 
