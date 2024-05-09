@@ -1532,5 +1532,9 @@
   "stopTooltip": "Зупинити",
   "@stopTooltip": {},
   "videoActionABRepeat": "Повторити від А до Б",
-  "@videoActionABRepeat": {}
+  "@videoActionABRepeat": {},
+  "renameProcessorHash": "Хеш",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Примусові арабські цифри",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }
