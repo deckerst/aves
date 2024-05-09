@@ -65,7 +65,7 @@
   "@hideTooltip": {},
   "chipActionCreateAlbum": "ایجاد البوم",
   "@chipActionCreateAlbum": {},
-  "filterNoRatingLabel": "بدون رتبه",
+  "filterNoRatingLabel": "بدون امتیاز",
   "@filterNoRatingLabel": {},
   "timeSeconds": "{seconds, plural, =1{1 ثانیع} other{{seconds} ثانیه}}",
   "@timeSeconds": {
@@ -123,7 +123,7 @@
   "@entryActionRotateCW": {},
   "entryInfoActionEditLocation": "ویرایش مکان",
   "@entryInfoActionEditLocation": {},
-  "entryActionFlip": "ایینه کردن افقی",
+  "entryActionFlip": "آینه کردن افقی",
   "@entryActionFlip": {},
   "entryActionShare": "اشتراک گذاری",
   "@entryActionShare": {},
@@ -163,7 +163,7 @@
   "@videoActionSkip10": {},
   "viewerActionSettings": "تنظیمات",
   "@viewerActionSettings": {},
-  "entryInfoActionEditRating": "ویرایش رتبه",
+  "entryInfoActionEditRating": "ویرایش امتیاز",
   "@entryInfoActionEditRating": {},
   "entryInfoActionEditTags": "ویرایش برچسب ها",
   "@entryInfoActionEditTags": {},
@@ -363,7 +363,7 @@
   "@nameConflictStrategyReplace": {},
   "displayRefreshRatePreferHighest": "بیشترین مقدار",
   "@displayRefreshRatePreferHighest": {},
-  "storageAccessDialogMessage": "لطفا شاخهٔ {directory} در «{volume}» را در صفحه بعد انتخاب کنید و اجازه را به برنامه بدهید.",
+  "storageAccessDialogMessage": "لطفا شاخهٔ {directory} در «{volume}» را در صفحه بعد انتخاب کنید و به برنامه اجازه بدهید.",
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -571,9 +571,9 @@
   "@setCoverDialogCustom": {},
   "nameConflictDialogSingleSourceMessage": "برخی از پرونده های موجود در پوشه مقصد به همین نام هستند.",
   "@nameConflictDialogSingleSourceMessage": {},
-  "missingSystemFilePickerDialogMessage": "انتخابگر پرونده سیستم وجود ندارد یا غیرفعال است. لطفا آن را فعال کنید و دوباره امتحان کنید",
+  "missingSystemFilePickerDialogMessage": "انتخابگر پرونده سامانه وجود ندارد یا غیرفعال است. لطفا آن را فعال کنید و دوباره امتحان کنید.",
   "@missingSystemFilePickerDialogMessage": {},
-  "nameConflictDialogMultipleSourceMessage": "برخی پرونده ها نام های یکسانی دارند",
+  "nameConflictDialogMultipleSourceMessage": "برخی پرونده ها نام های یکسانی دارند.",
   "@nameConflictDialogMultipleSourceMessage": {},
   "noMatchingAppDialogMessage": "هیچ کاره ای وجود ندارد که بتواند این موضوع را مدیریت کند.",
   "@noMatchingAppDialogMessage": {},
@@ -605,7 +605,7 @@
   "@drawerAlbumPage": {},
   "drawerTagPage": "برچسب ها",
   "@drawerTagPage": {},
-  "sortByRating": "با رتبه‌بندی",
+  "sortByRating": "با امتیازبندی",
   "@sortByRating": {},
   "sortByAlbumFileName": "با آلبوم و نام پرونده",
   "@sortByAlbumFileName": {},
@@ -621,9 +621,9 @@
   "@settingsViewerQuickActionEditorAvailableButtonsSectionTitle": {},
   "settingsViewerQuickActionEmpty": "بدون دکمه",
   "@settingsViewerQuickActionEmpty": {},
-  "settingsSlideshowVideoPlaybackTile": "باز‌پخش ویدیو",
+  "settingsSlideshowVideoPlaybackTile": "پخش ویدیو",
   "@settingsSlideshowVideoPlaybackTile": {},
-  "settingsSlideshowVideoPlaybackDialogTitle": "بازپخش ویدیو",
+  "settingsSlideshowVideoPlaybackDialogTitle": "پخش ویدیو",
   "@settingsSlideshowVideoPlaybackDialogTitle": {},
   "settingsVideoResumptionModeTile": "ادامه پخش",
   "@settingsVideoResumptionModeTile": {},
@@ -639,9 +639,9 @@
   "@viewerInfoSearchSuggestionDate": {},
   "settingsSlideshowShuffle": "در هم",
   "@settingsSlideshowShuffle": {},
-  "settingsVideoPlaybackTile": "بازپخش",
+  "settingsVideoPlaybackTile": "پخش",
   "@settingsVideoPlaybackTile": {},
-  "settingsVideoPlaybackPageTitle": "بازپخش",
+  "settingsVideoPlaybackPageTitle": "پخش",
   "@settingsVideoPlaybackPageTitle": {},
   "viewerInfoLabelResolution": "وضوح",
   "@viewerInfoLabelResolution": {},
@@ -668,7 +668,7 @@
   "@settingsViewerSlideshowPageTitle": {},
   "viewerInfoLabelUri": "URI",
   "@viewerInfoLabelUri": {},
-  "moveUndatedConfirmationDialogSetDate": "ذخیره تاریخ ها",
+  "moveUndatedConfirmationDialogSetDate": "نگه‌داری تاریخ ها",
   "@moveUndatedConfirmationDialogSetDate": {},
   "editEntryLocationDialogLongitude": "طول جغرافیایی",
   "@editEntryLocationDialogLongitude": {},
@@ -865,7 +865,7 @@
   },
   "settingsConfirmationBeforeMoveToBinItems": "پیش از هدایت موارد به سطل زباله بپرسید",
   "@settingsConfirmationBeforeMoveToBinItems": {},
-  "pinDialogEnter": "وارد کردن شماره",
+  "pinDialogEnter": "وارد کردن PIN",
   "@pinDialogEnter": {},
   "collectionGroupDay": "با روز",
   "@collectionGroupDay": {},
@@ -881,7 +881,7 @@
   "@filePickerNoItems": {},
   "settingsHomeDialogTitle": "خانه",
   "@settingsHomeDialogTitle": {},
-  "settingsThumbnailShowRating": "نمایش رتبه‌بندی",
+  "settingsThumbnailShowRating": "نمایش امتیازبندی",
   "@settingsThumbnailShowRating": {},
   "settingsThumbnailShowTagIcon": "نمایش نماد برچسب",
   "@settingsThumbnailShowTagIcon": {},
@@ -1067,7 +1067,7 @@
   "@drawerPlacePage": {},
   "sortOrderNewestFirst": "اول جدیدترین",
   "@sortOrderNewestFirst": {},
-  "albumGroupTier": "با رتبه",
+  "albumGroupTier": "با امتیاز",
   "@albumGroupTier": {},
   "sortOrderZtoA": "ی تا ا",
   "@sortOrderZtoA": {},
@@ -1129,7 +1129,7 @@
   "@settingsThumbnailShowHdrIcon": {},
   "settingsCollectionQuickActionTabBrowsing": "مرور کردن",
   "@settingsCollectionQuickActionTabBrowsing": {},
-  "settingsCollectionQuickActionEditorPageTitle": "کنش سریع",
+  "settingsCollectionQuickActionEditorPageTitle": "کنش های سریع",
   "@settingsCollectionQuickActionEditorPageTitle": {},
   "settingsCollectionQuickActionTabSelecting": "انتخاب کردن",
   "@settingsCollectionQuickActionTabSelecting": {},
@@ -1153,7 +1153,7 @@
   "@settingsSlideshowTransitionTile": {},
   "settingsSlideshowIntervalTile": "فاصله",
   "@settingsSlideshowIntervalTile": {},
-  "settingsVideoEnableHardwareAcceleration": "شتاب سختافزاری",
+  "settingsVideoEnableHardwareAcceleration": "شتاب سخت‌افزاری",
   "@settingsVideoEnableHardwareAcceleration": {},
   "settingsVideoAutoPlay": "پخش خودکار",
   "@settingsVideoAutoPlay": {},
@@ -1163,7 +1163,7 @@
   "@settingsVideoControlsPageTitle": {},
   "settingsVideoBackgroundModeDialogTitle": "حالت پس‌زمینه‌",
   "@settingsVideoBackgroundModeDialogTitle": {},
-  "settingsVideoGestureDoubleTapTogglePlay": "برای پخش/ایست دوبار ضربه ردن",
+  "settingsVideoGestureDoubleTapTogglePlay": "برای پخش/ایست دوبار ضربه زدن",
   "@settingsVideoGestureDoubleTapTogglePlay": {},
   "settingsVideoGestureSideDoubleTapSeek": "روی لبه های صفحه دوبار ضربه بزنید تا به عقب/جلو بروید",
   "@settingsVideoGestureSideDoubleTapSeek": {},
@@ -1249,7 +1249,7 @@
   "@renameEntrySetPageInsertTooltip": {},
   "renameEntrySetPageTitle": "تغییرنام",
   "@renameEntrySetPageTitle": {},
-  "videoSpeedDialogLabel": "سرعت پازپخش",
+  "videoSpeedDialogLabel": "سرعت پخش",
   "@videoSpeedDialogLabel": {},
   "collectionActionAddShortcut": "افزودن میانبر",
   "@collectionActionAddShortcut": {},
@@ -1293,7 +1293,7 @@
   "@settingsCollectionBurstPatternsTile": {},
   "settingsCollectionBurstPatternsNone": "هیچکدام",
   "@settingsCollectionBurstPatternsNone": {},
-  "settingsCollectionQuickActionsTile": "کنش سریع",
+  "settingsCollectionQuickActionsTile": "کنش های سریع",
   "@settingsCollectionQuickActionsTile": {},
   "settingsUnitSystemTile": "واحد ها",
   "@settingsUnitSystemTile": {},
@@ -1315,9 +1315,9 @@
   "@settingsViewerSectionTitle": {},
   "settingsViewerShowInformationSubtitle": "نمایش عنوان، تاریخ، مکان، و...",
   "@settingsViewerShowInformationSubtitle": {},
-  "settingsViewerQuickActionsTile": "کنش های سزیع",
+  "settingsViewerQuickActionsTile": "کنش های سریع",
   "@settingsViewerQuickActionsTile": {},
-  "settingsViewerQuickActionEditorPageTitle": "کنش های سزیع",
+  "settingsViewerQuickActionEditorPageTitle": "کنش های سریع",
   "@settingsViewerQuickActionEditorPageTitle": {},
   "settingsViewerQuickActionEditorBanner": "لمس کنید و نگه دارید تا دکمه ها را حرکت دهید و انتخاب کنید که کدام کنش ها در بیننده نمایش داده می شود.",
   "@settingsViewerQuickActionEditorBanner": {},
@@ -1440,5 +1440,101 @@
   "settingsDisplayRefreshRateModeTile": "نمایش نرخ تازه‌سازی",
   "@settingsDisplayRefreshRateModeTile": {},
   "settingsSubtitleThemeShowOutline": "نمایش نوار حاشیه و سایه",
-  "@settingsSubtitleThemeShowOutline": {}
+  "@settingsSubtitleThemeShowOutline": {},
+  "collectionCopySuccessFeedback": "{count, plural, =1{۱ مورد رونوشت شد} other{{count} مورد رونوشت شد}}",
+  "@collectionCopySuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "statsWithGps": "{count, plural, =1{1 مورد دارای مکان} other{{count} مورد دارای مکان}}",
+  "@statsWithGps": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "editEntryDateDialogShift": "جابه‌جایی",
+  "@editEntryDateDialogShift": {},
+  "collectionDeleteFailureFeedback": "{count, plural, =1{پاک‌کردن ۱ مورد ناموفق بود} other{پاک‌کردن {count} مورد ناموفق بود}}",
+  "@collectionDeleteFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "settingsDisablingBinWarningDialogMessage": "موارد موجود در سطل زباله برای همیشه نابود خواهند شد.",
+  "@settingsDisablingBinWarningDialogMessage": {},
+  "settingsAllowInstalledAppAccessSubtitle": "برای بهبود نمایش آلبوم بهره‌وری میشود",
+  "@settingsAllowInstalledAppAccessSubtitle": {},
+  "settingsHiddenPathsBanner": "تصاویر و ویدیوهای موجود در این پوشه‌ها یا هر یک از زیرپوشه‌های آن‌ها در مجموعه شما دیده نمی‌شوند.",
+  "@settingsHiddenPathsBanner": {},
+  "settingsStorageAccessBanner": "برخی پوشه ها برای اصلاح پرونپه های موجود در آنها به یک مجوز دسترسی نیاز دارند. در اینجا می توانید پوشه هایی را که قبلاً به آنها دسترسی داشته اید، مرور کنید.",
+  "@settingsStorageAccessBanner": {},
+  "collectionMoveFailureFeedback": "{count, plural, =1{هدایت ۱ مورد ناموفق بود} other{هدایت {count} مورد ناموفق بود}}",
+  "@collectionMoveFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionRenameFailureFeedback": "{count, plural, =1{تغییرنام ۱ مورد ناموفق بود} other{تغییرنام {count} مورد ناموفق بود}}",
+  "@collectionRenameFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "aboutCreditsWorldAtlas1": "این برنامه یک پرونده TopoJSON استفاده میکند از",
+  "@aboutCreditsWorldAtlas1": {},
+  "collectionCopyFailureFeedback": "{count, plural, =1{رونوشت ۱ مورد ناموفق بود} other{رونوشت {count} مورد ناموفق بود}}",
+  "@collectionCopyFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionMoveSuccessFeedback": "{count, plural, =1{۱ مورد هدایت شد} other{{count} مورد هدایت شد}}",
+  "@collectionMoveSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionRenameSuccessFeedback": "{count, plural, =1{۱ مورد تغییرنام یافت} other{{count} مورد تغییرنام یافت}}",
+  "@collectionRenameSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionEditSuccessFeedback": "{count, plural, =1{۱ مورد ویرایش شد} other{{count} مورد ویرایش شد}}",
+  "@collectionEditSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "settingsViewerUseCutout": "ناحیه برش را بکار بگیر",
+  "@settingsViewerUseCutout": {},
+  "settingsViewerShowHistogram": "نمایش نمودار",
+  "@settingsViewerShowHistogram": {},
+  "settingsVideoGestureVerticalDragBrightnessVolume": "برای تنظیم نور/صدا به بالا و پایین بکشید",
+  "@settingsVideoGestureVerticalDragBrightnessVolume": {},
+  "mapEmptyRegion": "تصویری در این ناحیه وجود ندارد",
+  "@mapEmptyRegion": {},
+  "mapAttributionOsmHot": "داده‌های نقشه © [OpenStreetMap](https:www.openstreetmap.orgcopyright) مشارکت‌کنندگان • کاشی ها توسط [HOT](https:www.hotosm.org) • میزبانی شده به دست [OSM France](https:openstreetmap.fr)",
+  "@mapAttributionOsmHot": {},
+  "mapAttributionStamen": "داده‌های نقشه © [OpenStreetMap](https:www.openstreetmap.org/copyright) مشارکت‌کنندگان • کاشی ها بدست [Stamen Design](https:stamen.com)، [CC BY 3.0](https:creativecommons.orglicensesby3.0)",
+  "@mapAttributionStamen": {},
+  "addShortcutButtonLabel": "افزودن",
+  "@addShortcutButtonLabel": {},
+  "aboutBugReportInstruction": "در گیت‌هاب با گزارش ها و ریزگان دستگاه گزارش کنید",
+  "@aboutBugReportInstruction": {},
+  "settingsViewerShowShootingDetails": "نمایش ریزگان تصویربرداری",
+  "@settingsViewerShowShootingDetails": {},
+  "settingsHiddenFiltersBanner": "تصاویر و ویدیوهایی که با پالایش‌های مخفی سازگار نیستند در مجموعه شما دیده نمیشوند.",
+  "@settingsHiddenFiltersBanner": {},
+  "moveUndatedConfirmationDialogMessage": "پیش از ادامه دادن تاریخ موارد نگه‌داری شود؟",
+  "@moveUndatedConfirmationDialogMessage": {},
+  "settingsAllowInstalledAppAccess": "اجازه دسترسی به دارایی برنامه",
+  "@settingsAllowInstalledAppAccess": {},
+  "collectionEditFailureFeedback": "{count, plural, =1{ویرایش ۱ مورد ناموفق بود} other{ویرایش {count} مورد ناموفق بود}}",
+  "@collectionEditFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

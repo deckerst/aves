@@ -1532,5 +1532,9 @@
   "videoRepeatActionSetStart": "設置起點",
   "@videoRepeatActionSetStart": {},
   "videoRepeatActionSetEnd": "設置終點",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "renameProcessorHash": "雜湊",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "強制使用阿拉伯數字",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }
