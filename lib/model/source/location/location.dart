@@ -76,7 +76,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
     }
   }
 
-  // full reverse geocoding, requiring Play Services and some connectivity
+  // full reverse geocoding, requiring geocoder and some connectivity
   Future<void> _locatePlaces(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
     if (controller.isStopping) return;
     if (!await availability.canLocatePlaces) return;
