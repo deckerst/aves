@@ -124,7 +124,7 @@ class _AppDrawerState extends State<AppDrawer> {
     final onPrimary = colorScheme.onPrimary;
 
     final drawerButtonStyle = ButtonStyle(
-      padding: MaterialStateProperty.all(const EdgeInsetsDirectional.only(start: 12, end: 16)),
+      padding: WidgetStateProperty.all(const EdgeInsetsDirectional.only(start: 12, end: 16)),
     );
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -163,9 +163,9 @@ class _AppDrawerState extends State<AppDrawer> {
             OutlinedButtonTheme(
               data: OutlinedButtonThemeData(
                 style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(onPrimary),
-                  overlayColor: MaterialStateProperty.all<Color>(onPrimary.withOpacity(.12)),
-                  side: MaterialStateProperty.all<BorderSide>(BorderSide(width: 1, color: onPrimary.withOpacity(.24))),
+                  foregroundColor: WidgetStateProperty.all<Color>(onPrimary),
+                  overlayColor: WidgetStateProperty.all<Color>(onPrimary.withOpacity(.12)),
+                  side: WidgetStateProperty.all<BorderSide>(BorderSide(width: 1, color: onPrimary.withOpacity(.24))),
                 ),
               ),
               child: Wrap(

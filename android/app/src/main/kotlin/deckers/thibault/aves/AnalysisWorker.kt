@@ -161,13 +161,12 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             applicationContext.getString(R.string.analysis_notification_action_stop),
             WorkManager.getInstance(applicationContext).createCancelPendingIntent(id)
         ).build()
-        val icon = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) R.drawable.ic_notification else R.mipmap.ic_launcher_round
         val contentTitle = title ?: applicationContext.getText(R.string.analysis_notification_default_title)
         val notification = NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL)
             .setContentTitle(contentTitle)
             .setTicker(contentTitle)
             .setContentText(message)
-            .setSmallIcon(icon)
+            .setSmallIcon(R.drawable.ic_notification)
             .setOngoing(true)
             .setContentIntent(openAppIntent)
             .addAction(stopAction)

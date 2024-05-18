@@ -3,28 +3,30 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/viewer/info/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-class InfoSearchDelegate extends SearchDelegate {
+class InfoSearchDelegate extends AvesSearchDelegate {
   final AvesEntry entry;
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
   final bool isSelecting;
 
   Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
 
+  static const pageRouteName = '/info/search';
+
   InfoSearchDelegate({
-    required String searchFieldLabel,
-    required TextStyle searchFieldStyle,
+    required super.searchFieldLabel,
+    required super.searchFieldStyle,
     required this.entry,
     required this.metadataNotifier,
     required this.isSelecting,
   }) : super(
-          searchFieldLabel: searchFieldLabel,
-          searchFieldStyle: searchFieldStyle,
+          routeName: pageRouteName,
         );
 
   @override

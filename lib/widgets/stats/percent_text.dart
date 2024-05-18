@@ -1,4 +1,5 @@
 import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:flutter/material.dart';
@@ -15,17 +16,16 @@ class LinearPercentIndicatorText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return OutlinedText(
       textSpans: [
         TextSpan(
           text: percentFormat.format(percent),
           style: TextStyle(
-            shadows: theme.isDark ? AStyles.embossShadows : null,
+            shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,
           ),
         )
       ],
-      outlineColor: theme.colorScheme.background,
+      outlineColor: Themes.firstLayerColor(context),
     );
   }
 }

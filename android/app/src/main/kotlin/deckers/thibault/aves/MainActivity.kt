@@ -17,13 +17,37 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
-import deckers.thibault.aves.channel.calls.*
+import deckers.thibault.aves.channel.calls.AccessibilityHandler
+import deckers.thibault.aves.channel.calls.AnalysisHandler
+import deckers.thibault.aves.channel.calls.AppAdapterHandler
+import deckers.thibault.aves.channel.calls.DebugHandler
+import deckers.thibault.aves.channel.calls.DeviceHandler
+import deckers.thibault.aves.channel.calls.EmbeddedDataHandler
+import deckers.thibault.aves.channel.calls.GeocodingHandler
+import deckers.thibault.aves.channel.calls.GlobalSearchHandler
+import deckers.thibault.aves.channel.calls.HomeWidgetHandler
+import deckers.thibault.aves.channel.calls.MediaEditHandler
+import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
+import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
+import deckers.thibault.aves.channel.calls.MediaSessionHandler
+import deckers.thibault.aves.channel.calls.MediaStoreHandler
+import deckers.thibault.aves.channel.calls.MetadataEditHandler
+import deckers.thibault.aves.channel.calls.MetadataFetchHandler
+import deckers.thibault.aves.channel.calls.SecurityHandler
+import deckers.thibault.aves.channel.calls.StorageHandler
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
-import deckers.thibault.aves.channel.streams.*
+import deckers.thibault.aves.channel.streams.ActivityResultStreamHandler
+import deckers.thibault.aves.channel.streams.AnalysisStreamHandler
+import deckers.thibault.aves.channel.streams.ErrorStreamHandler
+import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
+import deckers.thibault.aves.channel.streams.ImageOpStreamHandler
+import deckers.thibault.aves.channel.streams.IntentStreamHandler
+import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
+import deckers.thibault.aves.channel.streams.MediaStoreChangeStreamHandler
+import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
+import deckers.thibault.aves.channel.streams.SettingsChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
-import deckers.thibault.aves.utils.FlutterUtils.isSoftwareRenderingRequired
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -51,13 +75,6 @@ open class MainActivity : FlutterFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(LOG_TAG, "onCreate intent=$intent")
-
-        if (isSoftwareRenderingRequired()) {
-            intent.enableSoftwareRendering()
-            // running the app from Android Studio automatically adds to the intent the `start-paused` flag
-            // so the IDE can connect to the app, but launching on KitKat emulators fails because of a timeout
-            intent.removeExtra("start-paused")
-        }
 
         intent.extras?.takeUnless { it.isEmpty }?.let {
             Log.i(LOG_TAG, "onCreate intent extras=$it")
@@ -168,11 +185,9 @@ open class MainActivity : FlutterFragmentActivity() {
         // as of Flutter v3.0.1, the window `viewInsets` and `viewPadding`
         // are incorrect on startup in some environments (e.g. API 29 emulator),
         // so we manually request to apply the insets to update the window metrics
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                window.decorView.requestApplyInsets()
-            }, 100)
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            window.decorView.requestApplyInsets()
+        }, 100)
     }
 
     override fun onStop() {

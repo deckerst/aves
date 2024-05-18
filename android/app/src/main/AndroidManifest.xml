@@ -72,12 +72,10 @@
     -->
 
     <!--
-    allow install on API 19, despite the `minSdk` declared in dependencies:
-    - the Security library is from API 21
+    allow install on API 21, despite the `minSdk` declared in dependencies:
     - FFmpegKit for Flutter is from API 24 (when not LTS)
-    - Google Maps is from API 20
     -->
-    <uses-sdk tools:overrideLibrary="androidx.security, com.arthenica.ffmpegkit.flutter, io.flutter.plugins.googlemaps" />
+    <uses-sdk tools:overrideLibrary="com.arthenica.ffmpegkit.flutter" />
 
     <!-- from Android 11, we should define <queries> to make other apps visible to this app -->
     <queries>
@@ -321,8 +319,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- as of Flutter v3.19.0 (stable),
-        Impeller fails to render videos & platform views, has poor performance -->
+        <!-- as of Flutter v3.22.0 (stable),
+        Impeller fails to render videos (via `ffmpegkit`), and has random glitches -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

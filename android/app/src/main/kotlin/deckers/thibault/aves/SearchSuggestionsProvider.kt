@@ -34,7 +34,7 @@ class SearchSuggestionsProvider : ContentProvider() {
             val columns = arrayOf(
                 SearchManager.SUGGEST_COLUMN_INTENT_DATA,
                 SearchManager.SUGGEST_COLUMN_INTENT_EXTRA_DATA,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) SearchManager.SUGGEST_COLUMN_CONTENT_TYPE else "mimeType",
+                SearchManager.SUGGEST_COLUMN_CONTENT_TYPE,
                 SearchManager.SUGGEST_COLUMN_TEXT_1,
                 SearchManager.SUGGEST_COLUMN_TEXT_2,
                 SearchManager.SUGGEST_COLUMN_ICON_1,

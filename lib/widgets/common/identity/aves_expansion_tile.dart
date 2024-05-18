@@ -1,4 +1,5 @@
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class AvesExpansionTile extends StatelessWidget {
       expandable: enabled,
       initiallyExpanded: initiallyExpanded,
       finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
-      baseColor: theme.colorScheme.background,
+      baseColor: Themes.firstLayerColor(context),
       expandedTextColor: colorScheme.onSurface,
       duration: animationDuration,
       shadowColor: theme.shadowColor,

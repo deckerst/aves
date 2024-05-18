@@ -66,9 +66,6 @@ android {
 
     defaultConfig {
         applicationId packageName
-        // minSdk constraints:
-        // - Flutter & other plugins: 19 (cf `flutter.minSdkVersion`)
-        // - google_maps_flutter v2.1.1: 20
         minSdk flutter.minSdkVersion
         targetSdk 34
         versionCode flutterVersionCode.toInteger()
@@ -201,7 +198,7 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.lifecycle:lifecycle-process:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.8.0'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
@@ -229,7 +226,7 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 
-    kapt 'androidx.annotation:annotation:1.7.1'
+    kapt 'androidx.annotation:annotation:1.8.0'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')

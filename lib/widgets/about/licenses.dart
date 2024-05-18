@@ -2,6 +2,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/model/app/dependencies.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -87,8 +88,8 @@ class _LicensesState extends State<Licenses> {
                   MaterialPageRoute(
                     builder: (context) => Theme(
                       data: Theme.of(context).copyWith(
-                        // as of Flutter v3.7.8, `cardColor` is used as a background color by `LicensePage`
-                        cardColor: Theme.of(context).colorScheme.background,
+                        // as of Flutter v3.22.0, `cardColor` is used as a background color by `LicensePage`
+                        cardColor: Themes.firstLayerColor(context),
                       ),
                       child: const LicensePage(),
                     ),

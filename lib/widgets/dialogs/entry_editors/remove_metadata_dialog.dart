@@ -2,6 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -113,7 +114,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
           ),
         ),
       ],
-      outlineColor: Theme.of(context).colorScheme.background,
+      outlineColor: Themes.firstLayerColor(context),
     );
     if (context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.polychrome)) {
       final colors = context.watch<AvesColorsData>();

@@ -15,7 +15,7 @@ class AvesCaption extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final subtitleStyle = theme.textTheme.bodySmall!;
-    final subtitleChangeShadowColor = theme.colorScheme.onBackground;
+    final subtitleChangeShadowColor = theme.colorScheme.onSurface;
     return ChangeHighlightText(
       // provide key to refresh on theme brightness change
       key: ValueKey(subtitleChangeShadowColor),

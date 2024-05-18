@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- upgraded Flutter to stable v3.22.0
+
+### Removed
+
+- support for Android KitKat (API 19)
+
 ## <a id="v1.11.1"></a>[v1.11.1] - 2024-05-03
 
 ### Added

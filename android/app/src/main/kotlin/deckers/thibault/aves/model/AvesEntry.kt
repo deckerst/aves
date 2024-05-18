@@ -15,7 +15,7 @@ class AvesEntry(map: FieldMap) {
     val trashed = map["trashed"] as Boolean
     val trashPath = map["trashPath"] as String?
 
-    val isRotated: Boolean
+    private val isRotated: Boolean
         get() = rotationDegrees % 180 == 90
 
     val displayWidth: Int

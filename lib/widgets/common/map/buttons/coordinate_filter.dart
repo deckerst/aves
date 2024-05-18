@@ -60,49 +60,43 @@ class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChi
   Widget build(BuildContext context) {
     final blurred = settings.enableBlurEffect;
     final theme = Theme.of(context);
-    return Theme(
-      data: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(
-          background: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Selector<MapThemeData, Animation<double>>(
+        selector: (context, v) => v.scale,
+        builder: (context, scale, child) => SizeTransition(
+          sizeFactor: scale,
+          axisAlignment: 1,
+          child: FadeTransition(
+            opacity: scale,
+            child: child,
+          ),
         ),
-      ),
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Selector<MapThemeData, Animation<double>>(
-          selector: (context, v) => v.scale,
-          builder: (context, scale, child) => SizeTransition(
-            sizeFactor: scale,
-            axisAlignment: 1,
-            child: FadeTransition(
-              opacity: scale,
-              child: child,
-            ),
-          ),
-          child: ValueListenableBuilder<ZoomedBounds?>(
-            valueListenable: _idleBoundsNotifier,
-            builder: (context, bounds, child) {
-              if (bounds == null) return const SizedBox();
-              final filter = CoordinateFilter(
-                bounds.sw,
-                bounds.ne,
-                // more stable format when bounds change
-                minuteSecondPadding: true,
-              );
-              return Padding(
-                padding: EdgeInsets.all(widget.padding),
-                child: BlurredRRect.all(
-                  enabled: blurred,
-                  borderRadius: AvesFilterChip.defaultRadius,
-                  child: AvesFilterChip(
-                    filter: filter,
-                    useFilterColor: false,
-                    maxWidth: double.infinity,
-                    onTap: (filter) => FilterSelectedNotification(CoordinateFilter(bounds.sw, bounds.ne)).dispatch(context),
-                  ),
+        child: ValueListenableBuilder<ZoomedBounds?>(
+          valueListenable: _idleBoundsNotifier,
+          builder: (context, bounds, child) {
+            if (bounds == null) return const SizedBox();
+            final filter = CoordinateFilter(
+              bounds.sw,
+              bounds.ne,
+              // more stable format when bounds change
+              minuteSecondPadding: true,
+            );
+            return Padding(
+              padding: EdgeInsets.all(widget.padding),
+              child: BlurredRRect.all(
+                enabled: blurred,
+                borderRadius: AvesFilterChip.defaultRadius,
+                child: AvesFilterChip(
+                  filter: filter,
+                  useFilterColor: false,
+                  background: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
+                  maxWidth: double.infinity,
+                  onTap: (filter) => FilterSelectedNotification(CoordinateFilter(bounds.sw, bounds.ne)).dispatch(context),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

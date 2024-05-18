@@ -46,8 +46,8 @@ class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>>
   @override
   Widget build(BuildContext context) {
     final style = PopupMenuTheme.of(context).labelTextStyle!.resolve(
-      <MaterialState>{
-        if (!widget.enabled) MaterialState.disabled,
+      <WidgetState>{
+        if (!widget.enabled) WidgetState.disabled,
       },
     )!;
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);

@@ -31,6 +31,7 @@ import deckers.thibault.aves.utils.LogUtils
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.util.Locale
 import java.util.zip.InflaterInputStream
 import java.util.zip.ZipException
 
@@ -42,7 +43,7 @@ object SafePngMetadataReader {
     private val LOG_TAG = LogUtils.createTag<SafePngMetadataReader>()
 
     // arbitrary size to detect chunks that may yield an OOM
-    private const val chunkSizeDangerThreshold = SafeXmpReader.SEGMENT_TYPE_SIZE_DANGER_THRESHOLD
+    private const val CHUNK_SIZE_DANGER_THRESHOLD = SafeXmpReader.SEGMENT_TYPE_SIZE_DANGER_THRESHOLD
 
     private val latin1Encoding = Charsets.ISO_8859_1
     private val utf8Encoding = Charsets.UTF_8
@@ -85,7 +86,7 @@ object SafePngMetadataReader {
         val bytes = chunk.bytes
 
         // TLAD insert start
-        if (bytes.size > chunkSizeDangerThreshold) {
+        if (bytes.size > CHUNK_SIZE_DANGER_THRESHOLD) {
             Log.w(LOG_TAG, "PNG chunk $chunkType is too large, with a size of ${bytes.size} B")
             return
         }
@@ -290,11 +291,12 @@ object SafePngMetadataReader {
             val second = reader.uInt8.toInt()
             val directory = PngDirectory(PngChunkType.tIME)
             if (DateUtil.isValidDate(year, month - 1, day) && DateUtil.isValidTime(hour, minute, second)) {
-                val dateString = String.format("%04d:%02d:%02d %02d:%02d:%02d", year, month, day, hour, minute, second)
+                val dateString = String.format(Locale.ROOT, "%04d:%02d:%02d %02d:%02d:%02d", year, month, day, hour, minute, second)
                 directory.setString(PngDirectory.TAG_LAST_MODIFICATION_TIME, dateString)
             } else {
                 directory.addError(
                     String.format(
+                        Locale.ROOT,
                         "PNG tIME data describes an invalid date/time: year=%d month=%d day=%d hour=%d minute=%d second=%d",
                         year, month, day, hour, minute, second
                     )

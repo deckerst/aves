@@ -61,11 +61,6 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             return
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            error("requestDirectoryAccess-unsupported", "directory access is not allowed before Android Lollipop", null)
-            return
-        }
-
         PermissionManager.requestDirectoryAccess(activity, ensureTrailingSeparator(path), {
             success(true)
             endOfStream()

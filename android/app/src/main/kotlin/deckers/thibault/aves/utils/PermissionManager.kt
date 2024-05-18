@@ -28,7 +28,6 @@ object PermissionManager {
         Environment.DIRECTORY_PICTURES,
     )
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     suspend fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
 
@@ -151,7 +150,6 @@ object PermissionManager {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun revokeDirectoryAccess(context: Context, path: String): Boolean {
         return StorageUtils.convertDirPathToTreeDocumentUri(context, path)?.let {
             releaseUriPermission(context, it)
@@ -162,11 +160,9 @@ object PermissionManager {
     // returns paths matching directory URIs granted by the user
     fun getGrantedDirs(context: Context): Set<String> {
         val grantedDirs = HashSet<String>()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            for (uriPermission in context.contentResolver.persistedUriPermissions) {
-                val dirPath = StorageUtils.convertTreeDocumentUriToDirPath(context, uriPermission.uri)
-                dirPath?.let { grantedDirs.add(it) }
-            }
+        for (uriPermission in context.contentResolver.persistedUriPermissions) {
+            val dirPath = StorageUtils.convertTreeDocumentUriToDirPath(context, uriPermission.uri)
+            dirPath?.let { grantedDirs.add(it) }
         }
         return grantedDirs
     }
@@ -216,19 +212,6 @@ object PermissionManager {
                     )
                 })
             }
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT
-            || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
-        ) {
-            // removable storage requires access permission, at the file level
-            // without directory access, we consider the whole volume restricted
-            val primaryVolume = StorageUtils.getPrimaryVolumePath(context)
-            val nonPrimaryVolumes = StorageUtils.getVolumePaths(context).filter { it != primaryVolume }
-            dirs.addAll(nonPrimaryVolumes.map {
-                hashMapOf(
-                    "volumePath" to it,
-                    "relativeDir" to "",
-                )
-            })
         }
         return dirs
     }
@@ -236,7 +219,6 @@ object PermissionManager {
     // As of Android 11, `MediaStore.getDocumentUri` fails if any of the persisted
     // URI permissions we hold points to a folder that no longer exists,
     // so we should remove these obsolete URIs before proceeding.
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun sanitizePersistedUriPermissions(context: Context) {
         try {
             for (uriPermission in context.contentResolver.persistedUriPermissions) {
@@ -252,7 +234,6 @@ object PermissionManager {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun releaseUriPermission(context: Context, it: Uri) {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         context.contentResolver.releasePersistableUriPermission(it, flags)

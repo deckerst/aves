@@ -60,7 +60,7 @@ object Helper {
     private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
 
     // providing the stream length is risky, as it may crash if it is incorrect
-    private const val safeReadStreamLength = -1L
+    private const val SAFE_READ_STREAM_LENGTH = -1L
 
     fun readMimeType(input: InputStream): String? {
         val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
@@ -84,7 +84,7 @@ object Helper {
             FileType.Orf,
             FileType.Rw2 -> safeReadTiff(inputStream)
 
-            else -> ImageMetadataReader.readMetadata(inputStream, safeReadStreamLength, fileType)
+            else -> ImageMetadataReader.readMetadata(inputStream, SAFE_READ_STREAM_LENGTH, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))
@@ -116,7 +116,7 @@ object Helper {
 
     @Throws(IOException::class, TiffProcessingException::class)
     fun safeReadTiff(input: InputStream): com.drew.metadata.Metadata {
-        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, safeReadStreamLength)
+        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, SAFE_READ_STREAM_LENGTH)
         val metadata = com.drew.metadata.Metadata()
         val handler = SafeExifTiffHandler(metadata, null, 0)
         TiffReader().processTiff(reader, handler, 0)
@@ -294,9 +294,7 @@ object Helper {
         if (!modelTiePoints && !modelTransformation) return false
 
         val modelPixelScale = this.containsTag(ExifGeoTiffTags.TAG_MODEL_PIXEL_SCALE)
-        if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiePoints)) return false
-
-        return true
+        return !((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiePoints))
     }
 
     // TODO TLAD use `GeoTiffDirectory` from the Java version of `metadata-extractor` when available

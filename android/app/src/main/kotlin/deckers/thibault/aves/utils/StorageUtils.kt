@@ -16,7 +16,6 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.utils.FileUtils.transferFrom
@@ -29,7 +28,7 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.*
+import java.util.Locale
 import java.util.regex.Pattern
 
 object StorageUtils {
@@ -381,7 +380,6 @@ object StorageUtils {
     // e.g.
     // /storage/emulated/0/         -> content://com.android.externalstorage.documents/tree/primary%3A
     // /storage/10F9-3F13/Pictures/ -> content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun convertDirPathToTreeDocumentUri(context: Context, dirPath: String): Uri? {
         val uuid = getVolumeUuidForDocumentUri(context, dirPath)
         if (uuid != null) {
@@ -446,7 +444,7 @@ object StorageUtils {
 
     fun getDocumentFile(context: Context, anyPath: String, mediaUri: Uri): DocumentFileCompat? {
         try {
-            if (requireAccessPermission(context, anyPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (requireAccessPermission(context, anyPath)) {
                 // need a document URI (not a media content URI) to open a `DocumentFile` output stream
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
                     // cleanest API to get it
@@ -485,7 +483,7 @@ object StorageUtils {
     fun createDirectoryDocIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
         try {
             val cleanDirPath = ensureTrailingSeparator(dirPath)
-            return if (requireAccessPermission(context, cleanDirPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return if (requireAccessPermission(context, cleanDirPath)) {
                 val grantedDir = getGrantedDirForPath(context, cleanDirPath) ?: return null
                 val rootTreeDocumentUri = convertDirPathToTreeDocumentUri(context, grantedDir) ?: return null
                 var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
