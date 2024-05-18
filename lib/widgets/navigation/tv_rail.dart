@@ -6,6 +6,7 @@ import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -90,6 +91,9 @@ class _TvRailState extends State<TvRail> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final locale = l10n.localeName;
+
     final navEntries = _getNavEntries(context);
     return DirectionalSafeArea(
       end: false,
@@ -103,13 +107,13 @@ class _TvRailState extends State<TvRail> {
                     logo,
                     const SizedBox(width: 16),
                     Text(
-                      context.l10n.appName,
-                      style: const TextStyle(
+                      l10n.appName,
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
                         fontWeight: FontWeight.w300,
-                        letterSpacing: 1.0,
-                        fontFeatures: [FontFeature.enable('smcp')],
+                        letterSpacing: canHaveLetterSpacing(locale) ? 1 : 0,
+                        fontFeatures: const [FontFeature.enable('smcp')],
                       ),
                     ),
                   ],

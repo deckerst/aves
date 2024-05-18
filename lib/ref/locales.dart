@@ -45,3 +45,13 @@ bool shouldUseNativeDigits(Locale? countrifiedLocale) {
       return true;
   }
 }
+
+bool canHaveLetterSpacing(String locale) {
+  switch (locale) {
+    case 'ar':
+    case 'fa':
+      return false;
+    default:
+      return true;
+  }
+}

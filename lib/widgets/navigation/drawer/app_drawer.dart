@@ -1,4 +1,3 @@
-
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -8,6 +7,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -111,6 +111,9 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final l10n = context.l10n;
+    final locale = l10n.localeName;
+
     Future<void> goTo(String routeName, WidgetBuilder pageBuilder) async {
       Navigator.maybeOf(context)?.pop();
       await Future.delayed(ADurations.drawerTransitionAnimation);
@@ -145,13 +148,13 @@ class _AppDrawerState extends State<AppDrawer> {
                   OutlinedText(
                     textSpans: [
                       TextSpan(
-                        text: context.l10n.appName,
-                        style: const TextStyle(
+                        text: l10n.appName,
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 38,
                           fontWeight: FontWeight.w300,
-                          letterSpacing: 1.0,
-                          fontFeatures: [FontFeature.enable('smcp')],
+                          letterSpacing: canHaveLetterSpacing(locale) ? 1 : 0,
+                          fontFeatures: const [FontFeature.enable('smcp')],
                         ),
                       ),
                     ],
@@ -177,7 +180,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
                     style: drawerButtonStyle,
                     icon: const Icon(AIcons.info),
-                    label: Text(context.l10n.drawerAboutButton),
+                    label: Text(l10n.drawerAboutButton),
                   ),
                   OutlinedButton.icon(
                     // key is expected by test driver
@@ -185,7 +188,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     onPressed: () => goTo(SettingsPage.routeName, (_) => const SettingsPage()),
                     style: drawerButtonStyle,
                     icon: const Icon(AIcons.settings),
-                    label: Text(context.l10n.drawerSettingsButton),
+                    label: Text(l10n.drawerSettingsButton),
                   ),
                 ],
               ),
