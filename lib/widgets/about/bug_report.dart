@@ -122,6 +122,9 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
   }
 
   Widget _buildStep(int step, String text, String buttonText, VoidCallback onPressed) {
+    final locale = context.l10n.localeName;
+    final numberFormat = NumberFormat.decimalPattern(locale);
+
     final isMonochrome = settings.themeColorMode == AvesThemeColorMode.monochrome;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -136,7 +139,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
               )),
               shape: BoxShape.circle,
             ),
-            child: Text('$step'),
+            child: Text(numberFormat.format(step)),
           ),
           const SizedBox(width: 8),
           Expanded(child: Text(text)),

@@ -218,6 +218,9 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.l10n.localeName;
+    final percentFormat = NumberFormat.percentPattern(locale);
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final progressColor = colorScheme.primary;
@@ -230,7 +233,6 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
           final processedCount = processed.length.toDouble();
           final total = widget.itemCount;
           final percent = total == null || total == 0 ? 0.0 : min(1.0, processedCount / total);
-          final percentFormat = NumberFormat.percentPattern();
           return FadeTransition(
             opacity: _animation,
             child: Stack(
@@ -351,6 +353,9 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.l10n.localeName;
+    final numberFormat = NumberFormat('0', locale);
+
     final textScaler = MediaQuery.textScalerOf(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -388,7 +393,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                 // because we cannot use the app context theme here
                 foreground: widget.progressColor,
                 center: ChangeHighlightText(
-                  '${(remainingDurationMillis / 1000).ceil()}',
+                  numberFormat.format((remainingDurationMillis / 1000).ceil()),
                   style: contentTextStyle.copyWith(
                     shadows: [
                       Shadow(

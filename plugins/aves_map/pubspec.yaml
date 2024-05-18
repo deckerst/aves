@@ -15,6 +15,7 @@ dependencies:
   equatable:
   fluster:
   flutter_map:
+  intl:
   latlong2:
   provider:
 

@@ -4,10 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:latlong2/latlong.dart';
 
 class ImageMarker extends StatelessWidget {
   final int? count;
+  final intl.NumberFormat numberFormat;
   final bool drawArrow;
   final Widget Function(double extent) buildThumbnailImage;
 
@@ -20,12 +22,13 @@ class ImageMarker extends StatelessWidget {
   static const innerRadius = Radius.circular(outerBorderRadiusDim - outerBorderWidth);
   static const innerBorderRadius = BorderRadius.all(innerRadius);
 
-  const ImageMarker({
+  ImageMarker({
     super.key,
     required this.count,
+    required String locale,
     this.drawArrow = true,
     required this.buildThumbnailImage,
-  });
+  }) : numberFormat = intl.NumberFormat.decimalPattern(locale);
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +110,7 @@ class ImageMarker extends StatelessWidget {
                     ),
             ),
             child: Text(
-              '$count',
+              numberFormat.format(count),
               style: TextStyle(
                 fontSize: 12,
                 color: theme.colorScheme.onPrimary,
