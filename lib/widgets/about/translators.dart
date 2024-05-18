@@ -31,7 +31,7 @@ class AboutTranslators extends StatelessWidget {
   static Widget buildBody(BuildContext context) {
     return _RandomTextSpanHighlighter(
       spans: Contributors.translators.map((v) => v.name).toList(),
-      color: Theme.of(context).colorScheme.onBackground,
+      color: Theme.of(context).colorScheme.onSurface,
     );
   }
 }

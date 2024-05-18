@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -227,7 +228,7 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final backgroundColor = theme.appBarTheme.backgroundColor ?? theme.colorScheme.surface;
+    final backgroundColor = theme.appBarTheme.backgroundColor ?? Themes.firstLayerColor(context);
     return ValueListenableBuilder<bool>(
       valueListenable: _isBlurAllowedNotifier,
       builder: (context, isBlurAllowed, child) {

@@ -2,21 +2,26 @@ package deckers.thibault.aves
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
-import deckers.thibault.aves.channel.calls.*
+import deckers.thibault.aves.channel.calls.AccessibilityHandler
+import deckers.thibault.aves.channel.calls.DeviceHandler
+import deckers.thibault.aves.channel.calls.EmbeddedDataHandler
+import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
+import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
+import deckers.thibault.aves.channel.calls.MediaSessionHandler
+import deckers.thibault.aves.channel.calls.MetadataFetchHandler
+import deckers.thibault.aves.channel.calls.StorageHandler
+import deckers.thibault.aves.channel.calls.WallpaperHandler
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.FlutterUtils
-import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -30,9 +35,6 @@ class WallpaperActivity : FlutterFragmentActivity() {
     private lateinit var mediaSessionHandler: MediaSessionHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (FlutterUtils.isSoftwareRenderingRequired()) {
-            intent.enableSoftwareRendering()
-        }
         super.onCreate(savedInstanceState)
 
         Log.i(LOG_TAG, "onCreate intent=$intent")
@@ -83,11 +85,9 @@ class WallpaperActivity : FlutterFragmentActivity() {
         // as of Flutter v3.0.1, the window `viewInsets` and `viewPadding`
         // are incorrect on startup in some environments (e.g. API 29 emulator),
         // so we manually request to apply the insets to update the window metrics
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                window.decorView.requestApplyInsets()
-            }, 100)
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            window.decorView.requestApplyInsets()
+        }, 100)
     }
 
     override fun onDestroy() {

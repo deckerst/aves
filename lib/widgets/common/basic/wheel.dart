@@ -103,7 +103,7 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
                   child: Theme(
                     data: Theme.of(context).copyWith(
                       scrollbarTheme: ScrollbarThemeData(
-                        thumbVisibility: MaterialStateProperty.all(false),
+                        thumbVisibility: WidgetStateProperty.all(false),
                       ),
                     ),
                     child: ListWheelScrollView(

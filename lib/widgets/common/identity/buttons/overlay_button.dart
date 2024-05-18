@@ -161,7 +161,7 @@ class OverlayTextButton extends StatelessWidget {
   });
 
   static const _borderRadius = 123.0;
-  static final _minSize = MaterialStateProperty.all<Size>(const Size(kMinInteractiveDimension, kMinInteractiveDimension));
+  static final _minSize = WidgetStateProperty.all<Size>(const Size(kMinInteractiveDimension, kMinInteractiveDimension));
 
   @override
   Widget build(BuildContext context) {
@@ -173,12 +173,12 @@ class OverlayTextButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
-          foregroundColor: MaterialStateProperty.all<Color>(theme.colorScheme.onSurface),
-          overlayColor: theme.isDark ? MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
+          backgroundColor: WidgetStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
+          foregroundColor: WidgetStateProperty.all<Color>(theme.colorScheme.onSurface),
+          overlayColor: theme.isDark ? WidgetStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
           minimumSize: _minSize,
-          side: MaterialStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
-          shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
+          side: WidgetStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
+          shape: WidgetStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
           )),
         ),

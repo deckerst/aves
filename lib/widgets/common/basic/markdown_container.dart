@@ -38,7 +38,7 @@ class MarkdownContainer extends StatelessWidget {
       child = Theme(
         data: Theme.of(context).copyWith(
           scrollbarTheme: ScrollbarThemeData(
-            thumbVisibility: MaterialStateProperty.all(true),
+            thumbVisibility: WidgetStateProperty.all(true),
             radius: const Radius.circular(16),
             crossAxisMargin: 6,
             mainAxisMargin: 16,

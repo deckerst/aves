@@ -47,9 +47,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
 
     private fun getDataUsage(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var internalCache = getFolderSize(context.cacheDir)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            internalCache += getFolderSize(context.codeCacheDir)
-        }
+        internalCache += getFolderSize(context.codeCacheDir)
         val externalCache = context.externalCacheDirs.map(::getFolderSize).sum()
 
         val dataDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) context.dataDir else File(context.applicationInfo.dataDir)
@@ -105,12 +103,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                 val volumeFile = File(volumePath)
                 try {
                     val isPrimary = volumePath == primaryVolumePath
-                    val isRemovable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Environment.isExternalStorageRemovable(volumeFile)
-                    } else {
-                        // random guess
-                        !isPrimary
-                    }
+                    val isRemovable = Environment.isExternalStorageRemovable(volumeFile)
                     volumes.add(
                         hashMapOf(
                             "path" to volumePath,
@@ -199,11 +192,6 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         val path = call.argument<String>("path")
         if (path == null) {
             result.error("revokeDirectoryAccess-args", "missing arguments", null)
-            return
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            result.error("revokeDirectoryAccess-unsupported", "volume access is not allowed before Android Lollipop", null)
             return
         }
 

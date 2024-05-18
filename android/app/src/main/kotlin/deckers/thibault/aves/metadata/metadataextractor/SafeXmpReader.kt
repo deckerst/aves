@@ -16,6 +16,7 @@ import com.drew.metadata.xmp.XmpDirectory
 import com.drew.metadata.xmp.XmpReader
 import deckers.thibault.aves.utils.LogUtils
 import java.io.IOException
+import java.util.Locale
 
 class SafeXmpReader : XmpReader() {
     // adapted from `XmpReader` to detect and skip large extended XMP
@@ -133,7 +134,7 @@ class SafeXmpReader : XmpReader() {
                         System.arraycopy(segmentBytes, totalOffset, extendedXMPBuffer, chunkOffset, segmentLength - totalOffset)
                     } else {
                         val directory = XmpDirectory()
-                        directory.addError(String.format("Inconsistent length for the Extended XMP buffer: %d instead of %d", fullLength, extendedXMPBuffer.size))
+                        directory.addError(String.format(Locale.ROOT, "Inconsistent length for the Extended XMP buffer: %d instead of %d", fullLength, extendedXMPBuffer.size))
                         metadata.addDirectory(directory)
                     }
                 }

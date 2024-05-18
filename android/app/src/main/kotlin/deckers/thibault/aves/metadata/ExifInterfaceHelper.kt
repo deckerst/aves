@@ -4,14 +4,18 @@ import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.drew.lang.Rational
 import com.drew.metadata.Directory
-import com.drew.metadata.exif.*
+import com.drew.metadata.exif.ExifDirectoryBase
+import com.drew.metadata.exif.ExifIFD0Directory
+import com.drew.metadata.exif.ExifThumbnailDirectory
+import com.drew.metadata.exif.GpsDirectory
+import com.drew.metadata.exif.PanasonicRawIFD0Directory
 import com.drew.metadata.exif.makernotes.OlympusCameraSettingsMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusImageProcessingMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusMakernoteDirectory
 import deckers.thibault.aves.utils.LogUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.roundToLong
@@ -22,7 +26,7 @@ object ExifInterfaceHelper {
     val GPS_DATE_FORMAT = SimpleDateFormat("yyyy:MM:dd", Locale.ROOT)
     val GPS_TIME_FORMAT = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
 
-    private const val precisionErrorTolerance = 1e-10
+    private const val PRECISION_ERROR_TOLERANCE = 1e-10
 
     // ExifInterface always states it has the following attributes
     // and returns "0" instead of "null" when they are actually missing
@@ -220,7 +224,7 @@ object ExifInterfaceHelper {
         // initialize metadata-extractor directories that we will fill
         // by tags converted from the ExifInterface attributes
         // so that we can rely on metadata-extractor descriptions
-        val dirs = DirType.values().associateWith { it.createDirectory() }
+        val dirs = DirType.entries.associateWith { it.createDirectory() }
 
         // exclude Exif directory when it only includes image size
         val isUselessExif = fun(it: Map<String, String>): Boolean {
@@ -308,7 +312,7 @@ object ExifInterfaceHelper {
             val numerator = 1L
             val f = numerator / d
             val denominator = f.roundToLong()
-            if (abs(f - denominator) < precisionErrorTolerance) {
+            if (abs(f - denominator) < PRECISION_ERROR_TOLERANCE) {
                 return Rational(numerator, denominator)
             }
         }

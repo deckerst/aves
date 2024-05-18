@@ -1,5 +1,6 @@
 import 'dart:developer' show Flow, Timeline;
 
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/intents.dart';
 import 'package:flutter/foundation.dart';
@@ -77,7 +78,7 @@ class _TvLicensePageState extends State<TvLicensePage> {
                       final isSelected = index == selectedIndex;
                       final theme = Theme.of(context);
                       return Ink(
-                        color: isSelected ? theme.highlightColor : theme.colorScheme.background,
+                        color: isSelected ? theme.highlightColor : Themes.firstLayerColor(context),
                         child: ListTile(
                           title: Text(packageName),
                           subtitle: Text(MaterialLocalizations.of(context).licensesPackageDetailText(bindings.length)),
@@ -298,7 +299,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
         ),
         body: Center(
           child: Material(
-            color: theme.colorScheme.background,
+            color: Themes.firstLayerColor(context),
             elevation: 4.0,
             child: Container(
               constraints: BoxConstraints.loose(const Size.fromWidth(600.0)),
@@ -328,7 +329,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             pinned: true,
-            backgroundColor: theme.colorScheme.background,
+            backgroundColor: Themes.firstLayerColor(context),
             title: _PackageLicensePageTitle(
               title: title,
               subtitle: subtitle,

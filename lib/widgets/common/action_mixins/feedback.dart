@@ -87,7 +87,7 @@ mixin FeedbackMixin {
                 action: action != null
                     ? TextButton(
                         style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all(snackBarTheme.actionTextColor),
+                          foregroundColor: WidgetStateProperty.all(snackBarTheme.actionTextColor),
                         ),
                         onPressed: () {
                           notificationOverlayEntry?.dismiss();

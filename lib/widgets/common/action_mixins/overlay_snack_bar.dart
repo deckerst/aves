@@ -132,12 +132,10 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
               primary: colorScheme.onPrimary,
               secondary: buttonColor,
               surface: colorScheme.onSurface,
-              background: defaults.backgroundColor!,
               error: colorScheme.onError,
               onPrimary: colorScheme.primary,
               onSecondary: colorScheme.secondary,
               onSurface: colorScheme.surface,
-              onBackground: colorScheme.background,
               onError: colorScheme.error,
               brightness: brightness,
             ),
@@ -363,17 +361,17 @@ class _SnackbarDefaultsM3 extends SnackBarThemeData {
   Color get backgroundColor => _colors.inverseSurface;
 
   @override
-  Color get actionTextColor => MaterialStateColor.resolveWith((states) {
-        if (states.contains(MaterialState.disabled)) {
+  Color get actionTextColor => WidgetStateColor.resolveWith((states) {
+        if (states.contains(WidgetState.disabled)) {
           return _colors.inversePrimary;
         }
-        if (states.contains(MaterialState.pressed)) {
+        if (states.contains(WidgetState.pressed)) {
           return _colors.inversePrimary;
         }
-        if (states.contains(MaterialState.hovered)) {
+        if (states.contains(WidgetState.hovered)) {
           return _colors.inversePrimary;
         }
-        if (states.contains(MaterialState.focused)) {
+        if (states.contains(WidgetState.focused)) {
           return _colors.inversePrimary;
         }
         return _colors.inversePrimary;

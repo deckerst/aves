@@ -1,6 +1,7 @@
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
@@ -61,7 +62,7 @@ class HighlightTitle extends StatelessWidget {
               style: style,
             ),
           ],
-          outlineColor: Theme.of(context).colorScheme.background,
+          outlineColor: Themes.firstLayerColor(context),
           softWrap: false,
           overflow: TextOverflow.fade,
           maxLines: 1,

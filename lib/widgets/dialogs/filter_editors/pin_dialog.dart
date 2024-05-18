@@ -50,8 +50,8 @@ class _PinDialogState extends State<PinDialog> {
               autoFocus: true,
               autoDismissKeyboard: !widget.needConfirmation || _confirming,
               pinTheme: PinTheme(
-                activeColor: colorScheme.onBackground,
-                inactiveColor: colorScheme.onBackground,
+                activeColor: colorScheme.onSurface,
+                inactiveColor: colorScheme.onSurface,
                 selectedColor: colorScheme.primary,
                 selectedFillColor: colorScheme.primary,
                 borderRadius: BorderRadius.circular(8),

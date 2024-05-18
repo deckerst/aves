@@ -13,6 +13,7 @@ import 'package:aves/widgets/common/app_bar/sliver_app_bar_title.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_search.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
@@ -112,14 +113,15 @@ class InfoAppBar extends StatelessWidget {
 
   void _goToSearch(BuildContext context) {
     final isSelecting = context.read<Selection<AvesEntry>?>()?.isSelecting ?? false;
-    showSearch(
-      context: context,
-      delegate: InfoSearchDelegate(
-        searchFieldLabel: context.l10n.viewerInfoSearchFieldLabel,
-        searchFieldStyle: Themes.searchFieldStyle(context),
-        entry: entry,
-        metadataNotifier: metadataNotifier,
-        isSelecting: isSelecting,
+    Navigator.maybeOf(context)?.push(
+      SearchPageRoute(
+        delegate: InfoSearchDelegate(
+          searchFieldLabel: context.l10n.viewerInfoSearchFieldLabel,
+          searchFieldStyle: Themes.searchFieldStyle(context),
+          entry: entry,
+          metadataNotifier: metadataNotifier,
+          isSelecting: isSelecting,
+        ),
       ),
     );
   }

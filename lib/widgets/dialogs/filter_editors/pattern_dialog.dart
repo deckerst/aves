@@ -36,7 +36,7 @@ class _PatternDialogState extends State<PatternDialog> {
               child: PatternLock(
                 relativePadding: .4,
                 selectedColor: colorScheme.primary,
-                notSelectedColor: colorScheme.onBackground,
+                notSelectedColor: colorScheme.onSurface,
                 pointRadius: 8,
                 fillPoints: true,
                 onInputComplete: (input) => _submit(input.join()),

@@ -67,7 +67,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
           }
           return Container(
             alignment: Alignment.center,
-            color: Theme.of(context).colorScheme.background,
+            color: Themes.firstLayerColor(context),
             width: extent,
             height: extent,
             child: child,
