@@ -19,6 +19,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final String title, bannerText;
+  final TextDirection? displayedButtonsDirection;
   final List<List<T>> allAvailableActions;
   final Widget Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
@@ -29,6 +30,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
     super.key,
     required this.title,
     required this.bannerText,
+    this.displayedButtonsDirection,
     required this.allAvailableActions,
     required this.actionIcon,
     required this.actionText,
@@ -45,6 +47,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
       body: SafeArea(
         child: QuickActionEditorBody(
           bannerText: bannerText,
+          displayedButtonsDirection: displayedButtonsDirection,
           allAvailableActions: allAvailableActions,
           actionIcon: actionIcon,
           actionText: actionText,
@@ -58,6 +61,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
 
 class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   final String bannerText;
+  final TextDirection? displayedButtonsDirection;
   final List<List<T>> allAvailableActions;
   final Widget Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
@@ -67,6 +71,7 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   const QuickActionEditorBody({
     super.key,
     required this.bannerText,
+    this.displayedButtonsDirection,
     required this.allAvailableActions,
     required this.actionIcon,
     required this.actionText,
@@ -147,6 +152,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
       removeAction: _removeQuickAction,
       onTargetLeave: _onQuickActionTargetLeave,
     );
+    final originalDirection = Directionality.of(context);
     return PopScope(
       canPop: true,
       onPopInvoked: (didPop) => widget.save(_quickActions),
@@ -176,67 +182,73 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
               highlight: highlight,
               child: child!,
             ),
-            child: SizedBox(
-              height: OverlayButton.getSize(context) + quickActionVerticalPadding * 2,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: FractionallySizedBox(
-                      alignment: AlignmentDirectional.centerStart,
-                      widthFactor: .5,
-                      child: header,
+            child: Directionality(
+              textDirection: widget.displayedButtonsDirection ?? originalDirection,
+              child: SizedBox(
+                height: OverlayButton.getSize(context) + quickActionVerticalPadding * 2,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: FractionallySizedBox(
+                        alignment: AlignmentDirectional.centerStart,
+                        widthFactor: .5,
+                        child: header,
+                      ),
                     ),
-                  ),
-                  Positioned.fill(
-                    child: FractionallySizedBox(
-                      alignment: AlignmentDirectional.centerEnd,
-                      widthFactor: .5,
-                      child: footer,
+                    Positioned.fill(
+                      child: FractionallySizedBox(
+                        alignment: AlignmentDirectional.centerEnd,
+                        widthFactor: .5,
+                        child: footer,
+                      ),
                     ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: AnimatedList(
-                      key: _animatedListKey,
-                      initialItemCount: _quickActions.length,
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index, animation) {
-                        if (index >= _quickActions.length) return const SizedBox();
-                        final action = _quickActions[index];
-                        return QuickActionButton<T>(
-                          placement: QuickActionPlacement.action,
-                          action: action,
-                          panelHighlight: _quickActionHighlight,
-                          draggedQuickAction: _draggedQuickAction,
-                          draggedAvailableAction: _draggedAvailableAction,
-                          insertAction: _insertQuickAction,
-                          removeAction: _removeQuickAction,
-                          onTargetLeave: _onQuickActionTargetLeave,
-                          draggableFeedbackBuilder: (action) => CaptionedButton(
-                            icon: widget.actionIcon(action),
-                            caption: widget.actionText(context, action),
-                            showCaption: false,
-                            onPressed: () {},
-                          ),
-                          child: _buildQuickActionButton(action, animation),
-                        );
-                      },
-                    ),
-                  ),
-                  AnimatedBuilder(
-                    animation: _quickActionsChangeNotifier,
-                    builder: (context, child) => _quickActions.isEmpty
-                        ? Center(
-                            child: Text(
-                              context.l10n.settingsViewerQuickActionEmpty,
-                              style: theme.textTheme.bodySmall,
+                    Container(
+                      alignment: Alignment.center,
+                      child: AnimatedList(
+                        key: _animatedListKey,
+                        initialItemCount: _quickActions.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context, index, animation) {
+                          if (index >= _quickActions.length) return const SizedBox();
+                          final action = _quickActions[index];
+                          return Directionality(
+                            textDirection: originalDirection,
+                            child: QuickActionButton<T>(
+                              placement: QuickActionPlacement.action,
+                              action: action,
+                              panelHighlight: _quickActionHighlight,
+                              draggedQuickAction: _draggedQuickAction,
+                              draggedAvailableAction: _draggedAvailableAction,
+                              insertAction: _insertQuickAction,
+                              removeAction: _removeQuickAction,
+                              onTargetLeave: _onQuickActionTargetLeave,
+                              draggableFeedbackBuilder: (action) => CaptionedButton(
+                                icon: widget.actionIcon(action),
+                                caption: widget.actionText(context, action),
+                                showCaption: false,
+                                onPressed: () {},
+                              ),
+                              child: _buildQuickActionButton(action, animation),
                             ),
-                          )
-                        : const SizedBox(),
-                  ),
-                ],
+                          );
+                        },
+                      ),
+                    ),
+                    AnimatedBuilder(
+                      animation: _quickActionsChangeNotifier,
+                      builder: (context, child) => _quickActions.isEmpty
+                          ? Center(
+                              child: Text(
+                                context.l10n.settingsViewerQuickActionEmpty,
+                                style: theme.textTheme.bodySmall,
+                              ),
+                            )
+                          : const SizedBox(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

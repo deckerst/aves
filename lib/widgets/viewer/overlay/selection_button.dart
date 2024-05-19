@@ -6,6 +6,7 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/basic/text/animated_diff.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
+import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,7 @@ class SelectionButton extends StatelessWidget {
         padding: const EdgeInsets.only(left: padding, right: padding, bottom: padding),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          textDirection: ViewerBottomOverlay.actionsDirection,
           children: [
             const Spacer(),
             ScalingOverlayTextButton(
@@ -43,6 +45,7 @@ class SelectionButton extends StatelessWidget {
                 builder: (context, count, child) {
                   return Row(
                     mainAxisSize: MainAxisSize.min,
+                    textDirection: ViewerBottomOverlay.actionsDirection,
                     children: [
                       AnimatedDiffText(
                         count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),

@@ -1,3 +1,4 @@
+import 'package:aves/ref/locales.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -48,8 +49,7 @@ class _DurationDialogState extends State<DurationDialog> {
               padding: const EdgeInsets.only(top: 16),
               child: Center(
                 child: Table(
-                  // even when ambient direction is RTL, time is displayed in LTR
-                  textDirection: TextDirection.ltr,
+                  textDirection: timeComponentsDirection,
                   children: [
                     TableRow(
                       children: [

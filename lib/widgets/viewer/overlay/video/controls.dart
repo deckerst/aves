@@ -3,6 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/togglers/play.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
+import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class VideoControlRow extends StatelessWidget {
         switch (videoControls) {
           case VideoControls.play:
             return Padding(
-              padding: const EdgeInsetsDirectional.only(start: padding),
+              padding: const EdgeInsets.only(left: padding),
               child: _buildOverlayButton(
                 child: PlayToggler(
                   controller: controller,
@@ -44,6 +45,7 @@ class VideoControlRow extends StatelessWidget {
           case VideoControls.playSeek:
             return Row(
               mainAxisSize: MainAxisSize.min,
+              textDirection: ViewerBottomOverlay.actionsDirection,
               children: [
                 const SizedBox(width: padding),
                 _buildIconButton(
@@ -67,7 +69,7 @@ class VideoControlRow extends StatelessWidget {
             );
           case VideoControls.playOutside:
             return Padding(
-              padding: const EdgeInsetsDirectional.only(start: padding),
+              padding: const EdgeInsets.only(left: padding),
               child: _buildIconButton(context, EntryAction.openVideo, enabled: !entry.trashed),
             );
           case VideoControls.none:
