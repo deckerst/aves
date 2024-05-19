@@ -26,6 +26,7 @@ import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
+import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -130,6 +131,7 @@ class _TvButtonRowContent extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: ViewerBottomOverlay.actionsDirection,
           children: [
             ...EntryActions.topLevel,
             ...EntryActions.export,
@@ -257,6 +259,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
         return Padding(
           padding: const EdgeInsets.only(left: padding / 2, right: padding / 2, bottom: padding),
           child: Row(
+            textDirection: ViewerBottomOverlay.actionsDirection,
             children: [
               const Spacer(),
               ...widget.quickActions.map((action) => _buildOverlayButton(context, action, videoController)),

@@ -2,6 +2,12 @@ import 'dart:ui';
 
 const String asciiLocale = 'en_US';
 
+// time components hours/minutes/seconds are always displayed in that order
+const TextDirection timeComponentsDirection = TextDirection.ltr;
+
+// represents direction of tape being played, not direction of time
+const TextDirection videoPlaybackDirection = TextDirection.ltr;
+
 // cf https://en.wikipedia.org/wiki/Eastern_Arabic_numerals
 bool shouldUseNativeDigits(Locale? countrifiedLocale) {
   switch (countrifiedLocale?.toString()) {

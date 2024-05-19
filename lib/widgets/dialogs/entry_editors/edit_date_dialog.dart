@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
@@ -204,8 +205,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     const textStyle = TextStyle(fontSize: 34);
     return Center(
       child: Table(
-        // even when ambient direction is RTL, time is displayed in LTR
-        textDirection: TextDirection.ltr,
+        textDirection: timeComponentsDirection,
         children: [
           TableRow(
             children: [
