@@ -54,7 +54,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     _patternTextController.addListener(_onUserPatternChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      locale = context.l10n.localeName;
+      locale = context.locale;
       _onUserPatternChanged();
     });
   }

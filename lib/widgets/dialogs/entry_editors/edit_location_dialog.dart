@@ -48,7 +48,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   final TextEditingController _latitudeController = TextEditingController(), _longitudeController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  NumberFormat get coordinateFormatter => NumberFormat('0.000000', context.l10n.localeName);
+  NumberFormat get coordinateFormatter => NumberFormat('0.000000', context.locale);
 
   @override
   void initState() {

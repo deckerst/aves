@@ -28,8 +28,6 @@ class FilterListDetailsTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProxyProvider<MediaQueryData, FilterListDetailsThemeData>(
       update: (context, mq, previous) {
-        final locale = context.l10n.localeName;
-
         final use24hour = mq.alwaysUse24HourFormat;
         final textScaler = mq.textScaler;
 
@@ -54,7 +52,7 @@ class FilterListDetailsTheme extends StatelessWidget {
         titleLineHeightParagraph.dispose();
 
         final captionLineHeightParagraph = RenderParagraph(
-          TextSpan(text: formatDateTime(DateTime.now(), locale, use24hour), style: captionStyle),
+          TextSpan(text: formatDateTime(DateTime.now(), context.locale, use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);

@@ -112,7 +112,6 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget _buildHeader(BuildContext context) {
     final l10n = context.l10n;
-    final locale = l10n.localeName;
 
     Future<void> goTo(String routeName, WidgetBuilder pageBuilder) async {
       Navigator.maybeOf(context)?.pop();
@@ -153,7 +152,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           color: Colors.white,
                           fontSize: 38,
                           fontWeight: FontWeight.w300,
-                          letterSpacing: canHaveLetterSpacing(locale) ? 1 : 0,
+                          letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
                           fontFeatures: const [FontFeature.enable('smcp')],
                         ),
                       ),
@@ -295,7 +294,7 @@ class _AppDrawerState extends State<AppDrawer> {
     return CollectionNavTile(
       leading: const DrawerFilterIcon(filter: filter),
       title: const DrawerFilterTitle(filter: filter),
-      trailing: Text(formatFileSize(context.l10n.localeName, trashSize, round: 0)),
+      trailing: Text(formatFileSize(context.locale, trashSize, round: 0)),
       filter: filter,
       isSelected: () => currentCollection?.filters.contains(filter) ?? false,
     );

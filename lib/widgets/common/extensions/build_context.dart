@@ -7,7 +7,9 @@ extension ExtraContext on BuildContext {
 
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 
-  bool get isArabic => l10n.localeName.startsWith('ar');
+  String get locale => l10n.localeName;
+
+  bool get isArabic => locale.startsWith('ar');
 
   bool get isRtl => Directionality.of(this) == TextDirection.rtl;
 

@@ -24,8 +24,6 @@ class EntryListDetailsTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProxyProvider<MediaQueryData, EntryListDetailsThemeData>(
       update: (context, mq, previous) {
-        final locale = context.l10n.localeName;
-
         final use24hour = mq.alwaysUse24HourFormat;
         final textScaler = mq.textScaler;
 
@@ -50,7 +48,7 @@ class EntryListDetailsTheme extends StatelessWidget {
 
         final captionLineHeightParagraph = RenderParagraph(
           TextSpan(
-            text: formatDateTime(DateTime.now(), locale, use24hour),
+            text: formatDateTime(DateTime.now(), context.locale, use24hour),
             style: captionStyle,
           ),
           textDirection: TextDirection.ltr,

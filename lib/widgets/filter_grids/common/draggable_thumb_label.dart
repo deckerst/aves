@@ -36,9 +36,8 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
               context.l10n.itemCount(context.read<CollectionSource>().count(filterGridItem.filter)),
             ];
           case ChipSortFactor.size:
-            final locale = context.l10n.localeName;
             return [
-              formatFileSize(locale, context.read<CollectionSource>().size(filterGridItem.filter)),
+              formatFileSize(context.locale, context.read<CollectionSource>().size(filterGridItem.filter)),
             ];
         }
       },

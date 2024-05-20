@@ -137,7 +137,7 @@ class DataUsageDonut extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final locale = l10n.localeName;
+    final locale = context.locale;
 
     return AvesDonut(
       title: Text(title),

@@ -8,6 +8,7 @@ class WheelSelector<T> extends StatefulWidget {
   final List<T> values;
   final TextStyle textStyle;
   final TextAlign textAlign;
+  final String Function(T v) format;
 
   const WheelSelector({
     super.key,
@@ -15,6 +16,7 @@ class WheelSelector<T> extends StatefulWidget {
     required this.values,
     required this.textStyle,
     required this.textAlign,
+    required this.format,
   });
 
   @override
@@ -117,7 +119,7 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
                           .map((i) => SizedBox.fromSize(
                                 size: itemSize,
                                 child: Text(
-                                  '$i',
+                                  widget.format(i),
                                   textAlign: widget.textAlign,
                                   style: widget.textStyle,
                                 ),

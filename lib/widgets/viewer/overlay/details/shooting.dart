@@ -17,7 +17,7 @@ class OverlayShootingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.l10n.localeName;
+    final locale = context.locale;
 
     final aperture = details.aperture;
     final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', locale).format(aperture)}' : AText.valueNotAvailable;

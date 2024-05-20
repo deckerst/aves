@@ -156,6 +156,7 @@ class RotationControlPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TransformController>();
+    final angleFormatter = NumberFormat('0.0°', context.locale);
 
     return Row(
       children: [
@@ -172,7 +173,7 @@ class RotationControlPanel extends StatelessWidget {
                 divisions: 18,
                 onChangeStart: (v) => controller.activity = TransformActivity.straighten,
                 onChangeEnd: (v) => controller.activity = TransformActivity.none,
-                label: NumberFormat('0.0°', context.l10n.localeName).format(transformation.straightenDegrees),
+                label: angleFormatter.format(transformation.straightenDegrees),
                 onChanged: (v) => controller.straightenDegrees = v,
               );
             },

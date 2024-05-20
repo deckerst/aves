@@ -77,13 +77,12 @@ mixin SizeAwareMixin {
     await showDialog(
       context: context,
       builder: (context) {
-        final l10n = context.l10n;
-        final locale = l10n.localeName;
+        final locale = context.locale;
         final neededSize = formatFileSize(locale, needed);
         final freeSize = formatFileSize(locale, free);
         final volume = destinationVolume.getDescription(context);
         return AvesDialog(
-          content: Text(l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
+          content: Text(context.l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
           actions: const [OkButton()],
         );
       },

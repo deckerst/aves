@@ -16,13 +16,12 @@ class LinearPercentIndicatorText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.l10n.localeName;
-    final percentFormat = NumberFormat.percentPattern(locale);
+    final percentFormatter = NumberFormat.percentPattern(context.locale);
 
     return OutlinedText(
       textSpans: [
         TextSpan(
-          text: percentFormat.format(percent),
+          text: percentFormatter.format(percent),
           style: TextStyle(
             shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,
           ),

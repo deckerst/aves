@@ -673,7 +673,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
               final newest = firstKey.date;
               final oldest = lastKey.date;
               if (newest != null && oldest != null) {
-                final locale = context.l10n.localeName;
+                final locale = context.locale;
                 final dateFormat = (newest.difference(oldest).inHumanDays).abs() > 365 ? DateFormat.y(locale) : DateFormat.MMM(locale);
                 String? lastLabel;
                 sectionLayouts.forEach((section) {
