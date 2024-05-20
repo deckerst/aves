@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Ich stimme den Bedingungen und Konditionen zu",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 Element} other{{count} Elemente}}",
+  "itemCount": "{count, plural, =1{{count} Element} other{{count} Elemente}}",
   "@itemCount": {},
   "timeSeconds": "{seconds, plural, =1{1 Sekunde} other{{seconds} Sekunde}}",
   "@timeSeconds": {},
@@ -1366,5 +1366,17 @@
   "entryActionCast": "Übertragen",
   "@entryActionCast": {},
   "castDialogTitle": "Geräte zur Übertragung",
-  "@castDialogTitle": {}
+  "@castDialogTitle": {},
+  "renameProcessorHash": "Raute",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Arabische Ziffern erzwingen",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "videoActionABRepeat": "A-B-Wiederholung",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Start festlegen",
+  "@videoRepeatActionSetStart": {},
+  "stopTooltip": "Stop",
+  "@stopTooltip": {},
+  "videoRepeatActionSetEnd": "Ende festlegen",
+  "@videoRepeatActionSetEnd": {}
 }

@@ -840,7 +840,7 @@
   "@albumMimeTypeMixed": {},
   "settingsViewerQuickActionEditorAvailableButtonsSectionTitle": "Tiltækir hnappar",
   "@settingsViewerQuickActionEditorAvailableButtonsSectionTitle": {},
-  "itemCount": "{count, plural, =1{1 atriði} other{{count} atriðum}}",
+  "itemCount": "{count, plural, =1{{count} atriði} other{{count} atriðum}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

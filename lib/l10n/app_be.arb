@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeMessage": "Сардэчна запрашаем ў Aves",
   "@welcomeMessage": {},
-  "itemCount": "{count, plural, =1{1 элемент} other{{count} элементаў}}",
+  "itemCount": "{count, plural, =1{{count} элемент} other{{count} элементаў}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

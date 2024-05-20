@@ -637,7 +637,7 @@
   "@entryActionShareVideoOnly": {},
   "continueButtonLabel": "ПРОДОВЖИТИ",
   "@continueButtonLabel": {},
-  "itemCount": "{count, plural, =1{1 елемент} few{{count} елементи} other{{count} елементів}}",
+  "itemCount": "{count, plural, =1{{count} елемент} few{{count} елементи} other{{count} елементів}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

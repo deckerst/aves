@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Accetto i termini e le condizioni",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 elemento} other{{count} elementi}}",
+  "itemCount": "{count, plural, =1{{count} elemento} other{{count} elementi}}",
   "@itemCount": {},
   "timeSeconds": "{seconds, plural, =1{1 secondo} other{{seconds} secondi}}",
   "@timeSeconds": {},

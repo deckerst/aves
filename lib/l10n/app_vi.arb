@@ -1007,7 +1007,7 @@
   "@albumMimeTypeMixed": {},
   "settingsViewerQuickActionEditorAvailableButtonsSectionTitle": "Các nút có sẵn",
   "@settingsViewerQuickActionEditorAvailableButtonsSectionTitle": {},
-  "itemCount": "{count, plural, =1{1 mục} other{{count} mục}}",
+  "itemCount": "{count, plural, other{{count} mục}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

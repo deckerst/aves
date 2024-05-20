@@ -50,7 +50,7 @@
   "@welcomeMessage": {},
   "welcomeOptional": "Aukerazkoa",
   "@welcomeOptional": {},
-  "itemCount": "{count, plural, =1{elementu 1} other{{count} elementu}}",
+  "itemCount": "{count, plural, =1{elementu {count}} other{{count} elementu}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
