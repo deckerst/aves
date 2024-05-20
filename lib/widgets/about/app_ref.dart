@@ -31,7 +31,7 @@ class AppReference extends StatelessWidget {
   }
 
   Widget _buildAvesLine(BuildContext context) {
-    final locale = context.l10n.localeName;
+    final locale = context.locale;
     final textScaler = MediaQuery.textScalerOf(context);
     return Row(
       mainAxisSize: MainAxisSize.min,

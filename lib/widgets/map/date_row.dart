@@ -16,11 +16,10 @@ class MapDateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.l10n.localeName;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     final date = entry?.bestDate;
-    final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;
+    final dateText = date != null ? formatDateTime(date, context.locale, use24hour) : AText.valueNotAvailable;
     return Text.rich(
       TextSpan(
         children: [

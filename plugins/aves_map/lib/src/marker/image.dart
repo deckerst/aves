@@ -9,7 +9,7 @@ import 'package:latlong2/latlong.dart';
 
 class ImageMarker extends StatelessWidget {
   final int? count;
-  final intl.NumberFormat numberFormat;
+  final intl.NumberFormat countFormatter;
   final bool drawArrow;
   final Widget Function(double extent) buildThumbnailImage;
 
@@ -28,7 +28,7 @@ class ImageMarker extends StatelessWidget {
     required String locale,
     this.drawArrow = true,
     required this.buildThumbnailImage,
-  }) : numberFormat = intl.NumberFormat.decimalPattern(locale);
+  }) : countFormatter = intl.NumberFormat.decimalPattern(locale);
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class ImageMarker extends StatelessWidget {
                     ),
             ),
             child: Text(
-              numberFormat.format(count),
+              countFormatter.format(count),
               style: TextStyle(
                 fontSize: 12,
                 color: theme.colorScheme.onPrimary,

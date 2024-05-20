@@ -91,9 +91,6 @@ class _TvRailState extends State<TvRail> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final locale = l10n.localeName;
-
     final navEntries = _getNavEntries(context);
     return DirectionalSafeArea(
       end: false,
@@ -107,12 +104,12 @@ class _TvRailState extends State<TvRail> {
                     logo,
                     const SizedBox(width: 16),
                     Text(
-                      l10n.appName,
+                      context.l10n.appName,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
                         fontWeight: FontWeight.w300,
-                        letterSpacing: canHaveLetterSpacing(locale) ? 1 : 0,
+                        letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
                         fontFeatures: const [FontFeature.enable('smcp')],
                       ),
                     ),

@@ -21,7 +21,7 @@ class OverlayDateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.l10n.localeName;
+    final locale = context.locale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     final date = entry.bestDate;

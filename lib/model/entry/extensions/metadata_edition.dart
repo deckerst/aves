@@ -23,6 +23,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:xml/xml.dart';
 
 extension ExtraAvesEntryMetadataEdition on AvesEntry {
+  static final _iso6709LatitudeFormatter = NumberFormat('00.0000', asciiLocale);
+  static final _iso6709LongitudeFormatter = NumberFormat('000.0000', asciiLocale);
+
   Future<Set<EntryDataType>> editDate(DateModifier userModifier) async {
     final dataTypes = <EntryDataType>{};
 
@@ -122,9 +125,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       if (latLng != null && latLng != removalLocation) {
         final latitude = latLng.latitude;
         final longitude = latLng.longitude;
-        const locale = asciiLocale;
-        final isoLat = '${latitude >= 0 ? '+' : '-'}${NumberFormat('00.0000', locale).format(latitude.abs())}';
-        final isoLon = '${longitude >= 0 ? '+' : '-'}${NumberFormat('000.0000', locale).format(longitude.abs())}';
+        final isoLat = '${latitude >= 0 ? '+' : '-'}${_iso6709LatitudeFormatter.format(latitude.abs())}';
+        final isoLon = '${longitude >= 0 ? '+' : '-'}${_iso6709LongitudeFormatter.format(longitude.abs())}';
         iso6709String = '$isoLat$isoLon/';
       }
       mp4Fields[MetadataField.mp4GpsCoordinates] = iso6709String;

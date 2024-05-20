@@ -55,11 +55,10 @@ extension ExtraCoordinateFormat on CoordinateFormat {
   }
 
   static List<String> _toDecimal(AppLocalizations l10n, LatLng latLng) {
-    final locale = l10n.localeName;
-    final formatter = NumberFormat('0.000000°', locale);
+    final coordinateFormatter = NumberFormat('0.000000°', l10n.localeName);
     return [
-      formatter.format(latLng.latitude),
-      formatter.format(latLng.longitude),
+      coordinateFormatter.format(latLng.latitude),
+      coordinateFormatter.format(latLng.longitude),
     ];
   }
 }

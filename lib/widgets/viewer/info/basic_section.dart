@@ -299,7 +299,7 @@ class _BasicInfoState extends State<_BasicInfo> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
-    final locale = l10n.localeName;
+    final locale = context.locale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
@@ -383,10 +383,9 @@ class _BasicInfoState extends State<_BasicInfo> {
     // guess whether this is a photo, according to file type
     final isPhoto = [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(entry.mimeType) || entry.isRaw;
     if (isPhoto) {
-      final numberFormat = NumberFormat('0', locale);
       final megaPixels = (entry.width * entry.height / 1000000).round();
       if (megaPixels > 0) {
-        s += ' • ${numberFormat.format(megaPixels)} MP';
+        s += ' • ${NumberFormat('0', locale).format(megaPixels)} MP';
       }
     }
 

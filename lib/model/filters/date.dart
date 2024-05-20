@@ -100,8 +100,7 @@ class DateFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    final l10n = context.l10n;
-    final locale = l10n.localeName;
+    final locale = context.locale;
     switch (level) {
       case DateLevel.y:
         return DateFormat.y(locale).format(_effectiveDate);
@@ -113,7 +112,7 @@ class DateFilter extends CollectionFilter {
         if (date != null) {
           return DateFormat.MMMd(locale).format(_effectiveDate);
         } else {
-          return l10n.filterOnThisDayLabel;
+          return context.l10n.filterOnThisDayLabel;
         }
       case DateLevel.m:
         return DateFormat.MMMM(locale).format(_effectiveDate);

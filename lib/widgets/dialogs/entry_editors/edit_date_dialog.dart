@@ -18,6 +18,7 @@ import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class EditEntryDateDialog extends StatefulWidget {
@@ -147,19 +148,17 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Widget _buildSetCustomContent(BuildContext context) {
-    final l10n = context.l10n;
-    final locale = l10n.localeName;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(_customDateTime, locale, use24hour))),
+          Expanded(child: Text(formatDateTime(_customDateTime, context.locale, use24hour))),
           IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _editDate,
-            tooltip: l10n.changeTooltip,
+            tooltip: context.l10n.changeTooltip,
           ),
         ],
       ),
@@ -181,15 +180,13 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Widget _buildCopyItemContent(BuildContext context) {
-    final l10n = context.l10n;
-    final locale = l10n.localeName;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(copyItemDate, locale, use24hour))),
+          Expanded(child: Text(formatDateTime(copyItemDate, context.locale, use24hour))),
           const SizedBox(width: 8),
           ItemPicker(
             extent: 48,
@@ -202,7 +199,12 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Widget _buildShiftContent(BuildContext context) {
+    final l10n = context.l10n;
+    final timeComponentFormatter = NumberFormat('0', context.locale);
+
     const textStyle = TextStyle(fontSize: 34);
+    const digitsAlign = TextAlign.right;
+
     return Center(
       child: Table(
         textDirection: timeComponentsDirection,
@@ -210,9 +212,9 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
           TableRow(
             children: [
               const SizedBox(),
-              Center(child: Text(context.l10n.durationDialogHours)),
+              Center(child: Text(l10n.durationDialogHours)),
               const SizedBox(width: 16),
-              Center(child: Text(context.l10n.durationDialogMinutes)),
+              Center(child: Text(l10n.durationDialogMinutes)),
             ],
           ),
           TableRow(
@@ -222,6 +224,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                 values: const ['+', '-'],
                 textStyle: textStyle,
                 textAlign: TextAlign.center,
+                format: (v) => v,
               ),
               Align(
                 alignment: Alignment.centerRight,
@@ -229,7 +232,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   valueNotifier: _shiftHour,
                   values: List.generate(hoursInDay, (i) => i),
                   textStyle: textStyle,
-                  textAlign: TextAlign.end,
+                  textAlign: digitsAlign,
+                  format: timeComponentFormatter.format,
                 ),
               ),
               const Padding(
@@ -245,7 +249,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   valueNotifier: _shiftMinute,
                   values: List.generate(minutesInHour, (i) => i),
                   textStyle: textStyle,
-                  textAlign: TextAlign.end,
+                  textAlign: digitsAlign,
+                  format: timeComponentFormatter.format,
                 ),
               ),
             ],

@@ -223,7 +223,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         )..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
 
-    final locale = context.l10n.localeName;
+    final locale = context.locale;
     final timeAxisSpec = _firstDate != null && _lastDate != null
         ? TimeAxisSpec.forLevel(
             locale: locale,
@@ -232,7 +232,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
             last: _lastDate!,
           )
         : null;
-    final measureFormat = NumberFormat.decimalPattern(locale);
+    final tickFormatter = NumberFormat.decimalPattern(locale);
 
     final domainAxis = charts.DateTimeAxisSpec(
       renderSpec: charts.SmallTickRendererSpec(
@@ -254,7 +254,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         ),
         tickFormatterSpec: charts.BasicNumericTickFormatterSpec((v) {
           // localize and hide 0
-          return (v == null || v == 0) ? '' : measureFormat.format(v);
+          return (v == null || v == 0) ? '' : tickFormatter.format(v);
         }),
       ),
       defaultRenderer: charts.LineRendererConfig(
@@ -304,8 +304,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
   }
 
   Widget _buildSelectionRow() {
-    final locale = context.l10n.localeName;
-    final numberFormat = NumberFormat.decimalPattern(locale);
+    final countFormatter = NumberFormat.decimalPattern(context.locale);
 
     return ValueListenableBuilder<_EntryByDate?>(
       valueListenable: _selection,
@@ -326,7 +325,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
                 ),
                 const Spacer(),
                 Text(
-                  numberFormat.format(count),
+                  countFormatter.format(count),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
