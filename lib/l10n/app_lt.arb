@@ -13,13 +13,13 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Sutinku su taisyklėmis ir sąlygomis",
   "@welcomeTermsToggle": {},
-  "timeSeconds": "{seconds, plural, =1{1 sekundė} few{{seconds} sekundės} other{{seconds} sekundžių}}",
+  "timeSeconds": "{count, plural, =1{{count} sekundė} few{{count} sekundės} other{{count} sekundžių}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 diena} few{{days} dienos} other{{days} dienų}}",
+  "timeDays": "{count, plural, =1{{count} diena} few{{count} dienos} other{{count} dienų}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -291,7 +291,7 @@
       "count": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minutė} few{{minutes} minutės} other{{minutes} minučių}}",
+  "timeMinutes": "{count, plural, =1{{count} minutė} few{{count} minutės} other{{count} minučių}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}

@@ -1,25 +1,25 @@
 {
   "saveTooltip": "Gorde",
   "@saveTooltip": {},
-  "columnCount": "{count, plural, =1{zutabe 1} other{{count} zutabe}}",
+  "columnCount": "{count, plural, =1{zutabe {count}} other{{count} zutabe}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{segundu 1} other{{seconds} segundu}}",
+  "timeSeconds": "{count, plural, =1{segundu {count}} other{{count} segundu}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{minutu 1} other{{minutes} minutu}}",
+  "timeMinutes": "{count, plural, =1{minutu {count}} other{{count} minutu}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{egun 1} other{{days} egun}}",
+  "timeDays": "{count, plural, =1{egun {count}} other{{count} egun}}",
   "@timeDays": {
     "placeholders": {
       "days": {}

@@ -9,11 +9,11 @@
   "@welcomeTermsToggle": {},
   "itemCount": "{count, plural, =1{{count} Element} other{{count} Elemente}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, =1{1 Sekunde} other{{seconds} Sekunde}}",
+  "timeSeconds": "{count, plural, =1{{count} Sekunde} other{{count} Sekunde}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, =1{1 Minute} other{{minutes} Minuten}}",
+  "timeMinutes": "{count, plural, =1{{count} Minute} other{{count} Minuten}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, =1{1 Tag} other{{days} Tage}}",
+  "timeDays": "{count, plural, =1{{count} Tag} other{{count} Tage}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1193,7 +1193,7 @@
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
   "settingsDisplayUseTvInterface": "Android-TV Oberfläche",
   "@settingsDisplayUseTvInterface": {},
-  "columnCount": "{count, plural, =1{1 Spalte} other{{count} Spalten}}",
+  "columnCount": "{count, plural, =1{{count} Spalte} other{{count} Spalten}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
