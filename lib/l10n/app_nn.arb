@@ -1,5 +1,5 @@
 {
-  "timeSeconds": "{seconds, plural, other{{seconds} sekund}}",
+  "timeSeconds": "{count, plural, other{{count} sekund}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -15,13 +15,13 @@
       "count": {}
     }
   },
-  "timeMinutes": "{minutes, plural, other{{minutes} minutt}}",
+  "timeMinutes": "{count, plural, other{{count} minutt}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 dag} other{{days} dagar}}",
+  "timeDays": "{count, plural, =1{{count} dag} other{{count} dagar}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -1421,7 +1421,7 @@
   "@mapAttributionOsmHot": {},
   "mapAttributionStamen": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright)-medverkarar • Fliser av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
-  "columnCount": "{count, plural, =1{1 kolonne} other{{count} kolonnar}}",
+  "columnCount": "{count, plural, =1{{count} kolonne} other{{count} kolonnar}}",
   "@columnCount": {
     "placeholders": {
       "count": {}

@@ -887,7 +887,7 @@
   "@placePageTitle": {},
   "filterOnThisDayLabel": "في هذا اليوم",
   "@filterOnThisDayLabel": {},
-  "columnCount": "{count, plural, =1{1 عمود} other{{count} أعمدة}}{count}",
+  "columnCount": "{count, plural, =1{{count} عمود} other{{count} أعمدة}}{count}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1247,7 +1247,7 @@
   "@drawerCollectionImages": {},
   "sortOrderSmallestFirst": "الأصغر أولاً",
   "@sortOrderSmallestFirst": {},
-  "timeSeconds": "{seconds, plural, =1{1 ثانية} other{{seconds} ثواني}}",
+  "timeSeconds": "{count, plural, =1{{count} ثانية} other{{count} ثواني}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -1393,7 +1393,7 @@
   "@subtitlePositionBottom": {},
   "castDialogTitle": "أجهزة البث",
   "@castDialogTitle": {},
-  "timeDays": "{days, plural, =1{1 يوم} other{{days} أيام}}",
+  "timeDays": "{count, plural, =1{{count} يوم} other{{count} أيام}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -1425,7 +1425,7 @@
   "@newVaultDialogTitle": {},
   "entryInfoActionEditRating": "تحرير التقييم",
   "@entryInfoActionEditRating": {},
-  "timeMinutes": "{minutes, plural, =1{1 دقيقة} other{{minutes} دقائق}}",
+  "timeMinutes": "{count, plural, =1{{count} دقيقة} other{{count} دقائق}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}

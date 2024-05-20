@@ -5,19 +5,19 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Sunt de acord cu Termenii și condițiile",
   "@welcomeTermsToggle": {},
-  "timeSeconds": "{seconds, plural, =1{1 secundă} other{{seconds} secunde}}",
+  "timeSeconds": "{count, plural, =1{{count} secundă} other{{count} secunde}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minut} other{{minutes} minute}}",
+  "timeMinutes": "{count, plural, =1{{count} minut} other{{count} minute}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 zi} other{{days} zile}}",
+  "timeDays": "{count, plural, =1{{count} zi} other{{count} zile}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -1329,7 +1329,7 @@
   "@statsTopCountriesSectionTitle": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "Afișare alternative de gesturi atingeri-multiple",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
-  "columnCount": "{count, plural, =1{1 coloană} other{{count} coloane}}",
+  "columnCount": "{count, plural, =1{{count} coloană} other{{count} coloane}}",
   "@columnCount": {
     "placeholders": {
       "count": {}

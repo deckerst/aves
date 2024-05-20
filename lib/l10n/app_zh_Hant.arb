@@ -13,7 +13,7 @@
       "count": {}
     }
   },
-  "timeDays": "{days, plural, other{{days} 天}}",
+  "timeDays": "{count, plural, other{{count} 天}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -919,13 +919,13 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "北方向上",
   "@mapPointNorthUpTooltip": {},
-  "timeSeconds": "{seconds, plural, other{{seconds} 秒}}",
+  "timeSeconds": "{count, plural, other{{count} 秒}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, other{{minutes} 分}}",
+  "timeMinutes": "{count, plural, other{{count} 分}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
@@ -1419,7 +1419,7 @@
   "@settingsVideoResumptionModeDialogTitle": {},
   "tagEditorDiscardDialogMessage": "是否要放棄更改？",
   "@tagEditorDiscardDialogMessage": {},
-  "columnCount": "{count, plural, =1{1 列} other{{count} 列}}",
+  "columnCount": "{count, plural, other{{count} 列}}",
   "@columnCount": {
     "placeholders": {
       "count": {}

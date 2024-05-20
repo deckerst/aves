@@ -183,19 +183,19 @@
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
+  "timeSeconds": "{count, plural, =1{{count} segundo} other{{count} segundos}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
+  "timeMinutes": "{count, plural, =1{{count} minuto} other{{count} minutos}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 día} other{{days} días}}",
+  "timeDays": "{count, plural, =1{{count} día} other{{count} días}}",
   "@timeDays": {
     "placeholders": {
       "days": {}

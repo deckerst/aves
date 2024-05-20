@@ -137,7 +137,7 @@
   "@viewerActionSettings": {},
   "filterOnThisDayLabel": "Tänä päivänä",
   "@filterOnThisDayLabel": {},
-  "columnCount": "{count, plural, =1{1 sarake} other{{count} saraketta}}",
+  "columnCount": "{count, plural, =1{{count} sarake} other{{count} saraketta}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -231,7 +231,7 @@
   "@keepScreenOnNever": {},
   "mapStyleOsmHot": "Humanitaarinen OSM",
   "@mapStyleOsmHot": {},
-  "timeSeconds": "{seconds, plural, =1{1 sekunti} other{{seconds} sekuntia}}",
+  "timeSeconds": "{count, plural, =1{{count} sekunti} other{{count} sekuntia}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -265,7 +265,7 @@
   "@entryActionRotateCW": {},
   "entryActionFlip": "Käännä vaakasuorassa",
   "@entryActionFlip": {},
-  "timeDays": "{days, plural, =1{1 Päivä} other{{days} Päivää}}",
+  "timeDays": "{count, plural, =1{{count} Päivä} other{{count} Päivää}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -279,7 +279,7 @@
   "@entryActionEdit": {},
   "entryInfoActionEditRating": "Muokkaa luokitusta",
   "@entryInfoActionEditRating": {},
-  "timeMinutes": "{minutes, plural, =1{1 minuutti} other{{minutes} minuuttia}}",
+  "timeMinutes": "{count, plural, =1{{count} minuutti} other{{count} minuuttia}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
