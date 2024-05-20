@@ -75,7 +75,7 @@
   },
   "deleteButtonLabel": "پاک کردن",
   "@deleteButtonLabel": {},
-  "itemCount": "{count, plural, =1{1 فایل} other{{count} فایل}}",
+  "itemCount": "{count, plural, =1{{count} فایل} other{{count} فایل}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

@@ -233,7 +233,7 @@
   "@displayRefreshRatePreferLowest": {},
   "videoPlaybackMuted": "Odtwarzaj bez dźwięku",
   "@videoPlaybackMuted": {},
-  "itemCount": "{count, plural, =1{1 element} few{{count} elementy} other{{count} elelmentów}}",
+  "itemCount": "{count, plural, =1{{count} element} few{{count} elementy} other{{count} elelmentów}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

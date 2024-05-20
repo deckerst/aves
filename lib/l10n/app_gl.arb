@@ -177,7 +177,7 @@
   "@appName": {},
   "welcomeMessage": "Benvido a Aves",
   "@welcomeMessage": {},
-  "itemCount": "{count, plural, =1{1 elementos} other{{count} elementos}}",
+  "itemCount": "{count, plural, =1{{count} elementos} other{{count} elementos}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

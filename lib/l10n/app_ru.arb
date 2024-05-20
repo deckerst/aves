@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Я согласен с условиями и положениями",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 объект} few{{count} объекта} other{{count} объектов}}",
+  "itemCount": "{count, plural, =1{{count} объект} few{{count} объекта} other{{count} объектов}}",
   "@itemCount": {},
   "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
   "@timeSeconds": {},

@@ -941,7 +941,7 @@
   "@albumMimeTypeMixed": {},
   "settingsViewerQuickActionEditorAvailableButtonsSectionTitle": "الأزرار المتاحة",
   "@settingsViewerQuickActionEditorAvailableButtonsSectionTitle": {},
-  "itemCount": "{count, plural, =1{1 عنصر} other{{count} عناصر}}",
+  "itemCount": "{count, plural, =1{{count} عنصر} other{{count} عناصر}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

@@ -285,7 +285,7 @@
   "@collectionActionEdit": {},
   "welcomeMessage": "Sveiki atvykę į Aves",
   "@welcomeMessage": {},
-  "itemCount": "{count, plural, =1{1 elementas} few{{count} elementai} other{{count} elementų}}",
+  "itemCount": "{count, plural, =1{{count} elementas} few{{count} elementai} other{{count} elementų}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

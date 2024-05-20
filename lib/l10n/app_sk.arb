@@ -638,7 +638,7 @@
   "@filePickerOpenFrom": {},
   "filePickerUseThisFolder": "Použiť tento priečinok",
   "@filePickerUseThisFolder": {},
-  "itemCount": "{count, plural, =1{1 položka} other{{count} položiek}}",
+  "itemCount": "{count, plural, =1{{count} položka} other{{count} položiek}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
