@@ -9,11 +9,11 @@
   "@welcomeTermsToggle": {},
   "itemCount": "{count, plural, =1{{count} elemento} other{{count} elementi}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, =1{1 secondo} other{{seconds} secondi}}",
+  "timeSeconds": "{count, plural, =1{{count} secondo} other{{count} secondi}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minuti}}",
+  "timeMinutes": "{count, plural, =1{{count} minuto} other{{count} minuti}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, =1{1 giorno} other{{days} giorni}}",
+  "timeDays": "{count, plural, =1{{count} giorno} other{{count} giorni}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1171,7 +1171,7 @@
   "@settingsWidgetDisplayedItem": {},
   "settingsViewerShowRatingTags": "Mostra valutazione & etichette",
   "@settingsViewerShowRatingTags": {},
-  "columnCount": "{count, plural, =1{1 colonna} other{{count} colonne}}",
+  "columnCount": "{count, plural, =1{{count} colonna} other{{count} colonne}}",
   "@columnCount": {
     "placeholders": {
       "count": {}

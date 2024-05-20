@@ -106,25 +106,25 @@
       "count": {}
     }
   },
-  "columnCount": "{count, plural, =1{1 kolumn} other{{count} kolumner}}",
+  "columnCount": "{count, plural, =1{{count} kolumn} other{{count} kolumner}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 sekund} other{{seconds} sekunder}}",
+  "timeSeconds": "{count, plural, =1{{count} sekund} other{{count} sekunder}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minut} other{{minutes} minuter}}",
+  "timeMinutes": "{count, plural, =1{{count} minut} other{{count} minuter}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 dag} other{{days} dagar}}",
+  "timeDays": "{count, plural, =1{{count} dag} other{{count} dagar}}",
   "@timeDays": {
     "placeholders": {
       "days": {}

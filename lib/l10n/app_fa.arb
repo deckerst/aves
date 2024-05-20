@@ -67,7 +67,7 @@
   "@chipActionCreateAlbum": {},
   "filterNoRatingLabel": "بدون امتیاز",
   "@filterNoRatingLabel": {},
-  "timeSeconds": "{seconds, plural, =1{1 ثانیع} other{{seconds} ثانیه}}",
+  "timeSeconds": "{count, plural, =1{{count} ثانیع} other{{count} ثانیه}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -99,7 +99,7 @@
   "@doNotAskAgain": {},
   "entryActionDelete": "پاک‌کردن",
   "@entryActionDelete": {},
-  "timeMinutes": "{minutes, plural, =1{1 دقیقه} other{{minutes} دقیقه}}",
+  "timeMinutes": "{count, plural, other{{count} دقیقه}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
@@ -141,7 +141,7 @@
   "@filterBinLabel": {},
   "filterNoDateLabel": "بدون تاریخ",
   "@filterNoDateLabel": {},
-  "timeDays": "{days, plural, =1{1 روز} other{{days} روز}}",
+  "timeDays": "{count, plural, other{{count} روز}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -333,7 +333,7 @@
   "@videoPlaybackMuted": {},
   "storageVolumeDescriptionFallbackPrimary": "حافظه داخلی",
   "@storageVolumeDescriptionFallbackPrimary": {},
-  "columnCount": "{count, plural, =1{1 ستون} other{{count} ستون}}",
+  "columnCount": "{count, plural, other{{count} ستون}}",
   "@columnCount": {
     "placeholders": {
       "count": {}

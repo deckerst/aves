@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Я погоджуюсь з умовами та положеннями",
   "@welcomeTermsToggle": {},
-  "timeDays": "{days, plural, =1{1 день} few{{days} дні} other{{days} днів}}",
+  "timeDays": "{count, plural, =1{{count} день} few{{count} дні} other{{count} днів}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -643,13 +643,13 @@
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунди} other{{seconds} секунд}}",
+  "timeSeconds": "{count, plural, =1{{count} секунда} few{{count} секунди} other{{count} секунд}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 хвилина} few{{minutes} хвилини} other{{minutes} хвилин}}",
+  "timeMinutes": "{count, plural, =1{{count} хвилина} few{{count} хвилини} other{{count} хвилин}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
@@ -1345,7 +1345,7 @@
   "@mapAttributionOsmHot": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "Показувати альтернативи мультисенсорним жестам",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
-  "columnCount": "{count, plural, =1{1 стовпець} few{{count} стовпці} other{{count} стовпців}}",
+  "columnCount": "{count, plural, =1{{count} стовпець} few{{count} стовпці} other{{count} стовпців}}",
   "@columnCount": {
     "placeholders": {
       "count": {}

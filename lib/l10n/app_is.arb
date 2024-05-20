@@ -782,7 +782,7 @@
   "@placePageTitle": {},
   "filterOnThisDayLabel": "Á þessum degi",
   "@filterOnThisDayLabel": {},
-  "columnCount": "{count, plural, =1{1 dálkur} other{{count} dálkar}}",
+  "columnCount": "{count, plural, =1{{count} dálkur} other{{count} dálkar}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1136,7 +1136,7 @@
   "@drawerCollectionImages": {},
   "sortOrderSmallestFirst": "Minnsta fyrst",
   "@sortOrderSmallestFirst": {},
-  "timeSeconds": "{seconds, plural, =1{1 sekúnda} other{{seconds} sekúndur}}",
+  "timeSeconds": "{count, plural, =1{{count} sekúnda} other{{count} sekúndur}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -1292,7 +1292,7 @@
   "@subtitlePositionBottom": {},
   "castDialogTitle": "Útvörpunartæki",
   "@castDialogTitle": {},
-  "timeDays": "{days, plural, =1{1 dagur} other{{days} dagar}}",
+  "timeDays": "{count, plural, =1{{count} dagur} other{{count} dagar}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -1322,7 +1322,7 @@
   "@entryActionEdit": {},
   "entryInfoActionEditRating": "Breyta einkunn",
   "@entryInfoActionEditRating": {},
-  "timeMinutes": "{minutes, plural, =1{1 mínúta} other{{minutes} mínútur}}",
+  "timeMinutes": "{count, plural, =1{{count} mínúta} other{{count} mínútur}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}

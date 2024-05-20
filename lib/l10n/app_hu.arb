@@ -811,7 +811,7 @@
   "@widgetOpenPageCollection": {},
   "renameEntrySetPageInsertTooltip": "Mező beszúrása",
   "@renameEntrySetPageInsertTooltip": {},
-  "timeDays": "{days, plural, other{{days} nap}}",
+  "timeDays": "{count, plural, other{{count} nap}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -829,13 +829,13 @@
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, other{{seconds} másodperc}}",
+  "timeSeconds": "{count, plural, other{{count} másodperc}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, other{{minutes} perc}}",
+  "timeMinutes": "{count, plural, other{{count} perc}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
