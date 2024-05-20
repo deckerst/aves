@@ -35,7 +35,7 @@
   "@clearTooltip": {},
   "actionRemove": "हटाएं",
   "@actionRemove": {},
-  "itemCount": "{count, plural, =1{१ चीज} other{{count} चीजे}}",
+  "itemCount": "{count, plural, =1{{count} चीज} other{{count} चीजे}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

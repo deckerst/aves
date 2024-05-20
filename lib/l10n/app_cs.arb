@@ -50,7 +50,7 @@
       "days": {}
     }
   },
-  "itemCount": "{count, plural, =1{1 položka} few{{count} položky} other{{count} položek}}",
+  "itemCount": "{count, plural, =1{{count} položka} few{{count} položky} other{{count} položek}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

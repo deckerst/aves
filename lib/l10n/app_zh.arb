@@ -1377,6 +1377,6 @@
   "@videoRepeatActionSetEnd": {},
   "renameProcessorHash": "哈希",
   "@renameProcessorHash": {},
-  "settingsForceWesternArabicNumeralsTile": "强制阿拉伯数数字",
+  "settingsForceWesternArabicNumeralsTile": "强制使用阿拉伯数字",
   "@settingsForceWesternArabicNumeralsTile": {}
 }

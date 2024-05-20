@@ -9,7 +9,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Eg samtykkjer til krava og føresetnadane",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 er vald} other{{count} er valde}}",
+  "itemCount": "{count, plural, =1{{count} er vald} other{{count} er valde}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

@@ -131,7 +131,7 @@
   "@videoActionPause": {},
   "videoActionPlay": "لێدان",
   "@videoActionPlay": {},
-  "itemCount": "{count, plural, =1{١ دانە} other{دانە {count}}}",
+  "itemCount": "{count, plural, other{دانە {count}}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

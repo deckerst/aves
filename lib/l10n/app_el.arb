@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Συμφωνώ με τους όρους και τις προυποθέσεις",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 στοιχείο} other{{count} στοιχεία}}",
+  "itemCount": "{count, plural, =1{{count} στοιχείο} other{{count} στοιχεία}}",
   "@itemCount": {},
   "timeSeconds": "{seconds, plural, =1{1 δευτερόλεπτο} other{{seconds} δευτερόλεπτα}}",
   "@timeSeconds": {},

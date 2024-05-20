@@ -149,7 +149,7 @@
   "@maxBrightnessNever": {},
   "videoActionReplay10": "kelaa taaksepäin 10 sekuntia",
   "@videoActionReplay10": {},
-  "itemCount": "{count, plural, =1{1 kohde} other{{count} kohdetta}}",
+  "itemCount": "{count, plural, =1{{count} kohde} other{{count} kohdetta}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

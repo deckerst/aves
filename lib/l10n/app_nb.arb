@@ -763,7 +763,7 @@
       "days": {}
     }
   },
-  "itemCount": "{count, plural, =1{1 element} other{{count} elementer}}",
+  "itemCount": "{count, plural, =1{{count} element} other{{count} elementer}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

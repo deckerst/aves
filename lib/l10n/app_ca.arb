@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Estic d’acord amb els termes i condicions",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 element} other{{count} elements}}",
+  "itemCount": "{count, plural, =1{{count} element} other{{count} elements}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

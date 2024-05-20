@@ -648,7 +648,7 @@
   },
   "appName": "Aves",
   "@appName": {},
-  "itemCount": "{count, plural, =1{1 element} other{{count} elemente}}",
+  "itemCount": "{count, plural, =1{{count} element} other{{count} elemente}}",
   "@itemCount": {
     "placeholders": {
       "count": {}

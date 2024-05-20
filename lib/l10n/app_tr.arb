@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Hüküm ve koşulları kabul ediyorum",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 öğe} other{{count} öğe}}",
+  "itemCount": "{count, plural, other{{count} öğe}}",
   "@itemCount": {},
   "timeSeconds": "{seconds, plural, =1{1 saniye} other{{seconds} saniye}}",
   "@timeSeconds": {},
