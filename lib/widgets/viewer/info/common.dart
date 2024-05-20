@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -72,19 +73,22 @@ class InfoRowGroup extends StatefulWidget {
   }) {
     return (context, key, value) {
       value = linkText(context);
-      // open link on tap
-      final recognizer = TapGestureRecognizer()..onTap = () => onTap(context);
       // `colorScheme.secondary` is overridden upstream as an `ExpansionTileCard` theming workaround,
       // so we use `colorScheme.primary` instead
       final linkColor = Theme.of(context).colorScheme.primary;
-      final style = InfoRowGroup.valueStyle.copyWith(
-        color: linkColor,
-        decoration: TextDecoration.underline,
-        decorationColor: linkColor,
-        decorationStyle: TextDecorationStyle.solid,
-      );
 
-      return [TextSpan(text: '${Unicode.FSI}$value${Unicode.PDI}', style: style, recognizer: recognizer)];
+      return [
+        WidgetSpan(
+          child: LinkChip(
+            text: value,
+            color: linkColor,
+            textStyle: InfoRowGroup.valueStyle,
+            // open link on tap
+            onTap: () => onTap(context),
+          ),
+          alignment: PlaceholderAlignment.middle,
+        ),
+      ];
     };
   }
 }
