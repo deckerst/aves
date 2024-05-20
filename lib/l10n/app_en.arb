@@ -11,7 +11,7 @@
       }
     }
   },
-  "columnCount": "{count, plural, =1{1 column} other{{count} columns}}",
+  "columnCount": "{count, plural, =1{{count} column} other{{count} columns}}",
   "@columnCount": {
     "placeholders": {
       "count": {
@@ -20,26 +20,26 @@
     }
   },
 
-  "timeSeconds": "{seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "timeSeconds": "{count, plural, =1{{count} second} other{{count} seconds}}",
   "@timeSeconds": {
     "placeholders": {
-      "seconds": {
+      "count": {
         "format": "decimalPattern"
       }
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "timeMinutes": "{count, plural, =1{{count} minute} other{{count} minutes}}",
   "@timeMinutes": {
     "placeholders": {
-      "minutes": {
+      "count": {
         "format": "decimalPattern"
       }
     }
   },
-  "timeDays": "{days, plural, =1{1 day} other{{days} days}}",
+  "timeDays": "{count, plural, =1{{count} day} other{{count} days}}",
   "@timeDays": {
     "placeholders": {
-      "days": {
+      "count": {
         "format": "decimalPattern"
       }
     }
