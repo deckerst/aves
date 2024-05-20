@@ -3,7 +3,7 @@
   "welcomeMessage": "Welcome to Aves",
   "welcomeOptional": "Optional",
   "welcomeTermsToggle": "I agree to the terms and conditions",
-  "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "itemCount": "{count, plural, =1{{count} item} other{{count} items}}",
   "@itemCount": {
     "placeholders": {
       "count": {
