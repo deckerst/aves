@@ -114,7 +114,9 @@ class PlatformAppService implements AppService {
       if (result == null) return {'error': 'cancelled'};
       return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (e.code != 'edit-resolve') {
+        await reportService.recordError(e, stack);
+      }
       return {'error': e.code};
     }
   }
