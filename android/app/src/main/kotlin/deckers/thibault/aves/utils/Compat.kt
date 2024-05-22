@@ -56,13 +56,7 @@ fun Geocoder.getFromLocationCompat(
     onError: (errorCode: String, errorMessage: String?, errorDetails: Any?) -> Unit,
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        getFromLocation(latitude, longitude, maxResults, object : Geocoder.GeocodeListener {
-            override fun onGeocode(addresses: List<Address?>) = processAddresses(addresses.filterNotNull())
-
-            override fun onError(errorMessage: String?) {
-                onError("getAddress-asyncerror", "failed to get address", errorMessage)
-            }
-        })
+        Compat33.geocoderGetFromLocation(this, latitude, longitude, maxResults, processAddresses, onError)
     } else {
         try {
             @Suppress("deprecation")
