@@ -3,8 +3,8 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     ext {
-        kotlin_version = '1.9.22'
-        agp_version = '8.4.0'
+        kotlin_version = '1.9.24'
+        agp_version = '8.4.1'
     }
 
     repositories {

@@ -8,9 +8,9 @@ pluginManagement {
     }
     settings.ext.flutterSdkPath = flutterSdkPath()
 
-    settings.ext.kotlin_version = '1.9.21'
-    settings.ext.ksp_version = "$kotlin_version-1.0.15"
-    settings.ext.agp_version = '8.4.0'
+    settings.ext.kotlin_version = '1.9.24'
+    settings.ext.ksp_version = "$kotlin_version-1.0.20"
+    settings.ext.agp_version = '8.4.1'
 
     includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
 
