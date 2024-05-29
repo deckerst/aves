@@ -10,6 +10,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/behaviour/springy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
@@ -26,7 +27,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_brightness/screen_brightness.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens? collection;
@@ -86,7 +86,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     _registerWidget(widget);
 
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
-      _systemBrightness = ScreenBrightness().system;
+      _systemBrightness = AvesApp.screenBrightness?.system;
     }
   }
 
@@ -328,7 +328,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       _systemBrightness?.then((system) {
         final value = lerpDouble(maximumBrightness, system, ((1 - page).abs() * 2).clamp(0, 1))!;
-        ScreenBrightness().setScreenBrightness(value);
+        AvesApp.screenBrightness?.setScreenBrightness(value);
       });
     }
 

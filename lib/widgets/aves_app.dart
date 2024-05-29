@@ -86,6 +86,8 @@ class AvesApp extends StatefulWidget {
   // so that we can react to fullscreen `PageRoute`s only
   static final RouteObserver<PageRoute> pageRouteObserver = RouteObserver<PageRoute>();
 
+  static ScreenBrightness? get screenBrightness => _AvesAppState._screenBrightness;
+
   const AvesApp({
     super.key,
     required this.flavor,
@@ -159,7 +161,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(defaultPageTransitionsBuilder);
   final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
-  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.main);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.initialization);
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -175,6 +177,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.0.0)
   static const defaultPageTransitionsBuilder = FadeUpwardsPageTransitionsBuilder();
   static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
+  static ScreenBrightness? _screenBrightness;
 
   @override
   void initState() {
@@ -187,6 +190,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
     _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
     _updateCutoutInsets();
+    _appModeNotifier.addListener(_onAppModeChanged);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -539,9 +543,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       switch (settings.maxBrightness) {
         case MaxBrightness.never:
         case MaxBrightness.viewerOnly:
-          ScreenBrightness().resetScreenBrightness();
+          AvesApp.screenBrightness?.resetScreenBrightness();
         case MaxBrightness.always:
-          ScreenBrightness().setScreenBrightness(1);
+          AvesApp.screenBrightness?.setScreenBrightness(1);
       }
     }
 
@@ -627,6 +631,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _onError(String? error) => reportService.recordError(error, null);
+
+  void _onAppModeChanged() {
+    final appMode = _appModeNotifier.value;
+    debugPrint('App mode set to $appMode');
+    switch (appMode) {
+      case AppMode.screenSaver:
+        // we cannot modify brightness without access to the activity
+        _screenBrightness = null;
+        break;
+      default:
+        _screenBrightness = ScreenBrightness();
+        break;
+    }
+  }
 }
 
 class AvesScrollBehavior extends MaterialScrollBehavior {
