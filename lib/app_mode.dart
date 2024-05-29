@@ -1,4 +1,5 @@
 enum AppMode {
+  initialization,
   main,
   pickCollectionFiltersExternal,
   pickSingleMediaExternal,

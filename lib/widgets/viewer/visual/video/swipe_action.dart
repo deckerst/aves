@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:screen_brightness/screen_brightness.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 enum SwipeAction { brightness, volume }
@@ -12,7 +12,7 @@ extension ExtraSwipeAction on SwipeAction {
   Future<double> get() {
     switch (this) {
       case SwipeAction.brightness:
-        return ScreenBrightness().current;
+        return AvesApp.screenBrightness?.current ?? Future.value(1);
       case SwipeAction.volume:
         return VolumeController().getVolume();
     }
@@ -21,7 +21,7 @@ extension ExtraSwipeAction on SwipeAction {
   Future<void> set(double value) async {
     switch (this) {
       case SwipeAction.brightness:
-        await ScreenBrightness().setScreenBrightness(value);
+        await AvesApp.screenBrightness?.setScreenBrightness(value);
       case SwipeAction.volume:
         VolumeController().setVolume(value, showSystemUI: false);
     }

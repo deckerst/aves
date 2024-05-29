@@ -24,7 +24,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_brightness/screen_brightness.dart';
 
 class WallpaperPage extends StatelessWidget {
   static const routeName = '/set_wallpaper';
@@ -89,7 +88,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   void initState() {
     super.initState();
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
-      ScreenBrightness().setScreenBrightness(1);
+      AvesApp.screenBrightness?.setScreenBrightness(1);
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       windowService.keepScreenOn(true);

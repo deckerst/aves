@@ -488,6 +488,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
   }
 
   void _onViewStateChanged(MagnifierState v) {
+    if (!mounted) return;
     _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
       position: v.position,
       scale: v.scale,

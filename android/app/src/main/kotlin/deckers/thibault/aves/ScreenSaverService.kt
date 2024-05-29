@@ -9,6 +9,7 @@ import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.calls.window.ServiceWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
+import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.FlutterInjector
@@ -18,12 +19,14 @@ import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
 import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 // for FlutterView-level integration, cf https://docs.flutter.dev/development/add-to-app/android/add-flutter-view
 class ScreenSaverService : DreamService() {
     private var flutterEngine: FlutterEngine? = null
     private var flutterView: FlutterView? = null
+    private lateinit var mediaSessionHandler: MediaSessionHandler
 
     override fun onAttachedToWindow() {
         Log.i(LOG_TAG, "onAttachedToWindow")
@@ -77,6 +80,7 @@ class ScreenSaverService : DreamService() {
 
     private fun release() {
         destroyView()
+        mediaSessionHandler.dispose()
         flutterEngine = null
         flutterView = null
     }
@@ -96,12 +100,19 @@ class ScreenSaverService : DreamService() {
     private fun initChannels() {
         val messenger = flutterEngine!!.dartExecutor
 
+        // notification: platform -> dart
+        val mediaCommandStreamHandler = MediaCommandStreamHandler().apply {
+            EventChannel(messenger, MediaCommandStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+
         // dart -> platform -> dart
         // - need Context
+        mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
+        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
