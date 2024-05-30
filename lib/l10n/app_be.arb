@@ -1536,5 +1536,7 @@
   "renameProcessorHash": "Хэш",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Прымусовыя арабскія лічбы",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Паказаць ў Калекцыі",
+  "@chipActionShowCollection": {}
 }

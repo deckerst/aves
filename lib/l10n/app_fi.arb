@@ -300,5 +300,7 @@
   "entryActionShareImageOnly": "Jaa vain kuva",
   "@entryActionShareImageOnly": {},
   "filterNoDateLabel": "Päiväämätön",
-  "@filterNoDateLabel": {}
+  "@filterNoDateLabel": {},
+  "chipActionShowCollection": "Näytä kokoelmassa",
+  "@chipActionShowCollection": {}
 }

@@ -1296,5 +1296,7 @@
   "settingsViewerShowHistogram": "Histogram ကို ပြရန်",
   "@settingsViewerShowHistogram": {},
   "settingsVideoPlaybackTile": "ဖွင့်ကြည့်ခြင်း",
-  "@settingsVideoPlaybackTile": {}
+  "@settingsVideoPlaybackTile": {},
+  "chipActionShowCollection": "စုစည်းမှုထဲမှာ ပြရန်",
+  "@chipActionShowCollection": {}
 }

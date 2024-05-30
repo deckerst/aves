@@ -1532,5 +1532,7 @@
   "videoRepeatActionSetEnd": "Nastavit konec",
   "@videoRepeatActionSetEnd": {},
   "videoActionABRepeat": "Opakování A-B",
-  "@videoActionABRepeat": {}
+  "@videoActionABRepeat": {},
+  "chipActionShowCollection": "Zobrazit ve sbírce",
+  "@chipActionShowCollection": {}
 }

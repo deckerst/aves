@@ -1536,5 +1536,7 @@
   "videoActionABRepeat": "Endurtekning A-B",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "Stilla endi",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "chipActionShowCollection": "Sýna í safni",
+  "@chipActionShowCollection": {}
 }

@@ -1524,5 +1524,7 @@
     "placeholders": {
       "count": {}
     }
-  }
+  },
+  "chipActionShowCollection": "Mostrar a Coŀlecció",
+  "@chipActionShowCollection": {}
 }

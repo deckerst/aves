@@ -1524,5 +1524,7 @@
   "setHomeCustomCollection": "Kolekcia na mieru",
   "@setHomeCustomCollection": {},
   "settingsThumbnailShowHdrIcon": "Zobraziť ikonu HDR",
-  "@settingsThumbnailShowHdrIcon": {}
+  "@settingsThumbnailShowHdrIcon": {},
+  "chipActionShowCollection": "Zobraziť v kolekcií",
+  "@chipActionShowCollection": {}
 }
