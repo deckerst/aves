@@ -1536,5 +1536,7 @@
   "renameProcessorHash": "雜湊",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "強制使用阿拉伯數字",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "在收藏品中顯示",
+  "@chipActionShowCollection": {}
 }

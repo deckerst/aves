@@ -1274,5 +1274,7 @@
   "videoResumptionModeAlways": "Altijd",
   "@videoResumptionModeAlways": {},
   "exportEntryDialogWriteMetadata": "Schrijf metadata",
-  "@exportEntryDialogWriteMetadata": {}
+  "@exportEntryDialogWriteMetadata": {},
+  "chipActionShowCollection": "Tonen in Collectie",
+  "@chipActionShowCollection": {}
 }

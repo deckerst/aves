@@ -1536,5 +1536,7 @@
     "placeholders": {
       "count": {}
     }
-  }
+  },
+  "chipActionShowCollection": "نمایش در مجموعه",
+  "@chipActionShowCollection": {}
 }

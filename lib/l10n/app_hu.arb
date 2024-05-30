@@ -1532,5 +1532,7 @@
   "videoActionABRepeat": "A-B ismétlés",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "Végpont beállítása",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "chipActionShowCollection": "Megjelenítés a gyűjteményekben",
+  "@chipActionShowCollection": {}
 }

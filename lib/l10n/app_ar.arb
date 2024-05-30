@@ -1536,5 +1536,7 @@
   "settingsForceWesternArabicNumeralsTile": "فرض الأرقام العربية",
   "@settingsForceWesternArabicNumeralsTile": {},
   "renameProcessorHash": "تجزئة",
-  "@renameProcessorHash": {}
+  "@renameProcessorHash": {},
+  "chipActionShowCollection": "عرض في المجموعة",
+  "@chipActionShowCollection": {}
 }

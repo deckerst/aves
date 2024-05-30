@@ -1374,5 +1374,7 @@
   "stopTooltip": "Parar",
   "@stopTooltip": {},
   "videoRepeatActionSetStart": "Definir início",
-  "@videoRepeatActionSetStart": {}
+  "@videoRepeatActionSetStart": {},
+  "chipActionShowCollection": "Mostrar na Coleção",
+  "@chipActionShowCollection": {}
 }

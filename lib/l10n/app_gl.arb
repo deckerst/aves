@@ -296,5 +296,7 @@
   "mapStyleHuaweiTerrain": "Petal Maps (Terreo)",
   "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "Humanitarian OpenStreetMap Team",
-  "@mapStyleOsmHot": {}
+  "@mapStyleOsmHot": {},
+  "chipActionShowCollection": "Mostrar na colección",
+  "@chipActionShowCollection": {}
 }

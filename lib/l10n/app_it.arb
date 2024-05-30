@@ -1374,5 +1374,7 @@
   "collectionActionSetHome": "Imposta come pagina iniziale",
   "@collectionActionSetHome": {},
   "setHomeCustomCollection": "Collezione personalizzata",
-  "@setHomeCustomCollection": {}
+  "@setHomeCustomCollection": {},
+  "chipActionShowCollection": "Mostra nella Collezione",
+  "@chipActionShowCollection": {}
 }

@@ -1378,5 +1378,7 @@
   "settingsForceWesternArabicNumeralsTile": "Arap rakamlarını zorla",
   "@settingsForceWesternArabicNumeralsTile": {},
   "renameProcessorHash": "Sağlama",
-  "@renameProcessorHash": {}
+  "@renameProcessorHash": {},
+  "chipActionShowCollection": "Koleksiyonda göster",
+  "@chipActionShowCollection": {}
 }

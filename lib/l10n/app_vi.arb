@@ -1536,5 +1536,7 @@
   "renameProcessorHash": "Băm",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Buộc chữ số Ả Rập",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Hiển thị trong Bộ sưu tập",
+  "@chipActionShowCollection": {}
 }

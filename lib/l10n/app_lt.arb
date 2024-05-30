@@ -1340,5 +1340,7 @@
   "entryActionShareImageOnly": "Bendrinti tik paveikslėlį",
   "@entryActionShareImageOnly": {},
   "entryInfoActionRemoveLocation": "Pašalinti vietą",
-  "@entryInfoActionRemoveLocation": {}
+  "@entryInfoActionRemoveLocation": {},
+  "chipActionShowCollection": "Rodyti kolekcijoje",
+  "@chipActionShowCollection": {}
 }

@@ -1444,5 +1444,7 @@
   "filterNoLocationLabel": "Ustadsette",
   "@filterNoLocationLabel": {},
   "settingsNavigationSectionTitle": "Finn fram",
-  "@settingsNavigationSectionTitle": {}
+  "@settingsNavigationSectionTitle": {},
+  "chipActionShowCollection": "Vis i Samling",
+  "@chipActionShowCollection": {}
 }

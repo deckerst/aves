@@ -1536,5 +1536,7 @@
   "videoRepeatActionSetStart": "Setează începutul",
   "@videoRepeatActionSetStart": {},
   "videoRepeatActionSetEnd": "Setează sfârșitul",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "chipActionShowCollection": "Afișați în colecție",
+  "@chipActionShowCollection": {}
 }

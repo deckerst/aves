@@ -1338,5 +1338,7 @@
   "overlayHistogramRGB": "RGB",
   "@overlayHistogramRGB": {},
   "overlayHistogramLuminance": "Φωτεινότητα",
-  "@overlayHistogramLuminance": {}
+  "@overlayHistogramLuminance": {},
+  "chipActionShowCollection": "Εμφάνιση στη Συλλογή",
+  "@chipActionShowCollection": {}
 }

@@ -1478,5 +1478,7 @@
   "searchStatesSectionTitle": "Tilstander",
   "@searchStatesSectionTitle": {},
   "vaultLockTypePattern": "Mønster",
-  "@vaultLockTypePattern": {}
+  "@vaultLockTypePattern": {},
+  "chipActionShowCollection": "Vis i samling",
+  "@chipActionShowCollection": {}
 }

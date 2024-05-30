@@ -1378,5 +1378,7 @@
   "renameProcessorHash": "哈希",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "强制使用阿拉伯数字",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "在媒体集中显示",
+  "@chipActionShowCollection": {}
 }
