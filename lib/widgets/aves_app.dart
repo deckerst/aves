@@ -385,7 +385,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           case AppMode.pickSingleMediaExternal:
           case AppMode.pickMultipleMediaExternal:
             _saveTopEntries();
-            break;
           default:
             break;
         }
@@ -393,7 +392,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         availability.onResume();
         RecentlyAddedFilter.updateNow();
         _mediaStoreSource.checkForChanges();
-        break;
       default:
         break;
     }
@@ -639,10 +637,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       case AppMode.screenSaver:
         // we cannot modify brightness without access to the activity
         _screenBrightness = null;
-        break;
       default:
         _screenBrightness = ScreenBrightness();
-        break;
     }
   }
 }

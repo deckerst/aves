@@ -45,7 +45,7 @@ class FavouriteFilter extends CollectionFilter {
   String getLabel(BuildContext context) => context.l10n.filterFavouriteLabel;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.favourite, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.favourite, size: size);
 
   @override
   Future<Color> color(BuildContext context) {

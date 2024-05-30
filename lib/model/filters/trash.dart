@@ -41,7 +41,7 @@ class TrashFilter extends CollectionFilter {
   String getLabel(BuildContext context) => context.l10n.filterBinLabel;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.bin, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.bin, size: size);
 
   @override
   String get category => type;

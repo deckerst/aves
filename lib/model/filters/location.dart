@@ -89,7 +89,7 @@ class LocationFilter extends CoveredCollectionFilter {
   String getLabel(BuildContext context) => _isUnlocated ? context.l10n.filterNoLocationLabel : _location;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
     if (_isUnlocated) {
       return Icon(AIcons.locationUnlocated, size: size);
     }

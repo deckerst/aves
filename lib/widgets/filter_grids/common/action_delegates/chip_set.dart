@@ -3,6 +3,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/or.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -13,6 +14,7 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -99,9 +101,11 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.hide:
         return isMain;
       case ChipSetAction.pin:
-        return !hasSelection || !settings.pinnedFilters.containsAll(selectedFilters);
+        return isMain && (!hasSelection || !settings.pinnedFilters.containsAll(selectedFilters));
       case ChipSetAction.unpin:
-        return hasSelection && settings.pinnedFilters.containsAll(selectedFilters);
+        return isMain && (hasSelection && settings.pinnedFilters.containsAll(selectedFilters));
+      case ChipSetAction.showCollection:
+        return appMode.canNavigate;
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
@@ -149,6 +153,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.unpin:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
+      case ChipSetAction.showCollection:
         return hasSelection;
       // selecting (single filter)
       case ChipSetAction.rename:
@@ -194,6 +199,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.unpin:
         settings.pinnedFilters = settings.pinnedFilters..removeAll(getSelectedFilters(context));
         browse(context);
+      case ChipSetAction.showCollection:
+        _goToCollection(context);
       case ChipSetAction.delete:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
@@ -251,6 +258,22 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
+  Future<void> _goToCollection(context) async {
+    final filters = getSelectedFilters(context);
+    if (filters.isEmpty) return;
+
+    final filter = filters.length > 1 ? OrFilter(filters) : filters.first;
+    await Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: CollectionPage.routeName),
+        builder: (context) => CollectionPage(
+          source: context.read<CollectionSource>(),
+          filters: {filter},
+        ),
+      ),
+    );
+  }
+
   Future<void> _goToMap(BuildContext context) async {
     final mapCollection = CollectionLens(
       source: context.read<CollectionSource>(),
@@ -264,9 +287,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
   }
 
-  void _goToSlideshow(BuildContext context) {
+  Future<void> _goToSlideshow(BuildContext context) async {
     final entries = _selectedEntries(context).toList();
-    Navigator.maybeOf(context)?.push(
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
         builder: (context) {
@@ -281,9 +304,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
   }
 
-  void _goToStats(BuildContext context) {
+  Future<void> _goToStats(BuildContext context) async {
     final entries = _selectedEntries(context).toSet();
-    Navigator.maybeOf(context)?.push(
+    await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) {
@@ -296,8 +319,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
   }
 
-  void _goToSearch(BuildContext context) {
-    Navigator.maybeOf(context)?.push(
+  Future<void> _goToSearch(BuildContext context) async {
+    await Navigator.maybeOf(context)?.push(
       SearchPageRoute(
         delegate: CollectionSearchDelegate(
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
