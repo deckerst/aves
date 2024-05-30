@@ -1536,5 +1536,7 @@
   "settingsForceWesternArabicNumeralsTile": "Wymuszaj cyfry arabskie",
   "@settingsForceWesternArabicNumeralsTile": {},
   "renameProcessorHash": "Skrót",
-  "@renameProcessorHash": {}
+  "@renameProcessorHash": {},
+  "chipActionShowCollection": "Pokaż w Kolekcji",
+  "@chipActionShowCollection": {}
 }

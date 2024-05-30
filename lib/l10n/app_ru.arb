@@ -1378,5 +1378,7 @@
   "renameProcessorHash": "Хэш",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Принудительные арабские цифры",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Показать в Коллекции",
+  "@chipActionShowCollection": {}
 }

@@ -1378,5 +1378,7 @@
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Toujours utiliser les chiffres arabes",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Afficher dans Collection",
+  "@chipActionShowCollection": {}
 }

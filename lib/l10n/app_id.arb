@@ -1378,5 +1378,7 @@
   "settingsForceWesternArabicNumeralsTile": "Paksa angka Arab",
   "@settingsForceWesternArabicNumeralsTile": {},
   "renameProcessorHash": "Hash",
-  "@renameProcessorHash": {}
+  "@renameProcessorHash": {},
+  "chipActionShowCollection": "Tampilkan di Koleksi",
+  "@chipActionShowCollection": {}
 }

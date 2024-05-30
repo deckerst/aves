@@ -1378,5 +1378,7 @@
   "stopTooltip": "Stop",
   "@stopTooltip": {},
   "videoRepeatActionSetEnd": "Ende festlegen",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "chipActionShowCollection": "In Sammlung anzeigen",
+  "@chipActionShowCollection": {}
 }

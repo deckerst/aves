@@ -1536,5 +1536,7 @@
   "videoActionABRepeat": "Atik Brako errepikapena",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "Ezarri amaiera",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "chipActionShowCollection": "Erakutsi bilduman",
+  "@chipActionShowCollection": {}
 }

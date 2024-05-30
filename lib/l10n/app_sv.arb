@@ -835,5 +835,7 @@
   "filePickerUseThisFolder": "Använd den har mappen",
   "@filePickerUseThisFolder": {},
   "chipActionUnpin": "Släpp från fästet",
-  "@chipActionUnpin": {}
+  "@chipActionUnpin": {},
+  "chipActionShowCollection": "Visa i samling",
+  "@chipActionShowCollection": {}
 }
