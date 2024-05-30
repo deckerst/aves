@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Albums / Countries / Tags: show selection in Collection
+
 ### Changed
 
 - Screen saver: black background, consistent with slideshow

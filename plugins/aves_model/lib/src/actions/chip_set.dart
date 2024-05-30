@@ -20,6 +20,7 @@ enum ChipSetAction {
   unpin,
   lockVault,
   showCountryStates,
+  showCollection,
   // selecting (single filter)
   rename,
   setCover,
@@ -57,6 +58,7 @@ class ChipSetActions {
     ChipSetAction.showCountryStates,
     ChipSetAction.hide,
     null,
+    ChipSetAction.showCollection,
     ChipSetAction.map,
     ChipSetAction.slideshow,
     ChipSetAction.stats,

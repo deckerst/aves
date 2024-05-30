@@ -414,10 +414,8 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
       case TransformActivity.pan:
       case TransformActivity.resize:
         _gridDivisionNotifier.value = panResizeGridDivision;
-        break;
       case TransformActivity.straighten:
         _gridDivisionNotifier.value = straightenGridDivision;
-        break;
     }
     if (activity == TransformActivity.none) {
       _gridAnimationController.reverse();
@@ -452,12 +450,10 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
       case ChangeSource.internal:
       case ChangeSource.animation:
         _setOutline(currentOutline);
-        break;
       case ChangeSource.gesture:
         // TODO TLAD [crop] use other strat
         _setOutline(_applyCropRatioToOutline(currentOutline, _RatioStrategy.contain));
         _updateCropRegion();
-        break;
     }
   }
 
@@ -584,19 +580,15 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
       case CropAspectRatio.original:
         longCoef = contentSize.longestSide.round();
         shortCoef = contentSize.shortestSide.round();
-        break;
       case CropAspectRatio.square:
         longCoef = 1;
         shortCoef = 1;
-        break;
       case CropAspectRatio.ar_16_9:
         longCoef = 16;
         shortCoef = 9;
-        break;
       case CropAspectRatio.ar_4_3:
         longCoef = 4;
         shortCoef = 3;
-        break;
     }
 
     final contentRect = Offset.zero & contentSize;

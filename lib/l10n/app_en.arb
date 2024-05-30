@@ -85,6 +85,7 @@
   "sourceStateLocatingPlaces": "Locating places",
 
   "chipActionDelete": "Delete",
+  "chipActionShowCollection": "Show in Collection",
   "chipActionGoToAlbumPage": "Show in Albums",
   "chipActionGoToCountryPage": "Show in Countries",
   "chipActionGoToPlacePage": "Show in Places",

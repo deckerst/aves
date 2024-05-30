@@ -10,6 +10,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
+import 'package:aves/model/filters/or.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
@@ -43,6 +44,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     AspectRatioFilter.type,
     MissingFilter.type,
     PathFilter.type,
+    OrFilter.type,
   ];
 
   final bool reversed;
@@ -68,6 +70,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return MimeFilter.fromMap(jsonMap);
       case MissingFilter.type:
         return MissingFilter.fromMap(jsonMap);
+      case OrFilter.type:
+        return OrFilter.fromMap(jsonMap);
       case PathFilter.type:
         return PathFilter.fromMap(jsonMap);
       case PlaceholderFilter.type:

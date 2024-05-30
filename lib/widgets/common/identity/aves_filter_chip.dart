@@ -133,16 +133,12 @@ class AvesFilterChip extends StatefulWidget {
             switch (action) {
               case ChipAction.reverse:
                 text = filter.reversed ? context.l10n.chipActionFilterIn : context.l10n.chipActionFilterOut;
-                break;
               case ChipAction.ratingOrGreater:
                 text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrGreater);
-                break;
               case ChipAction.ratingOrLower:
                 text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrLower);
-                break;
               default:
                 text = action.getText(context);
-                break;
             }
             return PopupMenuItem(
               value: action,
