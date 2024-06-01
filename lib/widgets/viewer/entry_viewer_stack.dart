@@ -248,7 +248,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               return StreamBuilder<PiPStatus>(
                 // as of floating v2.0.0, plugin assumes activity and fails when bound via service
                 // so we do not access status stream directly, but check for support first
-                stream: device.supportPictureInPicture ? _floating.pipStatus$ : Stream.value(PiPStatus.disabled),
+                stream: device.supportPictureInPicture ? _floating.pipStatusStream : Stream.value(PiPStatus.disabled),
                 builder: (context, snapshot) {
                   var pipEnabled = snapshot.data == PiPStatus.enabled;
                   return ValueListenableBuilder<bool>(
@@ -931,10 +931,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       );
 
       try {
-        final status = await _floating.enable(
+        final status = await _floating.enable(EnableManual(
           aspectRatio: aspectRatio,
           sourceRectHint: sourceRectHint,
-        );
+        ));
         await reportService.log('Enabled picture-in-picture with status=$status');
         return status == PiPStatus.enabled;
       } on PlatformException catch (e, stack) {
