@@ -29,6 +29,7 @@ import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MemoryUtils
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -68,9 +69,10 @@ object Helper {
     }
 
     @Throws(IOException::class, ImageProcessingException::class)
-    fun safeRead(input: InputStream): com.drew.metadata.Metadata {
+    fun safeRead(input: InputStream, sizeBytes: Long?): com.drew.metadata.Metadata {
         val inputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         val fileType = FileTypeDetector.detectFileType(inputStream)
+        val streamLength = sizeBytes ?: SAFE_READ_STREAM_LENGTH
 
         val metadata = when (fileType) {
             FileType.Jpeg -> safeReadJpeg(inputStream)
@@ -82,9 +84,9 @@ object Helper {
             FileType.Cr2,
             FileType.Nef,
             FileType.Orf,
-            FileType.Rw2 -> safeReadTiff(inputStream)
+            FileType.Rw2 -> safeReadTiff(inputStream, streamLength)
 
-            else -> ImageMetadataReader.readMetadata(inputStream, SAFE_READ_STREAM_LENGTH, fileType)
+            else -> ImageMetadataReader.readMetadata(inputStream, streamLength, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))
@@ -115,10 +117,11 @@ object Helper {
     }
 
     @Throws(IOException::class, TiffProcessingException::class)
-    fun safeReadTiff(input: InputStream): com.drew.metadata.Metadata {
-        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, SAFE_READ_STREAM_LENGTH)
+    fun safeReadTiff(input: InputStream, streamLength: Long): com.drew.metadata.Metadata {
+        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, streamLength)
         val metadata = com.drew.metadata.Metadata()
         val handler = SafeExifTiffHandler(metadata, null, 0)
+        Log.d(LOG_TAG, "safeReadTiff: availableHeapSize=${MemoryUtils.getAvailableHeapSize()}")
         TiffReader().processTiff(reader, handler, 0)
         return metadata
     }

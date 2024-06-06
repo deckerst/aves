@@ -97,7 +97,7 @@ object MultiPage {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input)
+                    val metadata = Helper.safeRead(input, sizeBytes)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
@@ -168,7 +168,7 @@ object MultiPage {
         val mimeType = MimeTypes.JPEG
         try {
             Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                val metadata = Helper.safeRead(input)
+                val metadata = Helper.safeRead(input, sizeBytes)
                 return metadata.getDirectoriesOfType(MpEntryDirectory::class.java).map { it.entry }
             }
         } catch (e: Exception) {
@@ -332,7 +332,7 @@ object MultiPage {
 
         try {
             Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                val metadata = Helper.safeRead(input)
+                val metadata = Helper.safeRead(input, sizeBytes)
                 foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                 metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
             }
