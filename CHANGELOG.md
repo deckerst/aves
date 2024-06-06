@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Screen saver: black background, consistent with slideshow
-- upgraded Flutter to stable v3.22.1
+- upgraded Flutter to stable v3.22.2
 
 ### Removed
 
