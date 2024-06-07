@@ -296,7 +296,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                                 byGeoTiff[false]?.map { exifTagMapper(it) }?.let { dirMap.putAll(it) }
                                             }
 
-                                            mimeType == MimeTypes.DNG -> {
+                                            mimeType == MimeTypes.DNG || mimeType == MimeTypes.DNG_ADOBE -> {
                                                 // split DNG tags in their own directory
                                                 val dngDirMap = metadataMap[DIR_DNG] ?: HashMap()
                                                 metadataMap[DIR_DNG] = dngDirMap

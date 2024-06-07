@@ -28,7 +28,8 @@ object MimeTypes {
     private const val CR2 = "image/x-canon-cr2"
     private const val CRW = "image/x-canon-crw"
     private const val DCR = "image/x-kodak-dcr"
-    const val DNG = "image/x-adobe-dng"
+    const val DNG = "image/dng"
+    const val DNG_ADOBE = "image/x-adobe-dng"
     private const val ERF = "image/x-epson-erf"
     private const val K25 = "image/x-kodak-k25"
     private const val KDC = "image/x-kodak-kdc"
@@ -71,7 +72,7 @@ object MimeTypes {
 
     fun isRaw(mimeType: String): Boolean {
         return when (mimeType) {
-            ARW, CR2, CRW, DCR, DNG, ERF, K25, KDC, MRW, NEF, NRW, ORF, PEF, RAF, RAW, RW2, SR2, SRF, SRW, X3F -> true
+            ARW, CR2, CRW, DCR, DNG, DNG_ADOBE, ERF, K25, KDC, MRW, NEF, NRW, ORF, PEF, RAF, RAW, RW2, SR2, SRF, SRW, X3F -> true
             else -> false
         }
     }
@@ -142,7 +143,7 @@ object MimeTypes {
         return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             true
         } else when (mimeType) {
-            DNG, HEIC, HEIF, PNG, WEBP -> true
+            DNG, DNG_ADOBE, HEIC, HEIF, PNG, WEBP -> true
             else -> false
         }
     }
@@ -151,7 +152,7 @@ object MimeTypes {
     // according to EXIF orientation when decoding images of known formats
     // but we need to rotate the decoded bitmap for the other formats
     fun needRotationAfterContentResolverThumbnail(mimeType: String) = when (mimeType) {
-        DNG, PNG -> true
+        DNG, DNG_ADOBE, PNG -> true
         else -> false
     }
 

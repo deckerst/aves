@@ -120,7 +120,7 @@ object Metadata {
         return date.time + parseSubSecond(subSecond)
     }
 
-    // Opening large PSD/TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
+    // Opening some large files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
     // so we define an arbitrary threshold to avoid a crash on launch.
     // It is not clear whether it is because of the file itself or its metadata.
     private const val FILE_SIZE_MAX = 100 * (1 shl 20) // MB
@@ -136,6 +136,8 @@ object Metadata {
     private fun getSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): Uri {
         return when (mimeType) {
             // formats known to yield OOM for large files
+            MimeTypes.DNG,
+            MimeTypes.DNG_ADOBE,
             MimeTypes.HEIC,
             MimeTypes.HEIF,
             MimeTypes.MP4,

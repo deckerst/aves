@@ -60,19 +60,20 @@ object Helper {
     // e.g. "exif [...] 134 [...] 4578696600004949[...]"
     private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
 
-    // providing the stream length is risky, as it may crash if it is incorrect
-    private const val SAFE_READ_STREAM_LENGTH = -1L
-
     fun readMimeType(input: InputStream): String? {
         val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         return FileTypeDetector.detectFileType(bufferedInputStream).mimeType
     }
 
     @Throws(IOException::class, ImageProcessingException::class)
-    fun safeRead(input: InputStream, sizeBytes: Long?): com.drew.metadata.Metadata {
+    fun safeRead(input: InputStream, @Suppress("unused_parameter") sizeBytes: Long?): com.drew.metadata.Metadata {
         val inputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         val fileType = FileTypeDetector.detectFileType(inputStream)
-        val streamLength = sizeBytes ?: SAFE_READ_STREAM_LENGTH
+
+        // Providing the stream length is risky, as it may crash if it is incorrect.
+        // Not providing the stream length is also risky, as it may lead to OOM
+        // when `RandomAccessStreamReader` reads the entire stream to validate offsets.
+        val undefinedStreamLength = -1L
 
         val metadata = when (fileType) {
             FileType.Jpeg -> safeReadJpeg(inputStream)
@@ -84,9 +85,9 @@ object Helper {
             FileType.Cr2,
             FileType.Nef,
             FileType.Orf,
-            FileType.Rw2 -> safeReadTiff(inputStream, streamLength)
+            FileType.Rw2 -> safeReadTiff(inputStream, undefinedStreamLength)
 
-            else -> ImageMetadataReader.readMetadata(inputStream, streamLength, fileType)
+            else -> ImageMetadataReader.readMetadata(inputStream, undefinedStreamLength, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))
