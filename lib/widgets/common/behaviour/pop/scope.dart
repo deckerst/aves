@@ -1,5 +1,4 @@
 import 'package:aves/services/common/services.dart';
-import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
