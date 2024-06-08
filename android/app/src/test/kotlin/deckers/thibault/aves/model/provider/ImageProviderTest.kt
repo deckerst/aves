@@ -10,9 +10,9 @@ class ImageProviderTest {
     @Test
     fun imageProvider_CorrectEmailSimple_ReturnsTrue() {
         val date = LocalDate.of(1990, Month.FEBRUARY, 11).toEpochDay()
-        assertEquals(ImageProvider.getTimeZoneString(TimeZone.getTimeZone("Europe/Paris"), date), "+01:00")
-        assertEquals(ImageProvider.getTimeZoneString(TimeZone.getTimeZone("UTC"), date), "+00:00")
-        assertEquals(ImageProvider.getTimeZoneString(TimeZone.getTimeZone("Asia/Kolkata"), date), "+05:30")
-        assertEquals(ImageProvider.getTimeZoneString(TimeZone.getTimeZone("America/Chicago"), date), "-06:00")
+        assertEquals("+01:00", ImageProvider.getTimeZoneString(TimeZone.getTimeZone("Europe/Paris"), date))
+        assertEquals("+00:00", ImageProvider.getTimeZoneString(TimeZone.getTimeZone("UTC"), date))
+        assertEquals("+05:30", ImageProvider.getTimeZoneString(TimeZone.getTimeZone("Asia/Kolkata"), date))
+        assertEquals("-06:00", ImageProvider.getTimeZoneString(TimeZone.getTimeZone("America/Chicago"), date))
     }
 }

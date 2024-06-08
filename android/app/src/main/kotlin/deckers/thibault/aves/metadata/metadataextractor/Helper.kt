@@ -122,7 +122,6 @@ object Helper {
         val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, streamLength)
         val metadata = com.drew.metadata.Metadata()
         val handler = SafeExifTiffHandler(metadata, null, 0)
-        Log.d(LOG_TAG, "safeReadTiff: availableHeapSize=${MemoryUtils.getAvailableHeapSize()}")
         TiffReader().processTiff(reader, handler, 0)
         return metadata
     }
