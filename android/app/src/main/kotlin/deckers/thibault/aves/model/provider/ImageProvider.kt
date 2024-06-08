@@ -1026,7 +1026,7 @@ abstract class ImageProvider {
         uri: Uri,
         mimeType: String,
         dateMillis: Long?,
-        shiftMinutes: Long?,
+        shiftSeconds: Long?,
         fields: List<String>,
         callback: ImageOpCallback,
     ) {
@@ -1057,9 +1057,9 @@ abstract class ImageProvider {
                     }
                 }
 
-                shiftMinutes != null -> {
+                shiftSeconds != null -> {
                     // shift
-                    val shiftMillis = shiftMinutes * 60000
+                    val shiftMillis = shiftSeconds * 1000
                     listOf(
                         ExifInterface.TAG_DATETIME,
                         ExifInterface.TAG_DATETIME_ORIGINAL,

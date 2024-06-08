@@ -64,7 +64,7 @@ class PlatformMetadataEditService implements MetadataEditService {
       final result = await _platform.invokeMethod('editDate', <String, dynamic>{
         'entry': entry.toPlatformEntryMap(),
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
-        'shiftMinutes': modifier.shiftMinutes,
+        'shiftSeconds': modifier.shiftSeconds,
         'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toPlatform).whereNotNull().toList(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();

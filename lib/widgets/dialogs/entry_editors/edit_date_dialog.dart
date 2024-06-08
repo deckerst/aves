@@ -42,7 +42,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
   late AvesEntry _copyItemSource;
   late DateTime _customDateTime;
-  late ValueNotifier<int> _shiftHour, _shiftMinute;
+  late ValueNotifier<int> _shiftHour, _shiftMinute, _shiftSecond;
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
   final Set<MetadataField> _fields = {...DateModifier.writableFields};
@@ -50,12 +50,15 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   DateTime get copyItemDate => _copyItemSource.bestDate ?? DateTime.now();
 
+  static const _positiveSign = '+';
+  static const _negativeSign = '-';
+
   @override
   void initState() {
     super.initState();
     _initCustom();
     _initCopyItem();
-    _initShift(minutesInHour);
+    _initShift();
     _validate();
   }
 
@@ -64,6 +67,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     _isValidNotifier.dispose();
     _shiftHour.dispose();
     _shiftMinute.dispose();
+    _shiftSecond.dispose();
     _shiftSign.dispose();
     super.dispose();
   }
@@ -76,11 +80,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     _copyItemSource = widget.entry;
   }
 
-  void _initShift(int initialMinutes) {
-    final abs = initialMinutes.abs();
-    _shiftHour = ValueNotifier(abs ~/ minutesInHour);
-    _shiftMinute = ValueNotifier(abs % minutesInHour);
-    _shiftSign = ValueNotifier(initialMinutes.isNegative ? '-' : '+');
+  void _initShift() {
+    _shiftHour = ValueNotifier(1);
+    _shiftMinute = ValueNotifier(0);
+    _shiftSecond = ValueNotifier(0);
+    _shiftSign = ValueNotifier(_positiveSign);
   }
 
   @override
@@ -215,13 +219,15 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
               Center(child: Text(l10n.durationDialogHours)),
               const SizedBox(width: 16),
               Center(child: Text(l10n.durationDialogMinutes)),
+              const SizedBox(width: 16),
+              Center(child: Text(l10n.durationDialogSeconds)),
             ],
           ),
           TableRow(
             children: [
               WheelSelector(
                 valueNotifier: _shiftSign,
-                values: const ['+', '-'],
+                values: const [_positiveSign, _negativeSign],
                 textStyle: textStyle,
                 textAlign: TextAlign.center,
                 format: (v) => v,
@@ -236,18 +242,29 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   format: timeComponentFormatter.format,
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 2),
-                child: Text(
-                  ':',
-                  style: textStyle,
-                ),
+              const Text(
+                ':',
+                style: textStyle,
               ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: WheelSelector(
                   valueNotifier: _shiftMinute,
                   values: List.generate(minutesInHour, (i) => i),
+                  textStyle: textStyle,
+                  textAlign: digitsAlign,
+                  format: timeComponentFormatter.format,
+                ),
+              ),
+              const Text(
+                ':',
+                style: textStyle,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: WheelSelector(
+                  valueNotifier: _shiftSecond,
+                  values: List.generate(secondsInMinute, (i) => i),
                   textStyle: textStyle,
                   textAlign: digitsAlign,
                   format: timeComponentFormatter.format,
@@ -371,8 +388,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.extractFromTitle:
         return DateModifier.extractFromTitle();
       case DateEditAction.shift:
-        final shiftTotalMinutes = (_shiftHour.value * minutesInHour + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
-        return DateModifier.shift(_fields, shiftTotalMinutes);
+        final shiftTotalSeconds = ((_shiftHour.value * minutesInHour + _shiftMinute.value) * secondsInMinute + _shiftSecond.value) * (_shiftSign.value == _positiveSign ? 1 : -1);
+        return DateModifier.shift(_fields, shiftTotalSeconds);
       case DateEditAction.remove:
         return DateModifier.remove(_fields);
     }
