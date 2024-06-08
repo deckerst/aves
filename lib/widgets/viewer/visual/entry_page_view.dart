@@ -505,7 +505,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
   double? _getSideRatio() {
     if (!mounted) return null;
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-    return isPortrait ? 1 / 5 : 1 / 8;
+    return isPortrait ? 1 / 6 : 1 / 8;
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {
