@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- opening app from launcher shows home page only when exited by back button
 - Screen saver: black background, consistent with slideshow
 - upgraded Flutter to stable v3.22.2
 

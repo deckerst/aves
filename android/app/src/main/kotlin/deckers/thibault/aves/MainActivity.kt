@@ -285,10 +285,10 @@ open class MainActivity : FlutterFragmentActivity() {
     open fun extractIntentData(intent: Intent?): FieldMap {
         when (val action = intent?.action) {
             Intent.ACTION_MAIN -> {
-                val fields = hashMapOf<String, Any?>(
-                    INTENT_DATA_KEY_LAUNCHER to intent.hasCategory(Intent.CATEGORY_LAUNCHER),
-                    INTENT_DATA_KEY_SAFE_MODE to intent.getBooleanExtra(EXTRA_KEY_SAFE_MODE, false),
-                )
+                val fields = HashMap<String, Any?>()
+                if (intent.getBooleanExtra(EXTRA_KEY_SAFE_MODE, false)) {
+                    fields[INTENT_DATA_KEY_SAFE_MODE] = true
+                }
                 intent.getStringExtra(EXTRA_KEY_PAGE)?.let { page ->
                     val filters = extractFiltersFromIntent(intent)
                     fields[INTENT_DATA_KEY_PAGE] = page
@@ -497,7 +497,6 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_ACTION = "action"
         const val INTENT_DATA_KEY_ALLOW_MULTIPLE = "allowMultiple"
         const val INTENT_DATA_KEY_FILTERS = "filters"
-        const val INTENT_DATA_KEY_LAUNCHER = "launcher"
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_QUERY = "query"
