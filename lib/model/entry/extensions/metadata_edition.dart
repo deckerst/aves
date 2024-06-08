@@ -62,7 +62,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
                 final date = DateTime.tryParse(xmpDate);
                 if (date != null) {
                   // TODO TLAD [date] DateTime.tryParse converts to UTC time, losing the time zone offset
-                  final shiftedDate = date.add(Duration(minutes: appliedModifier.shiftMinutes!));
+                  final shiftedDate = date.add(Duration(seconds: appliedModifier.shiftSeconds!));
                   editCreateDateXmp(descriptions, shiftedDate);
                 } else {
                   reportService.recordError('failed to parse XMP date=$xmpDate', null);

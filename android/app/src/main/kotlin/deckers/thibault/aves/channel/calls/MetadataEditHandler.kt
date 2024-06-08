@@ -74,7 +74,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
     private fun editDate(call: MethodCall, result: MethodChannel.Result) {
         val dateMillis = call.argument<Number>("dateMillis")?.toLong()
-        val shiftMinutes = call.argument<Number>("shiftMinutes")?.toLong()
+        val shiftSeconds = call.argument<Number>("shiftSeconds")?.toLong()
         val fields = call.argument<List<String>>("fields")
         val entryMap = call.argument<FieldMap>("entry")
         if (entryMap == null || fields == null) {
@@ -97,7 +97,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
         }
 
         val callback = MetadataOpCallback("editDate", entryMap, result)
-        provider.editDate(contextWrapper, path, uri, mimeType, dateMillis, shiftMinutes, fields, callback)
+        provider.editDate(contextWrapper, path, uri, mimeType, dateMillis, shiftSeconds, fields, callback)
     }
 
     private fun editMetadata(call: MethodCall, result: MethodChannel.Result) {
