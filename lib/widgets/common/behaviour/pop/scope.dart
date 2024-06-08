@@ -1,4 +1,5 @@
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -28,6 +29,7 @@ class AvesPopScope extends StatelessWidget {
           } else {
             // exit
             reportService.log('Exit by pop');
+            PopExitNotification().dispatch(context);
             SystemNavigator.pop();
           }
         }
@@ -36,3 +38,6 @@ class AvesPopScope extends StatelessWidget {
     );
   }
 }
+
+@immutable
+class PopExitNotification extends Notification {}
