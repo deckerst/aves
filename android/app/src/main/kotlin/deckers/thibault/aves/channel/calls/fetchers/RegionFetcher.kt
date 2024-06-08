@@ -14,10 +14,12 @@ import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 // As of Android 14 (API 34), `BitmapRegionDecoder` documentation states
@@ -60,10 +62,6 @@ class RegionFetcher internal constructor(
             return
         }
 
-        val options = BitmapFactory.Options().apply {
-            inSampleSize = sampleSize
-        }
-
         var currentDecoderRef = lastDecoderRef
         if (currentDecoderRef != null && currentDecoderRef.uri != uri) {
             currentDecoderRef = null
@@ -85,27 +83,35 @@ class RegionFetcher internal constructor(
 
             // with raw images, the known image size may not match the decoded image size
             // so we scale the requested region accordingly
-            val effectiveRect = if (imageWidth != decoder.width || imageHeight != decoder.height) {
+            var effectiveRect = regionRect
+            var effectiveSampleSize = sampleSize
+
+            if (imageWidth != decoder.width || imageHeight != decoder.height) {
                 val xf = decoder.width.toDouble() / imageWidth
                 val yf = decoder.height.toDouble() / imageHeight
-                Rect(
+                effectiveRect = Rect(
                     (regionRect.left * xf).roundToInt(),
                     (regionRect.top * yf).roundToInt(),
                     (regionRect.right * xf).roundToInt(),
                     (regionRect.bottom * yf).roundToInt(),
                 )
-            } else {
-                regionRect
+                val factor = MathUtils.highestPowerOf2((1 / max(xf, yf)).roundToInt())
+                if (factor > 1) {
+                    effectiveSampleSize = max(1, effectiveSampleSize / factor)
+                }
             }
 
             // use `Long` as rect size could be unexpectedly large and go beyond `Int` max
-            val targetBitmapSizeBytes: Long = ARGB_8888_BYTE_SIZE.toLong() * effectiveRect.width() * effectiveRect.height() / sampleSize
+            val targetBitmapSizeBytes: Long = ARGB_8888_BYTE_SIZE.toLong() * effectiveRect.width() * effectiveRect.height() / effectiveSampleSize
             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                 // decoding a region that large would yield an OOM when creating the bitmap
                 result.error("fetch-large-region", "Region too large for uri=$uri regionRect=$regionRect", null)
                 return
             }
 
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = effectiveSampleSize
+            }
             val bitmap = decoder.decodeRegion(effectiveRect, options)
             if (bitmap != null) {
                 result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = true))

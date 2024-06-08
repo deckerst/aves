@@ -17,6 +17,10 @@ All notable changes to this project will be documented in this file.
 
 - support for Android KitKat (API 19)
 
+### Fixed
+
+- crash when cataloguing large images
+
 ## <a id="v1.11.1"></a>[v1.11.1] - 2024-05-03
 
 ### Added
