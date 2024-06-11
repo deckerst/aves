@@ -7,13 +7,13 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Acepto los términos y condiciones",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 elemento} other{{count} elementos}}",
+  "itemCount": "{count, plural, =1{{count} elemento} other{{count} elementos}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
+  "timeSeconds": "{count, plural, =1{{count} segundo} other{{count} segundos}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
+  "timeMinutes": "{count, plural, =1{{count} minuto} other{{count} minutos}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, =1{1 día} other{{days} días}}",
+  "timeDays": "{count, plural, =1{{count} día} other{{count} días}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1187,7 +1187,7 @@
   "@keepScreenOnVideoPlayback": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "Mostrar alternativas a gestos multitáctiles",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
-  "columnCount": "{count, plural, =1{1 columna} other{{count} columnas}}",
+  "columnCount": "{count, plural, =1{{count} columna} other{{count} columnas}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1378,5 +1378,7 @@
   "settingsForceWesternArabicNumeralsTile": "Forzar números arábigos",
   "@settingsForceWesternArabicNumeralsTile": {},
   "renameProcessorHash": "Hash",
-  "@renameProcessorHash": {}
+  "@renameProcessorHash": {},
+  "chipActionShowCollection": "Mostrar en Colección",
+  "@chipActionShowCollection": {}
 }

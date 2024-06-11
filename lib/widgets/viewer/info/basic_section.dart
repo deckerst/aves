@@ -32,6 +32,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class BasicSection extends StatefulWidget {
@@ -277,15 +278,6 @@ class _BasicInfoState extends State<_BasicInfo> {
 
   AvesEntry get entry => widget.entry;
 
-  int get megaPixels => (entry.width * entry.height / 1000000).round();
-
-  // guess whether this is a photo, according to file type
-  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(entry.mimeType) || entry.isRaw;
-
-  bool get showMegaPixels => isPhoto && megaPixels > 0;
-
-  String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' • $megaPixels MP' : ''}';
-
   static const ownerPackageNamePropKey = 'owner_package_name';
   static const iconSize = 20.0;
 
@@ -307,7 +299,7 @@ class _BasicInfoState extends State<_BasicInfo> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
-    final locale = l10n.localeName;
+    final locale = context.locale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
@@ -331,7 +323,7 @@ class _BasicInfoState extends State<_BasicInfo> {
                 l10n.viewerInfoLabelTitle: title,
                 l10n.viewerInfoLabelDate: dateText,
                 if (entry.isVideo) ..._buildVideoRows(context),
-                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(rasterResolutionText),
+                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(locale)),
                 l10n.viewerInfoLabelSize: context.applyDirectionality(sizeText),
                 if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
                 if (path != null) l10n.viewerInfoLabelPath: path,
@@ -383,5 +375,20 @@ class _BasicInfoState extends State<_BasicInfo> {
             style: InfoRowGroup.valueStyle,
           ),
         ];
+  }
+
+  String getRasterResolutionText(String locale) {
+    var s = entry.getResolutionText(locale);
+
+    // guess whether this is a photo, according to file type
+    final isPhoto = [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(entry.mimeType) || entry.isRaw;
+    if (isPhoto) {
+      final megaPixels = (entry.width * entry.height / 1000000).round();
+      if (megaPixels > 0) {
+        s += ' • ${NumberFormat('0', locale).format(megaPixels)} MP';
+      }
+    }
+
+    return s;
   }
 }

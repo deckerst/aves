@@ -44,19 +44,19 @@
       }
     }
   },
-  "timeDays": "{days, plural, =1{1 den} few{{days} dny} other{{days} dnů}}",
+  "timeDays": "{count, plural, =1{{count} den} few{{count} dny} other{{count} dnů}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
     }
   },
-  "itemCount": "{count, plural, =1{1 položka} few{{count} položky} other{{count} položek}}",
+  "itemCount": "{count, plural, =1{{count} položka} few{{count} položky} other{{count} položek}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "columnCount": "{count, plural, =1{1 sloupec} few{{count} sloupce} other{{count} sloupců}}",
+  "columnCount": "{count, plural, =1{{count} sloupec} few{{count} sloupce} other{{count} sloupců}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1279,13 +1279,13 @@
   "@settingsThumbnailShowVideoDuration": {},
   "settingsCollectionQuickActionsTile": "Rychlé akce",
   "@settingsCollectionQuickActionsTile": {},
-  "timeMinutes": "{minutes, plural, =1{1 minuta} few{{minutes} minuty} other{{minutes} minut}}",
+  "timeMinutes": "{count, plural, =1{{count} minuta} few{{count} minuty} other{{count} minut}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 sekunda} few{{seconds} sekundy} other{{seconds} sekund}}",
+  "timeSeconds": "{count, plural, =1{{count} sekunda} few{{count} sekundy} other{{count} sekund}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -1532,5 +1532,7 @@
   "videoRepeatActionSetEnd": "Nastavit konec",
   "@videoRepeatActionSetEnd": {},
   "videoActionABRepeat": "Opakování A-B",
-  "@videoActionABRepeat": {}
+  "@videoActionABRepeat": {},
+  "chipActionShowCollection": "Zobrazit ve sbírce",
+  "@chipActionShowCollection": {}
 }

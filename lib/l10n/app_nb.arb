@@ -751,25 +751,25 @@
   "@settingsConfirmationTile": {},
   "settingsThumbnailSectionTitle": "Miniatyrbilder",
   "@settingsThumbnailSectionTitle": {},
-  "timeMinutes": "{minutes, plural, =1{1 minutt} other{{minutes} minutter}}",
+  "timeMinutes": "{count, plural, =1{{count} minutt} other{{count} minutter}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 dag} other{{days} dager}}",
+  "timeDays": "{count, plural, =1{{count} dag} other{{count} dager}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
     }
   },
-  "itemCount": "{count, plural, =1{1 element} other{{count} elementer}}",
+  "itemCount": "{count, plural, =1{{count} element} other{{count} elementer}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 sekund} other{{seconds} sekunder}}",
+  "timeSeconds": "{count, plural, =1{{count} sekund} other{{count} sekunder}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -1343,7 +1343,7 @@
   "@settingsDisplayUseTvInterface": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "Vis multi-trykkhåndvendingsalternativer",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
-  "columnCount": "{count, plural, =1{1 kolonne} other{{count} kolonner}}",
+  "columnCount": "{count, plural, =1{{count} kolonne} other{{count} kolonner}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1478,5 +1478,7 @@
   "searchStatesSectionTitle": "Tilstander",
   "@searchStatesSectionTitle": {},
   "vaultLockTypePattern": "Mønster",
-  "@vaultLockTypePattern": {}
+  "@vaultLockTypePattern": {},
+  "chipActionShowCollection": "Vis i samling",
+  "@chipActionShowCollection": {}
 }

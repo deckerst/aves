@@ -49,13 +49,7 @@ class InteractiveTile extends StatelessWidget {
           case AppMode.pickFilteredMediaInternal:
           case AppMode.pickUnfilteredMediaInternal:
             Navigator.maybeOf(context)?.pop(entry);
-          case AppMode.pickCollectionFiltersExternal:
-          case AppMode.pickFilterInternal:
-          case AppMode.screenSaver:
-          case AppMode.setWallpaper:
-          case AppMode.slideshow:
-          case AppMode.view:
-          case AppMode.edit:
+          default:
             break;
         }
       },

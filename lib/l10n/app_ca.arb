@@ -7,13 +7,13 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Estic d’acord amb els termes i condicions",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 element} other{{count} elements}}",
+  "itemCount": "{count, plural, =1{{count} element} other{{count} elements}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "columnCount": "{count, plural, =1{1 columna} other{{count} columnes}}",
+  "columnCount": "{count, plural, =1{{count} columna} other{{count} columnes}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -479,19 +479,19 @@
   "@policyPageTitle": {},
   "collectionPageTitle": "Coŀlecció",
   "@collectionPageTitle": {},
-  "timeSeconds": "{seconds, plural, =1{1 segon} other{{seconds} segons}}",
+  "timeSeconds": "{count, plural, =1{{count} segon} other{{count} segons}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minut} other{{minutes} minuts}}",
+  "timeMinutes": "{count, plural, =1{{count} minut} other{{count} minuts}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 dia} other{{days} dies}}",
+  "timeDays": "{count, plural, =1{{count} dia} other{{count} dies}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -1524,5 +1524,7 @@
     "placeholders": {
       "count": {}
     }
-  }
+  },
+  "chipActionShowCollection": "Mostrar a Coŀlecció",
+  "@chipActionShowCollection": {}
 }

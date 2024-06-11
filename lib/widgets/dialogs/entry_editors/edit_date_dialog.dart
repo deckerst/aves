@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
@@ -17,6 +18,7 @@ import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class EditEntryDateDialog extends StatefulWidget {
@@ -40,7 +42,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
   late AvesEntry _copyItemSource;
   late DateTime _customDateTime;
-  late ValueNotifier<int> _shiftHour, _shiftMinute;
+  late ValueNotifier<int> _shiftHour, _shiftMinute, _shiftSecond;
   late ValueNotifier<String> _shiftSign;
   bool _showOptions = false;
   final Set<MetadataField> _fields = {...DateModifier.writableFields};
@@ -48,12 +50,15 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   DateTime get copyItemDate => _copyItemSource.bestDate ?? DateTime.now();
 
+  static const _positiveSign = '+';
+  static const _negativeSign = '-';
+
   @override
   void initState() {
     super.initState();
     _initCustom();
     _initCopyItem();
-    _initShift(minutesInHour);
+    _initShift();
     _validate();
   }
 
@@ -62,6 +67,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     _isValidNotifier.dispose();
     _shiftHour.dispose();
     _shiftMinute.dispose();
+    _shiftSecond.dispose();
     _shiftSign.dispose();
     super.dispose();
   }
@@ -74,11 +80,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     _copyItemSource = widget.entry;
   }
 
-  void _initShift(int initialMinutes) {
-    final abs = initialMinutes.abs();
-    _shiftHour = ValueNotifier(abs ~/ minutesInHour);
-    _shiftMinute = ValueNotifier(abs % minutesInHour);
-    _shiftSign = ValueNotifier(initialMinutes.isNegative ? '-' : '+');
+  void _initShift() {
+    _shiftHour = ValueNotifier(1);
+    _shiftMinute = ValueNotifier(0);
+    _shiftSecond = ValueNotifier(0);
+    _shiftSign = ValueNotifier(_positiveSign);
   }
 
   @override
@@ -146,19 +152,17 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Widget _buildSetCustomContent(BuildContext context) {
-    final l10n = context.l10n;
-    final locale = l10n.localeName;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(_customDateTime, locale, use24hour))),
+          Expanded(child: Text(formatDateTime(_customDateTime, context.locale, use24hour))),
           IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _editDate,
-            tooltip: l10n.changeTooltip,
+            tooltip: context.l10n.changeTooltip,
           ),
         ],
       ),
@@ -180,15 +184,13 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Widget _buildCopyItemContent(BuildContext context) {
-    final l10n = context.l10n;
-    final locale = l10n.localeName;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(copyItemDate, locale, use24hour))),
+          Expanded(child: Text(formatDateTime(copyItemDate, context.locale, use24hour))),
           const SizedBox(width: 8),
           ItemPicker(
             extent: 48,
@@ -201,27 +203,34 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Widget _buildShiftContent(BuildContext context) {
+    final l10n = context.l10n;
+    final timeComponentFormatter = NumberFormat('0', context.locale);
+
     const textStyle = TextStyle(fontSize: 34);
+    const digitsAlign = TextAlign.right;
+
     return Center(
       child: Table(
-        // even when ambient direction is RTL, time is displayed in LTR
-        textDirection: TextDirection.ltr,
+        textDirection: timeComponentsDirection,
         children: [
           TableRow(
             children: [
               const SizedBox(),
-              Center(child: Text(context.l10n.durationDialogHours)),
+              Center(child: Text(l10n.durationDialogHours)),
               const SizedBox(width: 16),
-              Center(child: Text(context.l10n.durationDialogMinutes)),
+              Center(child: Text(l10n.durationDialogMinutes)),
+              const SizedBox(width: 16),
+              Center(child: Text(l10n.durationDialogSeconds)),
             ],
           ),
           TableRow(
             children: [
               WheelSelector(
                 valueNotifier: _shiftSign,
-                values: const ['+', '-'],
+                values: const [_positiveSign, _negativeSign],
                 textStyle: textStyle,
                 textAlign: TextAlign.center,
+                format: (v) => v,
               ),
               Align(
                 alignment: Alignment.centerRight,
@@ -229,15 +238,13 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   valueNotifier: _shiftHour,
                   values: List.generate(hoursInDay, (i) => i),
                   textStyle: textStyle,
-                  textAlign: TextAlign.end,
+                  textAlign: digitsAlign,
+                  format: timeComponentFormatter.format,
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 2),
-                child: Text(
-                  ':',
-                  style: textStyle,
-                ),
+              const Text(
+                ':',
+                style: textStyle,
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -245,7 +252,22 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   valueNotifier: _shiftMinute,
                   values: List.generate(minutesInHour, (i) => i),
                   textStyle: textStyle,
-                  textAlign: TextAlign.end,
+                  textAlign: digitsAlign,
+                  format: timeComponentFormatter.format,
+                ),
+              ),
+              const Text(
+                ':',
+                style: textStyle,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: WheelSelector(
+                  valueNotifier: _shiftSecond,
+                  values: List.generate(secondsInMinute, (i) => i),
+                  textStyle: textStyle,
+                  textAlign: digitsAlign,
+                  format: timeComponentFormatter.format,
                 ),
               ),
             ],
@@ -366,8 +388,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case DateEditAction.extractFromTitle:
         return DateModifier.extractFromTitle();
       case DateEditAction.shift:
-        final shiftTotalMinutes = (_shiftHour.value * minutesInHour + _shiftMinute.value) * (_shiftSign.value == '+' ? 1 : -1);
-        return DateModifier.shift(_fields, shiftTotalMinutes);
+        final shiftTotalSeconds = ((_shiftHour.value * minutesInHour + _shiftMinute.value) * secondsInMinute + _shiftSecond.value) * (_shiftSign.value == _positiveSign ? 1 : -1);
+        return DateModifier.shift(_fields, shiftTotalSeconds);
       case DateEditAction.remove:
         return DateModifier.remove(_fields);
     }

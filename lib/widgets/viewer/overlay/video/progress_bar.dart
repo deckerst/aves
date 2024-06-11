@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
@@ -122,8 +123,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                               ClipRRect(
                                 borderRadius: const BorderRadius.all(Radius.circular(4)),
                                 child: Directionality(
-                                  // force directionality for `LinearProgressIndicator`
-                                  textDirection: TextDirection.ltr,
+                                  textDirection: videoPlaybackDirection,
                                   child: StreamBuilder<int>(
                                       stream: positionStream,
                                       builder: (context, snapshot) {

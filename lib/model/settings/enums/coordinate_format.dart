@@ -47,18 +47,18 @@ extension ExtraCoordinateFormat on CoordinateFormat {
     final min = minDecimal.toInt();
     final sec = (minDecimal - min) * 60;
 
-    var minText = NumberFormat('0' * (minuteSecondPadding ? 2 : 1), locale).format(min);
-    var secText = NumberFormat('${'0' * (minuteSecondPadding ? 2 : 1)}${secondDecimals > 0 ? '.${'0' * secondDecimals}' : ''}', locale).format(sec);
+    final degText = NumberFormat('0', locale).format(deg);
+    final minText = NumberFormat('0' * (minuteSecondPadding ? 2 : 1), locale).format(min);
+    final secText = NumberFormat('${'0' * (minuteSecondPadding ? 2 : 1)}${secondDecimals > 0 ? '.${'0' * secondDecimals}' : ''}', locale).format(sec);
 
-    return '$deg° $minText′ $secText″';
+    return '$degText° $minText′ $secText″';
   }
 
   static List<String> _toDecimal(AppLocalizations l10n, LatLng latLng) {
-    final locale = l10n.localeName;
-    final formatter = NumberFormat('0.000000°', locale);
+    final coordinateFormatter = NumberFormat('0.000000°', l10n.localeName);
     return [
-      formatter.format(latLng.latitude),
-      formatter.format(latLng.longitude),
+      coordinateFormatter.format(latLng.latitude),
+      coordinateFormatter.format(latLng.longitude),
     ];
   }
 }

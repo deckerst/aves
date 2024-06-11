@@ -49,27 +49,20 @@ class Transformation extends Equatable {
         break;
       case TransformOrientation.rotate90:
         matrix.rotateZ(math.pi / 2);
-        break;
       case TransformOrientation.rotate180:
         matrix.rotateZ(math.pi);
-        break;
       case TransformOrientation.rotate270:
         matrix.rotateZ(3 * math.pi / 2);
-        break;
       case TransformOrientation.transverse:
         matrix.scale(-1.0, 1.0, 1.0);
         matrix.rotateZ(-3 * math.pi / 2);
-        break;
       case TransformOrientation.flipVertical:
         matrix.scale(1.0, -1.0, 1.0);
-        break;
       case TransformOrientation.transpose:
         matrix.scale(-1.0, 1.0, 1.0);
         matrix.rotateZ(-1 * math.pi / 2);
-        break;
       case TransformOrientation.flipHorizontal:
         matrix.scale(-1.0, 1.0, 1.0);
-        break;
     }
     return matrix;
   }

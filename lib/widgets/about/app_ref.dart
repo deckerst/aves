@@ -1,5 +1,5 @@
-
 import 'package:aves/model/device.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/about/policy_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
@@ -9,13 +9,6 @@ import 'package:flutter/material.dart';
 
 class AppReference extends StatelessWidget {
   static const avesGithub = 'https://github.com/deckerst/aves';
-
-  static const _appTitleStyle = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.normal,
-    letterSpacing: 1.0,
-    fontFeatures: [FontFeature.enable('smcp')],
-  );
 
   const AppReference({super.key});
 
@@ -38,26 +31,34 @@ class AppReference extends StatelessWidget {
   }
 
   Widget _buildAvesLine(BuildContext context) {
+    final locale = context.locale;
     final textScaler = MediaQuery.textScalerOf(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         AvesLogo(
-          size: textScaler.scale(_appTitleStyle.fontSize!) * 1.3,
+          size: textScaler.scale(_getAppTitleStyle(locale).fontSize!) * 1.3,
         ),
         const SizedBox(width: 8),
         Text(
           context.l10n.appName,
-          style: _appTitleStyle,
+          style: _getAppTitleStyle(locale),
         ),
         const SizedBox(width: 8),
         Text(
           device.packageVersion,
-          style: _appTitleStyle,
+          style: _getAppTitleStyle(locale),
         ),
       ],
     );
   }
+
+  TextStyle _getAppTitleStyle(String locale) => TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.normal,
+        letterSpacing: canHaveLetterSpacing(locale) ? 1 : 0,
+        fontFeatures: const [FontFeature.enable('smcp')],
+      );
 
   static List<Widget> buildLinks(BuildContext context) {
     final l10n = context.l10n;

@@ -163,7 +163,7 @@ class SourceEntry {
 
         try {
             Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
-                val metadata = Helper.safeRead(input)
+                val metadata = Helper.safeRead(input, sizeBytes)
 
                 // do not switch on specific MIME types, as the reported MIME type could be wrong
                 // (e.g. PNG registered as JPG)

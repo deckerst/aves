@@ -79,15 +79,9 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "obbDir" to context.obbDir,
             "externalCacheDir" to context.externalCacheDir,
             "externalFilesDir" to context.getExternalFilesDir(null),
+            "codeCacheDir" to context.codeCacheDir,
+            "noBackupFilesDir" to context.noBackupFilesDir,
         ).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                putAll(
-                    hashMapOf(
-                        "codeCacheDir" to context.codeCacheDir,
-                        "noBackupFilesDir" to context.noBackupFilesDir,
-                    )
-                )
-            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 put("dataDir", context.dataDir)
             }
@@ -108,8 +102,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getCodecs(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val codecs = ArrayList<FieldMap>()
-
         fun getFields(info: MediaCodecInfo): FieldMap {
             val fields: FieldMap = hashMapOf(
                 "name" to info.name,
@@ -126,18 +118,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             return fields
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            codecs.addAll(MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos.map(::getFields))
-        } else {
-            @Suppress("deprecation")
-            val count = MediaCodecList.getCodecCount()
-            for (i in 0 until count) {
-                @Suppress("deprecation")
-                val info = MediaCodecList.getCodecInfoAt(i)
-                codecs.add(getFields(info))
-            }
-        }
-
+        val codecs = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos.map(::getFields).toList()
         result.success(codecs)
     }
 
@@ -294,7 +275,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input)
+                    val metadata = Helper.safeRead(input, sizeBytes)
                     metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
                         if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
                             dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)

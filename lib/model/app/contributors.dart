@@ -87,6 +87,10 @@ class Contributors {
     Contributor('slasb37', 'p84haghi@gmail.com'),
     Contributor('mimvahedi', 'vahedi0vahedi@gmail.com'),
     Contributor('Alireza Rashidi', 'alirezarashidigoorabi@gmail.com'),
+    Contributor('何意挽秋風', '94283631+RejectVanity@users.noreply.github.com'),
+    Contributor('cheese', 'deanlemans5646@gmail.com'),
+    Contributor('Owen Elderbroek', 'o.elderbroek@gmail.com'),
+    Contributor('Maxi', 'maxitendo01@proton.me'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese

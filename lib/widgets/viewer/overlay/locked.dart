@@ -65,7 +65,7 @@ class _ViewerLockedOverlayState extends State<ViewerLockedOverlay> {
       builder: (context, mqPaddingBottom, child) {
         final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
         return Container(
-          alignment: AlignmentDirectional.bottomEnd,
+          alignment: Alignment.bottomRight,
           padding: EdgeInsets.only(bottom: mqPaddingBottom) + const EdgeInsets.all(ViewerButtonRowContent.padding),
           child: SafeArea(
             top: false,

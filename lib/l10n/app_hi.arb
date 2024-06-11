@@ -3,19 +3,19 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "मैं नियमों और शर्तों पर सहमत हुं",
   "@welcomeTermsToggle": {},
-  "columnCount": "{count, plural, =1{१ कॉलम} other{{count} कॉलम}}",
+  "columnCount": "{count, plural, other{{count} कॉलम}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{ १ सेकंड} other{{seconds} सेकंडस}}",
+  "timeSeconds": "{count, plural, =1{{count} सेकंड} other{{count} सेकंडस}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeDays": "{days, plural, =1{ १ दिन} other{{days} दिन}}",
+  "timeDays": "{count, plural, other{{count} दिन}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -35,7 +35,7 @@
   "@clearTooltip": {},
   "actionRemove": "हटाएं",
   "@actionRemove": {},
-  "itemCount": "{count, plural, =1{१ चीज} other{{count} चीजे}}",
+  "itemCount": "{count, plural, =1{{count} चीज} other{{count} चीजे}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
@@ -43,7 +43,7 @@
   },
   "deleteButtonLabel": "डिलीट",
   "@deleteButtonLabel": {},
-  "timeMinutes": "{minutes, plural, =1{ १ मिनट} other{{minutes} मिनट}}",
+  "timeMinutes": "{count, plural, other{{count} मिनट}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}

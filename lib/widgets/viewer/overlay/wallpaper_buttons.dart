@@ -10,6 +10,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/dialogs/wallpaper_settings_dialog.dart';
+import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/view/conductor.dart';
@@ -38,6 +39,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
       child: Padding(
         padding: const EdgeInsets.only(left: padding / 2, right: padding / 2, bottom: padding),
         child: Row(
+          textDirection: ViewerBottomOverlay.actionsDirection,
           children: [
             const Spacer(),
             Padding(

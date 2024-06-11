@@ -649,5 +649,7 @@
         "description": "a list of unsupported types"
       }
     }
-  }
+  },
+  "chipActionShowCollection": "แสดงคอลเลกชัน",
+  "@chipActionShowCollection": {}
 }

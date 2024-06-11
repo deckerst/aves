@@ -1,7 +1,9 @@
-
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/colors.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves_model/aves_model.dart';
@@ -39,7 +41,7 @@ class HighlightTitle extends StatelessWidget {
     final style = TextStyle(
       shadows: shadows(context),
       fontSize: fontSize,
-      letterSpacing: 1.0,
+      letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
       fontFeatures: const [FontFeature.enable('smcp')],
     );
 
@@ -61,7 +63,7 @@ class HighlightTitle extends StatelessWidget {
               style: style,
             ),
           ],
-          outlineColor: Theme.of(context).colorScheme.background,
+          outlineColor: Themes.firstLayerColor(context),
           softWrap: false,
           overflow: TextOverflow.fade,
           maxLines: 1,

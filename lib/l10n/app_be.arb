@@ -7,7 +7,7 @@
   "@welcomeOptional": {},
   "welcomeMessage": "Сардэчна запрашаем ў Aves",
   "@welcomeMessage": {},
-  "itemCount": "{count, plural, =1{1 элемент} other{{count} элементаў}}",
+  "itemCount": "{count, plural, =1{{count} элемент} other{{count} элементаў}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
@@ -1495,25 +1495,25 @@
   "@settingsViewerShowHistogram": {},
   "settingsVideoPlaybackTile": "Прайграванне",
   "@settingsVideoPlaybackTile": {},
-  "columnCount": "{count, plural, =1{1 слупок} few{{count} слупкі} other{{count} слупкоў}}",
+  "columnCount": "{count, plural, =1{{count} слупок} few{{count} слупкі} other{{count} слупкоў}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
+  "timeSeconds": "{count, plural, =1{{count} секунда} few{{count} секунды} other{{count} секунд}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeDays": "{days, plural, =1{1 дзень} few{{days} дні} other{{days} дзён}}",
+  "timeDays": "{count, plural, =1{{count} дзень} few{{count} дні} other{{count} дзён}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 хвіліна} few{{minutes} хвіліны} other{{minutes} хвілін}}",
+  "timeMinutes": "{count, plural, =1{{count} хвіліна} few{{count} хвіліны} other{{count} хвілін}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
@@ -1536,5 +1536,7 @@
   "renameProcessorHash": "Хэш",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Прымусовыя арабскія лічбы",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Паказаць ў Калекцыі",
+  "@chipActionShowCollection": {}
 }

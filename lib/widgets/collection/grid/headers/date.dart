@@ -40,7 +40,8 @@ class DaySectionHeader<T> extends StatelessWidget {
     if (date == null) return l10n.sectionUnknown;
     if (date.isToday) return l10n.dateToday;
     if (date.isYesterday) return l10n.dateYesterday;
-    final locale = l10n.localeName;
+
+    final locale = context.locale;
     if (date.isThisYear) return '${DateFormat.MMMMd(locale).format(date)} (${DateFormat.E(locale).format(date)})';
     return '${DateFormat.yMMMMd(locale).format(date)} (${DateFormat.E(locale).format(date)})';
   }
@@ -69,7 +70,8 @@ class MonthSectionHeader<T> extends StatelessWidget {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
     if (date.isThisMonth) return l10n.dateThisMonth;
-    final locale = l10n.localeName;
+
+    final locale = context.locale;
     final localized = date.isThisYear ? DateFormat.MMMM(locale).format(date) : DateFormat.yMMMM(locale).format(date);
     return '${localized.substring(0, 1).toUpperCase()}${localized.substring(1)}';
   }

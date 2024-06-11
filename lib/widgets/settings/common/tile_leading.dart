@@ -1,5 +1,6 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:decorated_icon/decorated_icon.dart';
@@ -17,12 +18,10 @@ class SettingsTileLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     return AnimatedContainer(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: colorScheme.background,
+        color: Themes.firstLayerColor(context),
         border: Border.fromBorderSide(BorderSide(
           color: color,
           width: AvesFilterChip.outlineWidth,
@@ -34,7 +33,7 @@ class SettingsTileLeading extends StatelessWidget {
         icon,
         size: 18,
         color: DefaultTextStyle.of(context).style.color,
-        shadows: theme.isDark ? AStyles.embossShadows : null,
+        shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,
       ),
     );
   }

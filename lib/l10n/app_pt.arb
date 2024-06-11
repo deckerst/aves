@@ -7,13 +7,13 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Eu concordo com os Termos e Condições",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 item} other{{count} itens}}",
+  "itemCount": "{count, plural, =1{{count} item} other{{count} itens}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, =1{1 segundo} other{{seconds} segundos}}",
+  "timeSeconds": "{count, plural, =1{{count} segundo} other{{count} segundos}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, =1{1 minuto} other{{minutes} minutos}}",
+  "timeMinutes": "{count, plural, =1{{count} minuto} other{{count} minutos}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, =1{1 dia} other{{days} dias}}",
+  "timeDays": "{count, plural, =1{{count} dia} other{{count} dias}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1215,7 +1215,7 @@
   "@pinDialogConfirm": {},
   "passwordDialogEnter": "Digite a senha",
   "@passwordDialogEnter": {},
-  "columnCount": "{count, plural, =1{1 coluna} other{{count} colunas}}",
+  "columnCount": "{count, plural, =1{{count} coluna} other{{count} colunas}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1374,5 +1374,7 @@
   "stopTooltip": "Parar",
   "@stopTooltip": {},
   "videoRepeatActionSetStart": "Definir início",
-  "@videoRepeatActionSetStart": {}
+  "@videoRepeatActionSetStart": {},
+  "chipActionShowCollection": "Mostrar na Coleção",
+  "@chipActionShowCollection": {}
 }

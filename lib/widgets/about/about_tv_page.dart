@@ -1,4 +1,5 @@
 import 'package:aves/model/device.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/about/credits.dart';
 import 'package:aves/widgets/about/translators.dart';
@@ -192,7 +193,7 @@ class _ContentState extends State<_Content> {
                         return Theme(
                           data: theme.copyWith(
                             listTileTheme: listTileTheme.copyWith(
-                              tileColor: theme.colorScheme.background,
+                              tileColor: Themes.firstLayerColor(context),
                             ),
                           ),
                           child: const TvLicensePage(),

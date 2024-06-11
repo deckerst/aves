@@ -7,13 +7,13 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "J’accepte les conditions d’utilisation",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 élément} other{{count} éléments}}",
+  "itemCount": "{count, plural, =1{{count} élément} other{{count} éléments}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, =0{0 seconde} =1{1 seconde} other{{seconds} secondes}}",
+  "timeSeconds": "{count, plural, =0{{count} seconde} =1{{count} seconde} other{{count} secondes}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, =0{0 minute} =1{1 minute} other{{minutes} minutes}}",
+  "timeMinutes": "{count, plural, =0{{count} minute} =1{{count} minute} other{{count} minutes}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, =0{0 jour} =1{1 jour} other{{days} jours}}",
+  "timeDays": "{count, plural, =0{{count} jour} =1{{count} jour} other{{count} jours}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1185,7 +1185,7 @@
   "@entryInfoActionRemoveLocation": {},
   "keepScreenOnVideoPlayback": "Pendant la lecture de vidéos",
   "@keepScreenOnVideoPlayback": {},
-  "columnCount": "{count, plural, =1{1 colonne} other{{count} colonnes}}",
+  "columnCount": "{count, plural, =1{{count} colonne} other{{count} colonnes}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1378,5 +1378,7 @@
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Toujours utiliser les chiffres arabes",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Afficher dans Collection",
+  "@chipActionShowCollection": {}
 }

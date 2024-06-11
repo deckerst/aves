@@ -16,8 +16,6 @@ class MpfDirectory : Directory() {
         return _tagNameMap
     }
 
-    fun getNumberOfImages() = getInt(TAG_NUMBER_OF_IMAGES)
-
     companion object {
         const val TAG_MPF_VERSION = 0xb000
         const val TAG_NUMBER_OF_IMAGES = 0xb001

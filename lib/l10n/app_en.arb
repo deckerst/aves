@@ -3,35 +3,45 @@
   "welcomeMessage": "Welcome to Aves",
   "welcomeOptional": "Optional",
   "welcomeTermsToggle": "I agree to the terms and conditions",
-  "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "itemCount": "{count, plural, =1{{count} item} other{{count} items}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
-  "columnCount": "{count, plural, =1{1 column} other{{count} columns}}",
+  "columnCount": "{count, plural, =1{{count} column} other{{count} columns}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
 
-  "timeSeconds": "{seconds, plural, =1{1 second} other{{seconds} seconds}}",
+  "timeSeconds": "{count, plural, =1{{count} second} other{{count} seconds}}",
   "@timeSeconds": {
     "placeholders": {
-      "seconds": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
-  "timeMinutes": "{minutes, plural, =1{1 minute} other{{minutes} minutes}}",
+  "timeMinutes": "{count, plural, =1{{count} minute} other{{count} minutes}}",
   "@timeMinutes": {
     "placeholders": {
-      "minutes": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
-  "timeDays": "{days, plural, =1{1 day} other{{days} days}}",
+  "timeDays": "{count, plural, =1{{count} day} other{{count} days}}",
   "@timeDays": {
     "placeholders": {
-      "days": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "focalLength": "{length} mm",
@@ -75,6 +85,7 @@
   "sourceStateLocatingPlaces": "Locating places",
 
   "chipActionDelete": "Delete",
+  "chipActionShowCollection": "Show in Collection",
   "chipActionGoToAlbumPage": "Show in Albums",
   "chipActionGoToCountryPage": "Show in Countries",
   "chipActionGoToPlacePage": "Show in Places",
@@ -376,13 +387,17 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Move this item to the recycle bin?} other{Move these {count} items to the recycle bin?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Delete this item?} other{Delete these {count} items?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "Save item dates before proceeding?",
@@ -446,13 +461,17 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Delete this album and the item in it?} other{Delete this album and the {count} items in it?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Delete these albums and the item in them?} other{Delete these albums and the {count} items in them?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
 
@@ -597,61 +616,81 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Failed to delete 1 item} other{Failed to delete {count} items}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Failed to copy 1 item} other{Failed to copy {count} items}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Failed to move 1 item} other{Failed to move {count} items}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Failed to rename 1 item} other{Failed to rename {count} items}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Failed to edit 1 item} other{Failed to edit {count} items}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Failed to export 1 page} other{Failed to export {count} pages}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{Copied 1 item} other{Copied {count} items}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{Moved {count} items}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{Renamed 1 item} other{Renamed {count} items}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Edited 1 item} other{Edited {count} items}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
 
@@ -949,7 +988,9 @@
   "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "format": "decimalPattern"
+      }
     }
   },
   "statsTopCountriesSectionTitle": "Top Countries",

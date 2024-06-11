@@ -7,13 +7,13 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Я согласен с условиями и положениями",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 объект} few{{count} объекта} other{{count} объектов}}",
+  "itemCount": "{count, plural, =1{{count} объект} few{{count} объекта} other{{count} объектов}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, =1{1 секунда} few{{seconds} секунды} other{{seconds} секунд}}",
+  "timeSeconds": "{count, plural, =1{{count} секунда} few{{count} секунды} other{{count} секунд}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, =1{1 минута} few{{minutes} минуты} other{{minutes} минут}}",
+  "timeMinutes": "{count, plural, =1{{count} минута} few{{count} минуты} other{{count} минут}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, =1{1 день} few{{days} дня} other{{days} дней}}",
+  "timeDays": "{count, plural, =1{{count} день} few{{count} дня} other{{count} дней}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1177,7 +1177,7 @@
   "@filterAspectRatioPortraitLabel": {},
   "settingsViewerShowRatingTags": "Показать рейтинг и теги",
   "@settingsViewerShowRatingTags": {},
-  "columnCount": "{count, plural, =1{1 столбец} few{{count} столбца} other{{count} столбцов}}",
+  "columnCount": "{count, plural, =1{{count} столбец} few{{count} столбца} other{{count} столбцов}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1378,5 +1378,7 @@
   "renameProcessorHash": "Хэш",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Принудительные арабские цифры",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Показать в Коллекции",
+  "@chipActionShowCollection": {}
 }

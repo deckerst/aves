@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.2"></a>[v1.11.2] - 2024-06-11
+
+### Added
+
+- Albums / Countries / Tags: show selection in Collection
+- allow shifting dates by seconds
+
+### Changed
+
+- opening app from launcher shows home page only when exited by back button
+- Screen saver: black background, consistent with slideshow
+- upgraded Flutter to stable v3.22.2
+
+### Removed
+
+- support for Android KitKat (API 19)
+
+### Fixed
+
+- crash when cataloguing large images
+
 ## <a id="v1.11.1"></a>[v1.11.1] - 2024-05-03
 
 ### Added

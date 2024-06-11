@@ -74,7 +74,7 @@ class AvesDialog extends StatelessWidget {
         child = Theme(
           data: Theme.of(context).copyWith(
             scrollbarTheme: ScrollbarThemeData(
-              thumbVisibility: MaterialStateProperty.all(true),
+              thumbVisibility: WidgetStateProperty.all(true),
               radius: const Radius.circular(16),
               crossAxisMargin: 4,
               // adapt margin when corner is around content itself, not outside for the title

@@ -12,6 +12,7 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
@@ -48,6 +49,7 @@ class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool showText, showGenericIcon, useFilterColor;
   final AvesFilterDecoration? decoration;
+  final Color? background;
   final String? banner;
   final Widget? leadingOverride, details;
   final double padding;
@@ -71,6 +73,7 @@ class AvesFilterChip extends StatefulWidget {
     this.showGenericIcon = true,
     this.useFilterColor = true,
     this.decoration,
+    this.background,
     this.banner,
     this.leadingOverride,
     this.details,
@@ -130,16 +133,12 @@ class AvesFilterChip extends StatefulWidget {
             switch (action) {
               case ChipAction.reverse:
                 text = filter.reversed ? context.l10n.chipActionFilterIn : context.l10n.chipActionFilterOut;
-                break;
               case ChipAction.ratingOrGreater:
                 text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrGreater);
-                break;
               case ChipAction.ratingOrLower:
                 text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrLower);
-                break;
               default:
                 text = action.getText(context);
-                break;
             }
             return PopupMenuItem(
               value: action,
@@ -233,7 +232,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   @override
   Widget build(BuildContext context) {
     final decoration = widget.decoration;
-    final chipBackground = Theme.of(context).colorScheme.background;
+    final chipBackground = widget.background ?? Themes.firstLayerColor(context);
 
     final onTap = widget.onTap != null
         ? () {

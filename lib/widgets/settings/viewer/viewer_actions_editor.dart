@@ -2,6 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
+import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class ViewerActionEditorPage extends StatelessWidget {
     return QuickActionEditorPage<EntryAction>(
       title: context.l10n.settingsViewerQuickActionEditorPageTitle,
       bannerText: context.l10n.settingsViewerQuickActionEditorBanner,
+      displayedButtonsDirection: ViewerBottomOverlay.actionsDirection,
       allAvailableActions: allAvailableActions,
       actionIcon: (action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),

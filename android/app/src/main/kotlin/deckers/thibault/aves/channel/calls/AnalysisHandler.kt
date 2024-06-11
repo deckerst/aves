@@ -1,7 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
-import androidx.core.app.ComponentActivity
+import androidx.activity.ComponentActivity
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder

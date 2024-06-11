@@ -1,4 +1,3 @@
-
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
@@ -26,16 +25,21 @@ class Themes {
     }
   }
 
-  static Color _schemeCardLayer(ColorScheme colors) => ElevationOverlay.applySurfaceTint(colors.surface, colors.surfaceTint, 1);
+  static bool _isDarkTheme(ColorScheme colors) => colors.brightness == Brightness.dark && colors.surface != Colors.black;
+
+  static Color firstLayerColor(BuildContext context) => _schemeFirstLayer(Theme.of(context).colorScheme);
+
+  static Color _schemeFirstLayer(ColorScheme colors) => _isDarkTheme(colors) ? colors.surfaceContainer : colors.surface;
+
+  static Color _schemeCardLayer(ColorScheme colors) => _isDarkTheme(colors) ? _schemeSecondLayer(colors) : colors.surfaceContainerLow;
 
   static Color secondLayerColor(BuildContext context) => _schemeSecondLayer(Theme.of(context).colorScheme);
 
-  // `DialogTheme` M3 defaults use `6.0` elevation
-  static Color _schemeSecondLayer(ColorScheme colors) => ElevationOverlay.applySurfaceTint(colors.surface, colors.surfaceTint, 6);
+  static Color _schemeSecondLayer(ColorScheme colors) => _isDarkTheme(colors) ? colors.surfaceContainerHigh : colors.surfaceContainer;
 
   static Color thirdLayerColor(BuildContext context) => _schemeThirdLayer(Theme.of(context).colorScheme);
 
-  static Color _schemeThirdLayer(ColorScheme colors) => ElevationOverlay.applySurfaceTint(colors.surface, colors.surfaceTint, 12);
+  static Color _schemeThirdLayer(ColorScheme colors) => _isDarkTheme(colors) ? colors.surfaceContainerHighest : colors.surfaceContainerHigh;
 
   static Color _unselectedWidgetColor(ColorScheme colors) => colors.onSurface.withOpacity(0.6);
 
@@ -55,14 +59,15 @@ class Themes {
       colorScheme: colors,
       dividerColor: colors.outlineVariant,
       indicatorColor: colors.primary,
-      scaffoldBackgroundColor: colors.background,
+      scaffoldBackgroundColor: _schemeFirstLayer(colors),
       // TYPOGRAPHY & ICONOGRAPHY
       typography: _typography,
       // COMPONENT THEMES
       checkboxTheme: _checkboxTheme(colors),
+      drawerTheme: _drawerTheme(colors),
       floatingActionButtonTheme: _floatingActionButtonTheme(colors),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: colors.background,
+        backgroundColor: _schemeFirstLayer(colors),
         selectedIconTheme: IconThemeData(color: colors.primary),
         unselectedIconTheme: IconThemeData(color: _unselectedWidgetColor(colors)),
         selectedLabelTextStyle: TextStyle(color: colors.primary),
@@ -78,16 +83,21 @@ class Themes {
         side: BorderSide(width: 2.0, color: _unselectedWidgetColor(colors)),
       );
 
+  static DrawerThemeData _drawerTheme(ColorScheme colors) => DrawerThemeData(
+        backgroundColor: _schemeSecondLayer(colors),
+      );
+
   static const _listTileTheme = ListTileThemeData(
     contentPadding: EdgeInsets.symmetric(horizontal: 16),
   );
 
   static PopupMenuThemeData _popupMenuTheme(ColorScheme colors, TextTheme textTheme) {
     return PopupMenuThemeData(
-      labelTextStyle: MaterialStateProperty.resolveWith((states) {
+      color: _schemeSecondLayer(colors),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
         // adapted from M3 defaults
         final TextStyle style = textTheme.labelLarge!;
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return style.apply(color: colors.onSurface.withOpacity(0.38));
         }
         return style.apply(color: colors.onSurface);
@@ -105,23 +115,23 @@ class Themes {
 
   // adapted from M3 defaults
   static RadioThemeData _radioTheme(ColorScheme colors) => RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.selected)) {
-            if (states.contains(MaterialState.disabled)) {
+        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.selected)) {
+            if (states.contains(WidgetState.disabled)) {
               return colors.onSurface.withOpacity(0.38);
             }
             return colors.primary;
           }
-          if (states.contains(MaterialState.disabled)) {
+          if (states.contains(WidgetState.disabled)) {
             return colors.onSurface.withOpacity(0.38);
           }
-          if (states.contains(MaterialState.pressed)) {
+          if (states.contains(WidgetState.pressed)) {
             return colors.onSurface;
           }
-          if (states.contains(MaterialState.hovered)) {
+          if (states.contains(WidgetState.hovered)) {
             return colors.onSurface;
           }
-          if (states.contains(MaterialState.focused)) {
+          if (states.contains(WidgetState.focused)) {
             return colors.onSurface;
           }
           return _unselectedWidgetColor(colors);
@@ -166,13 +176,15 @@ class Themes {
       textTheme: textTheme,
       // COMPONENT THEMES
       appBarTheme: AppBarTheme(
+        backgroundColor: _schemeFirstLayer(colors),
         // `foregroundColor` is used by icons
         foregroundColor: _lightActionIconColor,
         // `titleTextStyle.color` is used by text
         titleTextStyle: _titleTextStyle.copyWith(color: _lightTitleColor),
-        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, colors.background) : null,
+        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : null,
       ),
       dialogTheme: DialogTheme(
+        backgroundColor: _schemeSecondLayer(colors),
         titleTextStyle: _titleTextStyle.copyWith(color: _lightTitleColor),
       ),
       listTileTheme: _listTileTheme.copyWith(
@@ -217,13 +229,15 @@ class Themes {
       textTheme: textTheme,
       // COMPONENT THEMES
       appBarTheme: AppBarTheme(
+        backgroundColor: _schemeFirstLayer(colors),
         // `foregroundColor` is used by icons
         foregroundColor: _darkTitleColor,
         // `titleTextStyle.color` is used by text
         titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
-        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, colors.background) : null,
+        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : null,
       ),
       dialogTheme: DialogTheme(
+        backgroundColor: _schemeSecondLayer(colors),
         titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
       ),
       listTileTheme: _listTileTheme,
@@ -251,13 +265,8 @@ class Themes {
 
   static ThemeData blackTheme(Color accentColor, bool deviceInitialized) {
     final colors = _darkColorScheme(accentColor).copyWith(
-      background: Colors.black,
+      surface: Colors.black,
     );
-    final baseTheme = _baseDarkTheme(colors, deviceInitialized);
-    return baseTheme.copyWith(
-      appBarTheme: baseTheme.appBarTheme.copyWith(
-        backgroundColor: colors.background,
-      ),
-    );
+    return _baseDarkTheme(colors, deviceInitialized);
   }
 }

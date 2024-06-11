@@ -69,16 +69,11 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        fun toMap(locale: Locale): FieldMap {
-            val fields: HashMap<String, Any?> = hashMapOf(
-                "language" to locale.language,
-                "country" to locale.country,
-            )
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fields["script"] = locale.script
-            }
-            return fields
-        }
+        fun toMap(locale: Locale): FieldMap = hashMapOf(
+            "language" to locale.language,
+            "country" to locale.country,
+            "script" to locale.script,
+        )
 
         val locales = ArrayList<FieldMap>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -106,11 +101,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun isSystemFilePickerEnabled(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val enabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).resolveActivity(context.packageManager) != null
-        } else {
-            false
-        }
+        val enabled = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).resolveActivity(context.packageManager) != null
         result.success(enabled)
     }
 

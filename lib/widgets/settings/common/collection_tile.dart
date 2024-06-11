@@ -3,6 +3,7 @@ import 'package:aves/services/intent_service.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:flutter/material.dart';
 
 class SettingsCollectionTile extends StatelessWidget {
@@ -19,7 +20,6 @@ class SettingsCollectionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final hasSubtitle = filters.isEmpty;
 
     // size and padding to match `ListTile`
@@ -39,13 +39,10 @@ class SettingsCollectionTile extends StatelessWidget {
                     children: [
                       Text(
                         l10n.settingsCollectionTile,
-                        style: textTheme.titleMedium!,
+                        // fallback to `ListTile` M3 default style
+                        style: theme.listTileTheme.titleTextStyle ?? theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurface),
                       ),
-                      if (hasSubtitle)
-                        Text(
-                          l10n.drawerCollectionAll,
-                          style: textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                        ),
+                      if (hasSubtitle) AvesCaption(l10n.drawerCollectionAll),
                     ],
                   ),
                   const Spacer(),

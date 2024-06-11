@@ -4,6 +4,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
+import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class PanoramaOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      textDirection: ViewerBottomOverlay.actionsDirection,
       children: [
         const Spacer(),
         ScalingOverlayTextButton(

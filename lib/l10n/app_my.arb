@@ -23,19 +23,19 @@
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, other{{seconds} စက္ကန့်}}",
+  "timeSeconds": "{count, plural, other{{count} စက္ကန့်}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
     }
   },
-  "timeMinutes": "{minutes, plural, other{{minutes} မိနစ်}}",
+  "timeMinutes": "{count, plural, other{{count} မိနစ်}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
     }
   },
-  "timeDays": "{days, plural, other{{days} ရက်}}",
+  "timeDays": "{count, plural, other{{count} ရက်}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -1296,5 +1296,7 @@
   "settingsViewerShowHistogram": "Histogram ကို ပြရန်",
   "@settingsViewerShowHistogram": {},
   "settingsVideoPlaybackTile": "ဖွင့်ကြည့်ခြင်း",
-  "@settingsVideoPlaybackTile": {}
+  "@settingsVideoPlaybackTile": {},
+  "chipActionShowCollection": "စုစည်းမှုထဲမှာ ပြရန်",
+  "@chipActionShowCollection": {}
 }

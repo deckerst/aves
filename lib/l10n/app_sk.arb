@@ -27,7 +27,7 @@
   "@chipActionDelete": {},
   "welcomeTermsToggle": "Súhlasím s pravidlami a podmienkami",
   "@welcomeTermsToggle": {},
-  "timeDays": "{days, plural, other{{days} dni}}",
+  "timeDays": "{count, plural, other{{count} dni}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -50,7 +50,7 @@
   "@doubleBackExitMessage": {},
   "welcomeOptional": "Voliteľné",
   "@welcomeOptional": {},
-  "timeMinutes": "{minutes, plural, =1{1 minúta} few{{minutes} minúty} other{{minutes} minút}}",
+  "timeMinutes": "{count, plural, =1{{count} minúta} few{{count} minúty} other{{count} minút}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
@@ -638,19 +638,19 @@
   "@filePickerOpenFrom": {},
   "filePickerUseThisFolder": "Použiť tento priečinok",
   "@filePickerUseThisFolder": {},
-  "itemCount": "{count, plural, =1{1 položka} other{{count} položiek}}",
+  "itemCount": "{count, plural, =1{{count} položka} other{{count} položiek}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "columnCount": "{count, plural, =1{1 stĺpec} other{{count} stĺpcov}}",
+  "columnCount": "{count, plural, =1{{count} stĺpec} other{{count} stĺpcov}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
     }
   },
-  "timeSeconds": "{seconds, plural, =1{1 sekunda} other{{seconds} sekúnd}}",
+  "timeSeconds": "{count, plural, =1{{count} sekunda} other{{count} sekúnd}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -1524,5 +1524,7 @@
   "setHomeCustomCollection": "Kolekcia na mieru",
   "@setHomeCustomCollection": {},
   "settingsThumbnailShowHdrIcon": "Zobraziť ikonu HDR",
-  "@settingsThumbnailShowHdrIcon": {}
+  "@settingsThumbnailShowHdrIcon": {},
+  "chipActionShowCollection": "Zobraziť v kolekcií",
+  "@chipActionShowCollection": {}
 }

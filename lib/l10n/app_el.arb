@@ -7,13 +7,13 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "Συμφωνώ με τους όρους και τις προυποθέσεις",
   "@welcomeTermsToggle": {},
-  "itemCount": "{count, plural, =1{1 στοιχείο} other{{count} στοιχεία}}",
+  "itemCount": "{count, plural, =1{{count} στοιχείο} other{{count} στοιχεία}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, =1{1 δευτερόλεπτο} other{{seconds} δευτερόλεπτα}}",
+  "timeSeconds": "{count, plural, =1{{count} δευτερόλεπτο} other{{count} δευτερόλεπτα}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, =1{1 λεπτό} other{{minutes} λεπτά}}",
+  "timeMinutes": "{count, plural, =1{{count} λεπτό} other{{count} λεπτά}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, =1{1 ημέρα} other{{days} ημέρες}}",
+  "timeDays": "{count, plural, =1{{count} ημέρα} other{{count} ημέρες}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1169,7 +1169,7 @@
   "@settingsSubtitleThemeTextPositionDialogTitle": {},
   "entryInfoActionExportMetadata": "Εξαγωγή μεταδεδομένων",
   "@entryInfoActionExportMetadata": {},
-  "columnCount": "{count, plural, =1{1 στήλη} other{{count} στήλες}}",
+  "columnCount": "{count, plural, =1{{count} στήλη} other{{count} στήλες}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1338,5 +1338,7 @@
   "overlayHistogramRGB": "RGB",
   "@overlayHistogramRGB": {},
   "overlayHistogramLuminance": "Φωτεινότητα",
-  "@overlayHistogramLuminance": {}
+  "@overlayHistogramLuminance": {},
+  "chipActionShowCollection": "Εμφάνιση στη Συλλογή",
+  "@chipActionShowCollection": {}
 }

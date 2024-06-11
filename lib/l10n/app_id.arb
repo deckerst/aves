@@ -9,11 +9,11 @@
   "@welcomeTermsToggle": {},
   "itemCount": "{count, plural, other{{count} benda}}",
   "@itemCount": {},
-  "timeSeconds": "{seconds, plural, other{{seconds} detik}}",
+  "timeSeconds": "{count, plural, other{{count} detik}}",
   "@timeSeconds": {},
-  "timeMinutes": "{minutes, plural, other{{minutes} menit}}",
+  "timeMinutes": "{count, plural, other{{count} menit}}",
   "@timeMinutes": {},
-  "timeDays": "{days, plural, other{{days} hari}}",
+  "timeDays": "{count, plural, other{{count} hari}}",
   "@timeDays": {},
   "focalLength": "{length} mm",
   "@focalLength": {},
@@ -1378,5 +1378,7 @@
   "settingsForceWesternArabicNumeralsTile": "Paksa angka Arab",
   "@settingsForceWesternArabicNumeralsTile": {},
   "renameProcessorHash": "Hash",
-  "@renameProcessorHash": {}
+  "@renameProcessorHash": {},
+  "chipActionShowCollection": "Tampilkan di Koleksi",
+  "@chipActionShowCollection": {}
 }

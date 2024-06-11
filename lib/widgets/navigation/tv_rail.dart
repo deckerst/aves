@@ -6,6 +6,7 @@ import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -104,12 +105,12 @@ class _TvRailState extends State<TvRail> {
                     const SizedBox(width: 16),
                     Text(
                       context.l10n.appName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 32,
                         fontWeight: FontWeight.w300,
-                        letterSpacing: 1.0,
-                        fontFeatures: [FontFeature.enable('smcp')],
+                        letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
+                        fontFeatures: const [FontFeature.enable('smcp')],
                       ),
                     ),
                   ],

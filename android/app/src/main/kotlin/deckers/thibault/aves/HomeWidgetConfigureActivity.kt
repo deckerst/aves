@@ -4,8 +4,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.FlutterUtils
-import deckers.thibault.aves.utils.FlutterUtils.enableSoftwareRendering
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
@@ -13,9 +11,6 @@ class HomeWidgetSettingsActivity : MainActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     public override fun onCreate(savedInstanceState: Bundle?) {
-        if (FlutterUtils.isSoftwareRenderingRequired()) {
-            intent.enableSoftwareRendering()
-        }
         super.onCreate(savedInstanceState)
 
         // cancel if user does not complete widget setup

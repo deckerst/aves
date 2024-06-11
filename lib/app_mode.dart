@@ -1,4 +1,5 @@
 enum AppMode {
+  initialization,
   main,
   pickCollectionFiltersExternal,
   pickSingleMediaExternal,
@@ -31,7 +32,10 @@ extension ExtraAppMode on AppMode {
         AppMode.pickMultipleMediaExternal,
       }.contains(this);
 
-  bool get canSelectFilter => this == AppMode.main;
+  bool get canSelectFilter => {
+        AppMode.main,
+        AppMode.pickCollectionFiltersExternal,
+      }.contains(this);
 
   bool get canCreateFilter => {
         AppMode.main,

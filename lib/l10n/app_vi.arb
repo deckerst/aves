@@ -951,7 +951,7 @@
   "@placePageTitle": {},
   "filterOnThisDayLabel": "Vào ngày này",
   "@filterOnThisDayLabel": {},
-  "columnCount": "{count, plural, =1{1 cột} other{{count} cột}}",
+  "columnCount": "{count, plural, other{{count} cột}}",
   "@columnCount": {
     "placeholders": {
       "count": {}
@@ -1007,7 +1007,7 @@
   "@albumMimeTypeMixed": {},
   "settingsViewerQuickActionEditorAvailableButtonsSectionTitle": "Các nút có sẵn",
   "@settingsViewerQuickActionEditorAvailableButtonsSectionTitle": {},
-  "itemCount": "{count, plural, =1{1 mục} other{{count} mục}}",
+  "itemCount": "{count, plural, other{{count} mục}}",
   "@itemCount": {
     "placeholders": {
       "count": {}
@@ -1271,7 +1271,7 @@
   "@drawerCollectionImages": {},
   "sortOrderSmallestFirst": "Nhỏ trước",
   "@sortOrderSmallestFirst": {},
-  "timeSeconds": "{seconds, plural, =1{1 giây} other{{seconds} giây}}",
+  "timeSeconds": "{count, plural, other{{count} giây}}",
   "@timeSeconds": {
     "placeholders": {
       "seconds": {}
@@ -1405,7 +1405,7 @@
   "@settingsNavigationDrawerTabAlbums": {},
   "subtitlePositionBottom": "Dưới",
   "@subtitlePositionBottom": {},
-  "timeDays": "{days, plural, =1{1 ngày} other{{days} ngày}}",
+  "timeDays": "{count, plural, other{{count} ngày}}",
   "@timeDays": {
     "placeholders": {
       "days": {}
@@ -1429,7 +1429,7 @@
   "@settingsViewerQuickActionsTile": {},
   "newVaultDialogTitle": "Két sắt mới",
   "@newVaultDialogTitle": {},
-  "timeMinutes": "{minutes, plural, =1{1 phút} other{{minutes} phút}}",
+  "timeMinutes": "{count, plural, other{{count} phút}}",
   "@timeMinutes": {
     "placeholders": {
       "minutes": {}
@@ -1536,5 +1536,7 @@
   "renameProcessorHash": "Băm",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Buộc chữ số Ả Rập",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionShowCollection": "Hiển thị trong Bộ sưu tập",
+  "@chipActionShowCollection": {}
 }

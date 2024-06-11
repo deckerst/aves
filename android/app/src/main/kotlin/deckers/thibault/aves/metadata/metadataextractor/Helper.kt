@@ -29,6 +29,7 @@ import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MemoryUtils
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -59,18 +60,20 @@ object Helper {
     // e.g. "exif [...] 134 [...] 4578696600004949[...]"
     private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
 
-    // providing the stream length is risky, as it may crash if it is incorrect
-    private const val safeReadStreamLength = -1L
-
     fun readMimeType(input: InputStream): String? {
         val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         return FileTypeDetector.detectFileType(bufferedInputStream).mimeType
     }
 
     @Throws(IOException::class, ImageProcessingException::class)
-    fun safeRead(input: InputStream): com.drew.metadata.Metadata {
+    fun safeRead(input: InputStream, @Suppress("unused_parameter") sizeBytes: Long?): com.drew.metadata.Metadata {
         val inputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
         val fileType = FileTypeDetector.detectFileType(inputStream)
+
+        // Providing the stream length is risky, as it may crash if it is incorrect.
+        // Not providing the stream length is also risky, as it may lead to OOM
+        // when `RandomAccessStreamReader` reads the entire stream to validate offsets.
+        val undefinedStreamLength = -1L
 
         val metadata = when (fileType) {
             FileType.Jpeg -> safeReadJpeg(inputStream)
@@ -82,9 +85,9 @@ object Helper {
             FileType.Cr2,
             FileType.Nef,
             FileType.Orf,
-            FileType.Rw2 -> safeReadTiff(inputStream)
+            FileType.Rw2 -> safeReadTiff(inputStream, undefinedStreamLength)
 
-            else -> ImageMetadataReader.readMetadata(inputStream, safeReadStreamLength, fileType)
+            else -> ImageMetadataReader.readMetadata(inputStream, undefinedStreamLength, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))
@@ -115,8 +118,8 @@ object Helper {
     }
 
     @Throws(IOException::class, TiffProcessingException::class)
-    fun safeReadTiff(input: InputStream): com.drew.metadata.Metadata {
-        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, safeReadStreamLength)
+    fun safeReadTiff(input: InputStream, streamLength: Long): com.drew.metadata.Metadata {
+        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, streamLength)
         val metadata = com.drew.metadata.Metadata()
         val handler = SafeExifTiffHandler(metadata, null, 0)
         TiffReader().processTiff(reader, handler, 0)
@@ -294,9 +297,7 @@ object Helper {
         if (!modelTiePoints && !modelTransformation) return false
 
         val modelPixelScale = this.containsTag(ExifGeoTiffTags.TAG_MODEL_PIXEL_SCALE)
-        if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiePoints)) return false
-
-        return true
+        return !((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiePoints))
     }
 
     // TODO TLAD use `GeoTiffDirectory` from the Java version of `metadata-extractor` when available

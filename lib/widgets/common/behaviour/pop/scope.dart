@@ -28,6 +28,7 @@ class AvesPopScope extends StatelessWidget {
           } else {
             // exit
             reportService.log('Exit by pop');
+            PopExitNotification().dispatch(context);
             SystemNavigator.pop();
           }
         }
@@ -36,3 +37,6 @@ class AvesPopScope extends StatelessWidget {
     );
   }
 }
+
+@immutable
+class PopExitNotification extends Notification {}
