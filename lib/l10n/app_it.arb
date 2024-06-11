@@ -1376,5 +1376,9 @@
   "setHomeCustomCollection": "Collezione personalizzata",
   "@setHomeCustomCollection": {},
   "chipActionShowCollection": "Mostra nella Collezione",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Forza numeri arabi",
+  "@settingsForceWesternArabicNumeralsTile": {}
 }
