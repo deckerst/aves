@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- handle `MediaStore.ACTION_REVIEW` intent
+
 ## <a id="v1.11.2"></a>[v1.11.2] - 2024-06-11
 
 ### Added
