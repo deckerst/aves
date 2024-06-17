@@ -43,7 +43,7 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   final ValueNotifier<Rect> _outlineNotifier = ValueNotifier(Rect.zero);
   final ValueNotifier<int> _gridDivisionNotifier = ValueNotifier(0);
   late AnimationController _gridAnimationController;
-  late Animation<double> _gridOpacity;
+  late CurvedAnimation _gridOpacity;
 
   static const double minDimension = Cropper.handleDimension;
   static const int panResizeGridDivision = 3;
@@ -87,6 +87,7 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
     _viewportSizeNotifier.dispose();
     _outlineNotifier.dispose();
     _gridDivisionNotifier.dispose();
+    _gridOpacity.dispose();
     _gridAnimationController.dispose();
     _unregisterWidget(widget);
     super.dispose();

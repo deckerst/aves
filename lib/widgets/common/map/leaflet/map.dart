@@ -286,9 +286,8 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     final animation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     controller.addListener(() => animate(animation));
     animation.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        controller.dispose();
-      } else if (status == AnimationStatus.dismissed) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        animation.dispose();
         controller.dispose();
       }
     });

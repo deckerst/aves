@@ -178,7 +178,7 @@ class ReportOverlay<T> extends StatefulWidget {
 class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerProviderStateMixin {
   final processed = <T>{};
   late AnimationController _animationController;
-  late Animation<double> _animation;
+  late CurvedAnimation _animation;
 
   Stream<T> get opStream => widget.opStream;
 
@@ -212,6 +212,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   @override
   void dispose() {
+    _animation.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -317,6 +318,7 @@ class _FeedbackMessage extends StatefulWidget {
 
 class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
+  CurvedAnimation? _animation;
   Animation<int>? _remainingDurationMillis;
   int? _totalDurationMillis;
 
@@ -333,19 +335,21 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
         duration: effectiveDuration,
         vsync: this,
       );
+      _animation = CurvedAnimation(
+        parent: _animationController!,
+        curve: Curves.linear,
+      );
       _remainingDurationMillis = IntTween(
         begin: effectiveDuration.inMilliseconds,
         end: 0,
-      ).animate(CurvedAnimation(
-        parent: _animationController!,
-        curve: Curves.linear,
-      ));
+      ).animate(_animation!);
       _animationController!.forward();
     }
   }
 
   @override
   void dispose() {
+    _animation?.dispose();
     _animationController?.dispose();
     super.dispose();
   }
