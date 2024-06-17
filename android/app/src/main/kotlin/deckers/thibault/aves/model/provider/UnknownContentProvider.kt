@@ -17,7 +17,7 @@ open class UnknownContentProvider : ImageProvider() {
     open val reliableProviderMimeType: Boolean
         get() = false
 
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
         var mimeType = sourceMimeType
         if (sourceMimeType == null || !reliableProviderMimeType) {
             // source MIME type may be incorrect, so we get a second opinion if possible
@@ -71,7 +71,7 @@ open class UnknownContentProvider : ImageProvider() {
         }
 
         val entry = SourceEntry(fields).fillPreCatalogMetadata(context)
-        if (entry.isSized || entry.isSvg || entry.isVideo) {
+        if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {
             callback.onFailure(Exception("entry has no size"))

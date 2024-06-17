@@ -12,7 +12,7 @@ import deckers.thibault.aves.utils.LogUtils
 import java.io.File
 
 internal class FileImageProvider : ImageProvider() {
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
         var mimeType = sourceMimeType
 
         if (mimeType == null) {
@@ -54,7 +54,7 @@ internal class FileImageProvider : ImageProvider() {
         }
         entry.fillPreCatalogMetadata(context)
 
-        if (entry.isSized || entry.isSvg || entry.isVideo) {
+        if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {
             callback.onFailure(Exception("entry has no size"))
