@@ -29,6 +29,7 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
     private fun getEntry(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType") // MIME type is optional
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val allowUnsized = call.argument<Boolean>("allowUnsized") ?: false
         if (uri == null) {
             result.error("getEntry-args", "missing arguments", null)
             return
@@ -40,7 +41,7 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
             return
         }
 
-        provider.fetchSingle(context, uri, mimeType, object : ImageOpCallback {
+        provider.fetchSingle(context, uri, mimeType, allowUnsized, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri mimeType=$mimeType", throwable.message)
         })

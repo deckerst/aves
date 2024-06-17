@@ -70,7 +70,7 @@ import java.util.TimeZone
 import kotlin.math.absoluteValue
 
 abstract class ImageProvider {
-    open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+    open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException("`fetchSingle` is not supported by this image provider"))
     }
 

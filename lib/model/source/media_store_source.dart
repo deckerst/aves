@@ -360,7 +360,7 @@ class MediaStoreSource extends CollectionSource {
           existingDirectories.add(existingDirectory);
         }
       } else {
-        final sourceEntry = await mediaFetchService.getEntry(uri, null);
+        final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
         if (sourceEntry != null) {
           newEntries.add(sourceEntry.copyWith(
             id: metadataDb.nextId,

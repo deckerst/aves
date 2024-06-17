@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        agp_version = '8.4.1' // same as `settings.ext.agp_version` in `/android/settings.gradle`
+        agp_version = '8.5.0' // same as `settings.ext.agp_version` in `/android/settings.gradle`
         glide_version = '4.16.0'
         // AppGallery Connect plugin versions: https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-sdk-changenotes-0000001058732550
         huawei_agconnect_version = '1.9.1.300'

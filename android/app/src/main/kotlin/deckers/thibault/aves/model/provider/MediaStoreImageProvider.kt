@@ -89,7 +89,7 @@ class MediaStoreImageProvider : ImageProvider() {
     // the provided URI can point to the wrong media collection,
     // e.g. a GIF image with the URI `content://media/external/video/media/[ID]`
     // so the effective entry URI may not match the provided URI
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
         var found = false
         val fetched = arrayListOf<FieldMap>()
         val id = uri.tryParseId()

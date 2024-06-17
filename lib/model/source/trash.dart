@@ -67,7 +67,7 @@ mixin TrashMixin on SourceBase {
           await metadataDb.updateTrash(id, entry.trashDetails);
         } else {
           // there is no matching entry
-          final sourceEntry = await mediaFetchService.getEntry(uri, null);
+          final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
           if (sourceEntry != null) {
             final id = metadataDb.nextId;
             sourceEntry.id = id;
