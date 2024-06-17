@@ -31,6 +31,7 @@ class Sweeper extends StatefulWidget {
 
 class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
   late AnimationController _angleAnimationController;
+  late CurvedAnimation _angleAnimation;
   late Animation<double> _angle;
   bool _isAppearing = false;
 
@@ -46,13 +47,14 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
     final startAngle = widget.startAngle;
     final sweepAngle = widget.sweepAngle;
     final centerSweep = widget.centerSweep;
+    _angleAnimation = CurvedAnimation(
+      parent: _angleAnimationController,
+      curve: widget.curve,
+    );
     _angle = Tween(
       begin: startAngle - sweepAngle * (centerSweep ? .5 : 0),
       end: startAngle + pi * 2 - sweepAngle * (centerSweep ? .5 : 1),
-    ).animate(CurvedAnimation(
-      parent: _angleAnimationController,
-      curve: widget.curve,
-    ));
+    ).animate(_angleAnimation);
     _angleAnimationController.addStatusListener(_onAnimationStatusChanged);
     _registerWidget(widget);
   }
@@ -66,7 +68,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _angleAnimationController.removeStatusListener(_onAnimationStatusChanged);
+    _angleAnimation.dispose();
     _angleAnimationController.dispose();
     _unregisterWidget(widget);
     super.dispose();

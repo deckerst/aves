@@ -22,7 +22,7 @@ abstract class ChooserQuickButton<T> extends StatefulWidget {
 
 abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> extends State<T> with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
-  Animation<double>? _animation;
+  CurvedAnimation? _animation;
   OverlayEntry? _chooserOverlayEntry;
   final ValueNotifier<U?> _chooserValueNotifier = ValueNotifier(null);
   final StreamController<LongPressMoveUpdateDetails> _moveUpdateStreamController = StreamController.broadcast();
@@ -47,6 +47,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
 
   @override
   void dispose() {
+    _animation?.dispose();
     _animationController?.dispose();
     _clearChooserOverlayEntry();
     _chooserValueNotifier.dispose();

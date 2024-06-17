@@ -25,7 +25,8 @@ class FloatingNavBar extends StatefulWidget {
 class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProviderStateMixin {
   final List<StreamSubscription> _subscriptions = [];
   late AnimationController _controller;
-  late Animation<Offset> _offsetAnimation;
+  late CurvedAnimation _animation;
+  late Animation<Offset> _offset;
   double? _lastOffset;
   bool _isDragging = false;
 
@@ -36,13 +37,14 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0, 0),
-      end: const Offset(0, 1),
-    ).animate(CurvedAnimation(
+    _animation = CurvedAnimation(
       parent: _controller,
       curve: Curves.linear,
-    ))
+    );
+    _offset = Tween<Offset>(
+      begin: const Offset(0, 0),
+      end: const Offset(0, 1),
+    ).animate(_animation)
       ..addListener(() {
         if (!mounted) return;
         setState(() {});
@@ -63,6 +65,8 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _animation.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -82,7 +86,7 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return SlideTransition(
-      position: _offsetAnimation,
+      position: _offset,
       child: widget.child,
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // adapted from Flutter `SnackBar` in `/material/snack_bar.dart`
 
-// As of Flutter v3.0.1, `SnackBar` is not customizable enough to add margin
+// As of Flutter v3.23.0, `SnackBar` is not customizable enough to add margin
 // and ignore pointers in that area, so we use an overlay entry instead.
 // This overlay entry is not under a `Scaffold` (which is expected by `SnackBar`
 // and `SnackBarAction`), and is not dismissed the same way.
@@ -73,10 +73,17 @@ class OverlaySnackBar extends StatefulWidget {
 class _OverlaySnackBarState extends State<OverlaySnackBar> {
   bool _wasVisible = false;
 
+  CurvedAnimation? _heightAnimation;
+  CurvedAnimation? _fadeInAnimation;
+  CurvedAnimation? _fadeInM3Animation;
+  CurvedAnimation? _fadeOutAnimation;
+  CurvedAnimation? _heightM3Animation;
+
   @override
   void initState() {
     super.initState();
     widget.animation!.addStatusListener(_onAnimationStatusChanged);
+    _setAnimations();
   }
 
   @override
@@ -85,26 +92,55 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
     if (widget.animation != oldWidget.animation) {
       oldWidget.animation!.removeStatusListener(_onAnimationStatusChanged);
       widget.animation!.addStatusListener(_onAnimationStatusChanged);
+      _disposeAnimations();
+      _setAnimations();
     }
+  }
+
+  void _setAnimations() {
+    assert(widget.animation != null);
+    _heightAnimation = CurvedAnimation(parent: widget.animation!, curve: _snackBarHeightCurve);
+    _fadeInAnimation = CurvedAnimation(parent: widget.animation!, curve: _snackBarFadeInCurve);
+    _fadeInM3Animation = CurvedAnimation(parent: widget.animation!, curve: _snackBarM3FadeInCurve);
+    _fadeOutAnimation = CurvedAnimation(
+      parent: widget.animation!,
+      curve: _snackBarFadeOutCurve,
+      reverseCurve: const Threshold(0.0),
+    );
+    // Material 3 Animation has a height animation on entry, but a direct fade out on exit.
+    _heightM3Animation = CurvedAnimation(
+      parent: widget.animation!,
+      curve: _snackBarM3HeightCurve,
+      reverseCurve: const Threshold(0.0),
+    );
+  }
+
+  void _disposeAnimations() {
+    _heightAnimation?.dispose();
+    _fadeInAnimation?.dispose();
+    _fadeInM3Animation?.dispose();
+    _fadeOutAnimation?.dispose();
+    _heightM3Animation?.dispose();
+    _heightAnimation = null;
+    _fadeInAnimation = null;
+    _fadeInM3Animation = null;
+    _fadeOutAnimation = null;
+    _heightM3Animation = null;
   }
 
   @override
   void dispose() {
     widget.animation!.removeStatusListener(_onAnimationStatusChanged);
+    _disposeAnimations();
     super.dispose();
   }
 
   void _onAnimationStatusChanged(AnimationStatus animationStatus) {
-    switch (animationStatus) {
-      case AnimationStatus.dismissed:
-      case AnimationStatus.forward:
-      case AnimationStatus.reverse:
-        break;
-      case AnimationStatus.completed:
-        if (widget.onVisible != null && !_wasVisible) {
-          widget.onVisible!();
-        }
-        _wasVisible = true;
+    if (animationStatus == AnimationStatus.completed) {
+      if (widget.onVisible != null && !_wasVisible) {
+        widget.onVisible!();
+      }
+      _wasVisible = true;
     }
   }
 
@@ -173,28 +209,13 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
 
     final double iconHorizontalMargin = (widget.padding?.resolve(TextDirection.ltr).right ?? horizontalPadding) / 12.0;
 
-    final CurvedAnimation heightAnimation = CurvedAnimation(parent: widget.animation!, curve: _snackBarHeightCurve);
-    final CurvedAnimation fadeInAnimation = CurvedAnimation(parent: widget.animation!, curve: _snackBarFadeInCurve);
-    final CurvedAnimation fadeInM3Animation = CurvedAnimation(parent: widget.animation!, curve: _snackBarM3FadeInCurve);
-
-    final CurvedAnimation fadeOutAnimation = CurvedAnimation(
-      parent: widget.animation!,
-      curve: _snackBarFadeOutCurve,
-      reverseCurve: const Threshold(0.0),
-    );
-    // Material 3 Animation has a height animation on entry, but a direct fade out on exit.
-    final CurvedAnimation heightM3Animation = CurvedAnimation(
-      parent: widget.animation!,
-      curve: _snackBarM3HeightCurve,
-      reverseCurve: const Threshold(0.0),
-    );
-
     final IconButton? iconButton = showCloseIcon
         ? IconButton(
             icon: const Icon(Icons.close),
             iconSize: 24.0,
             color: widget.closeIconColor ?? snackBarTheme.closeIconColor ?? defaults.closeIconColor,
             onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss),
+            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
           )
         : null;
 
@@ -253,7 +274,7 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
         child: accessibleNavigation || theme.useMaterial3
             ? snackBar
             : FadeTransition(
-                opacity: fadeOutAnimation,
+                opacity: _fadeOutAnimation!,
                 child: snackBar,
               ),
       ),
@@ -288,7 +309,7 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
         key: const Key('dismissible'),
         direction: widget.dismissDirection,
         resizeDuration: null,
-        behavior: widget.hitTestBehavior ?? (widget.margin != null ? HitTestBehavior.deferToChild : HitTestBehavior.opaque),
+        behavior: widget.hitTestBehavior ?? (widget.margin != null || snackBarTheme.insetPadding != null ? HitTestBehavior.deferToChild : HitTestBehavior.opaque),
         onDismissed: (direction) => widget.onDismiss(),
         child: snackBar,
       ),
@@ -299,19 +320,19 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
       snackBarTransition = snackBar;
     } else if (isFloatingSnackBar && !theme.useMaterial3) {
       snackBarTransition = FadeTransition(
-        opacity: fadeInAnimation,
+        opacity: _fadeInAnimation!,
         child: snackBar,
       );
       // Is Material 3 Floating Snack Bar.
     } else if (isFloatingSnackBar && theme.useMaterial3) {
       snackBarTransition = FadeTransition(
-        opacity: fadeInM3Animation,
-        child: AnimatedBuilder(
-          animation: heightM3Animation,
-          builder: (context, child) {
+        opacity: _fadeInM3Animation!,
+        child: ValueListenableBuilder<double>(
+          valueListenable: _heightM3Animation!,
+          builder: (context, value, child) {
             return Align(
-              alignment: AlignmentDirectional.bottomStart,
-              heightFactor: heightM3Animation.value,
+              alignment: Alignment.bottomLeft,
+              heightFactor: value,
               child: child,
             );
           },
@@ -319,12 +340,12 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
         ),
       );
     } else {
-      snackBarTransition = AnimatedBuilder(
-        animation: heightAnimation,
-        builder: (context, child) {
+      snackBarTransition = ValueListenableBuilder<double>(
+        valueListenable: _heightAnimation!,
+        builder: (context, value, child) {
           return Align(
             alignment: AlignmentDirectional.topStart,
-            heightFactor: heightAnimation.value,
+            heightFactor: value,
             child: child,
           );
         },

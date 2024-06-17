@@ -25,7 +25,7 @@ class SlideshowButtons extends StatefulWidget {
 
 class _SlideshowButtonsState extends State<SlideshowButtons> {
   final FocusScopeNode _buttonRowFocusScopeNode = FocusScopeNode();
-  late Animation<double> _buttonScale;
+  late CurvedAnimation _buttonScale;
 
   static const List<SlideshowAction> _actions = [
     SlideshowAction.resume,
@@ -65,7 +65,7 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
   }
 
   void _unregisterWidget(SlideshowButtons widget) {
-    // nothing
+    _buttonScale.dispose();
   }
 
   @override

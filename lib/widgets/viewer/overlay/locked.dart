@@ -25,7 +25,7 @@ class ViewerLockedOverlay extends StatefulWidget {
 }
 
 class _ViewerLockedOverlayState extends State<ViewerLockedOverlay> {
-  late Animation<double> _buttonScale;
+  late CurvedAnimation _buttonScale;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _ViewerLockedOverlayState extends State<ViewerLockedOverlay> {
   }
 
   void _unregisterWidget(ViewerLockedOverlay widget) {
-    // nothing
+    _buttonScale.dispose();
   }
 
   @override

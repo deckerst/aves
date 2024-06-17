@@ -22,6 +22,7 @@ class ChangeHighlightText extends StatefulWidget {
 
 class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  late final CurvedAnimation _animation;
   late final Animation<TextStyle> _style;
 
   @override
@@ -33,10 +34,11 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
     )
       ..value = 1
       ..addListener(() => setState(() {}));
-    _style = ShadowedTextStyleTween(begin: widget.changedStyle, end: widget.style).animate(CurvedAnimation(
+    _animation = CurvedAnimation(
       parent: _controller,
       curve: widget.curve,
-    ));
+    );
+    _style = ShadowedTextStyleTween(begin: widget.changedStyle, end: widget.style).animate(_animation);
   }
 
   @override
@@ -51,6 +53,7 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
 
   @override
   void dispose() {
+    _animation.dispose();
     _controller.dispose();
     super.dispose();
   }

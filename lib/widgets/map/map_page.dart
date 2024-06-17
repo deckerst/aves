@@ -103,7 +103,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   final ValueNotifier<double> _overlayOpacityNotifier = ValueNotifier(1);
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   late AnimationController _overlayAnimationController;
-  late Animation<double> _overlayScale, _scrollerSize;
+  late CurvedAnimation _overlayScale, _scrollerSize;
   CoordinateFilter? _regionFilter;
 
   CollectionLens? get regionCollection => _regionCollectionNotifier.value;
@@ -170,6 +170,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _dotEntryNotifier.dispose();
     _overlayOpacityNotifier.dispose();
     _overlayVisible.dispose();
+    _overlayScale.dispose();
+    _scrollerSize.dispose();
     _overlayAnimationController.dispose();
 
     // provided collection should be a new instance specifically created

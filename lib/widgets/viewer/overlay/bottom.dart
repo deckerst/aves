@@ -133,7 +133,7 @@ class _BottomOverlayContent extends StatefulWidget {
 
 class _BottomOverlayContentState extends State<_BottomOverlayContent> {
   final FocusScopeNode _buttonRowFocusScopeNode = FocusScopeNode();
-  late Animation<double> _buttonScale, _thumbnailOpacity;
+  late CurvedAnimation _buttonScale, _thumbnailOpacity;
 
   @override
   void initState() {
@@ -170,7 +170,8 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
   }
 
   void _unregisterWidget(_BottomOverlayContent widget) {
-    // nothing
+    _buttonScale.dispose();
+    _thumbnailOpacity.dispose();
   }
 
   @override
