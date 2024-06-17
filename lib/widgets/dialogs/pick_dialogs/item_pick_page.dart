@@ -29,20 +29,23 @@ class ItemPickPage extends StatefulWidget {
 }
 
 class _ItemPickPageState extends State<ItemPickPage> {
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.initialization);
+
   CollectionLens get collection => widget.collection;
 
   @override
   void dispose() {
     collection.dispose();
+    _appModeNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final liveFilter = collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
-    final mode = widget.canRemoveFilters ? AppMode.pickUnfilteredMediaInternal : AppMode.pickFilteredMediaInternal;
+    _appModeNotifier.value = widget.canRemoveFilters ? AppMode.pickUnfilteredMediaInternal : AppMode.pickFilteredMediaInternal;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(mode),
+      value: _appModeNotifier,
       child: AvesScaffold(
         body: SelectionProvider<AvesEntry>(
           child: QueryProvider(

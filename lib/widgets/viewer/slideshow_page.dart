@@ -35,6 +35,7 @@ class SlideshowPage extends StatefulWidget {
 }
 
 class _SlideshowPageState extends State<SlideshowPage> {
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.slideshow);
   late ViewerController _viewerController;
   late CollectionLens _slideshowCollection;
   AvesEntry? _initialEntry;
@@ -51,6 +52,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
 
   @override
   void dispose() {
+    _appModeNotifier.dispose();
     _disposeViewerController();
     super.dispose();
   }
@@ -59,7 +61,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
   Widget build(BuildContext context) {
     final initialEntry = _initialEntry;
     return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(AppMode.slideshow),
+      value: _appModeNotifier,
       child: AvesScaffold(
         body: initialEntry == null
             ? EmptyContent(

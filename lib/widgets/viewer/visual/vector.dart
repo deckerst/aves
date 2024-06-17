@@ -37,6 +37,7 @@ class _VectorImageViewState extends State<VectorImageView> {
   ImageStream? _fullImageStream;
   late ImageStreamListener _fullImageListener;
   final ValueNotifier<bool> _fullImageLoaded = ValueNotifier(false);
+  ImageInfo? _fullImageInfo;
 
   AvesEntry get entry => widget.entry;
 
@@ -91,10 +92,13 @@ class _VectorImageViewState extends State<VectorImageView> {
   void _unregisterFullImage() {
     _fullImageStream?.removeListener(_fullImageListener);
     _fullImageStream = null;
+    _fullImageInfo?.dispose();
   }
 
   void _onFullImageCompleted(ImageInfo image, bool synchronousCall) {
+    // implementer is responsible for disposing the provided `ImageInfo`
     _unregisterFullImage();
+    _fullImageInfo = image;
     _fullImageLoaded.value = true;
   }
 

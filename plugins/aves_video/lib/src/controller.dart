@@ -47,6 +47,7 @@ abstract class AvesVideoController with ABRepeatMixin {
     if (kFlutterMemoryAllocationsEnabled) {
       FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
     }
+    abRepeatNotifier.dispose();
     _entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
   }

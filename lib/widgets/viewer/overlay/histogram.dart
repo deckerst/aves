@@ -53,8 +53,10 @@ class _ImageHistogramState extends State<ImageHistogram> {
 
   void _registerWidget(ImageHistogram widget) {
     _imageStream = imageProvider.resolve(ImageConfiguration.empty);
-    _imageListener = ImageStreamListener((image, synchronousCall) {
-      _updateLevels(image);
+    _imageListener = ImageStreamListener((image, synchronousCall) async {
+      // implementer is responsible for disposing the provided `ImageInfo`
+      await _updateLevels(image);
+      image.dispose();
     });
     _imageStream?.addListener(_imageListener);
   }
