@@ -7,7 +7,7 @@ class FakeMediaFetchService extends Fake implements MediaFetchService {
   Set<AvesEntry> entries = {};
 
   @override
-  Future<AvesEntry?> getEntry(String uri, String? mimeType) async {
+  Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     return entries.firstWhereOrNull((v) => v.uri == uri);
   }
 }

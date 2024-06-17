@@ -51,6 +51,7 @@ class _RandomTextSpanHighlighter extends StatefulWidget {
 
 class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  late final CurvedAnimation _animation;
   late final Animation<TextStyle> _animatedStyle;
   late final TextStyle _baseStyle;
   int _highlightedIndex = 0;
@@ -90,14 +91,16 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
         }
       })
       ..repeat(reverse: true);
-    _animatedStyle = ShadowedTextStyleTween(begin: _baseStyle, end: highlightStyle).animate(CurvedAnimation(
+    _animation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOutCubic,
-    ));
+    );
+    _animatedStyle = ShadowedTextStyleTween(begin: _baseStyle, end: highlightStyle).animate(_animation);
   }
 
   @override
   void dispose() {
+    _animation.dispose();
     _controller.dispose();
     super.dispose();
   }

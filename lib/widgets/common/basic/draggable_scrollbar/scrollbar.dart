@@ -121,9 +121,9 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
   late Offset _longPressLastGlobalPosition;
 
   late AnimationController _thumbAnimationController;
-  late Animation<double> _thumbAnimation;
+  late CurvedAnimation _thumbAnimation;
   late AnimationController _labelAnimationController;
-  late Animation<double> _labelAnimation;
+  late CurvedAnimation _labelAnimation;
   Timer? _fadeoutTimer;
   Map<double, String>? _percentCrumbs;
   final Map<double, String> _viewportCrumbs = {};
@@ -167,7 +167,9 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
 
   @override
   void dispose() {
+    _thumbAnimation.dispose();
     _thumbAnimationController.dispose();
+    _labelAnimation.dispose();
     _labelAnimationController.dispose();
     _fadeoutTimer?.cancel();
     super.dispose();

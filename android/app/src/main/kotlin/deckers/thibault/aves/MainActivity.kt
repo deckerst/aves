@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.pm.ShortcutInfoCompat
@@ -299,6 +300,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
             Intent.ACTION_VIEW,
             Intent.ACTION_SEND,
+            MediaStore.ACTION_REVIEW,
             "com.android.camera.action.REVIEW",
             "com.android.camera.action.SPLIT_SCREEN_REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->

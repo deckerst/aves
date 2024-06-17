@@ -22,7 +22,7 @@ class ViewerController with CastMixin {
   late final ValueNotifier<bool> _autopilotNotifier;
   Timer? _playTimer;
   final StreamController _streamController = StreamController.broadcast();
-  final Map<TickerProvider, AnimationController> _autopilotAnimationControllers = {};
+  final Map<TickerProvider, _AutopilotAnimators> _autopilotAnimators = {};
   ScaleLevel? _autopilotInitialScale;
 
   Stream<dynamic> get _events => _streamController.stream;
@@ -94,9 +94,12 @@ class ViewerController with CastMixin {
 
   void _stopPlayTimer() => _playTimer?.cancel();
 
-  void _clearAutopilotAnimations() => _autopilotAnimationControllers.keys.toSet().forEach((v) => stopAutopilotAnimation(vsync: v));
+  void _clearAutopilotAnimations() => _autopilotAnimators.keys.toSet().forEach((v) => stopAutopilotAnimation(vsync: v));
 
-  void stopAutopilotAnimation({required TickerProvider vsync}) => _autopilotAnimationControllers.remove(vsync)?.dispose();
+  void stopAutopilotAnimation({required TickerProvider vsync}) {
+    final animationController = _autopilotAnimators.remove(vsync);
+    return animationController?.dispose();
+  }
 
   void startAutopilotAnimation({
     required TickerProvider vsync,
@@ -113,16 +116,37 @@ class ViewerController with CastMixin {
       duration: autopilotInterval,
       vsync: vsync,
     );
-    animationController.addListener(() => onUpdate.call(
-          scaleLevel: ScaleLevel(
-            ref: scaleLevelRef,
-            factor: scaleFactorTween.evaluate(CurvedAnimation(
-              parent: animationController,
-              curve: Curves.linear,
-            )),
-          ),
-        ));
-    _autopilotAnimationControllers[vsync] = animationController;
-    Future.delayed(ADurations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimationControllers[vsync]?.forward());
+    final animation = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.linear,
+    );
+    animationController.addListener(() {
+      return onUpdate.call(
+        scaleLevel: ScaleLevel(
+          ref: scaleLevelRef,
+          factor: scaleFactorTween.evaluate(animation),
+        ),
+      );
+    });
+    _autopilotAnimators[vsync] = _AutopilotAnimators(
+      controller: animationController,
+      animation: animation,
+    );
+    Future.delayed(ADurations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimators[vsync]?.controller.forward());
+  }
+}
+
+class _AutopilotAnimators {
+  final AnimationController controller;
+  final CurvedAnimation animation;
+
+  _AutopilotAnimators({
+    required this.controller,
+    required this.animation,
+  });
+
+  void dispose() {
+    animation.dispose();
+    controller.dispose();
   }
 }

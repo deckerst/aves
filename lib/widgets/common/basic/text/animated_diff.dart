@@ -26,7 +26,7 @@ class AnimatedDiffText extends StatefulWidget {
 
 class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final Animation<double> _animation;
+  late final CurvedAnimation _animation;
   final List<_TextDiff> _diffs = [];
 
   TextStyle get _textStyle {
@@ -66,6 +66,7 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
 
   @override
   void dispose() {
+    _animation.dispose();
     _controller.dispose();
     super.dispose();
   }

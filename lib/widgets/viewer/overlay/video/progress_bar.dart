@@ -222,6 +222,6 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
 
   double? _progressToDx(double progress) {
     final box = _getProgressBarRenderBox();
-    return box == null ? null : progress * box.size.width;
+    return box != null && box.hasSize ? progress * box.size.width : null;
   }
 }

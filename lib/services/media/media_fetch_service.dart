@@ -13,7 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class MediaFetchService {
-  Future<AvesEntry?> getEntry(String uri, String? mimeType);
+  Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false});
 
   Future<Uint8List> getSvg(
     String uri,
@@ -75,11 +75,12 @@ class PlatformMediaFetchService implements MediaFetchService {
   static const double _thumbnailDefaultSize = 64.0;
 
   @override
-  Future<AvesEntry?> getEntry(String uri, String? mimeType) async {
+  Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     try {
       final result = await _platformObject.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
+        'allowUnsized': allowUnsized,
       }) as Map;
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {

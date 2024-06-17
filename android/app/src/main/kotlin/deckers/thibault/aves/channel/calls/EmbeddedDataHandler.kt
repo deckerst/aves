@@ -340,7 +340,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             }
 
             ioScope.launch {
-                provider.fetchSingle(context, uri, mimeType, object : ImageProvider.ImageOpCallback {
+                provider.fetchSingle(context, uri, mimeType, false, object : ImageProvider.ImageOpCallback {
                     override fun onSuccess(fields: FieldMap) {
                         resultFields.putAll(fields)
                         result.success(resultFields)

@@ -142,6 +142,7 @@
                 <action android:name="android.intent.action.PICK" />
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.provider.action.REVIEW" />
                 <action android:name="com.android.camera.action.REVIEW" />
                 <action android:name="com.android.camera.action.SPLIT_SCREEN_REVIEW" />
 
@@ -161,6 +162,7 @@
                 <action android:name="android.intent.action.PICK" />
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.provider.action.REVIEW" />
                 <action android:name="com.android.camera.action.REVIEW" />
                 <action android:name="com.android.camera.action.SPLIT_SCREEN_REVIEW" />
 

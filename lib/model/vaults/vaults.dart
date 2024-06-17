@@ -166,7 +166,7 @@ class Vaults extends ChangeNotifier {
       debugPrint('Recovering ${untrackedPaths.length} untracked vault items');
       await Future.forEach(untrackedPaths, (untrackedPath) async {
         final uri = Uri.file(untrackedPath).toString();
-        final sourceEntry = await mediaFetchService.getEntry(uri, null);
+        final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
         if (sourceEntry != null) {
           sourceEntry.id = metadataDb.nextId;
           sourceEntry.origin = EntryOrigins.vault;

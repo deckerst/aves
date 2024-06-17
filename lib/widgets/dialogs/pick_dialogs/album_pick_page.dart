@@ -64,6 +64,7 @@ class _AlbumPickPage extends StatefulWidget {
 
 class _AlbumPickPageState extends State<_AlbumPickPage> {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.pickFilterInternal);
 
   CollectionSource get source => widget.source;
 
@@ -93,13 +94,14 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   @override
   void dispose() {
     _appBarHeightNotifier.dispose();
+    _appModeNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
-      value: ValueNotifier(AppMode.pickFilterInternal),
+      value: _appModeNotifier,
       child: Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor)>(
         selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor),
         builder: (context, s, child) {

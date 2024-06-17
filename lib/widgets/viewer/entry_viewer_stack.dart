@@ -73,7 +73,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   final ValueNotifier<bool> _viewLocked = ValueNotifier(false);
   final ValueNotifier<bool> _overlayExpandedNotifier = ValueNotifier(false);
   late AnimationController _verticalPageAnimationController, _overlayAnimationController;
-  late Animation<double> _overlayButtonScale, _overlayVideoControlScale, _overlayOpacity;
+  late CurvedAnimation _overlayButtonScale, _overlayVideoControlScale, _overlayOpacity, _overlayTopOffsetAnimation;
   late Animation<Offset> _overlayTopOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
@@ -158,10 +158,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
     );
-    _overlayTopOffset = Tween(begin: const Offset(0, -1), end: const Offset(0, 0)).animate(CurvedAnimation(
+    _overlayTopOffsetAnimation = CurvedAnimation(
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
-    ));
+    );
+    _overlayTopOffset = Tween(begin: const Offset(0, -1), end: const Offset(0, 0)).animate(_overlayTopOffsetAnimation);
     _overlayVisible.value = settings.showOverlayOnOpening && !viewerController.autopilot;
     _overlayVisible.addListener(_onOverlayVisibleChanged);
     _viewLocked.addListener(_onViewLockedChanged);
@@ -188,6 +189,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
     _verticalPageAnimationController.dispose();
+    _overlayButtonScale.dispose();
+    _overlayVideoControlScale.dispose();
+    _overlayOpacity.dispose();
+    _overlayTopOffsetAnimation.dispose();
     _overlayAnimationController.dispose();
     _overlayVisible.dispose();
     _viewLocked.dispose();

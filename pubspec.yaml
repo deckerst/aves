@@ -7,7 +7,7 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.11.2+121
+version: 1.11.3+122
 publish_to: none
 
 environment:
@@ -176,7 +176,7 @@ flutter:
 #  and `_PackageLicensePage` in `/material/about.dart`
 #
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
-#  adapts from Flutter v3.16.0 `SnackBar` in `/material/snack_bar.dart`
+#  adapts from Flutter v3.23.0 `SnackBar` in `/material/snack_bar.dart`
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
 #  adapts from Flutter v3.16.0 `ScaleGestureRecognizer` in `/gestures/scale.dart`

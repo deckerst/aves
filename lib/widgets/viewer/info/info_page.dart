@@ -286,5 +286,8 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     });
   }
 
-  void _onFilter(CollectionFilter filter) => FilterSelectedNotification(filter).dispatch(context);
+  void _onFilter(CollectionFilter filter) {
+    if (!mounted) return;
+    FilterSelectedNotification(filter).dispatch(context);
+  }
 }
