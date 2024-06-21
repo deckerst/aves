@@ -71,7 +71,7 @@ class ViewStateConductor {
   void reset(AvesEntry entry) {
     final uris = <AvesEntry>{
       entry,
-      ...?entry.burstEntries,
+      ...?entry.stackedEntries,
     }.map((v) => v.uri).toSet();
     final entryControllers = _controllers.where((v) => uris.contains(v.entry.uri)).toSet();
     entryControllers.forEach((controller) {

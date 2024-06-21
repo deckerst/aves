@@ -9,15 +9,18 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/trash.dart';
+import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -34,7 +37,7 @@ class CollectionLens with ChangeNotifier {
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
   final List<StreamSubscription> _subscriptions = [];
   int? id;
-  bool listenToSource, groupBursts, fixedSort;
+  bool listenToSource, stackBursts, stackDevelopedRaws, fixedSort;
   List<AvesEntry>? fixedSelection;
 
   final Set<AvesEntry> _syntheticEntries = {};
@@ -47,7 +50,8 @@ class CollectionLens with ChangeNotifier {
     Set<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
-    this.groupBursts = true,
+    this.stackBursts = true,
+    this.stackDevelopedRaws = true,
     this.fixedSort = false,
     this.fixedSelection,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
@@ -192,28 +196,57 @@ class CollectionLens with ChangeNotifier {
     _disposeSyntheticEntries();
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
-    if (groupBursts) {
-      _groupBursts();
+    if (stackBursts) {
+      _stackBursts();
+    }
+    if (stackDevelopedRaws) {
+      _stackDevelopedRaws();
     }
   }
 
-  void _groupBursts() {
+  void _stackBursts() {
     final byBurstKey = groupBy<AvesEntry, String?>(_filteredSortedEntries, (entry) => entry.getBurstKey(burstPatterns)).whereNotNullKey();
     byBurstKey.forEach((burstKey, entries) {
       if (entries.length > 1) {
         entries.sort(AvesEntrySort.compareByName);
         final mainEntry = entries.first;
-        final burstEntry = mainEntry.copyWith(burstEntries: entries);
-        _syntheticEntries.add(burstEntry);
+        final stackEntry = mainEntry.copyWith(stackedEntries: entries);
+        _syntheticEntries.add(stackEntry);
 
-        entries.skip(1).toList().forEach((subEntry) {
+        entries.skip(1).forEach((subEntry) {
           _filteredSortedEntries.remove(subEntry);
         });
         final index = _filteredSortedEntries.indexOf(mainEntry);
         _filteredSortedEntries.removeAt(index);
-        _filteredSortedEntries.insert(index, burstEntry);
+        _filteredSortedEntries.insert(index, stackEntry);
       }
     });
+  }
+
+  void _stackDevelopedRaws() {
+    final allRawEntries = _filteredSortedEntries.where(TypeFilter.raw.test).toSet();
+    if (allRawEntries.isNotEmpty) {
+      final allDevelopedEntries = _filteredSortedEntries.where(MimeFilter(MimeTypes.jpeg).test).toSet();
+      final rawEntriesByDir = groupBy<AvesEntry, String?>(allRawEntries, (entry) => entry.directory);
+      rawEntriesByDir.forEach((dir, dirRawEntries) {
+        if (dir != null) {
+          final dirDevelopedEntries = allDevelopedEntries.where((entry) => entry.directory == dir).toSet();
+          for (final rawEntry in dirRawEntries) {
+            final rawFilename = rawEntry.filenameWithoutExtension;
+            final developedEntry = dirDevelopedEntries.firstWhereOrNull((entry) => entry.filenameWithoutExtension == rawFilename);
+            if (developedEntry != null) {
+              final stackEntry = rawEntry.copyWith(stackedEntries: [rawEntry, developedEntry]);
+              _syntheticEntries.add(stackEntry);
+
+              _filteredSortedEntries.remove(developedEntry);
+              final index = _filteredSortedEntries.indexOf(rawEntry);
+              _filteredSortedEntries.removeAt(index);
+              _filteredSortedEntries.insert(0, stackEntry);
+            }
+          }
+        }
+      });
+    }
   }
 
   void _applySort() {
@@ -322,23 +355,52 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _onEntryRemoved(Set<AvesEntry> entries) {
-    if (groupBursts) {
-      // find impacted burst groups
-      final obsoleteBurstEntries = <AvesEntry>{};
-      final burstKeys = entries.map((entry) => entry.getBurstKey(burstPatterns)).whereNotNull().toSet();
-      if (burstKeys.isNotEmpty) {
-        _filteredSortedEntries.where((entry) => entry.isBurst && burstKeys.contains(entry.getBurstKey(burstPatterns))).forEach((mainEntry) {
-          final subEntries = mainEntry.burstEntries!;
+    if (_syntheticEntries.isNotEmpty) {
+      // find impacted stacks
+      final obsoleteStacks = <AvesEntry>{};
+
+      void _replaceStack(AvesEntry stackEntry, AvesEntry entry) {
+        obsoleteStacks.add(stackEntry);
+        fixedSelection?.replace(stackEntry, entry);
+        _filteredSortedEntries.replace(stackEntry, entry);
+        _sortedEntries?.replace(stackEntry, entry);
+        sections.forEach((key, sectionEntries) => sectionEntries.replace(stackEntry, entry));
+      }
+
+      final stacks = _filteredSortedEntries.where((entry) => entry.isStack).toSet();
+      stacks.forEach((stackEntry) {
+        final subEntries = stackEntry.stackedEntries!;
+        if (subEntries.any(entries.contains)) {
+          final mainEntry = subEntries.first;
+
           // remove the deleted sub-entries
           subEntries.removeWhere(entries.contains);
-          if (subEntries.isEmpty) {
-            // remove the burst entry itself
-            obsoleteBurstEntries.add(mainEntry);
+
+          switch (subEntries.length) {
+            case 0:
+              // remove the stack itself
+              obsoleteStacks.add(stackEntry);
+              break;
+            case 1:
+              // replace the stack by the last remaining sub-entry
+              _replaceStack(stackEntry, subEntries.first);
+              break;
+            default:
+              // keep the stack with the remaining sub-entries
+              if (!subEntries.contains(mainEntry)) {
+                // recreate the stack with the correct main entry
+                _replaceStack(stackEntry, subEntries.first.copyWith(stackedEntries: subEntries));
+              }
+              break;
           }
-          // TODO TLAD [burst] recreate the burst main entry if the first sub-entry got deleted
-        });
-        entries.addAll(obsoleteBurstEntries);
-      }
+        }
+      });
+
+      obsoleteStacks.forEach((stackEntry) {
+        _syntheticEntries.remove(stackEntry);
+        stackEntry.dispose();
+      });
+      entries.addAll(obsoleteStacks);
     }
 
     // we should remove obsolete entries and sections

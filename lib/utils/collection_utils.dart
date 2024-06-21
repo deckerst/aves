@@ -1,5 +1,15 @@
 import 'package:collection/collection.dart';
 
+extension ExtraList<E> on List<E> {
+  bool replace(E old, E newItem) {
+    final index = indexOf(old);
+    if (index == -1) return false;
+
+    this[index] = newItem;
+    return true;
+  }
+}
+
 extension ExtraMapNullableKey<K extends Object, V> on Map<K?, V> {
   Map<K, V> whereNotNullKey() => <K, V>{for (var v in keys.whereNotNull()) v: this[v] as V};
 }

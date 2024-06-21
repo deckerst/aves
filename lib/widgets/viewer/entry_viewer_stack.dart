@@ -795,11 +795,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         if (collectionEntries.remove(removedEntry)) return;
 
         // remove from burst
-        final mainEntry = collectionEntries.firstWhereOrNull((entry) => entry.burstEntries?.contains(removedEntry) == true);
+        final mainEntry = collectionEntries.firstWhereOrNull((entry) => entry.stackedEntries?.contains(removedEntry) == true);
         if (mainEntry != null) {
           final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
           if (multiPageController != null) {
-            mainEntry.burstEntries!.remove(removedEntry);
+            mainEntry.stackedEntries!.remove(removedEntry);
             multiPageController.reset();
           }
         }

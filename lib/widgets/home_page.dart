@@ -300,7 +300,7 @@ class _HomePageState extends State<HomePage> {
               // if we group bursts, opening a burst sub-entry should:
               // - identify and select the containing main entry,
               // - select the sub-entry in the Viewer page.
-              groupBursts: false,
+              stackBursts: false,
             );
             final viewerEntryPath = viewerEntry.path;
             final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);

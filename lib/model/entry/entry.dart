@@ -44,7 +44,8 @@ class AvesEntry with AvesEntryBase {
   AddressDetails? _addressDetails;
   TrashDetails? trashDetails;
 
-  List<AvesEntry>? burstEntries;
+  // synthetic stack of related entries, e.g. burst shots or raw/developed pairs
+  List<AvesEntry>? stackedEntries;
 
   @override
   final AChangeNotifier visualChangeNotifier = AChangeNotifier();
@@ -69,7 +70,7 @@ class AvesEntry with AvesEntryBase {
     required int? durationMillis,
     required this.trashed,
     required this.origin,
-    this.burstEntries,
+    this.stackedEntries,
   }) : id = id ?? 0 {
     if (kFlutterMemoryAllocationsEnabled) {
       FlutterMemoryAllocations.instance.dispatchObjectCreated(
@@ -93,7 +94,7 @@ class AvesEntry with AvesEntryBase {
     int? dateAddedSecs,
     int? dateModifiedSecs,
     int? origin,
-    List<AvesEntry>? burstEntries,
+    List<AvesEntry>? stackedEntries,
   }) {
     final copyEntryId = id ?? this.id;
     final copied = AvesEntry(
@@ -114,7 +115,7 @@ class AvesEntry with AvesEntryBase {
       durationMillis: durationMillis,
       trashed: trashed,
       origin: origin ?? this.origin,
-      burstEntries: burstEntries ?? this.burstEntries,
+      stackedEntries: stackedEntries ?? this.stackedEntries,
     )
       ..catalogMetadata = _catalogMetadata?.copyWith(id: copyEntryId)
       ..addressDetails = _addressDetails?.copyWith(id: copyEntryId)

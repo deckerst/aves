@@ -163,7 +163,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   AvesEntry _getTargetEntry(BuildContext context, EntryAction action) {
-    if (mainEntry.isMultiPage && (mainEntry.isBurst || EntryActions.pageActions.contains(action))) {
+    if (mainEntry.isMultiPage && (mainEntry.isStack || EntryActions.pageActions.contains(action))) {
       final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
         final multiPageInfo = multiPageController.info;
