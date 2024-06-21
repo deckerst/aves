@@ -237,7 +237,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Set<AvesEntry> _getTargetItems(BuildContext context) {
     final selection = context.read<Selection<AvesEntry>>();
     final groupedEntries = (selection.isSelecting ? selection.selectedItems : context.read<CollectionLens>().sortedEntries);
-    return groupedEntries.expand((entry) => entry.burstEntries ?? {entry}).toSet();
+    return groupedEntries.expand((entry) => entry.stackedEntries ?? {entry}).toSet();
   }
 
   Future<void> _share(BuildContext context) async {

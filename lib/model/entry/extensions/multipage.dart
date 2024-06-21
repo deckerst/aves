@@ -7,9 +7,9 @@ import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 
 extension ExtraAvesEntryMultipage on AvesEntry {
-  bool get isMultiPage => isBurst || ((catalogMetadata?.isMultiPage ?? false) && (isMotionPhoto || !isHdr));
+  bool get isMultiPage => isStack || ((catalogMetadata?.isMultiPage ?? false) && (isMotionPhoto || !isHdr));
 
-  bool get isBurst => burstEntries?.isNotEmpty == true;
+  bool get isStack => stackedEntries?.isNotEmpty == true;
 
   bool get isMotionPhoto => catalogMetadata?.isMotionPhoto ?? false;
 
@@ -19,10 +19,10 @@ extension ExtraAvesEntryMultipage on AvesEntry {
   }
 
   Future<MultiPageInfo?> getMultiPageInfo() async {
-    if (isBurst) {
+    if (isStack) {
       return MultiPageInfo(
         mainEntry: this,
-        pages: burstEntries!
+        pages: stackedEntries!
             .mapIndexed((index, entry) => SinglePageInfo(
                   index: index,
                   pageId: entry.id,

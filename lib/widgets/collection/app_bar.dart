@@ -444,7 +444,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Set<AvesEntry> _getExpandedSelectedItems(Selection<AvesEntry> selection) {
-    return selection.selectedItems.expand((entry) => entry.burstEntries ?? {entry}).toSet();
+    return selection.selectedItems.expand((entry) => entry.stackedEntries ?? {entry}).toSet();
   }
 
   // key is expected by test driver (e.g. 'menu-configureView', 'menu-map')
