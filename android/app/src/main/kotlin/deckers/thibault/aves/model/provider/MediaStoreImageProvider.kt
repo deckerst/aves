@@ -562,13 +562,14 @@ class MediaStoreImageProvider : ImageProvider() {
         }
 
         val desiredNameWithoutExtension = desiredName.substringBeforeLast(".")
-        val targetNameWithoutExtension = resolveTargetFileNameWithoutExtension(
+        val resolution = resolveTargetFileNameWithoutExtension(
             contextWrapper = activity,
             dir = targetDir,
             desiredNameWithoutExtension = desiredNameWithoutExtension,
             mimeType = mimeType,
             conflictStrategy = nameConflictStrategy,
-        ) ?: return skippedFieldMap
+        )
+        val targetNameWithoutExtension = resolution.nameWithoutExtension ?: return skippedFieldMap
 
         val sourceDocFile = DocumentFileCompat.fromSingleUri(activity, sourceUri)
         val targetPath = createSingle(

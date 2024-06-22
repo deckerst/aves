@@ -134,4 +134,15 @@ class MimeTypes {
     }
     return null;
   }
+
+  static const Map<String, String> _defaultExtensions = {
+    bmp: '.bmp',
+    gif: '.gif',
+    jpeg: '.jpg',
+    png: '.png',
+    svg: '.svg',
+    webp: '.webp',
+  };
+
+  static String? extensionFor(String mimeType) => _defaultExtensions[mimeType];
 }

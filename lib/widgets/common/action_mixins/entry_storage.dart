@@ -13,6 +13,7 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -70,6 +71,34 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     });
 
+    final l10n = context.l10n;
+
+    var nameConflictStrategy = NameConflictStrategy.rename;
+    final destinationDirectory = Directory(destinationAlbum);
+    final destinationExtension = MimeTypes.extensionFor(options.mimeType);
+    final names = [
+      ...selection.map((v) => '${v.filenameWithoutExtension}$destinationExtension'),
+      // do not guard up front based on directory existence,
+      // as conflicts could be within moved entries scattered across multiple albums
+      if (await destinationDirectory.exists()) ...destinationDirectory.listSync().map((v) => pContext.basename(v.path)),
+    ].map((v) => v.toLowerCase()).toList();
+    // case insensitive comparison
+    final uniqueNames = names.toSet();
+    if (uniqueNames.length < names.length) {
+      final value = await showDialog<NameConflictStrategy>(
+        context: context,
+        builder: (context) => AvesSingleSelectionDialog<NameConflictStrategy>(
+          initialValue: nameConflictStrategy,
+          options: Map.fromEntries(NameConflictStrategy.values.map((v) => MapEntry(v, v.getName(context)))),
+          message: l10n.nameConflictDialogSingleSourceMessage,
+          confirmationButtonLabel: l10n.continueButtonLabel,
+        ),
+        routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
+      );
+      if (value == null) return;
+      nameConflictStrategy = value;
+    }
+
     final selectionCount = selection.length;
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -79,7 +108,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         selection,
         options: options,
         destinationAlbum: destinationAlbum,
-        nameConflictStrategy: NameConflictStrategy.rename,
+        nameConflictStrategy: nameConflictStrategy,
       ),
       itemCount: selectionCount,
       onDone: (processed) async {
@@ -91,7 +120,6 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         source.resumeMonitoring();
         unawaited(source.refreshUris(newUris));
 
-        final l10n = context.l10n;
         // get navigator beforehand because
         // local context may be deactivated when action is triggered after navigation
         final navigator = Navigator.maybeOf(context);
@@ -173,7 +201,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         // do not guard up front based on directory existence,
         // as conflicts could be within moved entries scattered across multiple albums
         if (await destinationDirectory.exists()) ...destinationDirectory.listSync().map((v) => pContext.basename(v.path)),
-      ];
+      ].map((v) => v.toLowerCase()).toList();
+      // case insensitive comparison
       final uniqueNames = names.toSet();
       if (uniqueNames.length < names.length) {
         final value = await showDialog<NameConflictStrategy>(
