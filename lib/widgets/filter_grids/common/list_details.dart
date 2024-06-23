@@ -33,7 +33,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final detailsTheme = context.watch<FilterListDetailsThemeData>();
 
-    final leading = filter.iconBuilder(context, detailsTheme.titleIconSize, showGenericIcon: false);
+    final leading = filter.iconBuilder(context, detailsTheme.titleIconSize, allowGenericIcon: false);
     final hasTitleLeading = leading != null;
 
     return Container(

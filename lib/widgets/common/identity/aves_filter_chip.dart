@@ -47,7 +47,7 @@ class AvesFilterDecoration {
 
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
-  final bool showText, showGenericIcon, useFilterColor;
+  final bool showLeading, showText, allowGenericIcon, useFilterColor;
   final AvesFilterDecoration? decoration;
   final Color? background;
   final String? banner;
@@ -61,7 +61,7 @@ class AvesFilterChip extends StatefulWidget {
   static const double defaultRadius = 32;
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
-  static const double minChipWidth = 80;
+  static const double minChipWidth = kMinInteractiveDimension;
   static const double iconSize = 18;
   static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
@@ -69,8 +69,9 @@ class AvesFilterChip extends StatefulWidget {
   const AvesFilterChip({
     super.key,
     required this.filter,
+    this.showLeading = true,
     this.showText = true,
-    this.showGenericIcon = true,
+    this.allowGenericIcon = true,
     this.useFilterColor = true,
     this.decoration,
     this.background,
@@ -255,10 +256,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         : null;
 
     Widget? content;
-    if (widget.showText) {
+    final showLeading = widget.showLeading;
+    final showText = widget.showText;
+    if (showLeading || showText) {
       final textScaler = MediaQuery.textScalerOf(context);
       final iconSize = textScaler.scale(AvesFilterChip.iconSize);
-      final leading = widget.leadingOverride ?? filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
+      final leading = showLeading ? widget.leadingOverride ?? filter.iconBuilder(context, iconSize, allowGenericIcon: widget.allowGenericIcon) : null;
       final trailing = onRemove != null
           ? Theme(
               data: Theme.of(context).copyWith(
@@ -278,22 +281,21 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         mainAxisSize: decoration != null ? MainAxisSize.max : MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (leading != null) ...[
-            leading,
-            SizedBox(width: padding),
-          ],
-          Flexible(
-            child: Text(
-              filter.getLabel(context),
-              style: TextStyle(
-                fontSize: AvesFilterChip.fontSize,
-                decoration: filter.reversed ? TextDecoration.lineThrough : null,
-                decorationThickness: 2,
+          if (leading != null) leading,
+          if (leading != null && showText) SizedBox(width: padding),
+          if (showText)
+            Flexible(
+              child: Text(
+                filter.getLabel(context),
+                style: TextStyle(
+                  fontSize: AvesFilterChip.fontSize,
+                  decoration: filter.reversed ? TextDecoration.lineThrough : null,
+                  decorationThickness: 2,
+                ),
+                softWrap: false,
+                overflow: TextOverflow.fade,
               ),
-              softWrap: false,
-              overflow: TextOverflow.fade,
             ),
-          ),
           if (trailing != null) ...[
             SizedBox(width: padding),
             trailing,

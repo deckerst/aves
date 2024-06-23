@@ -35,7 +35,7 @@ class AlbumQuickChooser extends StatelessWidget {
       pointerGlobalPosition: pointerGlobalPosition,
       itemBuilder: (context, album) => AvesFilterChip(
         filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
-        showGenericIcon: false,
+        allowGenericIcon: false,
       ),
     );
   }

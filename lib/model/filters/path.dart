@@ -1,5 +1,9 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/view/view.dart';
+import 'package:flutter/widgets.dart';
 
 class PathFilter extends CollectionFilter {
   static const type = 'path';
@@ -46,6 +50,19 @@ class PathFilter extends CollectionFilter {
 
   @override
   String get universalLabel => path;
+
+  @override
+  String getLabel(BuildContext context) {
+    final _directory = androidFileUtils.relativeDirectoryFromPath(path);
+    if (_directory == null) return universalLabel;
+    if (_directory.relativeDir.isEmpty) {
+      return _directory.getVolumeDescription(context);
+    }
+    return pContext.split(_directory.relativeDir).last;
+  }
+
+  @override
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.explorer, size: size);
 
   @override
   String get category => type;

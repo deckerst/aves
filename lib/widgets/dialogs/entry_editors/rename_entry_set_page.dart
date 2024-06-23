@@ -6,7 +6,7 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
-import 'package:aves/view/src/metadata/fields.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
@@ -122,11 +122,10 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                               ...[
                                 MetadataField.exifMake,
                                 MetadataField.exifModel,
-                              ]
-                                  .map((field) => PopupMenuItem(
-                                value: MetadataFieldNamingProcessor.keyWithField(field),
-                                child: MenuRow(text: field.title),
-                              )),
+                              ].map((field) => PopupMenuItem(
+                                    value: MetadataFieldNamingProcessor.keyWithField(field),
+                                    child: MenuRow(text: field.title),
+                                  )),
                               PopupMenuItem(
                                 value: HashNamingProcessor.key,
                                 child: MenuRow(text: l10n.renameProcessorHash),

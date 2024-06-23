@@ -77,7 +77,7 @@ class MimeFilter extends CollectionFilter {
   }
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(_icon, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(_icon, size: size);
 
   @override
   Future<Color> color(BuildContext context) {

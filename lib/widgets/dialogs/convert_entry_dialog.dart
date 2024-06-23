@@ -8,7 +8,6 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
-import 'package:aves/view/src/metadata/convert_action.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/list_tiles/slider.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';

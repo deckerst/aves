@@ -7,6 +7,7 @@ export 'src/actions/map_cluster.dart';
 export 'src/actions/share.dart';
 export 'src/actions/slideshow.dart';
 export 'src/editor/enums.dart';
+export 'src/metadata/convert_action.dart';
 export 'src/metadata/date_edit_action.dart';
 export 'src/metadata/date_field_source.dart';
 export 'src/metadata/fields.dart';

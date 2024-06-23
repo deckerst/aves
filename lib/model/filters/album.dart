@@ -52,13 +52,13 @@ class AlbumFilter extends CoveredCollectionFilter {
   String getTooltip(BuildContext context) => album;
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
     return IconUtils.getAlbumIcon(
           context: context,
           albumPath: album,
           size: size,
         ) ??
-        (showGenericIcon ? Icon(AIcons.album, size: size) : null);
+        (allowGenericIcon ? Icon(AIcons.album, size: size) : null);
   }
 
   @override

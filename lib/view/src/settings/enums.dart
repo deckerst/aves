@@ -83,6 +83,7 @@ extension ExtraHomePageSettingView on HomePageSetting {
       HomePageSetting.collection => l10n.drawerCollectionAll,
       HomePageSetting.albums => l10n.drawerAlbumPage,
       HomePageSetting.tags => l10n.drawerTagPage,
+      HomePageSetting.explorer => l10n.explorerPageTitle,
     };
   }
 }

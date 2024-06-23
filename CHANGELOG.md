@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Collection: stack RAW and JPEG with same file names
 - Collection: ask to rename/replace/skip when converting items with name conflict
 - Export: bulk converting motion photos to still images
+- Explorer: view folder tree and filter paths
 
 ### Fixed
 

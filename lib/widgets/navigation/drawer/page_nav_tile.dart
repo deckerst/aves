@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
+import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
@@ -95,12 +96,14 @@ class PageNavTile extends StatelessWidget {
         return (_) => const PlaceListPage();
       case TagListPage.routeName:
         return (_) => const TagListPage();
-      case SettingsPage.routeName:
-        return (_) => const SettingsPage();
       case AboutPage.routeName:
         return (_) => const AboutPage();
       case AppDebugPage.routeName:
         return (_) => const AppDebugPage();
+      case ExplorerPage.routeName:
+        return (_) => const ExplorerPage();
+      case SettingsPage.routeName:
+        return (_) => const SettingsPage();
       default:
         throw Exception('unknown route=$routeName');
     }

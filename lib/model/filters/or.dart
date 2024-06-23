@@ -60,8 +60,8 @@ class OrFilter extends CollectionFilter {
   String getLabel(BuildContext context) => _filters.map((v) => v.getLabel(context)).join(', ');
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
-    return _genericIcon != null ? Icon(_genericIcon, size: size) : _first.iconBuilder(context, size, showGenericIcon: showGenericIcon);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
+    return _genericIcon != null ? Icon(_genericIcon, size: size) : _first.iconBuilder(context, size, allowGenericIcon: allowGenericIcon);
   }
 
   @override

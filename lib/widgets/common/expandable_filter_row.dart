@@ -170,7 +170,7 @@ class ExpandableFilterRow extends StatelessWidget {
       // key `album-{path}` is expected by test driver
       key: Key(filter.key),
       filter: filter,
-      showGenericIcon: showGenericIcon,
+      allowGenericIcon: showGenericIcon,
       leadingOverride: leadingBuilder?.call(filter),
       heroType: heroTypeBuilder?.call(filter) ?? HeroType.onTap,
       onTap: onTap,
