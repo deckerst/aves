@@ -29,6 +29,7 @@ class AIcons {
   static const disc = Icons.fiber_manual_record;
   static const display = Icons.light_mode_outlined;
   static const error = Icons.error_outline;
+  static const explorer = Icons.account_tree_outlined;
   static const folder = Icons.folder_outlined;
   static const geoBounds = Icons.public_outlined;
   static final github = MdiIcons.github;

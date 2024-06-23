@@ -64,7 +64,7 @@ class RatingFilter extends CollectionFilter {
       };
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
     return switch (rating) {
       -1 => Icon(AIcons.ratingRejected, size: size),
       0 => Icon(AIcons.ratingUnrated, size: size),

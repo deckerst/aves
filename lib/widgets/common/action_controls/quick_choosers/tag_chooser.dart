@@ -32,7 +32,7 @@ class TagQuickChooser extends StatelessWidget {
       pointerGlobalPosition: pointerGlobalPosition,
       itemBuilder: (context, filter) => AvesFilterChip(
         filter: filter,
-        showGenericIcon: false,
+        allowGenericIcon: false,
       ),
     );
   }

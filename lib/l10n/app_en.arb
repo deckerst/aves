@@ -771,6 +771,8 @@
 
   "binPageTitle": "Recycle Bin",
 
+  "explorerPageTitle": "Explorer",
+
   "searchCollectionFieldHint": "Search collection",
   "searchRecentSectionTitle": "Recent",
   "searchDateSectionTitle": "Date",

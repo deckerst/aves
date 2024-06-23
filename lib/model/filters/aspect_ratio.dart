@@ -68,7 +68,7 @@ class AspectRatioFilter extends CollectionFilter {
   }
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.aspectRatio, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.aspectRatio, size: size);
 
   @override
   String get category => type;

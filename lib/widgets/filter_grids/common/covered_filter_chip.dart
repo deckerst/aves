@@ -115,8 +115,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     return AvesFilterChip(
       key: chipKey,
       filter: _filter,
+      showLeading: showText,
       showText: showText,
-      showGenericIcon: false,
+      allowGenericIcon: false,
       decoration: AvesFilterDecoration(
         radius: radius(extent),
         widget: Padding(

@@ -51,7 +51,7 @@ class RecentlyAddedFilter extends CollectionFilter {
   String getLabel(BuildContext context) => context.l10n.filterRecentlyAddedLabel;
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.dateRecent, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.dateRecent, size: size);
 
   @override
   String get category => type;
