@@ -5,45 +5,46 @@ import 'package:flutter/material.dart';
 
 extension ExtraEntrySetActionView on EntrySetAction {
   String getText(BuildContext context) {
+    final l10n = context.l10n;
     return switch (this) {
       // general
-      EntrySetAction.configureView => context.l10n.menuActionConfigureView,
-      EntrySetAction.select => context.l10n.menuActionSelect,
-      EntrySetAction.selectAll => context.l10n.menuActionSelectAll,
-      EntrySetAction.selectNone => context.l10n.menuActionSelectNone,
+      EntrySetAction.configureView => l10n.menuActionConfigureView,
+      EntrySetAction.select => l10n.menuActionSelect,
+      EntrySetAction.selectAll => l10n.menuActionSelectAll,
+      EntrySetAction.selectNone => l10n.menuActionSelectNone,
       // browsing
       EntrySetAction.searchCollection => MaterialLocalizations.of(context).searchFieldLabel,
       EntrySetAction.toggleTitleSearch =>
         // different data depending on toggle state
-        context.l10n.collectionActionShowTitleSearch,
-      EntrySetAction.addShortcut => context.l10n.collectionActionAddShortcut,
-      EntrySetAction.setHome => context.l10n.collectionActionSetHome,
-      EntrySetAction.emptyBin => context.l10n.collectionActionEmptyBin,
+        l10n.collectionActionShowTitleSearch,
+      EntrySetAction.addShortcut => l10n.collectionActionAddShortcut,
+      EntrySetAction.setHome => l10n.collectionActionSetHome,
+      EntrySetAction.emptyBin => l10n.collectionActionEmptyBin,
       // browsing or selecting
-      EntrySetAction.map => context.l10n.menuActionMap,
-      EntrySetAction.slideshow => context.l10n.menuActionSlideshow,
-      EntrySetAction.stats => context.l10n.menuActionStats,
-      EntrySetAction.rescan => context.l10n.collectionActionRescan,
+      EntrySetAction.map => l10n.menuActionMap,
+      EntrySetAction.slideshow => l10n.menuActionSlideshow,
+      EntrySetAction.stats => l10n.menuActionStats,
+      EntrySetAction.rescan => l10n.collectionActionRescan,
       // selecting
-      EntrySetAction.share => context.l10n.entryActionShare,
-      EntrySetAction.delete => context.l10n.entryActionDelete,
-      EntrySetAction.restore => context.l10n.entryActionRestore,
-      EntrySetAction.copy => context.l10n.collectionActionCopy,
-      EntrySetAction.move => context.l10n.collectionActionMove,
-      EntrySetAction.rename => context.l10n.entryActionRename,
-      EntrySetAction.convert => context.l10n.entryActionConvert,
+      EntrySetAction.share => l10n.entryActionShare,
+      EntrySetAction.delete => l10n.entryActionDelete,
+      EntrySetAction.restore => l10n.entryActionRestore,
+      EntrySetAction.copy => l10n.collectionActionCopy,
+      EntrySetAction.move => l10n.collectionActionMove,
+      EntrySetAction.rename => l10n.entryActionRename,
+      EntrySetAction.convert => l10n.entryActionConvert,
       EntrySetAction.toggleFavourite =>
         // different data depending on toggle state
-        context.l10n.entryActionAddFavourite,
-      EntrySetAction.rotateCCW => context.l10n.entryActionRotateCCW,
-      EntrySetAction.rotateCW => context.l10n.entryActionRotateCW,
-      EntrySetAction.flip => context.l10n.entryActionFlip,
-      EntrySetAction.editDate => context.l10n.entryInfoActionEditDate,
-      EntrySetAction.editLocation => context.l10n.entryInfoActionEditLocation,
-      EntrySetAction.editTitleDescription => context.l10n.entryInfoActionEditTitleDescription,
-      EntrySetAction.editRating => context.l10n.entryInfoActionEditRating,
-      EntrySetAction.editTags => context.l10n.entryInfoActionEditTags,
-      EntrySetAction.removeMetadata => context.l10n.entryInfoActionRemoveMetadata,
+        l10n.entryActionAddFavourite,
+      EntrySetAction.rotateCCW => l10n.entryActionRotateCCW,
+      EntrySetAction.rotateCW => l10n.entryActionRotateCW,
+      EntrySetAction.flip => l10n.entryActionFlip,
+      EntrySetAction.editDate => l10n.entryInfoActionEditDate,
+      EntrySetAction.editLocation => l10n.entryInfoActionEditLocation,
+      EntrySetAction.editTitleDescription => l10n.entryInfoActionEditTitleDescription,
+      EntrySetAction.editRating => l10n.entryInfoActionEditRating,
+      EntrySetAction.editTags => l10n.entryInfoActionEditTags,
+      EntrySetAction.removeMetadata => l10n.entryInfoActionRemoveMetadata,
     };
   }
 

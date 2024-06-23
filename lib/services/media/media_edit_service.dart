@@ -193,15 +193,17 @@ class PlatformMediaEditService implements MediaEditService {
 
 @immutable
 class EntryConvertOptions extends Equatable {
+  final EntryConvertAction action;
   final String mimeType;
   final bool writeMetadata;
   final LengthUnit lengthUnit;
   final int width, height, quality;
 
   @override
-  List<Object?> get props => [mimeType, writeMetadata, lengthUnit, width, height, quality];
+  List<Object?> get props => [action, mimeType, writeMetadata, lengthUnit, width, height, quality];
 
   const EntryConvertOptions({
+    required this.action,
     required this.mimeType,
     required this.writeMetadata,
     required this.lengthUnit,

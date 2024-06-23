@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
@@ -13,7 +14,6 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/trash.dart';
-import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
@@ -224,7 +224,7 @@ class CollectionLens with ChangeNotifier {
   }
 
   void _stackDevelopedRaws() {
-    final allRawEntries = _filteredSortedEntries.where(TypeFilter.raw.test).toSet();
+    final allRawEntries = _filteredSortedEntries.where((entry) => entry.isRaw).toSet();
     if (allRawEntries.isNotEmpty) {
       final allDevelopedEntries = _filteredSortedEntries.where(MimeFilter(MimeTypes.jpeg).test).toSet();
       final rawEntriesByDir = groupBy<AvesEntry, String?>(allRawEntries, (entry) => entry.directory);
