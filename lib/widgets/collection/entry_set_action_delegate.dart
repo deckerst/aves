@@ -5,6 +5,7 @@ import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
+import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -20,6 +21,7 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/collection_utils.dart';
@@ -34,6 +36,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
@@ -366,9 +369,23 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     _browse(context);
   }
 
-  void _convert(BuildContext context) {
+  Future<void> _convert(BuildContext context) async {
     final entries = _getTargetItems(context);
-    convert(context, entries);
+
+    final options = await showDialog<EntryConvertOptions>(
+      context: context,
+      builder: (context) => ConvertEntryDialog(entries: entries),
+      routeSettings: const RouteSettings(name: ConvertEntryDialog.routeName),
+    );
+    if (options == null) return;
+
+    switch (options.action) {
+      case EntryConvertAction.convert:
+        await doExport(context, entries, options);
+      case EntryConvertAction.convertMotionPhotoToStillImage:
+        final todoItems = entries.where((entry) => entry.isMotionPhoto).toSet();
+        await _edit(context, todoItems, (entry) => entry.removeTrailerVideo());
+    }
 
     _browse(context);
   }

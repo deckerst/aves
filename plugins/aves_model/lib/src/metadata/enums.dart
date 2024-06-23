@@ -15,6 +15,8 @@ enum DateFieldSource {
   exifGpsDate,
 }
 
+enum EntryConvertAction { convert, convertMotionPhotoToStillImage }
+
 enum LengthUnit { px, percent }
 
 enum LocationEditAction {

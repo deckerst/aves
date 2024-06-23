@@ -28,7 +28,6 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
-import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
@@ -38,14 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  Future<void> convert(BuildContext context, Set<AvesEntry> targetEntries) async {
-    final options = await showDialog<EntryConvertOptions>(
-      context: context,
-      builder: (context) => ConvertEntryDialog(entries: targetEntries),
-      routeSettings: const RouteSettings(name: ConvertEntryDialog.routeName),
-    );
-    if (options == null) return;
-
+  Future<void> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
     final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
     if (destinationAlbum == null) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
