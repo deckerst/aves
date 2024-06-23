@@ -39,7 +39,7 @@ extension ExtraAlbumChipGroupFactorView on AlbumChipGroupFactor {
     return switch (this) {
       AlbumChipGroupFactor.importance => AIcons.important,
       AlbumChipGroupFactor.mimeType => AIcons.mimeType,
-      AlbumChipGroupFactor.volume => AIcons.removableStorage,
+      AlbumChipGroupFactor.volume => AIcons.storageCard,
       AlbumChipGroupFactor.none => AIcons.clear,
     };
   }

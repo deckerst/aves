@@ -76,7 +76,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
       EntrySetAction.restore => AIcons.restore,
       EntrySetAction.copy => AIcons.copy,
       EntrySetAction.move => AIcons.move,
-      EntrySetAction.rename => AIcons.name,
+      EntrySetAction.rename => AIcons.rename,
       EntrySetAction.convert => AIcons.convert,
       EntrySetAction.toggleFavourite =>
         // different data depending on toggle state

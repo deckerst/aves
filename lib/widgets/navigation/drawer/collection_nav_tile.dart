@@ -87,7 +87,7 @@ class AlbumNavTile extends StatelessWidget {
       title: DrawerFilterTitle(filter: filter),
       trailing: androidFileUtils.isOnRemovableStorage(album)
           ? const Icon(
-              AIcons.removableStorage,
+              AIcons.storageCard,
               size: 16,
             )
           : null,

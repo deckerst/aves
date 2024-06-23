@@ -165,7 +165,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
             ),
           ),
           ...volumes.map((v) {
-            final icon = v.isRemovable ? AIcons.removableStorage : AIcons.mainStorage;
+            final icon = v.isRemovable ? AIcons.storageCard : AIcons.storageMain;
             return ListTile(
               leading: Icon(icon),
               title: Text(v.getDescription(context)),

@@ -120,7 +120,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
 
     List<Widget> leadingIcons = [
       if (pinned) const Icon(AIcons.pin),
-      if (removableStorage) const Icon(AIcons.removableStorage),
+      if (removableStorage) const Icon(AIcons.storageCard),
     ];
 
     Widget? leading;
