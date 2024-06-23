@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - Collection: ask to rename/replace/skip when converting items with name conflict
 - Export: bulk converting motion photos to still images
 
+### Fixed
+
+- switching to PiP when changing device orientation on Android >=13
+
 ## <a id="v1.11.3"></a>[v1.11.3] - 2024-06-17
 
 ### Added

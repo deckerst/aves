@@ -79,7 +79,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late VideoActionDelegate _videoActionDelegate;
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
-  Timer? _overlayHidingTimer, _videoPauseTimer;
+  Timer? _overlayHidingTimer, _appInactiveReactionTimer;
 
   @override
   bool get isViewingImage => _currentVerticalPage.value == imagePage;
@@ -203,7 +203,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _verticalScrollNotifier.dispose();
     _heroInfoNotifier.dispose();
     _stopOverlayHidingTimer();
-    _stopVideoPauseTimer();
+    _stopAppInactiveTimer();
     AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);
     _unregisterWidget(widget);
     super.dispose();
@@ -334,42 +334,43 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     switch (AvesApp.lifecycleStateNotifier.value) {
       case AppLifecycleState.inactive:
         // inactive: when losing focus
-        _onAppInactive();
+        // also triggered when app is rotated on Android API >=33
+        _startAppInactiveTimer();
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         // paused: when switching to another app
         // detached: when app is without a view
         viewerController.autopilot = false;
-        _stopVideoPauseTimer();
+        _stopAppInactiveTimer();
         pauseVideoControllers();
       case AppLifecycleState.resumed:
-        _stopVideoPauseTimer();
+        _stopAppInactiveTimer();
       case AppLifecycleState.hidden:
         // hidden: transient state between `inactive` and `paused`
         break;
     }
   }
 
-  Future<void> _onAppInactive() async {
-    final playingController = context.read<VideoConductor>().getPlayingController();
+  Future<void> _onAppInactive(AvesVideoController? playingController) async {
     bool enabledPip = false;
     if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
-      enabledPip |= await _enablePictureInPicture();
+      enabledPip |= await _enablePictureInPicture(playingController);
     }
     if (enabledPip) {
       // ensure playback, in case lifecycle paused/resumed events happened when switching to PiP
       await playingController?.play();
     } else {
-      _startVideoPauseTimer();
+      await pauseVideoControllers();
     }
   }
 
-  void _startVideoPauseTimer() {
-    _stopVideoPauseTimer();
-    _videoPauseTimer = Timer(ADurations.videoPauseAppInactiveDelay, pauseVideoControllers);
+  void _startAppInactiveTimer() {
+    _stopAppInactiveTimer();
+    final playingController = context.read<VideoConductor>().getPlayingController();
+    _appInactiveReactionTimer = Timer(ADurations.appInactiveReactionDelay, () => _onAppInactive(playingController));
   }
 
-  void _stopVideoPauseTimer() => _videoPauseTimer?.cancel();
+  void _stopAppInactiveTimer() => _appInactiveReactionTimer?.cancel();
 
   Widget _decorateOverlay(Widget overlay) {
     return ValueListenableBuilder<double>(
@@ -920,10 +921,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     }
   }
 
-  Future<bool> _enablePictureInPicture() async {
-    final videoController = context.read<VideoConductor>().getPlayingController();
-    if (videoController != null) {
-      final entrySize = videoController.entry.displaySize;
+  Future<bool> _enablePictureInPicture(AvesVideoController? playingController) async {
+    if (playingController != null) {
+      final entrySize = playingController.entry.displaySize;
       final aspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
 
       final viewSize = MediaQuery.sizeOf(context) * MediaQuery.devicePixelRatioOf(context);
