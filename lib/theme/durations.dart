@@ -60,7 +60,7 @@ class ADurations {
   static const highlightJumpDelay = Duration(milliseconds: 400);
   static const highlightScrollInitDelay = Duration(milliseconds: 800);
   static const motionPhotoAutoPlayDelay = Duration(milliseconds: 700);
-  static const videoPauseAppInactiveDelay = Duration(milliseconds: 300);
+  static const appInactiveReactionDelay = Duration(milliseconds: 300);
   static const videoOverlayHideDelay = Duration(milliseconds: 500);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
