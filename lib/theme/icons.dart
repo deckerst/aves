@@ -30,7 +30,8 @@ class AIcons {
   static const display = Icons.light_mode_outlined;
   static const error = Icons.error_outline;
   static const folder = Icons.folder_outlined;
-  static const grid = Icons.grid_on_outlined;
+  static const geoBounds = Icons.public_outlined;
+  static final github = MdiIcons.github;
   static const home = Icons.home_outlined;
 
   // as of Flutter v3.16.3,
@@ -39,13 +40,15 @@ class AIcons {
   static const important = IconData(labelImportantOutlineCodePoint, fontFamily: materialIconsFontFamily, matchTextDirection: true);
 
   static const language = Icons.translate_outlined;
+  static final legal = MdiIcons.scaleBalance;
   static const location = Icons.place_outlined;
   static const locationUnlocated = Icons.location_off_outlined;
   static const country = Icons.flag_outlined;
   static const state = Icons.flag_outlined;
   static const place = Icons.place_outlined;
-  static const mainStorage = Icons.smartphone_outlined;
   static const mimeType = Icons.code_outlined;
+  static const name = Icons.abc_outlined;
+  static const newTier = Icons.fiber_new_outlined;
   static const opacity = Icons.opacity;
   static const palette = Icons.palette_outlined;
   static final privacy = MdiIcons.shieldAccountOutline;
@@ -54,15 +57,20 @@ class AIcons {
   static final ratingRejected = MdiIcons.starMinusOutline;
   static final ratingUnrated = MdiIcons.starOffOutline;
   static const raw = Icons.raw_on_outlined;
-  static const shooting = Icons.camera_outlined;
-  static const removableStorage = Icons.sd_storage_outlined;
   static const sensorControlEnabled = Icons.explore_outlined;
   static const sensorControlDisabled = Icons.explore_off_outlined;
   static const settings = Icons.settings_outlined;
+  static const shooting = Icons.camera_outlined;
   static const size = Icons.data_usage_outlined;
-  static const text = Icons.format_quote_outlined;
+  static const storageCard = Icons.sd_storage_outlined;
+  static const storageMain = Icons.smartphone_outlined;
+  static const streamVideo = Icons.movie_outlined;
+  static const streamAudio = Icons.audiotrack_outlined;
+  static const streamText = Icons.closed_caption_outlined;
   static const tag = Icons.local_offer_outlined;
   static final tagUntagged = MdiIcons.tagOffOutline;
+  static const text = Icons.format_quote_outlined;
+  static const thumbnails = Icons.grid_on_outlined;
   static const volumeMin = Icons.volume_mute_outlined;
   static const volumeMax = Icons.volume_up_outlined;
 
@@ -100,7 +108,6 @@ class AIcons {
   static const favouriteActive = Icons.favorite;
   static final filter = MdiIcons.filterOutline;
   static final filterOff = MdiIcons.filterOffOutline;
-  static const geoBounds = Icons.public_outlined;
   static const goUp = Icons.arrow_upward_outlined;
   static const hide = Icons.visibility_off_outlined;
   static const info = Icons.info_outlined;
@@ -110,8 +117,7 @@ class AIcons {
   static final move = MdiIcons.fileMoveOutline;
   static const mute = Icons.volume_off_outlined;
   static const unmute = Icons.volume_up_outlined;
-  static const name = Icons.abc_outlined;
-  static const newTier = Icons.fiber_new_outlined;
+  static const rename = Icons.abc_outlined;
   static const openOutside = Icons.open_in_new_outlined;
   static final openVideo = MdiIcons.moviePlayOutline;
   static const pin = Icons.push_pin_outlined;
@@ -133,20 +139,17 @@ class AIcons {
   static const rotateScreen = Icons.screen_rotation_outlined;
   static const search = Icons.search_outlined;
   static const select = Icons.select_all_outlined;
+  static const selectStreams = Icons.translate_outlined;
   static const setAs = Icons.wallpaper_outlined;
+  static final setBoundEnd = MdiIcons.rayEnd;
+  static final setBoundStart = MdiIcons.rayStart;
   static final setCover = MdiIcons.imageEditOutline;
-  static final setEnd = MdiIcons.rayEnd;
-  static final setStart = MdiIcons.rayStart;
   static const share = Icons.share_outlined;
   static const show = Icons.visibility_outlined;
   static final showFullscreen = MdiIcons.arrowExpand;
   static const slideshow = Icons.slideshow_outlined;
   static const speed = Icons.speed_outlined;
   static const stats = Icons.donut_small_outlined;
-  static const streams = Icons.translate_outlined;
-  static const streamVideo = Icons.movie_outlined;
-  static const streamAudio = Icons.audiotrack_outlined;
-  static const streamText = Icons.closed_caption_outlined;
   static const vaultLock = Icons.lock_outline;
   static const vaultAdd = Icons.enhanced_encryption_outlined;
   static final vaultConfigure = MdiIcons.shieldLockOutline;
@@ -189,9 +192,6 @@ class AIcons {
   static const videoThumb = Icons.play_circle_outline;
   static const selected = Icons.check_circle_outline;
   static const unselected = Icons.radio_button_unchecked;
-
-  static final github = MdiIcons.github;
-  static final legal = MdiIcons.scaleBalance;
 
   // Material Icons references to make constant instances of `IconData`
   // as non-constant instances of `IconData` prevent icon font tree shaking

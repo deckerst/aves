@@ -194,7 +194,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             padding: EdgeInsetsDirectional.only(end: padding),
             duration: ADurations.chipDecorationAnimation,
             child: Icon(
-              AIcons.removableStorage,
+              AIcons.storageCard,
               color: _detailColor(context),
               size: iconSize,
             ),
