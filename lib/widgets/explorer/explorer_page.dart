@@ -32,6 +32,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class ExplorerPage extends StatefulWidget {
@@ -95,33 +96,45 @@ class _ExplorerPageState extends State<ExplorerPage> {
             children: [
               Expanded(
                 child: ValueListenableBuilder<List<Directory>>(
-                    valueListenable: _contents,
-                    builder: (context, contents, child) {
-                      if (contents.isEmpty) {
-                        final source = context.read<CollectionSource>();
-                        final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
-                        return Center(
-                          child: EmptyContent(
-                            icon: AIcons.folder,
-                            text: '',
-                            bottom: album != null
-                                ? AvesFilterChip(
-                                    filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
-                                    maxWidth: double.infinity,
-                                    onTap: (filter) => _goToCollectionPage(context, filter),
-                                    onLongPress: null,
-                                  )
-                                : null,
-                          ),
-                        );
-                      }
-                      return ListView.builder(
-                        itemCount: contents.length,
-                        itemBuilder: (context, index) {
-                          return index < contents.length ? _buildContentLine(context, contents[index]) : const SizedBox();
-                        },
+                  valueListenable: _contents,
+                  builder: (context, contents, child) {
+                    if (contents.isEmpty) {
+                      final source = context.read<CollectionSource>();
+                      final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
+                      return Center(
+                        child: EmptyContent(
+                          icon: AIcons.folder,
+                          text: '',
+                          bottom: album != null
+                              ? AvesFilterChip(
+                                  filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
+                                  maxWidth: double.infinity,
+                                  onTap: (filter) => _goToCollectionPage(context, filter),
+                                  onLongPress: null,
+                                )
+                              : null,
+                        ),
                       );
-                    }),
+                    }
+                    final durations = context.watch<DurationsData>();
+                    return AnimationLimiter(
+                      key: ValueKey(_currentDirectoryPath),
+                      child: ListView(
+                        children: AnimationConfiguration.toStaggeredList(
+                          duration: durations.staggeredAnimation,
+                          delay: durations.staggeredAnimationDelay * timeDilation,
+                          childAnimationBuilder: (child) => SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: child,
+                            ),
+                          ),
+                          children: contents.map((v) => _buildContentLine(context, v)).toList(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
               const Divider(height: 0),
               Padding(
