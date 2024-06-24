@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:aves/model/filters/album.dart';
@@ -5,6 +6,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -47,6 +49,7 @@ class ExplorerPage extends StatefulWidget {
 }
 
 class _ExplorerPageState extends State<ExplorerPage> {
+  final List<StreamSubscription> _subscriptions = [];
   final ValueNotifier<VolumeRelativeDirectory> _directory = ValueNotifier(const VolumeRelativeDirectory(volumePath: '', relativeDir: ''));
   final ValueNotifier<List<Directory>> _contents = ValueNotifier([]);
   final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
@@ -72,10 +75,17 @@ class _ExplorerPageState extends State<ExplorerPage> {
         _goTo(primaryVolume.path);
       }
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final source = context.read<CollectionSource>();
+      _subscriptions.add(source.eventBus.on<AlbumsChangedEvent>().listen((event) => _updateContents()));
+    });
   }
 
   @override
   void dispose() {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
     _doubleBackPopHandler.dispose();
     super.dispose();
   }
@@ -106,21 +116,33 @@ class _ExplorerPageState extends State<ExplorerPage> {
                   valueListenable: _contents,
                   builder: (context, contents, child) {
                     if (contents.isEmpty) {
-                      final source = context.read<CollectionSource>();
-                      final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
-                      return Center(
-                        child: EmptyContent(
-                          icon: AIcons.folder,
-                          text: '',
-                          bottom: album != null
-                              ? AvesFilterChip(
-                                  filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
-                                  maxWidth: double.infinity,
-                                  onTap: (filter) => _goToCollectionPage(context, filter),
-                                  onLongPress: null,
-                                )
-                              : null,
-                        ),
+                      return Selector<CollectionSource, bool>(
+                        selector: (context, source) => source.state == SourceState.loading,
+                        builder: (context, loading, child) {
+                          Widget? bottom;
+                          if (loading) {
+                            bottom = const CircularProgressIndicator();
+                          } else {
+                            final source = context.read<CollectionSource>();
+                            final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
+                            if (album != null) {
+                              bottom = AvesFilterChip(
+                                filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
+                                maxWidth: double.infinity,
+                                onTap: (filter) => _goToCollectionPage(context, filter),
+                                onLongPress: null,
+                              );
+                            }
+                          }
+
+                          return Center(
+                            child: EmptyContent(
+                              icon: AIcons.folder,
+                              text: '',
+                              bottom: bottom,
+                            ),
+                          );
+                        },
                       );
                     }
                     final durations = context.watch<DurationsData>();
@@ -254,6 +276,10 @@ class _ExplorerPageState extends State<ExplorerPage> {
 
   void _goTo(String path) {
     _directory.value = androidFileUtils.relativeDirectoryFromPath(path)!;
+    _updateContents();
+  }
+
+  void _updateContents() {
     final contents = <Directory>[];
 
     final source = context.read<CollectionSource>();
