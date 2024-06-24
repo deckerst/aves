@@ -42,14 +42,15 @@ class EmptyContent extends StatelessWidget {
               ),
               const SizedBox(height: 16)
             ],
-            Text(
-              text,
-              style: TextStyle(
-                color: color,
-                fontSize: fontSize,
+            if (text.isNotEmpty)
+              Text(
+                text,
+                style: TextStyle(
+                  color: color,
+                  fontSize: fontSize,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
             if (bottom != null) bottom!,
           ],
         ),

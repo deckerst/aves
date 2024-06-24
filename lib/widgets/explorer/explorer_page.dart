@@ -17,6 +17,9 @@ import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
+import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -41,80 +44,98 @@ class ExplorerPage extends StatefulWidget {
 }
 
 class _ExplorerPageState extends State<ExplorerPage> {
-  late VolumeRelativeDirectory _directory;
-  List<Directory>? _contents;
+  final ValueNotifier<VolumeRelativeDirectory> _directory = ValueNotifier(const VolumeRelativeDirectory(volumePath: '', relativeDir: ''));
+  final ValueNotifier<List<Directory>> _contents = ValueNotifier([]);
+  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
-  Set<StorageVolume> get volumes => androidFileUtils.storageVolumes;
+  Set<StorageVolume> get _volumes => androidFileUtils.storageVolumes;
 
-  String get currentDirectoryPath => pContext.join(_directory.volumePath, _directory.relativeDir);
+  String get _currentDirectoryPath {
+    final dir = _directory.value;
+    return pContext.join(dir.volumePath, dir.relativeDir);
+  }
+
+  static const double _crumblineHeight = kMinInteractiveDimension;
 
   @override
   void initState() {
     super.initState();
-    final primaryVolume = volumes.firstWhereOrNull((v) => v.isPrimary);
+    final primaryVolume = _volumes.firstWhereOrNull((v) => v.isPrimary);
     if (primaryVolume != null) {
       _goTo(primaryVolume.path);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final visibleContents = _contents?.where((v) {
-      final isHidden = pContext.split(v.path).last.startsWith('.');
-      return !isHidden;
-    }).toList();
-    return PopScope(
-      canPop: _directory.relativeDir.isEmpty,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
+  void dispose() {
+    _doubleBackPopHandler.dispose();
+    super.dispose();
+  }
 
-        final parent = pContext.dirname(currentDirectoryPath);
-        _goTo(parent);
-        setState(() {});
-      },
+  @override
+  Widget build(BuildContext context) {
+    return AvesPopScope(
+      handlers: [
+        (context) {
+          if (_directory.value.relativeDir.isNotEmpty) {
+            final parent = pContext.dirname(_currentDirectoryPath);
+            _goTo(parent);
+            return false;
+          }
+          return true;
+        },
+        TvNavigationPopHandler.pop,
+        _doubleBackPopHandler.pop,
+      ],
       child: AvesScaffold(
         appBar: _buildAppBar(context),
         drawer: const AppDrawer(),
         body: SafeArea(
           child: Column(
             children: [
-              SizedBox(
-                height: kMinInteractiveDimension,
-                child: CrumbLine(
-                  directory: _directory,
-                  onTap: (path) {
-                    _goTo(path);
-                    setState(() {});
-                  },
-                ),
-              ),
-              const Divider(height: 0),
               Expanded(
-                child: visibleContents == null
-                    ? const SizedBox()
-                    : visibleContents.isEmpty
-                        ? Center(
-                            child: EmptyContent(
-                              icon: AIcons.folder,
-                              text: l10n.filePickerNoItems,
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: visibleContents.length,
-                            itemBuilder: (context, index) {
-                              return index < visibleContents.length ? _buildContentLine(context, visibleContents[index]) : const SizedBox();
-                            },
+                child: ValueListenableBuilder<List<Directory>>(
+                    valueListenable: _contents,
+                    builder: (context, contents, child) {
+                      if (contents.isEmpty) {
+                        final source = context.read<CollectionSource>();
+                        final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
+                        return Center(
+                          child: EmptyContent(
+                            icon: AIcons.folder,
+                            text: '',
+                            bottom: album != null
+                                ? AvesFilterChip(
+                                    filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
+                                    maxWidth: double.infinity,
+                                    onTap: (filter) => _goToCollectionPage(context, filter),
+                                    onLongPress: null,
+                                  )
+                                : null,
                           ),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: contents.length,
+                        itemBuilder: (context, index) {
+                          return index < contents.length ? _buildContentLine(context, contents[index]) : const SizedBox();
+                        },
+                      );
+                    }),
               ),
               const Divider(height: 0),
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: AvesFilterChip(
-                  filter: PathFilter(currentDirectoryPath),
-                  maxWidth: double.infinity,
-                  onTap: (filter) => _goToCollectionPage(context, filter),
-                  onLongPress: null,
+                child: ValueListenableBuilder<VolumeRelativeDirectory>(
+                  valueListenable: _directory,
+                  builder: (context, directory, child) {
+                    return AvesFilterChip(
+                      filter: PathFilter(_currentDirectoryPath),
+                      maxWidth: double.infinity,
+                      onTap: (filter) => _goToCollectionPage(context, filter),
+                      onLongPress: null,
+                    );
+                  },
                 ),
               ),
             ],
@@ -138,12 +159,12 @@ class _ExplorerPageState extends State<ExplorerPage> {
         ),
       ),
       actions: [
-        if (volumes.length > 1)
+        if (_volumes.length > 1)
           FontSizeIconTheme(
             child: PopupMenuButton<StorageVolume>(
               itemBuilder: (context) {
-                return volumes.map((v) {
-                  final selected = _directory.volumePath == v.path;
+                return _volumes.map((v) {
+                  final selected = _directory.value.volumePath == v.path;
                   final icon = v.isRemovable ? AIcons.storageCard : AIcons.storageMain;
                   return PopupMenuItem(
                     value: v,
@@ -162,12 +183,26 @@ class _ExplorerPageState extends State<ExplorerPage> {
                 Navigator.maybeOf(context)?.pop();
                 await Future.delayed(ADurations.drawerTransitionAnimation);
                 _goTo(volume.path);
-                setState(() {});
               },
               popUpAnimationStyle: animations.popUpAnimationStyle,
             ),
           ),
       ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(_crumblineHeight),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: _crumblineHeight),
+          child: ValueListenableBuilder<VolumeRelativeDirectory>(
+            valueListenable: _directory,
+            builder: (context, directory, child) {
+              return CrumbLine(
+                directory: directory,
+                onTap: _goTo,
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -196,21 +231,17 @@ class _ExplorerPageState extends State<ExplorerPage> {
               ),
             )
           : null,
-      onTap: () {
-        _goTo(content.path);
-        setState(() {});
-      },
+      onTap: () => _goTo(content.path),
     );
   }
 
   void _goTo(String path) {
-    _directory = androidFileUtils.relativeDirectoryFromPath(path)!;
-    _contents = null;
+    _directory.value = androidFileUtils.relativeDirectoryFromPath(path)!;
     final contents = <Directory>[];
 
     final source = context.read<CollectionSource>();
     final albums = source.rawAlbums.map((v) => v.toLowerCase()).toSet();
-    Directory(currentDirectoryPath).list().listen((event) {
+    Directory(_currentDirectoryPath).list().listen((event) {
       final entity = event.absolute;
       if (entity is Directory) {
         final dirPath = entity.path.toLowerCase();
@@ -219,8 +250,12 @@ class _ExplorerPageState extends State<ExplorerPage> {
         }
       }
     }, onDone: () {
-      _contents = contents..sort((a, b) => compareAsciiUpperCaseNatural(pContext.split(a.path).last, pContext.split(b.path).last));
-      setState(() {});
+      _contents.value = contents
+        ..sort((a, b) {
+          final nameA = pContext.split(a.path).last;
+          final nameB = pContext.split(b.path).last;
+          return compareAsciiUpperCaseNatural(nameA, nameB);
+        });
     });
   }
 

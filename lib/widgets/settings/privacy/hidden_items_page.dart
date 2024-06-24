@@ -101,20 +101,22 @@ class _HiddenFilters extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                          child: LayoutBuilder(builder: (context, constraints) {
-                            return Row(
-                              children: [
-                                AvesFilterChip(
-                                  filter: filter,
-                                  maxWidth: constraints.maxWidth,
-                                  onTap: onRemove,
-                                  onRemove: onRemove,
-                                  onLongPress: null,
-                                ),
-                                const Spacer(),
-                              ],
-                            );
-                          }),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                children: [
+                                  AvesFilterChip(
+                                    filter: filter,
+                                    maxWidth: constraints.maxWidth,
+                                    onTap: onRemove,
+                                    onRemove: onRemove,
+                                    onLongPress: null,
+                                  ),
+                                  const Spacer(),
+                                ],
+                              );
+                            },
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Switch(
