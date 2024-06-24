@@ -90,6 +90,7 @@
   "chipActionGoToCountryPage": "Show in Countries",
   "chipActionGoToPlacePage": "Show in Places",
   "chipActionGoToTagPage": "Show in Tags",
+  "chipActionGoToExplorerPage": "Show in Explorer",
   "chipActionFilterOut": "Filter out",
   "chipActionFilterIn": "Filter in",
   "chipActionHide": "Hide",

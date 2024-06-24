@@ -6,6 +6,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -104,6 +105,7 @@ class AvesFilterChip extends StatefulWidget {
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.place)) ChipAction.goToPlacePage,
         if (filter is TagFilter) ChipAction.goToTagPage,
+        if (filter is PathFilter) ChipAction.goToExplorerPage,
         if (filter is RatingFilter && 1 < filter.rating && filter.rating < 5) ...[
           if (filter.op != RatingFilter.opOrGreater) ChipAction.ratingOrGreater,
           if (filter.op != RatingFilter.opOrLower) ChipAction.ratingOrLower,

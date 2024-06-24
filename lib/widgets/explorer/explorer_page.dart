@@ -38,7 +38,9 @@ import 'package:provider/provider.dart';
 class ExplorerPage extends StatefulWidget {
   static const routeName = '/explorer';
 
-  const ExplorerPage({super.key});
+  final String? path;
+
+  const ExplorerPage({super.key, this.path});
 
   @override
   State<ExplorerPage> createState() => _ExplorerPageState();
@@ -61,9 +63,14 @@ class _ExplorerPageState extends State<ExplorerPage> {
   @override
   void initState() {
     super.initState();
-    final primaryVolume = _volumes.firstWhereOrNull((v) => v.isPrimary);
-    if (primaryVolume != null) {
-      _goTo(primaryVolume.path);
+    final path = widget.path;
+    if (path != null) {
+      _goTo(path);
+    } else {
+      final primaryVolume = _volumes.firstWhereOrNull((v) => v.isPrimary);
+      if (primaryVolume != null) {
+        _goTo(primaryVolume.path);
+      }
     }
   }
 
