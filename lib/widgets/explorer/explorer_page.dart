@@ -192,9 +192,6 @@ class _ExplorerPageState extends State<ExplorerPage> {
               onSelected: (volume) async {
                 // wait for the popup menu to hide before proceeding with the action
                 await Future.delayed(animations.popUpAnimationDelay * timeDilation);
-
-                Navigator.maybeOf(context)?.pop();
-                await Future.delayed(ADurations.drawerTransitionAnimation);
                 _goTo(volume.path);
               },
               popUpAnimationStyle: animations.popUpAnimationStyle,
