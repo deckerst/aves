@@ -3,6 +3,7 @@ enum ChipAction {
   goToCountryPage,
   goToPlacePage,
   goToTagPage,
+  goToExplorerPage,
   ratingOrGreater,
   ratingOrLower,
   reverse,

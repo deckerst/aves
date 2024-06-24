@@ -11,6 +11,7 @@ extension ExtraChipActionView on ChipAction {
       ChipAction.goToCountryPage => l10n.chipActionGoToCountryPage,
       ChipAction.goToPlacePage => l10n.chipActionGoToPlacePage,
       ChipAction.goToTagPage => l10n.chipActionGoToTagPage,
+      ChipAction.goToExplorerPage => l10n.chipActionGoToExplorerPage,
       ChipAction.ratingOrGreater ||
       ChipAction.ratingOrLower =>
         // different data depending on state
@@ -30,6 +31,7 @@ extension ExtraChipActionView on ChipAction {
         ChipAction.goToCountryPage => AIcons.country,
         ChipAction.goToPlacePage => AIcons.place,
         ChipAction.goToTagPage => AIcons.tag,
+        ChipAction.goToExplorerPage => AIcons.explorer,
         ChipAction.ratingOrGreater || ChipAction.ratingOrLower => AIcons.rating,
         ChipAction.reverse => AIcons.reverse,
         ChipAction.hide => AIcons.hide,

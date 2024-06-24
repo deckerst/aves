@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -9,6 +10,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
@@ -27,6 +29,7 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.goToCountryPage:
       case ChipAction.goToPlacePage:
       case ChipAction.goToTagPage:
+      case ChipAction.goToExplorerPage:
       case ChipAction.ratingOrGreater:
       case ChipAction.ratingOrLower:
       case ChipAction.reverse:
@@ -49,6 +52,16 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         _goTo(context, filter, PlaceListPage.routeName, (context) => const PlaceListPage());
       case ChipAction.goToTagPage:
         _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
+      case ChipAction.goToExplorerPage:
+        if (filter is PathFilter) {
+          Navigator.maybeOf(context)?.pushAndRemoveUntil(
+            MaterialPageRoute(
+              settings: const RouteSettings(name: ExplorerPage.routeName),
+              builder: (context) => ExplorerPage(path: filter.path),
+            ),
+                (route) => false,
+          );
+        }
       case ChipAction.ratingOrGreater:
         FilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrGreater)).dispatch(context);
       case ChipAction.ratingOrLower:
