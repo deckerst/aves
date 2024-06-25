@@ -1,8 +1,10 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CrumbLine extends StatefulWidget {
   final VolumeRelativeDirectory directory;
@@ -16,6 +18,8 @@ class CrumbLine extends StatefulWidget {
 
   @override
   State<CrumbLine> createState() => _CrumbLineState();
+
+  static double getPreferredHeight(TextScaler textScaler) => textScaler.scale(kToolbarHeight);
 }
 
 class _CrumbLineState extends State<CrumbLine> {
@@ -24,17 +28,28 @@ class _CrumbLineState extends State<CrumbLine> {
   VolumeRelativeDirectory get directory => widget.directory;
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(covariant CrumbLine oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.directory.relativeDir.length < widget.directory.relativeDir.length) {
       // scroll to show last crumb
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final animate = context.read<Settings>().animate;
         final extent = _scrollController.position.maxScrollExtent;
-        _scrollController.animateTo(
-          extent,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeOutQuad,
-        );
+        if (animate) {
+          _scrollController.animateTo(
+            extent,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOutQuad,
+          );
+        } else {
+          _scrollController.jumpTo(extent);
+        }
       });
     }
   }
