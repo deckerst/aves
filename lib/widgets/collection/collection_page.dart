@@ -7,7 +7,6 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -217,7 +216,7 @@ class _CollectionPageState extends State<CollectionPage> {
     await Future.delayed(delayDuration + ADurations.highlightScrollInitDelay);
 
     if (!mounted) return;
-    final animate = context.read<Settings>().accessibilityAnimations.animate;
+    final animate = context.read<Settings>().animate;
     context.read<HighlightInfo>().trackItem(item, animate: animate, highlightItem: item);
   }
 }

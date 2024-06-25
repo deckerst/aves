@@ -8,7 +8,6 @@ import 'package:aves/model/apps.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/display_refresh_rate_mode.dart';
 import 'package:aves/model/settings/enums/screen_on.dart';
 import 'package:aves/model/settings/enums/theme_brightness.dart';
@@ -325,7 +324,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(Theme.of(context)));
     }
     return Selector<Settings, bool>(
-      selector: (context, s) => s.initialized ? s.accessibilityAnimations.animate : true,
+      selector: (context, s) => s.initialized ? s.animate : true,
       builder: (context, areAnimationsEnabled, child) {
         return FutureBuilder<bool>(
           future: _shouldUseBoldFontLoader,
@@ -668,7 +667,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 class AvesScrollBehavior extends MaterialScrollBehavior {
   @override
   Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
-    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    final animate = context.select<Settings, bool>((v) => v.animate);
     return animate
         ? StretchingOverscrollIndicator(
             axisDirection: details.direction,
