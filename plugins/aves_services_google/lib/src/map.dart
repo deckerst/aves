@@ -142,7 +142,10 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
             mediaMarkers.add(Marker(
               markerId: MarkerId(geoEntry.markerId!),
               consumeTapEvents: true,
-              icon: BitmapDescriptor.fromBytes(bytes),
+              icon: BytesMapBitmap(
+                bytes,
+                bitmapScaling: MapBitmapScaling.none,
+              ),
               position: point,
               onTap: () => widget.onMarkerTap?.call(geoEntry),
               // TODO TLAD [map] GoogleMap.onLongPress is not appropriate for mediaMarkers, so the call should be here when this is fixed: https://github.com/flutter/flutter/issues/107148
@@ -198,7 +201,10 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
                             markerId: const MarkerId('dot'),
                             anchor: const Offset(.5, .5),
                             consumeTapEvents: true,
-                            icon: BitmapDescriptor.fromBytes(_dotMarkerBitmap!),
+                            icon: BytesMapBitmap(
+                              _dotMarkerBitmap!,
+                              bitmapScaling: MapBitmapScaling.none,
+                            ),
                             position: _toServiceLatLng(dotLocation),
                             zIndex: 1,
                           )

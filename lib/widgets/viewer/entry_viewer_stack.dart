@@ -62,7 +62,6 @@ class EntryViewerStack extends StatefulWidget {
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, TickerProviderStateMixin, RouteAware {
-  final Floating _floating = Floating();
   late int _currentEntryIndex;
   late ValueNotifier<int> _currentVerticalPage;
   late PageController _horizontalPager, _verticalPager;
@@ -184,7 +183,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void dispose() {
     AvesApp.pageRouteObserver.unsubscribe(this);
-    _floating.dispose();
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
     _verticalPageAnimationController.dispose();
@@ -252,7 +250,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               return StreamBuilder<PiPStatus>(
                 // as of floating v2.0.0, plugin assumes activity and fails when bound via service
                 // so we do not access status stream directly, but check for support first
-                stream: device.supportPictureInPicture ? _floating.pipStatusStream : Stream.value(PiPStatus.disabled),
+                stream: device.supportPictureInPicture ? Floating().pipStatusStream : Stream.value(PiPStatus.disabled),
                 builder: (context, snapshot) {
                   var pipEnabled = snapshot.data == PiPStatus.enabled;
                   return ValueListenableBuilder<bool>(
@@ -935,7 +933,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       );
 
       try {
-        final status = await _floating.enable(EnableManual(
+        final status = await Floating().enable(ImmediatePiP(
           aspectRatio: aspectRatio,
           sourceRectHint: sourceRectHint,
         ));

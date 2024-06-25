@@ -63,14 +63,12 @@ class Device {
     final auth = LocalAuthentication();
     _canAuthenticateUser = await auth.canCheckBiometrics || await auth.isDeviceSupported();
 
-    final floating = Floating();
     try {
-      _supportPictureInPicture = await floating.isPipAvailable;
+      _supportPictureInPicture = await Floating().isPipAvailable;
     } on PlatformException catch (_) {
       // as of floating v2.0.0, plugin assumes activity and fails when bound via service
       _supportPictureInPicture = false;
     }
-    floating.dispose();
 
     final capabilities = await deviceService.getCapabilities();
     _canGrantDirectoryAccess = capabilities['canGrantDirectoryAccess'] ?? false;
