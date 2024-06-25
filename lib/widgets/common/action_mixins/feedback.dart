@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/accessibility_timeout.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
@@ -224,7 +223,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final progressColor = colorScheme.primary;
-    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    final animate = context.select<Settings, bool>((v) => v.animate);
     return PopScope(
       canPop: false,
       child: StreamBuilder<T>(

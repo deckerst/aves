@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/view_state.dart';
 import 'package:aves/services/common/services.dart';
@@ -149,7 +148,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       );
     }
 
-    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    final animate = context.select<Settings, bool>((v) => v.animate);
     if (animate) {
       child = Consumer<HeroInfo?>(
         builder: (context, info, child) => Hero(

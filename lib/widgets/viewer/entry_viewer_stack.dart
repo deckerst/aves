@@ -9,7 +9,6 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/accessibility_timeout.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -702,7 +701,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _goToVerticalPage(int page) async {
-    if (settings.accessibilityAnimations.animate) {
+    if (settings.animate) {
       final start = _verticalPager.offset;
       final end = _verticalPager.position.viewportDimension * page;
       final simulation = ScrollSpringSimulation(ViewerVerticalPageView.spring, start, end, 0);
