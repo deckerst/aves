@@ -4,31 +4,22 @@ import 'dart:io';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
-import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/explorer/app_bar.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/settings/privacy/file_picker/crumb_line.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -61,8 +52,6 @@ class _ExplorerPageState extends State<ExplorerPage> {
     return pContext.join(dir.volumePath, dir.relativeDir);
   }
 
-  static const double _crumblineHeight = kMinInteractiveDimension;
-
   @override
   void initState() {
     super.initState();
@@ -75,6 +64,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
         _goTo(primaryVolume.path);
       }
     }
+    _contents.addListener(() => PrimaryScrollController.of(context).jumpTo(0));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final source = context.read<CollectionSource>();
       _subscriptions.add(source.eventBus.on<AlbumsChangedEvent>().listen((event) => _updateContents()));
@@ -86,6 +76,8 @@ class _ExplorerPageState extends State<ExplorerPage> {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+    _directory.dispose();
+    _contents.dispose();
     _doubleBackPopHandler.dispose();
     super.dispose();
   }
@@ -106,78 +98,73 @@ class _ExplorerPageState extends State<ExplorerPage> {
         _doubleBackPopHandler.pop,
       ],
       child: AvesScaffold(
-        appBar: _buildAppBar(context),
         drawer: const AppDrawer(),
-        body: SafeArea(
+        body: GestureAreaProtectorStack(
           child: Column(
             children: [
               Expanded(
                 child: ValueListenableBuilder<List<Directory>>(
                   valueListenable: _contents,
                   builder: (context, contents, child) {
-                    if (contents.isEmpty) {
-                      return Selector<CollectionSource, bool>(
-                        selector: (context, source) => source.state == SourceState.loading,
-                        builder: (context, loading, child) {
-                          Widget? bottom;
-                          if (loading) {
-                            bottom = const CircularProgressIndicator();
-                          } else {
-                            final source = context.read<CollectionSource>();
-                            final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
-                            if (album != null) {
-                              bottom = AvesFilterChip(
-                                filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
-                                maxWidth: double.infinity,
-                                onTap: (filter) => _goToCollectionPage(context, filter),
-                                onLongPress: null,
-                              );
-                            }
-                          }
-
-                          return Center(
-                            child: EmptyContent(
-                              icon: AIcons.folder,
-                              text: '',
-                              bottom: bottom,
-                            ),
-                          );
-                        },
-                      );
-                    }
                     final durations = context.watch<DurationsData>();
-                    return AnimationLimiter(
-                      key: ValueKey(_currentDirectoryPath),
-                      child: ListView(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: durations.staggeredAnimation,
-                          delay: durations.staggeredAnimationDelay * timeDilation,
-                          childAnimationBuilder: (child) => SlideAnimation(
-                            verticalOffset: 50.0,
-                            child: FadeInAnimation(
-                              child: child,
-                            ),
-                          ),
-                          children: contents.map((v) => _buildContentLine(context, v)).toList(),
+                    return CustomScrollView(
+                      // workaround to prevent scrolling the app bar away
+                      // when there is no content and we use `SliverFillRemaining`
+                      physics: contents.isEmpty ? const NeverScrollableScrollPhysics() : null,
+                      slivers: [
+                        ExplorerAppBar(
+                          key: const Key('appbar'),
+                          directoryNotifier: _directory,
+                          goTo: _goTo,
                         ),
-                      ),
+                        AnimationLimiter(
+                          // animation limiter should not be above the app bar
+                          // so that the crumb line can automatically scroll
+                          key: ValueKey(_currentDirectoryPath),
+                          child: SliverList.builder(
+                            itemBuilder: (context, index) {
+                              return AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: durations.staggeredAnimation,
+                                delay: durations.staggeredAnimationDelay * timeDilation,
+                                child: SlideAnimation(
+                                  verticalOffset: 50.0,
+                                  child: FadeInAnimation(
+                                    child: _buildContentLine(context, contents[index]),
+                                  ),
+                                ),
+                              );
+                            },
+                            itemCount: contents.length,
+                          ),
+                        ),
+                        contents.isEmpty
+                            ? SliverFillRemaining(
+                                child: _buildEmptyContent(),
+                              )
+                            : const SliverPadding(padding: EdgeInsets.only(bottom: 8)),
+                      ],
                     );
                   },
                 ),
               ),
               const Divider(height: 0),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: ValueListenableBuilder<VolumeRelativeDirectory>(
-                  valueListenable: _directory,
-                  builder: (context, directory, child) {
-                    return AvesFilterChip(
-                      filter: PathFilter(_currentDirectoryPath),
-                      maxWidth: double.infinity,
-                      onTap: (filter) => _goToCollectionPage(context, filter),
-                      onLongPress: null,
-                    );
-                  },
+              SafeArea(
+                top: false,
+                bottom: true,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: ValueListenableBuilder<VolumeRelativeDirectory>(
+                    valueListenable: _directory,
+                    builder: (context, directory, child) {
+                      return AvesFilterChip(
+                        filter: PathFilter(_currentDirectoryPath),
+                        maxWidth: double.infinity,
+                        onTap: (filter) => _goToCollectionPage(context, filter),
+                        onLongPress: null,
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -187,61 +174,34 @@ class _ExplorerPageState extends State<ExplorerPage> {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+  Widget _buildEmptyContent() {
+    return Selector<CollectionSource, bool>(
+      selector: (context, source) => source.state == SourceState.loading,
+      builder: (context, loading, child) {
+        Widget? bottom;
+        if (loading) {
+          bottom = const CircularProgressIndicator();
+        } else {
+          final source = context.read<CollectionSource>();
+          final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
+          if (album != null) {
+            bottom = AvesFilterChip(
+              filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
+              maxWidth: double.infinity,
+              onTap: (filter) => _goToCollectionPage(context, filter),
+              onLongPress: null,
+            );
+          }
+        }
 
-    return AppBar(
-      title: InteractiveAppBarTitle(
-        onTap: _goToSearch,
-        child: Text(
-          context.l10n.explorerPageTitle,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-      ),
-      actions: [
-        if (_volumes.length > 1)
-          FontSizeIconTheme(
-            child: PopupMenuButton<StorageVolume>(
-              itemBuilder: (context) {
-                return _volumes.map((v) {
-                  final selected = _directory.value.volumePath == v.path;
-                  final icon = v.isRemovable ? AIcons.storageCard : AIcons.storageMain;
-                  return PopupMenuItem(
-                    value: v,
-                    enabled: !selected,
-                    child: MenuRow(
-                      text: v.getDescription(context),
-                      icon: Icon(icon),
-                    ),
-                  );
-                }).toList();
-              },
-              onSelected: (volume) async {
-                // wait for the popup menu to hide before proceeding with the action
-                await Future.delayed(animations.popUpAnimationDelay * timeDilation);
-                _goTo(volume.path);
-              },
-              popUpAnimationStyle: animations.popUpAnimationStyle,
-            ),
+        return Center(
+          child: EmptyContent(
+            icon: AIcons.folder,
+            text: '',
+            bottom: bottom,
           ),
-      ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(_crumblineHeight),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: _crumblineHeight),
-          child: ValueListenableBuilder<VolumeRelativeDirectory>(
-            valueListenable: _directory,
-            builder: (context, directory, child) {
-              return CrumbLine(
-                directory: directory,
-                onTap: _goTo,
-              );
-            },
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -300,18 +260,6 @@ class _ExplorerPageState extends State<ExplorerPage> {
           return compareAsciiUpperCaseNatural(nameA, nameB);
         });
     });
-  }
-
-  void _goToSearch() {
-    Navigator.maybeOf(context)?.push(
-      SearchPageRoute(
-        delegate: CollectionSearchDelegate(
-          searchFieldLabel: context.l10n.searchCollectionFieldHint,
-          searchFieldStyle: Themes.searchFieldStyle(context),
-          source: context.read<CollectionSource>(),
-        ),
-      ),
-    );
   }
 
   void _goToCollectionPage(BuildContext context, CollectionFilter filter) {
