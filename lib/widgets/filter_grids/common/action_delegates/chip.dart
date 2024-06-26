@@ -53,13 +53,19 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.goToTagPage:
         _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
       case ChipAction.goToExplorerPage:
-        if (filter is PathFilter) {
+        String? path;
+        if (filter is AlbumFilter) {
+          path = filter.album;
+        } else if (filter is PathFilter) {
+          path = filter.path;
+        }
+        if (path != null) {
           Navigator.maybeOf(context)?.pushAndRemoveUntil(
             MaterialPageRoute(
               settings: const RouteSettings(name: ExplorerPage.routeName),
-              builder: (context) => ExplorerPage(path: filter.path),
+              builder: (context) => ExplorerPage(path: path),
             ),
-                (route) => false,
+            (route) => false,
           );
         }
       case ChipAction.ratingOrGreater:

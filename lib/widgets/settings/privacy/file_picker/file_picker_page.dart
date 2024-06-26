@@ -101,16 +101,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
         body: SafeArea(
           child: Column(
             children: [
-              SizedBox(
-                height: kMinInteractiveDimension,
-                child: CrumbLine(
-                  directory: _directory,
-                  onTap: (path) {
-                    _goTo(path);
-                    setState(() {});
-                  },
-                ),
-              ),
+              _buildCrumbLine(context),
               const Divider(height: 0),
               Expanded(
                 child: visibleContents == null
@@ -139,6 +130,26 @@ class _FilePickerPageState extends State<FilePickerPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCrumbLine(BuildContext context) {
+    final crumbStyle = Theme.of(context).textTheme.bodyMedium!;
+    return SizedBox(
+      height: kMinInteractiveDimension,
+      child: DefaultTextStyle(
+        style: crumbStyle.copyWith(
+          color: crumbStyle.color!.withOpacity(.4),
+          fontWeight: FontWeight.w500,
+        ),
+        child: CrumbLine(
+          directory: _directory,
+          onTap: (path) {
+            _goTo(path);
+            setState(() {});
+          },
         ),
       ),
     );

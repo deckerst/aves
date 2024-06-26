@@ -63,7 +63,7 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
                 const SectionRow(icon: AIcons.palette),
                 ...colors.map(
                   (v) => Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

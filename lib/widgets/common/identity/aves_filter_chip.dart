@@ -100,8 +100,11 @@ class AvesFilterChip extends StatefulWidget {
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
     if (context.read<ValueNotifier<AppMode>>().value.canNavigate) {
-      final actions = [
-        if (filter is AlbumFilter) ChipAction.goToAlbumPage,
+      final actions = <ChipAction>[
+        if (filter is AlbumFilter) ...[
+          ChipAction.goToAlbumPage,
+          ChipAction.goToExplorerPage,
+        ],
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.place)) ChipAction.goToPlacePage,
         if (filter is TagFilter) ChipAction.goToTagPage,
