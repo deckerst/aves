@@ -194,11 +194,18 @@ class _ExplorerPageState extends State<ExplorerPage> {
           }
         }
 
-        return Center(
-          child: EmptyContent(
-            icon: AIcons.folder,
-            text: '',
-            bottom: bottom,
+        return SafeArea(
+          top: false,
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Center(
+              child: EmptyContent(
+                icon: AIcons.folder,
+                text: '',
+                bottom: bottom,
+              ),
+            ),
           ),
         );
       },
@@ -215,21 +222,25 @@ class _ExplorerPageState extends State<ExplorerPage> {
     final album = _getAlbumPath(source, content);
     final baseIconTheme = IconTheme.of(context);
 
+    const leadingDim = AvesFilterChip.minChipWidth;
     return ListTile(
-      leading: const Icon(AIcons.folder),
-      title: Text('${Unicode.FSI}${pContext.split(content.path).last}${Unicode.PDI}'),
-      trailing: album != null
+      leading: album != null
           ? IconTheme.merge(
               data: baseIconTheme,
               child: AvesFilterChip(
                 filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
                 showText: false,
-                maxWidth: AvesFilterChip.minChipWidth,
+                maxWidth: leadingDim,
                 onTap: (filter) => _goToCollectionPage(context, filter),
                 onLongPress: null,
               ),
             )
-          : null,
+          : const SizedBox(
+              width: leadingDim,
+              height: leadingDim,
+              child: Icon(AIcons.folder),
+            ),
+      title: Text('${Unicode.FSI}${pContext.split(content.path).last}${Unicode.PDI}'),
       onTap: () => _goTo(content.path),
     );
   }

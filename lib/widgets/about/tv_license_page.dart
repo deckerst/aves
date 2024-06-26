@@ -233,13 +233,13 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
       if (!mounted) return;
       setState(() {
         _licenses.add(const Padding(
-          padding: EdgeInsets.all(18.0),
+          padding: EdgeInsets.all(18),
           child: Divider(),
         ));
         for (final LicenseParagraph paragraph in paragraphs) {
           if (paragraph.indent == LicenseParagraph.centeredIndent) {
             _licenses.add(Padding(
-              padding: const EdgeInsets.only(top: 16.0),
+              padding: const EdgeInsets.only(top: 16),
               child: Text(
                 paragraph.text,
                 style: const TextStyle(fontWeight: FontWeight.bold),
@@ -249,7 +249,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
           } else {
             assert(paragraph.indent >= 0);
             _licenses.add(Padding(
-              padding: EdgeInsetsDirectional.only(top: 8.0, start: 16.0 * paragraph.indent),
+              padding: EdgeInsetsDirectional.only(top: 8, start: 16.0 * paragraph.indent),
               child: Text(paragraph.text),
             ));
           }
@@ -278,7 +278,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
       ..._licenses,
       if (!_loaded)
         const Padding(
-          padding: EdgeInsets.symmetric(vertical: 24.0),
+          padding: EdgeInsets.symmetric(vertical: 24),
           child: Center(
             child: CircularProgressIndicator(),
           ),

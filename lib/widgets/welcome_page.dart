@@ -137,7 +137,7 @@ class _WelcomePageState extends State<WelcomePage> {
       context.l10n.welcomeMessage,
       style: Theme.of(context).textTheme.headlineSmall,
     );
-    final padding = isPortrait ? 16.0 : 8.0;
+    final double padding = isPortrait ? 16.0 : 8.0;
     return [
       SizedBox(height: padding),
       ...(isPortrait

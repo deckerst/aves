@@ -11,7 +11,7 @@ class AvesPopupMenuButton<T> extends PopupMenuButton<T> {
     super.onCanceled,
     super.tooltip,
     super.elevation,
-    super.padding = const EdgeInsets.all(8.0),
+    super.padding = const EdgeInsets.all(8),
     super.child,
     super.icon,
     super.offset = Offset.zero,

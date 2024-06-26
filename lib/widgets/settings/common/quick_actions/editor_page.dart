@@ -98,7 +98,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
   // as dragging a button against axis direction messes index resolution while items pop in and out
   bool _reordering = false;
 
-  static const quickActionVerticalPadding = 16.0;
+  static const double quickActionVerticalPadding = 16.0;
 
   @override
   void initState() {

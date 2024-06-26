@@ -302,7 +302,7 @@ class ExtraBottomOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewInsets = this.viewInsets ?? MediaQuery.viewInsetsOf(context);
     final viewPadding = this.viewPadding ?? MediaQuery.viewPaddingOf(context);
-    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
+    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8);
 
     return Padding(
       padding: safePadding,

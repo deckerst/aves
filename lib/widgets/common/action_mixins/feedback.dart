@@ -121,7 +121,7 @@ mixin FeedbackMixin {
 
   static double snackBarHorizontalPadding(SnackBarThemeData snackBarTheme) {
     final isFloatingSnackBar = (snackBarTheme.behavior ?? SnackBarBehavior.fixed) == SnackBarBehavior.floating;
-    final horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
+    final double horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
     return horizontalPadding;
   }
 
@@ -181,9 +181,9 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   Stream<T> get opStream => widget.opStream;
 
-  static const fontSize = 18.0;
-  static const diameter = 160.0;
-  static const strokeWidth = 8.0;
+  static const double fontSize = 18.0;
+  static const double diameter = 160.0;
+  static const double strokeWidth = 8.0;
 
   @override
   void initState() {
