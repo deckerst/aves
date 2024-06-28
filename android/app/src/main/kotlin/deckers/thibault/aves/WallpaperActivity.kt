@@ -2,132 +2,53 @@ package deckers.thibault.aves
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
-import deckers.thibault.aves.channel.calls.AccessibilityHandler
-import deckers.thibault.aves.channel.calls.DeviceHandler
-import deckers.thibault.aves.channel.calls.EmbeddedDataHandler
-import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
-import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
-import deckers.thibault.aves.channel.calls.MediaSessionHandler
-import deckers.thibault.aves.channel.calls.MetadataFetchHandler
-import deckers.thibault.aves.channel.calls.StorageHandler
-import deckers.thibault.aves.channel.calls.WallpaperHandler
-import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
-import deckers.thibault.aves.channel.calls.window.WindowHandler
-import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
-import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
+import deckers.thibault.aves.channel.calls.AppAdapterHandler
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
-import io.flutter.embedding.android.FlutterFragmentActivity
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
 
-class WallpaperActivity : FlutterFragmentActivity() {
-    private lateinit var intentDataMap: FieldMap
-    private lateinit var mediaSessionHandler: MediaSessionHandler
+class WallpaperActivity : MainActivity() {
+    private var originalIntent: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun extractIntentData(intent: Intent?): FieldMap {
+        if (intent != null) {
+            when (intent.action) {
+                Intent.ACTION_ATTACH_DATA, Intent.ACTION_SET_WALLPAPER -> {
+                    (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
+                        // MIME type is optional
+                        val type = intent.type ?: intent.resolveType(this)
+                        return hashMapOf(
+                            INTENT_DATA_KEY_ACTION to INTENT_ACTION_SET_WALLPAPER,
+                            INTENT_DATA_KEY_MIME_TYPE to type,
+                            INTENT_DATA_KEY_URI to uri.toString(),
+                        )
+                    }
 
-        Log.i(LOG_TAG, "onCreate intent=$intent")
-        intent.extras?.takeUnless { it.isEmpty }?.let {
-            Log.i(LOG_TAG, "onCreate intent extras=$it")
-        }
-        intentDataMap = extractIntentData(intent)
-    }
-
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        val messenger = flutterEngine.dartExecutor
-
-        // notification: platform -> dart
-        val mediaCommandStreamHandler = MediaCommandStreamHandler().apply {
-            EventChannel(messenger, MediaCommandStreamHandler.CHANNEL).setStreamHandler(this)
-        }
-
-        // dart -> platform -> dart
-        // - need Context
-        mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
-        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
-        MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
-        MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
-        MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
-        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
-        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
-        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
-        // - need ContextWrapper
-        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
-        // - need Activity
-        MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(this))
-
-        // result streaming: dart -> platform ->->-> dart
-        // - need Context
-        StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
-
-        // intent handling
-        // detail fetch: dart -> platform
-        MethodChannel(messenger, MainActivity.INTENT_CHANNEL).setMethodCallHandler { call, result -> onMethodCall(call, result) }
-    }
-
-    override fun onStart() {
-        Log.i(LOG_TAG, "onStart")
-        super.onStart()
-
-        // as of Flutter v3.0.1, the window `viewInsets` and `viewPadding`
-        // are incorrect on startup in some environments (e.g. API 29 emulator),
-        // so we manually request to apply the insets to update the window metrics
-        Handler(Looper.getMainLooper()).postDelayed({
-            window.decorView.requestApplyInsets()
-        }, 100)
-    }
-
-    override fun onDestroy() {
-        mediaSessionHandler.dispose()
-        super.onDestroy()
-    }
-
-    private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            "getIntentData" -> {
-                result.success(intentDataMap)
-                intentDataMap.clear()
-            }
-        }
-    }
-
-    private fun extractIntentData(intent: Intent?): FieldMap {
-        when (intent?.action) {
-            Intent.ACTION_ATTACH_DATA, Intent.ACTION_SET_WALLPAPER -> {
-                (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
-                    // MIME type is optional
-                    val type = intent.type ?: intent.resolveType(this)
-                    return hashMapOf(
-                        MainActivity.INTENT_DATA_KEY_ACTION to MainActivity.INTENT_ACTION_SET_WALLPAPER,
-                        MainActivity.INTENT_DATA_KEY_MIME_TYPE to type,
-                        MainActivity.INTENT_DATA_KEY_URI to uri.toString(),
-                    )
+                    // if the media URI is not provided we need to pick one first
+                    originalIntent = intent.action
+                    intent.action = Intent.ACTION_PICK
                 }
             }
-            Intent.ACTION_RUN -> {
-                // flutter run
-            }
-            else -> {
-                Log.w(LOG_TAG, "unhandled intent action=${intent?.action}")
-            }
         }
-        return HashMap()
+
+        return super.extractIntentData(intent)
     }
 
-    companion object {
-        private val LOG_TAG = LogUtils.createTag<WallpaperActivity>()
+    override fun submitPickedItems(call: MethodCall) {
+        if (originalIntent != null) {
+            val pickedUris = call.argument<List<String>>("uris")
+            if (!pickedUris.isNullOrEmpty()) {
+                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
+                onNewIntent(Intent().apply {
+                    action = originalIntent
+                    data = toUri(pickedUris.first())
+                })
+            } else {
+                setResult(RESULT_CANCELED)
+                finish()
+            }
+        } else {
+            super.submitPickedItems(call)
+        }
     }
 }

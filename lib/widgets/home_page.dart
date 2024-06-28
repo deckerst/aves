@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   int? _widgetId;
   String? _initialRouteName, _initialSearchQuery;
   Set<CollectionFilter>? _initialFilters;
+  List<String>? _secureUris;
 
   static const allowedShortcutRoutes = [
     CollectionPage.routeName,
@@ -91,6 +92,7 @@ class _HomePageState extends State<HomePage> {
     final safeMode = intentData[IntentDataKeys.safeMode] ?? false;
     final intentAction = intentData[IntentDataKeys.action];
     _initialFilters = null;
+    _secureUris = null;
 
     await androidFileUtils.init();
     if (!{
@@ -127,6 +129,7 @@ class _HomePageState extends State<HomePage> {
             uri = intentData[IntentDataKeys.uri];
             mimeType = intentData[IntentDataKeys.mimeType];
           }
+          _secureUris = intentData[IntentDataKeys.secureUris];
           if (uri != null) {
             _viewerEntry = await _initViewerEntry(
               uri: uri,
@@ -208,7 +211,7 @@ class _HomePageState extends State<HomePage> {
           canAnalyze: false,
         );
       case AppMode.view:
-        if (_isViewerSourceable(_viewerEntry)) {
+        if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
           final directory = _viewerEntry?.directory;
           if (directory != null) {
             unawaited(AnalysisService.registerCallback());
