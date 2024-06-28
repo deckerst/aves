@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - switching to PiP when changing device orientation on Android >=13
+- handling wallpaper intent without URI
 
 ## <a id="v1.11.3"></a>[v1.11.3] - 2024-06-17
 

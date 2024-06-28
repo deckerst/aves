@@ -36,6 +36,7 @@ import deckers.thibault.aves.channel.calls.MetadataEditHandler
 import deckers.thibault.aves.channel.calls.MetadataFetchHandler
 import deckers.thibault.aves.channel.calls.SecurityHandler
 import deckers.thibault.aves.channel.calls.StorageHandler
+import deckers.thibault.aves.channel.calls.WallpaperHandler
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
 import deckers.thibault.aves.channel.streams.ActivityResultStreamHandler
@@ -135,6 +136,7 @@ open class MainActivity : FlutterFragmentActivity() {
         MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         MethodChannel(messenger, MediaEditHandler.CHANNEL).setMethodCallHandler(MediaEditHandler(this))
         MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
+        MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
         // - need Activity
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(this))
 
@@ -301,16 +303,32 @@ open class MainActivity : FlutterFragmentActivity() {
             Intent.ACTION_VIEW,
             Intent.ACTION_SEND,
             MediaStore.ACTION_REVIEW,
+            MediaStore.ACTION_REVIEW_SECURE,
             "com.android.camera.action.REVIEW",
             "com.android.camera.action.SPLIT_SCREEN_REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
                     // MIME type is optional
                     val type = intent.type ?: intent.resolveType(this)
-                    return hashMapOf(
+                    val fields = hashMapOf<String, Any?>(
                         INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW,
                         INTENT_DATA_KEY_MIME_TYPE to type,
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
+
+                    if (action == MediaStore.ACTION_REVIEW_SECURE) {
+                        val uris = ArrayList<String>()
+                        intent.clipData?.let { clipData ->
+                            for (i in 0 until clipData.itemCount) {
+                                clipData.getItemAt(i).uri?.let { uris.add(it.toString()) }
+                            }
+                        }
+                        fields[INTENT_DATA_KEY_SECURE_URIS] = uris
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && intent.hasExtra(MediaStore.EXTRA_BRIGHTNESS)) {
+                        fields[INTENT_DATA_KEY_BRIGHTNESS] = intent.getFloatExtra(MediaStore.EXTRA_BRIGHTNESS, 0f)
+                    }
+
+                    return fields
                 }
             }
 
@@ -390,7 +408,7 @@ open class MainActivity : FlutterFragmentActivity() {
         return null
     }
 
-    private fun submitPickedItems(call: MethodCall) {
+    open fun submitPickedItems(call: MethodCall) {
         val pickedUris = call.argument<List<String>>("uris")
         if (!pickedUris.isNullOrEmpty()) {
             val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
@@ -498,11 +516,13 @@ open class MainActivity : FlutterFragmentActivity() {
 
         const val INTENT_DATA_KEY_ACTION = "action"
         const val INTENT_DATA_KEY_ALLOW_MULTIPLE = "allowMultiple"
+        const val INTENT_DATA_KEY_BRIGHTNESS = "brightness"
         const val INTENT_DATA_KEY_FILTERS = "filters"
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_QUERY = "query"
         const val INTENT_DATA_KEY_SAFE_MODE = "safeMode"
+        const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
 
