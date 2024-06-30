@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +28,11 @@ class IntentService {
         'uris': uris,
       });
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (e.code == 'submitPickedItems-large') {
+        throw TooManyItemsException();
+      } else {
+        await reportService.recordError(e, stack);
+      }
     }
   }
 

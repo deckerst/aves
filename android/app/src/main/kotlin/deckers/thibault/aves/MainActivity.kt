@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.TransactionTooLargeException
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -21,6 +22,7 @@ import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
 import deckers.thibault.aves.channel.calls.AnalysisHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.DebugHandler
 import deckers.thibault.aves.channel.calls.DeviceHandler
 import deckers.thibault.aves.channel.calls.EmbeddedDataHandler
@@ -170,7 +172,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     intentDataMap.clear()
                 }
 
-                "submitPickedItems" -> submitPickedItems(call)
+                "submitPickedItems" -> safe(call, result, ::submitPickedItems)
                 "submitPickedCollectionFilters" -> submitPickedCollectionFilters(call)
             }
         }
@@ -408,28 +410,36 @@ open class MainActivity : FlutterFragmentActivity() {
         return null
     }
 
-    open fun submitPickedItems(call: MethodCall) {
+    open fun submitPickedItems(call: MethodCall, result: MethodChannel.Result) {
         val pickedUris = call.argument<List<String>>("uris")
-        if (!pickedUris.isNullOrEmpty()) {
-            val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
-            val intent = Intent().apply {
-                val firstUri = toUri(pickedUris.first())
-                if (pickedUris.size == 1) {
-                    data = firstUri
-                } else {
-                    clipData = ClipData.newUri(contentResolver, null, firstUri).apply {
-                        pickedUris.drop(1).forEach {
-                            addItem(ClipData.Item(toUri(it)))
+        try {
+            if (!pickedUris.isNullOrEmpty()) {
+                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
+                val intent = Intent().apply {
+                    val firstUri = toUri(pickedUris.first())
+                    if (pickedUris.size == 1) {
+                        data = firstUri
+                    } else {
+                        clipData = ClipData.newUri(contentResolver, null, firstUri).apply {
+                            pickedUris.drop(1).forEach {
+                                addItem(ClipData.Item(toUri(it)))
+                            }
                         }
                     }
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                setResult(RESULT_OK, intent)
+            } else {
+                setResult(RESULT_CANCELED)
             }
-            setResult(RESULT_OK, intent)
-        } else {
-            setResult(RESULT_CANCELED)
+            finish()
+        } catch (e: Exception) {
+            if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
+                result.error("submitPickedItems-large", "transaction too large with ${pickedUris?.size} URIs", e)
+            } else {
+                result.error("submitPickedItems-exception", "failed to pick ${pickedUris?.size} URIs", e)
+            }
         }
-        finish()
     }
 
     private fun submitPickedCollectionFilters(call: MethodCall) {
