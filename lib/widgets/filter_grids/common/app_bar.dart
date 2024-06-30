@@ -141,9 +141,9 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       child: Selector<Query, bool>(
         selector: (context, query) => query.enabled,
         builder: (context, queryEnabled, child) {
-          ActionsBuilder<T, CSAD> actionsBuilder = widget.actionsBuilder ?? _buildActions;
+          final actionDelegate = widget.actionDelegate;
+          final ActionsBuilder<T, CSAD> actionsBuilder = widget.actionsBuilder ?? _buildActions;
           final useTvLayout = settings.useTvLayout;
-          final actions = actionsBuilder(context, appMode, selection, widget.actionDelegate);
           return AvesAppBar(
             contentHeight: appBarContentHeight,
             pinned: context.select<Selection<FilterGridItem<T>>, bool>((selection) => selection.isSelecting),
@@ -152,7 +152,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
               isSelecting: isSelecting,
             ),
             title: _buildAppBarTitle(isSelecting),
-            actions: useTvLayout ? [] : actions,
+            actions: (context, maxWidth) => useTvLayout ? [] : actionsBuilder(context, appMode, selection, actionDelegate),
             bottom: Column(
               children: [
                 if (useTvLayout)
@@ -161,7 +161,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
                     child: ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       scrollDirection: Axis.horizontal,
-                      children: actions,
+                      children: actionsBuilder(context, appMode, selection, actionDelegate),
                     ),
                   ),
                 if (queryEnabled)
