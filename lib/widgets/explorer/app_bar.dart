@@ -53,44 +53,12 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return AvesAppBar(
       contentHeight: appBarContentHeight,
       pinned: true,
       leading: const DrawerButton(),
       title: _buildAppBarTitle(context),
-      actions: [
-        IconButton(
-          icon: const Icon(AIcons.search),
-          onPressed: () => _goToSearch(context),
-          tooltip: MaterialLocalizations.of(context).searchFieldLabel,
-        ),
-        if (_volumes.length > 1)
-          FontSizeIconTheme(
-            child: PopupMenuButton<StorageVolume>(
-              itemBuilder: (context) {
-                return _volumes.map((v) {
-                  final selected = widget.directoryNotifier.value.volumePath == v.path;
-                  final icon = v.isRemovable ? AIcons.storageCard : AIcons.storageMain;
-                  return PopupMenuItem(
-                    value: v,
-                    enabled: !selected,
-                    child: MenuRow(
-                      text: v.getDescription(context),
-                      icon: Icon(icon),
-                    ),
-                  );
-                }).toList();
-              },
-              onSelected: (volume) async {
-                // wait for the popup menu to hide before proceeding with the action
-                await Future.delayed(animations.popUpAnimationDelay * timeDilation);
-                widget.goTo(volume.path);
-              },
-              popUpAnimationStyle: animations.popUpAnimationStyle,
-            ),
-          ),
-      ],
+      actions: _buildActions,
       bottom: LayoutBuilder(
         builder: (context, constraints) {
           return SizedBox(
@@ -130,6 +98,42 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
       onTap: () => _goToSearch(context),
       child: title,
     );
+  }
+
+  List<Widget> _buildActions(BuildContext context, double maxWidth) {
+    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    return [
+      IconButton(
+        icon: const Icon(AIcons.search),
+        onPressed: () => _goToSearch(context),
+        tooltip: MaterialLocalizations.of(context).searchFieldLabel,
+      ),
+      if (_volumes.length > 1)
+        FontSizeIconTheme(
+          child: PopupMenuButton<StorageVolume>(
+            itemBuilder: (context) {
+              return _volumes.map((v) {
+                final selected = widget.directoryNotifier.value.volumePath == v.path;
+                final icon = v.isRemovable ? AIcons.storageCard : AIcons.storageMain;
+                return PopupMenuItem(
+                  value: v,
+                  enabled: !selected,
+                  child: MenuRow(
+                    text: v.getDescription(context),
+                    icon: Icon(icon),
+                  ),
+                );
+              }).toList();
+            },
+            onSelected: (volume) async {
+              // wait for the popup menu to hide before proceeding with the action
+              await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+              widget.goTo(volume.path);
+            },
+            popUpAnimationStyle: animations.popUpAnimationStyle,
+          ),
+        ),
+    ];
   }
 
   double get appBarContentHeight {
