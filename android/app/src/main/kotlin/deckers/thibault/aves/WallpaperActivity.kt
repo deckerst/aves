@@ -6,6 +6,7 @@ import deckers.thibault.aves.channel.calls.AppAdapterHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
 
 class WallpaperActivity : MainActivity() {
     private var originalIntent: String? = null
@@ -34,7 +35,7 @@ class WallpaperActivity : MainActivity() {
         return super.extractIntentData(intent)
     }
 
-    override fun submitPickedItems(call: MethodCall) {
+    override fun submitPickedItems(call: MethodCall, result: MethodChannel.Result) {
         if (originalIntent != null) {
             val pickedUris = call.argument<List<String>>("uris")
             if (!pickedUris.isNullOrEmpty()) {
@@ -48,7 +49,7 @@ class WallpaperActivity : MainActivity() {
                 finish()
             }
         } else {
-            super.submitPickedItems(call)
+            super.submitPickedItems(call, result)
         }
     }
 }
