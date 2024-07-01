@@ -683,7 +683,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final baseCollection = collection;
     if (baseCollection == null) return;
 
-    unawaited(_onLeave());
+    await _onLeave();
     final uri = entryNotifier.value?.uri;
     unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
@@ -852,7 +852,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void _popVisual() {
     if (Navigator.canPop(context)) {
       Future<void> pop() async {
-        unawaited(_onLeave());
+        await _onLeave();
         Navigator.maybeOf(context)?.pop();
       }
 
@@ -916,6 +916,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (!settings.useTvLayout) {
       await windowService.requestOrientation();
     }
+    // delay to prevent white/black flash on page transition
+    // from a viewer with a transparent background and no system UI
+    // to a regular page with system UI
+    await Future.delayed(const Duration(milliseconds: 50));
   }
 
   Future<bool> _enablePictureInPicture(AvesVideoController? playingController) async {
