@@ -87,6 +87,7 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
                       label: context.l10n.aboutDataUsageClearCache,
                       onPressed: () async {
                         await storageService.deleteTempDirectory();
+                        await storageService.deleteExternalCache();
                         await mediaFetchService.clearSizedThumbnailDiskCache();
                         imageCache.clear();
                         _reload();
