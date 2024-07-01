@@ -1538,5 +1538,9 @@
   "renameProcessorHash": "Skrót",
   "@renameProcessorHash": {},
   "chipActionShowCollection": "Pokaż w Kolekcji",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "chipActionGoToExplorerPage": "Pokaż w przeglądarce",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "Przeglądarka",
+  "@explorerPageTitle": {}
 }

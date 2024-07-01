@@ -1380,5 +1380,9 @@
   "settingsForceWesternArabicNumeralsTile": "强制使用阿拉伯数字",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionShowCollection": "在媒体集中显示",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "explorerPageTitle": "资源管理器",
+  "@explorerPageTitle": {},
+  "chipActionGoToExplorerPage": "在资源管理器中显示",
+  "@chipActionGoToExplorerPage": {}
 }

@@ -1526,5 +1526,17 @@
   "settingsThumbnailShowHdrIcon": "Zobraziť ikonu HDR",
   "@settingsThumbnailShowHdrIcon": {},
   "chipActionShowCollection": "Zobraziť v kolekcií",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "videoActionABRepeat": "Opakovanie A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Nastaviť začiatok",
+  "@videoRepeatActionSetStart": {},
+  "videoRepeatActionSetEnd": "Nastaviť koniec",
+  "@videoRepeatActionSetEnd": {},
+  "settingsForceWesternArabicNumeralsTile": "Vynútiť arabské číslice",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "stopTooltip": "Zastaviť",
+  "@stopTooltip": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {}
 }
