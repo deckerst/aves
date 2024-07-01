@@ -39,6 +39,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
             "deleteEmptyDirectories" -> ioScope.launch { safe(call, result, ::deleteEmptyDirectories) }
             "deleteTempDirectory" -> ioScope.launch { safe(call, result, ::deleteTempDirectory) }
+            "deleteExternalCache" -> ioScope.launch { safe(call, result, ::deleteExternalCache) }
             "canRequestMediaFileBulkAccess" -> safe(call, result, ::canRequestMediaFileBulkAccess)
             "canInsertMedia" -> safe(call, result, ::canInsertMedia)
             else -> result.notImplemented()
@@ -49,16 +50,17 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         var internalCache = getFolderSize(context.cacheDir)
         internalCache += getFolderSize(context.codeCacheDir)
         val externalCache = context.externalCacheDirs.map(::getFolderSize).sum()
+        val externalFilesDirs = context.getExternalFilesDirs(null)
 
         val dataDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) context.dataDir else File(context.applicationInfo.dataDir)
 
         val database = getFolderSize(File(dataDir, "databases"))
         val flutter = getFolderSize(File(PathUtils.getDataDirectory(context)))
         val vaults = getFolderSize(File(StorageUtils.getVaultRoot(context)))
-        val trash = context.getExternalFilesDirs(null).mapNotNull { StorageUtils.trashDirFor(context, it.path) }.map(::getFolderSize).sum()
+        val trash = externalFilesDirs.mapNotNull { StorageUtils.trashDirFor(context, it.path) }.map(::getFolderSize).sum()
 
         val internalData = getFolderSize(dataDir) - internalCache
-        val externalData = context.getExternalFilesDirs(null).map(::getFolderSize).sum()
+        val externalData = externalFilesDirs.map(::getFolderSize).sum()
         val miscData = internalData + externalData - (database + flutter + vaults + trash)
 
         result.success(
@@ -222,6 +224,11 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
 
     private fun deleteTempDirectory(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(StorageUtils.deleteTempDirectory(context))
+    }
+
+    private fun deleteExternalCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        context.externalCacheDirs.filter { it.exists() }.forEach { it.deleteRecursively() }
+        result.success(true)
     }
 
     private fun canRequestMediaFileBulkAccess(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
