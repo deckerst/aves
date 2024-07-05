@@ -38,8 +38,9 @@ void widgetMainCommon(AppFlavor flavor) async {
 
 Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final widgetId = args['widgetId'] as int;
-  final widthPx = args['widthPx'] as int;
-  final heightPx = args['heightPx'] as int;
+  final sizesDip = (args['sizesDip'] as List).cast<Map>().map((kv) {
+    return Size(kv['widthDip'] as double, kv['heightDip'] as double);
+  }).toList();
   final cornerRadiusPx = args['cornerRadiusPx'] as double?;
   final devicePixelRatio = args['devicePixelRatio'] as double;
   final drawEntryImage = args['drawEntryImage'] as bool;
@@ -54,15 +55,22 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
     entry: entry,
     devicePixelRatio: devicePixelRatio,
   );
-  final bytes = await painter.drawWidget(
-    widthPx: widthPx,
-    heightPx: heightPx,
-    cornerRadiusPx: cornerRadiusPx,
-    outline: outline,
-    shape: settings.getWidgetShape(widgetId),
-  );
+  final bytesBySizeDip = <Map<String, dynamic>>[];
+  await Future.forEach(sizesDip, (sizeDip) async {
+    final bytes = await painter.drawWidget(
+      sizeDip: sizeDip,
+      cornerRadiusPx: cornerRadiusPx,
+      outline: outline,
+      shape: settings.getWidgetShape(widgetId),
+    );
+    bytesBySizeDip.add({
+      'widthDip': sizeDip.width,
+      'heightDip': sizeDip.height,
+      'bytes': bytes,
+    });
+  });
   return {
-    'bytes': bytes,
+    'bytesBySizeDip': bytesBySizeDip,
     'updateOnTap': settings.getWidgetOpenPage(widgetId) == WidgetOpenPage.updateWidget,
   };
 }

@@ -27,14 +27,16 @@ class HomeWidgetPainter {
   });
 
   Future<Uint8List> drawWidget({
-    required int widthPx,
-    required int heightPx,
+    required Size sizeDip,
     required double? cornerRadiusPx,
     required Color? outline,
     required WidgetShape shape,
     ui.ImageByteFormat format = ui.ImageByteFormat.rawRgba,
   }) async {
-    final widgetSizePx = Size(widthPx.toDouble(), heightPx.toDouble());
+    final widthPx = sizeDip.width * devicePixelRatio;
+    final heightPx = sizeDip.height * devicePixelRatio;
+    final widgetSizePx = Size(widthPx, heightPx);
+    debugPrint('draw widget for $sizeDip dp ($widgetSizePx px), entry=$entry');
     final ui.Image? entryImage;
     if (entry != null) {
       final extent = shape.extentPx(widgetSizePx, entry!) / devicePixelRatio;
@@ -57,7 +59,7 @@ class HomeWidgetPainter {
     if (outline != null) {
       drawOutline(canvas, path, devicePixelRatio, outline);
     }
-    final widgetImage = await recorder.endRecording().toImage(widthPx, heightPx);
+    final widgetImage = await recorder.endRecording().toImage(widthPx.round(), heightPx.round());
     final byteData = await widgetImage.toByteData(format: format);
     return byteData?.buffer.asUint8List() ?? Uint8List(0);
   }
