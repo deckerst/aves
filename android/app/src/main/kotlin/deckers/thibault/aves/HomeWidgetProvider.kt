@@ -104,7 +104,11 @@ class HomeWidgetProvider : AppWidgetProvider() {
                             "drawEntryImage" to drawEntryImage,
                             "reuseEntry" to reuseEntry,
                             "isSystemThemeDark" to isNightModeOn,
-                        ), object : MethodChannel.Result {
+                        ).apply {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                put("cornerRadiusPx", context.resources.getDimension(android.R.dimen.system_app_widget_background_radius))
+                            }
+                        }, object : MethodChannel.Result {
                             override fun success(result: Any?) {
                                 cont.resume(result)
                             }
