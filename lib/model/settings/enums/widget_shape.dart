@@ -3,11 +3,13 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/painting.dart';
 
 extension ExtraWidgetShape on WidgetShape {
-  Path path(Size widgetSize, double devicePixelRatio) {
+  static const double _defaultCornerRadius = 24;
+
+  Path path(Size widgetSize, double devicePixelRatio, {double? cornerRadiusPx}) {
     final rect = Offset.zero & widgetSize;
     switch (this) {
       case WidgetShape.rrect:
-        return Path()..addRRect(BorderRadius.circular(24 * devicePixelRatio).toRRect(rect));
+        return Path()..addRRect(BorderRadius.circular(cornerRadiusPx ?? (_defaultCornerRadius * devicePixelRatio)).toRRect(rect));
       case WidgetShape.circle:
         return Path()
           ..addOval(Rect.fromCircle(

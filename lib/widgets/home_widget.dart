@@ -29,6 +29,7 @@ class HomeWidgetPainter {
   Future<Uint8List> drawWidget({
     required int widthPx,
     required int heightPx,
+    required double? cornerRadiusPx,
     required Color? outline,
     required WidgetShape shape,
     ui.ImageByteFormat format = ui.ImageByteFormat.rawRgba,
@@ -45,7 +46,7 @@ class HomeWidgetPainter {
     final recorder = ui.PictureRecorder();
     final rect = Offset.zero & widgetSizePx;
     final canvas = Canvas(recorder, rect);
-    final path = shape.path(widgetSizePx, devicePixelRatio);
+    final path = shape.path(widgetSizePx, devicePixelRatio, cornerRadiusPx: cornerRadiusPx);
     canvas.clipPath(path);
     if (entryImage != null) {
       canvas.drawImage(entryImage, Offset(widgetSizePx.width - entryImage.width, widgetSizePx.height - entryImage.height) / 2, Paint());

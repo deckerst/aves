@@ -40,6 +40,7 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final widgetId = args['widgetId'] as int;
   final widthPx = args['widthPx'] as int;
   final heightPx = args['heightPx'] as int;
+  final cornerRadiusPx = args['cornerRadiusPx'] as double?;
   final devicePixelRatio = args['devicePixelRatio'] as double;
   final drawEntryImage = args['drawEntryImage'] as bool;
   final reuseEntry = args['reuseEntry'] as bool;
@@ -56,6 +57,7 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final bytes = await painter.drawWidget(
     widthPx: widthPx,
     heightPx: heightPx,
+    cornerRadiusPx: cornerRadiusPx,
     outline: outline,
     shape: settings.getWidgetShape(widgetId),
   );
