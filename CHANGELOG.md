@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.4"></a>[v1.11.4] - 2024-07-09
+
 ### Added
 
 - Collection: stack RAW and JPEG with same file names

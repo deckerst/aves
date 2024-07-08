@@ -1,3 +1,0 @@
-In v1.11.0:
-- watch videos with SRT subtitle files
-Full changelog available on GitHub
