@@ -1380,5 +1380,9 @@
   "settingsForceWesternArabicNumeralsTile": "아라비아 숫자 항상 사용",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionShowCollection": "미디어 페이지에서 보기",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "explorerPageTitle": "탐색기",
+  "@explorerPageTitle": {},
+  "chipActionGoToExplorerPage": "탐색기 페이지에서 보기",
+  "@chipActionGoToExplorerPage": {}
 }

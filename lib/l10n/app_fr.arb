@@ -1380,5 +1380,9 @@
   "settingsForceWesternArabicNumeralsTile": "Toujours utiliser les chiffres arabes",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionShowCollection": "Afficher dans Collection",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "explorerPageTitle": "Explorateur",
+  "@explorerPageTitle": {},
+  "chipActionGoToExplorerPage": "Afficher dans Explorateur",
+  "@chipActionGoToExplorerPage": {}
 }

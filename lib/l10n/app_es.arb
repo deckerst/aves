@@ -1380,5 +1380,9 @@
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
   "chipActionShowCollection": "Mostrar en Colección",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "explorerPageTitle": "Explorar",
+  "@explorerPageTitle": {},
+  "chipActionGoToExplorerPage": "Mostrar en el explorador",
+  "@chipActionGoToExplorerPage": {}
 }
