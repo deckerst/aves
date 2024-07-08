@@ -122,7 +122,7 @@ class DateFilter extends CollectionFilter {
   }
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.date, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.date, size: size);
 
   @override
   String get category => type;

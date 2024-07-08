@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.4"></a>[v1.11.4] - 2024-07-09
+
+### Added
+
+- Collection: stack RAW and JPEG with same file names
+- Collection: ask to rename/replace/skip when converting items with name conflict
+- Export: bulk converting motion photos to still images
+- Explorer: view folder tree and filter paths
+
+### Fixed
+
+- switching to PiP when changing device orientation on Android >=13
+- handling wallpaper intent without URI
+- sizing widgets with some launchers on Android >=12
+
 ## <a id="v1.11.3"></a>[v1.11.3] - 2024-06-17
 
 ### Added

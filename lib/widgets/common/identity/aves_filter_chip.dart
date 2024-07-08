@@ -6,6 +6,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -47,7 +48,7 @@ class AvesFilterDecoration {
 
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
-  final bool showText, showGenericIcon, useFilterColor;
+  final bool showLeading, showText, allowGenericIcon, useFilterColor;
   final AvesFilterDecoration? decoration;
   final Color? background;
   final String? banner;
@@ -61,7 +62,7 @@ class AvesFilterChip extends StatefulWidget {
   static const double defaultRadius = 32;
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
-  static const double minChipWidth = 80;
+  static const double minChipWidth = kMinInteractiveDimension;
   static const double iconSize = 18;
   static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
@@ -69,8 +70,9 @@ class AvesFilterChip extends StatefulWidget {
   const AvesFilterChip({
     super.key,
     required this.filter,
+    this.showLeading = true,
     this.showText = true,
-    this.showGenericIcon = true,
+    this.allowGenericIcon = true,
     this.useFilterColor = true,
     this.decoration,
     this.background,
@@ -98,11 +100,15 @@ class AvesFilterChip extends StatefulWidget {
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
     if (context.read<ValueNotifier<AppMode>>().value.canNavigate) {
-      final actions = [
-        if (filter is AlbumFilter) ChipAction.goToAlbumPage,
+      final actions = <ChipAction>[
+        if (filter is AlbumFilter) ...[
+          ChipAction.goToAlbumPage,
+          ChipAction.goToExplorerPage,
+        ],
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.place)) ChipAction.goToPlacePage,
         if (filter is TagFilter) ChipAction.goToTagPage,
+        if (filter is PathFilter) ChipAction.goToExplorerPage,
         if (filter is RatingFilter && 1 < filter.rating && filter.rating < 5) ...[
           if (filter.op != RatingFilter.opOrGreater) ChipAction.ratingOrGreater,
           if (filter.op != RatingFilter.opOrLower) ChipAction.ratingOrLower,
@@ -255,10 +261,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         : null;
 
     Widget? content;
-    if (widget.showText) {
+    final showLeading = widget.showLeading;
+    final showText = widget.showText;
+    if (showLeading || showText) {
       final textScaler = MediaQuery.textScalerOf(context);
       final iconSize = textScaler.scale(AvesFilterChip.iconSize);
-      final leading = widget.leadingOverride ?? filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon);
+      final leading = showLeading ? widget.leadingOverride ?? filter.iconBuilder(context, iconSize, allowGenericIcon: widget.allowGenericIcon) : null;
       final trailing = onRemove != null
           ? Theme(
               data: Theme.of(context).copyWith(
@@ -278,22 +286,21 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         mainAxisSize: decoration != null ? MainAxisSize.max : MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (leading != null) ...[
-            leading,
-            SizedBox(width: padding),
-          ],
-          Flexible(
-            child: Text(
-              filter.getLabel(context),
-              style: TextStyle(
-                fontSize: AvesFilterChip.fontSize,
-                decoration: filter.reversed ? TextDecoration.lineThrough : null,
-                decorationThickness: 2,
+          if (leading != null) leading,
+          if (leading != null && showText) SizedBox(width: padding),
+          if (showText)
+            Flexible(
+              child: Text(
+                filter.getLabel(context),
+                style: TextStyle(
+                  fontSize: AvesFilterChip.fontSize,
+                  decoration: filter.reversed ? TextDecoration.lineThrough : null,
+                  decorationThickness: 2,
+                ),
+                softWrap: false,
+                overflow: TextOverflow.fade,
               ),
-              softWrap: false,
-              overflow: TextOverflow.fade,
             ),
-          ),
           if (trailing != null) ...[
             SizedBox(width: padding),
             trailing,
@@ -414,7 +421,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       ),
     );
 
-    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    final animate = context.select<Settings, bool>((v) => v.animate);
     if (animate && (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped)) {
       chip = Hero(
         tag: filter,

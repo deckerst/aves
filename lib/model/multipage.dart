@@ -32,10 +32,10 @@ class MultiPageInfo {
         _pages.insert(0, firstPage.copyWith(isDefault: true));
       }
 
-      final burstEntries = mainEntry.burstEntries;
-      if (burstEntries != null) {
+      final stackedEntries = mainEntry.stackedEntries;
+      if (stackedEntries != null) {
         _pageEntries.addEntries(pages.map((pageInfo) {
-          final pageEntry = burstEntries.firstWhere((entry) => entry.uri == pageInfo.uri);
+          final pageEntry = stackedEntries.firstWhere((entry) => entry.uri == pageInfo.uri);
           return MapEntry(pageInfo, pageEntry);
         }));
       }

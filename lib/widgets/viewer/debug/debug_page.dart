@@ -113,7 +113,7 @@ class ViewerDebugPage extends StatelessWidget {
             'isRotated': '${entry.isRotated}',
             'isFlipped': '${entry.isFlipped}',
             'displayAspectRatio': '${entry.displayAspectRatio}',
-            'displaySize': '${entry.displaySize}',
+            'displaySize': '${entry.displaySize.width}x${entry.displaySize.height}',
           },
         ),
         const Divider(),

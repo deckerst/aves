@@ -181,7 +181,7 @@ class _TvButtonRowContent extends StatelessWidget {
   }) {
     switch (action) {
       case EntryAction.toggleFavourite:
-        final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
+        final favouriteTargetEntry = mainEntry.isStack ? pageEntry : mainEntry;
         return FavouriteTogglerCaption(
           entries: {favouriteTargetEntry},
           enabled: enabled,
@@ -236,7 +236,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
 
   AvesEntry get pageEntry => widget.pageEntry;
 
-  AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
+  AvesEntry get favouriteTargetEntry => mainEntry.isStack ? pageEntry : mainEntry;
 
   static const double padding = ViewerButtonRowContent.padding;
 
@@ -487,7 +487,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
           onPressed: onPressed,
         );
       case EntryAction.toggleFavourite:
-        final favouriteTargetEntry = mainEntry.isBurst ? pageEntry : mainEntry;
+        final favouriteTargetEntry = mainEntry.isStack ? pageEntry : mainEntry;
         child = FavouriteToggler(
           entries: {favouriteTargetEntry},
           focusNode: focusNode,

@@ -85,7 +85,7 @@ class _InfoPageState extends State<InfoPage> {
                   );
                 }
 
-                return mainEntry.isBurst
+                return mainEntry.isStack
                     ? PageEntryBuilder(
                         multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
                         builder: (pageEntry) => _buildContent(pageEntry: pageEntry),

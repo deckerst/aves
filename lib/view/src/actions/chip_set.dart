@@ -67,7 +67,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       ChipSetAction.showCountryStates => AIcons.state,
       ChipSetAction.showCollection => AIcons.allCollection,
       // selecting (single filter)
-      ChipSetAction.rename => AIcons.name,
+      ChipSetAction.rename => AIcons.rename,
       ChipSetAction.setCover => AIcons.setCover,
       ChipSetAction.configureVault => AIcons.vaultConfigure,
     };

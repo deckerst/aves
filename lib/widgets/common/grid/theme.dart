@@ -29,7 +29,7 @@ class GridTheme extends StatelessWidget {
     return ProxyProvider2<Settings, MediaQueryData, GridThemeData>(
       update: (context, settings, mq, previous) {
         final margin = OverlayIcon.defaultMargin.vertical;
-        var iconSize = min(24.0, ((extent - margin) / 5).floorToDouble() - margin);
+        var iconSize = min<double>(24.0, ((extent - margin) / 5).floorToDouble() - margin);
         final fontSize = (iconSize * .7).floorToDouble();
         iconSize = mq.textScaler.scale(iconSize);
         final highlightBorderWidth = extent * .1;

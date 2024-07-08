@@ -1,4 +1,0 @@
-In v1.10.7:
-- detect HDR videos (but do not play them in their full HDR glory)
-- removing animations also applies to pop up menus
-Full changelog available on GitHub

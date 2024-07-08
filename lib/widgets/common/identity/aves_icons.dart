@@ -181,8 +181,8 @@ class MultiPageIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? text;
-    if (entry.isBurst) {
-      text = '${entry.burstEntries?.length}';
+    if (entry.isStack) {
+      text = '${entry.stackedEntries?.length}';
     }
     final child = OverlayIcon(
       icon: AIcons.multiPage,

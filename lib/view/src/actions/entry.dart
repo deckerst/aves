@@ -90,7 +90,7 @@ extension ExtraEntryActionView on EntryAction {
       EntryAction.restore => AIcons.restore,
       EntryAction.convert => AIcons.convert,
       EntryAction.print => AIcons.print,
-      EntryAction.rename => AIcons.name,
+      EntryAction.rename => AIcons.rename,
       EntryAction.copy => AIcons.copy,
       EntryAction.move => AIcons.move,
       EntryAction.share => AIcons.share,
@@ -109,7 +109,7 @@ extension ExtraEntryActionView on EntryAction {
       EntryAction.videoToggleMute =>
         // different data depending on toggle state
         AIcons.mute,
-      EntryAction.videoSelectStreams => AIcons.streams,
+      EntryAction.videoSelectStreams => AIcons.selectStreams,
       EntryAction.videoSetSpeed => AIcons.speed,
       EntryAction.videoABRepeat => AIcons.repeat,
       EntryAction.videoSettings => AIcons.videoSettings,

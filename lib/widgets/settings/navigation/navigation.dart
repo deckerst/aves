@@ -73,6 +73,7 @@ class SettingsTileNavigationHomePage extends SettingsTile {
           const _HomeOption(HomePageSetting.collection),
           const _HomeOption(HomePageSetting.albums),
           const _HomeOption(HomePageSetting.tags),
+          const _HomeOption(HomePageSetting.explorer),
           if (settings.homeCustomCollection.isNotEmpty) _HomeOption(HomePageSetting.collection, customCollection: settings.homeCustomCollection),
         ],
         getName: (context, v) => v.getName(context),

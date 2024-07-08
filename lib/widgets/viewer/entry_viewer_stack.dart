@@ -9,7 +9,6 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/accessibility_timeout.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -63,7 +62,6 @@ class EntryViewerStack extends StatefulWidget {
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewControllerMixin, FeedbackMixin, TickerProviderStateMixin, RouteAware {
-  final Floating _floating = Floating();
   late int _currentEntryIndex;
   late ValueNotifier<int> _currentVerticalPage;
   late PageController _horizontalPager, _verticalPager;
@@ -79,7 +77,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late VideoActionDelegate _videoActionDelegate;
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
-  Timer? _overlayHidingTimer, _videoPauseTimer;
+  Timer? _overlayHidingTimer, _appInactiveReactionTimer;
 
   @override
   bool get isViewingImage => _currentVerticalPage.value == imagePage;
@@ -185,7 +183,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void dispose() {
     AvesApp.pageRouteObserver.unsubscribe(this);
-    _floating.dispose();
     cleanEntryControllers(entryNotifier.value);
     _videoActionDelegate.dispose();
     _verticalPageAnimationController.dispose();
@@ -203,7 +200,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _verticalScrollNotifier.dispose();
     _heroInfoNotifier.dispose();
     _stopOverlayHidingTimer();
-    _stopVideoPauseTimer();
+    _stopAppInactiveTimer();
     AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);
     _unregisterWidget(widget);
     super.dispose();
@@ -253,7 +250,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
               return StreamBuilder<PiPStatus>(
                 // as of floating v2.0.0, plugin assumes activity and fails when bound via service
                 // so we do not access status stream directly, but check for support first
-                stream: device.supportPictureInPicture ? _floating.pipStatusStream : Stream.value(PiPStatus.disabled),
+                stream: device.supportPictureInPicture ? Floating().pipStatusStream : Stream.value(PiPStatus.disabled),
                 builder: (context, snapshot) {
                   var pipEnabled = snapshot.data == PiPStatus.enabled;
                   return ValueListenableBuilder<bool>(
@@ -334,42 +331,43 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     switch (AvesApp.lifecycleStateNotifier.value) {
       case AppLifecycleState.inactive:
         // inactive: when losing focus
-        _onAppInactive();
+        // also triggered when app is rotated on Android API >=33
+        _startAppInactiveTimer();
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
         // paused: when switching to another app
         // detached: when app is without a view
         viewerController.autopilot = false;
-        _stopVideoPauseTimer();
+        _stopAppInactiveTimer();
         pauseVideoControllers();
       case AppLifecycleState.resumed:
-        _stopVideoPauseTimer();
+        _stopAppInactiveTimer();
       case AppLifecycleState.hidden:
         // hidden: transient state between `inactive` and `paused`
         break;
     }
   }
 
-  Future<void> _onAppInactive() async {
-    final playingController = context.read<VideoConductor>().getPlayingController();
+  Future<void> _onAppInactive(AvesVideoController? playingController) async {
     bool enabledPip = false;
     if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
-      enabledPip |= await _enablePictureInPicture();
+      enabledPip |= await _enablePictureInPicture(playingController);
     }
     if (enabledPip) {
       // ensure playback, in case lifecycle paused/resumed events happened when switching to PiP
       await playingController?.play();
     } else {
-      _startVideoPauseTimer();
+      await pauseVideoControllers();
     }
   }
 
-  void _startVideoPauseTimer() {
-    _stopVideoPauseTimer();
-    _videoPauseTimer = Timer(ADurations.videoPauseAppInactiveDelay, pauseVideoControllers);
+  void _startAppInactiveTimer() {
+    _stopAppInactiveTimer();
+    final playingController = context.read<VideoConductor>().getPlayingController();
+    _appInactiveReactionTimer = Timer(ADurations.appInactiveReactionDelay, () => _onAppInactive(playingController));
   }
 
-  void _stopVideoPauseTimer() => _videoPauseTimer?.cancel();
+  void _stopAppInactiveTimer() => _appInactiveReactionTimer?.cancel();
 
   Widget _decorateOverlay(Widget overlay) {
     return ValueListenableBuilder<double>(
@@ -685,7 +683,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final baseCollection = collection;
     if (baseCollection == null) return;
 
-    unawaited(_onLeave());
+    await _onLeave();
     final uri = entryNotifier.value?.uri;
     unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
@@ -701,7 +699,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _goToVerticalPage(int page) async {
-    if (settings.accessibilityAnimations.animate) {
+    if (settings.animate) {
       final start = _verticalPager.offset;
       final end = _verticalPager.position.viewportDimension * page;
       final simulation = ScrollSpringSimulation(ViewerVerticalPageView.spring, start, end, 0);
@@ -795,11 +793,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         if (collectionEntries.remove(removedEntry)) return;
 
         // remove from burst
-        final mainEntry = collectionEntries.firstWhereOrNull((entry) => entry.burstEntries?.contains(removedEntry) == true);
+        final mainEntry = collectionEntries.firstWhereOrNull((entry) => entry.stackedEntries?.contains(removedEntry) == true);
         if (mainEntry != null) {
           final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
           if (multiPageController != null) {
-            mainEntry.burstEntries!.remove(removedEntry);
+            mainEntry.stackedEntries!.remove(removedEntry);
             multiPageController.reset();
           }
         }
@@ -854,7 +852,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void _popVisual() {
     if (Navigator.canPop(context)) {
       Future<void> pop() async {
-        unawaited(_onLeave());
+        await _onLeave();
         Navigator.maybeOf(context)?.pop();
       }
 
@@ -918,12 +916,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (!settings.useTvLayout) {
       await windowService.requestOrientation();
     }
+    // delay to prevent white/black flash on page transition
+    // from a viewer with a transparent background and no system UI
+    // to a regular page with system UI
+    await Future.delayed(const Duration(milliseconds: 50));
   }
 
-  Future<bool> _enablePictureInPicture() async {
-    final videoController = context.read<VideoConductor>().getPlayingController();
-    if (videoController != null) {
-      final entrySize = videoController.entry.displaySize;
+  Future<bool> _enablePictureInPicture(AvesVideoController? playingController) async {
+    if (playingController != null) {
+      final entrySize = playingController.entry.displaySize;
       final aspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
 
       final viewSize = MediaQuery.sizeOf(context) * MediaQuery.devicePixelRatioOf(context);
@@ -936,7 +937,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       );
 
       try {
-        final status = await _floating.enable(EnableManual(
+        final status = await Floating().enable(ImmediatePiP(
           aspectRatio: aspectRatio,
           sourceRectHint: sourceRectHint,
         ));

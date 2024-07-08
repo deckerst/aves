@@ -25,6 +25,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/editor/entry_editor_page.dart';
+import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/intent.dart';
@@ -60,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   int? _widgetId;
   String? _initialRouteName, _initialSearchQuery;
   Set<CollectionFilter>? _initialFilters;
+  List<String>? _secureUris;
 
   static const allowedShortcutRoutes = [
     CollectionPage.routeName,
@@ -90,6 +92,7 @@ class _HomePageState extends State<HomePage> {
     final safeMode = intentData[IntentDataKeys.safeMode] ?? false;
     final intentAction = intentData[IntentDataKeys.action];
     _initialFilters = null;
+    _secureUris = null;
 
     await androidFileUtils.init();
     if (!{
@@ -126,6 +129,7 @@ class _HomePageState extends State<HomePage> {
             uri = intentData[IntentDataKeys.uri];
             mimeType = intentData[IntentDataKeys.mimeType];
           }
+          _secureUris = intentData[IntentDataKeys.secureUris];
           if (uri != null) {
             _viewerEntry = await _initViewerEntry(
               uri: uri,
@@ -207,7 +211,7 @@ class _HomePageState extends State<HomePage> {
           canAnalyze: false,
         );
       case AppMode.view:
-        if (_isViewerSourceable(_viewerEntry)) {
+        if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
           final directory = _viewerEntry?.directory;
           if (directory != null) {
             unawaited(AnalysisService.registerCallback());
@@ -300,7 +304,7 @@ class _HomePageState extends State<HomePage> {
               // if we group bursts, opening a burst sub-entry should:
               // - identify and select the containing main entry,
               // - select the sub-entry in the Viewer page.
-              groupBursts: false,
+              stackBursts: false,
             );
             final viewerEntryPath = viewerEntry.path;
             final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
@@ -346,12 +350,14 @@ class _HomePageState extends State<HomePage> {
         return buildRoute((context) => const AlbumListPage());
       case TagListPage.routeName:
         return buildRoute((context) => const TagListPage());
+      case ExplorerPage.routeName:
+        return buildRoute((context) => const ExplorerPage());
+      case HomeWidgetSettingsPage.routeName:
+        return buildRoute((context) => HomeWidgetSettingsPage(widgetId: _widgetId!));
       case ScreenSaverPage.routeName:
         return buildRoute((context) => ScreenSaverPage(source: source));
       case ScreenSaverSettingsPage.routeName:
         return buildRoute((context) => const ScreenSaverSettingsPage());
-      case HomeWidgetSettingsPage.routeName:
-        return buildRoute((context) => HomeWidgetSettingsPage(widgetId: _widgetId!));
       case SearchPage.routeName:
         return SearchPageRoute(
           delegate: CollectionSearchDelegate(

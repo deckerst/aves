@@ -10,7 +10,7 @@ class ArrowClipper extends CustomClipper<Path> {
     path.lineTo(0.0, 0.0);
     path.close();
 
-    const arrowWidth = 8.0;
+    const double arrowWidth = 8.0;
     final startPointX = (size.width - arrowWidth) / 2;
     var startPointY = size.height / 2 - arrowWidth / 2;
     path.moveTo(startPointX, startPointY);

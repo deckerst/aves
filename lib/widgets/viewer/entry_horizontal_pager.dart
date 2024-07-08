@@ -1,7 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/viewer_transition.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -71,7 +70,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
                 : _buildViewer(mainEntry);
 
             return Selector<Settings, bool>(
-              selector: (context, s) => s.accessibilityAnimations.animate,
+              selector: (context, s) => s.animate,
               builder: (context, animate, child) {
                 if (!animate) return child!;
                 return AnimatedBuilder(

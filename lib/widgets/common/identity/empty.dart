@@ -1,5 +1,8 @@
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class EmptyContent extends StatelessWidget {
@@ -23,6 +26,7 @@ class EmptyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.primary.withOpacity(.5);
+    final durations = context.watch<DurationsData>();
     return Padding(
       padding: safeBottom
           ? EdgeInsets.only(
@@ -33,25 +37,36 @@ class EmptyContent extends StatelessWidget {
         alignment: alignment,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(
-                icon,
-                size: 64,
-                color: color,
+          children: AnimationConfiguration.toStaggeredList(
+            duration: durations.staggeredAnimation,
+            delay: durations.staggeredAnimationDelay * timeDilation,
+            childAnimationBuilder: (child) => SlideAnimation(
+              verticalOffset: 50.0,
+              child: FadeInAnimation(
+                child: child,
               ),
-              const SizedBox(height: 16)
-            ],
-            Text(
-              text,
-              style: TextStyle(
-                color: color,
-                fontSize: fontSize,
-              ),
-              textAlign: TextAlign.center,
             ),
-            if (bottom != null) bottom!,
-          ],
+            children: [
+              if (icon != null) ...[
+                Icon(
+                  icon,
+                  size: 64,
+                  color: color,
+                ),
+                const SizedBox(height: 16)
+              ],
+              if (text.isNotEmpty)
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: fontSize,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              if (bottom != null) bottom!,
+            ],
+          ),
         ),
       ),
     );

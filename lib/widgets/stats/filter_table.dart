@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -36,7 +35,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final countFormatter = NumberFormat.decimalPattern(context.locale);
-    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    final animate = context.select<Settings, bool>((v) => v.animate);
 
     final sortedEntries = entryCountMap.entries.toList();
     if (sortByCount) {

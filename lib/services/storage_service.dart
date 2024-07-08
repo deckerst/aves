@@ -33,6 +33,8 @@ abstract class StorageService {
 
   Future<bool> deleteTempDirectory();
 
+  Future<bool> deleteExternalCache();
+
   // returns whether user granted access to a directory of his choosing
   Future<bool> requestDirectoryAccess(String path);
 
@@ -195,6 +197,17 @@ class PlatformStorageService implements StorageService {
   Future<bool> deleteTempDirectory() async {
     try {
       final result = await _platform.invokeMethod('deleteTempDirectory');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> deleteExternalCache() async {
+    try {
+      final result = await _platform.invokeMethod('deleteExternalCache');
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);

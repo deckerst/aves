@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/accessibility_timeout.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
@@ -122,7 +121,7 @@ mixin FeedbackMixin {
 
   static double snackBarHorizontalPadding(SnackBarThemeData snackBarTheme) {
     final isFloatingSnackBar = (snackBarTheme.behavior ?? SnackBarBehavior.fixed) == SnackBarBehavior.floating;
-    final horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
+    final double horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
     return horizontalPadding;
   }
 
@@ -182,9 +181,9 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   Stream<T> get opStream => widget.opStream;
 
-  static const fontSize = 18.0;
-  static const diameter = 160.0;
-  static const strokeWidth = 8.0;
+  static const double fontSize = 18.0;
+  static const double diameter = 160.0;
+  static const double strokeWidth = 8.0;
 
   @override
   void initState() {
@@ -224,7 +223,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final progressColor = colorScheme.primary;
-    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    final animate = context.select<Settings, bool>((v) => v.animate);
     return PopScope(
       canPop: false,
       child: StreamBuilder<T>(

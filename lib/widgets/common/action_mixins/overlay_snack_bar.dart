@@ -212,7 +212,7 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
     final IconButton? iconButton = showCloseIcon
         ? IconButton(
             icon: const Icon(Icons.close),
-            iconSize: 24.0,
+            iconSize: 24,
             color: widget.closeIconColor ?? snackBarTheme.closeIconColor ?? defaults.closeIconColor,
             onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss),
             tooltip: MaterialLocalizations.of(context).closeButtonTooltip,

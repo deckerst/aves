@@ -15,6 +15,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
@@ -26,6 +27,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
@@ -163,7 +165,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   AvesEntry _getTargetEntry(BuildContext context, EntryAction action) {
-    if (mainEntry.isMultiPage && (mainEntry.isBurst || EntryActions.pageActions.contains(action))) {
+    if (mainEntry.isMultiPage && (mainEntry.isStack || EntryActions.pageActions.contains(action))) {
       final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
         final multiPageInfo = multiPageController.info;
@@ -198,7 +200,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.restore:
         _move(context, targetEntry, moveType: MoveType.fromBin);
       case EntryAction.convert:
-        convert(context, {targetEntry});
+        _convert(context, targetEntry);
       case EntryAction.print:
         EntryPrinter(targetEntry).print(context);
       case EntryAction.rename:
@@ -443,6 +445,22 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         moveType: moveType,
         entries: {targetEntry},
       );
+
+  Future<void> _convert(BuildContext context, AvesEntry targetEntry) async {
+    final options = await showDialog<EntryConvertOptions>(
+      context: context,
+      builder: (context) => ConvertEntryDialog(entries: {targetEntry}),
+      routeSettings: const RouteSettings(name: ConvertEntryDialog.routeName),
+    );
+    if (options == null) return;
+
+    switch (options.action) {
+      case EntryConvertAction.convert:
+        await doExport(context, {targetEntry}, options);
+      case EntryConvertAction.convertMotionPhotoToStillImage:
+        await _metadataActionDelegate.onActionSelected(context, targetEntry, collection, EntryAction.convertMotionPhotoToStillImage);
+    }
+  }
 
   Future<void> _rename(BuildContext context, AvesEntry targetEntry) async {
     final newName = await showDialog<String>(

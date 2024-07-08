@@ -39,7 +39,7 @@ class AlbumSectionHeader extends StatelessWidget {
       title: albumName ?? context.l10n.sectionUnknown,
       trailing: _directory != null && androidFileUtils.isOnRemovableStorage(_directory)
           ? const Icon(
-              AIcons.removableStorage,
+              AIcons.storageCard,
               size: 16,
               color: Color(0xFF757575),
             )

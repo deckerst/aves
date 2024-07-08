@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
@@ -13,12 +15,13 @@ class AvesAppBar extends StatelessWidget {
   final bool pinned;
   final Widget? leading;
   final Widget title;
-  final List<Widget> actions;
+  final List<Widget> Function(BuildContext context, double maxWidth) actions;
   final Widget? bottom;
   final Object? transitionKey;
 
   static const leadingHeroTag = 'appbar-leading';
   static const titleHeroTag = 'appbar-title';
+  static const double _titleMinWidth = 96;
 
   const AvesAppBar({
     super.key,
@@ -90,12 +93,16 @@ class AvesAppBar extends StatelessWidget {
                               child: AnimatedSwitcher(
                                 duration: context.read<DurationsData>().iconAnimation,
                                 child: FontSizeIconTheme(
-                                  child: Row(
-                                    key: ValueKey(transitionKey),
-                                    children: [
-                                      Expanded(child: title),
-                                      ...actions,
-                                    ],
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      return Row(
+                                        key: ValueKey(transitionKey),
+                                        children: [
+                                          Expanded(child: title),
+                                          ...(actions(context, max(0, constraints.maxWidth - _titleMinWidth))),
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ),
                               ),

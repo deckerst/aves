@@ -7,10 +7,10 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
@@ -24,6 +24,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_fab.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
@@ -186,10 +187,21 @@ class _CollectionPageState extends State<CollectionPage> {
         return hasSelection
             ? AvesFab(
                 tooltip: context.l10n.pickTooltip,
-                onPressed: () {
+                onPressed: () async {
                   final items = context.read<Selection<AvesEntry>>().selectedItems;
                   final uris = items.map((entry) => entry.uri).toList();
-                  IntentService.submitPickedItems(uris);
+                  try {
+                    await IntentService.submitPickedItems(uris);
+                  } on TooManyItemsException catch (_) {
+                    await showDialog(
+                      context: context,
+                      builder: (context) => AvesDialog(
+                        content: Text(context.l10n.tooManyItemsErrorDialogMessage),
+                        actions: const [OkButton()],
+                      ),
+                      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+                    );
+                  }
                 },
               )
             : null;
@@ -217,7 +229,7 @@ class _CollectionPageState extends State<CollectionPage> {
     await Future.delayed(delayDuration + ADurations.highlightScrollInitDelay);
 
     if (!mounted) return;
-    final animate = context.read<Settings>().accessibilityAnimations.animate;
+    final animate = context.read<Settings>().animate;
     context.read<HighlightInfo>().trackItem(item, animate: animate, highlightItem: item);
   }
 }

@@ -6,7 +6,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -439,7 +438,7 @@ class _LocationIndicator extends StatelessWidget {
                       lineHeight: lineHeight,
                       backgroundColor: Themes.secondLayerColor(context),
                       progressColor: theme.colorScheme.primary,
-                      animation: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
+                      animation: context.select<Settings, bool>((v) => v.animate),
                       isRTL: context.isRtl,
                       barRadius: barRadius,
                       padding: EdgeInsets.symmetric(horizontal: lineHeight),

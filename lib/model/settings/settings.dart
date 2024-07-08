@@ -8,6 +8,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/defaults.dart';
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/modules/app.dart';
 import 'package:aves/model/settings/modules/collection.dart';
@@ -205,6 +206,8 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
   set showPinchGestureAlternatives(bool newValue) => set(SettingKeys.showPinchGestureAlternativesKey, newValue);
 
   AccessibilityAnimations get accessibilityAnimations => getEnumOrDefault(SettingKeys.accessibilityAnimationsKey, SettingsDefaults.accessibilityAnimations, AccessibilityAnimations.values);
+
+  bool get animate => accessibilityAnimations.animate;
 
   set accessibilityAnimations(AccessibilityAnimations newValue) => set(SettingKeys.accessibilityAnimationsKey, newValue.toString());
 

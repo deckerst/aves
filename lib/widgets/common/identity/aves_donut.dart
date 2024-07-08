@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
@@ -107,7 +106,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                 ),
                 charts.PieChart(
                   series,
-                  animate: context.select<Settings, bool>((v) => v.accessibilityAnimations.animate),
+                  animate: context.select<Settings, bool>((v) => v.animate),
                   animationDuration: widget.animationDuration,
                   defaultRenderer: charts.ArcRendererConfig<String>(
                     arcWidth: 16,

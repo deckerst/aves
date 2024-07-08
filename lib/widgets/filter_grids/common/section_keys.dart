@@ -62,5 +62,5 @@ class StorageVolumeSectionKey extends ChipSectionKey {
   StorageVolumeSectionKey(BuildContext context, this.volume) : super(title: volume?.getDescription(context) ?? context.l10n.sectionUnknown);
 
   @override
-  Widget? get leading => (volume?.isRemovable ?? false) ? const Icon(AIcons.removableStorage) : null;
+  Widget? get leading => (volume?.isRemovable ?? false) ? const Icon(AIcons.storageCard) : null;
 }

@@ -4,7 +4,6 @@ import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
@@ -190,7 +189,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
 
   @override
   Widget build(BuildContext context) {
-    final animate = context.select<Settings, bool>((v) => v.accessibilityAnimations.animate);
+    final animate = context.select<Settings, bool>((v) => v.animate);
     if (!entry.canDecode || _lastException != null) {
       return _buildError(context, animate);
     }
