@@ -27,6 +27,10 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -34,13 +38,17 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class AnalysisWorker(context: Context, parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
+    private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var workCont: Continuation<Any?>? = null
     private var flutterEngine: FlutterEngine? = null
     private var backgroundChannel: MethodChannel? = null
 
     override suspend fun doWork(): Result {
-        createNotificationChannel()
-        setForeground(createForegroundInfo())
+        defaultScope.launch {
+            // prevent ANR triggered by slow operations in main thread
+            createNotificationChannel()
+            setForeground(createForegroundInfo())
+        }
         suspendCoroutine { cont ->
             workCont = cont
             onStart()
