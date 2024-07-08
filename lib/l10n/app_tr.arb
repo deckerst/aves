@@ -1380,5 +1380,9 @@
   "renameProcessorHash": "Sağlama",
   "@renameProcessorHash": {},
   "chipActionShowCollection": "Koleksiyonda göster",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "chipActionGoToExplorerPage": "Gezginde göster",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "Gezgin",
+  "@explorerPageTitle": {}
 }

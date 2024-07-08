@@ -1195,7 +1195,7 @@
   "@collectionActionAddShortcut": {},
   "settingsViewerShowMinimap": "إظهار الخريطة المصغرة",
   "@settingsViewerShowMinimap": {},
-  "settingsCollectionBurstPatternsTile": "أنماط الانفجار",
+  "settingsCollectionBurstPatternsTile": "أنماط الصور المتتابعة",
   "@settingsCollectionBurstPatternsTile": {},
   "viewerInfoLabelPath": "المسار",
   "@viewerInfoLabelPath": {},
@@ -1538,5 +1538,9 @@
   "renameProcessorHash": "تجزئة",
   "@renameProcessorHash": {},
   "chipActionShowCollection": "عرض في المجموعة",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "chipActionGoToExplorerPage": "عرض في المستكشف",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "المستكشف",
+  "@explorerPageTitle": {}
 }

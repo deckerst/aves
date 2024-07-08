@@ -593,7 +593,7 @@
   "@collectionCopySuccessFeedback": {},
   "collectionMoveSuccessFeedback": "{count, plural, =1{Перемещён 1 объект} few{Перемещено {count} объекта} other{Перемещено {count} объектов}}",
   "@collectionMoveSuccessFeedback": {},
-  "collectionRenameSuccessFeedback": "{count, plural, =1{Переименован 1 объект} few{Переименовао {count} объекта} other{Переименовано {count} объектов}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{Переименован 1 объект} few{Переименовано {count} объекта} other{Переименовано {count} объектов}}",
   "@collectionRenameSuccessFeedback": {},
   "collectionEditSuccessFeedback": "{count, plural, =1{Изменён 1 объект} few{Изменено {count} объекта} other{Изменено {count} объектов}}",
   "@collectionEditSuccessFeedback": {},
@@ -1380,5 +1380,9 @@
   "settingsForceWesternArabicNumeralsTile": "Принудительные арабские цифры",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionShowCollection": "Показать в Коллекции",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "chipActionGoToExplorerPage": "Показать в проводнике",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "Проводник",
+  "@explorerPageTitle": {}
 }
