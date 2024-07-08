@@ -1,4 +1,0 @@
-In v1.10.8:
-- rename in bulk using tags
-- repeat a section section section of a video
-Full changelog available on GitHub
