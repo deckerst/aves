@@ -167,8 +167,6 @@ class _GeoMapState extends State<GeoMap> {
             case EntryMapStyle.googleNormal:
             case EntryMapStyle.googleHybrid:
             case EntryMapStyle.googleTerrain:
-            case EntryMapStyle.hmsNormal:
-            case EntryMapStyle.hmsTerrain:
               child = mobileServices.buildMap<AvesEntry>(
                 controller: controller,
                 clusterListenable: _clusterChangeNotifier,

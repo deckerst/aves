@@ -238,8 +238,6 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Terrain)",
-  "mapStyleHuaweiNormal": "Petal Maps",
-  "mapStyleHuaweiTerrain": "Petal Maps (Terrain)",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
 
