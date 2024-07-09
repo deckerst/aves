@@ -339,10 +339,6 @@
       "count": {}
     }
   },
-  "mapStyleHuaweiNormal": "پتال مپس",
-  "@mapStyleHuaweiNormal": {},
-  "mapStyleHuaweiTerrain": "پتال مپس (نمایش زمین)",
-  "@mapStyleHuaweiTerrain": {},
   "mapStyleOsmHot": "اوپن‌استریت‌مپ بشردوستانه",
   "@mapStyleOsmHot": {},
   "subtitlePositionBottom": "پایین",
