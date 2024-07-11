@@ -41,16 +41,15 @@ class HomeWidgetProvider : AppWidgetProvider() {
         for (widgetId in appWidgetIds) {
             val widgetInfo = appWidgetManager.getAppWidgetOptions(widgetId)
 
-            goAsync().run {
-                defaultScope.launch {
-                    val backgroundProps = getProps(context, widgetId, widgetInfo, drawEntryImage = false)
-                    updateWidgetImage(context, appWidgetManager, widgetId, backgroundProps)
+            val pendingResult = goAsync()
+            defaultScope.launch() {
+                val backgroundProps = getProps(context, widgetId, widgetInfo, drawEntryImage = false)
+                updateWidgetImage(context, appWidgetManager, widgetId, backgroundProps)
 
-                    val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = false)
-                    updateWidgetImage(context, appWidgetManager, widgetId, imageProps)
+                val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = false)
+                updateWidgetImage(context, appWidgetManager, widgetId, imageProps)
 
-                    finish()
-                }
+                pendingResult?.finish()
             }
         }
     }
