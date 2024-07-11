@@ -49,9 +49,6 @@ jobs:
           cp build/app/outputs/bundle/playRelease/*.aab outputs
           ./flutterw build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders.sksl.json
           cp build/app/outputs/apk/play/release/*.apk outputs
-          scripts/apply_flavor_huawei.sh
-          ./flutterw build apk -t lib/main_huawei.dart --flavor huawei --bundle-sksl-path shaders.sksl.json
-          cp build/app/outputs/apk/huawei/release/*.apk outputs
           scripts/apply_flavor_izzy.sh
           ./flutterw build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi
           cp build/app/outputs/apk/izzy/release/*.apk outputs
@@ -65,7 +62,6 @@ jobs:
           AVES_KEY_ALIAS: ${{ secrets.AVES_KEY_ALIAS }}
           AVES_KEY_PASSWORD: ${{ secrets.AVES_KEY_PASSWORD }}
           AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
-          AVES_HUAWEI_API_KEY: ${{ secrets.AVES_HUAWEI_API_KEY }}
 
       - name: Create a release with the APK and App Bundle.
         uses: ncipollo/release-action@v1

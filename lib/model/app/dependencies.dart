@@ -169,19 +169,6 @@ class Dependencies {
     ),
   ];
 
-  static const List<Dependency> _huaweiMobileServices = [
-    Dependency(
-      name: 'Huawei Mobile Services (Availability, Map)',
-      license: apache2,
-      licenseUrl: 'https://github.com/HMS-Core/hms-flutter-plugin/blob/master/LICENCE',
-      sourceUrl: 'https://github.com/HMS-Core/hms-flutter-plugin',
-    ),
-  ];
-
-  static const List<Dependency> _flutterPluginsHuaweiOnly = [
-    ..._huaweiMobileServices,
-  ];
-
   static const List<Dependency> _flutterPluginsIzzyOnly = [
     ..._googleMobileServices,
   ];
@@ -199,7 +186,6 @@ class Dependencies {
 
   static List<Dependency> flutterPlugins(AppFlavor flavor) => [
         ..._flutterPluginsCommon,
-        if (flavor == AppFlavor.huawei) ..._flutterPluginsHuaweiOnly,
         if (flavor == AppFlavor.izzy) ..._flutterPluginsIzzyOnly,
         if (flavor == AppFlavor.libre) ..._flutterPluginsLibreOnly,
         if (flavor == AppFlavor.play) ..._flutterPluginsPlayOnly,

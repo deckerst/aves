@@ -68,8 +68,6 @@ extension ExtraEntryMapStyleView on EntryMapStyle {
       EntryMapStyle.googleNormal => l10n.mapStyleGoogleNormal,
       EntryMapStyle.googleHybrid => l10n.mapStyleGoogleHybrid,
       EntryMapStyle.googleTerrain => l10n.mapStyleGoogleTerrain,
-      EntryMapStyle.hmsNormal => l10n.mapStyleHuaweiNormal,
-      EntryMapStyle.hmsTerrain => l10n.mapStyleHuaweiTerrain,
       EntryMapStyle.osmHot => l10n.mapStyleOsmHot,
       EntryMapStyle.stamenWatercolor => l10n.mapStyleStamenWatercolor,
     };

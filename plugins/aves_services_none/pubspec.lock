@@ -103,10 +103,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_map
-      sha256: cc102fe5eeab1a740c321e1982706061e46259cd75115b3b3779195f21d57cc3
+      sha256: "2ecb34619a4be19df6f40c2f8dce1591675b4eff7a6857bd8f533706977385da"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "7.0.2"
   http:
     dependency: transitive
     description:

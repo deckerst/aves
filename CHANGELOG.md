@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.11.4"></a>[v1.11.4] - 2024-07-09
+## <a id="v1.11.5"></a>[v1.11.5] - 2024-07-11
 
 ### Added
 
@@ -18,6 +18,12 @@ All notable changes to this project will be documented in this file.
 - switching to PiP when changing device orientation on Android >=13
 - handling wallpaper intent without URI
 - sizing widgets with some launchers on Android >=12
+
+### Removed
+
+- `huawei` app flavor
+
+## <a id="v1.11.4"></a>[v1.11.4] - 2024-07-09 [YANKED]
 
 ## <a id="v1.11.3"></a>[v1.11.3] - 2024-06-17
 
