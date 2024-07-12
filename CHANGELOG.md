@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- predictive back support (inter-app)
+
+### Changed
+
+- target Android 15 (API 35)
+
 ## <a id="v1.11.5"></a>[v1.11.5] - 2024-07-11
 
 ### Added

@@ -44,7 +44,8 @@ class SecurityHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        with(getStore().edit()) {
+        val preferences = getStore()
+        with(preferences.edit()) {
             when (value) {
                 is Boolean -> putBoolean(key, value)
                 is Float -> putFloat(key, value)

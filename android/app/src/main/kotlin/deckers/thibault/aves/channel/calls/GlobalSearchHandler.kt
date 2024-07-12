@@ -28,10 +28,11 @@ class GlobalSearchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        context.getSharedPreferences(SearchSuggestionsProvider.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-            .edit()
-            .putLong(SearchSuggestionsProvider.CALLBACK_HANDLE_KEY, callbackHandle)
-            .apply()
+        val preferences = context.getSharedPreferences(SearchSuggestionsProvider.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        with(preferences.edit()) {
+            putLong(SearchSuggestionsProvider.CALLBACK_HANDLE_KEY, callbackHandle)
+            apply()
+        }
         result.success(true)
     }
 

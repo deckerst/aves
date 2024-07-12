@@ -3,6 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -11,18 +12,25 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// address `TV-DB` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
-class TvNavigationPopHandler {
-  static bool pop(BuildContext context) {
-    if (!settings.useTvLayout || _isHome(context)) {
-      return true;
-    }
+final TvNavigationPopHandler tvNavigationPopHandler = TvNavigationPopHandler._private();
 
+// address `TV-DB` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+class TvNavigationPopHandler implements PopHandler {
+  TvNavigationPopHandler._private();
+
+  @override
+  bool canPop(BuildContext context) {
+    if (context.select<Settings, bool>((s) => !s.useTvLayout)) return true;
+    if (_isHome(context)) return true;
+    return false;
+  }
+
+  @override
+  void onPopBlocked(BuildContext context) {
     Navigator.maybeOf(context)?.pushAndRemoveUntil(
       _getHomeRoute(),
       (route) => false,
     );
-    return false;
   }
 
   static bool _isHome(BuildContext context) {

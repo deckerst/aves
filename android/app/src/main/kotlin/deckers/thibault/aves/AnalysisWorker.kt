@@ -179,13 +179,12 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             .setContentIntent(openAppIntent)
             .addAction(stopAction)
             .build()
-        return if (Build.VERSION.SDK_INT >= 34) {
-            // from Android 14 (API 34), foreground service type is mandatory
-            // despite the sample code omitting it at:
+        return if (Build.VERSION.SDK_INT == 34) {
+            // from Android 14 (API 34), foreground service type is mandatory for long-running workers:
             // https://developer.android.com/guide/background/persistent/how-to/long-running
-            // TODO TLAD [Android 15 (API 35)] use `FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING`
-            val type = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-            ForegroundInfo(NOTIFICATION_ID, notification, type)
+            ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else if (Build.VERSION.SDK_INT >= 35) {
+            ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)
         } else {
             ForegroundInfo(NOTIFICATION_ID, notification)
         }
