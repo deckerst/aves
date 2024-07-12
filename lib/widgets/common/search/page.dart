@@ -1,4 +1,3 @@
-
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
@@ -31,7 +30,6 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final Debouncer _debouncer = Debouncer(delay: ADurations.searchDebounceDelay);
   final FocusNode _searchFieldFocusNode = FocusNode();
-  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
   void initState() {
@@ -55,7 +53,6 @@ class _SearchPageState extends State<SearchPage> {
     _unregisterWidget(widget);
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
     _searchFieldFocusNode.dispose();
-    _doubleBackPopHandler.dispose();
     widget.delegate.dispose();
     super.dispose();
   }
@@ -151,8 +148,8 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: AvesPopScope(
         handlers: [
-          TvNavigationPopHandler.pop,
-          _doubleBackPopHandler.pop,
+          tvNavigationPopHandler,
+          doubleBackPopHandler,
         ],
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),

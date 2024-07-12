@@ -54,7 +54,7 @@ import deckers.thibault.aves.channel.streams.SettingsChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
-import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -66,7 +66,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
-open class MainActivity : FlutterFragmentActivity() {
+open class MainActivity : FlutterActivity() {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler

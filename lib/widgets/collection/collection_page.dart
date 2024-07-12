@@ -55,7 +55,6 @@ class _CollectionPageState extends State<CollectionPage> {
   final List<StreamSubscription> _subscriptions = [];
   late CollectionLens _collection;
   final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
-  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   @override
   void initState() {
@@ -80,7 +79,6 @@ class _CollectionPageState extends State<CollectionPage> {
       ..forEach((sub) => sub.cancel())
       ..clear();
     _collection.dispose();
-    _doubleBackPopHandler.dispose();
     super.dispose();
   }
 
@@ -98,16 +96,12 @@ class _CollectionPageState extends State<CollectionPage> {
               builder: (context) {
                 return AvesPopScope(
                   handlers: [
-                    (context) {
-                      final selection = context.read<Selection<AvesEntry>>();
-                      if (selection.isSelecting) {
-                        selection.browse();
-                        return false;
-                      }
-                      return true;
-                    },
-                    TvNavigationPopHandler.pop,
-                    _doubleBackPopHandler.pop,
+                    APopHandler(
+                      canPop: (context) => context.select<Selection<AvesEntry>, bool>((v) => !v.isSelecting),
+                      onPopBlocked: (context) => context.read<Selection<AvesEntry>>().browse(),
+                    ),
+                    tvNavigationPopHandler,
+                    doubleBackPopHandler,
                   ],
                   child: GestureAreaProtectorStack(
                     child: DirectionalSafeArea(

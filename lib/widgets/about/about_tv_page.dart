@@ -21,7 +21,7 @@ class AboutTvPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AvesScaffold(
       body: AvesPopScope(
-        handlers: const [TvNavigationPopHandler.pop],
+        handlers: [tvNavigationPopHandler],
         child: Row(
           children: [
             TvRail(

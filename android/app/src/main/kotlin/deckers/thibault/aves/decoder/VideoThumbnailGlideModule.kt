@@ -152,12 +152,12 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
 
     @RequiresApi(Build.VERSION_CODES.P)
     private fun getBitmapParams() = MediaMetadataRetriever.BitmapParams().apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        preferredConfig = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // improved precision with the same memory cost as `ARGB_8888` (4 bytes per pixel)
             // for wide-gamut and HDR content which does not require alpha blending
-            setPreferredConfig(Bitmap.Config.RGBA_1010102)
+            Bitmap.Config.RGBA_1010102
         } else {
-            setPreferredConfig(Bitmap.Config.ARGB_8888)
+            Bitmap.Config.ARGB_8888
         }
     }
 

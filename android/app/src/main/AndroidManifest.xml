@@ -14,10 +14,6 @@
         android:name="android.software.leanback"
         android:required="false" />
 
-    <!--
-    TODO TLAD [Android 14 (API 34)] request/handle READ_MEDIA_VISUAL_USER_SELECTED permission
-    cf https://developer.android.com/about/versions/14/changes/partial-photo-video-access
-    -->
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -35,10 +31,13 @@
 
     <!-- to access media with original metadata with scoped storage (API >=29) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-    <!-- to provide a foreground service type, as required by Android 14 (API 34) -->
-    <!-- TODO TLAD [Android 15 (API 35)] use `FOREGROUND_SERVICE_MEDIA_PROCESSING` -->
+    <!-- to provide a foreground service type, as required from Android 14 (API 34) -->
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"
+        android:maxSdkVersion="34"
+        tools:ignore="SystemPermissionTypo" />
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING"
         tools:ignore="SystemPermissionTypo" />
     <!-- TODO TLAD still needed to fetch map tiles / reverse geocoding / else ? check in release mode -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -103,17 +102,12 @@
         </intent>
     </queries>
 
-    <!--
-    as of Flutter v3.16.0, predictive back gesture does not work
-    as expected when extending `FlutterFragmentActivity`
-    so we disable `enableOnBackInvokedCallback`
-    -->
     <application
         android:allowBackup="true"
         android:appCategory="image"
         android:banner="@drawable/banner"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:enableOnBackInvokedCallback="false"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/full_backup_content"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
@@ -261,11 +255,14 @@
             </intent-filter>
         </receiver>
 
-        <!-- anonymous service for analysis worker is specified here to provide service type -->
-        <!-- TODO TLAD [Android 15 (API 35)] use `mediaProcessing` -->
+        <!--
+        anonymous service for analysis worker is specified here to provide service type:
+        - `dataSync` for Android 14 (API 34)
+        - `mediaProcessing` from Android 15 (API 35)
+        -->
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"
-            android:foregroundServiceType="dataSync"
+            android:foregroundServiceType="dataSync|mediaProcessing"
             tools:node="merge" />
 
         <service

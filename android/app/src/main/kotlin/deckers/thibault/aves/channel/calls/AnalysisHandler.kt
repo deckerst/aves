@@ -1,7 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
-import androidx.activity.ComponentActivity
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
@@ -10,6 +9,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import deckers.thibault.aves.AnalysisWorker
 import deckers.thibault.aves.utils.FlutterUtils
+import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
-class AnalysisHandler(private val activity: ComponentActivity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler {
+class AnalysisHandler(private val activity: FlutterActivity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -37,10 +37,11 @@ class AnalysisHandler(private val activity: ComponentActivity, private val onAna
             return
         }
 
-        activity.getSharedPreferences(AnalysisWorker.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-            .edit()
-            .putLong(AnalysisWorker.CALLBACK_HANDLE_KEY, callbackHandle)
-            .apply()
+        val preferences = activity.getSharedPreferences(AnalysisWorker.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        with(preferences.edit()) {
+            putLong(AnalysisWorker.CALLBACK_HANDLE_KEY, callbackHandle)
+            apply()
+        }
         result.success(true)
     }
 
