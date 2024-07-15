@@ -61,11 +61,13 @@ class _HomePageState extends State<HomePage> {
   int? _widgetId;
   String? _initialRouteName, _initialSearchQuery;
   Set<CollectionFilter>? _initialFilters;
+  String? _initialExplorerPath;
   List<String>? _secureUris;
 
   static const allowedShortcutRoutes = [
-    CollectionPage.routeName,
     AlbumListPage.routeName,
+    CollectionPage.routeName,
+    ExplorerPage.routeName,
     SearchPage.routeName,
   ];
 
@@ -92,6 +94,7 @@ class _HomePageState extends State<HomePage> {
     final safeMode = intentData[IntentDataKeys.safeMode] ?? false;
     final intentAction = intentData[IntentDataKeys.action];
     _initialFilters = null;
+    _initialExplorerPath = null;
     _secureUris = null;
 
     await androidFileUtils.init();
@@ -186,6 +189,7 @@ class _HomePageState extends State<HomePage> {
         final extraFilters = intentData[IntentDataKeys.filters];
         _initialFilters = extraFilters != null ? (extraFilters as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet() : null;
       }
+      _initialExplorerPath = intentData[IntentDataKeys.explorerPath];
     }
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
@@ -351,7 +355,8 @@ class _HomePageState extends State<HomePage> {
       case TagListPage.routeName:
         return buildRoute((context) => const TagListPage());
       case ExplorerPage.routeName:
-        return buildRoute((context) => const ExplorerPage());
+        final path = _initialExplorerPath ?? settings.homeCustomExplorerPath;
+        return buildRoute((context) => ExplorerPage(path: path));
       case HomeWidgetSettingsPage.routeName:
         return buildRoute((context) => HomeWidgetSettingsPage(widgetId: _widgetId!));
       case ScreenSaverPage.routeName:

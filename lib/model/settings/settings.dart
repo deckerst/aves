@@ -440,6 +440,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.maxBrightnessKey:
             case SettingKeys.keepScreenOnKey:
             case SettingKeys.homePageKey:
+            case SettingKeys.homeCustomExplorerPathKey:
             case SettingKeys.collectionGroupFactorKey:
             case SettingKeys.collectionSortFactorKey:
             case SettingKeys.thumbnailLocationIconKey:

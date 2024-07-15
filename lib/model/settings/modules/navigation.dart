@@ -14,11 +14,19 @@ mixin NavigationSettings on SettingsAccess {
 
   HomePageSetting get homePage => getEnumOrDefault(SettingKeys.homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
-  set homePage(HomePageSetting newValue) => set(SettingKeys.homePageKey, newValue.toString());
-
   Set<CollectionFilter> get homeCustomCollection => (getStringList(SettingKeys.homeCustomCollectionKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
-  set homeCustomCollection(Set<CollectionFilter> newValue) => set(SettingKeys.homeCustomCollectionKey, newValue.map((filter) => filter.toJson()).toList());
+  String? get homeCustomExplorerPath => getString(SettingKeys.homeCustomExplorerPathKey);
+
+  void setHome(
+    HomePageSetting homePage, {
+    Set<CollectionFilter> customCollection = const {},
+    String? customExplorerPath,
+  }) {
+    set(SettingKeys.homePageKey, homePage.toString());
+    set(SettingKeys.homeCustomCollectionKey, customCollection.map((filter) => filter.toJson()).toList());
+    set(SettingKeys.homeCustomExplorerPathKey, customExplorerPath);
+  }
 
   bool get enableBottomNavigationBar => getBool(SettingKeys.enableBottomNavigationBarKey) ?? SettingsDefaults.enableBottomNavigationBar;
 

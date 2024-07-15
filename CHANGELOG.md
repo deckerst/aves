@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Explorer: set custom path as home
+- Explorer: create shortcut to custom path
 - predictive back support (inter-app)
 
 ### Changed

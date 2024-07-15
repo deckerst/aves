@@ -771,6 +771,9 @@
   "binPageTitle": "Recycle Bin",
 
   "explorerPageTitle": "Explorer",
+  "explorerActionSelectStorageVolume": "Select storage",
+
+  "selectStorageVolumeDialogTitle": "Select Storage",
 
   "searchCollectionFieldHint": "Search collection",
   "searchRecentSectionTitle": "Recent",
@@ -804,7 +807,7 @@
   "settingsNavigationSectionTitle": "Navigation",
   "settingsHomeTile": "Home",
   "settingsHomeDialogTitle": "Home",
-  "setHomeCustomCollection": "Custom collection",
+  "setHomeCustom": "Custom",
   "settingsShowBottomNavigationBar": "Show bottom navigation bar",
   "settingsKeepScreenOnTile": "Keep screen on",
   "settingsKeepScreenOnDialogTitle": "Keep Screen On",

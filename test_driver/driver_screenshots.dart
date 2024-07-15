@@ -30,8 +30,7 @@ Future<void> configureAndLaunch() async {
     ..enableBlurEffect = true
     // navigation
     ..keepScreenOn = KeepScreenOn.always
-    ..homePage = HomePageSetting.collection
-    ..homeCustomCollection = {}
+    ..setHome(HomePageSetting.collection)
     ..enableBottomNavigationBar = true
     ..drawerTypeBookmarks = [null, FavouriteFilter.instance]
     // collection

@@ -15,6 +15,7 @@ class IntentDataKeys {
   static const action = 'action';
   static const allowMultiple = 'allowMultiple';
   static const brightness = 'brightness';
+  static const explorerPath = 'explorerPath';
   static const filters = 'filters';
   static const mimeType = 'mimeType';
   static const page = 'page';
