@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
@@ -43,24 +45,44 @@ class NavigationSection extends SettingsSection {
 class _HomeOption {
   final HomePageSetting page;
   final Set<CollectionFilter> customCollection;
+  final String? customExplorerPath;
 
   const _HomeOption(
     this.page, {
     this.customCollection = const {},
+    this.customExplorerPath,
   });
 
   String getName(BuildContext context) {
-    if (page == HomePageSetting.collection && customCollection.isNotEmpty) {
-      return context.l10n.setHomeCustomCollection;
+    final pageName = page.getName(context);
+    switch (page) {
+      case HomePageSetting.collection:
+        return customCollection.isNotEmpty ? context.l10n.setHomeCustom : pageName;
+      case HomePageSetting.explorer:
+        return customExplorerPath != null ? context.l10n.setHomeCustom : pageName;
+      default:
+        return pageName;
     }
-    return page.getName(context);
+  }
+
+  String? getDetails(BuildContext context) {
+    switch (page) {
+      case HomePageSetting.collection:
+        final filters = customCollection;
+        return filters.isNotEmpty ? [context.l10n.collectionPageTitle, filters.map((v) => v.getLabel(context)).join(', ')].join(AText.separator) : null;
+      case HomePageSetting.explorer:
+        final path = customExplorerPath;
+        return path != null ? [context.l10n.explorerPageTitle, pContext.basename(path)].join(AText.separator) : null;
+      default:
+        return null;
+    }
   }
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is _HomeOption && runtimeType == other.runtimeType && page == other.page && const DeepCollectionEquality().equals(customCollection, other.customCollection);
+  bool operator ==(Object other) => identical(this, other) || (other is _HomeOption && runtimeType == other.runtimeType && page == other.page && const DeepCollectionEquality().equals(customCollection, other.customCollection) && customExplorerPath == other.customExplorerPath);
 
   @override
-  int get hashCode => page.hashCode ^ customCollection.hashCode;
+  int get hashCode => page.hashCode ^ customCollection.hashCode ^ customExplorerPath.hashCode;
 }
 
 class SettingsTileNavigationHomePage extends SettingsTile {
@@ -75,15 +97,18 @@ class SettingsTileNavigationHomePage extends SettingsTile {
           const _HomeOption(HomePageSetting.tags),
           const _HomeOption(HomePageSetting.explorer),
           if (settings.homeCustomCollection.isNotEmpty) _HomeOption(HomePageSetting.collection, customCollection: settings.homeCustomCollection),
+          if (settings.homeCustomExplorerPath != null) _HomeOption(HomePageSetting.explorer, customExplorerPath: settings.homeCustomExplorerPath),
         ],
         getName: (context, v) => v.getName(context),
-        selector: (context, s) => _HomeOption(s.homePage, customCollection: s.homeCustomCollection),
-        onSelection: (v) {
-          settings.homePage = v.page;
-          settings.homeCustomCollection = v.customCollection;
-        },
+        selector: (context, s) => _HomeOption(s.homePage, customCollection: s.homeCustomCollection, customExplorerPath: s.homeCustomExplorerPath),
+        onSelection: (v) => settings.setHome(
+          v.page,
+          customCollection: v.customCollection,
+          customExplorerPath: v.customExplorerPath,
+        ),
         tileTitle: title(context),
         dialogTitle: context.l10n.settingsHomeDialogTitle,
+        optionSubtitleBuilder: (v) => v.getDetails(context),
       );
 }
 

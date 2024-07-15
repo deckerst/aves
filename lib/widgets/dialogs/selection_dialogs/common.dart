@@ -20,4 +20,4 @@ Future<void> showSelectionDialog<T>({
   }
 }
 
-typedef TextBuilder<T> = String Function(T value);
+typedef TextBuilder<T> = String? Function(T value);

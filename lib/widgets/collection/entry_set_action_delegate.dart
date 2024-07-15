@@ -753,8 +753,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void _setHome(BuildContext context) async {
-    settings.homeCustomCollection = context.read<CollectionLens>().filters;
-    settings.homePage = HomePageSetting.collection;
+    settings.setHome(HomePageSetting.collection, customCollection: context.read<CollectionLens>().filters);
     showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
   }
 }
