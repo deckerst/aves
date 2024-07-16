@@ -106,8 +106,8 @@ class AndroidFileUtils {
     if (isScreenshotsPath(dirPath)) return AlbumType.screenshots;
     if (isVideoCapturesPath(dirPath)) return AlbumType.videoCaptures;
 
-    final dir = pContext.split(dirPath).last;
-    if (dirPath.startsWith(primaryStorage) && appInventory.isPotentialAppDir(dir)) return AlbumType.app;
+    final dir = pContext.split(dirPath).lastOrNull;
+    if (dir != null && dirPath.startsWith(primaryStorage) && appInventory.isPotentialAppDir(dir)) return AlbumType.app;
 
     return AlbumType.regular;
   }

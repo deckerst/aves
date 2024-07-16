@@ -2,7 +2,6 @@ package deckers.thibault.aves.channel.calls
 
 import android.content.Context
 import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -39,7 +38,7 @@ class AnalysisHandler(private val activity: FlutterActivity, private val onAnaly
 
         val preferences = activity.getSharedPreferences(AnalysisWorker.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
         with(preferences.edit()) {
-            putLong(AnalysisWorker.CALLBACK_HANDLE_KEY, callbackHandle)
+            putLong(AnalysisWorker.PREF_CALLBACK_HANDLE_KEY, callbackHandle)
             apply()
         }
         result.success(true)
@@ -54,33 +53,24 @@ class AnalysisHandler(private val activity: FlutterActivity, private val onAnaly
 
         // can be null or empty
         val allEntryIds = call.argument<List<Int>>("entryIds")
-        val progressTotal = allEntryIds?.size ?: 0
-        var progressOffset = 0
 
         // work `Data` cannot occupy more than 10240 bytes when serialized
-        // so we split it when we have a long list of entry IDs
-        val chunked = allEntryIds?.chunked(WORK_DATA_CHUNK_SIZE) ?: listOf(null)
-
-        fun buildRequest(entryIds: List<Int>?, progressOffset: Int): OneTimeWorkRequest {
-            val workData = workDataOf(
-                AnalysisWorker.KEY_ENTRY_IDS to entryIds?.toIntArray(),
-                AnalysisWorker.KEY_FORCE to force,
-                AnalysisWorker.KEY_PROGRESS_TOTAL to progressTotal,
-                AnalysisWorker.KEY_PROGRESS_OFFSET to progressOffset,
-            )
-            return OneTimeWorkRequestBuilder<AnalysisWorker>().apply { setInputData(workData) }.build()
+        // so we save the possibly long list of entry IDs to shared preferences
+        val preferences = activity.getSharedPreferences(AnalysisWorker.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        with(preferences.edit()) {
+            putStringSet(AnalysisWorker.PREF_ENTRY_IDS_KEY, allEntryIds?.map { it.toString() }?.toSet())
+            apply()
         }
 
-        var work = WorkManager.getInstance(activity).beginUniqueWork(
+        val workData = workDataOf(
+            AnalysisWorker.KEY_FORCE to force,
+        )
+
+        WorkManager.getInstance(activity).beginUniqueWork(
             ANALYSIS_WORK_NAME,
             ExistingWorkPolicy.KEEP,
-            buildRequest(chunked.first(), progressOffset),
-        )
-        chunked.drop(1).forEach { entryIds ->
-            progressOffset += WORK_DATA_CHUNK_SIZE
-            work = work.then(buildRequest(entryIds, progressOffset))
-        }
-        work.enqueue()
+            OneTimeWorkRequestBuilder<AnalysisWorker>().apply { setInputData(workData) }.build(),
+        ).enqueue()
 
         attachToActivity()
         result.success(null)
@@ -106,6 +96,5 @@ class AnalysisHandler(private val activity: FlutterActivity, private val onAnaly
     companion object {
         const val CHANNEL = "deckers.thibault/aves/analysis"
         private const val ANALYSIS_WORK_NAME = "analysis_work"
-        private const val WORK_DATA_CHUNK_SIZE = 1000
     }
 }

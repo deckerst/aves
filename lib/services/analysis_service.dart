@@ -127,21 +127,16 @@ class Analyzer with WidgetsBindingObserver {
   Future<void> start(dynamic args) async {
     List<int>? entryIds;
     var force = false;
-    var progressTotal = 0, progressOffset = 0;
     if (args is Map) {
       entryIds = (args['entryIds'] as List?)?.cast<int>();
       force = args['force'] ?? false;
-      progressTotal = args['progressTotal'];
-      progressOffset = args['progressOffset'];
     }
-    await reportService.log('Analyzer start for ${entryIds?.length ?? 'all'} entries, at $progressOffset/$progressTotal');
+    await reportService.log('Analyzer start for ${entryIds?.length ?? 'all'} entries');
     _controller?.dispose();
     _controller = AnalysisController(
       canStartService: false,
       entryIds: entryIds,
       force: force,
-      progressTotal: progressTotal,
-      progressOffset: progressOffset,
     );
 
     settings.systemLocalesFallback = await deviceService.getLocales();

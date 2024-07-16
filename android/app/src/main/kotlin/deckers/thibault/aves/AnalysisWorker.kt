@@ -70,7 +70,7 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
     private fun onStart() {
         Log.i(LOG_TAG, "Start analysis worker $id")
         runBlocking {
-            FlutterUtils.initFlutterEngine(applicationContext, SHARED_PREFERENCES_KEY, CALLBACK_HANDLE_KEY) {
+            FlutterUtils.initFlutterEngine(applicationContext, SHARED_PREFERENCES_KEY, PREF_CALLBACK_HANDLE_KEY) {
                 flutterEngine = it
             }
         }
@@ -78,14 +78,15 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
         try {
             initChannels(applicationContext)
 
+            val preferences = applicationContext.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+            val entryIdStrings = preferences.getStringSet(PREF_ENTRY_IDS_KEY, null)
+
             runBlocking {
                 FlutterUtils.runOnUiThread {
                     backgroundChannel?.invokeMethod(
                         "start", hashMapOf(
-                            "entryIds" to inputData.getIntArray(KEY_ENTRY_IDS)?.toList(),
+                            "entryIds" to entryIdStrings?.map { Integer.parseUnsignedInt(it) }?.toList(),
                             "force" to inputData.getBoolean(KEY_FORCE, false),
-                            "progressTotal" to inputData.getInt(KEY_PROGRESS_TOTAL, 0),
-                            "progressOffset" to inputData.getInt(KEY_PROGRESS_OFFSET, 0),
                         )
                     )
                 }
@@ -194,14 +195,12 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
         private val LOG_TAG = LogUtils.createTag<AnalysisWorker>()
         private const val BACKGROUND_CHANNEL = "deckers.thibault/aves/analysis_service_background"
         const val SHARED_PREFERENCES_KEY = "analysis_service"
-        const val CALLBACK_HANDLE_KEY = "callback_handle"
+        const val PREF_CALLBACK_HANDLE_KEY = "callback_handle"
+        const val PREF_ENTRY_IDS_KEY = "entry_ids"
 
         const val NOTIFICATION_CHANNEL = "analysis"
         const val NOTIFICATION_ID = 1
 
-        const val KEY_ENTRY_IDS = "entry_ids"
         const val KEY_FORCE = "force"
-        const val KEY_PROGRESS_TOTAL = "progress_total"
-        const val KEY_PROGRESS_OFFSET = "progress_offset"
     }
 }
