@@ -11,7 +11,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.util.Log
-import androidx.exifinterface.media.ExifInterface
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy

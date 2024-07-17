@@ -2,7 +2,7 @@ package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.net.Uri
-import androidx.exifinterface.media.ExifInterface
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils

@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import androidx.exifinterface.media.ExifInterface
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.adobe.internal.xmp.XMPMeta
 import com.drew.imaging.jpeg.JpegSegmentType
 import com.drew.metadata.exif.ExifDirectoryBase

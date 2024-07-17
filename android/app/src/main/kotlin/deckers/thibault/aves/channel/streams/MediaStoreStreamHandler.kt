@@ -21,11 +21,13 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
 
     private var knownEntries: Map<Long?, Int?>? = null
     private var directory: String? = null
+    private var safe: Boolean = false
 
     init {
         if (arguments is Map<*, *>) {
             knownEntries = (arguments["knownEntries"] as? Map<*, *>?)?.map { (it.key as Number?)?.toLong() to it.value as Int? }?.toMap()
             directory = arguments["directory"] as String?
+            safe = arguments.getOrDefault("safe", false) as Boolean
         }
     }
 
@@ -59,7 +61,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     }
 
     private fun fetchAll() {
-        MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap(), directory) { success(it) }
+        MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap(), directory, safe) { success(it) }
         endOfStream()
     }
 

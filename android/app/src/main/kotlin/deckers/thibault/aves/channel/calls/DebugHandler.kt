@@ -12,7 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import androidx.exifinterface.media.ExifInterface
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifInterfaceHelper

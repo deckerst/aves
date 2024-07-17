@@ -52,7 +52,7 @@ internal class FileImageProvider : ImageProvider() {
                 callback.onFailure(e)
             }
         }
-        entry.fillPreCatalogMetadata(context)
+        entry.fillPreCatalogMetadata(context, safe = false)
 
         if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())

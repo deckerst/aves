@@ -1,7 +1,7 @@
 package deckers.thibault.aves.metadata
 
 import android.util.Log
-import androidx.exifinterface.media.ExifInterface
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.drew.lang.Rational
 import com.drew.metadata.Directory
 import com.drew.metadata.exif.ExifDirectoryBase
