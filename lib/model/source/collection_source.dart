@@ -93,6 +93,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     _rawEntries.forEach((v) => v.dispose());
   }
 
+  set safeMode(bool enabled);
+
   final EventBus _eventBus = EventBus();
 
   @override

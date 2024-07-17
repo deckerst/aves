@@ -16,12 +16,12 @@
 
 package androidx.exifinterface.media;
 
-import static androidx.exifinterface.media.ExifInterfaceUtils.closeFileDescriptor;
-import static androidx.exifinterface.media.ExifInterfaceUtils.closeQuietly;
-import static androidx.exifinterface.media.ExifInterfaceUtils.convertToLongArray;
-import static androidx.exifinterface.media.ExifInterfaceUtils.copy;
-import static androidx.exifinterface.media.ExifInterfaceUtils.parseSubSeconds;
-import static androidx.exifinterface.media.ExifInterfaceUtils.startsWith;
+import static androidx.exifinterface.media.ExifInterfaceUtilsFork.closeFileDescriptor;
+import static androidx.exifinterface.media.ExifInterfaceUtilsFork.closeQuietly;
+import static androidx.exifinterface.media.ExifInterfaceUtilsFork.convertToLongArray;
+import static androidx.exifinterface.media.ExifInterfaceUtilsFork.copy;
+import static androidx.exifinterface.media.ExifInterfaceUtilsFork.parseSubSeconds;
+import static androidx.exifinterface.media.ExifInterfaceUtilsFork.startsWith;
 import static java.nio.ByteOrder.BIG_ENDIAN;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
@@ -41,8 +41,8 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.exifinterface.media.ExifInterfaceUtils.Api21Impl;
-import androidx.exifinterface.media.ExifInterfaceUtils.Api23Impl;
+import androidx.exifinterface.media.ExifInterfaceUtilsFork.Api21Impl;
+import androidx.exifinterface.media.ExifInterfaceUtilsFork.Api23Impl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -84,6 +84,7 @@ import java.util.zip.CRC32;
 
 /*
  * Forked from 'androidx.exifinterface:exifinterface:1.3.7' on 2024/02/21
+ * Named differently to let ExifInterface be loaded as subdependency.
  */
 
 /**
@@ -97,7 +98,7 @@ import java.util.zip.CRC32;
  * it. This class will search both locations for XMP data, but if XMP data exist both inside and
  * outside Exif, will favor the XMP data inside Exif over the one outside.
  */
-public class ExifInterface {
+public class ExifInterfaceFork {
     // TLAD threshold for safer Exif attribute parsing
     private static final int ATTRIBUTE_SIZE_DANGER_THRESHOLD = 3 * (1 << 20); // MB
 
@@ -3949,7 +3950,7 @@ public class ExifInterface {
      * @throws IOException          if an I/O error occurs while retrieving file descriptor via
      *                              {@link FileInputStream#getFD()}.
      */
-    public ExifInterface(@NonNull File file) throws IOException {
+    public ExifInterfaceFork(@NonNull File file) throws IOException {
         if (file == null) {
             throw new NullPointerException("file cannot be null");
         }
@@ -3964,7 +3965,7 @@ public class ExifInterface {
      * @throws IOException          if an I/O error occurs while retrieving file descriptor via
      *                              {@link FileInputStream#getFD()}.
      */
-    public ExifInterface(@NonNull String filename) throws IOException {
+    public ExifInterfaceFork(@NonNull String filename) throws IOException {
         if (filename == null) {
             throw new NullPointerException("filename cannot be null");
         }
@@ -3980,7 +3981,7 @@ public class ExifInterface {
      * @throws NullPointerException if file descriptor is null
      * @throws IOException          if an error occurs while duplicating the file descriptor.
      */
-    public ExifInterface(@NonNull FileDescriptor fileDescriptor) throws IOException {
+    public ExifInterfaceFork(@NonNull FileDescriptor fileDescriptor) throws IOException {
         if (fileDescriptor == null) {
             throw new NullPointerException("fileDescriptor cannot be null");
         }
@@ -4023,7 +4024,7 @@ public class ExifInterface {
      * @param inputStream the input stream that contains the image data
      * @throws NullPointerException if the input stream is null
      */
-    public ExifInterface(@NonNull InputStream inputStream) throws IOException {
+    public ExifInterfaceFork(@NonNull InputStream inputStream) throws IOException {
         this(inputStream, STREAM_TYPE_FULL_IMAGE_DATA);
     }
 
@@ -4039,7 +4040,7 @@ public class ExifInterface {
      * @throws IOException          if an I/O error occurs while retrieving file descriptor via
      *                              {@link FileInputStream#getFD()}.
      */
-    public ExifInterface(@NonNull InputStream inputStream, @ExifStreamType int streamType)
+    public ExifInterfaceFork(@NonNull InputStream inputStream, @ExifStreamType int streamType)
             throws IOException {
         if (inputStream == null) {
             throw new NullPointerException("inputStream cannot be null");
@@ -5071,7 +5072,7 @@ public class ExifInterface {
         if (location == null) {
             return;
         }
-        setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD, location.getProvider());
+        setAttribute(ExifInterfaceFork.TAG_GPS_PROCESSING_METHOD, location.getProvider());
         setLatLong(location.getLatitude(), location.getLongitude());
         setAltitude(location.getAltitude());
         // Location objects store speeds in m/sec. Translates it to km/hr here.
@@ -5080,8 +5081,8 @@ public class ExifInterface {
                 * TimeUnit.HOURS.toSeconds(1) / 1000).toString());
         String[] dateTime = sFormatterPrimary.format(
                 new Date(location.getTime())).split("\\s+", -1);
-        setAttribute(ExifInterface.TAG_GPS_DATESTAMP, dateTime[0]);
-        setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, dateTime[1]);
+        setAttribute(ExifInterfaceFork.TAG_GPS_DATESTAMP, dateTime[0]);
+        setAttribute(ExifInterfaceFork.TAG_GPS_TIMESTAMP, dateTime[1]);
     }
 
     /**
@@ -5158,11 +5159,11 @@ public class ExifInterface {
     }
 
     /**
-     * Returns parsed {@link ExifInterface#TAG_DATETIME} value as number of milliseconds since
+     * Returns parsed {@link ExifInterfaceFork#TAG_DATETIME} value as number of milliseconds since
      * Jan. 1, 1970, midnight local time.
      *
      * <p>Note: The return value includes the first three digits (or less depending on the length
-     * of the string) of {@link ExifInterface#TAG_SUBSEC_TIME}.
+     * of the string) of {@link ExifInterfaceFork#TAG_SUBSEC_TIME}.
      *
      * @return null if date time information is unavailable or invalid.
      */
@@ -5175,11 +5176,11 @@ public class ExifInterface {
     }
 
     /**
-     * Returns parsed {@link ExifInterface#TAG_DATETIME_DIGITIZED} value as number of
+     * Returns parsed {@link ExifInterfaceFork#TAG_DATETIME_DIGITIZED} value as number of
      * milliseconds since Jan. 1, 1970, midnight local time.
      *
      * <p>Note: The return value includes the first three digits (or less depending on the length
-     * of the string) of {@link ExifInterface#TAG_SUBSEC_TIME_DIGITIZED}.
+     * of the string) of {@link ExifInterfaceFork#TAG_SUBSEC_TIME_DIGITIZED}.
      *
      * @return null if digitized date time information is unavailable or invalid.
      */
@@ -5192,11 +5193,11 @@ public class ExifInterface {
     }
 
     /**
-     * Returns parsed {@link ExifInterface#TAG_DATETIME_ORIGINAL} value as number of
+     * Returns parsed {@link ExifInterfaceFork#TAG_DATETIME_ORIGINAL} value as number of
      * milliseconds since Jan. 1, 1970, midnight local time.
      *
      * <p>Note: The return value includes the first three digits (or less depending on the length
-     * of the string) of {@link ExifInterface#TAG_SUBSEC_TIME_ORIGINAL}.
+     * of the string) of {@link ExifInterfaceFork#TAG_SUBSEC_TIME_ORIGINAL}.
      *
      * @return null if original date time information is unavailable or invalid.
      */
@@ -5910,18 +5911,18 @@ public class ExifInterface {
                 }
 
                 if (rotation != null) {
-                    int orientation = ExifInterface.ORIENTATION_NORMAL;
+                    int orientation = ExifInterfaceFork.ORIENTATION_NORMAL;
 
                     // all rotation angles in CW
                     switch (Integer.parseInt(rotation)) {
                         case 90:
-                            orientation = ExifInterface.ORIENTATION_ROTATE_90;
+                            orientation = ExifInterfaceFork.ORIENTATION_ROTATE_90;
                             break;
                         case 180:
-                            orientation = ExifInterface.ORIENTATION_ROTATE_180;
+                            orientation = ExifInterfaceFork.ORIENTATION_ROTATE_180;
                             break;
                         case 270:
-                            orientation = ExifInterface.ORIENTATION_ROTATE_270;
+                            orientation = ExifInterfaceFork.ORIENTATION_ROTATE_270;
                             break;
                     }
 
@@ -6175,7 +6176,11 @@ public class ExifInterface {
                     // IEND marks the end of the image.
                     break;
                 } else if (Arrays.equals(type, PNG_CHUNK_TYPE_EXIF)) {
-                    // TODO: Need to handle potential OutOfMemoryError
+                    // TLAD start
+                    if (length > ATTRIBUTE_SIZE_DANGER_THRESHOLD) {
+                        throw new IOException("dangerous exif chunk size=" + length);
+                    }
+                    // TLAD end
                     byte[] data = new byte[length];
                     in.readFully(data);
 
@@ -6976,9 +6981,11 @@ public class ExifInterface {
             }
 
             final int bytesOffset = dataInputStream.position() + mOffsetToExifData;
-            if (byteCount > 0 && byteCount < ATTRIBUTE_SIZE_DANGER_THRESHOLD) {
+            // TLAD start
+            if (byteCount > ATTRIBUTE_SIZE_DANGER_THRESHOLD) {
                 throw new IOException("dangerous attribute size=" + byteCount);
             }
+            // TLAD end
             final byte[] bytes = new byte[(int) byteCount];
             dataInputStream.readFully(bytes);
             ExifAttribute attribute = new ExifAttribute(dataFormat, numberOfComponents,
