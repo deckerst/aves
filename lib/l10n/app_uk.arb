@@ -1517,8 +1517,6 @@
   "@castDialogTitle": {},
   "settingsThumbnailShowHdrIcon": "Показати іконку HDR",
   "@settingsThumbnailShowHdrIcon": {},
-  "setHomeCustomCollection": "Власна колекція",
-  "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Встановити як головну",
   "@collectionActionSetHome": {},
   "videoRepeatActionSetStart": "Змінити початок",
@@ -1538,5 +1536,11 @@
   "chipActionGoToExplorerPage": "Показати в провіднику",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Провідник",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "setHomeCustom": "Власне",
+  "@setHomeCustom": {},
+  "explorerActionSelectStorageVolume": "Обрати сховище",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Оберіть сховище",
+  "@selectStorageVolumeDialogTitle": {}
 }

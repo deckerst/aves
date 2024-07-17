@@ -1361,8 +1361,6 @@
   "@settingsThumbnailShowHdrIcon": {},
   "collectionActionSetHome": "Fijar como inicio",
   "@collectionActionSetHome": {},
-  "setHomeCustomCollection": "Colección personalizada",
-  "@setHomeCustomCollection": {},
   "videoRepeatActionSetStart": "Fijar el inicio",
   "@videoRepeatActionSetStart": {},
   "stopTooltip": "Parar",
@@ -1380,5 +1378,11 @@
   "explorerPageTitle": "Explorar",
   "@explorerPageTitle": {},
   "chipActionGoToExplorerPage": "Mostrar en el explorador",
-  "@chipActionGoToExplorerPage": {}
+  "@chipActionGoToExplorerPage": {},
+  "selectStorageVolumeDialogTitle": "Seleccionar almacenamiento",
+  "@selectStorageVolumeDialogTitle": {},
+  "setHomeCustom": "Personalizado",
+  "@setHomeCustom": {},
+  "explorerActionSelectStorageVolume": "Seleccionar almacenamiento",
+  "@explorerActionSelectStorageVolume": {}
 }

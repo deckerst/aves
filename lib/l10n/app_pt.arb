@@ -1361,8 +1361,6 @@
   "@settingsThumbnailShowHdrIcon": {},
   "collectionActionSetHome": "Definir como início",
   "@collectionActionSetHome": {},
-  "setHomeCustomCollection": "Coleção personalizada",
-  "@setHomeCustomCollection": {},
   "videoActionABRepeat": "Repetição A-B",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetEnd": "Definir fim",
@@ -1372,5 +1370,13 @@
   "videoRepeatActionSetStart": "Definir início",
   "@videoRepeatActionSetStart": {},
   "chipActionShowCollection": "Mostrar na Coleção",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {},
+  "settingsForceWesternArabicNumeralsTile": "Forçar numerais arábicos",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "chipActionGoToExplorerPage": "Mostrar no Explorador",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "Explorador",
+  "@explorerPageTitle": {}
 }
