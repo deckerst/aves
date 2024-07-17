@@ -1321,8 +1321,6 @@
   "@passwordDialogConfirm": {},
   "collectionActionSetHome": "Ana ekran olarak ayarla",
   "@collectionActionSetHome": {},
-  "setHomeCustomCollection": "Kişisel koleksiyon",
-  "@setHomeCustomCollection": {},
   "statsTopStatesSectionTitle": "Baş Eyaletler",
   "@statsTopStatesSectionTitle": {},
   "pinDialogEnter": "PIN girin",

@@ -1357,8 +1357,6 @@
   "@overlayHistogramLuminance": {},
   "settingsModificationWarningDialogMessage": "他の設定は変更されます。",
   "@settingsModificationWarningDialogMessage": {},
-  "setHomeCustomCollection": "カスタムコレクション",
-  "@setHomeCustomCollection": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "マルチタッチジェスチャーの選択肢を表示する",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
   "chipActionCreateVault": "保管庫を作成",

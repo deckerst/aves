@@ -1361,8 +1361,6 @@
   "@settingsThumbnailShowHdrIcon": {},
   "collectionActionSetHome": "홈으로 설정",
   "@collectionActionSetHome": {},
-  "setHomeCustomCollection": "지정 미디어",
-  "@setHomeCustomCollection": {},
   "videoRepeatActionSetStart": "시작 지점 설정",
   "@videoRepeatActionSetStart": {},
   "videoRepeatActionSetEnd": "종료 지점 설정",
@@ -1380,5 +1378,11 @@
   "explorerPageTitle": "탐색기",
   "@explorerPageTitle": {},
   "chipActionGoToExplorerPage": "탐색기 페이지에서 보기",
-  "@chipActionGoToExplorerPage": {}
+  "@chipActionGoToExplorerPage": {},
+  "setHomeCustom": "직접 설정",
+  "@setHomeCustom": {},
+  "explorerActionSelectStorageVolume": "저장공간 선택",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "저장공간",
+  "@selectStorageVolumeDialogTitle": {}
 }

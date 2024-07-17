@@ -1515,8 +1515,6 @@
   "@entryActionCast": {},
   "castDialogTitle": "Thiết bị truyền",
   "@castDialogTitle": {},
-  "setHomeCustomCollection": "Bộ sưu tập tùy chỉnh",
-  "@setHomeCustomCollection": {},
   "settingsThumbnailShowHdrIcon": "Hiển thị biểu tượng HDR",
   "@settingsThumbnailShowHdrIcon": {},
   "collectionActionSetHome": "Đặt làm nhà",
@@ -1534,5 +1532,13 @@
   "settingsForceWesternArabicNumeralsTile": "Buộc chữ số Ả Rập",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionShowCollection": "Hiển thị trong Bộ sưu tập",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "selectStorageVolumeDialogTitle": "Chọn dung lượng",
+  "@selectStorageVolumeDialogTitle": {},
+  "explorerActionSelectStorageVolume": "Chọn dung lượng",
+  "@explorerActionSelectStorageVolume": {},
+  "chipActionGoToExplorerPage": "Hiển thị ở Explorer",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "Explorer",
+  "@explorerPageTitle": {}
 }

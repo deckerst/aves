@@ -1355,8 +1355,6 @@
   "@aboutDataUsageClearCache": {},
   "entryActionCast": "Siarkan",
   "@entryActionCast": {},
-  "setHomeCustomCollection": "Koleksi kustom",
-  "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Tetapkan sebagai beranda",
   "@collectionActionSetHome": {},
   "settingsThumbnailShowHdrIcon": "Tampilkan ikon HDR",

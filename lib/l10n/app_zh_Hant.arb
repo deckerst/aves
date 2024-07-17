@@ -1511,8 +1511,6 @@
   "@overlayHistogramLuminance": {},
   "collectionActionSetHome": "設為首頁",
   "@collectionActionSetHome": {},
-  "setHomeCustomCollection": "自訂收藏品",
-  "@setHomeCustomCollection": {},
   "aboutDataUsageClearCache": "清除快取",
   "@aboutDataUsageClearCache": {},
   "settingsViewerShowHistogram": "顯示直方圖",
@@ -1534,5 +1532,9 @@
   "settingsForceWesternArabicNumeralsTile": "強制使用阿拉伯數字",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionShowCollection": "在收藏品中顯示",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "explorerPageTitle": "檔案總管",
+  "@explorerPageTitle": {},
+  "chipActionGoToExplorerPage": "在檔案總管裡顯示",
+  "@chipActionGoToExplorerPage": {}
 }

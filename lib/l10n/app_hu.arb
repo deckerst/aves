@@ -1517,8 +1517,6 @@
   "@castDialogTitle": {},
   "settingsThumbnailShowHdrIcon": "HDR ikon megjelenítése",
   "@settingsThumbnailShowHdrIcon": {},
-  "setHomeCustomCollection": "Egyéni gyűjtemény",
-  "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Kezdőlapnak beállít",
   "@collectionActionSetHome": {},
   "stopTooltip": "Állj",

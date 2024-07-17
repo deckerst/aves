@@ -1359,8 +1359,6 @@
   "@castDialogTitle": {},
   "settingsThumbnailShowHdrIcon": "Показать значок HDR",
   "@settingsThumbnailShowHdrIcon": {},
-  "setHomeCustomCollection": "Собственная коллекция",
-  "@setHomeCustomCollection": {},
   "collectionActionSetHome": "Установить как главную",
   "@collectionActionSetHome": {},
   "videoRepeatActionSetStart": "Установить начало",
@@ -1380,5 +1378,7 @@
   "chipActionGoToExplorerPage": "Показать в проводнике",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Проводник",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "explorerActionSelectStorageVolume": "Выбрать хранилище",
+  "@explorerActionSelectStorageVolume": {}
 }

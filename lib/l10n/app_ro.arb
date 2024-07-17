@@ -1491,8 +1491,6 @@
   "@collectionActionSetHome": {},
   "aboutDataUsageClearCache": "Golește memoria cache",
   "@aboutDataUsageClearCache": {},
-  "setHomeCustomCollection": "Colecție personalizată",
-  "@setHomeCustomCollection": {},
   "settingsThumbnailShowHdrIcon": "Afișare pictogramă HDR",
   "@settingsThumbnailShowHdrIcon": {},
   "settingsViewerShowHistogram": "Afișare histogramă",
