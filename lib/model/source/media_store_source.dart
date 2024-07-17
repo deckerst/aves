@@ -50,7 +50,7 @@ class MediaStoreSource extends CollectionSource {
       analysisController: analysisController,
       directory: directory,
       loadTopEntriesFirst: loadTopEntriesFirst,
-      canAnalyze: canAnalyze && _safeMode,
+      canAnalyze: canAnalyze && !_safeMode,
     ));
   }
 

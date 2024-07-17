@@ -14,6 +14,10 @@ All notable changes to this project will be documented in this file.
 
 - target Android 15 (API 35)
 
+### Fixed
+
+- crash when cataloguing some PNG files
+
 ## <a id="v1.11.5"></a>[v1.11.5] - 2024-07-11
 
 ### Added
