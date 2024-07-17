@@ -43,7 +43,6 @@ class _ExplorerPageState extends State<ExplorerPage> {
   final List<StreamSubscription> _subscriptions = [];
   final ValueNotifier<VolumeRelativeDirectory> _directory = ValueNotifier(const VolumeRelativeDirectory(volumePath: '', relativeDir: ''));
   final ValueNotifier<List<Directory>> _contents = ValueNotifier([]);
-  final DoubleBackPopHandler _doubleBackPopHandler = DoubleBackPopHandler();
 
   Set<StorageVolume> get _volumes => androidFileUtils.storageVolumes;
 
@@ -78,99 +77,95 @@ class _ExplorerPageState extends State<ExplorerPage> {
       ..clear();
     _directory.dispose();
     _contents.dispose();
-    _doubleBackPopHandler.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AvesPopScope(
-      handlers: [
-        (context) {
-          if (_directory.value.relativeDir.isNotEmpty) {
-            final parent = pContext.dirname(_currentDirectoryPath);
-            _goTo(parent);
-            return false;
-          }
-          return true;
-        },
-        TvNavigationPopHandler.pop,
-        _doubleBackPopHandler.pop,
-      ],
-      child: AvesScaffold(
-        drawer: const AppDrawer(),
-        body: GestureAreaProtectorStack(
-          child: Column(
-            children: [
-              Expanded(
-                child: ValueListenableBuilder<List<Directory>>(
-                  valueListenable: _contents,
-                  builder: (context, contents, child) {
-                    final durations = context.watch<DurationsData>();
-                    return CustomScrollView(
-                      // workaround to prevent scrolling the app bar away
-                      // when there is no content and we use `SliverFillRemaining`
-                      physics: contents.isEmpty ? const NeverScrollableScrollPhysics() : null,
-                      slivers: [
-                        ExplorerAppBar(
-                          key: const Key('appbar'),
-                          directoryNotifier: _directory,
-                          goTo: _goTo,
-                        ),
-                        AnimationLimiter(
-                          // animation limiter should not be above the app bar
-                          // so that the crumb line can automatically scroll
-                          key: ValueKey(_currentDirectoryPath),
-                          child: SliverList.builder(
-                            itemBuilder: (context, index) {
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: durations.staggeredAnimation,
-                                delay: durations.staggeredAnimationDelay * timeDilation,
-                                child: SlideAnimation(
-                                  verticalOffset: 50.0,
-                                  child: FadeInAnimation(
-                                    child: _buildContentLine(context, contents[index]),
-                                  ),
-                                ),
-                              );
-                            },
-                            itemCount: contents.length,
-                          ),
-                        ),
-                        contents.isEmpty
-                            ? SliverFillRemaining(
-                                child: _buildEmptyContent(),
-                              )
-                            : const SliverPadding(padding: EdgeInsets.only(bottom: 8)),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              const Divider(height: 0),
-              SafeArea(
-                top: false,
-                bottom: true,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: ValueListenableBuilder<VolumeRelativeDirectory>(
-                    valueListenable: _directory,
-                    builder: (context, directory, child) {
-                      return AvesFilterChip(
+    return ValueListenableBuilder<VolumeRelativeDirectory>(
+      valueListenable: _directory,
+      builder: (context, directory, child) {
+        final atRoot = directory.relativeDir.isEmpty;
+        return AvesPopScope(
+          handlers: [
+            APopHandler(
+              canPop: (context) => atRoot,
+              onPopBlocked: (context) => _goTo(pContext.dirname(_currentDirectoryPath)),
+            ),
+            tvNavigationPopHandler,
+            doubleBackPopHandler,
+          ],
+          child: AvesScaffold(
+            drawer: const AppDrawer(),
+            body: GestureAreaProtectorStack(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ValueListenableBuilder<List<Directory>>(
+                      valueListenable: _contents,
+                      builder: (context, contents, child) {
+                        final durations = context.watch<DurationsData>();
+                        return CustomScrollView(
+                          // workaround to prevent scrolling the app bar away
+                          // when there is no content and we use `SliverFillRemaining`
+                          physics: contents.isEmpty ? const NeverScrollableScrollPhysics() : null,
+                          slivers: [
+                            ExplorerAppBar(
+                              key: const Key('appbar'),
+                              directoryNotifier: _directory,
+                              goTo: _goTo,
+                            ),
+                            AnimationLimiter(
+                              // animation limiter should not be above the app bar
+                              // so that the crumb line can automatically scroll
+                              key: ValueKey(_currentDirectoryPath),
+                              child: SliverList.builder(
+                                itemBuilder: (context, index) {
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: durations.staggeredAnimation,
+                                    delay: durations.staggeredAnimationDelay * timeDilation,
+                                    child: SlideAnimation(
+                                      verticalOffset: 50.0,
+                                      child: FadeInAnimation(
+                                        child: _buildContentLine(context, contents[index]),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                itemCount: contents.length,
+                              ),
+                            ),
+                            contents.isEmpty
+                                ? SliverFillRemaining(
+                                    child: _buildEmptyContent(),
+                                  )
+                                : const SliverPadding(padding: EdgeInsets.only(bottom: 8)),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  const Divider(height: 0),
+                  SafeArea(
+                    top: false,
+                    bottom: true,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: AvesFilterChip(
                         filter: PathFilter(_currentDirectoryPath),
                         maxWidth: double.infinity,
                         onTap: (filter) => _goToCollectionPage(context, filter),
                         onLongPress: null,
-                      );
-                    },
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

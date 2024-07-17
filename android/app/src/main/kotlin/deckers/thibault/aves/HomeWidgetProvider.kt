@@ -42,7 +42,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
             val widgetInfo = appWidgetManager.getAppWidgetOptions(widgetId)
 
             val pendingResult = goAsync()
-            defaultScope.launch() {
+            defaultScope.launch {
                 val backgroundProps = getProps(context, widgetId, widgetInfo, drawEntryImage = false)
                 updateWidgetImage(context, appWidgetManager, widgetId, backgroundProps)
 

@@ -26,8 +26,7 @@ Future<void> configureAndLaunch() async {
     ..enableBlurEffect = true
     // navigation
     ..keepScreenOn = KeepScreenOn.always
-    ..homePage = HomePageSetting.collection
-    ..homeCustomCollection = {}
+    ..setHome(HomePageSetting.collection)
     ..enableBottomNavigationBar = true
     // collection
     ..collectionSectionFactor = EntryGroupFactor.album

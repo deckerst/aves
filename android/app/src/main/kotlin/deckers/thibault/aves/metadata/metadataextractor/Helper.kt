@@ -29,7 +29,6 @@ import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MemoryUtils
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream

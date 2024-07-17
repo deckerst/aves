@@ -67,7 +67,7 @@ class AppDebugPage extends StatelessWidget {
           ],
         ),
         body: AvesPopScope(
-          handlers: const [TvNavigationPopHandler.pop],
+          handlers: [tvNavigationPopHandler],
           child: SafeArea(
             child: ListView(
               padding: const EdgeInsets.all(8),

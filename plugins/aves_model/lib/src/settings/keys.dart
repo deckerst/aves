@@ -43,6 +43,7 @@ class SettingKeys {
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
   static const homeCustomCollectionKey = 'home_custom_collection';
+  static const homeCustomExplorerPathKey = 'home_custom_explorer_path';
   static const enableBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmCreateVaultKey = 'confirm_create_vault';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';

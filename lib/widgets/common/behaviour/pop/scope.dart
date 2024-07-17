@@ -1,11 +1,9 @@
-import 'package:aves/services/common/services.dart';
-import 'package:flutter/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-// as of Flutter v3.3.10, the resolution order of multiple `WillPopScope` is random
-// so this widget combines multiple handlers with a guaranteed order
+// this widget combines multiple pop handlers with a guaranteed order
 class AvesPopScope extends StatelessWidget {
-  final List<bool Function(BuildContext context)> handlers;
+  final List<PopHandler> handlers;
   final Widget child;
 
   const AvesPopScope({
@@ -16,26 +14,40 @@ class AvesPopScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final blocker = handlers.firstWhereOrNull((v) => !v.canPop(context));
     return PopScope(
-      canPop: false,
+      canPop: blocker == null,
       onPopInvoked: (didPop) {
-        if (didPop) return;
-
-        final shouldPop = handlers.fold(true, (prev, v) => prev ? v(context) : false);
-        if (shouldPop) {
-          if (Navigator.canPop(context)) {
-            Navigator.maybeOf(context)?.pop();
-          } else {
-            // exit
-            reportService.log('Exit by pop');
-            PopExitNotification().dispatch(context);
-            SystemNavigator.pop();
-          }
+        if (!didPop) {
+          blocker?.onPopBlocked(context);
         }
       },
       child: child,
     );
   }
+}
+
+abstract class PopHandler {
+  bool canPop(BuildContext context);
+
+  void onPopBlocked(BuildContext context);
+}
+
+class APopHandler implements PopHandler {
+  final bool Function(BuildContext context) _canPop;
+  final void Function(BuildContext context) _onPopBlocked;
+
+  APopHandler({
+    required bool Function(BuildContext context) canPop,
+    required void Function(BuildContext context) onPopBlocked,
+  })  : _canPop = canPop,
+        _onPopBlocked = onPopBlocked;
+
+  @override
+  bool canPop(BuildContext context) => _canPop(context);
+
+  @override
+  void onPopBlocked(BuildContext context) => _onPopBlocked(context);
 }
 
 @immutable

@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.6"></a>[v1.11.6] - 2024-07-17
+
+### Added
+
+- Explorer: set custom path as home
+- Explorer: create shortcut to custom path
+- predictive back support (inter-app)
+
+### Changed
+
+- target Android 15 (API 35)
+
+### Fixed
+
+- crash when cataloguing some PNG files
+
 ## <a id="v1.11.5"></a>[v1.11.5] - 2024-07-11
 
 ### Added

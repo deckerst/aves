@@ -1,10 +1,10 @@
 package deckers.thibault.aves.channel.streams
 
+import android.app.Activity
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.FragmentActivity
 import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
@@ -21,9 +21,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.*
 
-class ImageOpStreamHandler(private val activity: FragmentActivity, private val arguments: Any?) : EventChannel.StreamHandler {
+class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler

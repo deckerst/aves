@@ -1,7 +1,7 @@
 package deckers.thibault.aves.utils
 
 import android.webkit.MimeTypeMap
-import androidx.exifinterface.media.ExifInterface
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import deckers.thibault.aves.decoder.MultiPageImage
 
 object MimeTypes {
@@ -17,8 +17,8 @@ object MimeTypes {
     private const val ICO = "image/x-icon"
     const val JPEG = "image/jpeg"
     const val PNG = "image/png"
-    const val PSD_VND = "image/vnd.adobe.photoshop"
-    const val PSD_X = "image/x-photoshop"
+    private const val PSD_VND = "image/vnd.adobe.photoshop"
+    private const val PSD_X = "image/x-photoshop"
     const val TIFF = "image/tiff"
     private const val WBMP = "image/vnd.wap.wbmp"
     const val WEBP = "image/webp"

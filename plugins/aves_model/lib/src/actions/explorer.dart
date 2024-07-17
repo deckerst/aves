@@ -1,0 +1,4 @@
+enum ExplorerAction {
+  addShortcut,
+  setHome,
+}

@@ -11,8 +11,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.util.Log
-import androidx.exifinterface.media.ExifInterface
-import androidx.fragment.app.FragmentActivity
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -196,7 +195,7 @@ abstract class ImageProvider {
     }
 
     suspend fun convertMultiple(
-        activity: FragmentActivity,
+        activity: Activity,
         imageExportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
@@ -255,7 +254,7 @@ abstract class ImageProvider {
     }
 
     private suspend fun convertSingle(
-        activity: FragmentActivity,
+        activity: Activity,
         sourceEntry: AvesEntry,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
@@ -334,7 +333,7 @@ abstract class ImageProvider {
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
 
-                target = Glide.with(activity)
+                target = Glide.with(activity.applicationContext)
                     .asBitmap()
                     .apply(glideOptions)
                     .load(model)
@@ -396,7 +395,7 @@ abstract class ImageProvider {
             return newFields
         } finally {
             // clearing Glide target should happen after effectively writing the bitmap
-            Glide.with(activity).clear(target)
+            Glide.with(activity.applicationContext).clear(target)
 
             resolution.replacementFile?.delete()
         }

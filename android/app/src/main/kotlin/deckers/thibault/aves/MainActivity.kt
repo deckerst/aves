@@ -54,7 +54,7 @@ import deckers.thibault.aves.channel.streams.SettingsChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.getParcelableExtraCompat
-import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -66,7 +66,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
-open class MainActivity : FlutterFragmentActivity() {
+open class MainActivity : FlutterActivity() {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
@@ -294,11 +294,9 @@ open class MainActivity : FlutterFragmentActivity() {
                 if (intent.getBooleanExtra(EXTRA_KEY_SAFE_MODE, false)) {
                     fields[INTENT_DATA_KEY_SAFE_MODE] = true
                 }
-                intent.getStringExtra(EXTRA_KEY_PAGE)?.let { page ->
-                    val filters = extractFiltersFromIntent(intent)
-                    fields[INTENT_DATA_KEY_PAGE] = page
-                    fields[INTENT_DATA_KEY_FILTERS] = filters
-                }
+                fields[INTENT_DATA_KEY_PAGE] = intent.getStringExtra(EXTRA_KEY_PAGE)
+                fields[INTENT_DATA_KEY_FILTERS] = extractFiltersFromIntent(intent)
+                fields[INTENT_DATA_KEY_EXPLORER_PATH] = intent.getStringExtra(EXTRA_KEY_EXPLORER_PATH)
                 return fields
             }
 
@@ -527,6 +525,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_ACTION = "action"
         const val INTENT_DATA_KEY_ALLOW_MULTIPLE = "allowMultiple"
         const val INTENT_DATA_KEY_BRIGHTNESS = "brightness"
+        const val INTENT_DATA_KEY_EXPLORER_PATH = "explorerPath"
         const val INTENT_DATA_KEY_FILTERS = "filters"
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
         const val INTENT_DATA_KEY_PAGE = "page"
@@ -537,6 +536,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
 
         const val EXTRA_KEY_PAGE = "page"
+        const val EXTRA_KEY_EXPLORER_PATH = "explorerPath"
         const val EXTRA_KEY_FILTERS_ARRAY = "filters"
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
         const val EXTRA_KEY_SAFE_MODE = "safeMode"
