@@ -13,7 +13,7 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.22.2
+  flutter: 3.22.3
   sdk: '>=3.4.1 <4.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor

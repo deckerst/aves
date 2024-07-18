@@ -1611,10 +1611,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: ceb2625f0c24ade6ef6778d1de0b2e44f2db71fded235eb52295247feba8c5cf
+      sha256: eac82dc8e5f48818054f46021e9e5f34c239f8d301e7e29165b977c8d1189fed
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.3"
+    version: "6.3.4"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1801,4 +1801,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.4.1 <4.0.0"
-  flutter: ">=3.22.2"
+  flutter: ">=3.22.3"
