@@ -12,7 +12,6 @@ import 'package:latlong2/latlong.dart' as ll;
 
 class PlatformMobileServices extends MobileServices {
   bool _isAvailable = false;
-  bool _canRenderMaps = false;
 
   @override
   Future<void> init() async {
@@ -21,21 +20,14 @@ class PlatformMobileServices extends MobileServices {
     debugPrint('Device has Google Play Services=$_isAvailable');
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    _canRenderMaps = androidInfo.version.sdkInt >= 21;
-    if (_canRenderMaps) {
-      final mapsImplementation = GoogleMapsFlutterPlatform.instance;
-      if (mapsImplementation is GoogleMapsFlutterAndroid) {
-        // as of flutter v3.7.10 / google_maps_flutter v2.2.5 / google_maps_flutter_android v2.4.10,
-        // setting `useAndroidViewSurface` to true (default):
-        // + issue #241 exists but workaround is efficient
-        // - page stack and page animation perf is bad
-        // - overlay blur is disabled
-        // setting `useAndroidViewSurface` to false:
-        // - issue #241 exists and workaround is inefficient
-        // + page stack and page animation perf is OK
-        // + overlay blur is effective
-        mapsImplementation.useAndroidViewSurface = false;
-      }
+    final mapsImplementation = GoogleMapsFlutterPlatform.instance;
+    if (mapsImplementation is GoogleMapsFlutterAndroid) {
+      // As of Flutter v3.22.2 / google_maps_flutter_android 2.12.0,
+      // using Texture Layer Hybrid Composition (`useAndroidViewSurface = false`)
+      // is the default and the best. But it fails to render on API < 23, yielding:
+      // "UnsupportedOperationException: Platform views cannot be displayed below API level 23"
+      // so we fall back to Hybrid Composition (`useAndroidViewSurface = true`)
+      mapsImplementation.useAndroidViewSurface = androidInfo.version.sdkInt < 23;
     }
   }
 
@@ -46,7 +38,7 @@ class PlatformMobileServices extends MobileServices {
   EntryMapStyle get defaultMapStyle => EntryMapStyle.googleNormal;
 
   @override
-  List<EntryMapStyle> get mapStyles => (isServiceAvailable && _canRenderMaps)
+  List<EntryMapStyle> get mapStyles => isServiceAvailable
       ? [
           EntryMapStyle.googleNormal,
           EntryMapStyle.googleHybrid,
