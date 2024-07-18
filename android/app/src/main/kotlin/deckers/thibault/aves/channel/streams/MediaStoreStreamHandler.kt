@@ -27,7 +27,9 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
         if (arguments is Map<*, *>) {
             knownEntries = (arguments["knownEntries"] as? Map<*, *>?)?.map { (it.key as Number?)?.toLong() to it.value as Int? }?.toMap()
             directory = arguments["directory"] as String?
-            safe = arguments.getOrDefault("safe", false) as Boolean
+            // do not use kotlin.collections `getOrDefault` as it crashes on API <24
+            // and there is no warning from Android Studio
+            safe = arguments["safe"] as Boolean? ?: false
         }
     }
 
