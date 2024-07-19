@@ -8,7 +8,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import deckers.thibault.aves.AnalysisWorker
 import deckers.thibault.aves.utils.FlutterUtils
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
-class AnalysisHandler(private val activity: FlutterActivity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler {
+class AnalysisHandler(private val activity: FlutterFragmentActivity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {

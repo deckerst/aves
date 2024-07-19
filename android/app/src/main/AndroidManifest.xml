@@ -102,12 +102,17 @@
         </intent>
     </queries>
 
+    <!--
+    as of Flutter v3.22.2, predictive back gesture does not work
+    as expected when extending `FlutterFragmentActivity`
+    so we disable `enableOnBackInvokedCallback`
+    -->
     <application
         android:allowBackup="true"
         android:appCategory="image"
         android:banner="@drawable/banner"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:enableOnBackInvokedCallback="true"
+        android:enableOnBackInvokedCallback="false"
         android:fullBackupContent="@xml/full_backup_content"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
