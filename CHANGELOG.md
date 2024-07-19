@@ -4,13 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.11.7"></a>[v1.11.7] - 2024-07-18
+## <a id="v1.11.8"></a>[v1.11.8] - 2024-07-19
 
 ### Added
 
 - Explorer: set custom path as home
 - Explorer: create shortcut to custom path
-- predictive back support (inter-app)
 
 ### Changed
 
@@ -20,6 +19,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when cataloguing some PNG files
+
+## <a id="v1.11.7"></a>[v1.11.7] - 2024-07-18 [YANKED AGAIN!]
 
 ## <a id="v1.11.6"></a>[v1.11.6] - 2024-07-17 [YANKED]
 
