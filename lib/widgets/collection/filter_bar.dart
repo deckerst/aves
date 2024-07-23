@@ -142,7 +142,7 @@ class _Chip extends StatelessWidget {
           key: ValueKey(filter),
           filter: filter,
           maxWidth: single
-              ? AvesFilterChip.computeMaxWidth(
+              ? AvesFilterChip.computeMaxWidthForRow(
                   context,
                   minChipPerRow: 1,
                   chipPadding: FilterBar.chipPadding.horizontal,
