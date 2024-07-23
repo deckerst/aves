@@ -55,9 +55,9 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
     return scrollableBox.size.width;
   }
 
-  static const double scrollEdgeRatio = .15;
-  static const double scrollMaxPixelPerSecond = 600.0;
-  static const Duration scrollUpdateInterval = Duration(milliseconds: 100);
+  static const double _scrollEdgeRatio = .15;
+  static const double _scrollMaxPixelPerSecond = 600.0;
+  static const Duration _scrollUpdateInterval = Duration(milliseconds: 100);
 
   @override
   void initState() {
@@ -158,7 +158,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
     final top = dy < height / 2;
 
     final distanceToEdge = max(0, top ? dy - _scrollableInsets.top : height - dy - _scrollableInsets.bottom);
-    final threshold = height * scrollEdgeRatio;
+    final threshold = height * _scrollEdgeRatio;
     if (distanceToEdge < threshold) {
       _setScrollSpeed((top ? -1 : 1) * roundToPrecision((threshold - distanceToEdge) / threshold, decimals: 1));
     } else {
@@ -185,7 +185,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
     final target = speedFactor > 0 ? scrollController.position.maxScrollExtent : .0;
     if (target != current) {
       final distance = target - current;
-      final millis = distance * 1000 / scrollMaxPixelPerSecond / speedFactor;
+      final millis = distance * 1000 / _scrollMaxPixelPerSecond / speedFactor;
       scrollController.animateTo(
         target,
         duration: Duration(milliseconds: millis.round()),
@@ -193,7 +193,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
       );
       // use a timer to update the selection, because `onLongPressMoveUpdate`
       // is not called when the pointer stays still while the view is scrolling
-      _selectionUpdateTimer = Timer.periodic(scrollUpdateInterval, (_) => _onLongPressUpdate());
+      _selectionUpdateTimer = Timer.periodic(_scrollUpdateInterval, (_) => _onLongPressUpdate());
     }
   }
 

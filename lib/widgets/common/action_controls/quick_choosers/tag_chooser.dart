@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
-import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/filter_quick_chooser_mixin.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
-class TagQuickChooser extends StatelessWidget {
+class TagQuickChooser extends StatelessWidget with FilterQuickChooserMixin<CollectionFilter> {
   final ValueNotifier<CollectionFilter?> valueNotifier;
+  @override
   final List<CollectionFilter> options;
   final bool blurred;
   final PopupMenuPosition chooserPosition;
@@ -30,10 +32,14 @@ class TagQuickChooser extends StatelessWidget {
       blurred: blurred,
       chooserPosition: chooserPosition,
       pointerGlobalPosition: pointerGlobalPosition,
-      itemBuilder: (context, filter) => AvesFilterChip(
-        filter: filter,
-        allowGenericIcon: false,
-      ),
+      maxTotalOptionCount: FilterQuickChooserMixin.maxTotalOptionCount,
+      itemHeight: computeItemHeight(context),
+      contentWidth: computeLargestItemWidth,
+      itemBuilder: itemBuilder,
+      emptyBuilder: (context) => Text(context.l10n.tagEmpty),
     );
   }
+
+  @override
+  CollectionFilter buildFilter(BuildContext context, CollectionFilter option) => option;
 }

@@ -51,7 +51,6 @@ class _ShareButtonState extends ChooserQuickButtonState<ShareButton, ShareAction
         child: ShareQuickChooser(
           valueNotifier: chooserValueNotifier,
           options: options,
-          autoReverse: false,
           blurred: widget.blurred,
           chooserPosition: chooserPosition,
           pointerGlobalPosition: pointerGlobalPosition,

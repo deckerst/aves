@@ -162,6 +162,8 @@ class AIcons {
   static const zoomOut = Icons.remove_outlined;
   static const collapse = Icons.expand_less_outlined;
   static const expand = Icons.expand_more_outlined;
+  static const up = Icons.keyboard_arrow_up_outlined;
+  static const down = Icons.keyboard_arrow_down_outlined;
   static const previous = Icons.chevron_left_outlined;
   static const next = Icons.chevron_right_outlined;
 

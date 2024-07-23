@@ -59,6 +59,7 @@ class AvesFilterChip extends StatefulWidget {
   final FilterCallback? onTap, onRemove;
   final OffsetFilterCallback? onLongPress;
 
+  static const double defaultPadding = 6.0;
   static const double defaultRadius = 32;
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
@@ -79,7 +80,7 @@ class AvesFilterChip extends StatefulWidget {
     this.banner,
     this.leadingOverride,
     this.details,
-    this.padding = 6.0,
+    this.padding = defaultPadding,
     this.maxWidth,
     this.heroType = HeroType.onTap,
     this.onTap,
@@ -87,7 +88,7 @@ class AvesFilterChip extends StatefulWidget {
     this.onLongPress = showDefaultLongPressMenu,
   });
 
-  static double computeMaxWidth(
+  static double computeMaxWidthForRow(
     BuildContext context, {
     required int minChipPerRow,
     required double chipPadding,
@@ -347,7 +348,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         maxWidth: max(
             AvesFilterChip.minChipWidth,
             widget.maxWidth ??
-                AvesFilterChip.computeMaxWidth(
+                AvesFilterChip.computeMaxWidthForRow(
                   context,
                   minChipPerRow: 2,
                   chipPadding: FilterBar.chipPadding.horizontal,

@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 mixin AppSettings on SettingsAccess {
-  static const int _recentFilterHistoryMax = 10;
+  static const int recentFilterHistoryMax = 20;
 
   bool get hasAcceptedTerms => getBool(SettingKeys.hasAcceptedTermsKey) ?? SettingsDefaults.hasAcceptedTerms;
 
@@ -105,9 +105,9 @@ mixin AppSettings on SettingsAccess {
 
   List<String> get recentDestinationAlbums => getStringList(SettingKeys.recentDestinationAlbumsKey) ?? [];
 
-  set recentDestinationAlbums(List<String> newValue) => set(SettingKeys.recentDestinationAlbumsKey, newValue.take(_recentFilterHistoryMax).toList());
+  set recentDestinationAlbums(List<String> newValue) => set(SettingKeys.recentDestinationAlbumsKey, newValue.take(recentFilterHistoryMax).toList());
 
   List<CollectionFilter> get recentTags => (getStringList(SettingKeys.recentTagsKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
 
-  set recentTags(List<CollectionFilter> newValue) => set(SettingKeys.recentTagsKey, newValue.take(_recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
+  set recentTags(List<CollectionFilter> newValue) => set(SettingKeys.recentTagsKey, newValue.take(recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
 }
