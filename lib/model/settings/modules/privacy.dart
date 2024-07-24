@@ -9,17 +9,18 @@ mixin PrivacySettings on SettingsAccess, SearchSettings {
   set hiddenFilters(Set<CollectionFilter> newValue) => set(SettingKeys.hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
+    final _deactivatedHiddenFilters = deactivatedHiddenFilters;
     final _hiddenFilters = hiddenFilters;
+
+    _deactivatedHiddenFilters.removeAll(filters);
     if (visible) {
       _hiddenFilters.removeAll(filters);
     } else {
       _hiddenFilters.addAll(filters);
       searchHistory = searchHistory..removeWhere(filters.contains);
-
-      final _deactivatedHiddenFilters = deactivatedHiddenFilters;
-      _deactivatedHiddenFilters.removeAll(filters);
-      deactivatedHiddenFilters = _deactivatedHiddenFilters;
     }
+
+    deactivatedHiddenFilters = _deactivatedHiddenFilters;
     hiddenFilters = _hiddenFilters;
   }
 
@@ -29,14 +30,18 @@ mixin PrivacySettings on SettingsAccess, SearchSettings {
 
   void activateHiddenFilter(CollectionFilter filter, bool active) {
     final _deactivatedHiddenFilters = deactivatedHiddenFilters;
+    final _hiddenFilters = hiddenFilters;
+
     if (active) {
       _deactivatedHiddenFilters.remove(filter);
+      _hiddenFilters.add(filter);
+      searchHistory = searchHistory..remove(filter);
     } else {
       _deactivatedHiddenFilters.add(filter);
+      _hiddenFilters.remove(filter);
     }
-    deactivatedHiddenFilters = _deactivatedHiddenFilters;
 
-    final visible = !active;
-    changeFilterVisibility({filter}, visible);
+    deactivatedHiddenFilters = _deactivatedHiddenFilters;
+    hiddenFilters = _hiddenFilters;
   }
 }
