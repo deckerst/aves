@@ -631,7 +631,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       final shouldReset = _exitedMainByPop;
       _exitedMainByPop = false;
 
-      if (!shouldReset && (intentData ?? {}).isEmpty) {
+      if (!shouldReset && (intentData ?? {}).values.whereNotNull().isEmpty) {
         reportService.log('Relaunch');
         return;
       }

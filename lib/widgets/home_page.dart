@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
       unawaited(appInventory.initAppNames());
     }
 
-    if (intentData.isNotEmpty) {
+    if (intentData.values.whereNotNull().isNotEmpty) {
       await reportService.log('Intent data=$intentData');
       switch (intentAction) {
         case IntentActions.view:
