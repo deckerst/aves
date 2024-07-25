@@ -1374,5 +1374,11 @@
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
   "chipActionShowCollection": "Tampilkan di Koleksi",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "explorerActionSelectStorageVolume": "Pilih penyimpanan",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Pilih Penyimpanan",
+  "@selectStorageVolumeDialogTitle": {},
+  "setHomeCustom": "Kustom",
+  "@setHomeCustom": {}
 }
