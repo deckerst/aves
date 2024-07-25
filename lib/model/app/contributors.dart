@@ -95,6 +95,7 @@ class Contributors {
     Contributor('elfriob', 'elfriob@ya.ru'),
     Contributor('Stephan Paternotte', 'stephan@paternottes.net'),
     Contributor('Tung Anh', 'buihuutunganh2007@gmail.com'),
+    Contributor('Adrien N', 'adriennathaniel1999@gmail.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
