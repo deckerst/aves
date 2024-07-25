@@ -1536,5 +1536,11 @@
   "chipActionGoToExplorerPage": "عرض في المستكشف",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "المستكشف",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "explorerActionSelectStorageVolume": "حدد التخزين",
+  "@explorerActionSelectStorageVolume": {},
+  "setHomeCustom": "مخصص",
+  "@setHomeCustom": {},
+  "selectStorageVolumeDialogTitle": "حدد التَخزين",
+  "@selectStorageVolumeDialogTitle": {}
 }
