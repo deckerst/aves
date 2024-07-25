@@ -1378,5 +1378,11 @@
   "chipActionGoToExplorerPage": "Gezginde göster",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Gezgin",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "explorerActionSelectStorageVolume": "Depolama alanı seç",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Depolama Alanı Seç",
+  "@selectStorageVolumeDialogTitle": {},
+  "setHomeCustom": "Özel",
+  "@setHomeCustom": {}
 }

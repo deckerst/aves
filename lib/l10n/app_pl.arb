@@ -1536,5 +1536,11 @@
   "chipActionGoToExplorerPage": "Pokaż w przeglądarce",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Przeglądarka",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "selectStorageVolumeDialogTitle": "Wybierz pamięć",
+  "@selectStorageVolumeDialogTitle": {},
+  "explorerActionSelectStorageVolume": "Wybierz pamięć",
+  "@explorerActionSelectStorageVolume": {},
+  "setHomeCustom": "Własny",
+  "@setHomeCustom": {}
 }
