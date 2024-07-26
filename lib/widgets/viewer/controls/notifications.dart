@@ -126,3 +126,6 @@ class FullImageLoadedNotification extends Notification {
 
   const FullImageLoadedNotification(this.entry, this.image);
 }
+
+@immutable
+class PopupMenuOpenedNotification extends Notification {}

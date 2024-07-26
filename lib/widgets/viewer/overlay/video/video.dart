@@ -16,7 +16,6 @@ class VideoControlOverlay extends StatefulWidget {
   final AvesVideoController? controller;
   final Animation<double> scale;
   final Function(EntryAction value) onActionSelected;
-  final VoidCallback onActionMenuOpened;
 
   const VideoControlOverlay({
     super.key,
@@ -24,7 +23,6 @@ class VideoControlOverlay extends StatefulWidget {
     required this.controller,
     required this.scale,
     required this.onActionSelected,
-    required this.onActionMenuOpened,
   });
 
   @override

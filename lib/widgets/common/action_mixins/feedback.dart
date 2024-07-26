@@ -24,6 +24,7 @@ typedef MarginComputer = EdgeInsets Function(BuildContext context);
 
 mixin FeedbackMixin {
   static final ValueNotifier<MarginComputer?> snackBarMarginOverrideNotifier = ValueNotifier(null);
+  static OverlaySupportEntry? _overlayNotificationEntry;
 
   static EdgeInsets snackBarMarginDefault(BuildContext context) {
     return EdgeInsets.only(
@@ -31,7 +32,11 @@ mixin FeedbackMixin {
     );
   }
 
-  void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  void dismissFeedback(BuildContext context) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    _overlayNotificationEntry?.dismiss();
+    _overlayNotificationEntry = null;
+  }
 
   void showFeedback(BuildContext context, FeedbackType type, String message, [SnackBarAction? action]) {
     ScaffoldMessengerState? scaffoldMessenger;
@@ -67,8 +72,7 @@ mixin FeedbackMixin {
         // and space under the snack bar `margin` does not receive gestures
         // (because it is used by the `Dismissible` wrapping the snack bar)
         // so we use `showOverlayNotification` instead
-        OverlaySupportEntry? notificationOverlayEntry;
-        notificationOverlayEntry = showOverlayNotification(
+        _overlayNotificationEntry = showOverlayNotification(
           (context) => SafeArea(
             bottom: false,
             child: ValueListenableBuilder<MarginComputer?>(
@@ -89,7 +93,7 @@ mixin FeedbackMixin {
                           foregroundColor: WidgetStateProperty.all(snackBarTheme.actionTextColor),
                         ),
                         onPressed: () {
-                          notificationOverlayEntry?.dismiss();
+                          dismissFeedback(context);
                           action.onPressed();
                         },
                         child: Text(action.label),
@@ -97,7 +101,7 @@ mixin FeedbackMixin {
                     : null,
                 animation: kAlwaysCompleteAnimation,
                 dismissDirection: DismissDirection.horizontal,
-                onDismiss: () => notificationOverlayEntry?.dismiss(),
+                onDismiss: () => dismissFeedback(context),
               ),
             ),
           ),
