@@ -315,12 +315,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                           _popupExpandedNotifier.value = null;
                         },
                         iconSize: IconTheme.of(context).size,
-                        onMenuOpened: () {
-                          // if the menu is opened while overlay is hiding,
-                          // the popup menu button is disposed and menu items are ineffective,
-                          // so we make sure overlay stays visible
-                          const ToggleOverlayNotification(visible: true).dispatch(context);
-                        },
+                        onMenuOpened: () => PopupMenuOpenedNotification().dispatch(context),
                         popUpAnimationStyle: animations.popUpAnimationStyle,
                       ),
                     ),

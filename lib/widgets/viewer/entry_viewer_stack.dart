@@ -494,13 +494,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                     );
                   }
                 },
-                onActionMenuOpened: () {
-                  // if the menu is opened while overlay is hiding,
-                  // the popup menu button is disposed and menu items are ineffective,
-                  // so we make sure overlay stays visible
-                  _videoActionDelegate.stopOverlayHidingTimer();
-                  const ToggleOverlayNotification(visible: true).dispatch(context);
-                },
               ),
             );
           } else if (targetEntry.is360) {
@@ -602,6 +595,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         case MoveType.export:
           break;
       }
+    } else if (notification is PopupMenuOpenedNotification) {
+      // if the menu is opened while overlay is hiding,
+      // the popup menu button is disposed and menu items are ineffective,
+      // so we make sure overlay stays visible
+      _overlayVisible.value = true;
+      _videoActionDelegate.stopOverlayHidingTimer();
+      dismissFeedback(context);
     } else if (notification is ToggleOverlayNotification) {
       _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
     } else if (notification is LockViewNotification) {
