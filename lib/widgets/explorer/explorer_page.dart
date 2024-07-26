@@ -55,7 +55,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
   void initState() {
     super.initState();
     final path = widget.path;
-    if (path != null) {
+    if (path != null && androidFileUtils.getStorageVolume(path) != null) {
       _goTo(path);
     } else {
       final primaryVolume = _volumes.firstWhereOrNull((v) => v.isPrimary);
@@ -241,8 +241,11 @@ class _ExplorerPageState extends State<ExplorerPage> {
   }
 
   void _goTo(String path) {
-    _directory.value = androidFileUtils.relativeDirectoryFromPath(path)!;
-    _updateContents();
+    final dir = androidFileUtils.relativeDirectoryFromPath(path);
+    if (dir != null) {
+      _directory.value = dir;
+      _updateContents();
+    }
   }
 
   void _updateContents() {
