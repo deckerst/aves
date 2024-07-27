@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
@@ -10,6 +11,7 @@ import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   static const routeName = '/search';
@@ -103,7 +105,24 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    Widget? body;
+
+    Widget leading = Center(child: widget.delegate.buildLeading(context));
+    Widget title = DefaultTextStyle.merge(
+      style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
+      child: TextField(
+        controller: widget.delegate.queryTextController,
+        focusNode: _searchFieldFocusNode,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: widget.delegate.searchFieldLabel,
+          hintStyle: theme.inputDecorationTheme.hintStyle,
+        ),
+        textInputAction: TextInputAction.search,
+        style: Themes.searchFieldStyle(context),
+        onSubmitted: (_) => widget.delegate.showResults(context),
+      ),
+    );
+    Widget body;
     switch (widget.delegate.currentBody) {
       case SearchBody.suggestions:
         body = KeyedSubtree(
@@ -116,34 +135,31 @@ class _SearchPageState extends State<SearchPage> {
           child: widget.delegate.buildResults(context),
         );
       case null:
-        break;
+        body = const SizedBox();
     }
+
+    final animate = context.select<Settings, bool>((v) => v.animate);
+    if (animate) {
+      leading = Hero(
+        tag: AvesAppBar.leadingHeroTag,
+        transitionOnUserGestures: true,
+        child: leading,
+      );
+      title = Hero(
+        tag: AvesAppBar.titleHeroTag,
+        transitionOnUserGestures: true,
+        child: title,
+      );
+      body = AnimatedSwitcher(
+        duration: ADurations.searchBodyTransition,
+        child: body,
+      );
+    }
+
     return AvesScaffold(
       appBar: AppBar(
-        leading: Hero(
-          tag: AvesAppBar.leadingHeroTag,
-          transitionOnUserGestures: true,
-          child: Center(child: widget.delegate.buildLeading(context)),
-        ),
-        title: Hero(
-          tag: AvesAppBar.titleHeroTag,
-          transitionOnUserGestures: true,
-          child: DefaultTextStyle.merge(
-            style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
-            child: TextField(
-              controller: widget.delegate.queryTextController,
-              focusNode: _searchFieldFocusNode,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: widget.delegate.searchFieldLabel,
-                hintStyle: theme.inputDecorationTheme.hintStyle,
-              ),
-              textInputAction: TextInputAction.search,
-              style: Themes.searchFieldStyle(context),
-              onSubmitted: (_) => widget.delegate.showResults(context),
-            ),
-          ),
-        ),
+        leading: leading,
+        title: title,
         actions: widget.delegate.buildActions(context),
       ),
       body: AvesPopScope(
@@ -151,10 +167,7 @@ class _SearchPageState extends State<SearchPage> {
           tvNavigationPopHandler,
           doubleBackPopHandler,
         ],
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: body,
-        ),
+        child: body,
       ),
     );
   }

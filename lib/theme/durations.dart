@@ -32,6 +32,7 @@ class ADurations {
 
   // search animations
   static const filterRowExpandAnimation = Duration(milliseconds: 300);
+  static const searchBodyTransition = Duration(milliseconds: 300);
 
   // viewer animations
   static const thumbnailScrollerScrollAnimation = Duration(milliseconds: 200);

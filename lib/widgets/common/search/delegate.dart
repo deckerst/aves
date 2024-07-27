@@ -5,6 +5,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 abstract class AvesSearchDelegate extends SearchDelegate {
   final String routeName;
@@ -38,12 +39,13 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     // use a property instead of checking `Navigator.canPop(context)`
     // because the navigator state changes as soon as we press back
     // so the leading may mistakenly switch to the close button
+    final animate = context.read<Settings>().animate;
     return canPop
         ? IconButton(
-            icon: AnimatedIcon(
+            icon: animate ? AnimatedIcon(
               icon: AnimatedIcons.menu_arrow,
               progress: transitionAnimation,
-            ),
+            ): const Icon(Icons.arrow_back),
             onPressed: () => goBack(context),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           )
