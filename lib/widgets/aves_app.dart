@@ -665,6 +665,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 }
 
+// Flutter has various overscroll indicator implementations for Android:
+// - `StretchingOverscrollIndicator`, default when using Material 3
+// - `GlowingOverscrollIndicator`, default when not using Material 3
 class AvesScrollBehavior extends MaterialScrollBehavior {
   @override
   Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
@@ -674,11 +677,7 @@ class AvesScrollBehavior extends MaterialScrollBehavior {
             axisDirection: details.direction,
             child: child,
           )
-        : GlowingOverscrollIndicator(
-            axisDirection: details.direction,
-            color: Colors.white,
-            child: child,
-          );
+        : child;
   }
 }
 
