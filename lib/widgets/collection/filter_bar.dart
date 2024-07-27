@@ -1,8 +1,10 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FilterBar extends StatefulWidget {
   static const EdgeInsets chipPadding = EdgeInsets.symmetric(horizontal: 4);
@@ -45,7 +47,7 @@ class _FilterBarState extends State<FilterBar> {
       existing.removeAt(index);
       // only animate item removal when triggered by a user interaction with the chip,
       // not from automatic chip replacement following chip selection
-      final animate = _userTappedFilter == filter;
+      final animate = context.read<Settings>().animate && _userTappedFilter == filter;
       listState!.removeItem(
         index,
         animate

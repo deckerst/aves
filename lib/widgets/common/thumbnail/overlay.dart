@@ -89,10 +89,10 @@ class ThumbnailZoomOverlay extends StatelessWidget {
   });
 
   static const alignment = AlignmentDirectional.bottomEnd;
-  static const duration = ADurations.thumbnailOverlayAnimation;
 
   @override
   Widget build(BuildContext context) {
+    final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
     final isSelecting = context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting);
     final interactiveDimension = context.select<GridThemeData, double>((t) => t.interactiveDimension);
     return AnimatedSwitcher(

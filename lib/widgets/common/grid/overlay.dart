@@ -10,8 +10,6 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
   final BorderRadius? borderRadius;
   final EdgeInsets? padding;
 
-  static const duration = ADurations.thumbnailOverlayAnimation;
-
   const GridItemSelectionOverlay({
     super.key,
     required this.item,
@@ -21,6 +19,7 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
     final isSelecting = context.select<Selection<T>, bool>((selection) => selection.isSelecting);
     return AnimatedSwitcher(
       duration: duration,
