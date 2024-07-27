@@ -40,6 +40,50 @@ class AvesAppBar extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final textScaler = MediaQuery.textScalerOf(context);
     final useTvLayout = settings.useTvLayout;
+
+    Widget? _leading = leading;
+    if (_leading != null) {
+      _leading = FontSizeIconTheme(
+        child: _leading,
+      );
+    }
+
+    Widget _title = FontSizeIconTheme(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Row(
+            key: ValueKey(transitionKey),
+            children: [
+              Expanded(child: title),
+              ...(actions(context, max(0, constraints.maxWidth - _titleMinWidth))),
+            ],
+          );
+        },
+      ),
+    );
+
+    final animate = context.select<Settings, bool>((v) => v.animate);
+    if (animate) {
+      _title = Hero(
+        tag: titleHeroTag,
+        flightShuttleBuilder: _flightShuttleBuilder,
+        transitionOnUserGestures: true,
+        child: AnimatedSwitcher(
+          duration: context.read<DurationsData>().iconAnimation,
+          child: _title,
+        ),
+      );
+
+      if (_leading != null) {
+        _leading = Hero(
+          tag: leadingHeroTag,
+          flightShuttleBuilder: _flightShuttleBuilder,
+          transitionOnUserGestures: true,
+          child: _leading,
+        );
+      }
+    }
+
     return SliverPersistentHeader(
       floating: !useTvLayout,
       pinned: pinned,
@@ -70,43 +114,16 @@ class AvesAppBar extends StatelessWidget {
                     height: textScaler.scale(kToolbarHeight),
                     child: Row(
                       children: [
-                        leading != null
+                        _leading != null
                             ? Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                                child: Hero(
-                                  tag: leadingHeroTag,
-                                  flightShuttleBuilder: _flightShuttleBuilder,
-                                  transitionOnUserGestures: true,
-                                  child: FontSizeIconTheme(
-                                    child: leading!,
-                                  ),
-                                ),
+                                child: _leading,
                               )
                             : const SizedBox(width: 16),
                         Expanded(
                           child: DefaultTextStyle(
                             style: theme.appBarTheme.titleTextStyle!,
-                            child: Hero(
-                              tag: titleHeroTag,
-                              flightShuttleBuilder: _flightShuttleBuilder,
-                              transitionOnUserGestures: true,
-                              child: AnimatedSwitcher(
-                                duration: context.read<DurationsData>().iconAnimation,
-                                child: FontSizeIconTheme(
-                                  child: LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      return Row(
-                                        key: ValueKey(transitionKey),
-                                        children: [
-                                          Expanded(child: title),
-                                          ...(actions(context, max(0, constraints.maxWidth - _titleMinWidth))),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
+                            child: _title,
                           ),
                         ),
                       ],
