@@ -29,8 +29,6 @@ class ADurations {
   // collection animations
   static const filterBarRemovalAnimation = Duration(milliseconds: 400);
   static const collectionOpOverlayAnimation = Duration(milliseconds: 300);
-  static const sectionHeaderAnimation = Duration(milliseconds: 200);
-  static const thumbnailOverlayAnimation = Duration(milliseconds: 200);
 
   // search animations
   static const filterRowExpandAnimation = Duration(milliseconds: 300);

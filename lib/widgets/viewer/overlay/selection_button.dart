@@ -15,7 +15,6 @@ class SelectionButton extends StatelessWidget {
   final Animation<double> scale;
 
   static const double padding = 8;
-  static const duration = ADurations.thumbnailOverlayAnimation;
 
   const SelectionButton({
     super.key,
@@ -27,6 +26,7 @@ class SelectionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final selection = context.read<Selection<AvesEntry>>();
+    final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
     return SafeArea(
       top: false,
       bottom: false,

@@ -189,6 +189,7 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!selectable) return _buildBrowsing(context);
 
+    final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
     final isSelecting = context.select<Selection<T>, bool>((selection) => selection.isSelecting);
     final Widget child = isSelecting
         ? _SectionSelectingLeading<T>(
@@ -201,7 +202,7 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
       descendantsAreFocusable: false,
       descendantsAreTraversable: false,
       child: AnimatedSwitcher(
-        duration: ADurations.sectionHeaderAnimation,
+        duration: duration,
         switchInCurve: Curves.easeInOut,
         switchOutCurve: Curves.easeInOut,
         transitionBuilder: (child, animation) {
@@ -240,11 +241,12 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
     final sectionEntries = context.watch<SectionedListLayout<T>>().sections[sectionKey] ?? [];
     final selection = context.watch<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     return AnimatedSwitcher(
-      duration: ADurations.sectionHeaderAnimation,
+      duration: duration,
       switchInCurve: Curves.easeOutBack,
       switchOutCurve: Curves.easeOutBack,
       transitionBuilder: (child, animation) => ScaleTransition(
