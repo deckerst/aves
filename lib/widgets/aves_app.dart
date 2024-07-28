@@ -345,12 +345,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                     child: ValueListenableBuilder<PageTransitionsBuilder>(
                       valueListenable: _pageTransitionsBuilderNotifier,
                       builder: (context, pageTransitionsBuilder, child) {
+                        final theme = Theme.of(context);
                         return Theme(
-                          data: Theme.of(context).copyWith(
+                          data: theme.copyWith(
                             pageTransitionsTheme: areAnimationsEnabled
                                 ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
                                 // strip page transitions used by `MaterialPageRoute`
                                 : const DirectPageTransitionsTheme(),
+                            splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
                           ),
                           child: MediaQueryDataProvider(child: child!),
                         );
