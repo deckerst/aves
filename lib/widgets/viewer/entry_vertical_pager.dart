@@ -33,12 +33,12 @@ class ViewerVerticalPageView extends StatefulWidget {
   final ValueNotifier<AvesEntry?> entryNotifier;
   final ViewerController viewerController;
   final Animation<double> overlayOpacity;
-  final PageController horizontalPager, verticalPager;
+  final PageController verticalPager, horizontalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
   final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
 
-  // critically damped spring a bit stiffer than `ScrollPhysics._kDefaultSpring`
+  // critically damped spring (ratio = 1) a bit stiffer than `ScrollPhysics._kDefaultSpring`
   static final spring = SpringDescription.withDampingRatio(
     mass: 0.5,
     stiffness: 140.0,
@@ -77,6 +77,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   bool get hasCollection => collection != null;
 
   AvesEntry? get entry => widget.entryNotifier.value;
+
+  PageController get verticalPager => widget.verticalPager;
+
+  PageController get horizontalPager => widget.horizontalPager;
 
   static const double maximumBrightness = 1.0;
 
@@ -146,10 +150,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           return true;
         },
         child: AnimatedBuilder(
-          animation: widget.verticalPager,
+          animation: verticalPager,
           builder: (context, child) {
             return Visibility(
-              visible: widget.verticalPager.page! > 1,
+              visible: verticalPager.page! > 1,
               child: child!,
             );
           },
@@ -185,7 +189,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         // key is expected by test driver
         key: const Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
-        controller: widget.verticalPager,
+        controller: verticalPager,
         physics: MagnifierScrollerPhysics(
           gestureSettings: MediaQuery.gestureSettingsOf(context),
           parent: SpringyScrollPhysics(
@@ -217,7 +221,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       child = MultiEntryScroller(
         collection: collection!,
         viewerController: widget.viewerController,
-        pageController: widget.horizontalPager,
+        pageController: horizontalPager,
         onPageChanged: widget.onHorizontalPageChanged,
         onViewDisposed: widget.onViewDisposed,
       );
@@ -299,8 +303,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _goToHorizontalPage(int delta, {required bool animate}) {
-    final pageController = widget.horizontalPager;
-    final page = pageController.page?.round();
+    final page = horizontalPager.page?.round();
     final _collection = collection;
     if (page != null && _collection != null) {
       var target = page + delta;
@@ -308,19 +311,19 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         target = target.clamp(0, _collection.entryCount - 1);
       }
       if (animate) {
-        pageController.animateToPage(
+        horizontalPager.animateToPage(
           target,
           duration: ADurations.viewerHorizontalPageAnimation,
           curve: Curves.easeInOutCubic,
         );
       } else {
-        pageController.jumpToPage(target);
+        horizontalPager.jumpToPage(target);
       }
     }
   }
 
   void _onVerticalPageControllerChanged() {
-    final page = widget.verticalPager.page!;
+    final page = verticalPager.page!;
 
     final opacity = min(1.0, page);
     _backgroundOpacityNotifier.value = opacity * opacity;
