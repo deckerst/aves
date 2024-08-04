@@ -124,7 +124,13 @@ class MapButtonPanel extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(top: padding),
                       // key is expected by test driver
-                      child: _buildButton(context, MapAction.selectStyle, buttonKey: const Key('map-menu-layers')),
+                      child: Column(
+                        children: [
+                          _buildButton(context, MapAction.selectStyle, buttonKey: const Key('map-menu-layers')),
+                          SizedBox(height: padding),
+                          _buildButton(context, MapAction.openMapApp),
+                        ],
+                      ),
                     ),
                   ],
                 ),

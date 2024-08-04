@@ -8,6 +8,7 @@ extension ExtraMapActionView on MapAction {
     final l10n = context.l10n;
     return switch (this) {
       MapAction.selectStyle => l10n.mapStyleTooltip,
+      MapAction.openMapApp => l10n.entryActionOpenMap,
       MapAction.zoomIn => l10n.mapZoomInTooltip,
       MapAction.zoomOut => l10n.mapZoomOutTooltip,
     };
@@ -18,6 +19,7 @@ extension ExtraMapActionView on MapAction {
   IconData _getIconData() {
     return switch (this) {
       MapAction.selectStyle => AIcons.layers,
+      MapAction.openMapApp => AIcons.openOutside,
       MapAction.zoomIn => AIcons.zoomIn,
       MapAction.zoomOut => AIcons.zoomOut,
     };
