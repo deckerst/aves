@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Viewer: display more items in tag/copy/move quick action choosers
+- Collection: sort by duration
 
 ### Changed
 

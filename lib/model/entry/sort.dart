@@ -35,4 +35,12 @@ class AvesEntrySort {
     final c = (b.sizeBytes ?? 0).compareTo(a.sizeBytes ?? 0);
     return c != 0 ? c : compareByDate(a, b);
   }
+
+  // compare by:
+  // 1) duration descending
+  // 2) date descending
+  static int compareByDuration(AvesEntry a, AvesEntry b) {
+    final c = (b.durationMillis ?? 0).compareTo(a.durationMillis ?? 0);
+    return c != 0 ? c : compareByDate(a, b);
+  }
 }
