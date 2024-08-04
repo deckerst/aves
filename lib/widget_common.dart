@@ -18,11 +18,13 @@ import 'package:flutter/services.dart';
 const _widgetDrawChannel = MethodChannel('deckers.thibault/aves/widget_draw');
 
 void widgetMainCommon(AppFlavor flavor) async {
+  debugPrint('Widget main start');
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
   await settings.init(monitorPlatformSettings: false);
   await reportService.init();
 
+  debugPrint('Widget channel method handling setup');
   _widgetDrawChannel.setMethodCallHandler((call) async {
     // widget settings may be modified in a different process after channel setup
     await settings.reload();

@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: display more items in tag/copy/move quick action choosers
 
+### Fixed
+
+- multiple widget setup after device reboot
+
 ## <a id="v1.11.8"></a>[v1.11.8] - 2024-07-19
 
 ### Added
