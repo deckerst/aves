@@ -1384,5 +1384,11 @@
   "explorerActionSelectStorageVolume": "Choisir le stockage",
   "@explorerActionSelectStorageVolume": {},
   "selectStorageVolumeDialogTitle": "Volumes de stockage",
-  "@selectStorageVolumeDialogTitle": {}
+  "@selectStorageVolumeDialogTitle": {},
+  "sortByDuration": "par durée",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Plus courts d’abord",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Plus longs d’abord",
+  "@sortOrderLongestFirst": {}
 }
