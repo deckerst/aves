@@ -4,7 +4,7 @@ enum ChipSortFactor { date, name, count, size }
 
 enum AlbumChipGroupFactor { none, importance, mimeType, volume }
 
-enum EntrySortFactor { date, name, rating, size }
+enum EntrySortFactor { date, name, rating, size, duration }
 
 enum EntryGroupFactor { none, album, month, day }
 

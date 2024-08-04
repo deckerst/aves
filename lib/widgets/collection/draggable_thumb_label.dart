@@ -57,6 +57,10 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
             return [
               if (entry.sizeBytes != null) formatFileSize(context.locale, entry.sizeBytes!, round: 0),
             ];
+          case EntrySortFactor.duration:
+            return [
+              if (entry.durationMillis != null) entry.durationText,
+            ];
         }
       },
     );

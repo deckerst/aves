@@ -723,6 +723,7 @@
   "sortBySize": "By size",
   "sortByAlbumFileName": "By album & file name",
   "sortByRating": "By rating",
+  "sortByDuration": "By duration",
 
   "sortOrderNewestFirst": "Newest first",
   "sortOrderOldestFirst": "Oldest first",
@@ -732,6 +733,8 @@
   "sortOrderLowestFirst": "Lowest first",
   "sortOrderLargestFirst": "Largest first",
   "sortOrderSmallestFirst": "Smallest first",
+  "sortOrderShortestFirst": "Shortest first",
+  "sortOrderLongestFirst": "Longest first",
 
   "albumGroupTier": "By tier",
   "albumGroupType": "By type",

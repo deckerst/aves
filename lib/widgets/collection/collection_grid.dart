@@ -697,6 +697,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
         addAlbums(collection, sectionLayouts, crumbs);
       case EntrySortFactor.rating:
       case EntrySortFactor.size:
+      case EntrySortFactor.duration:
         break;
     }
     return crumbs;
