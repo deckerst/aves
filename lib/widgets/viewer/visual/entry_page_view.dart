@@ -4,7 +4,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/view_state.dart';
+import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/media_session_service.dart';
 import 'package:aves/theme/icons.dart';

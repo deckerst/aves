@@ -1,5 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/view_state.dart';
+import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/widgets/viewer/view/histogram.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

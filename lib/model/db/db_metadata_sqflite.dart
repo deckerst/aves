@@ -10,7 +10,7 @@ import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/vaults/details.dart';
-import 'package:aves/model/video_playback.dart';
+import 'package:aves/model/viewer/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';

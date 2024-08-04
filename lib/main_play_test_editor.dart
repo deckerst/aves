@@ -1,6 +1,6 @@
 import 'package:aves/app_flavor.dart';
 import 'package:aves/main_common.dart';
-import 'package:aves/widgets/intent.dart';
+import 'package:aves/model/app/intent.dart';
 
 // https://developer.android.com/studio/command-line/adb.html#IntentSpec
 // adb shell am start -n deckers.thibault.aves.debug/deckers.thibault.aves.MainActivity -a android.intent.action.EDIT -d content://media/external/images/media/183128 -t image/*

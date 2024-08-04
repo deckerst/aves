@@ -1,4 +1,4 @@
-import 'package:aves/convert/metadata/fields.dart';
+import 'package:aves/convert/convert.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';

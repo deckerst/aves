@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/view_state.dart';
+import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/editor/transform/controller.dart';
 import 'package:aves/widgets/editor/transform/painter.dart';
