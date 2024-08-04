@@ -1384,5 +1384,11 @@
   "selectStorageVolumeDialogTitle": "Depolama Alanı Seç",
   "@selectStorageVolumeDialogTitle": {},
   "setHomeCustom": "Özel",
-  "@setHomeCustom": {}
+  "@setHomeCustom": {},
+  "sortByDuration": "Süreye göre",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Önce en kısa",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Önce en uzun",
+  "@sortOrderLongestFirst": {}
 }
