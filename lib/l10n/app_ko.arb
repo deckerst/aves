@@ -1384,5 +1384,11 @@
   "explorerActionSelectStorageVolume": "저장공간 선택",
   "@explorerActionSelectStorageVolume": {},
   "selectStorageVolumeDialogTitle": "저장공간",
-  "@selectStorageVolumeDialogTitle": {}
+  "@selectStorageVolumeDialogTitle": {},
+  "sortByDuration": "길이",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "짧은 순",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "긴 순",
+  "@sortOrderLongestFirst": {}
 }

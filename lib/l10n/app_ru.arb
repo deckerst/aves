@@ -1380,5 +1380,7 @@
   "explorerPageTitle": "Проводник",
   "@explorerPageTitle": {},
   "explorerActionSelectStorageVolume": "Выбрать хранилище",
-  "@explorerActionSelectStorageVolume": {}
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Выбрать хранилище",
+  "@selectStorageVolumeDialogTitle": {}
 }
