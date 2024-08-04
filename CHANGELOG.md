@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: display more items in tag/copy/move quick action choosers
 - Collection: sort by duration
+- Map: open external map app from map views
 
 ### Changed
 

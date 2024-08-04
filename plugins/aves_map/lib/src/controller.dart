@@ -6,6 +6,9 @@ import 'package:latlong2/latlong.dart';
 
 class AvesMapController {
   final StreamController _streamController = StreamController.broadcast();
+  ZoomedBounds? _idleBounds;
+
+  ZoomedBounds? get idleBounds => _idleBounds;
 
   Stream<dynamic> get _events => _streamController.stream;
 
@@ -38,7 +41,10 @@ class AvesMapController {
 
   void zoomBy(double delta) => _streamController.add(MapControllerZoomEvent(delta));
 
-  void notifyIdle(ZoomedBounds bounds) => _streamController.add(MapIdleUpdate(bounds));
+  void notifyIdle(ZoomedBounds bounds) {
+    _idleBounds = bounds;
+    _streamController.add(MapIdleUpdate(bounds));
+  }
 
   void notifyMarkerLocationChange() => _streamController.add(MapMarkerLocationChangeEvent());
 }

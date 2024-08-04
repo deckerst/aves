@@ -12,6 +12,7 @@ import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
@@ -28,6 +29,7 @@ import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/map/scroller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
@@ -188,6 +190,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           _goToCollection(notification.filter);
         } else if (notification is FilterNotification) {
           _goToCollection(notification.filter);
+        } else if (notification is OpenMapAppNotification) {
+          _openMapApp();
         } else {
           return false;
         }
@@ -432,6 +436,15 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       ),
       (route) => false,
     );
+  }
+
+  Future<void> _openMapApp() async {
+    final latLng = _dotEntryNotifier.value?.latLng ?? _mapController.idleBounds?.projectedCenter;
+    if (latLng != null) {
+      await appService.openMap(latLng).then((success) {
+        if (!success) showNoMatchingAppDialog(context);
+      });
+    }
   }
 
   // overlay
