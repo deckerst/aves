@@ -300,7 +300,7 @@
   "@coordinateFormatDms": {},
   "coordinateFormatDecimal": "Decimal degrees",
   "@coordinateFormatDecimal": {},
-  "coordinateDms": "{निर्देशांक} {दिशा}",
+  "coordinateDms": "{coordinate} {direction}",
   "@coordinateDms": {
     "placeholders": {
       "coordinate": {
