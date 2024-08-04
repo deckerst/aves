@@ -8,8 +8,14 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: display more items in tag/copy/move quick action choosers
 
+### Changed
+
+- Accessibility: more animations and effects are suppressed when animations are disabled
+
 ### Fixed
 
+- opening app from launcher always showing home page
+- collection quick actions not showing in the top bar nor the menu
 - multiple widget setup after device reboot
 
 ## <a id="v1.11.8"></a>[v1.11.8] - 2024-07-19
