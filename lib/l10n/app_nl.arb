@@ -1386,5 +1386,11 @@
   "explorerActionSelectStorageVolume": "Opslag selecteren",
   "@explorerActionSelectStorageVolume": {},
   "selectStorageVolumeDialogTitle": "Opslag selecteren",
-  "@selectStorageVolumeDialogTitle": {}
+  "@selectStorageVolumeDialogTitle": {},
+  "sortByDuration": "Op lengte",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Kortste eerst",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Langste eerst",
+  "@sortOrderLongestFirst": {}
 }
