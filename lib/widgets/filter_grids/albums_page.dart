@@ -1,4 +1,4 @@
-import 'package:aves/model/apps.dart';
+import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/album.dart';

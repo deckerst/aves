@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
-import 'package:aves/model/panorama.dart';
+import 'package:aves/model/media/panorama.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
