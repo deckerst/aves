@@ -24,7 +24,7 @@ class LocationSection extends StatefulWidget {
   final AvesEntry entry;
   final bool showTitle;
   final ValueNotifier<bool> isScrollingNotifier;
-  final FilterCallback onFilter;
+  final AFilterCallback onFilter;
 
   const LocationSection({
     super.key,

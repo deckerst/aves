@@ -105,7 +105,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
 
   void _onAnimationStatusChanged(AnimationStatus status) {
     setState(() {});
-    if (status == AnimationStatus.completed) {
+    if (status.isCompleted) {
       widget.onSweepEnd?.call();
     }
   }

@@ -26,7 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-typedef FilterCallback = void Function(CollectionFilter filter);
+typedef AFilterCallback = void Function(CollectionFilter filter);
 typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
 
 enum HeroType { always, onTap, never }
@@ -56,7 +56,7 @@ class AvesFilterChip extends StatefulWidget {
   final double padding;
   final double? maxWidth;
   final HeroType heroType;
-  final FilterCallback? onTap, onRemove;
+  final AFilterCallback? onTap, onRemove;
   final OffsetFilterCallback? onLongPress;
 
   static const double defaultPadding = 6.0;

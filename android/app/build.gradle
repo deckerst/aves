@@ -189,7 +189,7 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.lifecycle:lifecycle-process:2.8.3'
+    implementation 'androidx.lifecycle:lifecycle-process:2.8.4'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
@@ -201,7 +201,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation 'com.google.android.material:material:1.12.0'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.13'
+    implementation 'org.slf4j:slf4j-simple:2.0.14'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
@@ -213,9 +213,9 @@ dependencies {
     implementation 'com.github.deckerst:pixymeta-android:9ec7097f17'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
 
-    kapt 'androidx.annotation:annotation:1.8.0'
+    kapt 'androidx.annotation:annotation:1.8.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')

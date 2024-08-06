@@ -23,7 +23,7 @@ import 'package:provider/provider.dart';
 class Histogram extends StatefulWidget {
   final Set<AvesEntry> entries;
   final Duration animationDuration;
-  final FilterCallback onFilterSelection;
+  final AFilterCallback onFilterSelection;
 
   const Histogram({
     super.key,

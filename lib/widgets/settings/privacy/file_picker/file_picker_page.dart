@@ -62,7 +62,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
     final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
     return PopScope(
       canPop: _directory.relativeDir.isEmpty,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
         final parent = pContext.dirname(currentDirectoryPath);

@@ -219,7 +219,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final viewStateConductor = context.read<ViewStateConductor>();
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
         _onPopInvoked();
