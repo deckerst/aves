@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Accessibility: more animations and effects are suppressed when animations are disabled
+- upgraded Flutter to stable v3.24.0
 
 ### Fixed
 

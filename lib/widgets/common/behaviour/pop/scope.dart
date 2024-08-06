@@ -17,7 +17,7 @@ class AvesPopScope extends StatelessWidget {
     final blocker = handlers.firstWhereOrNull((v) => !v.canPop(context));
     return PopScope(
       canPop: blocker == null,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           blocker?.onPopBlocked(context);
         }

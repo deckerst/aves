@@ -16,7 +16,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
   final CollectionFilter Function(T key) filterBuilder;
   final bool sortByCount;
   final int? maxRowCount;
-  final FilterCallback onFilterSelection;
+  final AFilterCallback onFilterSelection;
 
   const FilterTable({
     super.key,

@@ -30,7 +30,7 @@ class EditorControlPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: actionNotifier.value == null,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
         _cancelAction(context);

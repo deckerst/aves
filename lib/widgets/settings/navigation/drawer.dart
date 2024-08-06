@@ -104,7 +104,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
         ),
         body: PopScope(
           canPop: true,
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, result) {
             settings.drawerTypeBookmarks = _typeItems.where(_visibleTypes.contains).toList();
             settings.drawerAlbumBookmarks = _albumItems;
             settings.drawerPageBookmarks = _pageItems.where(_visiblePages.contains).toList();

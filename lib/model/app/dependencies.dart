@@ -339,12 +339,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/jifalops/dart-latlong',
     ),
     Dependency(
-      name: 'Material Color Utilities',
-      license: apache2,
-      licenseUrl: 'https://github.com/material-foundation/material-color-utilities/tree/main/dart/LICENSE',
-      sourceUrl: 'https://github.com/material-foundation/material-color-utilities/tree/main/dart',
-    ),
-    Dependency(
       name: 'Memory Leak Tracker',
       license: bsd3,
       sourceUrl: 'https://github.com/dart-lang/leak_tracker',

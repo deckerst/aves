@@ -41,7 +41,7 @@ class BasicSection extends StatefulWidget {
   final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<bool> isScrollingNotifier;
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
-  final FilterCallback onFilter;
+  final AFilterCallback onFilter;
 
   const BasicSection({
     super.key,

@@ -95,9 +95,9 @@ class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStat
 
   void _onStatusChanged(VideoStatus status) {
     final status = _playPauseAnimation.status;
-    if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
+    if (isPlaying && !status.isForwardOrCompleted) {
       _playPauseAnimation.forward();
-    } else if (!isPlaying && status != AnimationStatus.reverse && status != AnimationStatus.dismissed) {
+    } else if (!isPlaying && status.isForwardOrCompleted) {
       _playPauseAnimation.reverse();
     }
   }

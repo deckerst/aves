@@ -58,7 +58,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: true,
-      onPopInvoked: (didPop) => _onLeave(),
+      onPopInvokedWithResult: (didPop, result) => _onLeave(),
       child: AvesScaffold(
         body: Stack(
           children: [

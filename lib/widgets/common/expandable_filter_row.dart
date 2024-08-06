@@ -12,7 +12,7 @@ class TitledExpandableFilterRow extends StatelessWidget {
   final ValueNotifier<String?> expandedNotifier;
   final bool showGenericIcon;
   final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
-  final FilterCallback onTap;
+  final AFilterCallback onTap;
   final OffsetFilterCallback? onLongPress;
 
   const TitledExpandableFilterRow({
@@ -96,8 +96,8 @@ class ExpandableFilterRow extends StatelessWidget {
   final bool showGenericIcon;
   final Widget? Function(CollectionFilter)? leadingBuilder;
   final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
-  final FilterCallback onTap;
-  final FilterCallback? onRemove;
+  final AFilterCallback onTap;
+  final AFilterCallback? onRemove;
   final OffsetFilterCallback? onLongPress;
 
   static const double horizontalPadding = 8;
