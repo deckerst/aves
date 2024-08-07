@@ -1542,5 +1542,11 @@
   "explorerActionSelectStorageVolume": "Wybierz pamięć",
   "@explorerActionSelectStorageVolume": {},
   "setHomeCustom": "Własny",
-  "@setHomeCustom": {}
+  "@setHomeCustom": {},
+  "sortByDuration": "Według czasu trwania",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Najkrótsze najpierw",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Najdłuższe najpierw",
+  "@sortOrderLongestFirst": {}
 }
