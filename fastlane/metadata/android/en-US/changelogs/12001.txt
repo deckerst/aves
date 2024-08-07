@@ -1,4 +1,0 @@
-In v1.11.1:
-- watch videos with SRT subtitle files
-- enjoy the app in Persian
-Full changelog available on GitHub
