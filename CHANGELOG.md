@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.9"></a>[v1.11.9] - 2024-08-07
+
 ### Added
 
 - Viewer: display more items in tag/copy/move quick action choosers
