@@ -219,7 +219,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final viewStateConductor = context.read<ViewStateConductor>();
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
         _onPopInvoked();
@@ -494,13 +494,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                     );
                   }
                 },
-                onActionMenuOpened: () {
-                  // if the menu is opened while overlay is hiding,
-                  // the popup menu button is disposed and menu items are ineffective,
-                  // so we make sure overlay stays visible
-                  _videoActionDelegate.stopOverlayHidingTimer();
-                  const ToggleOverlayNotification(visible: true).dispatch(context);
-                },
               ),
             );
           } else if (targetEntry.is360) {
@@ -602,6 +595,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         case MoveType.export:
           break;
       }
+    } else if (notification is PopupMenuOpenedNotification) {
+      // if the menu is opened while overlay is hiding,
+      // the popup menu button is disposed and menu items are ineffective,
+      // so we make sure overlay stays visible
+      _overlayVisible.value = true;
+      _videoActionDelegate.stopOverlayHidingTimer();
+      dismissFeedback(context);
     } else if (notification is ToggleOverlayNotification) {
       _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
     } else if (notification is LockViewNotification) {
@@ -712,16 +712,23 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
     _overrideSnackBarMargin();
+    final animate = context.read<Settings>().animate;
     switch (page) {
       case transitionPage:
         dismissFeedback(context);
         _popVisual();
+        if (!animate) {
+          _verticalPager.jumpToPage(page);
+        }
       case imagePage:
         reportService.log('Nav move to Image page');
       case infoPage:
         reportService.log('Nav move to Info page');
         // prevent hero when viewer is offscreen
         _heroInfoNotifier.value = null;
+        if (!animate) {
+          _verticalPager.jumpToPage(page);
+        }
     }
   }
 

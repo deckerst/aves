@@ -36,7 +36,7 @@ class HomeWidgetPainter {
     final widthPx = sizeDip.width * devicePixelRatio;
     final heightPx = sizeDip.height * devicePixelRatio;
     final widgetSizePx = Size(widthPx, heightPx);
-    debugPrint('draw widget for $sizeDip dp ($widgetSizePx px), entry=$entry');
+    debugPrint('Draw widget for ${sizeDip.width}x${sizeDip.height} dp (${widgetSizePx.width}x${widgetSizePx.height} px), entry=$entry');
     final ui.Image? entryImage;
     if (entry != null) {
       final extent = shape.extentPx(widgetSizePx, entry!) / devicePixelRatio;

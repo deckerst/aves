@@ -53,6 +53,8 @@ jobs:
           ./flutterw build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi
           cp build/app/outputs/apk/izzy/release/*.apk outputs
           scripts/apply_flavor_libre.sh
+          ./flutterw build appbundle -t lib/main_libre.dart --flavor libre
+          cp build/app/outputs/bundle/libreRelease/*.aab outputs
           ./flutterw build apk -t lib/main_libre.dart --flavor libre --split-per-abi
           cp build/app/outputs/apk/libre/release/*.apk outputs
           rm $AVES_STORE_FILE

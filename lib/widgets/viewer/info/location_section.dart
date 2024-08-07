@@ -10,7 +10,9 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
+import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves_map/aves_map.dart';
@@ -22,7 +24,7 @@ class LocationSection extends StatefulWidget {
   final AvesEntry entry;
   final bool showTitle;
   final ValueNotifier<bool> isScrollingNotifier;
-  final FilterCallback onFilter;
+  final AFilterCallback onFilter;
 
   const LocationSection({
     super.key,
@@ -76,63 +78,72 @@ class _LocationSectionState extends State<LocationSection> {
     if (!entry.hasGps) return const SizedBox();
 
     final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.showTitle) const SectionRow(icon: AIcons.location),
-        MapTheme(
-          interactive: false,
-          showCoordinateFilter: false,
-          navigationButton: canNavigate ? MapNavigationButton.map : MapNavigationButton.none,
-          visualDensity: VisualDensity.compact,
-          mapHeight: 200,
-          child: GeoMap(
-            controller: _mapController,
-            entries: [entry],
-            availableSize: MediaQuery.sizeOf(context),
-            isAnimatingNotifier: widget.isScrollingNotifier,
-            onUserZoomChange: (zoom) => settings.infoMapZoom = zoom.roundToDouble(),
-            onMarkerTap: collection != null && canNavigate ? (location, entry) => _openMapPage(context) : null,
-            openMapPage: collection != null ? _openMapPage : null,
+    return NotificationListener(
+      onNotification: (notification) {
+        if (notification is OpenMapAppNotification) {
+          _openMapApp();
+          return true;
+        }
+        return false;
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.showTitle) const SectionRow(icon: AIcons.location),
+          MapTheme(
+            interactive: false,
+            showCoordinateFilter: false,
+            navigationButton: canNavigate ? MapNavigationButton.map : MapNavigationButton.none,
+            visualDensity: VisualDensity.compact,
+            mapHeight: 200,
+            child: GeoMap(
+              controller: _mapController,
+              entries: [entry],
+              availableSize: MediaQuery.sizeOf(context),
+              isAnimatingNotifier: widget.isScrollingNotifier,
+              onUserZoomChange: (zoom) => settings.infoMapZoom = zoom.roundToDouble(),
+              onMarkerTap: collection != null && canNavigate ? (location, entry) => _openMapPage(context) : null,
+              openMapPage: collection != null ? _openMapPage : null,
+            ),
           ),
-        ),
-        AnimatedBuilder(
-          animation: entry.addressChangeNotifier,
-          builder: (context, child) {
-            final filters = <LocationFilter>[];
-            if (entry.hasAddress) {
-              final address = entry.addressDetails!;
-              final country = address.countryName;
-              if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
-              final state = address.stateName;
-              if (state != null && state.isNotEmpty) filters.add(LocationFilter(LocationLevel.state, '$state${LocationFilter.locationSeparator}${address.stateCode}'));
-              final place = address.place;
-              if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
-            }
+          AnimatedBuilder(
+            animation: entry.addressChangeNotifier,
+            builder: (context, child) {
+              final filters = <LocationFilter>[];
+              if (entry.hasAddress) {
+                final address = entry.addressDetails!;
+                final country = address.countryName;
+                if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
+                final state = address.stateName;
+                if (state != null && state.isNotEmpty) filters.add(LocationFilter(LocationLevel.state, '$state${LocationFilter.locationSeparator}${address.stateCode}'));
+                final place = address.place;
+                if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
+              }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _AddressInfoGroup(entry: entry),
-                if (filters.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: filters
-                          .map((filter) => AvesFilterChip(
-                                filter: filter,
-                                onTap: widget.onFilter,
-                              ))
-                          .toList(),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _AddressInfoGroup(entry: entry),
+                  if (filters.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: filters
+                            .map((filter) => AvesFilterChip(
+                                  filter: filter,
+                                  onTap: widget.onFilter,
+                                ))
+                            .toList(),
+                      ),
                     ),
-                  ),
-              ],
-            );
-          },
-        ),
-      ],
+                ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -153,6 +164,15 @@ class _LocationSectionState extends State<LocationSection> {
         ),
       ),
     );
+  }
+
+  Future<void> _openMapApp() async {
+    final latLng = entry.latLng;
+    if (latLng != null) {
+      await appService.openMap(latLng).then((success) {
+        if (!success) showNoMatchingAppDialog(context);
+      });
+    }
   }
 
   void _onMetadataChanged() {

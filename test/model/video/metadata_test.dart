@@ -1,4 +1,4 @@
-import 'package:aves/model/video/metadata.dart';
+import 'package:aves/model/media/video/metadata.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -1380,5 +1380,15 @@
   "explorerPageTitle": "Проводник",
   "@explorerPageTitle": {},
   "explorerActionSelectStorageVolume": "Выбрать хранилище",
-  "@explorerActionSelectStorageVolume": {}
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Выбрать хранилище",
+  "@selectStorageVolumeDialogTitle": {},
+  "sortByDuration": "По продолжительности",
+  "@sortByDuration": {},
+  "sortOrderLongestFirst": "Сначала самый длинный",
+  "@sortOrderLongestFirst": {},
+  "setHomeCustom": "По своему",
+  "@setHomeCustom": {},
+  "sortOrderShortestFirst": "Сначала самый короткий",
+  "@sortOrderShortestFirst": {}
 }

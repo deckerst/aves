@@ -28,6 +28,7 @@ class AIcons {
   static const descriptionUntitled = Icons.comments_disabled_outlined;
   static const disc = Icons.fiber_manual_record;
   static const display = Icons.light_mode_outlined;
+  static const duration = Icons.timelapse_outlined;
   static const error = Icons.error_outline;
   static const explorer = Icons.account_tree_outlined;
   static const folder = Icons.folder_outlined;
@@ -162,6 +163,8 @@ class AIcons {
   static const zoomOut = Icons.remove_outlined;
   static const collapse = Icons.expand_less_outlined;
   static const expand = Icons.expand_more_outlined;
+  static const up = Icons.keyboard_arrow_up_outlined;
+  static const down = Icons.keyboard_arrow_down_outlined;
   static const previous = Icons.chevron_left_outlined;
   static const next = Icons.chevron_right_outlined;
 

@@ -79,6 +79,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     EntrySortFactor.size,
     EntrySortFactor.name,
     EntrySortFactor.rating,
+    EntrySortFactor.duration,
   ];
 
   static const _groupOptions = [
@@ -92,6 +93,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     TileLayout.mosaic,
     TileLayout.grid,
     TileLayout.list,
+  ];
+
+  static const _trashSelectionQuickActions = [
+    EntrySetAction.delete,
+    EntrySetAction.restore,
   ];
 
   @override
@@ -388,7 +394,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final hasSelection = selectedItemCount > 0;
 
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
-    final selectionQuickActions = isTrash ? [EntrySetAction.delete, EntrySetAction.restore] : settings.collectionSelectionQuickActions;
+    final selectionQuickActions = isTrash ? _trashSelectionQuickActions : settings.collectionSelectionQuickActions;
     final quickActions = (isSelecting ? selectionQuickActions : browsingQuickActions).take(max(0, availableCount - 1)).toList();
     final quickActionButtons = quickActions.where(isVisible).map(
           (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
@@ -430,7 +436,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 title: context.l10n.collectionActionEdit,
                 items: [
                   _buildRotateAndFlipMenuItems(context, canApply: canApply),
-                  ...EntrySetActions.edit.where((v) => isVisible(v) && !selectionQuickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
+                  ...EntrySetActions.edit.where((v) => isVisible(v) && !quickActions.contains(v)).map((action) => _toMenuItem(action, enabled: canApply(action), selection: selection)),
                 ],
               ),
           ];

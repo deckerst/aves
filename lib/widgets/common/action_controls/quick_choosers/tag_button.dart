@@ -4,7 +4,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/button.dart';
-import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/filter_quick_chooser_mixin.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_chooser.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
@@ -38,7 +38,7 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
   @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
     final options = settings.recentTags;
-    final takeCount = MenuQuickChooser.maxOptionCount - options.length;
+    final takeCount = FilterQuickChooserMixin.maxTotalOptionCount - options.length;
     if (takeCount > 0) {
       final source = context.read<CollectionSource>();
       final filters = source.sortedTags.map(TagFilter.new).whereNot(options.contains).toSet();

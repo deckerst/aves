@@ -66,6 +66,7 @@ class CollectionSectionHeader extends StatelessWidget {
           selectable: selectable,
         );
       case EntrySortFactor.size:
+      case EntrySortFactor.duration:
         break;
     }
     return null;

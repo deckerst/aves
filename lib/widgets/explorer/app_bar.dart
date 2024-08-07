@@ -7,7 +7,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/view/src/actions/explorer.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
@@ -27,7 +26,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class ExplorerAppBar extends StatefulWidget {
-  final ValueNotifier<VolumeRelativeDirectory> directoryNotifier;
+  final ValueNotifier<VolumeRelativeDirectory?> directoryNotifier;
   final void Function(String path) goTo;
 
   const ExplorerAppBar({
@@ -68,7 +67,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           return SizedBox(
             width: constraints.maxWidth,
             height: CrumbLine.getPreferredHeight(MediaQuery.textScalerOf(context)),
-            child: ValueListenableBuilder<VolumeRelativeDirectory>(
+            child: ValueListenableBuilder<VolumeRelativeDirectory?>(
               valueListenable: widget.directoryNotifier,
               builder: (context, directory, child) {
                 return CrumbLine(
@@ -118,7 +117,10 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           return [
             ExplorerAction.addShortcut,
             ExplorerAction.setHome,
-          ].map((v) {
+            null,
+            ExplorerAction.stats,
+          ].map<PopupMenuEntry<ExplorerAction>>((v) {
+            if (v == null) return const PopupMenuDivider();
             return PopupMenuItem(
               value: v,
               child: MenuRow(text: v.getText(context), icon: v.getIcon()),
@@ -129,7 +131,9 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           // wait for the popup menu to hide before proceeding with the action
           await Future.delayed(animations.popUpAnimationDelay * timeDilation);
           final directory = widget.directoryNotifier.value;
-          ExplorerActionDelegate(directory: directory).onActionSelected(context, action);
+          if (directory != null) {
+            ExplorerActionDelegate(directory: directory).onActionSelected(context, action);
+          }
         },
         popUpAnimationStyle: animations.popUpAnimationStyle,
       ),
@@ -138,10 +142,10 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
 
   Widget _buildVolumeSelector(BuildContext context) {
     if (_volumes.length == 2) {
-      return ValueListenableBuilder<VolumeRelativeDirectory>(
+      return ValueListenableBuilder<VolumeRelativeDirectory?>(
         valueListenable: widget.directoryNotifier,
         builder: (context, directory, child) {
-          final currentVolume = directory.volumePath;
+          final currentVolume = directory?.volumePath;
           final otherVolume = _volumes.firstWhere((volume) => volume.path != currentVolume);
           final icon = otherVolume.isRemovable ? AIcons.storageCard : AIcons.storageMain;
           return IconButton(
@@ -156,7 +160,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
         icon: const Icon(AIcons.storageCard),
         onPressed: () async {
           _volumes.map((v) {
-            final selected = widget.directoryNotifier.value.volumePath == v.path;
+            final selected = widget.directoryNotifier.value?.volumePath == v.path;
             final icon = v.isRemovable ? AIcons.storageCard : AIcons.storageMain;
             return PopupMenuItem(
               value: v,
@@ -167,7 +171,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
               ),
             );
           }).toList();
-          final volumePath = widget.directoryNotifier.value.volumePath;
+          final volumePath = widget.directoryNotifier.value?.volumePath;
           final initialVolume = _volumes.firstWhereOrNull((v) => v.path == volumePath);
           final volume = await showDialog<StorageVolume?>(
             context: context,

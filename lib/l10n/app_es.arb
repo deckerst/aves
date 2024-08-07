@@ -1384,5 +1384,11 @@
   "setHomeCustom": "Personalizado",
   "@setHomeCustom": {},
   "explorerActionSelectStorageVolume": "Seleccionar almacenamiento",
-  "@explorerActionSelectStorageVolume": {}
+  "@explorerActionSelectStorageVolume": {},
+  "sortByDuration": "Por duración",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "El más corto primero",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "El más largo primero",
+  "@sortOrderLongestFirst": {}
 }

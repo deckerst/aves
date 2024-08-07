@@ -59,7 +59,14 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
 
     private fun getGeneration(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         val generation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            MediaStore.getGeneration(context, MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            try {
+                MediaStore.getGeneration(context, MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            } catch (e: Exception) {
+                // may yield `IllegalArgumentException: Volume external_primary not found`
+                val volumes = MediaStore.getExternalVolumeNames(context).joinToString(", ")
+                result.error("getGeneration-primary", e.message + " (available volumes are $volumes)", e)
+                return
+            }
         } else {
             null
         }

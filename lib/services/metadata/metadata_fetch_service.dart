@@ -2,12 +2,11 @@ import 'package:aves/convert/convert.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/geotiff.dart';
+import 'package:aves/model/media/geotiff.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/model/panorama.dart';
-import 'package:aves/ref/mime_types.dart';
+import 'package:aves/model/media/panorama.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
@@ -68,11 +67,6 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
-
-    // TODO TLAD remove log when MP4/TIFF-related OOMs are fixed
-    if ({MimeTypes.mp4, MimeTypes.tiff}.contains(entry.mimeType) && (entry.sizeBytes ?? 0) > 20000000) {
-      await reportService.log('catalog large entry=$entry size=${entry.sizeBytes}');
-    }
 
     Future<CatalogMetadata?> call() async {
       try {

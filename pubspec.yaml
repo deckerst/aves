@@ -7,14 +7,14 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.11.8+127
+version: 1.11.9+128
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.22.3
-  sdk: '>=3.4.1 <4.0.0'
+  flutter: 3.24.0
+  sdk: '>=3.5.0 <4.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:
@@ -82,7 +82,6 @@ dependencies:
   latlong2:
   leak_tracker:
   local_auth:
-  material_color_utilities:
   material_design_icons_flutter:
   network_info_plus:
   overlay_support:

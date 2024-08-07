@@ -19,7 +19,6 @@ import 'package:aves/widgets/common/action_controls/togglers/play.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
-import 'package:aves/widgets/common/basic/popup/menu_button.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
@@ -269,7 +268,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                   child: OverlayButton(
                     scale: widget.scale,
                     child: FontSizeIconTheme(
-                      child: AvesPopupMenuButton<EntryAction>(
+                      child: PopupMenuButton<EntryAction>(
                         key: const Key('entry-menu-button'),
                         itemBuilder: (context) {
                           final exportInternalActions = exportActions.whereNot(EntryActions.exportExternal.contains).toList();
@@ -305,6 +304,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                             ]
                           ];
                         },
+                        onOpened: () => PopupMenuOpenedNotification().dispatch(context),
                         onSelected: (action) async {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
@@ -315,12 +315,6 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                           _popupExpandedNotifier.value = null;
                         },
                         iconSize: IconTheme.of(context).size,
-                        onMenuOpened: () {
-                          // if the menu is opened while overlay is hiding,
-                          // the popup menu button is disposed and menu items are ineffective,
-                          // so we make sure overlay stays visible
-                          const ToggleOverlayNotification(visible: true).dispatch(context);
-                        },
                         popUpAnimationStyle: animations.popUpAnimationStyle,
                       ),
                     ),

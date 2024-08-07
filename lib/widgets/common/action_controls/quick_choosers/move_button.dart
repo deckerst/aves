@@ -5,7 +5,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/album_chooser.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/button.dart';
-import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/filter_quick_chooser_mixin.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -42,7 +42,7 @@ class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
     final source = context.read<CollectionSource>();
     final rawAlbums = source.rawAlbums;
     final options = settings.recentDestinationAlbums.where(rawAlbums.contains).toList();
-    final takeCount = MenuQuickChooser.maxOptionCount - options.length;
+    final takeCount = FilterQuickChooserMixin.maxTotalOptionCount - options.length;
     if (takeCount > 0) {
       final filters = rawAlbums.whereNot(options.contains).map((album) => AlbumFilter(album, null)).toSet();
       final allMapEntries = filters.map((filter) => FilterGridItem(filter, source.recentEntry(filter))).toList();

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/video_playback.dart';
+import 'package:aves/model/viewer/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';

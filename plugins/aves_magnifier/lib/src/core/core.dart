@@ -427,7 +427,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
   }
 
   void onAnimationStatus(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
+    if (status.isCompleted) {
       onAnimationStatusCompleted();
     }
   }

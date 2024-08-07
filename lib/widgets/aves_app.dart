@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
 import 'package:aves/l10n/l10n.dart';
-import 'package:aves/model/apps.dart';
+import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/defaults.dart';
@@ -345,12 +345,14 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                     child: ValueListenableBuilder<PageTransitionsBuilder>(
                       valueListenable: _pageTransitionsBuilderNotifier,
                       builder: (context, pageTransitionsBuilder, child) {
+                        final theme = Theme.of(context);
                         return Theme(
-                          data: Theme.of(context).copyWith(
+                          data: theme.copyWith(
                             pageTransitionsTheme: areAnimationsEnabled
                                 ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
                                 // strip page transitions used by `MaterialPageRoute`
                                 : const DirectPageTransitionsTheme(),
+                            splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
                           ),
                           child: MediaQueryDataProvider(child: child!),
                         );
@@ -411,6 +413,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   void didHaveMemoryPressure() {
     super.didHaveMemoryPressure();
     reportService.log('App memory pressure');
+    imageCache.clear();
   }
 
   @override
@@ -631,7 +634,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       final shouldReset = _exitedMainByPop;
       _exitedMainByPop = false;
 
-      if (!shouldReset && (intentData ?? {}).isEmpty) {
+      if (!shouldReset && (intentData ?? {}).values.whereNotNull().isEmpty) {
         reportService.log('Relaunch');
         return;
       }
@@ -665,6 +668,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 }
 
+// Flutter has various overscroll indicator implementations for Android:
+// - `StretchingOverscrollIndicator`, default when using Material 3
+// - `GlowingOverscrollIndicator`, default when not using Material 3
 class AvesScrollBehavior extends MaterialScrollBehavior {
   @override
   Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
@@ -674,11 +680,7 @@ class AvesScrollBehavior extends MaterialScrollBehavior {
             axisDirection: details.direction,
             child: child,
           )
-        : GlowingOverscrollIndicator(
-            axisDirection: details.direction,
-            color: Colors.white,
-            child: child,
-          );
+        : child;
   }
 }
 

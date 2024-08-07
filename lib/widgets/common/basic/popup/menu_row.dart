@@ -10,6 +10,8 @@ class MenuRow extends StatelessWidget {
     this.icon,
   });
 
+  static const leadingPadding = EdgeInsetsDirectional.only(end: 12);
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -17,7 +19,7 @@ class MenuRow extends StatelessWidget {
       children: [
         if (icon != null)
           Padding(
-            padding: const EdgeInsetsDirectional.only(end: 12),
+            padding: leadingPadding,
             child: IconTheme.merge(
               data: IconThemeData(
                 color: ListTileTheme.of(context).iconColor,

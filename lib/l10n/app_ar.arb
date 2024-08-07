@@ -1536,5 +1536,17 @@
   "chipActionGoToExplorerPage": "عرض في المستكشف",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "المستكشف",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "explorerActionSelectStorageVolume": "حدد التخزين",
+  "@explorerActionSelectStorageVolume": {},
+  "setHomeCustom": "مخصص",
+  "@setHomeCustom": {},
+  "selectStorageVolumeDialogTitle": "حدد التَخزين",
+  "@selectStorageVolumeDialogTitle": {},
+  "sortOrderShortestFirst": "الأقصر أولاً",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "الأطول أولاً",
+  "@sortOrderLongestFirst": {},
+  "sortByDuration": "حسب المدة",
+  "@sortByDuration": {}
 }

@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.9"></a>[v1.11.9] - 2024-08-07
+
+### Added
+
+- Viewer: display more items in tag/copy/move quick action choosers
+- Viewer: long descriptions are scrollable when overlay is expanded by tap
+- Collection: sort by duration
+- Map: open external map app from map views
+- Explorer: stats
+
+### Changed
+
+- Accessibility: more animations and effects are suppressed when animations are disabled
+- upgraded Flutter to stable v3.24.0
+
+### Fixed
+
+- opening app from launcher always showing home page
+- collection quick actions not showing in the top bar nor the menu
+- multiple widget setup after device reboot
+
 ## <a id="v1.11.8"></a>[v1.11.8] - 2024-07-19
 
 ### Added

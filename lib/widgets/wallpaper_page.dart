@@ -187,13 +187,6 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
               controller: videoController,
               action: action,
             ),
-            onActionMenuOpened: () {
-              // if the menu is opened while overlay is hiding,
-              // the popup menu button is disposed and menu items are ineffective,
-              // so we make sure overlay stays visible
-              _videoActionDelegate.stopOverlayHidingTimer();
-              const ToggleOverlayNotification(visible: true).dispatch(context);
-            },
           ),
         );
       }
