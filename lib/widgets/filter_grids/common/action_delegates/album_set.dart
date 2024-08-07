@@ -33,6 +33,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:android_intent_plus/android_intent.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumFilter>> _items;
@@ -148,7 +149,17 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       case ChipSetAction.createAlbum:
         _createAlbum(context, locked: false);
       case ChipSetAction.createVault:
-        _createAlbum(context, locked: true);
+        //_createAlbum(context, locked: true);
+        if (Platform.isAndroid) {
+
+          const intent = AndroidIntent(
+            action: 'action_view',
+            package: 'org.fossify.gallery.debug',
+            componentName: 'org.fossify.gallery.aes.AESActivity',
+            arguments: {'POS_EMULATOR_EXTRA': 'extras'},
+          );
+           intent.launch();
+        }
       // single/multiple filters
       case ChipSetAction.delete:
         _delete(context);

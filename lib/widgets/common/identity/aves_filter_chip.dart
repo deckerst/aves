@@ -61,7 +61,7 @@ class AvesFilterChip extends StatefulWidget {
 
   static const double defaultPadding = 6.0;
   static const double defaultRadius = 32;
-  static const double outlineWidth = 2;
+  static const double outlineWidth = 1;
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = kMinInteractiveDimension;
   static const double iconSize = 18;
@@ -296,7 +296,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                 style: TextStyle(
                   fontSize: AvesFilterChip.fontSize,
                   decoration: filter.reversed ? TextDecoration.lineThrough : null,
-                  decorationThickness: 2,
+                  //decorationThickness: 2,
                 ),
                 softWrap: false,
                 overflow: TextOverflow.fade,

@@ -155,6 +155,8 @@ class MpvVideoController extends AvesVideoController {
 
   Future<void> _init({int startMillis = 0}) async {
     final playing = _instance.state.playing;
+    // debugPrint('>>>> setting key and iv');
+    // await (_instance.platform as dynamic).setProperty('stream-lavf-o', 'decryption_key=7f104943f4c132dae72612d22a14b0624e66b1d958b079dd9912efca59d92edd,decryption_iv=a7c2d599fb131290');
 
     await _applyLoop();
     await _instance.open(Media(entry.uri), play: playing);
@@ -185,6 +187,7 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   Future<void> play() async {
+    debugPrint('>>>> Play called');
     await untilReady;
     await _instance.play();
   }

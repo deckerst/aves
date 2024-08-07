@@ -56,7 +56,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     return textScaler.scale(AvesFilterChip.fontSize + detailFontSize(extent) + 4) + AvesFilterChip.decoratedContentVerticalPadding * 2;
   }
 
-  static Radius radius(double extent) => Radius.circular(min<double>(AvesFilterChip.defaultRadius, extent / 4));
+  static Radius radius(double extent) => Radius.circular(min<double>(AvesFilterChip.defaultRadius, extent / 8));
 
   static double detailIconSize(double extent) => min<double>(AvesFilterChip.fontSize, extent / 8);
 
