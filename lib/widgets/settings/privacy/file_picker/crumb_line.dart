@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CrumbLine extends StatefulWidget {
-  final VolumeRelativeDirectory directory;
+  final VolumeRelativeDirectory? directory;
   final void Function(String path) onTap;
 
   const CrumbLine({
@@ -25,7 +25,7 @@ class CrumbLine extends StatefulWidget {
 class _CrumbLineState extends State<CrumbLine> {
   final ScrollController _scrollController = ScrollController();
 
-  VolumeRelativeDirectory get directory => widget.directory;
+  VolumeRelativeDirectory? get directory => widget.directory;
 
   @override
   void dispose() {
@@ -36,7 +36,7 @@ class _CrumbLineState extends State<CrumbLine> {
   @override
   void didUpdateWidget(covariant CrumbLine oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.directory.relativeDir.length < widget.directory.relativeDir.length) {
+    if ((oldWidget.directory?.relativeDir.length ?? 0) < (widget.directory?.relativeDir.length ?? 0)) {
       // scroll to show last crumb
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final animate = context.read<Settings>().animate;
@@ -56,10 +56,15 @@ class _CrumbLineState extends State<CrumbLine> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> parts = [
-      directory.getVolumeDescription(context),
-      ...pContext.split(directory.relativeDir),
-    ];
+    final _directory = directory;
+    final parts = <String>[];
+    if (_directory != null) {
+      parts.addAll([
+        _directory.getVolumeDescription(context),
+        ...pContext.split(_directory.relativeDir),
+      ]);
+    }
+
     final crumbColor = DefaultTextStyle.of(context).style.color;
     return ListView.builder(
       scrollDirection: Axis.horizontal,
@@ -84,13 +89,15 @@ class _CrumbLineState extends State<CrumbLine> {
           );
         }
         return GestureDetector(
-          onTap: () {
-            final path = pContext.joinAll([
-              directory.volumePath,
-              ...parts.skip(1).take(index),
-            ]);
-            widget.onTap(path);
-          },
+          onTap: _directory != null
+              ? () {
+                  final path = pContext.joinAll([
+                    _directory.volumePath,
+                    ...parts.skip(1).take(index),
+                  ]);
+                  widget.onTap(path);
+                }
+              : null,
           child: Container(
             // use a `Container` with a dummy color to make it expand
             // so that we can also detect taps around the title `Text`
