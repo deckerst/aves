@@ -1,5 +1,5 @@
 {
-  "viewerActionLock": "Lås",
+  "viewerActionLock": "Lås visaren",
   "@viewerActionLock": {},
   "entryInfoActionEditTags": "Redigera taggar",
   "@entryInfoActionEditTags": {},
@@ -7,19 +7,19 @@
   "@videoActionPlay": {},
   "viewerActionSettings": "Inställningar",
   "@viewerActionSettings": {},
-  "albumTierSpecial": "Vanlig",
+  "albumTierSpecial": "Vanligt förekommande",
   "@albumTierSpecial": {},
   "displayRefreshRatePreferLowest": "Lägsta intervall",
   "@displayRefreshRatePreferLowest": {},
-  "keepScreenOnViewerOnly": "Visningssidan bara",
+  "keepScreenOnViewerOnly": "Endast visningssidan",
   "@keepScreenOnViewerOnly": {},
-  "mapStyleOsmHot": "Humanitarian OSM",
+  "mapStyleOsmHot": "Humanitär OSM",
   "@mapStyleOsmHot": {},
   "videoResumptionModeAlways": "Alltid",
   "@videoResumptionModeAlways": {},
   "storageVolumeDescriptionFallbackPrimary": "Intern lagring",
   "@storageVolumeDescriptionFallbackPrimary": {},
-  "widgetOpenPageCollection": "Öppen insamling",
+  "widgetOpenPageCollection": "Öppna samling",
   "@widgetOpenPageCollection": {},
   "widgetTapUpdateWidget": "Uppdatera widgeten",
   "@widgetTapUpdateWidget": {},
@@ -206,7 +206,7 @@
   "@entryActionDelete": {},
   "entryActionCopyToClipboard": "Spara till urklipp",
   "@entryActionCopyToClipboard": {},
-  "viewerActionUnlock": "Öppna",
+  "viewerActionUnlock": "Lås upp visaren",
   "@viewerActionUnlock": {},
   "slideshowActionResume": "Återuppta",
   "@slideshowActionResume": {},
@@ -238,9 +238,9 @@
   "@cropAspectRatioOriginal": {},
   "cropAspectRatioSquare": "Fyrkant",
   "@cropAspectRatioSquare": {},
-  "filterAspectRatioLandscapeLabel": "Liggande",
+  "filterAspectRatioLandscapeLabel": "Liggande bilder",
   "@filterAspectRatioLandscapeLabel": {},
-  "filterAspectRatioPortraitLabel": "Porträtt",
+  "filterAspectRatioPortraitLabel": "Stående bilder",
   "@filterAspectRatioPortraitLabel": {},
   "filterBinLabel": "Papperskorg",
   "@filterBinLabel": {},
@@ -333,9 +333,9 @@
   "@mapStyleGoogleNormal": {},
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "@mapStyleGoogleHybrid": {},
-  "mapStyleGoogleTerrain": "Google Maps (Terrain)",
+  "mapStyleGoogleTerrain": "Google Maps (Terräng)",
   "@mapStyleGoogleTerrain": {},
-  "mapStyleStamenWatercolor": "Stamen Watercolor",
+  "mapStyleStamenWatercolor": "Stamen Watercolor (Akvarell)",
   "@mapStyleStamenWatercolor": {},
   "maxBrightnessNever": "Alldrig",
   "@maxBrightnessNever": {},
@@ -377,11 +377,11 @@
   "@settingsVideoEnablePip": {},
   "videoControlsPlay": "Spela",
   "@videoControlsPlay": {},
-  "videoControlsPlaySeek": "Spela & sök bakåt/framåt",
+  "videoControlsPlaySeek": "Spela & spola bakåt/framåt",
   "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "Öppna med annan spelare",
   "@videoControlsPlayOutside": {},
-  "videoControlsNone": "Ingen",
+  "videoControlsNone": "Inga",
   "@videoControlsNone": {},
   "videoLoopModeNever": "Aldrig",
   "@videoLoopModeNever": {},
@@ -409,9 +409,9 @@
   "@widgetDisplayedItemRandom": {},
   "widgetDisplayedItemMostRecent": "Alldra senast",
   "@widgetDisplayedItemMostRecent": {},
-  "widgetOpenPageHome": "Öppna hem",
+  "widgetOpenPageHome": "Öppna startsida",
   "@widgetOpenPageHome": {},
-  "otherDirectoryDescription": "“{name}” map",
+  "otherDirectoryDescription": "“{name}”-katalogen",
   "@otherDirectoryDescription": {
     "placeholders": {
       "name": {
@@ -421,7 +421,7 @@
       }
     }
   },
-  "storageAccessDialogMessage": "Var snäll och välj {directory} av“{volume}” på nästa skärm för att ge appen åtkomst till den.",
+  "storageAccessDialogMessage": "Vänligen välj {directory} i “{volume}” på nästa skärm för att ge appen åtkomst till den.",
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -523,7 +523,7 @@
   "@nameConflictDialogSingleSourceMessage": {},
   "nameConflictDialogMultipleSourceMessage": "Vissa filer har samma namn.",
   "@nameConflictDialogMultipleSourceMessage": {},
-  "noMatchingAppDialogMessage": "Det finns inga appar som kan hantera detta.",
+  "noMatchingAppDialogMessage": "Det finns inga applikationer som kan hantera detta.",
   "@noMatchingAppDialogMessage": {},
   "moveUndatedConfirmationDialogSetDate": "Spara datum",
   "@moveUndatedConfirmationDialogSetDate": {},
@@ -752,7 +752,7 @@
   "@viewerTransitionFade": {},
   "wallpaperTargetHomeLock": "Hem och låsskärmar",
   "@wallpaperTargetHomeLock": {},
-  "missingSystemFilePickerDialogMessage": "systemets filväljare är borta eller avstängd. Var snäll och sätt på den och försök igen.",
+  "missingSystemFilePickerDialogMessage": "Systemets filväljare saknas eller har inaktiverats. Vänligen aktivera denna och försök igen.",
   "@missingSystemFilePickerDialogMessage": {},
   "renameProcessorCounter": "Räknare",
   "@renameProcessorCounter": {},
@@ -833,5 +833,66 @@
   "chipActionUnpin": "Släpp från fästet",
   "@chipActionUnpin": {},
   "chipActionShowCollection": "Visa i samling",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "videoActionABRepeat": "A-B återupprepa",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Ange start",
+  "@videoRepeatActionSetStart": {},
+  "restrictedAccessDialogMessage": "Denna applikation har ej tillåtelse att modifiera filer i {directory} i \"{volume}\".\n\nVänligen använd en förinstallerad filhanterare eller galleriapplikation för att flytta filerna till en annan katalog.",
+  "@restrictedAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "widgetOpenPageViewer": "Öppna bildspel",
+  "@widgetOpenPageViewer": {},
+  "rootDirectoryDescription": "grundkatalog",
+  "@rootDirectoryDescription": {},
+  "notEnoughSpaceDialogMessage": "Denna åtgärd behöver {neededSize} ledigt utrymme på \"{volume}\" för att kunna slutföras, men det är enbart {freeSize} kvar.",
+  "@notEnoughSpaceDialogMessage": {
+    "placeholders": {
+      "neededSize": {
+        "type": "String",
+        "example": "314 MB"
+      },
+      "freeSize": {
+        "type": "String",
+        "example": "123 MB"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "addShortcutButtonLabel": "LÄGG TILL",
+  "@addShortcutButtonLabel": {},
+  "addShortcutDialogLabel": "Rubrik för genväg",
+  "@addShortcutDialogLabel": {},
+  "unsupportedTypeDialogMessage": "{count, plural, =1{Denna åtgärd stöds ej för filer av denna typ: {types}.} other{Denna åtgärd stöds ej för följande typer av filer: {types}.}}",
+  "@unsupportedTypeDialogMessage": {
+    "placeholders": {
+      "count": {},
+      "types": {
+        "type": "String",
+        "example": "GIF, TIFF, MP4",
+        "description": "a list of unsupported types"
+      }
+    }
+  },
+  "stopTooltip": "Stopp",
+  "@stopTooltip": {},
+  "chipActionGoToExplorerPage": "Visa i utforskaren",
+  "@chipActionGoToExplorerPage": {},
+  "videoRepeatActionSetEnd": "Ange slut",
+  "@videoRepeatActionSetEnd": {}
 }

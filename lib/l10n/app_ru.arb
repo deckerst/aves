@@ -1382,5 +1382,13 @@
   "explorerActionSelectStorageVolume": "Выбрать хранилище",
   "@explorerActionSelectStorageVolume": {},
   "selectStorageVolumeDialogTitle": "Выбрать хранилище",
-  "@selectStorageVolumeDialogTitle": {}
+  "@selectStorageVolumeDialogTitle": {},
+  "sortByDuration": "По продолжительности",
+  "@sortByDuration": {},
+  "sortOrderLongestFirst": "Сначала самый длинный",
+  "@sortOrderLongestFirst": {},
+  "setHomeCustom": "По своему",
+  "@setHomeCustom": {},
+  "sortOrderShortestFirst": "Сначала самый короткий",
+  "@sortOrderShortestFirst": {}
 }
