@@ -1542,5 +1542,11 @@
   "setHomeCustom": "مخصص",
   "@setHomeCustom": {},
   "selectStorageVolumeDialogTitle": "حدد التَخزين",
-  "@selectStorageVolumeDialogTitle": {}
+  "@selectStorageVolumeDialogTitle": {},
+  "sortOrderShortestFirst": "الأقصر أولاً",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "الأطول أولاً",
+  "@sortOrderLongestFirst": {},
+  "sortByDuration": "حسب المدة",
+  "@sortByDuration": {}
 }

@@ -7,6 +7,6 @@
     <string name="videos_shortcut_short_label">Videor</string>
     <string name="analysis_channel_name">Media scanning</string>
     <string name="analysis_notification_default_title">Scannar media</string>
-    <string name="analysis_notification_action_stop">Stop</string>
+    <string name="analysis_notification_action_stop">Stopp</string>
     <string name="search_shortcut_short_label">Sök</string>
 </resources>
