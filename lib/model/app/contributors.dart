@@ -114,6 +114,7 @@ class Contributors {
     // Contributor('Prasanta-Hembram', 'Prasantahembram720@gmail.com'), // Santali
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('Shift18', 'bribable.lawyer@posteo.net'), // Swedish
+    // Contributor('Andreas Håll', 'ante_skalman@hotmail.com'), // Swedish
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
   };
 }
