@@ -9,6 +9,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,8 @@ class ExplorerActionDelegate with FeedbackMixin {
         return isMain && device.canPinShortcut;
       case ExplorerAction.setHome:
         return isMain && !useTvLayout;
+      case ExplorerAction.stats:
+        return isMain;
     }
   }
 
@@ -36,6 +39,7 @@ class ExplorerActionDelegate with FeedbackMixin {
     switch (action) {
       case ExplorerAction.addShortcut:
       case ExplorerAction.setHome:
+      case ExplorerAction.stats:
         return true;
     }
   }
@@ -47,6 +51,8 @@ class ExplorerActionDelegate with FeedbackMixin {
         _addShortcut(context);
       case ExplorerAction.setHome:
         _setHome(context);
+      case ExplorerAction.stats:
+        _goToStats(context);
     }
   }
 
@@ -81,5 +87,24 @@ class ExplorerActionDelegate with FeedbackMixin {
   void _setHome(BuildContext context) async {
     settings.setHome(HomePageSetting.explorer, customExplorerPath: directory.dirPath);
     showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+  }
+
+  void _goToStats(BuildContext context) {
+    final path = directory.dirPath;
+    final filter = PathFilter(path);
+    final collection = CollectionLens(
+      source: context.read<CollectionSource>(),
+      filters: {filter},
+    );
+
+    Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: StatsPage.routeName),
+        builder: (context) => StatsPage(
+          entries: collection.sortedEntries.toSet(),
+          source: collection.source,
+        ),
+      ),
+    );
   }
 }

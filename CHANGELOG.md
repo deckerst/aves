@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: long descriptions are scrollable when overlay is expanded by tap
 - Collection: sort by duration
 - Map: open external map app from map views
+- Explorer: stats
 
 ### Changed
 

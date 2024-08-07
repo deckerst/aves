@@ -9,6 +9,7 @@ extension ExtraExplorerActionView on ExplorerAction {
     return switch (this) {
       ExplorerAction.addShortcut => l10n.collectionActionAddShortcut,
       ExplorerAction.setHome => l10n.collectionActionSetHome,
+      ExplorerAction.stats => l10n.menuActionStats,
     };
   }
 
@@ -18,6 +19,7 @@ extension ExtraExplorerActionView on ExplorerAction {
     return switch (this) {
       ExplorerAction.addShortcut => AIcons.addShortcut,
       ExplorerAction.setHome => AIcons.home,
+      ExplorerAction.stats => AIcons.stats,
     };
   }
 }
