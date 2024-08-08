@@ -437,7 +437,7 @@
   },
   "videoStartOverButtonLabel": "BÖRJA OM",
   "@videoStartOverButtonLabel": {},
-  "videoResumeButtonLabel": "Återuppta",
+  "videoResumeButtonLabel": "ÅTERUPPTA",
   "@videoResumeButtonLabel": {},
   "setCoverDialogLatest": "Senaste objektet",
   "@setCoverDialogLatest": {},
@@ -467,7 +467,7 @@
   "@passwordDialogEnter": {},
   "passwordDialogConfirm": "Bekräfta lösenord",
   "@passwordDialogConfirm": {},
-  "authenticateToConfigureVault": "Autentisera för att konfigurera valvet",
+  "authenticateToConfigureVault": "Verifiera dig för att konfigurera valvet",
   "@authenticateToConfigureVault": {},
   "appName": "Aves",
   "@appName": {},
@@ -527,7 +527,7 @@
   "@noMatchingAppDialogMessage": {},
   "moveUndatedConfirmationDialogSetDate": "Spara datum",
   "@moveUndatedConfirmationDialogSetDate": {},
-  "videoResumeDialogMessage": "Vill du återuppta uppspelningen vid",
+  "videoResumeDialogMessage": "Vill du återuppta uppspelningen vid tidpunkten {time}?",
   "@videoResumeDialogMessage": {
     "placeholders": {
       "time": {
@@ -548,7 +548,7 @@
   "@patternDialogConfirm": {},
   "renameEntrySetPagePatternFieldLabel": "Namnge mönster",
   "@renameEntrySetPagePatternFieldLabel": {},
-  "renameEntrySetPageInsertTooltip": "Infoga ---",
+  "renameEntrySetPageInsertTooltip": "Infoga fällt",
   "@renameEntrySetPageInsertTooltip": {},
   "renameEntrySetPagePreviewSectionTitle": "Förhandsgranska",
   "@renameEntrySetPagePreviewSectionTitle": {},
@@ -562,7 +562,7 @@
   "@exportEntryDialogHeight": {},
   "exportEntryDialogQuality": "Kvalitet",
   "@exportEntryDialogQuality": {},
-  "exportEntryDialogWriteMetadata": "Skriv metadata",
+  "exportEntryDialogWriteMetadata": "Registrera metadata",
   "@exportEntryDialogWriteMetadata": {},
   "renameEntryDialogLabel": "Nytt namn",
   "@renameEntryDialogLabel": {},
@@ -572,9 +572,9 @@
   "@editEntryDateDialogTitle": {},
   "editEntryDateDialogExtractFromTitle": "Kopiera från titel",
   "@editEntryDateDialogExtractFromTitle": {},
-  "editEntryDateDialogShift": "Skift",
+  "editEntryDateDialogShift": "Förskjut",
   "@editEntryDateDialogShift": {},
-  "editEntryDateDialogSourceFileModifiedDate": "Filens modifieringsdatum",
+  "editEntryDateDialogSourceFileModifiedDate": "Datum då filen ändrades",
   "@editEntryDateDialogSourceFileModifiedDate": {},
   "durationDialogHours": "Timmar",
   "@durationDialogHours": {},
@@ -604,11 +604,11 @@
   "@videoStreamSelectionDialogAudio": {},
   "videoStreamSelectionDialogText": "Undertexter",
   "@videoStreamSelectionDialogText": {},
-  "aboutBugReportInstruction": "Rapportera på GitHub med loggarna och systeminformation.",
+  "aboutBugReportInstruction": "Rapportera på GitHub tillsammans med bifogade loggar och systeminformation",
   "@aboutBugReportInstruction": {},
   "aboutDataUsageInternal": "Internt",
   "@aboutDataUsageInternal": {},
-  "aboutLicensesBanner": "Den här appen använder följande paket och bibliotek under öppen källkod-licens",
+  "aboutLicensesBanner": "Den här applikationen använder följande paket och bibliotek under öppen källkod-licens.",
   "@aboutLicensesBanner": {},
   "collectionPickPageTitle": "Välj",
   "@collectionPickPageTitle": {},
@@ -624,7 +624,7 @@
   "@aboutDataUsageCache": {},
   "aboutDataUsageDatabase": "Databas",
   "@aboutDataUsageDatabase": {},
-  "aboutDataUsageMisc": "Annat",
+  "aboutDataUsageMisc": "Diverse",
   "@aboutDataUsageMisc": {},
   "aboutDataUsageExternal": "Externt",
   "@aboutDataUsageExternal": {},
@@ -638,9 +638,9 @@
   "@aboutTranslatorsSectionTitle": {},
   "aboutLicensesSectionTitle": "Öppen-Källkod Licenser",
   "@aboutLicensesSectionTitle": {},
-  "aboutLicensesAndroidLibrariesSectionTitle": "Android Biblotek",
+  "aboutLicensesAndroidLibrariesSectionTitle": "Android Bibliotek",
   "@aboutLicensesAndroidLibrariesSectionTitle": {},
-  "aboutLicensesFlutterPluginsSectionTitle": "Flutter Tillägg",
+  "aboutLicensesFlutterPluginsSectionTitle": "Flutter-programtillägg",
   "@aboutLicensesFlutterPluginsSectionTitle": {},
   "collectionPageTitle": "Samling",
   "@collectionPageTitle": {},
@@ -662,7 +662,7 @@
   "@viewDialogReverseSortOrder": {},
   "tileLayoutMosaic": "Mosaik",
   "@tileLayoutMosaic": {},
-  "tileLayoutGrid": "Nät",
+  "tileLayoutGrid": "Rutnät",
   "@tileLayoutGrid": {},
   "tileLayoutList": "Lista",
   "@tileLayoutList": {},
@@ -700,7 +700,7 @@
   "@collectionActionRescan": {},
   "collectionActionEdit": "Redigera",
   "@collectionActionEdit": {},
-  "collectionSearchTitlesHintText": "Sög titlar",
+  "collectionSearchTitlesHintText": "Sök titlar",
   "@collectionSearchTitlesHintText": {},
   "dateYesterday": "Igår",
   "@dateYesterday": {},
@@ -754,15 +754,15 @@
   "@wallpaperTargetHomeLock": {},
   "missingSystemFilePickerDialogMessage": "Systemets filväljare saknas eller har inaktiverats. Vänligen aktivera denna och försök igen.",
   "@missingSystemFilePickerDialogMessage": {},
-  "renameProcessorCounter": "Räknare",
+  "renameProcessorCounter": "Numrering",
   "@renameProcessorCounter": {},
   "editEntryLocationDialogSetCustom": "Ange anpassad plats",
   "@editEntryLocationDialogSetCustom": {},
-  "collectionGroupAlbum": "Om album",
+  "collectionGroupAlbum": "Efter album",
   "@collectionGroupAlbum": {},
-  "collectionGroupMonth": "Om månad",
+  "collectionGroupMonth": "Efter månad",
   "@collectionGroupMonth": {},
-  "collectionGroupDay": "Om dag",
+  "collectionGroupDay": "Efter dag",
   "@collectionGroupDay": {},
   "collectionGroupNone": "Gruppera inte",
   "@collectionGroupNone": {},
@@ -894,5 +894,67 @@
   "chipActionGoToExplorerPage": "Visa i utforskaren",
   "@chipActionGoToExplorerPage": {},
   "videoRepeatActionSetEnd": "Ange slut",
-  "@videoRepeatActionSetEnd": {}
+  "@videoRepeatActionSetEnd": {},
+  "moveUndatedConfirmationDialogMessage": "Registrera datum på filerna innan vi går vidare?",
+  "@moveUndatedConfirmationDialogMessage": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {},
+  "editEntryDateDialogSetCustom": "Ange anpassat datum",
+  "@editEntryDateDialogSetCustom": {},
+  "editEntryDateDialogCopyField": "Kopiera från annat datum",
+  "@editEntryDateDialogCopyField": {},
+  "castDialogTitle": "Uppspelningsenheter",
+  "@castDialogTitle": {},
+  "renameEntrySetPageTitle": "Döpa om",
+  "@renameEntrySetPageTitle": {},
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Vill du ta bort denna fil?} other{Vill du ta bort dessa {count} filer?}}",
+  "@deleteEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "renameAlbumDialogLabel": "Nytt namn",
+  "@renameAlbumDialogLabel": {},
+  "renameAlbumDialogLabelAlreadyExistsHelper": "Katalogen finns redan",
+  "@renameAlbumDialogLabelAlreadyExistsHelper": {},
+  "aboutLicensesDartPackagesSectionTitle": "Dart-paket",
+  "@aboutLicensesDartPackagesSectionTitle": {},
+  "collectionActionShowTitleSearch": "Visa namnfilter",
+  "@collectionActionShowTitleSearch": {},
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytta denna fil tillpapperskorgen?} other{Flytta dessa {count} filer till papperskorgen?}}",
+  "@binEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "vaultBinUsageDialogMessage": "Några valv använder papperskorgen.",
+  "@vaultBinUsageDialogMessage": {},
+  "authenticateToUnlockVault": "Verifiera dig för att låsa upp valvet",
+  "@authenticateToUnlockVault": {},
+  "aboutCreditsSectionTitle": "Tillkännagivande",
+  "@aboutCreditsSectionTitle": {},
+  "aboutLicensesFlutterPackagesSectionTitle": "Flutter-paket",
+  "@aboutLicensesFlutterPackagesSectionTitle": {},
+  "editEntryDialogTargetFieldsHeader": "Fällt att modifiera",
+  "@editEntryDialogTargetFieldsHeader": {},
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort detta album samt filen som den innehåller?} other{Ta bort detta album och de {count} filer som den innehåller?}}",
+  "@deleteSingleAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort dessa album samt den fil som dem innehåller?} other{Ta bort dessa album samt de {count} filer som dem innehåller?}}",
+  "@deleteMultiAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  }
 }
