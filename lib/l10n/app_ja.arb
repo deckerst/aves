@@ -1193,7 +1193,7 @@
   "@chipActionFilterIn": {},
   "filterAspectRatioPortraitLabel": "縦向き",
   "@filterAspectRatioPortraitLabel": {},
-  "filterNoAddressLabel": "位置情報なし",
+  "filterNoAddressLabel": "アドレスなし",
   "@filterNoAddressLabel": {},
   "keepScreenOnVideoPlayback": "動画再生時",
   "@keepScreenOnVideoPlayback": {},
@@ -1370,5 +1370,11 @@
   "cropAspectRatioOriginal": "オリジナル",
   "@cropAspectRatioOriginal": {},
   "stopTooltip": "停止",
-  "@stopTooltip": {}
+  "@stopTooltip": {},
+  "explorerPageTitle": "エクスプローラー",
+  "@explorerPageTitle": {},
+  "chipActionGoToExplorerPage": "エクスプローラーで表示",
+  "@chipActionGoToExplorerPage": {},
+  "filterLocatedLabel": "位置情報あり",
+  "@filterLocatedLabel": {}
 }
