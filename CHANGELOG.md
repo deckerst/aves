@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Swedish translation (thanks Shift18, Andreas Håll)
+
 ## <a id="v1.11.9"></a>[v1.11.9] - 2024-08-07
 
 ### Added
