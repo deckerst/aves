@@ -71,7 +71,6 @@ class AvesApp extends StatefulWidget {
     'or', // Odia
     'sat', // Santali
     'sl', // Slovenian
-    'sv', // Swedish
     'th', // Thai
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
