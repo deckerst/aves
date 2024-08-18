@@ -1532,5 +1532,21 @@
   "videoRepeatActionSetEnd": "Setează sfârșitul",
   "@videoRepeatActionSetEnd": {},
   "chipActionShowCollection": "Afișați în colecție",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "sortByDuration": "După durată",
+  "@sortByDuration": {},
+  "setHomeCustom": "Personalizat",
+  "@setHomeCustom": {},
+  "sortOrderShortestFirst": "Cel mai scurt mai întâi",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Cel mai lung mai întâi",
+  "@sortOrderLongestFirst": {},
+  "explorerActionSelectStorageVolume": "Selectează spațiu de stocare",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Selectează spațiu de stocare",
+  "@selectStorageVolumeDialogTitle": {},
+  "chipActionGoToExplorerPage": "Afișare în Explorer",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "Explorer",
+  "@explorerPageTitle": {}
 }
