@@ -1374,5 +1374,21 @@
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Forza numeri arabi",
-  "@settingsForceWesternArabicNumeralsTile": {}
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "sortByDuration": "Per durata",
+  "@sortByDuration": {},
+  "sortOrderLongestFirst": "Prima i più lunghi",
+  "@sortOrderLongestFirst": {},
+  "sortOrderShortestFirst": "Prima i più corti",
+  "@sortOrderShortestFirst": {},
+  "explorerPageTitle": "Esploratore",
+  "@explorerPageTitle": {},
+  "explorerActionSelectStorageVolume": "Seleziona il supporto",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Seleziona Supporto",
+  "@selectStorageVolumeDialogTitle": {},
+  "setHomeCustom": "Personalizzato",
+  "@setHomeCustom": {},
+  "chipActionGoToExplorerPage": "Mostra nell'Esploratore",
+  "@chipActionGoToExplorerPage": {}
 }

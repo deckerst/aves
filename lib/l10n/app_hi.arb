@@ -544,5 +544,15 @@
   "authenticateToConfigureVault": "वॉल्ट को कॉन्फ़िगर करने के लिए प्रमाणीकरण करें",
   "@authenticateToConfigureVault": {},
   "renameAlbumDialogLabelAlreadyExistsHelper": "डायरेक्टरी पहले से मौजूद",
-  "@renameAlbumDialogLabelAlreadyExistsHelper": {}
+  "@renameAlbumDialogLabelAlreadyExistsHelper": {},
+  "videoRepeatActionSetEnd": "एण्ड सेट करे",
+  "@videoRepeatActionSetEnd": {},
+  "chipActionShowCountryStates": "राज्यों को दिखाएं",
+  "@chipActionShowCountryStates": {},
+  "chipActionConfigureVault": "वॉल्ट को कॉन्फ़िगर करें",
+  "@chipActionConfigureVault": {},
+  "videoActionABRepeat": "A-B दोहराव",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "स्टार्ट सेट करे",
+  "@videoRepeatActionSetStart": {}
 }
