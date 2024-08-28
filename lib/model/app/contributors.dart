@@ -99,6 +99,7 @@ class Contributors {
     Contributor('Shift18', 'bribable.lawyer@posteo.net'),
     Contributor('Andreas Håll', 'ante_skalman@hotmail.com'),
     Contributor('Scorza9999', 'oliva.scorza@gmail.com'),
+    Contributor('Taufan', 'taufanxxx@gmail.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
