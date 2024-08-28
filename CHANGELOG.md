@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Swedish translation (thanks Shift18, Andreas Håll)
 
+### Changed
+
+- upgraded Flutter to stable v3.24.1
+
 ## <a id="v1.11.9"></a>[v1.11.9] - 2024-08-07
 
 ### Added
