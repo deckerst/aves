@@ -13,7 +13,7 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.24.0
+  flutter: 3.24.1
   sdk: '>=3.5.0 <4.0.0'
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
@@ -119,6 +119,10 @@ dependency_overrides:
   # media_kit_video v1.2.4 depends on a specific old version of screen_brightness
   media_kit_video: ^1.0.0
   screen_brightness: ^1.0.0
+  #  Because printing >=5.13.2 depends on web ^1.0.0 and firebase_core_web >=2.12.0 depends on web ^0.5.1, printing >=5.13.2 is incompatible with firebase_core_web >=2.12.0.
+  #  And because firebase_core 3.3.0 depends on firebase_core_web ^2.17.4, printing >=5.13.2 is incompatible with firebase_core 3.3.0.
+  #  So, because aves depends on both firebase_core 3.3.0 and printing 5.13.2, version solving failed.
+  printing: "5.13.1"
 
 dev_dependencies:
   flutter_test:
