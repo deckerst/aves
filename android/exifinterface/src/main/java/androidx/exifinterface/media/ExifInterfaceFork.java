@@ -6808,6 +6808,11 @@ public class ExifInterfaceFork {
         }
         firstIfdOffset -= 8;
         if (firstIfdOffset > 0) {
+            // TLAD start
+            if (firstIfdOffset > ATTRIBUTE_SIZE_DANGER_THRESHOLD) {
+                throw new IOException("dangerous IFD offset=" + firstIfdOffset);
+            }
+            // TLAD end
             dataInputStream.skipFully(firstIfdOffset);
         }
     }
