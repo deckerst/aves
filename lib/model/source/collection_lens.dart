@@ -161,6 +161,7 @@ class CollectionLens with ChangeNotifier {
       case EntrySortFactor.rating:
         return !filters.any((f) => f is RatingFilter);
       case EntrySortFactor.size:
+      case EntrySortFactor.duration:
         return false;
     }
   }
@@ -261,6 +262,8 @@ class CollectionLens with ChangeNotifier {
         _filteredSortedEntries.sort(AvesEntrySort.compareByRating);
       case EntrySortFactor.size:
         _filteredSortedEntries.sort(AvesEntrySort.compareBySize);
+      case EntrySortFactor.duration:
+        _filteredSortedEntries.sort(AvesEntrySort.compareByDuration);
     }
     if (sortReverse) {
       _filteredSortedEntries = _filteredSortedEntries.reversed.toList();
@@ -294,6 +297,7 @@ class CollectionLens with ChangeNotifier {
         case EntrySortFactor.rating:
           sections = groupBy<AvesEntry, EntryRatingSectionKey>(_filteredSortedEntries, (entry) => EntryRatingSectionKey(entry.rating));
         case EntrySortFactor.size:
+        case EntrySortFactor.duration:
           sections = Map.fromEntries([
             MapEntry(const SectionKey(), _filteredSortedEntries),
           ]);

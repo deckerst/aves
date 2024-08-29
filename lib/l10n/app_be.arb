@@ -1536,5 +1536,17 @@
   "chipActionGoToExplorerPage": "Паказаць у Правадыру",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Правадыр",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "sortByDuration": "Па працягласці",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Спачатку самы кароткі",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Спачатку самы доўгі",
+  "@sortOrderLongestFirst": {},
+  "explorerActionSelectStorageVolume": "Выбраць сховішча",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Выбраць сховішча",
+  "@selectStorageVolumeDialogTitle": {},
+  "setHomeCustom": "Па-свойму",
+  "@setHomeCustom": {}
 }

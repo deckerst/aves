@@ -26,6 +26,8 @@ class MapActionDelegate {
           ),
           onSelection: (v) => settings.mapStyle = v,
         );
+      case MapAction.openMapApp:
+        OpenMapAppNotification().dispatch(context);
       case MapAction.zoomIn:
         controller?.zoomBy(1);
       case MapAction.zoomOut:
@@ -33,3 +35,5 @@ class MapActionDelegate {
     }
   }
 }
+
+class OpenMapAppNotification extends Notification {}

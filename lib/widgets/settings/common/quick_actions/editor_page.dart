@@ -155,7 +155,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     final originalDirection = Directionality.of(context);
     return PopScope(
       canPop: true,
-      onPopInvoked: (didPop) => widget.save(_quickActions),
+      onPopInvokedWithResult: (didPop, result) => widget.save(_quickActions),
       child: ListView(
         children: [
           Padding(

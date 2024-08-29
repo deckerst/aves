@@ -74,7 +74,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
 
     return PopScope(
       canPop: !_isModified,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
         final NavigatorState navigator = Navigator.of(context);

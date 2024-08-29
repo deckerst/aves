@@ -11,12 +11,18 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.SizeF
 import android.widget.RemoteViews
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
-import deckers.thibault.aves.channel.calls.*
+import deckers.thibault.aves.channel.calls.DeviceHandler
+import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
+import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
+import deckers.thibault.aves.channel.calls.MediaStoreHandler
+import deckers.thibault.aves.channel.calls.StorageHandler
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
 import deckers.thibault.aves.model.FieldMap
@@ -26,8 +32,14 @@ import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -108,37 +120,25 @@ class HomeWidgetProvider : AppWidgetProvider() {
 
         val isNightModeOn = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
+        val params = hashMapOf(
+            "widgetId" to widgetId,
+            "sizesDip" to sizesDip,
+            "devicePixelRatio" to getDevicePixelRatio(),
+            "drawEntryImage" to drawEntryImage,
+            "reuseEntry" to reuseEntry,
+            "isSystemThemeDark" to isNightModeOn,
+        ).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                put("cornerRadiusPx", context.resources.getDimension(android.R.dimen.system_app_widget_background_radius))
+            }
+        }
+
         initFlutterEngine(context)
-        val messenger = flutterEngine!!.dartExecutor
-        val channel = MethodChannel(messenger, WIDGET_DRAW_CHANNEL)
         try {
-            val props = suspendCoroutine<Any?> { cont ->
+            val props = suspendCoroutine { cont ->
                 defaultScope.launch {
                     FlutterUtils.runOnUiThread {
-                        channel.invokeMethod("drawWidget", hashMapOf(
-                            "widgetId" to widgetId,
-                            "sizesDip" to sizesDip,
-                            "devicePixelRatio" to getDevicePixelRatio(),
-                            "drawEntryImage" to drawEntryImage,
-                            "reuseEntry" to reuseEntry,
-                            "isSystemThemeDark" to isNightModeOn,
-                        ).apply {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                put("cornerRadiusPx", context.resources.getDimension(android.R.dimen.system_app_widget_background_radius))
-                            }
-                        }, object : MethodChannel.Result {
-                            override fun success(result: Any?) {
-                                cont.resume(result)
-                            }
-
-                            override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-                                cont.resumeWithException(Exception("$errorCode: $errorMessage\n$errorDetails"))
-                            }
-
-                            override fun notImplemented() {
-                                cont.resumeWithException(Exception("not implemented"))
-                            }
-                        })
+                        tryDrawWidget(params, cont, 0)
                     }
                 }
             }
@@ -148,6 +148,30 @@ class HomeWidgetProvider : AppWidgetProvider() {
             Log.e(LOG_TAG, "failed to draw widget for widgetId=$widgetId sizesPx=$sizesDip", e)
         }
         return null
+    }
+
+    private fun tryDrawWidget(params: HashMap<String, Any>, cont: Continuation<Any?>, drawRetry: Int) {
+        val messenger = flutterEngine!!.dartExecutor
+        val channel = MethodChannel(messenger, WIDGET_DRAW_CHANNEL)
+        channel.invokeMethod("drawWidget", params, object : MethodChannel.Result {
+            override fun success(result: Any?) {
+                cont.resume(result)
+            }
+
+            override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+                cont.resumeWithException(Exception("$errorCode: $errorMessage\n$errorDetails"))
+            }
+
+            override fun notImplemented() {
+                if (drawRetry > DRAW_RETRY_MAX) {
+                    cont.resumeWithException(Exception("not implemented"))
+                } else {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        tryDrawWidget(params, cont, drawRetry + 1)
+                    }, 2000L)
+                }
+            }
+        })
     }
 
     private fun updateWidgetImage(
@@ -271,6 +295,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         private val LOG_TAG = LogUtils.createTag<HomeWidgetProvider>()
         private const val WIDGET_DART_ENTRYPOINT = "widgetMain"
         private const val WIDGET_DRAW_CHANNEL = "deckers.thibault/aves/widget_draw"
+        private const val DRAW_RETRY_MAX = 5
 
         private var flutterEngine: FlutterEngine? = null
         private var imageByteFetchJob: Job? = null

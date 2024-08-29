@@ -1,6 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -73,6 +74,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
                   icon: const Icon(isNotFavouriteIcon),
                 );
         }
+        final animate = context.select<Settings, bool>((v) => v.animate);
         return Stack(
           alignment: Alignment.center,
           children: [
@@ -82,14 +84,15 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
               focusNode: widget.focusNode,
               tooltip: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
             ),
-            Sweeper(
-              key: ValueKey(entries.length == 1 ? entries.first : entries.length),
-              builder: (context) => Icon(
-                favouriteSweeperIcon,
-                color: context.select<AvesColorsData, Color>((v) => v.favourite),
+            if (animate)
+              Sweeper(
+                key: ValueKey(entries.length == 1 ? entries.first : entries.length),
+                builder: (context) => Icon(
+                  favouriteSweeperIcon,
+                  color: context.select<AvesColorsData, Color>((v) => v.favourite),
+                ),
+                toggledNotifier: _isFavouriteNotifier,
               ),
-              toggledNotifier: _isFavouriteNotifier,
-            ),
           ],
         );
       },

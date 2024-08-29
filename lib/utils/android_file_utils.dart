@@ -1,4 +1,4 @@
-import 'package:aves/model/apps.dart';
+import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
@@ -6,6 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
+
+enum _State { uninitialized, initializing, initialized }
 
 class AndroidFileUtils {
   // cf https://developer.android.com/reference/android/content/ContentResolver#SCHEME_CONTENT
@@ -27,13 +29,19 @@ class AndroidFileUtils {
   late final String dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;
   late final Set<String> videoCapturesPaths;
   Set<StorageVolume> storageVolumes = {};
-  bool _initialized = false;
+  _State _initialized = _State.uninitialized;
 
   AndroidFileUtils._private();
 
   Future<void> init() async {
-    if (_initialized) return;
+    if (_initialized == _State.uninitialized) {
+      _initialized = _State.initializing;
+      await _doInit();
+      _initialized = _State.initialized;
+    }
+  }
 
+  Future<void> _doInit() async {
     separator = pContext.separator;
     await _initStorageVolumes();
     vaultRoot = await storageService.getVaultRoot();
@@ -50,8 +58,6 @@ class AndroidFileUtils {
       // from Aves
       avesVideoCapturesPath,
     };
-
-    _initialized = true;
   }
 
   Future<void> _initStorageVolumes() async {

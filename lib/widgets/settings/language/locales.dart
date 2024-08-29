@@ -29,6 +29,7 @@ class SupportedLocales {
     'ro': 'Română',
     'ru': 'Русский',
     'sk': 'Slovenčina',
+    'sv': 'Svenska',
     'tr': 'Türkçe',
     'uk': 'Українська',
     'vi': 'Tiếng Việt',

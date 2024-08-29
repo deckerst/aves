@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/model/video/channel_layouts.dart';
-import 'package:aves/model/video/codecs.dart';
-import 'package:aves/model/video/profiles/aac.dart';
-import 'package:aves/model/video/profiles/h264.dart';
-import 'package:aves/model/video/profiles/hevc.dart';
+import 'package:aves/model/media/video/channel_layouts.dart';
+import 'package:aves/model/media/video/codecs.dart';
+import 'package:aves/model/media/video/profiles/aac.dart';
+import 'package:aves/model/media/video/profiles/h264.dart';
+import 'package:aves/model/media/video/profiles/hevc.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';

@@ -41,15 +41,13 @@ class ExplorerPage extends StatefulWidget {
 
 class _ExplorerPageState extends State<ExplorerPage> {
   final List<StreamSubscription> _subscriptions = [];
-  final ValueNotifier<VolumeRelativeDirectory> _directory = ValueNotifier(const VolumeRelativeDirectory(volumePath: '', relativeDir: ''));
+  final ValueNotifier<VolumeRelativeDirectory?> _directory = ValueNotifier(null);
+  final ValueNotifier<VolumeRelativeDirectory?> _contentsDirectory = ValueNotifier(null);
   final ValueNotifier<List<Directory>> _contents = ValueNotifier([]);
 
   Set<StorageVolume> get _volumes => androidFileUtils.storageVolumes;
 
-  String get _currentDirectoryPath {
-    final dir = _directory.value;
-    return pContext.join(dir.volumePath, dir.relativeDir);
-  }
+  String? _pathOf(VolumeRelativeDirectory? dir) => dir != null ? pContext.join(dir.volumePath, dir.relativeDir) : null;
 
   @override
   void initState() {
@@ -82,15 +80,20 @@ class _ExplorerPageState extends State<ExplorerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<VolumeRelativeDirectory>(
+    return ValueListenableBuilder<VolumeRelativeDirectory?>(
       valueListenable: _directory,
       builder: (context, directory, child) {
-        final atRoot = directory.relativeDir.isEmpty;
+        final atRoot = directory?.relativeDir.isEmpty ?? true;
         return AvesPopScope(
           handlers: [
             APopHandler(
               canPop: (context) => atRoot,
-              onPopBlocked: (context) => _goTo(pContext.dirname(_currentDirectoryPath)),
+              onPopBlocked: (context) {
+                final path = _pathOf(directory);
+                if (path != null) {
+                  _goTo(pContext.dirname(path));
+                }
+              },
             ),
             tvNavigationPopHandler,
             doubleBackPopHandler,
@@ -118,7 +121,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
                             AnimationLimiter(
                               // animation limiter should not be above the app bar
                               // so that the crumb line can automatically scroll
-                              key: ValueKey(_currentDirectoryPath),
+                              key: ValueKey(contents),
                               child: SliverList.builder(
                                 itemBuilder: (context, index) {
                                   return AnimationConfiguration.staggeredList(
@@ -147,18 +150,26 @@ class _ExplorerPageState extends State<ExplorerPage> {
                     ),
                   ),
                   const Divider(height: 0),
-                  SafeArea(
-                    top: false,
-                    bottom: true,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: AvesFilterChip(
-                        filter: PathFilter(_currentDirectoryPath),
-                        maxWidth: double.infinity,
-                        onTap: (filter) => _goToCollectionPage(context, filter),
-                        onLongPress: null,
-                      ),
-                    ),
+                  ValueListenableBuilder<VolumeRelativeDirectory?>(
+                    valueListenable: _contentsDirectory,
+                    builder: (context, contentsDirectory, child) {
+                      final dirPath = _pathOf(contentsDirectory);
+                      return dirPath != null
+                          ? SafeArea(
+                              top: false,
+                              bottom: true,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: AvesFilterChip(
+                                  filter: PathFilter(dirPath),
+                                  maxWidth: double.infinity,
+                                  onTap: (filter) => _goToCollectionPage(context, filter),
+                                  onLongPress: null,
+                                ),
+                              ),
+                            )
+                          : const SizedBox();
+                    },
                   ),
                 ],
               ),
@@ -177,15 +188,18 @@ class _ExplorerPageState extends State<ExplorerPage> {
         if (loading) {
           bottom = const CircularProgressIndicator();
         } else {
-          final source = context.read<CollectionSource>();
-          final album = _getAlbumPath(source, Directory(_currentDirectoryPath));
-          if (album != null) {
-            bottom = AvesFilterChip(
-              filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
-              maxWidth: double.infinity,
-              onTap: (filter) => _goToCollectionPage(context, filter),
-              onLongPress: null,
-            );
+          final dirPath = _pathOf(_contentsDirectory.value);
+          if (dirPath != null) {
+            final source = context.read<CollectionSource>();
+            final album = _getAlbumPath(source, Directory(dirPath));
+            if (album != null) {
+              bottom = AvesFilterChip(
+                filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
+                maxWidth: double.infinity,
+                onTap: (filter) => _goToCollectionPage(context, filter),
+                onLongPress: null,
+              );
+            }
           }
         }
 
@@ -249,11 +263,14 @@ class _ExplorerPageState extends State<ExplorerPage> {
   }
 
   void _updateContents() {
-    final contents = <Directory>[];
+    final directory = _directory.value;
+    final dirPath = _pathOf(directory);
+    if (dirPath == null) return;
 
+    final contents = <Directory>[];
     final source = context.read<CollectionSource>();
     final albums = source.rawAlbums.map((v) => v.toLowerCase()).toSet();
-    Directory(_currentDirectoryPath).list().listen((event) {
+    Directory(dirPath).list().listen((event) {
       final entity = event.absolute;
       if (entity is Directory) {
         final dirPath = entity.path.toLowerCase();
@@ -268,6 +285,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
           final nameB = pContext.split(b.path).last;
           return compareAsciiUpperCaseNatural(nameA, nameB);
         });
+      _contentsDirectory.value = directory;
     });
   }
 

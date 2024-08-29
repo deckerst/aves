@@ -12,7 +12,7 @@ class MimeDonut extends StatelessWidget {
   final IconData icon;
   final Map<String, int> byMimeTypes;
   final Duration animationDuration;
-  final FilterCallback onFilterSelection;
+  final AFilterCallback onFilterSelection;
 
   const MimeDonut({
     super.key,

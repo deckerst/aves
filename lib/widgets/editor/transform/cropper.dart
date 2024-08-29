@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/view_state.dart';
+import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/geometry.dart';
 import 'package:aves/widgets/common/fx/dashed_path_painter.dart';

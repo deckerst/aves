@@ -135,8 +135,8 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
     super.dispose();
   }
 
-  void _onAnimationStatusChanged(AnimationStatus animationStatus) {
-    if (animationStatus == AnimationStatus.completed) {
+  void _onAnimationStatusChanged(AnimationStatus status) {
+    if (status.isCompleted) {
       if (widget.onVisible != null && !_wasVisible) {
         widget.onVisible!();
       }

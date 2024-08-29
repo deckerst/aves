@@ -1,6 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/app_icon_image_provider.dart';
-import 'package:aves/model/apps.dart';
+import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
@@ -41,7 +41,7 @@ class BasicSection extends StatefulWidget {
   final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<bool> isScrollingNotifier;
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
-  final FilterCallback onFilter;
+  final AFilterCallback onFilter;
 
   const BasicSection({
     super.key,

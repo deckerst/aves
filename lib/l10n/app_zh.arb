@@ -1384,5 +1384,11 @@
   "explorerActionSelectStorageVolume": "选择存储器",
   "@explorerActionSelectStorageVolume": {},
   "selectStorageVolumeDialogTitle": "选择存储器",
-  "@selectStorageVolumeDialogTitle": {}
+  "@selectStorageVolumeDialogTitle": {},
+  "sortByDuration": "按时长",
+  "@sortByDuration": {},
+  "sortOrderLongestFirst": "先长后短",
+  "@sortOrderLongestFirst": {},
+  "sortOrderShortestFirst": "先短后长",
+  "@sortOrderShortestFirst": {}
 }

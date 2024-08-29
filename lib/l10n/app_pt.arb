@@ -1378,5 +1378,17 @@
   "chipActionGoToExplorerPage": "Mostrar no Explorador",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Explorador",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "sortByDuration": "Por duração",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Mais curtos primeiro",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Mais longos primeiro",
+  "@sortOrderLongestFirst": {},
+  "explorerActionSelectStorageVolume": "Selecione o armazenamento",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Selecione o Armazenamento",
+  "@selectStorageVolumeDialogTitle": {},
+  "setHomeCustom": "Personalizada",
+  "@setHomeCustom": {}
 }

@@ -364,7 +364,7 @@ class StatsTopPage extends StatelessWidget {
 
   final String title;
   final WidgetBuilder tableBuilder;
-  final FilterCallback onFilterSelection;
+  final AFilterCallback onFilterSelection;
 
   const StatsTopPage({
     super.key,

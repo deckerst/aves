@@ -75,42 +75,47 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
       const AvesBottomNavItem(route: AlbumListPage.routeName),
     ];
 
-    Widget child = AvesFloatingBar(
-      builder: (context, backgroundColor, child) => BottomNavigationBar(
-        items: items
-            .map((item) => BottomNavigationBarItem(
-                  icon: item.icon(context),
-                  label: item.label(context),
-                  tooltip: item.label(context),
-                ))
-            .toList(),
-        onTap: (index) => _goTo(context, items, index),
-        currentIndex: _getCurrentIndex(context, items),
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: backgroundColor,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-      ),
-    );
-
-    return Hero(
-      tag: 'nav-bar',
-      flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-        return MediaQuery.removeViewInsets(
-          context: context,
-          removeBottom: true,
-          child: toHero.widget,
-        );
-      },
-      child: FloatingNavBar(
-        scrollController: PrimaryScrollController.of(context),
-        events: widget.events,
-        childHeight: AppBottomNavBar.height + context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
-        child: SafeArea(
-          child: child,
+    Widget child = FloatingNavBar(
+      scrollController: PrimaryScrollController.of(context),
+      events: widget.events,
+      childHeight: AppBottomNavBar.height + context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+      child: SafeArea(
+        child: AvesFloatingBar(
+          builder: (context, backgroundColor, child) => BottomNavigationBar(
+            items: items
+                .map((item) => BottomNavigationBarItem(
+                      icon: item.icon(context),
+                      label: item.label(context),
+                      tooltip: item.label(context),
+                    ))
+                .toList(),
+            onTap: (index) => _goTo(context, items, index),
+            currentIndex: _getCurrentIndex(context, items),
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: backgroundColor,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+          ),
         ),
       ),
     );
+
+    final animate = context.select<Settings, bool>((v) => v.animate);
+    if (animate) {
+      child = Hero(
+        tag: 'nav-bar',
+        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+          return MediaQuery.removeViewInsets(
+            context: context,
+            removeBottom: true,
+            child: toHero.widget,
+          );
+        },
+        child: child,
+      );
+    }
+
+    return child;
   }
 
   void _onCollectionFilterChanged() => setState(() {});
