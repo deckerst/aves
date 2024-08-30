@@ -24,7 +24,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
   List<String> sortedPlaces = List.unmodifiable([]);
 
   Future<void> loadAddresses({Set<int>? ids}) async {
-    final saved = await (ids != null ? metadataDb.loadAddressesById(ids) : metadataDb.loadAddresses());
+    final saved = await (ids != null ? localMediaDb.loadAddressesById(ids) : localMediaDb.loadAddresses());
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.id]?.addressDetails = metadata);
     invalidateEntries();
@@ -37,7 +37,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
 
     final unlocatedIds = candidateEntries.where((entry) => !entry.hasGps).map((entry) => entry.id).toSet();
     if (unlocatedIds.isNotEmpty) {
-      await metadataDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
+      await localMediaDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
       onAddressMetadataChanged();
     }
   }
@@ -71,7 +71,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       setProgress(done: ++progressDone, total: progressTotal);
     });
     if (newAddresses.isNotEmpty) {
-      await metadataDb.saveAddresses(Set.unmodifiable(newAddresses));
+      await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
       onAddressMetadataChanged();
     }
   }
@@ -129,7 +129,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       if (entry.hasFineAddress) {
         newAddresses.add(entry.addressDetails!);
         if (newAddresses.length >= commitCountThreshold) {
-          await metadataDb.saveAddresses(Set.unmodifiable(newAddresses));
+          await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
           onAddressMetadataChanged();
           newAddresses.clear();
         }
@@ -141,7 +141,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       setProgress(done: ++progressDone, total: progressTotal);
     }
     if (newAddresses.isNotEmpty) {
-      await metadataDb.saveAddresses(Set.unmodifiable(newAddresses));
+      await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
       onAddressMetadataChanged();
     }
   }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/db/db_metadata.dart';
+import 'package:aves/model/db/db.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
@@ -35,7 +35,7 @@ import '../fake/availability.dart';
 import '../fake/device_service.dart';
 import '../fake/media_fetch_service.dart';
 import '../fake/media_store_service.dart';
-import '../fake/metadata_db.dart';
+import '../fake/db.dart';
 import '../fake/metadata_fetch_service.dart';
 import '../fake/report_service.dart';
 import '../fake/storage_service.dart';
@@ -58,7 +58,7 @@ void main() {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
     getIt.registerLazySingleton<AvesAvailability>(FakeAvesAvailability.new);
-    getIt.registerLazySingleton<MetadataDb>(FakeMetadataDb.new);
+    getIt.registerLazySingleton<LocalMediaDb>(FakeAvesDb.new);
 
     getIt.registerLazySingleton<AppService>(FakeAppService.new);
     getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);

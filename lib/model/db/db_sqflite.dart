@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/db/db_metadata.dart';
-import 'package:aves/model/db/db_metadata_sqflite_upgrade.dart';
+import 'package:aves/model/db/db.dart';
+import 'package:aves/model/db/db_sqflite_upgrade.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -16,7 +16,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
-class SqfliteMetadataDb implements MetadataDb {
+class SqfliteLocalMediaDb implements LocalMediaDb {
   late Database _db;
 
   Future<String> get path async => pContext.join(await getDatabasesPath(), 'metadata.db');
@@ -108,7 +108,7 @@ class SqfliteMetadataDb implements MetadataDb {
             ', resumeTimeMillis INTEGER'
             ')');
       },
-      onUpgrade: MetadataDbUpgrader.upgradeDb,
+      onUpgrade: LocalMediaDbUpgrader.upgradeDb,
       version: 11,
     );
 
@@ -209,7 +209,7 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<Set<AvesEntry>> loadEntriesById(Set<int> ids) => _getByIds(ids, entryTable, AvesEntry.fromMap);
 
   @override
-  Future<void> saveEntries(Set<AvesEntry> entries) async {
+  Future<void> insertEntries(Set<AvesEntry> entries) async {
     if (entries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
     final batch = _db.batch();
@@ -244,6 +244,35 @@ class SqfliteMetadataDb implements MetadataDb {
       limit: limit,
     );
     return rows.map(AvesEntry.fromMap).toSet();
+  }
+
+  @override
+  Future<Set<AvesEntry>> searchLiveDuplicates(int origin, Set<AvesEntry>? entries) async {
+    String where = 'origin = ? AND trashed = ?';
+    if (entries != null) {
+      where += ' AND contentId IN (${entries.map((v) => v.contentId).join(',')})';
+    }
+    final rows = await _db.query(
+      entryTable,
+      where: where,
+      whereArgs: [origin, 0],
+      groupBy: 'contentId',
+      having: 'COUNT(id) > 1',
+    );
+    final duplicates = rows.map(AvesEntry.fromMap).toSet();
+    if (duplicates.isEmpty) {
+      return {};
+    }
+
+    debugPrint('Found duplicates=$duplicates');
+    if (entries != null) {
+      // return duplicates among the provided entries
+      final duplicateIds = duplicates.map((v) => v.id).toSet();
+      return entries.where((v) => duplicateIds.contains(v.id)).toSet();
+    } else {
+      // return latest duplicates for each content ID
+      return duplicates.groupFoldBy<int?, AvesEntry>((v) => v.contentId, (prev, v) => prev != null && prev.id > v.id ? prev : v).values.toSet();
+    }
   }
 
   // date taken

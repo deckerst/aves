@@ -16,12 +16,12 @@ class DatabasePlaybackStateHandler extends PlaybackStateHandler {
 
   @override
   Future<int?> getResumeTime({required int entryId, required BuildContext context}) async {
-    final playback = await metadataDb.loadVideoPlayback(entryId);
+    final playback = await localMediaDb.loadVideoPlayback(entryId);
     final resumeTime = playback?.resumeTimeMillis ?? 0;
     if (resumeTime == 0) return null;
 
     // clear on retrieval
-    await metadataDb.removeVideoPlayback({entryId});
+    await localMediaDb.removeVideoPlayback({entryId});
 
     switch (settings.videoResumptionMode) {
       case VideoResumptionMode.never:
@@ -54,14 +54,14 @@ class DatabasePlaybackStateHandler extends PlaybackStateHandler {
   @override
   Future<void> saveResumeTime({required int entryId, required int position, required double progress}) async {
     if (resumeTimeSaveMinProgress < progress && progress < resumeTimeSaveMaxProgress) {
-      await metadataDb.addVideoPlayback({
+      await localMediaDb.addVideoPlayback({
         VideoPlaybackRow(
           entryId: entryId,
           resumeTimeMillis: position,
         )
       });
     } else {
-      await metadataDb.removeVideoPlayback({entryId});
+      await localMediaDb.removeVideoPlayback({entryId});
     }
   }
 }

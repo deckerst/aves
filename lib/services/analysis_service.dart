@@ -48,7 +48,7 @@ Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
   await androidFileUtils.init();
-  await metadataDb.init();
+  await localMediaDb.init();
   await device.init();
   await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);

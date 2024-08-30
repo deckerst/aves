@@ -15,7 +15,7 @@ class Favourites with ChangeNotifier {
   Favourites._private();
 
   Future<void> init() async {
-    _rows = await metadataDb.loadAllFavourites();
+    _rows = await localMediaDb.loadAllFavourites();
   }
 
   int get count => _rows.length;
@@ -29,7 +29,7 @@ class Favourites with ChangeNotifier {
   Future<void> add(Set<AvesEntry> entries) async {
     final newRows = entries.map(_entryToRow).toSet();
 
-    await metadataDb.addFavourites(newRows);
+    await localMediaDb.addFavourites(newRows);
     _rows.addAll(newRows);
 
     notifyListeners();
@@ -40,14 +40,14 @@ class Favourites with ChangeNotifier {
   Future<void> removeIds(Set<int> entryIds) async {
     final removedRows = _rows.where((row) => entryIds.contains(row.entryId)).toSet();
 
-    await metadataDb.removeFavourites(removedRows);
+    await localMediaDb.removeFavourites(removedRows);
     removedRows.forEach(_rows.remove);
 
     notifyListeners();
   }
 
   Future<void> clear() async {
-    await metadataDb.clearFavourites();
+    await localMediaDb.clearFavourites();
     _rows.clear();
 
     notifyListeners();

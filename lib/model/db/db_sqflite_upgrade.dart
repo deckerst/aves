@@ -1,18 +1,18 @@
-import 'package:aves/model/db/db_metadata_sqflite.dart';
+import 'package:aves/model/db/db_sqflite.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
-class MetadataDbUpgrader {
-  static const entryTable = SqfliteMetadataDb.entryTable;
-  static const dateTakenTable = SqfliteMetadataDb.dateTakenTable;
-  static const metadataTable = SqfliteMetadataDb.metadataTable;
-  static const addressTable = SqfliteMetadataDb.addressTable;
-  static const favouriteTable = SqfliteMetadataDb.favouriteTable;
-  static const coverTable = SqfliteMetadataDb.coverTable;
-  static const vaultTable = SqfliteMetadataDb.vaultTable;
-  static const trashTable = SqfliteMetadataDb.trashTable;
-  static const videoPlaybackTable = SqfliteMetadataDb.videoPlaybackTable;
+class LocalMediaDbUpgrader {
+  static const entryTable = SqfliteLocalMediaDb.entryTable;
+  static const dateTakenTable = SqfliteLocalMediaDb.dateTakenTable;
+  static const metadataTable = SqfliteLocalMediaDb.metadataTable;
+  static const addressTable = SqfliteLocalMediaDb.addressTable;
+  static const favouriteTable = SqfliteLocalMediaDb.favouriteTable;
+  static const coverTable = SqfliteLocalMediaDb.coverTable;
+  static const vaultTable = SqfliteLocalMediaDb.vaultTable;
+  static const trashTable = SqfliteLocalMediaDb.trashTable;
+  static const videoPlaybackTable = SqfliteLocalMediaDb.videoPlaybackTable;
 
   // warning: "ALTER TABLE ... RENAME COLUMN ..." is not supported
   // on SQLite <3.25.0, bundled on older Android devices

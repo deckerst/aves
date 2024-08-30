@@ -1,6 +1,6 @@
 import 'package:aves/model/availability.dart';
-import 'package:aves/model/db/db_metadata.dart';
-import 'package:aves/model/db/db_metadata_sqflite.dart';
+import 'package:aves/model/db/db.dart';
+import 'package:aves/model/db/db_sqflite.dart';
 import 'package:aves/model/settings/store_shared_pref.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/device_service.dart';
@@ -32,7 +32,7 @@ final SettingsStore settingsStore = SharedPrefSettingsStore();
 
 final p.Context pContext = getIt<p.Context>();
 final AvesAvailability availability = getIt<AvesAvailability>();
-final MetadataDb metadataDb = getIt<MetadataDb>();
+final LocalMediaDb localMediaDb = getIt<LocalMediaDb>();
 final AvesVideoControllerFactory videoControllerFactory = getIt<AvesVideoControllerFactory>();
 final AvesVideoMetadataFetcher videoMetadataFetcher = getIt<AvesVideoMetadataFetcher>();
 
@@ -54,7 +54,7 @@ final WindowService windowService = getIt<WindowService>();
 void initPlatformServices() {
   getIt.registerLazySingleton<p.Context>(p.Context.new);
   getIt.registerLazySingleton<AvesAvailability>(LiveAvesAvailability.new);
-  getIt.registerLazySingleton<MetadataDb>(SqfliteMetadataDb.new);
+  getIt.registerLazySingleton<LocalMediaDb>(SqfliteLocalMediaDb.new);
   getIt.registerLazySingleton<AvesVideoControllerFactory>(MpvVideoControllerFactory.new);
   getIt.registerLazySingleton<AvesVideoMetadataFetcher>(FfmpegVideoMetadataFetcher.new);
 

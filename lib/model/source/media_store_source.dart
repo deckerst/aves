@@ -57,7 +57,7 @@ class MediaStoreSource extends CollectionSource {
   Future<void> _loadEssentials() async {
     final stopwatch = Stopwatch()..start();
     state = SourceState.loading;
-    await metadataDb.init();
+    await localMediaDb.init();
     await vaults.init();
     await favourites.init();
     await covers.init();
@@ -67,8 +67,8 @@ class MediaStoreSource extends CollectionSource {
       if (currentTimeZoneOffset != catalogTimeZoneOffset) {
         // clear catalog metadata to get correct date/times when moving to a different time zone
         debugPrint('$runtimeType clear catalog metadata to get correct date/times');
-        await metadataDb.clearDates();
-        await metadataDb.clearCatalogMetadata();
+        await localMediaDb.clearDates();
+        await localMediaDb.clearCatalogMetadata();
         settings.catalogTimeZoneRawOffsetMillis = currentTimeZoneOffset;
       }
     }
@@ -92,13 +92,13 @@ class MediaStoreSource extends CollectionSource {
       final topIds = settings.topEntryIds?.toSet();
       if (topIds != null) {
         debugPrint('$runtimeType refresh ${stopwatch.elapsed} load ${topIds.length} top entries');
-        topEntries.addAll(await metadataDb.loadEntriesById(topIds));
+        topEntries.addAll(await localMediaDb.loadEntriesById(topIds));
         addEntries(topEntries);
       }
     }
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} fetch known entries');
-    final knownEntries = await metadataDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: directory);
+    final knownEntries = await localMediaDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: directory);
     final knownLiveEntries = knownEntries.where((entry) => !entry.trashed).toSet();
 
     debugPrint('$runtimeType refresh ${stopwatch.elapsed} check obsolete entries');
@@ -146,7 +146,7 @@ class MediaStoreSource extends CollectionSource {
     // clean up obsolete entries
     if (removedEntries.isNotEmpty) {
       debugPrint('$runtimeType refresh ${stopwatch.elapsed} remove obsolete entries');
-      await metadataDb.removeIds(removedEntries.map((entry) => entry.id).toSet());
+      await localMediaDb.removeIds(removedEntries.map((entry) => entry.id).toSet());
     }
 
     // verify paths because some apps move files without updating their `last modified date`
@@ -185,7 +185,7 @@ class MediaStoreSource extends CollectionSource {
         // reuse known entry ID to overwrite it while preserving favourites, etc.
         final contentId = entry.contentId;
         final existingEntry = knownContentIds.contains(contentId) ? knownLiveEntries.firstWhereOrNull((entry) => entry.contentId == contentId) : null;
-        entry.id = existingEntry?.id ?? metadataDb.nextId;
+        entry.id = existingEntry?.id ?? localMediaDb.nextId;
 
         pendingNewEntries.add(entry);
         if (pendingNewEntries.length >= refreshCount) {
@@ -198,7 +198,13 @@ class MediaStoreSource extends CollectionSource {
 
         if (allNewEntries.isNotEmpty) {
           debugPrint('$runtimeType refresh ${stopwatch.elapsed} save new entries');
-          await metadataDb.saveEntries(allNewEntries);
+          await localMediaDb.insertEntries(allNewEntries);
+
+          // TODO TLAD [971] check duplicates
+          final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, allNewEntries);
+          if (duplicates.isNotEmpty) {
+            unawaited(reportService.recordError(Exception('Loading entries yielded duplicates=${duplicates.join(', ')}'), StackTrace.current));
+          }
 
           // new entries include existing entries with obsolete paths
           // so directories may be added, but also removed or simply have their content summary changed
@@ -276,7 +282,7 @@ class MediaStoreSource extends CollectionSource {
             if (existingEntry != null) {
               entriesToRefresh.add(existingEntry);
             } else {
-              sourceEntry.id = metadataDb.nextId;
+              sourceEntry.id = localMediaDb.nextId;
               newEntries.add(sourceEntry);
             }
             final existingDirectory = existingEntry?.directory;
@@ -304,7 +310,14 @@ class MediaStoreSource extends CollectionSource {
 
     if (newEntries.isNotEmpty) {
       addEntries(newEntries);
-      await metadataDb.saveEntries(newEntries);
+      await localMediaDb.insertEntries(newEntries);
+
+      // TODO TLAD [971] check duplicates
+      final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
+      if (duplicates.isNotEmpty) {
+        unawaited(reportService.recordError(Exception('Refreshing entries yielded duplicates=${duplicates.join(', ')}'), StackTrace.current));
+      }
+
       await analyze(analysisController, entries: newEntries);
     }
 
@@ -346,7 +359,7 @@ class MediaStoreSource extends CollectionSource {
   // vault
 
   Future<void> _loadVaultEntries(String? directory) async {
-    addEntries(await metadataDb.loadEntries(origin: EntryOrigins.vault, directory: directory));
+    addEntries(await localMediaDb.loadEntries(origin: EntryOrigins.vault, directory: directory));
   }
 
   Future<void> _refreshVaultEntries({
@@ -367,7 +380,7 @@ class MediaStoreSource extends CollectionSource {
         final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
         if (sourceEntry != null) {
           newEntries.add(sourceEntry.copyWith(
-            id: metadataDb.nextId,
+            id: localMediaDb.nextId,
             origin: EntryOrigins.vault,
           ));
         }
