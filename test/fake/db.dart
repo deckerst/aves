@@ -33,6 +33,9 @@ class FakeAvesDb extends Fake implements LocalMediaDb {
   @override
   Future<void> updateEntry(int id, AvesEntry entry) => SynchronousFuture(null);
 
+  @override
+  Future<Set<AvesEntry>> searchLiveDuplicates(int origin, Set<AvesEntry>? entries) => SynchronousFuture({});
+
   // date taken
 
   @override
