@@ -8,7 +8,7 @@ import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/viewer/video_playback.dart';
 
-abstract class MetadataDb {
+abstract class LocalMediaDb {
   int get nextId;
 
   Future<void> init();
@@ -27,11 +27,13 @@ abstract class MetadataDb {
 
   Future<Set<AvesEntry>> loadEntriesById(Set<int> ids);
 
-  Future<void> saveEntries(Set<AvesEntry> entries);
+  Future<void> insertEntries(Set<AvesEntry> entries);
 
   Future<void> updateEntry(int id, AvesEntry entry);
 
   Future<Set<AvesEntry>> searchLiveEntries(String query, {int? limit});
+
+  Future<Set<AvesEntry>> searchLiveDuplicates(int origin, Set<AvesEntry>? entries);
 
   // date taken
 

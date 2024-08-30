@@ -32,7 +32,7 @@ class Covers {
   Covers._private();
 
   Future<void> init() async {
-    _rows = await metadataDb.loadAllCovers();
+    _rows = await localMediaDb.loadAllCovers();
   }
 
   int get count => _rows.length;
@@ -59,7 +59,7 @@ class Covers {
 
     final oldRows = _rows.where((row) => row.filter == filter).toSet();
     _rows.removeAll(oldRows);
-    await metadataDb.removeCovers({filter});
+    await localMediaDb.removeCovers({filter});
 
     final oldRow = oldRows.firstOrNull;
     final oldEntry = oldRow?.entryId;
@@ -74,7 +74,7 @@ class Covers {
         color: color,
       );
       _rows.add(row);
-      await metadataDb.addCovers({row});
+      await localMediaDb.addCovers({row});
     }
 
     if (oldEntry != entryId) _entryChangeStreamController.add({filter});
@@ -103,7 +103,7 @@ class Covers {
   }
 
   Future<void> clear() async {
-    await metadataDb.clearCovers();
+    await localMediaDb.clearCovers();
     _rows.clear();
 
     _entryChangeStreamController.add(null);

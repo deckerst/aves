@@ -1,5 +1,5 @@
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/db/db_metadata.dart';
+import 'package:aves/model/db/db.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -10,7 +10,7 @@ import 'package:aves/model/vaults/details.dart';
 import 'package:flutter/foundation.dart';
 import 'package:test/fake.dart';
 
-class FakeMetadataDb extends Fake implements MetadataDb {
+class FakeAvesDb extends Fake implements LocalMediaDb {
   static int _lastId = 0;
 
   @override
@@ -28,7 +28,7 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<Set<AvesEntry>> loadEntries({int? origin, String? directory}) => SynchronousFuture({});
 
   @override
-  Future<void> saveEntries(Set<AvesEntry> entries) => SynchronousFuture(null);
+  Future<void> insertEntries(Set<AvesEntry> entries) => SynchronousFuture(null);
 
   @override
   Future<void> updateEntry(int id, AvesEntry entry) => SynchronousFuture(null);

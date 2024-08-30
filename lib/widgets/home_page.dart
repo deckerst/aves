@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initViewerEssentials() async {
     // for video playback storage
-    await metadataDb.init();
+    await localMediaDb.init();
   }
 
   bool _isViewerSourceable(AvesEntry? viewerEntry) {

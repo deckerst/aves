@@ -432,8 +432,8 @@ class AvesEntry with AvesEntryBase {
     if (isFlipped is bool) this.isFlipped = isFlipped;
 
     if (persist) {
-      await metadataDb.saveEntries({this});
-      if (catalogMetadata != null) await metadataDb.saveCatalogMetadata({catalogMetadata!});
+      await localMediaDb.updateEntry(id, this);
+      if (catalogMetadata != null) await localMediaDb.saveCatalogMetadata({catalogMetadata!});
     }
 
     await _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
@@ -451,7 +451,7 @@ class AvesEntry with AvesEntryBase {
     _tags = null;
 
     if (persist) {
-      await metadataDb.removeIds({id}, dataTypes: dataTypes);
+      await localMediaDb.removeIds({id}, dataTypes: dataTypes);
     }
 
     final updatedEntry = await mediaFetchService.getEntry(uri, mimeType);
