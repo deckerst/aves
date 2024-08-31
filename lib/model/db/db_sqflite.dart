@@ -112,7 +112,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       version: 11,
     );
 
-    final maxIdRows = await _db.rawQuery('SELECT max(id) AS maxId FROM $entryTable');
+    final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
     _lastId = (maxIdRows.firstOrNull?['maxId'] as int?) ?? 0;
   }
 
@@ -252,27 +252,20 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     if (entries != null) {
       where += ' AND contentId IN (${entries.map((v) => v.contentId).join(',')})';
     }
-    final rows = await _db.query(
-      entryTable,
-      where: where,
-      whereArgs: [origin, 0],
-      groupBy: 'contentId',
-      having: 'COUNT(id) > 1',
+    final rows = await _db.rawQuery(
+      'SELECT *, MAX(id) AS id'
+      ' FROM $entryTable'
+      ' WHERE $where'
+      ' GROUP BY contentId'
+      ' HAVING COUNT(id) > 1',
+      [origin, 0],
     );
     final duplicates = rows.map(AvesEntry.fromMap).toSet();
-    if (duplicates.isEmpty) {
-      return {};
+    if (duplicates.isNotEmpty) {
+      debugPrint('Found duplicates=$duplicates');
     }
-
-    debugPrint('Found duplicates=$duplicates');
-    if (entries != null) {
-      // return duplicates among the provided entries
-      final duplicateIds = duplicates.map((v) => v.id).toSet();
-      return entries.where((v) => duplicateIds.contains(v.id)).toSet();
-    } else {
-      // return latest duplicates for each content ID
-      return duplicates.groupFoldBy<int?, AvesEntry>((v) => v.contentId, (prev, v) => prev != null && prev.id > v.id ? prev : v).values.toSet();
-    }
+    // return most recent duplicate for each duplicated content ID
+    return duplicates;
   }
 
   // date taken
