@@ -10,7 +10,12 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- request notification permission when launching scanning service
 - upgraded Flutter to stable v3.24.1
+
+### Fixed
+
+- duplicates from new item loading/refreshing
 
 ## <a id="v1.11.9"></a>[v1.11.9] - 2024-08-07
 

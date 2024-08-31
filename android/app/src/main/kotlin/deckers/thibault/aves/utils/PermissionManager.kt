@@ -96,7 +96,7 @@ object PermissionManager {
                 segments.volumePath?.let { volumePath ->
                     val dirSet = dirsPerVolume[volumePath] ?: HashSet()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        // request primary directory on volume from Android 11
+                        // request primary directory on volume from Android 11 (API 30)
                         val relativeDir = segments.relativeDir
                         if (relativeDir != null) {
                             val dirSegments = relativeDir.split(File.separator).takeWhile { it.isNotEmpty() }
@@ -172,7 +172,6 @@ object PermissionManager {
         val accessibleDirs = HashSet(getGrantedDirs(context))
         accessibleDirs.addAll(context.getExternalFilesDirs(null).filterNotNull().map { it.path })
 
-        // from API 19 / Android 4.4 / KitKat, removable storage requires access permission, at the file level
         // from API 21 / Android 5.0 / Lollipop, removable storage requires access permission, but directory access grant is possible
         // from API 30 / Android 11 / R, any storage requires access permission
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {

@@ -565,7 +565,7 @@ object StorageUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             val path = uri.path
             path ?: return uri
-            // from Android 11, accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
+            // from Android 11 (API 30), accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
             if (path.startsWith(IMAGE_PATH_ROOT) || path.startsWith(VIDEO_PATH_ROOT)) {
                 // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
                 if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {

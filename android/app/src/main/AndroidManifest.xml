@@ -76,7 +76,7 @@
     -->
     <uses-sdk tools:overrideLibrary="com.arthenica.ffmpegkit.flutter" />
 
-    <!-- from Android 11, we should define <queries> to make other apps visible to this app -->
+    <!-- from Android 11 (API 30), we should define <queries> to make other apps visible to this app -->
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -92,7 +92,7 @@
             <data android:mimeType="video/*" />
         </intent>
         <!--
-        from Android 11, `url_launcher` method `canLaunchUrl()` will return false,
+        from Android 11 (API 30), `url_launcher` method `canLaunchUrl()` will return false,
         if appropriate intents are not declared, cf https://pub.dev/packages/url_launcher#configuration=
         -->
         <!-- to open https URLs -->
