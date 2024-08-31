@@ -497,7 +497,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         }
       }
       if (startAnalysisService) {
-        // TODO TLAD [tiramisu] explain foreground service and request POST_NOTIFICATIONS permission
         await AnalysisService.startService(
           force: force,
           entryIds: entries?.map((entry) => entry.id).toList(),
