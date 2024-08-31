@@ -1374,5 +1374,21 @@
   "videoRepeatActionSetEnd": "Ende festlegen",
   "@videoRepeatActionSetEnd": {},
   "chipActionShowCollection": "In Sammlung anzeigen",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "sortByDuration": "Nach Dauer",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Kurze zuerst",
+  "@sortOrderShortestFirst": {},
+  "sortOrderLongestFirst": "Lange zuerst",
+  "@sortOrderLongestFirst": {},
+  "explorerActionSelectStorageVolume": "Speicher auswählen",
+  "@explorerActionSelectStorageVolume": {},
+  "selectStorageVolumeDialogTitle": "Speicher auswählen",
+  "@selectStorageVolumeDialogTitle": {},
+  "setHomeCustom": "Benutzerdefiniert",
+  "@setHomeCustom": {},
+  "chipActionGoToExplorerPage": "Im Explorer anzeigen",
+  "@chipActionGoToExplorerPage": {},
+  "explorerPageTitle": "Explorer",
+  "@explorerPageTitle": {}
 }
