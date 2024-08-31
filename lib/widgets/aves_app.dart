@@ -71,7 +71,6 @@ class AvesApp extends StatefulWidget {
     'or', // Odia
     'sat', // Santali
     'sl', // Slovenian
-    'sv', // Swedish
     'th', // Thai
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
@@ -648,9 +647,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _onAnalysisCompletion() async {
     debugPrint('Analysis completed');
-    await _mediaStoreSource.loadCatalogMetadata();
-    await _mediaStoreSource.loadAddresses();
-    _mediaStoreSource.updateDerivedFilters();
+    if (_mediaStoreSource.initState != SourceInitializationState.none) {
+      await _mediaStoreSource.loadCatalogMetadata();
+      await _mediaStoreSource.loadAddresses();
+      _mediaStoreSource.updateDerivedFilters();
+    }
   }
 
   void _onError(String? error) => reportService.recordError(error, null);

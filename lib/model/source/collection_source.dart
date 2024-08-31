@@ -136,7 +136,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   late Map<int?, int?> _savedDates;
 
   Future<void> loadDates() async {
-    _savedDates = Map.unmodifiable(await metadataDb.loadDates());
+    _savedDates = Map.unmodifiable(await localMediaDb.loadDates());
   }
 
   Set<CollectionFilter> _getAppHiddenFilters() => {
@@ -217,7 +217,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     final ids = entries.map((entry) => entry.id).toSet();
     await favourites.removeIds(ids);
     await covers.removeIds(ids);
-    await metadataDb.removeIds(ids);
+    await localMediaDb.removeIds(ids);
 
     ids.forEach((id) => _entryById.remove);
     _rawEntries.removeAll(entries);
@@ -278,10 +278,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (persist) {
       await covers.moveEntry(entry);
       final id = entry.id;
-      await metadataDb.updateEntry(id, entry);
-      await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
-      await metadataDb.updateAddress(id, entry.addressDetails);
-      await metadataDb.updateTrash(id, entry.trashDetails);
+      await localMediaDb.updateEntry(id, entry);
+      await localMediaDb.updateCatalogMetadata(id, entry.catalogMetadata);
+      await localMediaDb.updateAddress(id, entry.addressDetails);
+      await localMediaDb.updateTrash(id, entry.trashDetails);
     }
   }
 
@@ -352,7 +352,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         if (sourceEntry != null) {
           fromAlbums.add(sourceEntry.directory);
           movedEntries.add(sourceEntry.copyWith(
-            id: metadataDb.nextId,
+            id: localMediaDb.nextId,
             uri: newFields['uri'] as String?,
             path: newFields['path'] as String?,
             contentId: newFields['contentId'] as int?,
@@ -366,9 +366,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           debugPrint('failed to find source entry with uri=$sourceUri');
         }
       });
-      await metadataDb.saveEntries(movedEntries);
-      await metadataDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
-      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).whereNotNull().toSet());
+      await localMediaDb.insertEntries(movedEntries);
+      await localMediaDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
+      await localMediaDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).whereNotNull().toSet());
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
         final newFields = movedOp.newFields;
@@ -455,7 +455,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       await deviceService.requestGarbageCollection();
       await Future.forEach(entries, (entry) async {
         await entry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
-        await metadataDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
+        await localMediaDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
       });
       onCatalogMetadataChanged();
     }
@@ -463,7 +463,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (dataTypes.contains(EntryDataType.address)) {
       await Future.forEach(entries, (entry) async {
         await entry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
-        await metadataDb.updateAddress(entry.id, entry.addressDetails);
+        await localMediaDb.updateAddress(entry.id, entry.addressDetails);
       });
       onAddressMetadataChanged();
     }
@@ -497,7 +497,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         }
       }
       if (startAnalysisService) {
-        // TODO TLAD [tiramisu] explain foreground service and request POST_NOTIFICATIONS permission
         await AnalysisService.startService(
           force: force,
           entryIds: entries?.map((entry) => entry.id).toList(),

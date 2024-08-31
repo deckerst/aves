@@ -1380,5 +1380,15 @@
   "selectStorageVolumeDialogTitle": "Pilih Penyimpanan",
   "@selectStorageVolumeDialogTitle": {},
   "setHomeCustom": "Kustom",
-  "@setHomeCustom": {}
+  "@setHomeCustom": {},
+  "explorerPageTitle": "Explorer",
+  "@explorerPageTitle": {},
+  "sortOrderLongestFirst": "Yang terpanjang dulu",
+  "@sortOrderLongestFirst": {},
+  "sortByDuration": "Berdasarkan durasi",
+  "@sortByDuration": {},
+  "sortOrderShortestFirst": "Yang terpendek dulu",
+  "@sortOrderShortestFirst": {},
+  "chipActionGoToExplorerPage": "Tampilkan di Explorer",
+  "@chipActionGoToExplorerPage": {}
 }

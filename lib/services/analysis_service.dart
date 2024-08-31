@@ -13,6 +13,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AnalysisService {
   static const _platform = MethodChannel('deckers.thibault/aves/analysis');
@@ -29,6 +30,10 @@ class AnalysisService {
   }
 
   static Future<void> startService({required bool force, List<int>? entryIds}) async {
+    // from Android 13 (API 33), notifications are off by default,
+    // so the user needs to grant the permission to see the service notification
+    unawaited(Permission.notification.request());
+
     await reportService.log('Start analysis service${entryIds != null ? ' for ${entryIds.length} items' : ''}');
     try {
       await _platform.invokeMethod('startAnalysis', <String, dynamic>{
@@ -48,7 +53,7 @@ Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
   await androidFileUtils.init();
-  await metadataDb.init();
+  await localMediaDb.init();
   await device.init();
   await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);

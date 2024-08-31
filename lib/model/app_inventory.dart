@@ -29,10 +29,10 @@ class AppInventory {
     areAppNamesReadyNotifier.value = false;
   }
 
-  bool isPotentialAppDir(String dir) => _potentialAppDirs.contains(dir);
+  bool isPotentialAppDir(String dir) => _potentialAppDirs.contains(Package.normalizePotentialDir(dir));
 
   String? getAlbumAppPackageName(String albumPath) {
-    final dir = pContext.split(albumPath).last;
+    final dir = Package.normalizePotentialDir(pContext.split(albumPath).last);
     final package = _launcherPackages.firstWhereOrNull((v) => v.potentialDirs.contains(dir));
     return package?.packageName;
   }
@@ -71,7 +71,11 @@ class Package {
         currentLabel,
         englishLabel,
         ...ownedDirs,
-      ].whereNotNull().toSet();
+      ].whereNotNull().map(normalizePotentialDir).toSet();
+
+  static String normalizePotentialDir(String dir) {
+    return dir.replaceAll('_', ' ').trim().toLowerCase();
+  }
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{packageName=$packageName, categoryLauncher=$categoryLauncher, isSystem=$isSystem, currentLabel=$currentLabel, englishLabel=$englishLabel, ownedDirs=$ownedDirs}';

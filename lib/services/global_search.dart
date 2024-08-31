@@ -29,7 +29,7 @@ Future<void> _init() async {
 
   // service initialization for path context, database
   initPlatformServices();
-  await metadataDb.init();
+  await localMediaDb.init();
 
   // `intl` initialization for date formatting
   await initializeDateFormatting();
@@ -55,8 +55,8 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
     debugPrint('getSuggestions query=$query, locale=$locale use24hour=$use24hour');
 
     if (query is String && locale is String) {
-      final entries = (await metadataDb.searchLiveEntries(query, limit: 9)).toList();
-      final catalogMetadata = await metadataDb.loadCatalogMetadataById(entries.map((entry) => entry.id).toSet());
+      final entries = (await localMediaDb.searchLiveEntries(query, limit: 9)).toList();
+      final catalogMetadata = await localMediaDb.loadCatalogMetadataById(entries.map((entry) => entry.id).toSet());
       catalogMetadata.forEach((metadata) => entries.firstWhereOrNull((entry) => entry.id == metadata.id)?.catalogMetadata = metadata);
       entries.sort(AvesEntrySort.compareByDate);
 

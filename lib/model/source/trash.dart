@@ -14,7 +14,7 @@ mixin TrashMixin on SourceBase {
   static const Duration binKeepDuration = Duration(days: 30);
 
   Future<void> loadTrashDetails() async {
-    final saved = await metadataDb.loadAllTrashDetails();
+    final saved = await localMediaDb.loadAllTrashDetails();
     final idMap = entryById;
     saved.forEach((details) => idMap[details.id]?.trashDetails = details);
   }
@@ -63,13 +63,13 @@ mixin TrashMixin on SourceBase {
           entry.trashed = true;
           entry.trashDetails = _buildTrashDetails(id);
           // persist
-          await metadataDb.updateEntry(id, entry);
-          await metadataDb.updateTrash(id, entry.trashDetails);
+          await localMediaDb.updateEntry(id, entry);
+          await localMediaDb.updateTrash(id, entry.trashDetails);
         } else {
           // there is no matching entry
           final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
           if (sourceEntry != null) {
-            final id = metadataDb.nextId;
+            final id = localMediaDb.nextId;
             sourceEntry.id = id;
             sourceEntry.path = pContext.join(recoveryPath, pContext.basename(untrackedPath));
             sourceEntry.trashed = true;

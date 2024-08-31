@@ -17,7 +17,7 @@ mixin TagMixin on SourceBase {
   List<String> sortedTags = List.unmodifiable([]);
 
   Future<void> loadCatalogMetadata({Set<int>? ids}) async {
-    final saved = await (ids != null ? metadataDb.loadCatalogMetadataById(ids) : metadataDb.loadCatalogMetadata());
+    final saved = await (ids != null ? localMediaDb.loadCatalogMetadataById(ids) : localMediaDb.loadCatalogMetadata());
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.id]?.catalogMetadata = metadata);
     invalidateEntries();
@@ -48,7 +48,7 @@ mixin TagMixin on SourceBase {
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata!);
         if (newMetadata.length >= commitCountThreshold) {
-          await metadataDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
+          await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
           onCatalogMetadataChanged();
           newMetadata.clear();
         }
@@ -59,7 +59,7 @@ mixin TagMixin on SourceBase {
       }
       setProgress(done: ++progressDone, total: progressTotal);
     }
-    await metadataDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
+    await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
     onCatalogMetadataChanged();
   }
 

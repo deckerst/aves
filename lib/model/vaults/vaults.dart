@@ -23,7 +23,7 @@ class Vaults extends ChangeNotifier {
   Vaults._private();
 
   Future<void> init() async {
-    _rows = await metadataDb.loadAllVaults();
+    _rows = await localMediaDb.loadAllVaults();
     _vaultDirPaths = null;
     final screenStateStream = Platform.isAndroid ? AvesScreenState().screenStateStream : null;
     if (screenStateStream != null) {
@@ -44,7 +44,7 @@ class Vaults extends ChangeNotifier {
   VaultDetails? detailsForPath(String dirPath) => _rows.firstWhereOrNull((v) => v.path == dirPath);
 
   Future<void> create(VaultDetails details) async {
-    await metadataDb.addVaults({details});
+    await localMediaDb.addVaults({details});
 
     _rows.add(details);
     _vaultDirPaths = null;
@@ -56,7 +56,7 @@ class Vaults extends ChangeNotifier {
     final details = dirPaths.map(detailsForPath).whereNotNull().toSet();
     if (details.isEmpty) return;
 
-    await metadataDb.removeVaults(details);
+    await localMediaDb.removeVaults(details);
 
     await Future.forEach(details, (v) => securityService.writeValue(v.passKey, null));
 
@@ -74,7 +74,7 @@ class Vaults extends ChangeNotifier {
     if (newName == null) return;
 
     final newDetails = oldDetails.copyWith(name: newName);
-    await metadataDb.updateVault(oldDetails.name, newDetails);
+    await localMediaDb.updateVault(oldDetails.name, newDetails);
 
     final pass = await securityService.readValue(oldDetails.passKey);
     if (pass != null) {
@@ -96,7 +96,7 @@ class Vaults extends ChangeNotifier {
     final oldDetails = detailsForPath(newDetails.path);
     if (oldDetails == null) return;
 
-    await metadataDb.updateVault(newDetails.name, newDetails);
+    await localMediaDb.updateVault(newDetails.name, newDetails);
 
     _rows
       ..remove(oldDetails)
@@ -104,7 +104,7 @@ class Vaults extends ChangeNotifier {
   }
 
   Future<void> clear() async {
-    await metadataDb.clearVaults();
+    await localMediaDb.clearVaults();
     _rows.clear();
     _vaultDirPaths = null;
   }
@@ -146,7 +146,7 @@ class Vaults extends ChangeNotifier {
     final newEntries = await recoverUntrackedItems(source, dirPath);
     if (newEntries.isNotEmpty) {
       source.addEntries(newEntries);
-      await metadataDb.saveEntries(newEntries);
+      await localMediaDb.insertEntries(newEntries);
       unawaited(source.analyze(null, entries: newEntries));
     }
 
@@ -168,7 +168,7 @@ class Vaults extends ChangeNotifier {
         final uri = Uri.file(untrackedPath).toString();
         final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
         if (sourceEntry != null) {
-          sourceEntry.id = metadataDb.nextId;
+          sourceEntry.id = localMediaDb.nextId;
           sourceEntry.origin = EntryOrigins.vault;
           newEntries.add(sourceEntry);
         } else {

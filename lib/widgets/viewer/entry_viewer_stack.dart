@@ -568,9 +568,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     } else if (notification is CastNotification) {
       _cast(notification.enabled);
     } else if (notification is FullImageLoadedNotification) {
-      final viewStateController = context.read<ViewStateConductor>().getOrCreateController(notification.entry);
       // microtask so that listeners do not trigger during build
-      scheduleMicrotask(() => viewStateController.fullImageNotifier.value = notification.image);
+      scheduleMicrotask(() {
+        if (!mounted) return;
+        final viewStateController = context.read<ViewStateConductor>().getController(notification.entry);
+        viewStateController?.fullImageNotifier.value = notification.image;
+      });
     } else if (notification is EntryDeletedNotification) {
       _onEntryRemoved(context, notification.entries);
     } else if (notification is EntryMovedNotification) {
