@@ -20,6 +20,7 @@ import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/tile.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -587,7 +588,13 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       valueListenable: collection.source.stateNotifier,
       builder: (context, sourceState, child) {
         if (sourceState == SourceState.loading) {
-          return const SizedBox();
+          return EmptyContent(
+            text: context.l10n.sourceStateLoading,
+            bottom: const Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: ReportProgressIndicator(),
+            ),
+          );
         }
 
         return FutureBuilder<bool>(

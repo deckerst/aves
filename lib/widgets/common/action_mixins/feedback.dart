@@ -166,6 +166,9 @@ class ReportOverlay<T> extends StatefulWidget {
   final VoidCallback? onCancel;
   final void Function(Set<T> processed) onDone;
 
+  static const double diameter = 160.0;
+  static const double strokeWidth = 8.0;
+
   const ReportOverlay({
     super.key,
     required this.opStream,
@@ -186,8 +189,6 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   Stream<T> get opStream => widget.opStream;
 
   static const double fontSize = 18.0;
-  static const double diameter = 160.0;
-  static const double strokeWidth = 8.0;
 
   @override
   void initState() {
@@ -222,6 +223,8 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    const diameter = ReportOverlay.diameter;
+    const strokeWidth = ReportOverlay.strokeWidth;
     final percentFormatter = NumberFormat.percentPattern(context.locale);
 
     final theme = Theme.of(context);
@@ -249,16 +252,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                     shape: BoxShape.circle,
                   ),
                 ),
-                if (animate)
-                  Container(
-                    width: diameter,
-                    height: diameter,
-                    padding: const EdgeInsets.all(strokeWidth / 2),
-                    child: CircularProgressIndicator(
-                      color: progressColor.withOpacity(.1),
-                      strokeWidth: strokeWidth,
-                    ),
-                  ),
+                if (animate) const ReportProgressIndicator(opacity: .1),
                 CircularPercentIndicator(
                   percent: percent,
                   lineWidth: strokeWidth,
@@ -296,6 +290,32 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class ReportProgressIndicator extends StatelessWidget {
+  final double opacity;
+
+  const ReportProgressIndicator({
+    super.key,
+    this.opacity = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const diameter = ReportOverlay.diameter;
+    const strokeWidth = ReportOverlay.strokeWidth;
+    final progressColor = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: diameter,
+      height: diameter,
+      padding: const EdgeInsets.all(strokeWidth / 2),
+      child: CircularProgressIndicator(
+        color: progressColor.withOpacity(opacity),
+        strokeWidth: strokeWidth,
       ),
     );
   }
