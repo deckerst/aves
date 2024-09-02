@@ -411,7 +411,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void didHaveMemoryPressure() {
     super.didHaveMemoryPressure();
-    reportService.log('App memory pressure');
+    debugPrint('App memory pressure');
     imageCache.clear();
   }
 
