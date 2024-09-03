@@ -90,9 +90,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     var appMode = AppMode.main;
+    var error = false;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
-    final safeMode = intentData[IntentDataKeys.safeMode] ?? false;
-    final intentAction = intentData[IntentDataKeys.action];
+    final safeMode = (intentData[IntentDataKeys.safeMode] as bool?) ?? false;
+    final intentAction = intentData[IntentDataKeys.action] as String?;
     _initialFilters = null;
     _initialExplorerPath = null;
     _secureUris = null;
@@ -109,61 +110,22 @@ class _HomePageState extends State<HomePage> {
 
     if (intentData.values.whereNotNull().isNotEmpty) {
       await reportService.log('Intent data=$intentData');
+      var intentUri = intentData[IntentDataKeys.uri] as String?;
+      final intentMimeType = intentData[IntentDataKeys.mimeType] as String?;
+
       switch (intentAction) {
         case IntentActions.view:
-        case IntentActions.widgetOpen:
-          String? uri, mimeType;
-          final widgetId = intentData[IntentDataKeys.widgetId];
-          if (widgetId != null) {
-            // widget settings may be modified in a different process after channel setup
-            await settings.reload();
-            final page = settings.getWidgetOpenPage(widgetId);
-            switch (page) {
-              case WidgetOpenPage.home:
-              case WidgetOpenPage.updateWidget:
-                break;
-              case WidgetOpenPage.collection:
-                _initialFilters = settings.getWidgetCollectionFilters(widgetId);
-              case WidgetOpenPage.viewer:
-                uri = settings.getWidgetUri(widgetId);
-            }
-            unawaited(WidgetService.update(widgetId));
-          } else {
-            uri = intentData[IntentDataKeys.uri];
-            mimeType = intentData[IntentDataKeys.mimeType];
-          }
-          _secureUris = intentData[IntentDataKeys.secureUris];
-          if (uri != null) {
-            _viewerEntry = await _initViewerEntry(
-              uri: uri,
-              mimeType: mimeType,
-            );
-            if (_viewerEntry != null) {
-              appMode = AppMode.view;
-            }
-          }
+          appMode = AppMode.view;
+          _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
         case IntentActions.edit:
-          _viewerEntry = await _initViewerEntry(
-            uri: intentData[IntentDataKeys.uri],
-            mimeType: intentData[IntentDataKeys.mimeType],
-          );
-          if (_viewerEntry != null) {
-            appMode = AppMode.edit;
-          }
+          appMode = AppMode.edit;
         case IntentActions.setWallpaper:
-          _viewerEntry = await _initViewerEntry(
-            uri: intentData[IntentDataKeys.uri],
-            mimeType: intentData[IntentDataKeys.mimeType],
-          );
-          if (_viewerEntry != null) {
-            appMode = AppMode.setWallpaper;
-          }
+          appMode = AppMode.setWallpaper;
         case IntentActions.pickItems:
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
-          String? pickMimeTypes = intentData[IntentDataKeys.mimeType];
-          final multiple = intentData[IntentDataKeys.allowMultiple] ?? false;
-          debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
+          final multiple = (intentData[IntentDataKeys.allowMultiple] as bool?) ?? false;
+          debugPrint('pick mimeType=$intentMimeType multiple=$multiple');
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
         case IntentActions.pickCollectionFilters:
           appMode = AppMode.pickCollectionFiltersExternal;
@@ -174,23 +136,64 @@ class _HomePageState extends State<HomePage> {
           _initialRouteName = ScreenSaverSettingsPage.routeName;
         case IntentActions.search:
           _initialRouteName = SearchPage.routeName;
-          _initialSearchQuery = intentData[IntentDataKeys.query];
+          _initialSearchQuery = intentData[IntentDataKeys.query] as String?;
         case IntentActions.widgetSettings:
           _initialRouteName = HomeWidgetSettingsPage.routeName;
-          _widgetId = intentData[IntentDataKeys.widgetId] ?? 0;
+          _widgetId = (intentData[IntentDataKeys.widgetId] as int?) ?? 0;
+        case IntentActions.widgetOpen:
+          final widgetId = intentData[IntentDataKeys.widgetId] as int?;
+          if (widgetId == null) {
+            error = true;
+          } else {
+            // widget settings may be modified in a different process after channel setup
+            await settings.reload();
+            final page = settings.getWidgetOpenPage(widgetId);
+            switch (page) {
+              case WidgetOpenPage.collection:
+                _initialFilters = settings.getWidgetCollectionFilters(widgetId);
+              case WidgetOpenPage.viewer:
+                appMode = AppMode.view;
+                intentUri = settings.getWidgetUri(widgetId);
+              case WidgetOpenPage.home:
+              case WidgetOpenPage.updateWidget:
+                break;
+            }
+            unawaited(WidgetService.update(widgetId));
+          }
         default:
           // do not use 'route' as extra key, as the Flutter framework acts on it
-          final extraRoute = intentData[IntentDataKeys.page];
+          final extraRoute = intentData[IntentDataKeys.page] as String?;
           if (allowedShortcutRoutes.contains(extraRoute)) {
             _initialRouteName = extraRoute;
           }
       }
       if (_initialFilters == null) {
-        final extraFilters = intentData[IntentDataKeys.filters];
-        _initialFilters = extraFilters != null ? (extraFilters as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet() : null;
+        final extraFilters = (intentData[IntentDataKeys.filters] as List?)?.cast<String>();
+        _initialFilters = extraFilters?.map(CollectionFilter.fromJson).whereNotNull().toSet();
       }
-      _initialExplorerPath = intentData[IntentDataKeys.explorerPath];
+      _initialExplorerPath = intentData[IntentDataKeys.explorerPath] as String?;
+
+      switch (appMode) {
+        case AppMode.view:
+        case AppMode.edit:
+        case AppMode.setWallpaper:
+          if (intentUri != null) {
+            _viewerEntry = await _initViewerEntry(
+              uri: intentUri,
+              mimeType: intentMimeType,
+            );
+          }
+          error = _viewerEntry == null;
+        default:
+          break;
+      }
     }
+
+    if (error) {
+      debugPrint('Failed to init app mode=$appMode for intent data=$intentData. Fallback to main mode.');
+      appMode = AppMode.main;
+    }
+
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
     debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
