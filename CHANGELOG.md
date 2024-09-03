@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- support opening from the lock screen
+
 ## <a id="v1.11.10"></a>[v1.11.10] - 2024-09-01
 
 ### Added
