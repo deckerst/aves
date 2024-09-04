@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - support opening from the lock screen
 
+### Changed
+
+- upgraded Flutter to stable v3.24.2
+
 ## <a id="v1.11.10"></a>[v1.11.10] - 2024-09-01
 
 ### Added
