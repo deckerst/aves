@@ -4,4 +4,6 @@
     <color name="ic_shortcut_background">#FFFFFF</color>
     <color name="ic_shortcut_foreground">#455A64</color>
     <color name="ic_launcher_flavour">#1cc8eb</color>
+    <color name="window_background_day">#FFFFFF</color>
+    <color name="window_background_night">#262626</color>
 </resources>
