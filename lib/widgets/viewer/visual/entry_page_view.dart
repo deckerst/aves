@@ -414,7 +414,11 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       onScaleUpdate: onScaleUpdate,
       onScaleEnd: onScaleEnd,
       onFling: _onFling,
-      onTap: (c, s, a, p) => _onTap(alignment: a),
+      onTap: (c, s, a, p) {
+        if (c.mounted) {
+          _onTap(alignment: a);
+        }
+      },
       onDoubleTap: onDoubleTap,
       child: child,
     );
