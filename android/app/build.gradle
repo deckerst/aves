@@ -208,14 +208,14 @@ dependencies {
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:90c06eebf4'
-    implementation 'com.github.deckerst.mp4parser:isoparser:4cc0c5d06c'
-    implementation 'com.github.deckerst.mp4parser:muxer:4cc0c5d06c'
+    implementation 'com.github.deckerst.mp4parser:isoparser:86d4b6baa1'
+    implementation 'com.github.deckerst.mp4parser:muxer:86d4b6baa1'
     implementation 'com.github.deckerst:pixymeta-android:9ec7097f17'
     implementation project(':exifinterface')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
 
-    kapt 'androidx.annotation:annotation:1.8.1'
+    kapt 'androidx.annotation:annotation:1.8.2'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')
