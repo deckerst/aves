@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when cataloguing some malformed MP4 files
+- inconsistent launch screen
 
 ## <a id="v1.11.10"></a>[v1.11.10] - 2024-09-01
 
