@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.24.2
 
+### Fixed
+
+- crash when cataloguing some malformed MP4 files
+
 ## <a id="v1.11.10"></a>[v1.11.10] - 2024-09-01
 
 ### Added
