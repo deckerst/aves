@@ -14,6 +14,8 @@ abstract class DeviceService {
 
   Future<int> getPerformanceClass();
 
+  Future<bool> isLocked();
+
   Future<bool> isSystemFilePickerEnabled();
 
   Future<void> requestMediaManagePermission();
@@ -87,6 +89,17 @@ class PlatformDeviceService implements DeviceService {
       await reportService.recordError(e, stack);
     }
     return 0;
+  }
+
+  @override
+  Future<bool> isLocked() async {
+    try {
+      final result = await _platform.invokeMethod('isLocked');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 
   @override

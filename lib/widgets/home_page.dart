@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> {
     _initialExplorerPath = null;
     _secureUris = null;
 
+    await availability.onNewIntent();
     await androidFileUtils.init();
     if (!{
           IntentActions.edit,
