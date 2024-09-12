@@ -7,6 +7,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
@@ -278,6 +279,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                             ...topLevelActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                             if (exportActions.isNotEmpty)
                               PopupMenuExpansionPanel<EntryAction>(
+                                enabled: !availability.isLocked,
                                 value: 'export',
                                 expandedNotifier: _popupExpandedNotifier,
                                 icon: AIcons.export,
@@ -345,18 +347,18 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
   }
 
   PopupMenuItem<EntryAction> _buildPopupMenuItem(BuildContext context, EntryAction action, AvesVideoController? videoController) {
-    late final bool enabled;
+    var enabled = widget.actionDelegate.canApply(action);
     switch (action) {
       case EntryAction.videoCaptureFrame:
-        enabled = videoController?.canCaptureFrameNotifier.value ?? false;
+        enabled &= videoController?.canCaptureFrameNotifier.value ?? false;
       case EntryAction.videoToggleMute:
-        enabled = videoController?.canMuteNotifier.value ?? false;
+        enabled &= videoController?.canMuteNotifier.value ?? false;
       case EntryAction.videoSelectStreams:
-        enabled = videoController?.canSelectStreamNotifier.value ?? false;
+        enabled &= videoController?.canSelectStreamNotifier.value ?? false;
       case EntryAction.videoSetSpeed:
-        enabled = videoController?.canSetSpeedNotifier.value ?? false;
+        enabled &= videoController?.canSetSpeedNotifier.value ?? false;
       default:
-        enabled = true;
+        break;
     }
 
     Widget? child;

@@ -33,6 +33,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getDefaultTimeZoneRawOffsetMillis" -> safe(call, result, ::getDefaultTimeZoneRawOffsetMillis)
             "getLocales" -> safe(call, result, ::getLocales)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
+            "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             "requestMediaManagePermission" -> safe(call, result, ::requestMediaManagePermission)
             "getAvailableHeapSize" -> safe(call, result, ::getAvailableHeapSize)
@@ -49,13 +50,11 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         val sdkInt = Build.VERSION.SDK_INT
         result.success(
             hashMapOf(
-                "canGrantDirectoryAccess" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.M),
                 "canRenderSubdivisionFlagEmojis" to (sdkInt >= Build.VERSION_CODES.O),
                 "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),
                 "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
-                "canUseCrypto" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
@@ -98,6 +97,12 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(Build.VERSION.SDK_INT)
+    }
+
+    private fun isLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
+        val isLocked = keyguardManager.isKeyguardLocked
+        result.success(isLocked)
     }
 
     private fun isSystemFilePickerEnabled(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

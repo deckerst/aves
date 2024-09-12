@@ -43,7 +43,7 @@ class PrivacySection extends SettingsSection {
       SettingsTilePrivacySaveSearchHistory(),
       if (!settings.useTvLayout) SettingsTilePrivacyEnableBin(),
       SettingsTilePrivacyHiddenItems(),
-      if (!settings.useTvLayout && device.canGrantDirectoryAccess) SettingsTilePrivacyStorageAccess(),
+      if (!settings.useTvLayout) SettingsTilePrivacyStorageAccess(),
     ];
   }
 }

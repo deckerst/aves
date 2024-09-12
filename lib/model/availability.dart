@@ -6,7 +6,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class AvesAvailability {
+  Future<void> onNewIntent();
+
   void onResume();
+
+  bool get isLocked;
 
   Future<bool> get isConnected;
 
@@ -16,14 +20,23 @@ abstract class AvesAvailability {
 }
 
 class LiveAvesAvailability implements AvesAvailability {
-  bool? _isConnected;
+  bool? _isConnected, _isLocked;
 
   LiveAvesAvailability() {
     Connectivity().onConnectivityChanged.listen(_updateConnectivityFromResult);
   }
 
   @override
+  Future<void> onNewIntent() async {
+    _isLocked = await deviceService.isLocked();
+    debugPrint('Device is locked=$_isLocked');
+  }
+
+  @override
   void onResume() => _isConnected = null;
+
+  @override
+  bool get isLocked => _isLocked ?? false;
 
   @override
   Future<bool> get isConnected async {

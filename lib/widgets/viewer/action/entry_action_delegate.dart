@@ -159,6 +159,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.convertMotionPhotoToStillImage:
       case EntryAction.viewMotionPhotoVideo:
         return _metadataActionDelegate.canApply(targetEntry, action);
+      case EntryAction.convert:
+      case EntryAction.copy:
+      case EntryAction.move:
+        return !availability.isLocked;
       default:
         return true;
     }
