@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class ViewerBottomOverlay extends StatefulWidget {
+class ViewerBottomOverlay extends StatelessWidget {
   final List<AvesEntry> entries;
   final int index;
   final CollectionLens? collection;
@@ -32,6 +32,10 @@ class ViewerBottomOverlay extends StatefulWidget {
 
   // always keep action buttons in the lower right corner, even with RTL locales
   static const actionsDirection = TextDirection.ltr;
+
+  AvesEntry? get entry {
+    return index < entries.length ? entries[index] : null;
+  }
 
   const ViewerBottomOverlay({
     super.key,
@@ -46,42 +50,21 @@ class ViewerBottomOverlay extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _ViewerBottomOverlayState();
-
-  static double actionSafeHeight(BuildContext context) {
-    final mqPaddingBottom = context.select<MediaQueryData, double>((mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom));
-    final buttonHeight = ViewerButtons.preferredHeight(context);
-    final thumbnailHeight = (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
-    return mqPaddingBottom + buttonHeight + thumbnailHeight;
-  }
-}
-
-class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
-  List<AvesEntry> get entries => widget.entries;
-
-  AvesEntry? get entry {
-    final index = widget.index;
-    return index < entries.length ? entries[index] : null;
-  }
-
-  MultiPageController? get multiPageController => widget.multiPageController;
-
-  @override
   Widget build(BuildContext context) {
     final mainEntry = entry;
     if (mainEntry == null) return const SizedBox();
 
     Widget _buildContent({AvesEntry? pageEntry}) => _BottomOverlayContent(
           entries: entries,
-          index: widget.index,
+          index: index,
           mainEntry: mainEntry,
           pageEntry: pageEntry ?? mainEntry,
-          collection: widget.collection,
-          availableSize: widget.availableSize,
-          viewInsets: widget.viewInsets,
-          viewPadding: widget.viewPadding,
+          collection: collection,
+          availableSize: availableSize,
+          viewInsets: viewInsets,
+          viewPadding: viewPadding,
           multiPageController: multiPageController,
-          animationController: widget.animationController,
+          animationController: animationController,
         );
 
     Widget child = multiPageController != null
@@ -101,6 +84,13 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
       },
       child: child,
     );
+  }
+
+  static double actionSafeHeight(BuildContext context) {
+    final mqPaddingBottom = context.select<MediaQueryData, double>((mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom));
+    final buttonHeight = ViewerButtons.preferredHeight(context);
+    final thumbnailHeight = (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
+    return mqPaddingBottom + buttonHeight + thumbnailHeight;
   }
 }
 
