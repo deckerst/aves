@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/map/info_row.dart';
+import 'package:aves/widgets/viewer/hero.dart';
 import 'package:flutter/material.dart';
 
 class MapEntryScroller extends StatefulWidget {
@@ -85,7 +86,7 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
                       entryBuilder: (index) => index < regionEntries.length ? regionEntries[index] : null,
                       indexNotifier: widget.selectedIndexNotifier,
                       onTap: widget.onTap,
-                      heroTagger: (entry) => Object.hashAll([regionCollection?.id, entry.id]),
+                      heroTagger: (entry) => EntryHeroInfo(regionCollection, entry).tag,
                       highlightable: true,
                       showLocation: false,
                     );
