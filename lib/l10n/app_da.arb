@@ -1,1 +1,119 @@
-{}
+{
+  "welcomeMessage": "Velkommen til Aves",
+  "@welcomeMessage": {},
+  "welcomeOptional": "Valgfri",
+  "@welcomeOptional": {},
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeTermsToggle": "Jeg accepterer vilkårene og betingelserne",
+  "@welcomeTermsToggle": {},
+  "itemCount": "{count, plural, =1{{count} fil} other{{count} filer}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "columnCount": "{count, plural, =1{{count} kolonne} other{{count} kolonner}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeMinutes": "{count, plural, =1{{count} minut} other{{count} minutter}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeDays": "{count, plural, =1{{count} dag} other{{count} dage}}",
+  "@timeDays": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "focalLength": "{length} mm",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "applyButtonLabel": "UDFØR",
+  "@applyButtonLabel": {},
+  "deleteButtonLabel": "SLET",
+  "@deleteButtonLabel": {},
+  "nextButtonLabel": "NÆSTE",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "VIS",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "SKJUL",
+  "@hideButtonLabel": {},
+  "saveCopyButtonLabel": "GEM KOPI",
+  "@saveCopyButtonLabel": {},
+  "applyTooltip": "Udfør",
+  "@applyTooltip": {},
+  "cancelTooltip": "Fortryd",
+  "@cancelTooltip": {},
+  "nextTooltip": "Næste",
+  "@nextTooltip": {},
+  "showTooltip": "Vis",
+  "@showTooltip": {},
+  "hideTooltip": "Skjul",
+  "@hideTooltip": {},
+  "actionRemove": "Fjern",
+  "@actionRemove": {},
+  "resetTooltip": "Nulstil",
+  "@resetTooltip": {},
+  "saveTooltip": "Gem",
+  "@saveTooltip": {},
+  "chipActionDelete": "Slet",
+  "@chipActionDelete": {},
+  "chipActionGoToAlbumPage": "Vis i Album",
+  "@chipActionGoToAlbumPage": {},
+  "chipActionGoToCountryPage": "Vis i Lande",
+  "@chipActionGoToCountryPage": {},
+  "chipActionGoToPlacePage": "Vis i Steder",
+  "@chipActionGoToPlacePage": {},
+  "chipActionGoToTagPage": "Vis i Tags",
+  "@chipActionGoToTagPage": {},
+  "timeSeconds": "{count, plural, =1{{count} sekund} other{{count} sekunder}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "continueButtonLabel": "FORTSÆT",
+  "@continueButtonLabel": {},
+  "clearTooltip": "Ryd",
+  "@clearTooltip": {},
+  "previousTooltip": "Forrige",
+  "@previousTooltip": {},
+  "stopTooltip": "Stop",
+  "@stopTooltip": {},
+  "pickTooltip": "Vælg",
+  "@pickTooltip": {},
+  "chipActionShowCollection": "Vis i Samling",
+  "@chipActionShowCollection": {},
+  "doubleBackExitMessage": "Tryk \"tilbage\" igen for at gå ud.",
+  "@doubleBackExitMessage": {},
+  "doNotAskAgain": "Spørg ikke igen",
+  "@doNotAskAgain": {},
+  "sourceStateLoading": "Loader",
+  "@sourceStateLoading": {},
+  "sourceStateLocatingCountries": "Lokaliserer lande",
+  "@sourceStateLocatingCountries": {},
+  "sourceStateLocatingPlaces": "Lokaliserer steder",
+  "@sourceStateLocatingPlaces": {}
+}
