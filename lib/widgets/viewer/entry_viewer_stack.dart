@@ -75,7 +75,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late Animation<Offset> _overlayTopOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
-  final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
+  final ValueNotifier<EntryHeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
   Timer? _overlayHidingTimer, _appInactiveReactionTimer;
 
@@ -116,7 +116,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final initialEntry = widget.initialEntry;
     final entry = entries.firstWhereOrNull((entry) => entry.id == initialEntry.id) ?? entries.firstOrNull;
     // opening hero, with viewer as target
-    _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
+    _heroInfoNotifier.value = EntryHeroInfo(collection, entry);
     entryNotifier = viewerController.entryNotifier;
     entryNotifier.value = entry;
     _currentEntryIndex = max(0, entry != null ? entries.indexOf(entry) : -1);
@@ -224,7 +224,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
         _onPopInvoked();
       },
-      child: ValueListenableProvider<HeroInfo?>.value(
+      child: ValueListenableProvider<EntryHeroInfo?>.value(
         value: _heroInfoNotifier,
         child: NotificationListener(
           onNotification: _handleNotification,
@@ -867,7 +867,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       }
 
       // closing hero, with viewer as source
-      final heroInfo = HeroInfo(collection?.id, entryNotifier.value);
+      final heroInfo = EntryHeroInfo(collection, entryNotifier.value);
       if (_heroInfoNotifier.value != heroInfo) {
         _heroInfoNotifier.value = heroInfo;
         // we post closing the viewer page so that hero animation source is ready

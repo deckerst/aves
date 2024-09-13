@@ -261,11 +261,12 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
             },
           );
 
-    if (animate && widget.heroTag != null) {
+    final heroTag = widget.heroTag;
+    if (animate && heroTag != null) {
       final background = settings.imageBackground;
       final backgroundColor = background.isColor ? background.color : null;
       image = Hero(
-        tag: widget.heroTag!,
+        tag: heroTag,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
           Widget child = TransitionImage(
             image: entry.bestCachedThumbnail,
@@ -296,9 +297,10 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
       extent: extent,
     );
 
-    if (animate && widget.heroTag != null) {
+    final heroTag = widget.heroTag;
+    if (animate && heroTag != null) {
       child = Hero(
-        tag: widget.heroTag!,
+        tag: heroTag,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
           return MediaQueryDataProvider(
             child: DefaultTextStyle(

@@ -150,9 +150,9 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
 
     final animate = context.select<Settings, bool>((v) => v.animate);
     if (animate) {
-      child = Consumer<HeroInfo?>(
+      child = Consumer<EntryHeroInfo?>(
         builder: (context, info, child) => Hero(
-          tag: info != null && info.entry == mainEntry ? Object.hashAll([info.collectionId, mainEntry.id]) : hashCode,
+          tag: info != null && info.entry == mainEntry ? info.tag : hashCode,
           transitionOnUserGestures: true,
           child: child!,
         ),
