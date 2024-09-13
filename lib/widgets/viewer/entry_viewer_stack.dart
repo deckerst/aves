@@ -412,17 +412,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Widget _buildSlideshowBottomOverlay(Size availableSize) {
-    return SizedBox.fromSize(
-      size: availableSize,
+    return TooltipTheme(
+      data: TooltipTheme.of(context).copyWith(
+        preferBelow: false,
+      ),
       child: Align(
         alignment: AlignmentDirectional.bottomEnd,
-        child: TooltipTheme(
-          data: TooltipTheme.of(context).copyWith(
-            preferBelow: false,
-          ),
-          child: SlideshowButtons(
-            animationController: _overlayAnimationController,
-          ),
+        child: SlideshowBottomOverlay(
+          animationController: _overlayAnimationController,
+          availableSize: availableSize,
+          viewInsets: _frozenViewInsets,
+          viewPadding: _frozenViewPadding,
         ),
       ),
     );
