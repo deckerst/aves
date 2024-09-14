@@ -14,7 +14,7 @@ permissions: read-all
 
 jobs:
   analyze_flutter:
-    name: Flutter analysis and tests.
+    name: Flutter analysis
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
@@ -22,10 +22,10 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Checkout repository.
+      - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Get packages for the Flutter project.
+      - name: Get Flutter packages
         run: scripts/pub_get_all.sh
 
       - name: Static analysis.
@@ -35,7 +35,7 @@ jobs:
         run: ./flutterw test
 
   analyze_codeql:
-    name: Analyze (${{ matrix.language }}) with CodeQL.
+    name: CodeQL analysis (${{ matrix.language }})
     runs-on: ubuntu-latest
     permissions:
       # required for all workflows
@@ -58,7 +58,7 @@ jobs:
 
       # Building relies on the Android Gradle plugin,
       # which requires a modern Java version (not the default one).
-      - name: Set up JDK for Android Gradle plugin.
+      - name: Set up JDK for Android Gradle plugin
         uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88 # v4.3.0
         with:
           distribution: 'temurin'

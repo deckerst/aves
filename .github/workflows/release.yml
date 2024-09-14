@@ -9,8 +9,8 @@ on:
 permissions: read-all
 
 jobs:
-  build:
-    name: Build and release artifacts.
+  release_github:
+    name: GitHub release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,22 +22,22 @@ jobs:
 
       # Building relies on the Android Gradle plugin,
       # which requires a modern Java version (not the default one).
-      - name: Set up JDK for Android Gradle plugin.
+      - name: Set up JDK for Android Gradle plugin
         uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88 # v4.3.0
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Checkout repository.
+      - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Get packages for the Flutter project.
+      - name: Get Flutter packages
         run: scripts/pub_get_all.sh
 
-      - name: Update the flutter version file.
+      - name: Update Flutter version file
         run: scripts/update_flutter_version.sh
 
-      - name: Build signed artifacts.
+      - name: Build signed artifacts
         # `KEY_JKS` should contain the result of:
         # gpg -c --armor keystore.jks
         # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
@@ -72,7 +72,7 @@ jobs:
           AVES_KEY_PASSWORD: ${{ secrets.AVES_KEY_PASSWORD }}
           AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
 
-      - name: Create a release with the APK and App Bundle.
+      - name: Create GitHub release
         uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5 # v1.14.0
         with:
           artifacts: "outputs/*"
@@ -85,8 +85,8 @@ jobs:
           name: appbundle
           path: outputs/app-play-release.aab
 
-  release:
-    name: Create beta release on Play Store.
+  release_play:
+    name: Play Store beta release
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
@@ -95,15 +95,15 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Checkout repository.
+      - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Get appbundle from artifacts.
+      - name: Get appbundle from artifacts
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: appbundle
 
-      - name: Release app to beta channel.
+      - name: Release to beta channel
         uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
