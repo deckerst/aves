@@ -14,7 +14,7 @@ permissions: read-all
 
 jobs:
   analyze_flutter:
-    name: Flutter static analysis and tests.
+    name: Flutter analysis and tests.
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
@@ -67,9 +67,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - name: Get packages for the Flutter project.
-        run: scripts/pub_get_all.sh
-
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -79,9 +76,11 @@ jobs:
 
       - if: matrix.build-mode == 'manual'
         shell: bash
+        # build in profile mode, instead of release,
+        # so that setting up signing environment variables is not required
         run: |
           scripts/apply_flavor_play.sh
-          ./flutterw build apk -t lib/main_play.dart --flavor play
+          ./flutterw build apk --profile -t lib/main_play.dart --flavor play
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
