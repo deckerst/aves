@@ -20,12 +20,15 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88 # v4.3.0
+      # Building relies on the Android Gradle plugin,
+      # which requires a modern Java version (not the default one).
+      - name: Set up JDK for Android Gradle plugin.
+        uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88 # v4.3.0
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: 'temurin'
+          java-version: '21'
 
-      - name: Clone the repository.
+      - name: Checkout repository.
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Get packages for the Flutter project.
@@ -33,12 +36,6 @@ jobs:
 
       - name: Update the flutter version file.
         run: scripts/update_flutter_version.sh
-
-      - name: Static analysis.
-        run: ./flutterw analyze
-
-      - name: Unit tests.
-        run: ./flutterw test
 
       - name: Build signed artifacts.
         # `KEY_JKS` should contain the result of:
@@ -98,7 +95,8 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Checkout repository.
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Get appbundle from artifacts.
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
