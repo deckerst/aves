@@ -93,9 +93,14 @@ void main() {
     final subImage = FakeMediaStoreService.newImage(subAlbum, 'image1');
     final siblingImage = FakeMediaStoreService.newImage(siblingAlbum, 'image1');
 
-    final path = PathFilter('$rootAlbum/');
-    expect(path.test(rootImage), true);
-    expect(path.test(subImage), true);
-    expect(path.test(siblingImage), false);
+    final untrailedPath = PathFilter(rootAlbum);
+    expect(untrailedPath.test(rootImage), true);
+    expect(untrailedPath.test(subImage), true);
+    expect(untrailedPath.test(siblingImage), false);
+
+    final trailedPath = PathFilter('$rootAlbum/');
+    expect(trailedPath.test(rootImage), true);
+    expect(trailedPath.test(subImage), true);
+    expect(trailedPath.test(siblingImage), false);
   });
 }
