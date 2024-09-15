@@ -13,6 +13,8 @@ class DecoratedThumbnail extends StatelessWidget {
   final ValueNotifier<bool>? cancellableNotifier;
   final bool isMosaic, selectable, highlightable;
   final Object? Function()? heroTagger;
+  final HeroPlaceholderBuilder? heroPlaceholderBuilder;
+  final TransitionBuilder? imageDecorator;
 
   static Color borderColor(BuildContext context) => Theme.of(context).dividerColor;
 
@@ -27,6 +29,8 @@ class DecoratedThumbnail extends StatelessWidget {
     this.selectable = true,
     this.highlightable = true,
     this.heroTagger,
+    this.heroPlaceholderBuilder,
+    this.imageDecorator,
   });
 
   @override
@@ -50,12 +54,13 @@ class DecoratedThumbnail extends StatelessWidget {
       isMosaic: isMosaic,
       cancellableNotifier: cancellableNotifier,
       heroTag: heroTagger?.call(),
+      heroPlaceholderBuilder: heroPlaceholderBuilder,
     );
 
     child = Stack(
       fit: StackFit.passthrough,
       children: [
-        child,
+        imageDecorator?.call(context, child) ?? child,
         ThumbnailEntryOverlay(entry: entry),
         if (selectable) ...[
           GridItemSelectionOverlay<AvesEntry>(
