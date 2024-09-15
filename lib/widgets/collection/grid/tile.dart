@@ -6,6 +6,7 @@ import 'package:aves/services/intent_service.dart';
 import 'package:aves/widgets/collection/grid/list_details.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
+import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -124,5 +125,20 @@ class Tile extends StatelessWidget {
         selectable: selectable,
         highlightable: highlightable,
         heroTagger: heroTagger,
+        // do not use a hero placeholder but hide the thumbnail matching the viewer entry,
+        // so that it can hero out on an entry and come back with a hero to a different entry
+        heroPlaceholderBuilder: (context, heroSize, child) => child,
+        imageDecorator: (context, child) {
+          return Selector<ViewerEntryNotifier, bool>(
+            selector: (context, v) => v.value == entry,
+            builder: (context, isViewerEntry, child) {
+              return Visibility.maintain(
+                visible: !isViewerEntry,
+                child: child!,
+              );
+            },
+            child: child,
+          );
+        },
       );
 }
