@@ -87,7 +87,7 @@ jobs:
 
   release_play:
     name: Play Store beta release
-    needs: [ build ]
+    needs: [ release_github ]
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
