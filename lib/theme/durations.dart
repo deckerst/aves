@@ -5,10 +5,11 @@ class ADurations {
   static const transitionMarginMillis = 20;
 
   // page transition duration also available via `ModalRoute.of(context)!.transitionDuration * timeDilation`
-  static const pageTransitionAnimation = Duration(milliseconds: 300 + transitionMarginMillis); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
-  static const dialogTransitionAnimation = Duration(milliseconds: 150 + transitionMarginMillis); // ref `transitionDuration` used in `DialogRoute`
-  static const drawerTransitionAnimation = Duration(milliseconds: 246 + transitionMarginMillis); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
-  static const toggleableTransitionAnimation = Duration(milliseconds: 200 + transitionMarginMillis); // ref `_kToggleDuration` used in `ToggleableStateMixin`
+  static const pageTransitionExact = Duration(milliseconds: 300); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
+  static const pageTransitionLoose = Duration(milliseconds: 300 + transitionMarginMillis); // ref `transitionDuration` used in `MaterialRouteTransitionMixin`
+  static const dialogTransitionLoose = Duration(milliseconds: 150 + transitionMarginMillis); // ref `transitionDuration` used in `DialogRoute`
+  static const drawerTransitionLoose = Duration(milliseconds: 246 + transitionMarginMillis); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
+  static const toggleableTransitionLoose = Duration(milliseconds: 200 + transitionMarginMillis); // ref `_kToggleDuration` used in `ToggleableStateMixin`
 
   // common animations
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);

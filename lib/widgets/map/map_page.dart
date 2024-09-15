@@ -118,7 +118,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
       _isPageAnimatingNotifier.value = true;
-      Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
+      Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });
@@ -142,7 +142,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions.add(openingCollection.source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _updateRegionCollection()));
 
     _selectedIndexNotifier.addListener(_onThumbnailIndexChanged);
-    Future.delayed(ADurations.pageTransitionAnimation * timeDilation + const Duration(seconds: 1), () {
+    Future.delayed(ADurations.pageTransitionLoose * timeDilation + const Duration(seconds: 1), () {
       final regionEntries = regionCollection?.sortedEntries ?? [];
       final initialEntry = widget.initialEntry ?? regionEntries.firstOrNull;
       if (initialEntry != null) {

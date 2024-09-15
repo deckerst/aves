@@ -182,7 +182,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
               title: Text(v.getDescription(context)),
               onTap: () async {
                 Navigator.maybeOf(context)?.pop();
-                await Future.delayed(ADurations.drawerTransitionAnimation);
+                await Future.delayed(ADurations.drawerTransitionLoose);
                 _goTo(v.path);
                 setState(() {});
               },

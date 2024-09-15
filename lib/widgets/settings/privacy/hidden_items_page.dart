@@ -185,7 +185,7 @@ class _HiddenPaths extends StatelessWidget {
                   ),
                 );
                 // wait for the dialog to hide as applying the change may block the UI
-                await Future.delayed(ADurations.pageTransitionAnimation * timeDilation);
+                await Future.delayed(ADurations.pageTransitionLoose * timeDilation);
                 if (path != null && path.isNotEmpty) {
                   settings.changeFilterVisibility({PathFilter(path)}, false);
                 }

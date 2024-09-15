@@ -81,7 +81,7 @@ mixin FeedbackMixin {
                 final margin = (marginComputer ?? snackBarMarginDefault).call(context);
                 return AnimatedPadding(
                   padding: margin,
-                  duration: ADurations.pageTransitionAnimation,
+                  duration: ADurations.pageTransitionLoose,
                   child: child,
                 );
               },
