@@ -25,6 +25,7 @@ class ThumbnailImage extends StatefulWidget {
   final bool showLoadingBackground;
   final ValueNotifier<bool>? cancellableNotifier;
   final Object? heroTag;
+  final HeroPlaceholderBuilder? heroPlaceholderBuilder;
 
   const ThumbnailImage({
     super.key,
@@ -37,6 +38,7 @@ class ThumbnailImage extends StatefulWidget {
     this.showLoadingBackground = true,
     this.cancellableNotifier,
     this.heroTag,
+    this.heroPlaceholderBuilder,
   });
 
   @override
@@ -283,6 +285,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
           }
           return child;
         },
+        placeholderBuilder: widget.heroPlaceholderBuilder,
         transitionOnUserGestures: true,
         child: image,
       );

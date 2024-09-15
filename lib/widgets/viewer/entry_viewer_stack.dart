@@ -18,6 +18,7 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/viewer/action/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
@@ -900,6 +901,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
             predicate: (v) => v < 1,
             animate: false,
           );
+      context.read<ViewerEntryNotifier>().value = entry;
     }
   }
 
