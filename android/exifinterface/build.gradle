@@ -4,10 +4,10 @@ plugins {
 
 android {
     namespace 'androidx.exifinterface.media'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
-        minSdk 19
+        minSdk 21
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -20,11 +20,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.8.0'
+    implementation 'androidx.annotation:annotation:1.8.2'
 }

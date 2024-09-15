@@ -32,6 +32,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/durations_provider.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
@@ -224,6 +225,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         Provider<TvRailController>.value(value: _tvRailController),
         DurationsProvider(),
         HighlightInfoProvider(),
+        ViewerEntryProvider(),
       ],
       child: NotificationListener<PopExitNotification>(
         onNotification: (notification) {
@@ -411,7 +413,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void didHaveMemoryPressure() {
     super.didHaveMemoryPressure();
-    reportService.log('App memory pressure');
+    debugPrint('App memory pressure');
     imageCache.clear();
   }
 

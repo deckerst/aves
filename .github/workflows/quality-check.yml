@@ -1,0 +1,88 @@
+name: Quality check
+
+on:
+  push:
+    branches: [ "develop", "main" ]
+  pull_request:
+    branches: [ "develop", "main" ]
+    types: [ opened, synchronize, reopened ]
+  schedule:
+    - cron: '17 8 * * 3'
+
+# Declare default permissions as read only.
+permissions: read-all
+
+jobs:
+  analyze_flutter:
+    name: Flutter analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Get Flutter packages
+        run: scripts/pub_get_all.sh
+
+      - name: Static analysis.
+        run: ./flutterw analyze
+
+      - name: Unit tests.
+        run: ./flutterw test
+
+  analyze_codeql:
+    name: CodeQL analysis (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      # required for all workflows
+      security-events: write
+
+      # required to fetch internal or private CodeQL packs
+      packages: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: java-kotlin
+            build-mode: manual
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
+      # Building relies on the Android Gradle plugin,
+      # which requires a modern Java version (not the default one).
+      - name: Set up JDK for Android Gradle plugin
+        uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88 # v4.3.0
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Checkout repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@8214744c546c1e5c8f03dde8fab3a7353211988d # v3.26.7
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - if: matrix.build-mode == 'manual'
+        shell: bash
+        # build in profile mode, instead of release,
+        # so that setting up signing environment variables is not required
+        run: |
+          scripts/apply_flavor_play.sh
+          ./flutterw build apk --profile -t lib/main_play.dart --flavor play
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@8214744c546c1e5c8f03dde8fab3a7353211988d # v3.26.7
+        with:
+          category: "/language:${{matrix.language}}"

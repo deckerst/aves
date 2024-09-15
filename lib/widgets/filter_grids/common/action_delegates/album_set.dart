@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -78,12 +77,10 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     final selectedSingleItem = selectedFilters.length == 1;
     final isMain = appMode == AppMode.main;
 
-    final canCreate = !settings.isReadOnly && appMode.canCreateFilter && !isSelecting;
     switch (action) {
       case ChipSetAction.createAlbum:
-        return canCreate;
       case ChipSetAction.createVault:
-        return canCreate && device.canUseVaults;
+        return !settings.isReadOnly && appMode.canCreateFilter && !isSelecting;
       case ChipSetAction.delete:
       case ChipSetAction.rename:
         return isMain && isSelecting && !settings.isReadOnly;
@@ -190,7 +187,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
     // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
+    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
       sortFactor = value.$1!;
       settings.albumGroupFactor = value.$2!;

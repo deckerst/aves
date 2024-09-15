@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.appwidget.AppWidgetManager
 import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -229,6 +230,7 @@ open class MainActivity : FlutterFragmentActivity() {
         intentStreamHandler.notifyNewIntent(extractIntentData(intent))
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -316,6 +318,13 @@ open class MainActivity : FlutterFragmentActivity() {
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
 
+                    val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
+                    val isLocked = keyguardManager.isKeyguardLocked
+                    if (isLocked) {
+                        // device is locked, so access to content is limited to intent URI by default
+                        fields[INTENT_DATA_KEY_SECURE_URIS] = listOf(uri.toString())
+                    }
+
                     if (action == MediaStore.ACTION_REVIEW_SECURE) {
                         val uris = ArrayList<String>()
                         intent.clipData?.let { clipData ->
@@ -323,7 +332,9 @@ open class MainActivity : FlutterFragmentActivity() {
                                 clipData.getItemAt(i).uri?.let { uris.add(it.toString()) }
                             }
                         }
-                        fields[INTENT_DATA_KEY_SECURE_URIS] = uris
+                        if (uris.isNotEmpty()) {
+                            fields[INTENT_DATA_KEY_SECURE_URIS] = uris
+                        }
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && intent.hasExtra(MediaStore.EXTRA_BRIGHTNESS)) {
                         fields[INTENT_DATA_KEY_BRIGHTNESS] = intent.getFloatExtra(MediaStore.EXTRA_BRIGHTNESS, 0f)

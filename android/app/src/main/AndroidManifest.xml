@@ -128,6 +128,7 @@
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
+            android:showWhenLocked="true"
             android:supportsPictureInPicture="true"
             android:theme="@style/NormalTheme"
             android:windowSoftInputMode="adjustResize">

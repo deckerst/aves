@@ -40,6 +40,7 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
+import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
@@ -49,6 +50,7 @@ import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -115,6 +117,12 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   final ValueNotifier<AvesEntry?> _focusedItemNotifier = ValueNotifier(null);
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
   final ValueNotifier<AppMode> _selectingAppModeNotifier = ValueNotifier(AppMode.pickFilteredMediaInternal);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<ViewerEntryNotifier>().value = null);
+  }
 
   @override
   void dispose() {
@@ -238,9 +246,12 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
     );
   }
 
-  void _goToViewer(CollectionLens collection, AvesEntry entry) {
+  Future<void> _goToViewer(CollectionLens collection, AvesEntry entry) async {
+    // track viewer entry for dynamic hero placeholder
+    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<ViewerEntryNotifier>().value = entry);
+
     final selection = context.read<Selection<AvesEntry>>();
-    Navigator.maybeOf(context)?.push(
+    await Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
@@ -266,6 +277,14 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
         },
       ),
     );
+
+    // reset track viewer entry
+    final animate = context.read<Settings>().animate;
+    if (animate) {
+      // TODO TLAD fix timing when transition is incomplete, e.g. when going back while going to the viewer
+      await Future.delayed(ADurations.pageTransitionExact * timeDilation);
+    }
+    context.read<ViewerEntryNotifier>().value = null;
   }
 }
 

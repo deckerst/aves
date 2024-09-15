@@ -42,11 +42,9 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
 
   final List<VaultLockType> _lockTypeOptions = [
     if (device.canAuthenticateUser) VaultLockType.system,
-    if (device.canUseCrypto) ...[
-      VaultLockType.pattern,
-      VaultLockType.pin,
-      VaultLockType.password,
-    ],
+    VaultLockType.pattern,
+    VaultLockType.pin,
+    VaultLockType.password,
   ];
 
   VaultDetails? get initialDetails => widget.initialDetails;

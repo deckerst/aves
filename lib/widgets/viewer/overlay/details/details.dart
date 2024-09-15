@@ -221,7 +221,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
       rows.add(_buildRatingTagsFullRow(context));
     }
     if (showDescription) {
-      rows.add(_buildDescriptionFullRow(context));
+      rows.add(_buildDescriptionFullRow(context, infoMaxWidth));
     }
     return rows;
   }
@@ -243,12 +243,17 @@ class ViewerDetailOverlayContent extends StatelessWidget {
         ),
       );
 
-  Widget _buildDescriptionFullRow(BuildContext context) => _buildFullRowSwitcher(
+  Widget _buildDescriptionFullRow(BuildContext context, double infoMaxWidth) => _buildFullRowSwitcher(
         context: context,
         visible: details.description != null,
-        builder: (context) => OverlayRowExpander(
-          expandedNotifier: expandedNotifier,
-          child: OverlayDescriptionRow(description: details.description!),
+        builder: (context) => SizedBox(
+          // size it so that a long description with multiple short lines
+          // expands to the full width and the scroll bar is at the edge
+          width: infoMaxWidth,
+          child: OverlayRowExpander(
+            expandedNotifier: expandedNotifier,
+            child: OverlayDescriptionRow(description: details.description!),
+          ),
         ),
       );
 
@@ -286,45 +291,49 @@ class ViewerDetailOverlayContent extends StatelessWidget {
     required double subRowWidth,
     required bool visible,
     required WidgetBuilder builder,
-  }) =>
-      AnimatedSwitcher(
-        duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
-        switchInCurve: Curves.easeInOutCubic,
-        switchOutCurve: Curves.easeInOutCubic,
-        transitionBuilder: (child, animation) => FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-        child: visible
-            ? SizedBox(
-                width: subRowWidth,
-                child: builder(context),
-              )
-            : const SizedBox(),
-      );
+  }) {
+    final child = visible
+        ? SizedBox(
+            width: subRowWidth,
+            child: builder(context),
+          )
+        : const SizedBox();
+    return AnimatedSwitcher(
+      duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
+      switchInCurve: Curves.easeInOutCubic,
+      switchOutCurve: Curves.easeInOutCubic,
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+      child: child,
+    );
+  }
 
   Widget _buildFullRowSwitcher({
     required BuildContext context,
     required bool visible,
     required WidgetBuilder builder,
-  }) =>
-      AnimatedSwitcher(
-        duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
-        switchInCurve: Curves.easeInOutCubic,
-        switchOutCurve: Curves.easeInOutCubic,
-        transitionBuilder: (child, animation) => FadeTransition(
-          opacity: animation,
-          child: SizeTransition(
-            axisAlignment: 1,
-            sizeFactor: animation,
-            child: child,
-          ),
+  }) {
+    final child = visible
+        ? Padding(
+            padding: const EdgeInsets.only(top: _interRowPadding),
+            child: builder(context),
+          )
+        : const SizedBox();
+    return AnimatedSwitcher(
+      duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayChangeAnimation),
+      switchInCurve: Curves.easeInOutCubic,
+      switchOutCurve: Curves.easeInOutCubic,
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: animation,
+          axisAlignment: 1,
+          child: child,
         ),
-        child: visible
-            ? Padding(
-                padding: const EdgeInsets.only(top: _interRowPadding),
-                child: builder(context),
-              )
-            : const SizedBox(),
-      );
+      ),
+      child: child,
+    );
+  }
 }

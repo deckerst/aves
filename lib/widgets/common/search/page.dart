@@ -76,7 +76,7 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
-    Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
+    Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
       if (!mounted) return;
       _searchFieldFocusNode.requestFocus();
     });

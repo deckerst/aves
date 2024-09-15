@@ -6,8 +6,10 @@ import 'package:aves/services/intent_service.dart';
 import 'package:aves/widgets/collection/grid/list_details.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
+import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
+import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,10 +64,7 @@ class InteractiveTile extends StatelessWidget {
           selectable: true,
           highlightable: true,
           isScrollingNotifier: isScrollingNotifier,
-          // hero tag should include a collection identifier, so that it animates
-          // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
-          // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
-          heroTagger: () => Object.hashAll([collection.id, entry.id]),
+          heroTagger: () => EntryHeroInfo(collection, entry).tag,
         ),
       ),
     );
@@ -126,5 +125,20 @@ class Tile extends StatelessWidget {
         selectable: selectable,
         highlightable: highlightable,
         heroTagger: heroTagger,
+        // do not use a hero placeholder but hide the thumbnail matching the viewer entry,
+        // so that it can hero out on an entry and come back with a hero to a different entry
+        heroPlaceholderBuilder: (context, heroSize, child) => child,
+        imageDecorator: (context, child) {
+          return Selector<ViewerEntryNotifier, bool>(
+            selector: (context, v) => v.value == entry,
+            builder: (context, isViewerEntry, child) {
+              return Visibility.maintain(
+                visible: !isViewerEntry,
+                child: child!,
+              );
+            },
+            child: child,
+          );
+        },
       );
 }

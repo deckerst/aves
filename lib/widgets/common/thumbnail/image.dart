@@ -25,6 +25,7 @@ class ThumbnailImage extends StatefulWidget {
   final bool showLoadingBackground;
   final ValueNotifier<bool>? cancellableNotifier;
   final Object? heroTag;
+  final HeroPlaceholderBuilder? heroPlaceholderBuilder;
 
   const ThumbnailImage({
     super.key,
@@ -37,6 +38,7 @@ class ThumbnailImage extends StatefulWidget {
     this.showLoadingBackground = true,
     this.cancellableNotifier,
     this.heroTag,
+    this.heroPlaceholderBuilder,
   });
 
   @override
@@ -261,11 +263,12 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
             },
           );
 
-    if (animate && widget.heroTag != null) {
+    final heroTag = widget.heroTag;
+    if (animate && heroTag != null) {
       final background = settings.imageBackground;
       final backgroundColor = background.isColor ? background.color : null;
       image = Hero(
-        tag: widget.heroTag!,
+        tag: heroTag,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
           Widget child = TransitionImage(
             image: entry.bestCachedThumbnail,
@@ -282,6 +285,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
           }
           return child;
         },
+        placeholderBuilder: widget.heroPlaceholderBuilder,
         transitionOnUserGestures: true,
         child: image,
       );
@@ -296,9 +300,10 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
       extent: extent,
     );
 
-    if (animate && widget.heroTag != null) {
+    final heroTag = widget.heroTag;
+    if (animate && heroTag != null) {
       child = Hero(
-        tag: widget.heroTag!,
+        tag: heroTag,
         flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
           return MediaQueryDataProvider(
             child: DefaultTextStyle(
