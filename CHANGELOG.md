@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.11.11"></a>[v1.11.11] - 2024-09-16
+## <a id="v1.11.12"></a>[v1.11.12] - 2024-09-16
 
 ### Added
 
@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file.
 
 - crash when cataloguing some malformed MP4 files
 - inconsistent launch screen
+
+## <a id="v1.11.11"></a>[v1.11.11] - 2024-09-16 [YANKED]
 
 ## <a id="v1.11.10"></a>[v1.11.10] - 2024-09-01
 

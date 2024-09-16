@@ -320,6 +320,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
                     val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
                     val isLocked = keyguardManager.isKeyguardLocked
+                    setShowWhenLocked(isLocked)
                     if (isLocked) {
                         // device is locked, so access to content is limited to intent URI by default
                         fields[INTENT_DATA_KEY_SECURE_URIS] = listOf(uri.toString())
