@@ -8,6 +8,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
@@ -35,6 +36,7 @@ Future<String?> pickAlbum({
 }) async {
   final source = context.read<CollectionSource>();
   if (source.initState != SourceInitializationState.full) {
+    await reportService.log('Complete source initialization to pick album');
     // source may not be fully initialized in view mode
     await source.init();
   }
