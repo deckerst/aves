@@ -209,7 +209,7 @@ class _HomePageState extends State<HomePage> {
         final source = context.read<CollectionSource>();
         source.safeMode = safeMode;
         if (source.initState != SourceInitializationState.full) {
-          await reportService.log('Complete source initialization to set up home for app mode=$appMode');
+          await reportService.log('Initialize source (init state=${source.initState.name}) to start app with mode=$appMode');
           await source.init(
             loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
           );
