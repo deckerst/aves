@@ -209,12 +209,14 @@ class _HomePageState extends State<HomePage> {
         final source = context.read<CollectionSource>();
         source.safeMode = safeMode;
         if (source.initState != SourceInitializationState.full) {
+          await reportService.log('Initialize source (init state=${source.initState.name}) to start app with mode=$appMode');
           await source.init(
             loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
           );
         }
       case AppMode.screenSaver:
         final source = context.read<CollectionSource>();
+        await reportService.log('Initialize source to start screen saver');
         await source.init(
           canAnalyze: false,
         );
@@ -223,6 +225,7 @@ class _HomePageState extends State<HomePage> {
           final directory = _viewerEntry?.directory;
           if (directory != null) {
             unawaited(AnalysisService.registerCallback());
+            await reportService.log('Initialize source to view item in directory $directory');
             final source = context.read<CollectionSource>();
             await source.init(
               directory: directory,

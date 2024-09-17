@@ -209,6 +209,7 @@ abstract class ImageProvider {
     ) {
         if (!supportedExportMimeTypes.contains(imageExportMimeType)) {
             callback.onFailure(Exception("unsupported export MIME type=$imageExportMimeType"))
+            return
         }
 
         val targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
@@ -858,6 +859,7 @@ abstract class ImageProvider {
             }
         } catch (e: NoClassDefFoundError) {
             callback.onFailure(e)
+            return false
         } catch (e: Exception) {
             callback.onFailure(e)
             return false

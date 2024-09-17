@@ -49,6 +49,8 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final reuseEntry = args['reuseEntry'] as bool;
   final isSystemThemeDark = args['isSystemThemeDark'] as bool;
 
+  await reportService.log('Draw widget with widgetId=$widgetId');
+
   final brightness = isSystemThemeDark ? Brightness.dark : Brightness.light;
   final outline = await settings.getWidgetOutline(widgetId).color(brightness);
 
