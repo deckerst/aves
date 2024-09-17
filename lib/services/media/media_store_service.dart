@@ -69,7 +69,9 @@ class PlatformMediaStoreService implements MediaStoreService {
     try {
       return await _platform.invokeMethod('getGeneration');
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (e.code != 'getGeneration-primary') {
+        await reportService.recordError(e, stack);
+      }
     }
     return null;
   }

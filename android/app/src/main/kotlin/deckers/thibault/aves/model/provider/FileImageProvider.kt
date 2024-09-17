@@ -50,6 +50,7 @@ internal class FileImageProvider : ImageProvider() {
                 }
             } catch (e: SecurityException) {
                 callback.onFailure(e)
+                return
             }
         }
         entry.fillPreCatalogMetadata(context, safe = false)
