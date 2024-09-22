@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Map: OpenTopoMap layer
+
 ## <a id="v1.11.13"></a>[v1.11.13] - 2024-09-17
 
 ### Added
