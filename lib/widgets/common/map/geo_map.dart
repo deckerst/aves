@@ -185,6 +185,7 @@ class _GeoMapState extends State<GeoMap> {
                 onMarkerTap: _onMarkerTap,
                 onMarkerLongPress: onMarkerLongPress,
               );
+            case EntryMapStyle.osmAmericana:
             case EntryMapStyle.openTopoMap:
             case EntryMapStyle.osmHot:
             case EntryMapStyle.stamenWatercolor:

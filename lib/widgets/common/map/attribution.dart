@@ -16,6 +16,8 @@ class Attribution extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (style) {
+      case EntryMapStyle.osmAmericana:
+        return _buildAttributionMarkdown(context, context.l10n.mapAttributionOsmAmericana);
       case EntryMapStyle.openTopoMap:
         return _buildAttributionMarkdown(context, context.l10n.mapAttributionOpenTopoMap);
       case EntryMapStyle.osmHot:
