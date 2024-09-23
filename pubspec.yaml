@@ -111,6 +111,7 @@ dependencies:
       url: https://github.com/deckerst/aves_streams_channel.git
   transparent_image:
   url_launcher:
+  vector_map_tiles:
   vector_math:
   volume_controller:
   xml:
@@ -119,6 +120,8 @@ dependency_overrides:
   # media_kit_video v1.2.4 depends on a specific old version of screen_brightness
   media_kit_video: ^1.0.0
   screen_brightness: ^1.0.0
+  vector_tile_renderer:
+    path: ../dart-vector-tile-renderer
 
 dev_dependencies:
   flutter_test:
