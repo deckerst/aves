@@ -1,4 +1,5 @@
 import 'package:aves/model/device.dart';
+import 'package:aves/widgets/common/map/leaflet/vector_style_reader_extra.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
@@ -45,39 +46,61 @@ class StamenWatercolorLayer extends StatelessWidget {
   }
 }
 
-class OsmAmericanaLayer extends StatefulWidget {
-  const OsmAmericanaLayer({super.key});
+class OsmLibertyLayer extends StatefulWidget {
+  const OsmLibertyLayer({super.key});
 
   @override
-  State<OsmAmericanaLayer> createState() => _OsmAmericanaLayerState();
+  State<OsmLibertyLayer> createState() => _OsmLibertyLayerState();
 }
 
-class _OsmAmericanaLayerState extends State<OsmAmericanaLayer> {
-  late final Future<Style> _styleFuture;
+class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
+  late final Future<Style> _americanaStyleFuture;
+  late final Future<Style> _osmLibertyStyleFuture;
+
+  static const _openMapTileProviderSource = 'openmaptiles';
+
+  // `Americana` provides tiles, but it uses layer syntax that is not supported by the vector tile renderer
+  static const _americanaStyle = 'https://americanamap.org/style.json';
+
+  // `OSM Liberty` is well supported by the vector tile renderer, but it requires an API key for the tiles
+  static const _osmLiberty = 'https://maputnik.github.io/osm-liberty/style.json';
 
   @override
   void initState() {
     super.initState();
-    _styleFuture = StyleReader(
-      uri: 'https://americanamap.org/style.json',
+
+    _americanaStyleFuture = StyleReader(
+      uri: _americanaStyle,
+    ).readExtra(skippedSources: {});
+
+    _osmLibertyStyleFuture = StyleReader(
+      uri: _osmLiberty,
       logger: const vtr.Logger.console(),
-    ).read();
+    ).readExtra(skippedSources: {_openMapTileProviderSource});
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Style>(
-      future: _styleFuture,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) return Text(snapshot.error.toString());
+      future: _americanaStyleFuture,
+      builder: (context, americanaStyleSnapshot) {
+        return FutureBuilder<Style>(
+          future: _osmLibertyStyleFuture,
+          builder: (context, osmLibertyStyleSnapshot) {
+            if (americanaStyleSnapshot.hasError) return Text(americanaStyleSnapshot.error.toString());
+            if (osmLibertyStyleSnapshot.hasError) return Text(osmLibertyStyleSnapshot.error.toString());
 
-        final style = snapshot.data;
-        if (style == null) return const SizedBox();
+            final americanaStyle = americanaStyleSnapshot.data;
+            final osmLibertyStyle = osmLibertyStyleSnapshot.data;
+            if (americanaStyle == null || osmLibertyStyle == null) return const SizedBox();
 
-        return VectorTileLayer(
-          tileProviders: style.providers,
-          theme: style.theme,
-          sprites: style.sprites,
+            return VectorTileLayer(
+              tileProviders: americanaStyle.providers,
+              theme: osmLibertyStyle.theme,
+              sprites: osmLibertyStyle.sprites,
+              layerMode: VectorTileLayerMode.raster,
+            );
+          },
         );
       },
     );

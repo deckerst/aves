@@ -701,7 +701,7 @@ packages:
     source: hosted
     version: "0.15.4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
@@ -1741,11 +1741,12 @@ packages:
     source: hosted
     version: "2.0.0"
   vector_tile_renderer:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
-      path: "../dart-vector-tile-renderer"
-      relative: true
-    source: path
+      name: vector_tile_renderer
+      sha256: b58fa02b472ced87de00de2b4d5837576239bddb21b562481f25bde39bd117ae
+      url: "https://pub.dev"
+    source: hosted
     version: "5.2.0"
   vm_service:
     dependency: transitive
