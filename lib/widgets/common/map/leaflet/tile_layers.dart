@@ -54,50 +54,66 @@ class OsmLibertyLayer extends StatefulWidget {
 }
 
 class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
-  late final Future<Style> _americanaStyleFuture;
-  late final Future<Style> _osmLibertyStyleFuture;
+  late final Future<TileProviders> _tileProviderFuture;
+  late final Future<Style> _styleFuture;
 
   static const _openMapTileProviderSource = 'openmaptiles';
 
-  // `Americana` provides tiles, but it uses layer syntax that is not supported by the vector tile renderer
-  static const _americanaStyle = 'https://americanamap.org/style.json';
+  // `Americana` provides tiles, but it uses layer syntax that is not supported by the vector tile renderer.
+  // Full style is at 'https://americanamap.org/style.json' but it is heavy (1.0 MB, mostly for the layers).
+  static const _americanaTileProviderUri = 'https://tile.ourmap.us/data/v3.json';
 
-  // `OSM Liberty` is well supported by the vector tile renderer, but it requires an API key for the tiles
-  static const _osmLiberty = 'https://maputnik.github.io/osm-liberty/style.json';
+  // `OSM Liberty` is well supported by the vector tile renderer, but it requires an API key for the tiles.
+  static const _osmLibertyStyleUri = 'https://maputnik.github.io/osm-liberty/style.json';
+
+  // as of 2024/09/25,
+  // Americana provider JSON:     39.4 kB
+  // OSM Liberty style JSON:      48.3 kB
+  // OSM Liberty sprites JSON 1x: 16.6 kB
+  // OSM Liberty sprites  PNG 1x: 30.4 kB
+  // OSM Liberty sprites JSON 2x: 16.6 kB
+  // OSM Liberty sprites  PNG 2x: 82.5 kB
+  // -> total overhead:          233.8 kB
 
   @override
   void initState() {
     super.initState();
 
-    _americanaStyleFuture = StyleReader(
-      uri: _americanaStyle,
-    ).readExtra(skippedSources: {});
+    _tileProviderFuture = StyleReaderExtra.readProviderByName(
+      {
+        _openMapTileProviderSource: {
+          'url': _americanaTileProviderUri,
+          'type': 'vector',
+        }
+      },
+    ).then(TileProviders.new);
 
-    _osmLibertyStyleFuture = StyleReader(
-      uri: _osmLiberty,
+    _styleFuture = StyleReader(
+      uri: _osmLibertyStyleUri,
       logger: const vtr.Logger.console(),
-    ).readExtra(skippedSources: {_openMapTileProviderSource});
+    ).readExtra(skipSources: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Style>(
-      future: _americanaStyleFuture,
-      builder: (context, americanaStyleSnapshot) {
+    return FutureBuilder<TileProviders>(
+      future: _tileProviderFuture,
+      builder: (context, tileProviderSnapshot) {
         return FutureBuilder<Style>(
-          future: _osmLibertyStyleFuture,
-          builder: (context, osmLibertyStyleSnapshot) {
-            if (americanaStyleSnapshot.hasError) return Text(americanaStyleSnapshot.error.toString());
-            if (osmLibertyStyleSnapshot.hasError) return Text(osmLibertyStyleSnapshot.error.toString());
+          future: _styleFuture,
+          builder: (context, styleSnapshot) {
+            if (tileProviderSnapshot.hasError) return Text(tileProviderSnapshot.error.toString());
+            if (styleSnapshot.hasError) return Text(styleSnapshot.error.toString());
 
-            final americanaStyle = americanaStyleSnapshot.data;
-            final osmLibertyStyle = osmLibertyStyleSnapshot.data;
-            if (americanaStyle == null || osmLibertyStyle == null) return const SizedBox();
+            final tileProviders = tileProviderSnapshot.data;
+            final style = styleSnapshot.data;
+            if (tileProviders == null || style == null) return const SizedBox();
 
             return VectorTileLayer(
-              tileProviders: americanaStyle.providers,
-              theme: osmLibertyStyle.theme,
-              sprites: osmLibertyStyle.sprites,
+              tileProviders: tileProviders,
+              theme: style.theme,
+              sprites: style.sprites,
+              // `vector` is higher quality and follows map orientation, but it is slower
               layerMode: VectorTileLayerMode.raster,
             );
           },
