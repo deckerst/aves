@@ -8,7 +8,7 @@ enum EntryMapStyle {
   googleHybrid,
   googleTerrain,
   // Vector (OpenMapTiles)
-  osmAmericana,
+  osmLiberty,
   // Raster (Leaflet)
   openTopoMap,
   osmHot,
