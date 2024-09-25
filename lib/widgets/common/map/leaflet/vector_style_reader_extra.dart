@@ -7,14 +7,14 @@ import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart';
 
 extension StyleReaderExtra on StyleReader {
-  Future<Style> readExtra({required Set<String> skippedSources}) async {
+  Future<Style> readExtra({required bool skipSources}) async {
     final styleText = await _httpGet(uri);
     final style = await compute(jsonDecode, styleText);
     if (style is! Map<String, dynamic>) {
       throw _invalidStyle(uri);
     }
     final sources = style['sources'] as Map<String, dynamic>;
-    final providerByName = await _readProviderByName(Map.fromEntries(sources.entries.where((kv) => !skippedSources.contains(kv.key))));
+    final Map<String, VectorTileProvider> providerByName = skipSources ? {} : await readProviderByName(sources);
     final name = style['name'] as String?;
 
     final center = style['center'];
@@ -52,7 +52,7 @@ extension StyleReaderExtra on StyleReader {
     return Style(theme: ThemeReader(logger: logger).read(style), providers: TileProviders(providerByName), sprites: sprites, name: name, center: centerPoint, zoom: zoom);
   }
 
-  Future<Map<String, VectorTileProvider>> _readProviderByName(Map<String, dynamic> sources) async {
+  static Future<Map<String, VectorTileProvider>> readProviderByName(Map<String, dynamic> sources) async {
     final providers = <String, VectorTileProvider>{};
     final sourceEntries = sources.entries.toList();
     for (final entry in sourceEntries) {
@@ -84,9 +84,9 @@ extension StyleReaderExtra on StyleReader {
     return providers;
   }
 
-  String _invalidStyle(String url) => 'Uri does not appear to be a valid style: $url';
+  static String _invalidStyle(String url) => 'Uri does not appear to be a valid style: $url';
 
-  Future<String> _httpGet(String url) async {
+  static Future<String> _httpGet(String url) async {
     final response = await get(Uri.parse(url));
     if (response.statusCode == 200) {
       return response.body;
@@ -95,7 +95,7 @@ extension StyleReaderExtra on StyleReader {
     }
   }
 
-  Future<Uint8List> _loadBinary(String url) async {
+  static Future<Uint8List> _loadBinary(String url) async {
     final response = await get(Uri.parse(url));
     if (response.statusCode == 200) {
       return response.bodyBytes;
