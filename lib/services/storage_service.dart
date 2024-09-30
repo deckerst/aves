@@ -176,7 +176,6 @@ class PlatformStorageService implements StorageService {
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
-    return;
   }
 
   // returns number of deleted directories

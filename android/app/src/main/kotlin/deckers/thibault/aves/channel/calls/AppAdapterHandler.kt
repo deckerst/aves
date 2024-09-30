@@ -1,6 +1,10 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -42,7 +46,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import kotlin.math.roundToInt
 
 class AppAdapterHandler(private val context: Context) : MethodCallHandler {

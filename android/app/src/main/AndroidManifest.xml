@@ -39,6 +39,10 @@
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING"
         tools:ignore="SystemPermissionTypo" />
+    <!-- to switch between regular and work profiles -->
+    <uses-permission
+        android:name="android.permission.INTERACT_ACROSS_PROFILES"
+        tools:ignore="ProtectedPermissions" />
     <!-- TODO TLAD still needed to fetch map tiles / reverse geocoding / else ? check in release mode -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- from Android 12 (API 31), users can optionally grant access to the media management special permission -->
