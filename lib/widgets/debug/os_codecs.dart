@@ -6,14 +6,14 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-class DebugAndroidCodecSection extends StatefulWidget {
-  const DebugAndroidCodecSection({super.key});
+class DebugOSCodecSection extends StatefulWidget {
+  const DebugOSCodecSection({super.key});
 
   @override
-  State<DebugAndroidCodecSection> createState() => _DebugAndroidCodecSectionState();
+  State<DebugOSCodecSection> createState() => _DebugOSCodecSectionState();
 }
 
-class _DebugAndroidCodecSectionState extends State<DebugAndroidCodecSection> with AutomaticKeepAliveClientMixin {
+class _DebugOSCodecSectionState extends State<DebugOSCodecSection> with AutomaticKeepAliveClientMixin {
   late Future<List<Map>> _loader;
   final ValueNotifier<String> _queryNotifier = ValueNotifier('');
 
@@ -34,7 +34,7 @@ class _DebugAndroidCodecSectionState extends State<DebugAndroidCodecSection> wit
     super.build(context);
 
     return AvesExpansionTile(
-      title: 'Android Codecs',
+      title: 'OS Codecs',
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),

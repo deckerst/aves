@@ -1,6 +1,7 @@
 package deckers.thibault.aves
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
 import android.app.SearchManager
 import android.appwidget.AppWidgetManager
 import android.content.ClipData
@@ -23,6 +24,7 @@ import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
 import deckers.thibault.aves.channel.calls.AnalysisHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
+import deckers.thibault.aves.channel.calls.AppProfileHandler
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.DebugHandler
 import deckers.thibault.aves.channel.calls.DeviceHandler
@@ -142,6 +144,7 @@ open class MainActivity : FlutterFragmentActivity() {
         MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
         MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
         // - need Activity
+        MethodChannel(messenger, AppProfileHandler.CHANNEL).setMethodCallHandler(AppProfileHandler(this))
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ActivityWindowHandler(this))
 
         // result streaming: dart -> platform ->->-> dart
@@ -318,7 +321,7 @@ open class MainActivity : FlutterFragmentActivity() {
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
 
-                    val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
+                    val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
                     val isLocked = keyguardManager.isKeyguardLocked
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                         setShowWhenLocked(isLocked)

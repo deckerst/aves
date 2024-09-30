@@ -7,14 +7,14 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
-class DebugStorageSection extends StatefulWidget {
-  const DebugStorageSection({super.key});
+class DebugOSStorageSection extends StatefulWidget {
+  const DebugOSStorageSection({super.key});
 
   @override
-  State<DebugStorageSection> createState() => _DebugStorageSectionState();
+  State<DebugOSStorageSection> createState() => _DebugOSStorageSectionState();
 }
 
-class _DebugStorageSectionState extends State<DebugStorageSection> with AutomaticKeepAliveClientMixin {
+class _DebugOSStorageSectionState extends State<DebugOSStorageSection> with AutomaticKeepAliveClientMixin {
   final Map<String, int?> _freeSpaceByVolume = {};
 
   @override
@@ -31,7 +31,7 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
     super.build(context);
 
     return AvesExpansionTile(
-      title: 'Storage Volumes',
+      title: 'OS Storage',
       children: [
         ...androidFileUtils.storageVolumes.expand((v) {
           final freeSpace = _freeSpaceByVolume[v.path];

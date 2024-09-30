@@ -7,14 +7,14 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-class DebugAndroidAppSection extends StatefulWidget {
-  const DebugAndroidAppSection({super.key});
+class DebugOSAppSection extends StatefulWidget {
+  const DebugOSAppSection({super.key});
 
   @override
-  State<DebugAndroidAppSection> createState() => _DebugAndroidAppSectionState();
+  State<DebugOSAppSection> createState() => _DebugOSAppSectionState();
 }
 
-class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with AutomaticKeepAliveClientMixin {
+class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKeepAliveClientMixin {
   late Future<Set<Package>> _loader;
   final ValueNotifier<String> _queryNotifier = ValueNotifier('');
 
@@ -37,7 +37,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
     super.build(context);
 
     return AvesExpansionTile(
-      title: 'Android Apps',
+      title: 'OS Apps',
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),

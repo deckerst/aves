@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Map: OpenTopoMap layer
+- Enterprise: support for work profile switching from the drawer
 
 ## <a id="v1.11.13"></a>[v1.11.13] - 2024-09-17
 
