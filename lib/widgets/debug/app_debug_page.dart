@@ -12,19 +12,19 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
-import 'package:aves/widgets/debug/android_apps.dart';
-import 'package:aves/widgets/debug/android_codecs.dart';
-import 'package:aves/widgets/debug/android_dirs.dart';
 import 'package:aves/widgets/debug/app_debug_action.dart';
 import 'package:aves/widgets/debug/cache.dart';
+import 'package:aves/widgets/debug/capabilities.dart';
 import 'package:aves/widgets/debug/colors.dart';
 import 'package:aves/widgets/debug/database.dart';
-import 'package:aves/widgets/debug/device.dart';
 import 'package:aves/widgets/debug/general.dart';
 import 'package:aves/widgets/debug/media_store_scan_dialog.dart';
+import 'package:aves/widgets/debug/os_apps.dart';
+import 'package:aves/widgets/debug/os_codecs.dart';
+import 'package:aves/widgets/debug/os_paths.dart';
+import 'package:aves/widgets/debug/os_storage.dart';
 import 'package:aves/widgets/debug/report.dart';
 import 'package:aves/widgets/debug/settings.dart';
-import 'package:aves/widgets/debug/storage.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -73,16 +73,16 @@ class AppDebugPage extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               children: const [
                 DebugGeneralSection(),
-                DebugAndroidAppSection(),
-                DebugAndroidCodecSection(),
-                DebugAndroidDirSection(),
                 DebugCacheSection(),
+                DebugCapabilitiesSection(),
                 DebugColorSection(),
                 DebugAppDatabaseSection(),
-                DebugDeviceSection(),
                 DebugErrorReportingSection(),
                 DebugSettingsSection(),
-                DebugStorageSection(),
+                DebugOSAppSection(),
+                DebugOSCodecSection(),
+                DebugOSPathSection(),
+                DebugOSStorageSection(),
               ],
             ),
           ),
