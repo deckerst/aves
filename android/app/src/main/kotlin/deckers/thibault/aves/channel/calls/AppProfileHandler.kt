@@ -75,7 +75,7 @@ class AppProfileHandler(private val activity: Activity) : MethodCallHandler {
 
         val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as CrossProfileApps
         val userHandles = crossProfileApps.targetUserProfiles
-        val label = crossProfileApps.getProfileSwitchingLabel(userHandles.first())
+        val label = if (userHandles.isEmpty()) "" else crossProfileApps.getProfileSwitchingLabel(userHandles.first())
 
         result.success(label)
     }
