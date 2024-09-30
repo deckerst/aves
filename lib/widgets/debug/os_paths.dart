@@ -5,14 +5,14 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
-class DebugAndroidDirSection extends StatefulWidget {
-  const DebugAndroidDirSection({super.key});
+class DebugOSPathSection extends StatefulWidget {
+  const DebugOSPathSection({super.key});
 
   @override
-  State<DebugAndroidDirSection> createState() => _DebugAndroidDirSectionState();
+  State<DebugOSPathSection> createState() => _DebugOSPathSectionState();
 }
 
-class _DebugAndroidDirSectionState extends State<DebugAndroidDirSection> with AutomaticKeepAliveClientMixin {
+class _DebugOSPathSectionState extends State<DebugOSPathSection> with AutomaticKeepAliveClientMixin {
   late Future<Map> _loader;
 
   @override
@@ -26,7 +26,7 @@ class _DebugAndroidDirSectionState extends State<DebugAndroidDirSection> with Au
     super.build(context);
 
     return AvesExpansionTile(
-      title: 'Android Dirs',
+      title: 'OS Paths',
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),

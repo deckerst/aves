@@ -2,6 +2,7 @@ import 'package:aves/model/availability.dart';
 import 'package:aves/model/db/db.dart';
 import 'package:aves/model/db/db_sqflite.dart';
 import 'package:aves/model/settings/store_shared_pref.dart';
+import 'package:aves/services/app_profile_service.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/services/media/embedded_data_service.dart';
@@ -37,6 +38,7 @@ final AvesVideoControllerFactory videoControllerFactory = getIt<AvesVideoControl
 final AvesVideoMetadataFetcher videoMetadataFetcher = getIt<AvesVideoMetadataFetcher>();
 
 final AppService appService = getIt<AppService>();
+final AppProfileService appProfileService = getIt<AppProfileService>();
 final DeviceService deviceService = getIt<DeviceService>();
 final EmbeddedDataService embeddedDataService = getIt<EmbeddedDataService>();
 final MediaEditService mediaEditService = getIt<MediaEditService>();
@@ -59,6 +61,7 @@ void initPlatformServices() {
   getIt.registerLazySingleton<AvesVideoMetadataFetcher>(FfmpegVideoMetadataFetcher.new);
 
   getIt.registerLazySingleton<AppService>(PlatformAppService.new);
+  getIt.registerLazySingleton<AppProfileService>(PlatformAppProfileService.new);
   getIt.registerLazySingleton<DeviceService>(PlatformDeviceService.new);
   getIt.registerLazySingleton<EmbeddedDataService>(PlatformEmbeddedDataService.new);
   getIt.registerLazySingleton<MediaEditService>(PlatformMediaEditService.new);
