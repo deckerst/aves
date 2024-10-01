@@ -10,6 +10,7 @@ import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
@@ -42,6 +43,12 @@ class MapButtonPanel extends StatelessWidget {
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           );
         }
+      case MapNavigationButton.close:
+        navigationButton = MapOverlayButton(
+          icon: const CloseButtonIcon(),
+          onPressed: SystemNavigator.pop,
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+        );
       case MapNavigationButton.map:
         if (openMapPage != null) {
           navigationButton = MapOverlayButton(

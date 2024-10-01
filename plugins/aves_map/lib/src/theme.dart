@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum MapNavigationButton { back, map, none }
+enum MapNavigationButton { back, close, map, none }
 
 class MapThemeData {
   final bool interactive, showCoordinateFilter;
