@@ -313,6 +313,13 @@ open class MainActivity : FlutterFragmentActivity() {
             "com.android.camera.action.REVIEW",
             "com.android.camera.action.SPLIT_SCREEN_REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
+                    if (uri.scheme == "geo") {
+                        return hashMapOf(
+                            INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW_GEO,
+                            INTENT_DATA_KEY_URI to uri.toString(),
+                        )
+                    }
+
                     // MIME type is optional
                     val type = intent.type ?: intent.resolveType(this)
                     val fields = hashMapOf<String, Any?>(
@@ -484,7 +491,16 @@ open class MainActivity : FlutterFragmentActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_search else R.drawable.ic_shortcut_search))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(EXTRA_KEY_PAGE, "/search")
+                    .putExtra(EXTRA_KEY_PAGE, SEARCH_PAGE_ROUTE_NAME)
+            )
+            .build()
+
+        val map = ShortcutInfoCompat.Builder(this, "map")
+            .setShortLabel(getString(R.string.map_shortcut_short_label))
+            .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_map else R.drawable.ic_shortcut_map))
+            .setIntent(
+                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                    .putExtra(EXTRA_KEY_PAGE, MAP_PAGE_ROUTE_NAME)
             )
             .build()
 
@@ -493,21 +509,12 @@ open class MainActivity : FlutterFragmentActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_movie else R.drawable.ic_shortcut_movie))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(EXTRA_KEY_PAGE, "/collection")
+                    .putExtra(EXTRA_KEY_PAGE, COLLECTION_PAGE_ROUTE_NAME)
                     .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}"))
             )
             .build()
 
-        val safeMode = ShortcutInfoCompat.Builder(this, "safeMode")
-            .setShortLabel(getString(R.string.safe_mode_shortcut_short_label))
-            .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_safe_mode else R.drawable.ic_shortcut_safe_mode))
-            .setIntent(
-                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(EXTRA_KEY_SAFE_MODE, true)
-            )
-            .build()
-
-        val shortcutInfoList = listOf(videos, search, safeMode)
+        val shortcutInfoList = listOf(videos, search, map)
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcutInfoList)
         Log.i(LOG_TAG, "set shortcuts: ${shortcutInfoList.joinToString(", ") { v -> v.id }}")
     }
@@ -537,6 +544,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_ACTION_SEARCH = "search"
         const val INTENT_ACTION_SET_WALLPAPER = "set_wallpaper"
         const val INTENT_ACTION_VIEW = "view"
+        const val INTENT_ACTION_VIEW_GEO = "view_geo"
         const val INTENT_ACTION_WIDGET_OPEN = "widget_open"
         const val INTENT_ACTION_WIDGET_SETTINGS = "widget_settings"
 
@@ -559,6 +567,11 @@ open class MainActivity : FlutterFragmentActivity() {
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
         const val EXTRA_KEY_SAFE_MODE = "safeMode"
         const val EXTRA_KEY_WIDGET_ID = "widgetId"
+
+        // dart page routes
+        const val COLLECTION_PAGE_ROUTE_NAME = "/collection"
+        const val MAP_PAGE_ROUTE_NAME = "/map"
+        const val SEARCH_PAGE_ROUTE_NAME = "/search"
 
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()

@@ -248,7 +248,8 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
 
   Future<void> _goToViewer(CollectionLens collection, AvesEntry entry) async {
     // track viewer entry for dynamic hero placeholder
-    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<ViewerEntryNotifier>().value = entry);
+    final viewerEntryNotifier = context.read<ViewerEntryNotifier>();
+    WidgetsBinding.instance.addPostFrameCallback((_) => viewerEntryNotifier.value = entry);
 
     final selection = context.read<Selection<AvesEntry>>();
     await Navigator.maybeOf(context)?.push(
@@ -284,7 +285,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
       // TODO TLAD fix timing when transition is incomplete, e.g. when going back while going to the viewer
       await Future.delayed(ADurations.pageTransitionExact * timeDilation);
     }
-    context.read<ViewerEntryNotifier>().value = null;
+    viewerEntryNotifier.value = null;
   }
 }
 

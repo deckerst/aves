@@ -7,6 +7,7 @@ class IntentActions {
   static const search = 'search';
   static const setWallpaper = 'set_wallpaper';
   static const view = 'view';
+  static const viewGeo = 'view_geo';
   static const widgetOpen = 'widget_open';
   static const widgetSettings = 'widget_settings';
 }
