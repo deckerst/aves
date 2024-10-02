@@ -6,8 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Map: OpenTopoMap layer
+- Map: OpenTopoMap raster layer
+- Map: OSM Liberty vector layer (hosted by OSM Americana)
+- Interoperability: receiving `geo:` URI generally opens map page at location
+- Interoperability: receiving `geo:` URI when editing item location fills in coordinates
+- Map basic app shortcut
 - Enterprise: support for work profile switching from the drawer
+
+### Removed
+
+- `Safe mode` basic app shortcut
 
 ## <a id="v1.11.13"></a>[v1.11.13] - 2024-09-17
 

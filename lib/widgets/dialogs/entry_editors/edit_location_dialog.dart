@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
@@ -10,6 +12,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
@@ -42,6 +45,7 @@ class EditEntryLocationDialog extends StatefulWidget {
 }
 
 class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
+  final List<StreamSubscription> _subscriptions = [];
   LocationEditAction _action = LocationEditAction.chooseOnMap;
   LatLng? _mapCoordinates;
   late AvesEntry _copyItemSource;
@@ -56,6 +60,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
     _initMapCoordinates();
     _initCopyItem();
     _initCustom();
+    AvesApp.intentEventBus.on<LocationReceivedEvent>().listen((event) => _setCustomLocation(event.location));
   }
 
   void _initMapCoordinates() {
@@ -82,6 +87,9 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
 
   @override
   void dispose() {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
     _latitudeController.dispose();
     _longitudeController.dispose();
     _isValidNotifier.dispose();
@@ -151,8 +159,6 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
   }
 
   Widget _buildChooseOnMapContent(BuildContext context) {
-    final l10n = context.l10n;
-
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
@@ -162,11 +168,19 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> {
           IconButton(
             icon: const Icon(AIcons.map),
             onPressed: _pickLocation,
-            tooltip: l10n.editEntryLocationDialogChooseOnMap,
+            tooltip: context.l10n.editEntryLocationDialogChooseOnMap,
           ),
         ],
       ),
     );
+  }
+
+  void _setCustomLocation(LatLng latLng) {
+    _latitudeController.text = coordinateFormatter.format(latLng.latitude);
+    _longitudeController.text = coordinateFormatter.format(latLng.longitude);
+    _action = LocationEditAction.setCustom;
+    _validate();
+    setState(() {});
   }
 
   CollectionLens? _createPickCollection() {
