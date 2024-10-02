@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/app_mode.dart';
+import 'package:aves/geo/uri.dart';
 import 'package:aves/l10n/l10n.dart';
+import 'package:aves/model/app/intent.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -33,6 +35,7 @@ import 'package:aves/widgets/common/providers/durations_provider.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
+import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
@@ -42,11 +45,13 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localization_nn/flutter_localization_nn.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -87,6 +92,8 @@ class AvesApp extends StatefulWidget {
   static final RouteObserver<PageRoute> pageRouteObserver = RouteObserver<PageRoute>();
 
   static ScreenBrightness? get screenBrightness => _AvesAppState._screenBrightness;
+
+  static EventBus get intentEventBus => _AvesAppState._intentEventBus;
 
   const AvesApp({
     super.key,
@@ -159,7 +166,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final MediaStoreSource _mediaStoreSource = MediaStoreSource();
   Size? _screenSize;
 
-  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(defaultPageTransitionsBuilder);
+  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(_defaultPageTransitionsBuilder);
   final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.initialization);
 
@@ -176,10 +183,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // - `OpenUpwardsPageTransitionsBuilder` on Pie / API 28
   // - `ZoomPageTransitionsBuilder` on Android 10 / API 29 and above (default in Flutter v3.22.0)
   // - `PredictiveBackPageTransitionsBuilder` for Android 15 / API 35 intra-app predictive back
-  static const defaultPageTransitionsBuilder = FadeUpwardsPageTransitionsBuilder();
+  static const _defaultPageTransitionsBuilder = FadeUpwardsPageTransitionsBuilder();
   static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
   static ScreenBrightness? _screenBrightness;
   static bool _exitedMainByPop = false;
+  static final EventBus _intentEventBus = EventBus();
 
   @override
   void initState() {
@@ -534,7 +542,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         await windowService.requestOrientation(Orientation.landscape);
       }
     } else {
-      _pageTransitionsBuilderNotifier.value = defaultPageTransitionsBuilder;
+      _pageTransitionsBuilderNotifier.value = _defaultPageTransitionsBuilder;
       _tvMediaQueryModifierNotifier.value = null;
       await windowService.requestOrientation(null);
     }
@@ -627,6 +635,17 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
         ]);
   }
 
+  // at this level `ModalRoute.of(context)` is null,
+  // so we use the global navigator as a workaround
+  String? getCurrentRouteName() {
+    String? currentRoute;
+    _navigatorKey.currentState?.popUntil((route) {
+      currentRoute = route.settings.name;
+      return true;
+    });
+    return currentRoute;
+  }
+
   void _onNewIntent(Map? intentData) {
     reportService.log('New intent data=$intentData');
 
@@ -638,6 +657,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       if (!shouldReset && (intentData ?? {}).values.whereNotNull().isEmpty) {
         reportService.log('Relaunch');
         return;
+      }
+    }
+
+    if (intentData != null) {
+      final intentAction = intentData[IntentDataKeys.action] as String?;
+      if (intentAction == IntentActions.viewGeo) {
+        final locationZoom = parseGeoUri(intentData[IntentDataKeys.uri] as String?);
+        if (locationZoom != null && getCurrentRouteName() == EditEntryLocationDialog.routeName) {
+          // do not push a new route but pass the provided location to the dialog
+          final location = locationZoom.$1;
+          debugPrint('Use received location $location for input');
+          _intentEventBus.fire(LocationReceivedEvent(location));
+          return;
+        }
       }
     }
 
@@ -688,3 +721,9 @@ class AvesScrollBehavior extends MaterialScrollBehavior {
 }
 
 typedef TvMediaQueryModifier = MediaQueryData Function(MediaQueryData);
+
+class LocationReceivedEvent {
+  final LatLng location;
+
+  const LocationReceivedEvent(this.location);
+}

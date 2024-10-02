@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/geo/uri.dart';
 import 'package:aves/model/app/intent.dart';
 import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/app_inventory.dart';
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage> {
   String? _initialRouteName, _initialSearchQuery;
   Set<CollectionFilter>? _initialFilters;
   String? _initialExplorerPath;
-  (LatLng, double)? _initialLocationZoom;
+  (LatLng, double?)? _initialLocationZoom;
   List<String>? _secureUris;
 
   static const allowedShortcutRoutes = [
@@ -126,26 +127,11 @@ class _HomePageState extends State<HomePage> {
         case IntentActions.viewGeo:
           error = true;
           if (intentUri != null) {
-            final geoUri = Uri.tryParse(intentUri);
-            if (geoUri != null) {
-              // e.g. `geo:44.4361283,26.1027248?z=4.0(Bucharest)`
-              // cf https://en.wikipedia.org/wiki/Geo_URI_scheme
-              // cf https://developer.android.com/guide/components/intents-common#ViewMap
-              final coordinates = geoUri.path.split(',');
-              if (coordinates.length == 2) {
-                final lat = double.tryParse(coordinates[0]);
-                final lon = double.tryParse(coordinates[1]);
-                if (lat != null && lon != null) {
-                  double? zoom;
-                  final zoomString = geoUri.queryParameters['z'];
-                  if (zoomString != null) {
-                    zoom = double.tryParse(zoomString);
-                  }
-                  _initialRouteName = MapPage.routeName;
-                  _initialLocationZoom = (LatLng(lat, lon), zoom ?? settings.infoMapZoom);
-                  error = false;
-                }
-              }
+            final locationZoom = parseGeoUri(intentUri);
+            if (locationZoom != null) {
+              _initialRouteName = MapPage.routeName;
+              _initialLocationZoom = locationZoom;
+              error = false;
             }
           }
           break;
@@ -228,7 +214,6 @@ class _HomePageState extends State<HomePage> {
 
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
-    debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
 
     switch (appMode) {
       case AppMode.main:
@@ -272,6 +257,8 @@ class _HomePageState extends State<HomePage> {
       default:
         break;
     }
+
+    debugPrint('Home setup complete in ${stopwatch.elapsed.inMilliseconds}ms');
 
     // `pushReplacement` is not enough in some edge cases
     // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
