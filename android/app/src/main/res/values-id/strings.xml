@@ -8,5 +8,4 @@
     <string name="analysis_channel_name">Pindai media</string>
     <string name="analysis_notification_default_title">Memindai media</string>
     <string name="analysis_notification_action_stop">Berhenti</string>
-    <string name="safe_mode_shortcut_short_label">Mode aman</string>
 </resources>

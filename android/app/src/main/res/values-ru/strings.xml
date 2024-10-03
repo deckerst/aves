@@ -8,5 +8,4 @@
     <string name="analysis_channel_name">Сканировать медия</string>
     <string name="analysis_notification_default_title">Сканирование медиа</string>
     <string name="analysis_notification_action_stop">Стоп</string>
-    <string name="safe_mode_shortcut_short_label">Безопасный режим</string>
 </resources>
