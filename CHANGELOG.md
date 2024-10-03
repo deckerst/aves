@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Interoperability: receiving `geo:` URI when editing item location fills in coordinates
 - Map basic app shortcut
 - Enterprise: support for work profile switching from the drawer
+- Settings: hidden path filters are merged with others and can be toggled
 
 ### Removed
 
