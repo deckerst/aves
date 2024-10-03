@@ -55,7 +55,6 @@ class _SearchPageState extends State<SearchPage> {
     _unregisterWidget(widget);
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
     _searchFieldFocusNode.dispose();
-    widget.delegate.dispose();
     super.dispose();
   }
 

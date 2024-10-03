@@ -21,6 +21,14 @@ class SearchPageRoute<T> extends PageRoute<T> {
     delegate.route = this;
   }
 
+  @override
+  void dispose() {
+    // `delegate` is always created by the caller at route creation time,
+    // so it should always be disposed when the route is disposed
+    delegate.dispose();
+    super.dispose();
+  }
+
   final AvesSearchDelegate delegate;
 
   @override

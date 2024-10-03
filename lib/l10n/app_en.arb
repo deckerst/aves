@@ -946,13 +946,8 @@
   "settingsHiddenItemsTile": "Hidden items",
   "settingsHiddenItemsPageTitle": "Hidden Items",
 
-  "settingsHiddenItemsTabFilters": "Hidden Filters",
   "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
   "settingsHiddenFiltersEmpty": "No hidden filters",
-
-  "settingsHiddenItemsTabPaths": "Hidden Paths",
-  "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
-  "addPathTooltip": "Add path",
 
   "settingsStorageAccessTile": "Storage access",
   "settingsStorageAccessPageTitle": "Storage Access",
