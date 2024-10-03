@@ -8,5 +8,4 @@
     <string name="analysis_channel_name">미디어 분석</string>
     <string name="analysis_notification_default_title">미디어 분석</string>
     <string name="analysis_notification_action_stop">취소</string>
-    <string name="safe_mode_shortcut_short_label">안전 모드</string>
 </resources>

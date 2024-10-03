@@ -2,7 +2,6 @@
 <resources>
     <string name="app_widget_label">Okvir Slike</string>
     <string name="wallpaper">Pozadina</string>
-    <string name="safe_mode_shortcut_short_label">Siguran režim</string>
     <string name="videos_shortcut_short_label">Snimci</string>
     <string name="analysis_channel_name">Pretraga medija</string>
     <string name="analysis_notification_default_title">Skeniranje medija</string>

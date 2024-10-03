@@ -8,5 +8,4 @@
     <string name="search_shortcut_short_label">搜尋</string>
     <string name="analysis_channel_name">媒體掃描</string>
     <string name="analysis_notification_action_stop">停止</string>
-    <string name="safe_mode_shortcut_short_label">安全模式</string>
 </resources>

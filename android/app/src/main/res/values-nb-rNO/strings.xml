@@ -8,5 +8,4 @@
     <string name="wallpaper">Bakgrunnsbilde</string>
     <string name="search_shortcut_short_label">Søk</string>
     <string name="analysis_notification_action_stop">Stopp</string>
-    <string name="safe_mode_shortcut_short_label">Trygt modus</string>
 </resources>

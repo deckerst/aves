@@ -8,5 +8,4 @@
     <string name="analysis_notification_action_stop">توقف کردن</string>
     <string name="app_widget_label">قاب عکس</string>
     <string name="app_name">Aves</string>
-    <string name="safe_mode_shortcut_short_label">حالت امن</string>
 </resources>
