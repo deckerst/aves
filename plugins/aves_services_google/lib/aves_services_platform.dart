@@ -1,5 +1,3 @@
-library aves_services_platform;
-
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_services/aves_services.dart';
 import 'package:aves_services_platform/src/map.dart';

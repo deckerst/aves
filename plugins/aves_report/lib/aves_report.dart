@@ -1,5 +1,3 @@
-library aves_report;
-
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stack_trace/stack_trace.dart';
