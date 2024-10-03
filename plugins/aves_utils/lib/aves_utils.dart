@@ -1,5 +1,3 @@
-library aves_utils;
-
 export 'src/colors.dart';
 export 'src/listenable.dart';
 export 'src/optional_event_channel.dart';

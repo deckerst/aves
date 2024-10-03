@@ -1,5 +1,3 @@
-library aves_report_platform;
-
 import 'package:aves_report/aves_report.dart';
 import 'package:flutter/foundation.dart';
 

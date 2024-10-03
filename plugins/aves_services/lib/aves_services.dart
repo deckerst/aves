@@ -1,5 +1,3 @@
-library aves_services;
-
 import 'package:aves_map/aves_map.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';

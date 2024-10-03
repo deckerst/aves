@@ -1,5 +1,3 @@
-library aves_map;
-
 export 'src/controller.dart';
 export 'src/geo_entry.dart';
 export 'src/geo_utils.dart';
