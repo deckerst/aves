@@ -8,5 +8,4 @@
     <string name="analysis_channel_name">メディアスキャン</string>
     <string name="analysis_notification_default_title">メディアをスキャン中</string>
     <string name="analysis_notification_action_stop">停止</string>
-    <string name="safe_mode_shortcut_short_label">セーフモード</string>
 </resources>

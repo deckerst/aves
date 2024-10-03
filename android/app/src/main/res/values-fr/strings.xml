@@ -8,5 +8,4 @@
     <string name="analysis_channel_name">Analyse des images</string>
     <string name="analysis_notification_default_title">Analyse des images</string>
     <string name="analysis_notification_action_stop">Annuler</string>
-    <string name="safe_mode_shortcut_short_label">Mode sans échec</string>
 </resources>

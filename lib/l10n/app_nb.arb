@@ -852,8 +852,6 @@
   "@settingsSubtitleThemeTextAlignmentCenter": {},
   "settingsVideoControlsPageTitle": "Kontroller",
   "@settingsVideoControlsPageTitle": {},
-  "settingsHiddenItemsTabFilters": "Skjulte filtre",
-  "@settingsHiddenItemsTabFilters": {},
   "settingsThemeEnableDynamicColor": "Dynamisk farge",
   "@settingsThemeEnableDynamicColor": {},
   "mapZoomOutTooltip": "Forminsk",
@@ -1195,10 +1193,6 @@
   "@settingsSubtitleThemeTextPositionTile": {},
   "settingsHiddenFiltersEmpty": "Ingen skjulte filtre",
   "@settingsHiddenFiltersEmpty": {},
-  "settingsHiddenItemsTabPaths": "Skjulte stier",
-  "@settingsHiddenItemsTabPaths": {},
-  "addPathTooltip": "Legg til sti",
-  "@addPathTooltip": {},
   "settingsStorageAccessTile": "Lagringstilgang",
   "@settingsStorageAccessTile": {},
   "settingsWidgetDisplayedItem": "Vist element",
@@ -1273,8 +1267,6 @@
   "@settingsSubtitleThemeTextPositionDialogTitle": {},
   "wallpaperUseScrollEffect": "Bruk rulleeffekt på hjemmeskjerm",
   "@wallpaperUseScrollEffect": {},
-  "settingsHiddenPathsBanner": "Bilder og videoer i disse mappene og deres undermapper vil ikke vises i samlingen din.",
-  "@settingsHiddenPathsBanner": {},
   "storageAccessDialogMessage": "Velg {directory} for «{volume}» i neste skjerm for å gi dette programmet tilgang til det.",
   "@storageAccessDialogMessage": {
     "placeholders": {
