@@ -272,8 +272,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         // key is expected by test driver
         key: const Key('map_view'),
         controller: _mapController,
-        collectionListenable: openingCollection,
-        entries: openingCollection.sortedEntries,
+        collection: openingCollection,
         availableSize: MediaQuery.sizeOf(context),
         initialCenter: widget.initialLocation ?? widget.initialEntry?.latLng ?? widget.overlayEntry?.center,
         initialZoom: widget.initialZoom,
