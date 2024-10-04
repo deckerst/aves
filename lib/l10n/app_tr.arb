@@ -1386,5 +1386,9 @@
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
   "mapAttributionOpenTopoMap": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Döşemeler [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar • Döşemeler [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Barındıran [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }
