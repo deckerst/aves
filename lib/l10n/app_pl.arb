@@ -1544,5 +1544,9 @@
   "mapStyleOpenTopoMap": "Otwórz TopoMap",
   "@mapStyleOpenTopoMap": {},
   "mapAttributionOpenTopoMap": "Dane mapy © [OpenStreetMap](https://www.openstreetmap.org/copyright) wnoszący wkład • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Kafelki od [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) współtwórcy • Płytki od [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Obsługiwane przez [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }
