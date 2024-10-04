@@ -1388,5 +1388,9 @@
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
   "mapAttributionOpenTopoMap": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragen • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tegels van [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragen • Symbolen van [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Aangeboden door [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }
