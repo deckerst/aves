@@ -1073,9 +1073,9 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "Aponte para o norte para cima",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionOsmHot": "Dados do mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) colaboradores • Blocos por [HOT](https://www.hotosm.org/) • Hospedado por [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Blocos por [HOT](https://www.hotosm.org/) • Hospedado por [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Dados do mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) colaboradores • Blocos por [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Blocos por [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Visualizar na página do mapa",
   "@openMapPageTooltip": {},
@@ -1382,5 +1382,7 @@
   "selectStorageVolumeDialogTitle": "Selecione o Armazenamento",
   "@selectStorageVolumeDialogTitle": {},
   "setHomeCustom": "Personalizada",
-  "@setHomeCustom": {}
+  "@setHomeCustom": {},
+  "mapAttributionOsmData": "Dados do mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) colaboradores",
+  "@mapAttributionOsmData": {}
 }

@@ -1285,7 +1285,7 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "Apuntar el nord cap amunt",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionStamen": "Dades de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuïdors • Rajoles per [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Rajoles per [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Veure a la pàgina de mapa",
   "@openMapPageTooltip": {},
@@ -1443,7 +1443,7 @@
   "@appExportCovers": {},
   "appExportFavourites": "Preferits",
   "@appExportFavourites": {},
-  "mapAttributionOsmHot": "Dades de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuïdors • Rajoles de [HOT](https://www.hotosm.org/) • Allotjat a [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Rajoles de [HOT](https://www.hotosm.org/) • Allotjat a [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "viewerInfoSearchSuggestionDescription": "Descripció",
   "@viewerInfoSearchSuggestionDescription": {},
@@ -1512,5 +1512,7 @@
     }
   },
   "chipActionShowCollection": "Mostrar a Coŀlecció",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "mapAttributionOsmData": "Dades de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuïdors",
+  "@mapAttributionOsmData": {}
 }

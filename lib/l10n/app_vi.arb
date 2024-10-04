@@ -227,8 +227,6 @@
   "@settingsEnableBinSubtitle": {},
   "viewerInfoPageTitle": "Thông tin",
   "@viewerInfoPageTitle": {},
-  "mapAttributionStamen": "Dữ liệu bản đồ © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
-  "@mapAttributionStamen": {},
   "widgetOpenPageViewer": "Mở chế độ xem",
   "@widgetOpenPageViewer": {},
   "setCoverDialogLatest": "Mục mới nhất",
@@ -1097,8 +1095,6 @@
   "@mapZoomOutTooltip": {},
   "collectionActionHideTitleSearch": "Ẩn tên filter",
   "@collectionActionHideTitleSearch": {},
-  "mapAttributionOsmHot": "Dữ liệu bản đồ © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
-  "@mapAttributionOsmHot": {},
   "settingsNavigationDrawerTile": "Menu điều hướng",
   "@settingsNavigationDrawerTile": {},
   "drawerCollectionAnimated": "Hoạt ảnh",
@@ -1532,5 +1528,7 @@
   "chipActionGoToExplorerPage": "Hiển thị ở Explorer",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Explorer",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "mapAttributionOsmData": "Dữ liệu bản đồ © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors",
+  "@mapAttributionOsmData": {}
 }

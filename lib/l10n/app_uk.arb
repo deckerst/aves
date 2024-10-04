@@ -1155,7 +1155,7 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "Повернути на північ",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionStamen": "Картографічні дані © [OpenStreetMap](https://www.openstreetmap.org/copyright) помічники • Плитки [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Плитки [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Переглянути на карті",
   "@openMapPageTooltip": {},
@@ -1329,7 +1329,7 @@
   "@settingsScreenSaverPageTitle": {},
   "settingsWidgetDisplayedItem": "Відображаємий елемент",
   "@settingsWidgetDisplayedItem": {},
-  "mapAttributionOsmHot": "Картографічні дані © [OpenStreetMap](https://www.openstreetmap.org/copyright) помічники • Плитки [HOT](https://www.hotosm.org/) • Розміщена на [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Плитки [HOT](https://www.hotosm.org/) • Розміщена на [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "Показувати альтернативи мультисенсорним жестам",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
@@ -1540,5 +1540,7 @@
   "sortOrderShortestFirst": "Спершу найкоротше",
   "@sortOrderShortestFirst": {},
   "sortOrderLongestFirst": "Спершу найдовше",
-  "@sortOrderLongestFirst": {}
+  "@sortOrderLongestFirst": {},
+  "mapAttributionOsmData": "Картографічні дані © [OpenStreetMap](https://www.openstreetmap.org/copyright) помічники",
+  "@mapAttributionOsmData": {}
 }

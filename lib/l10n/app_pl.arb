@@ -1029,7 +1029,7 @@
   "@viewerInfoLabelPath": {},
   "mapZoomInTooltip": "Powiększ",
   "@mapZoomInTooltip": {},
-  "mapAttributionStamen": "Dane mapy © [OpenStreetMap](https://www.openstreetmap.org/copyright) współtwórcy • Kafelki od [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Kafelki od [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "filePickerUseThisFolder": "Użyj tego katalogu",
   "@filePickerUseThisFolder": {},
@@ -1317,7 +1317,7 @@
   "@viewerInfoLabelCoordinates": {},
   "viewerInfoUnknown": "Nieznany",
   "@viewerInfoUnknown": {},
-  "mapAttributionOsmHot": "Dane mapy © [OpenStreetMap](https://www.openstreetmap.org/copyright) współtwórcy • Kafelki od [HOT](https://www.hotosm.org/) • Obsługiwany przez: [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Kafelki od [HOT](https://www.hotosm.org/) • Obsługiwany przez: [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "mapPointNorthUpTooltip": "Północ u góry",
   "@mapPointNorthUpTooltip": {},
@@ -1543,6 +1543,8 @@
   "@sortOrderLongestFirst": {},
   "mapStyleOpenTopoMap": "Otwórz TopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "Dane mapy © [OpenStreetMap](https://www.openstreetmap.org/copyright) wnoszący wkład • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Kafelki od [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Kafelki od [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapAttributionOsmData": "Dane mapy © [OpenStreetMap](https://www.openstreetmap.org/copyright) współtwórcy",
+  "@mapAttributionOsmData": {}
 }

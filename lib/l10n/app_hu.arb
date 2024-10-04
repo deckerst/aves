@@ -1421,9 +1421,9 @@
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
   "settingsStorageAccessBanner": "Egyes könyvtárak kifejezett hozzáférési engedélyt igényelnek a benne lévő fájlok módosításához. Itt áttekintheted a könyvtárakat, amelyekhez korábban hozzáférést adtál.",
   "@settingsStorageAccessBanner": {},
-  "mapAttributionOsmHot": "Térképadatok © [OpenStreetMap](https://www.openstreetmap.org/copyright) közreműködők • [HOT](https://www.hotosm.org/) csempék • [OSM France](https://openstreetmap.fr/) kiszolgáló",
+  "mapAttributionOsmHot": "[HOT](https://www.hotosm.org/) csempék • [OSM France](https://openstreetmap.fr/) kiszolgáló",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Térképadatok © [OpenStreetMap](https://www.openstreetmap.org/copyright) közreműködők • [Stamen Design](https://stamen.com) csempék, [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "[Stamen Design](https://stamen.com) csempék, [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "viewerInfoSearchEmpty": "Nincs egyező kulcs",
   "@viewerInfoSearchEmpty": {},
@@ -1537,12 +1537,14 @@
   "@sortOrderLongestFirst": {},
   "selectStorageVolumeDialogTitle": "Tároló Kiválasztása",
   "@selectStorageVolumeDialogTitle": {},
-  "mapAttributionOpenTopoMap": "Térkép adatok © [OpenStreetMap](https://www.openstreetmap.org/copyright) közreműködők • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Elemek: [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Elemek: [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "renameProcessorHash": "Hash-kulcs",
   "@renameProcessorHash": {},
   "settingsForceWesternArabicNumeralsTile": "Arab számok használata",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionGoToExplorerPage": "Mutatás a böngészőben",
-  "@chipActionGoToExplorerPage": {}
+  "@chipActionGoToExplorerPage": {},
+  "mapAttributionOsmData": "Térképadatok © [OpenStreetMap](https://www.openstreetmap.org/copyright) közreműködők",
+  "@mapAttributionOsmData": {}
 }

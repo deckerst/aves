@@ -1065,9 +1065,9 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "上北下南",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionOsmHot": "地图数据由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献 • 绘制于 [HOT](https://www.hotosm.org/) • 主办方 [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "绘制于 [HOT](https://www.hotosm.org/) • 主办方 [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "地图数据由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献 • 绘制于 [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "绘制于 [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "在地图页面上查看",
   "@openMapPageTooltip": {},
@@ -1385,6 +1385,8 @@
   "@sortOrderShortestFirst": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "地图数据 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 提供 由 • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) 贡献 | 图块由 [OpenTopoMap](https://opentopomap.org/)提供，[CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 图块由 [OpenTopoMap](https://opentopomap.org/)提供，[CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapAttributionOsmData": "地图数据由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献",
+  "@mapAttributionOsmData": {}
 }

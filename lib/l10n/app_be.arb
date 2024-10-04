@@ -541,7 +541,7 @@
   "@viewerInfoViewXmlLinkText": {},
   "viewerInfoOpenLinkText": "Адкрыць",
   "@viewerInfoOpenLinkText": {},
-  "mapAttributionStamen": "Даныя карты © [OpenStreetMap](https://www.openstreetmap.org/copyright) удзельнікі • Пліткі ад [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Пліткі ад [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "mapPointNorthUpTooltip": "Пакажыце поўнач уверх",
   "@mapPointNorthUpTooltip": {},
@@ -637,7 +637,7 @@
   "@filePickerDoNotShowHiddenFiles": {},
   "viewerInfoOpenEmbeddedFailureFeedback": "Не ўдалося атрымаць убудаваныя даныя",
   "@viewerInfoOpenEmbeddedFailureFeedback": {},
-  "mapAttributionOsmHot": "Даныя карты © [OpenStreetMap](https://www.openstreetmap.org/copyright) удзельнікі • Пліткі ад [HOT](https://www.hotosm.org/) • Арганізаваны [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Пліткі ад [HOT](https://www.hotosm.org/) • Арганізаваны [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "viewerInfoLabelSize": "Памер",
   "@viewerInfoLabelSize": {},
@@ -1543,6 +1543,8 @@
   "@setHomeCustom": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "Дадзеныя карты © [openstreetmap](https://www.openstreetmap.org/copyright) удзельнікі • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Пліткі ад [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Пліткі ад [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapAttributionOsmData": "Даныя карты © [OpenStreetMap](https://www.openstreetmap.org/copyright) удзельнікі",
+  "@mapAttributionOsmData": {}
 }

@@ -1331,9 +1331,9 @@
   "@settingsWidgetDisplayedItem": {},
   "tagEditorPageNewTagFieldLabel": "Etiketa berria",
   "@tagEditorPageNewTagFieldLabel": {},
-  "mapAttributionStamen": "Maparen datuak © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Teselak: [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Teselak: [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
-  "mapAttributionOsmHot": "Maparen datuak © [OpenStreetMap](https://www.openstreetmap.org/copyright) laguntzaileak • Teselak: [HOT](https://www.hotosm.org/) • Ostalaria: [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Teselak: [HOT](https://www.hotosm.org/) • Ostalaria: [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "filePickerNoItems": "Elementurik ez",
   "@filePickerNoItems": {},
@@ -1524,5 +1524,7 @@
   "videoRepeatActionSetEnd": "Ezarri amaiera",
   "@videoRepeatActionSetEnd": {},
   "chipActionShowCollection": "Erakutsi bilduman",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "mapAttributionOsmData": "Maparen datuak © [OpenStreetMap](https://www.openstreetmap.org/copyright) laguntzaileak",
+  "@mapAttributionOsmData": {}
 }

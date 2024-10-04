@@ -1067,9 +1067,9 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "Noorden boven",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionOsmHot": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragers • Tegels door [HOT](https://www.hotosm.org/) • Gehost door [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Tegels door [HOT](https://www.hotosm.org/) • Gehost door [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragers • Tegels door [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Tegels door [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Op kaartpagina tonen",
   "@openMapPageTooltip": {},
@@ -1387,6 +1387,8 @@
   "@sortOrderLongestFirst": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragen • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tegels van [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tegels van [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapAttributionOsmData": "Kaartgegevens © [OpenStreetMap](https://www.openstreetmap.org/copyright) bijdragers",
+  "@mapAttributionOsmData": {}
 }

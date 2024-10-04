@@ -903,7 +903,7 @@
   "@wallpaperUseScrollEffect": {},
   "tagEditorPageTitle": "Upravit štítky",
   "@tagEditorPageTitle": {},
-  "mapAttributionOsmHot": "Mapová data © [OpenStreetMap](https://www.openstreetmap.org/copyright) přispěvatelé • Dlaždice z [HOT](https://www.hotosm.org/) • Hostováno na [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Dlaždice z [HOT](https://www.hotosm.org/) • Hostováno na [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "viewerInfoSearchSuggestionRights": "Práva",
   "@viewerInfoSearchSuggestionRights": {},
@@ -1335,7 +1335,7 @@
   "@tagEditorPageNewTagFieldLabel": {},
   "tagEditorSectionRecent": "Nedávné",
   "@tagEditorSectionRecent": {},
-  "mapAttributionStamen": "Mapová data © [OpenStreetMap](https://www.openstreetmap.org/copyright) přispěvatelé • Dlaždice z [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Dlaždice z [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "panoramaDisableSensorControl": "Zakázat ovládání senzorem",
   "@panoramaDisableSensorControl": {},
@@ -1520,5 +1520,7 @@
   "videoActionABRepeat": "Opakování A-B",
   "@videoActionABRepeat": {},
   "chipActionShowCollection": "Zobrazit ve sbírce",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "mapAttributionOsmData": "Mapová data © [OpenStreetMap](https://www.openstreetmap.org/copyright) přispěvatelé",
+  "@mapAttributionOsmData": {}
 }

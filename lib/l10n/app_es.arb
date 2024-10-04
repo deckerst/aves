@@ -1017,9 +1017,9 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "Apuntar el Norte hacia arriba",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionOsmHot": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores • Teselas por [HOT](https://www.hotosm.org/) • Alojado por [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Teselas por [HOT](https://www.hotosm.org/) • Alojado por [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores • Teselas por [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Teselas por [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Ver en página del mapa",
   "@openMapPageTooltip": {},
@@ -1385,6 +1385,8 @@
   "@sortOrderLongestFirst": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "Datos del mapa © Colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright) • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Mosaicos de [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Mosaicos de [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapAttributionOsmData": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores",
+  "@mapAttributionOsmData": {}
 }
