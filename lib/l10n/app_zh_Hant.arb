@@ -1263,9 +1263,9 @@
   "@viewerErrorUnknown": {},
   "viewerInfoLabelDate": "日期",
   "@viewerInfoLabelDate": {},
-  "mapAttributionOsmHot": "地圖資料由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 貢獻 • 繪製於 [HOT](https://www.hotosm.org/) • 主辦方 [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "繪製於 [HOT](https://www.hotosm.org/) • 主辦方 [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "地圖資料由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 貢獻 • 繪製於 [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "繪製於 [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "在地圖頁面上檢視",
   "@openMapPageTooltip": {},
@@ -1528,5 +1528,7 @@
   "explorerPageTitle": "檔案總管",
   "@explorerPageTitle": {},
   "chipActionGoToExplorerPage": "在檔案總管裡顯示",
-  "@chipActionGoToExplorerPage": {}
+  "@chipActionGoToExplorerPage": {},
+  "mapAttributionOsmData": "地圖資料由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 貢獻",
+  "@mapAttributionOsmData": {}
 }

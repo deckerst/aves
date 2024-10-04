@@ -1247,7 +1247,7 @@
   "@viewerInfoLabelDescription": {},
   "mapPointNorthUpTooltip": "Centruoti pagal šiaurę",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionOsmHot": "Žemėlapio duomenys © [OpenStreetMap](https://www.openstreetmap.org/copyright) bendraautoriai • Sluoksniai [HOT](https://www.hotosm.org/) • Priegloba [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Sluoksniai [HOT](https://www.hotosm.org/) • Priegloba [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "mapEmptyRegion": "Šiame regione paveikslėlių nėra",
   "@mapEmptyRegion": {},
@@ -1309,7 +1309,7 @@
   "@settingsThumbnailShowLocationIcon": {},
   "tagPlaceholderCountry": "Šalis",
   "@tagPlaceholderCountry": {},
-  "mapAttributionStamen": "Žemėlapio duomenys © [OpenStreetMap](https://www.openstreetmap.org/copyright) bendradarbiai • Sluoksniai [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Sluoksniai [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "tagPlaceholderPlace": "Vieta",
   "@tagPlaceholderPlace": {},
@@ -1330,5 +1330,7 @@
   "entryInfoActionRemoveLocation": "Pašalinti vietą",
   "@entryInfoActionRemoveLocation": {},
   "chipActionShowCollection": "Rodyti kolekcijoje",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "mapAttributionOsmData": "Žemėlapio duomenys © [OpenStreetMap](https://www.openstreetmap.org/copyright) bendradarbiai",
+  "@mapAttributionOsmData": {}
 }

@@ -1049,9 +1049,9 @@
   "@mapZoomOutTooltip": {},
   "mapPointNorthUpTooltip": "Arahkan ke utara ke atas",
   "@mapPointNorthUpTooltip": {},
-  "mapAttributionOsmHot": "Data peta © [OpenStreetMap](https://www.openstreetmap.org/copyright) kontributor • Tile oleh [HOT](https://www.hotosm.org/) • Diselenggarakan oleh [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Tile oleh [HOT](https://www.hotosm.org/) • Diselenggarakan oleh [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Data peta © [OpenStreetMap](https://www.openstreetmap.org/copyright) kontributor • Tile oleh [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Tile oleh [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "openMapPageTooltip": "Lihat di halaman Peta",
   "@openMapPageTooltip": {},
@@ -1382,5 +1382,7 @@
   "sortOrderShortestFirst": "Yang terpendek dulu",
   "@sortOrderShortestFirst": {},
   "chipActionGoToExplorerPage": "Tampilkan di Explorer",
-  "@chipActionGoToExplorerPage": {}
+  "@chipActionGoToExplorerPage": {},
+  "mapAttributionOsmData": "Data peta © [OpenStreetMap](https://www.openstreetmap.org/copyright) kontributor",
+  "@mapAttributionOsmData": {}
 }

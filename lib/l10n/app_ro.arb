@@ -1175,9 +1175,9 @@
   "@settingsScreenSaverPageTitle": {},
   "settingsWidgetPageTitle": "Ramă foto",
   "@settingsWidgetPageTitle": {},
-  "mapAttributionStamen": "Datele hărții © [OpenStreetMap](https://www.openstreetmap.org/copyright) • Plăci de la [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Plăci de la [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
-  "mapAttributionOsmHot": "Datele hărții © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributori • Plăci de la [HOT](https://www.hotosm.org/) • Găzduit de [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Plăci de la [HOT](https://www.hotosm.org/) • Găzduit de [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "filePickerNoItems": "Fără articole",
   "@filePickerNoItems": {},
@@ -1540,5 +1540,7 @@
   "chipActionGoToExplorerPage": "Afișare în Explorer",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Explorer",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "mapAttributionOsmData": "Datele hărții © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributori",
+  "@mapAttributionOsmData": {}
 }

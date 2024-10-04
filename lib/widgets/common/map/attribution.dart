@@ -1,3 +1,4 @@
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -15,26 +16,27 @@ class Attribution extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     switch (style) {
       case EntryMapStyle.osmLiberty:
-        return _buildAttributionMarkdown(context, context.l10n.mapAttributionOsmLiberty);
+        return _buildOsmAttributionMarkdown(context, l10n.mapAttributionOsmLiberty);
       case EntryMapStyle.openTopoMap:
-        return _buildAttributionMarkdown(context, context.l10n.mapAttributionOpenTopoMap);
+        return _buildOsmAttributionMarkdown(context, l10n.mapAttributionOpenTopoMap);
       case EntryMapStyle.osmHot:
-        return _buildAttributionMarkdown(context, context.l10n.mapAttributionOsmHot);
+        return _buildOsmAttributionMarkdown(context, l10n.mapAttributionOsmHot);
       case EntryMapStyle.stamenWatercolor:
-        return _buildAttributionMarkdown(context, context.l10n.mapAttributionStamen);
+        return _buildOsmAttributionMarkdown(context, l10n.mapAttributionStamen);
       default:
         return const SizedBox();
     }
   }
 
-  Widget _buildAttributionMarkdown(BuildContext context, String data) {
+  Widget _buildOsmAttributionMarkdown(BuildContext context, String data) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 4),
       child: MarkdownBody(
-        data: data,
+        data: '${context.l10n.mapAttributionOsmData}${AText.separator}$data',
         selectable: true,
         styleSheet: MarkdownStyleSheet(
           a: TextStyle(color: theme.colorScheme.primary),

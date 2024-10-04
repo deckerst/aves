@@ -127,7 +127,7 @@
   "@settingsEnableBinSubtitle": {},
   "viewerInfoPageTitle": "معلومات",
   "@viewerInfoPageTitle": {},
-  "mapAttributionStamen": "بيانات الخريطة © [OpenStreetMap](https://www.openstreetmap.org/copyright) المساهمين • البلاط بواسطة [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "البلاط بواسطة [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "widgetOpenPageViewer": "افتح العارض",
   "@widgetOpenPageViewer": {},
@@ -1055,7 +1055,7 @@
   "@entryInfoActionEditTags": {},
   "collectionActionHideTitleSearch": "إخفاء مرشح العنوان",
   "@collectionActionHideTitleSearch": {},
-  "mapAttributionOsmHot": "بيانات الخريطة © [OpenStreetMap](https://www.openstreetmap.org/copyright) المساهمين • البلاط بواسطة [HOT](https://www.hotosm.org/) • استضافة بواسطة [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "البلاط بواسطة [HOT](https://www.hotosm.org/) • استضافة بواسطة [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "settingsNavigationDrawerTile": "قائمة تنقل",
   "@settingsNavigationDrawerTile": {},
@@ -1543,6 +1543,6 @@
   "@sortByDuration": {},
   "mapStyleOpenTopoMap": "الخريطة الطبوغرافية المفتوحة",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "بيانات الخريطة © [الخريطة الطبوغرافية المفتوحة](https://www.openstreetmap.org/copyright) contributors • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles by [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOsmData": "بيانات الخريطة © [OpenStreetMap](https://www.openstreetmap.org/copyright) المساهمين",
+  "@mapAttributionOsmData": {}
 }

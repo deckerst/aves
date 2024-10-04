@@ -1501,9 +1501,9 @@
   "@settingsVideoGestureVerticalDragBrightnessVolume": {},
   "mapEmptyRegion": "تصویری در این ناحیه وجود ندارد",
   "@mapEmptyRegion": {},
-  "mapAttributionOsmHot": "داده‌های نقشه © [OpenStreetMap](https:www.openstreetmap.orgcopyright) مشارکت‌کنندگان • کاشی ها توسط [HOT](https:www.hotosm.org) • میزبانی شده به دست [OSM France](https:openstreetmap.fr)",
+  "mapAttributionOsmHot": "کاشی ها توسط [HOT](https:www.hotosm.org) • میزبانی شده به دست [OSM France](https:openstreetmap.fr)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "داده‌های نقشه © [OpenStreetMap](https:www.openstreetmap.org/copyright) مشارکت‌کنندگان • کاشی ها بدست [Stamen Design](https:stamen.com)، [CC BY 3.0](https:creativecommons.orglicensesby3.0)",
+  "mapAttributionStamen": "کاشی ها بدست [Stamen Design](https:stamen.com)، [CC BY 3.0](https:creativecommons.orglicensesby3.0)",
   "@mapAttributionStamen": {},
   "addShortcutButtonLabel": "افزودن",
   "@addShortcutButtonLabel": {},
@@ -1524,5 +1524,7 @@
     }
   },
   "chipActionShowCollection": "نمایش در مجموعه",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "mapAttributionOsmData": "داده‌های نقشه © [OpenStreetMap](https:www.openstreetmap.org/copyright) مشارکت‌کنندگان",
+  "@mapAttributionOsmData": {}
 }

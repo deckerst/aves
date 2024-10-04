@@ -1209,7 +1209,7 @@
   "@settingsEnableBinSubtitle": {},
   "viewerInfoPageTitle": "Informácie",
   "@viewerInfoPageTitle": {},
-  "mapAttributionStamen": "Dáta máp © [OpenStreetMap](https://www.openstreetmap.org/copyright) prispievatelia • [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "[Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "wallpaperUseScrollEffect": "Používanie efektu posúvania na domovskej obrazovke",
   "@wallpaperUseScrollEffect": {},
@@ -1385,7 +1385,7 @@
   "@viewerInfoLabelUri": {},
   "mapZoomOutTooltip": "Oddialiť",
   "@mapZoomOutTooltip": {},
-  "mapAttributionOsmHot": "Údaje máp © [OpenStreetMap](https://www.openstreetmap.org/copyright) prispievatelia • [HOT](https://www.hotosm.org/) • Hosťuje [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "[HOT](https://www.hotosm.org/) • Hosťuje [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
   "settingsHiddenItemsPageTitle": "Skryté položky",
   "@settingsHiddenItemsPageTitle": {},
@@ -1529,8 +1529,6 @@
   "@mapStyleOpenTopoMap": {},
   "sortByDuration": "Trvanie",
   "@sortByDuration": {},
-  "mapAttributionOpenTopoMap": "Mapa údajov © [OpenStreetMap](https://www.openstreetmap.org/copyright) prispievateľov • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) WP Tiles [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {},
   "sortOrderShortestFirst": "Najkratší prvý",
   "@sortOrderShortestFirst": {},
   "sortOrderLongestFirst": "Najdlhšie prvý",
@@ -1544,5 +1542,7 @@
   "chipActionGoToExplorerPage": "Zobraziť v Explorer",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Prieskumník",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "mapAttributionOsmData": "Údaje máp © [OpenStreetMap](https://www.openstreetmap.org/copyright) prispievatelia",
+  "@mapAttributionOsmData": {}
 }

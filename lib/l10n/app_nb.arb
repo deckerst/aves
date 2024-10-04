@@ -974,7 +974,7 @@
   "@viewerErrorUnknown": {},
   "viewerInfoBackToViewerTooltip": "Tilbake til visning",
   "@viewerInfoBackToViewerTooltip": {},
-  "mapAttributionOsmHot": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright)-bidragsyterne • Flis av [HOT](https://www.hotosm.org) • Vertstjent av [OSM France](https://openstreetmap.fr)",
+  "mapAttributionOsmHot": "Flis av [HOT](https://www.hotosm.org) • Vertstjent av [OSM France](https://openstreetmap.fr)",
   "@mapAttributionOsmHot": {},
   "panoramaEnableSensorControl": "Skru på sensorstyring",
   "@panoramaEnableSensorControl": {},
@@ -1211,7 +1211,7 @@
   "@coordinateFormatDms": {},
   "settingsCollectionBrowsingQuickActionEditorBanner": "Trykk og hold for å flytte knapper og velge hvilke handlinger som skal vises ved utforskning av elementer.",
   "@settingsCollectionBrowsingQuickActionEditorBanner": {},
-  "mapAttributionStamen": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright)-bidragsytere • Flis av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Flis av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "moveUndatedConfirmationDialogMessage": "Lagre elementdatoer før fortsettelse?",
   "@moveUndatedConfirmationDialogMessage": {},
@@ -1468,5 +1468,7 @@
   "vaultLockTypePattern": "Mønster",
   "@vaultLockTypePattern": {},
   "chipActionShowCollection": "Vis i samling",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "mapAttributionOsmData": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright)-bidragsyterne",
+  "@mapAttributionOsmData": {}
 }

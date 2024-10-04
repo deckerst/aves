@@ -1551,9 +1551,9 @@
   "@mapStyleDialogTitle": {},
   "mapStyleTooltip": "Välj stil på karta",
   "@mapStyleTooltip": {},
-  "mapAttributionOsmHot": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Brickor av [HOT](https://www.hotosm.org/) • Tillhandahållen av [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Brickor av [HOT](https://www.hotosm.org/) • Tillhandahållen av [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Brickor av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Brickor av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "tagEditorSectionPlaceholders": "Platshållare",
   "@tagEditorSectionPlaceholders": {},
@@ -1565,6 +1565,8 @@
   "@tagPlaceholderState": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Brickor av [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Brickor av [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapAttributionOsmData": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare",
+  "@mapAttributionOsmData": {}
 }
