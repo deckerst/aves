@@ -1386,5 +1386,9 @@
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
   "mapAttributionOpenTopoMap": "Données © les contributeurs d’[OpenStreetMap](https://www.openstreetmap.org/copyright) • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Fond de carte par [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Données © les contributeurs d’[OpenStreetMap](https://www.openstreetmap.org/copyright) • Fond de carte par [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hébergé par [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }

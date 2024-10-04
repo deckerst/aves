@@ -1544,5 +1544,9 @@
   "settingsForceWesternArabicNumeralsTile": "Arab számok használata",
   "@settingsForceWesternArabicNumeralsTile": {},
   "chipActionGoToExplorerPage": "Mutatás a böngészőben",
-  "@chipActionGoToExplorerPage": {}
+  "@chipActionGoToExplorerPage": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Térképadatok © [OpenStreetMap](https://www.openstreetmap.org/copyright) közreműködők • Térképelemek: [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Kiszolgálja: [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }
