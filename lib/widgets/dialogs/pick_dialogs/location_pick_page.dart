@@ -135,8 +135,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       navigationButton: MapNavigationButton.back,
       child: GeoMap(
         controller: _mapController,
-        collectionListenable: openingCollection,
-        entries: openingCollection?.sortedEntries ?? [],
+        collection: openingCollection,
         availableSize: MediaQuery.sizeOf(context),
         initialCenter: widget.initialLocation,
         isAnimatingNotifier: _isPageAnimatingNotifier,
