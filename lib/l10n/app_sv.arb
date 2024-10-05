@@ -1551,9 +1551,9 @@
   "@mapStyleDialogTitle": {},
   "mapStyleTooltip": "Välj stil på karta",
   "@mapStyleTooltip": {},
-  "mapAttributionOsmHot": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Brickor av [HOT](https://www.hotosm.org/) • Tillhandahållen av [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Tiles av [HOT](https://www.hotosm.org/) • Tillhandahålls av [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Brickor av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Tiles av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "tagEditorSectionPlaceholders": "Platshållare",
   "@tagEditorSectionPlaceholders": {},
@@ -1565,6 +1565,10 @@
   "@tagPlaceholderState": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Brickor av [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "mapAttributionOpenTopoMap": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • [SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles av [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Tiles av [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Tillhandahålls av [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }
