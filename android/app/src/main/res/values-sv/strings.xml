@@ -8,4 +8,5 @@
     <string name="analysis_notification_default_title">Scannar media</string>
     <string name="analysis_notification_action_stop">Stopp</string>
     <string name="search_shortcut_short_label">Sök</string>
+    <string name="map_shortcut_short_label">Karta</string>
 </resources>
