@@ -8,4 +8,5 @@
     <string name="analysis_channel_name">Media indexeren</string>
     <string name="analysis_notification_default_title">Media indexeren</string>
     <string name="analysis_notification_action_stop">Stoppen</string>
+    <string name="map_shortcut_short_label">Kaart</string>
 </resources>
