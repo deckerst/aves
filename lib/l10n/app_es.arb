@@ -1385,7 +1385,7 @@
   "@sortOrderLongestFirst": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Mosaicos de [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Teselas por [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "mapAttributionOsmData": "Datos de mapas © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuidores",
   "@mapAttributionOsmData": {},
