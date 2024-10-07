@@ -163,9 +163,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
             // remove this stat as it is not actual XMP data
             dirMap.remove(XmpDirectory().getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
-            // add schema prefixes for namespace resolution
-            val prefixes = XMPMetaFactory.getSchemaRegistry().prefixes
-            dirMap["schemaRegistryPrefixes"] = JSONObject(prefixes).toString()
+            if (dirMap.isNotEmpty()) {
+                // add schema prefixes for namespace resolution
+                val prefixes = XMPMetaFactory.getSchemaRegistry().prefixes
+                dirMap["schemaRegistryPrefixes"] = JSONObject(prefixes).toString()
+            }
         }
 
         val mp4UuidDirCount = HashMap<String, Int>()
