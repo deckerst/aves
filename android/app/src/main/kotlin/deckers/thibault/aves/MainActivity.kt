@@ -437,7 +437,7 @@ open class MainActivity : FlutterFragmentActivity() {
         val pickedUris = call.argument<List<String>>("uris")
         try {
             if (!pickedUris.isNullOrEmpty()) {
-                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
+                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this@MainActivity, Uri.parse(uriString)) }
                 val intent = Intent().apply {
                     val firstUri = toUri(pickedUris.first())
                     if (pickedUris.size == 1) {
@@ -455,7 +455,8 @@ open class MainActivity : FlutterFragmentActivity() {
             } else {
                 setResult(RESULT_CANCELED)
             }
-            finish()
+            // move code triggering `Binder` call off the main thread
+            defaultScope.launch { finish() }
         } catch (e: Exception) {
             if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
                 result.error("submitPickedItems-large", "transaction too large with ${pickedUris?.size} URIs", e)
