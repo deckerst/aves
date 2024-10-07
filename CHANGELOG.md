@@ -18,6 +18,11 @@ All notable changes to this project will be documented in this file.
 
 - `Safe mode` basic app shortcut
 
+### Fixed
+
+- hanging when cataloguing some JPEG MPF images
+- Apple HDR image detection
+
 ## <a id="v1.11.13"></a>[v1.11.13] - 2024-09-17
 
 ### Added

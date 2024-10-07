@@ -6,7 +6,6 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
@@ -20,7 +19,6 @@ import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.exif.GpsDirectory
-import com.drew.metadata.exif.makernotes.AppleMakernoteDirectory
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
@@ -108,6 +106,7 @@ import java.text.ParseException
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -660,7 +659,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     if (metadata.getDirectoriesOfType(MpEntryDirectory::class.java).count { !it.entry.isThumbnail } > 1) {
                         flags = flags or MASK_IS_MULTIPAGE
 
-                        if (hasAppleHdrGainMap(uri, sizeBytes, metadata)) {
+                        if (hasAppleHdrGainMap(uri, sizeBytes)) {
                             flags = flags or MASK_IS_HDR
                         }
                     }
@@ -789,9 +788,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         metadataMap[KEY_FLAGS] = flags
     }
 
-    private fun hasAppleHdrGainMap(uri: Uri, sizeBytes: Long?, primaryMetadata: com.drew.metadata.Metadata): Boolean {
-        if (!primaryMetadata.containsDirectoryOfType(AppleMakernoteDirectory::class.java)) return false
-
+    private fun hasAppleHdrGainMap(uri: Uri, sizeBytes: Long?): Boolean {
         val mpEntries = MultiPage.getJpegMpfEntries(context, uri, sizeBytes) ?: return false
         mpEntries.filter { it.type == MpEntry.TYPE_UNDEFINED }.forEach { mpEntry ->
             var dataOffset = mpEntry.dataOffset
