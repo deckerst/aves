@@ -25,7 +25,10 @@ class SectionHeader<T> extends StatelessWidget {
     this.selectable = true,
   });
 
-  static const leadingSize = Size(48, 32);
+  static const leadingSize = Size.square(32);
+  static const widgetSpanAlignmentMargin = EdgeInsetsDirectional.only(bottom: 4);
+  static final leadingMargin = const EdgeInsetsDirectional.only(end: 8) + widgetSpanAlignmentMargin;
+  static final trailingMargin = const EdgeInsetsDirectional.only(start: 8) + widgetSpanAlignmentMargin;
   static const margin = EdgeInsets.symmetric(vertical: 0, horizontal: 8);
   static const padding = EdgeInsets.symmetric(vertical: 16, horizontal: 8);
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
@@ -68,9 +71,9 @@ class SectionHeader<T> extends StatelessWidget {
                     sectionKey: sectionKey,
                     browsingBuilder: leading != null
                         ? (context) => Container(
-                              padding: const EdgeInsetsDirectional.only(end: 8),
                               width: leadingSize.width,
                               height: leadingSize.height,
+                              margin: leadingMargin,
                               child: leading,
                             )
                         : null,
@@ -86,7 +89,7 @@ class SectionHeader<T> extends StatelessWidget {
                 WidgetSpan(
                   alignment: widgetSpanAlignment,
                   child: Container(
-                    padding: const EdgeInsetsDirectional.only(start: 8, bottom: 2),
+                    margin: trailingMargin,
                     child: trailing,
                   ),
                 ),
@@ -226,7 +229,7 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
     );
   }
 
-  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: SectionHeader.leadingSize.height);
+  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: SectionHeader.leadingSize.height + SectionHeader.widgetSpanAlignmentMargin.vertical);
 }
 
 class _SectionSelectingLeading<T> extends StatelessWidget {
@@ -258,21 +261,21 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
         data: TooltipTheme.of(context).copyWith(
           preferBelow: false,
         ),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(end: 8, bottom: 6),
+        child: Container(
+          width: SectionHeader.leadingSize.width,
+          height: SectionHeader.leadingSize.height,
+          margin: SectionHeader.leadingMargin,
           child: Theme(
             data: Theme.of(context).copyWith(
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: IconButton(
               iconSize: 26,
-              visualDensity: const VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity),
-              padding: const EdgeInsets.symmetric(horizontal: 7),
               onPressed: onPressed,
               tooltip: isSelected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
-              constraints: BoxConstraints(
-                minHeight: SectionHeader.leadingSize.height,
-                minWidth: SectionHeader.leadingSize.width,
+              style: ButtonStyle(
+                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+                minimumSize: WidgetStateProperty.all<Size>(SectionHeader.leadingSize),
               ),
               icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
             ),
