@@ -70,7 +70,7 @@ open class UnknownContentProvider : ImageProvider() {
             return
         }
 
-        val entry = SourceEntry(fields).fillPreCatalogMetadata(context, safe = false)
+        val entry = SourceEntry(fields).fillPreCatalogMetadata(context)
         if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {

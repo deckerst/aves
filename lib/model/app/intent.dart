@@ -21,7 +21,6 @@ class IntentDataKeys {
   static const mimeType = 'mimeType';
   static const page = 'page';
   static const query = 'query';
-  static const safeMode = 'safeMode';
   static const secureUris = 'secureUris';
   static const uri = 'uri';
   static const widgetId = 'widgetId';

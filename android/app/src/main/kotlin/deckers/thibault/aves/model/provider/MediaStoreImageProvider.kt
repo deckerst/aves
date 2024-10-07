@@ -51,10 +51,9 @@ class MediaStoreImageProvider : ImageProvider() {
         context: Context,
         knownEntries: Map<Long?, Int?>,
         directory: String?,
-        safe: Boolean,
         handleNewEntry: NewEntryHandler,
     ) {
-        Log.d(LOG_TAG, "fetching all media store items for ${knownEntries.size} known entries, directory=$directory safe=$safe")
+        Log.d(LOG_TAG, "fetching all media store items for ${knownEntries.size} known entries, directory=$directory")
         val isModified = fun(contentId: Long, dateModifiedSecs: Int): Boolean {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
@@ -84,8 +83,8 @@ class MediaStoreImageProvider : ImageProvider() {
         } else {
             handleNew = handleNewEntry
         }
-        fetchFrom(context, isModified, handleNew, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs, safe = safe)
-        fetchFrom(context, isModified, handleNew, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs, safe = safe)
+        fetchFrom(context, isModified, handleNew, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs)
+        fetchFrom(context, isModified, handleNew, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs)
     }
 
     // the provided URI can point to the wrong media collection,
@@ -208,7 +207,6 @@ class MediaStoreImageProvider : ImageProvider() {
         selection: String? = null,
         selectionArgs: Array<String>? = null,
         fileMimeType: String? = null,
-        safe: Boolean = false,
     ): Boolean {
         var found = false
         val orderBy = "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
@@ -302,7 +300,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                 // missing some attributes such as width, height, orientation.
                                 // Also, the reported size of raw images is inconsistent across devices
                                 // and Android versions (sometimes the raw size, sometimes the decoded size).
-                                val entry = SourceEntry(entryMap).fillPreCatalogMetadata(context, safe)
+                                val entry = SourceEntry(entryMap).fillPreCatalogMetadata(context)
                                 entryMap = entry.toMap()
                             }
 

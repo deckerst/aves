@@ -296,14 +296,11 @@ open class MainActivity : FlutterFragmentActivity() {
     open fun extractIntentData(intent: Intent?): FieldMap {
         when (val action = intent?.action) {
             Intent.ACTION_MAIN -> {
-                val fields = HashMap<String, Any?>()
-                if (intent.getBooleanExtra(EXTRA_KEY_SAFE_MODE, false)) {
-                    fields[INTENT_DATA_KEY_SAFE_MODE] = true
-                }
-                fields[INTENT_DATA_KEY_PAGE] = intent.getStringExtra(EXTRA_KEY_PAGE)
-                fields[INTENT_DATA_KEY_FILTERS] = extractFiltersFromIntent(intent)
-                fields[INTENT_DATA_KEY_EXPLORER_PATH] = intent.getStringExtra(EXTRA_KEY_EXPLORER_PATH)
-                return fields
+                return hashMapOf(
+                    INTENT_DATA_KEY_PAGE to intent.getStringExtra(EXTRA_KEY_PAGE),
+                    INTENT_DATA_KEY_FILTERS to extractFiltersFromIntent(intent),
+                    INTENT_DATA_KEY_EXPLORER_PATH to intent.getStringExtra(EXTRA_KEY_EXPLORER_PATH),
+                )
             }
 
             Intent.ACTION_VIEW,
@@ -557,7 +554,6 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_QUERY = "query"
-        const val INTENT_DATA_KEY_SAFE_MODE = "safeMode"
         const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
@@ -566,7 +562,6 @@ open class MainActivity : FlutterFragmentActivity() {
         const val EXTRA_KEY_EXPLORER_PATH = "explorerPath"
         const val EXTRA_KEY_FILTERS_ARRAY = "filters"
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
-        const val EXTRA_KEY_SAFE_MODE = "safeMode"
         const val EXTRA_KEY_WIDGET_ID = "widgetId"
 
         // dart page routes
