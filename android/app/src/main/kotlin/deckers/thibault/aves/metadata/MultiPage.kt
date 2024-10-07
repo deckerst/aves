@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.adobe.internal.xmp.XMPMeta
 import com.drew.imaging.jpeg.JpegSegmentType
 import com.drew.metadata.exif.ExifDirectoryBase
@@ -30,6 +29,8 @@ import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.indexOfBytes
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.DataInputStream
+import java.io.EOFException
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object MultiPage {
     private val LOG_TAG = LogUtils.createTag<MultiPage>()
@@ -136,21 +137,31 @@ object MultiPage {
     // starts after `[APP2 marker (1 byte)] [segment size (2 bytes)] [MPF marker (4 bytes)]`
     fun getJpegMpfBaseOffset(context: Context, uri: Uri, sizeBytes: Long?): Int? {
         val mimeType = MimeTypes.JPEG
+        val endMarker = 0xFF
         val app2Marker = JpegSegmentType.APP2.byteValue
         val mpfMarker = "MPF".toByteArray() + 0x00
 
         try {
             Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                 var offset = 0
+                val marker = ByteArray(4)
                 while (true) {
-                    do {
-                        val b = input.read().toByte()
+                    // look for APP2 marker (0xFFE2)
+                    var found = false
+                    while (!found) {
+                        var i = input.read()
+                        if (i == -1) throw EOFException()
                         offset++
-                    } while (b != app2Marker)
+                        if (i == endMarker) {
+                            i = input.read()
+                            if (i == -1) throw EOFException()
+                            offset++
+                            found = i.toByte() == app2Marker
+                        }
+                    }
                     // skip 2 bytes for segment size
                     input.skip(2)
                     offset += 2
-                    val marker = ByteArray(4)
                     input.read(marker, 0, marker.size)
                     offset += 4
                     if (marker.contentEquals(mpfMarker)) {
