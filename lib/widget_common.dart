@@ -96,7 +96,8 @@ Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
       readyCompleter.complete();
     }
   });
-  await source.init(canAnalyze: false);
+  source.canAnalyze = false;
+  await source.init();
   await readyCompleter.future;
 
   final entries = CollectionLens(source: source, filters: filters).sortedEntries;

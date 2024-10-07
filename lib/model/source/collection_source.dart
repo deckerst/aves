@@ -31,7 +31,7 @@ import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
-enum SourceInitializationState { none, directory, full }
+enum SourceScope { none, album, full }
 
 mixin SourceBase {
   EventBus get eventBus;
@@ -93,7 +93,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     _rawEntries.forEach((v) => v.dispose());
   }
 
-  set safeMode(bool enabled);
+  set canAnalyze(bool enabled);
 
   final EventBus _eventBus = EventBus();
 
@@ -427,13 +427,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     eventBus.fire(EntryMovedEvent(MoveType.move, movedEntries));
   }
 
-  SourceInitializationState get initState => SourceInitializationState.none;
+  SourceScope get scope => SourceScope.none;
 
   Future<void> init({
     AnalysisController? analysisController,
-    String? directory,
+    AlbumFilter? albumFilter,
     bool loadTopEntriesFirst = false,
-    bool canAnalyze = true,
   });
 
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
@@ -518,13 +517,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   // monitoring
 
-  bool _monitoring = true;
+  bool _canRefresh = true;
 
-  void pauseMonitoring() => _monitoring = false;
+  void pauseMonitoring() => _canRefresh = false;
 
-  void resumeMonitoring() => _monitoring = true;
+  void resumeMonitoring() => _canRefresh = true;
 
-  bool get isMonitoring => _monitoring;
+  bool get canRefresh => _canRefresh;
 
   // filter summary
 

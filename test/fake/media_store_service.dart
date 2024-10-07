@@ -33,7 +33,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
   }
 
   @override
-  Stream<AvesEntry> getEntries(bool safe, Map<int?, int?> knownEntries, {String? directory}) => Stream.fromIterable(entries);
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) => Stream.fromIterable(entries);
 
   static var _lastId = 1;
 

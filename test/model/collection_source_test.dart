@@ -109,7 +109,7 @@ void main() {
     final source = MediaStoreSource();
     unawaited(source.init());
     await Future.delayed(const Duration(milliseconds: 10));
-    expect(source.initState, SourceInitializationState.full);
+    expect(source.scope, SourceScope.full);
     await source.refreshUris({refreshEntry.uri});
 
     await Future.delayed(const Duration(seconds: 1));

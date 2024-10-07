@@ -21,36 +21,34 @@ class MediaStoreSource extends CollectionSource {
   final Debouncer _changeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
   int? _lastGeneration;
-  SourceInitializationState _initState = SourceInitializationState.none;
-  bool _safeMode = false;
+  SourceScope _scope = SourceScope.none;
+  bool _canAnalyze = true;
 
   @override
-  set safeMode(bool enabled) => _safeMode = enabled;
+  set canAnalyze(bool enabled) => _canAnalyze = enabled;
 
   @override
-  SourceInitializationState get initState => _initState;
+  SourceScope get scope => _scope;
 
   @override
   Future<void> init({
     AnalysisController? analysisController,
-    String? directory,
+    AlbumFilter? albumFilter,
     bool loadTopEntriesFirst = false,
-    bool canAnalyze = true,
   }) async {
-    await reportService.log('$runtimeType init directory=$directory');
-    if (_initState == SourceInitializationState.none) {
+    await reportService.log('$runtimeType init album=${albumFilter?.album}');
+    if (_scope == SourceScope.none) {
       await _loadEssentials();
     }
-    if (_initState != SourceInitializationState.full) {
-      _initState = directory != null ? SourceInitializationState.directory : SourceInitializationState.full;
+    if (_scope != SourceScope.full) {
+      _scope = albumFilter != null ? SourceScope.album : SourceScope.full;
     }
     addDirectories(albums: settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).toSet());
     await updateGeneration();
     unawaited(_loadEntries(
       analysisController: analysisController,
-      directory: directory,
+      directory: albumFilter?.album,
       loadTopEntriesFirst: loadTopEntriesFirst,
-      canAnalyze: canAnalyze && !_safeMode,
     ));
   }
 
@@ -80,7 +78,6 @@ class MediaStoreSource extends CollectionSource {
     AnalysisController? analysisController,
     String? directory,
     required bool loadTopEntriesFirst,
-    required bool canAnalyze,
   }) async {
     unawaited(reportService.log('$runtimeType load start'));
     final stopwatch = Stopwatch()..start();
@@ -158,6 +155,12 @@ class MediaStoreSource extends CollectionSource {
       knownDateByContentId[contentId] = 0;
     });
 
+    if (!_canAnalyze) {
+      // it can discover new entries only if it can analyze them
+      state = SourceState.ready;
+      return;
+    }
+
     // items to add to the collection
     final newEntries = <AvesEntry>{};
 
@@ -169,7 +172,7 @@ class MediaStoreSource extends CollectionSource {
 
     // fetch new & modified entries
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch new entries');
-    mediaStoreService.getEntries(_safeMode, knownDateByContentId, directory: directory).listen(
+    mediaStoreService.getEntries(knownDateByContentId, directory: directory).listen(
       (entry) {
         // when discovering modified entry with known content ID,
         // reuse known entry ID to overwrite it while preserving favourites, etc.
@@ -210,11 +213,7 @@ class MediaStoreSource extends CollectionSource {
         if (analysisIds != null) {
           analysisEntries = visibleEntries.where((entry) => analysisIds.contains(entry.id)).toSet();
         }
-        if (canAnalyze) {
-          await analyze(analysisController, entries: analysisEntries);
-        } else {
-          state = SourceState.ready;
-        }
+        await analyze(analysisController, entries: analysisEntries);
 
         // the home page may not reflect the current derived filters
         // as the initial addition of entries is silent,
@@ -234,7 +233,7 @@ class MediaStoreSource extends CollectionSource {
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
   @override
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController}) async {
-    if (_initState == SourceInitializationState.none || !isMonitoring || !isReady) return changedUris;
+    if (_scope == SourceScope.none || !canRefresh || !isReady) return changedUris;
 
     state = SourceState.loading;
 
@@ -272,7 +271,8 @@ class MediaStoreSource extends CollectionSource {
           if (volume != null) {
             if (existingEntry != null) {
               entriesToRefresh.add(existingEntry);
-            } else {
+            } else if (_canAnalyze) {
+              // it can discover new entries only if it can analyze them
               sourceEntry.id = localMediaDb.nextId;
               newEntries.add(sourceEntry);
             }
@@ -329,10 +329,6 @@ class MediaStoreSource extends CollectionSource {
   }
 
   void onStoreChanged(String? uri) {
-    // dismiss changes if the source is only loaded to view a specific directory
-    // to let the main instance handle the change in the database
-    if (_initState == SourceInitializationState.directory) return;
-
     if (uri != null) _changedUris.add(uri);
     if (_changedUris.isNotEmpty) {
       _changeDebouncer(() async {

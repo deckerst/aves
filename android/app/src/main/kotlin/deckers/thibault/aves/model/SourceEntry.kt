@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.jpeg.JpegDirectory
@@ -29,6 +28,7 @@ import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 class SourceEntry {
     private val origin: Int
@@ -116,8 +116,8 @@ class SourceEntry {
     // metadata retrieval
     // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
-    fun fillPreCatalogMetadata(context: Context, safe: Boolean): SourceEntry {
-        if (isSvg || safe) return this
+    fun fillPreCatalogMetadata(context: Context): SourceEntry {
+        if (isSvg) return this
         if (isVideo) {
             fillVideoByMediaMetadataRetriever(context)
             if (isSized && hasDuration) return this

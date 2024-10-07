@@ -683,7 +683,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _onAnalysisCompletion() async {
     debugPrint('Analysis completed');
-    if (_mediaStoreSource.initState != SourceInitializationState.none) {
+    if (_mediaStoreSource.scope != SourceScope.none) {
       await _mediaStoreSource.loadCatalogMetadata();
       await _mediaStoreSource.loadAddresses();
       _mediaStoreSource.updateDerivedFilters();

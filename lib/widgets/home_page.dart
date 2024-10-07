@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
     var appMode = AppMode.main;
     var error = false;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
-    final safeMode = (intentData[IntentDataKeys.safeMode] as bool?) ?? false;
     final intentAction = intentData[IntentDataKeys.action] as String?;
     _initialFilters = null;
     _initialExplorerPath = null;
@@ -223,19 +222,16 @@ class _HomePageState extends State<HomePage> {
         unawaited(GlobalSearch.registerCallback());
         unawaited(AnalysisService.registerCallback());
         final source = context.read<CollectionSource>();
-        source.safeMode = safeMode;
-        if (source.initState != SourceInitializationState.full) {
-          await reportService.log('Initialize source (init state=${source.initState.name}) to start app with mode=$appMode');
-          await source.init(
-            loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
-          );
+        if (source.scope != SourceScope.full) {
+          await reportService.log('Initialize source (init state=${source.scope.name}) to start app with mode=$appMode');
+          final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
+          await source.init(loadTopEntriesFirst: loadTopEntriesFirst);
         }
       case AppMode.screenSaver:
-        final source = context.read<CollectionSource>();
         await reportService.log('Initialize source to start screen saver');
-        await source.init(
-          canAnalyze: false,
-        );
+        final source = context.read<CollectionSource>();
+        source.canAnalyze = false;
+        await source.init();
       case AppMode.view:
         if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
           final directory = _viewerEntry?.directory;
@@ -243,10 +239,8 @@ class _HomePageState extends State<HomePage> {
             unawaited(AnalysisService.registerCallback());
             await reportService.log('Initialize source to view item in directory $directory');
             final source = context.read<CollectionSource>();
-            await source.init(
-              directory: directory,
-              canAnalyze: false,
-            );
+            source.canAnalyze = false;
+            await source.init(albumFilter: AlbumFilter(directory, null));
           }
         } else {
           await _initViewerEssentials();
@@ -311,7 +305,7 @@ class _HomePageState extends State<HomePage> {
         CollectionLens? collection;
 
         final source = context.read<CollectionSource>();
-        if (source.initState != SourceInitializationState.none) {
+        if (source.scope != SourceScope.none) {
           final album = viewerEntry.directory;
           if (album != null) {
             // wait for collection to pass the `loading` state
