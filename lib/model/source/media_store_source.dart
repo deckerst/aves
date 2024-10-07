@@ -329,6 +329,10 @@ class MediaStoreSource extends CollectionSource {
   }
 
   void onStoreChanged(String? uri) {
+    // dismiss changes if the source is only loaded to view a specific directory
+    // to let the main instance handle the change in the database
+    if (_initState == SourceInitializationState.directory) return;
+
     if (uri != null) _changedUris.add(uri);
     if (_changedUris.isNotEmpty) {
       _changeDebouncer(() async {
