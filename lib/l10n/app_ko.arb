@@ -1388,5 +1388,9 @@
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 타일 [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "mapAttributionOsmData": "지도 데이터 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "mapAttributionOsmLiberty": "타일 [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • 호스팅 [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {}
 }
