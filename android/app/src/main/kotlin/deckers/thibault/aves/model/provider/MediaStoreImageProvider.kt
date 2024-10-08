@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -452,10 +453,8 @@ class MediaStoreImageProvider : ImageProvider() {
                 effectiveTargetDir = targetDir
                 targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
                 if (!File(targetDir).exists()) {
-                    val downloadDirPath = StorageUtils.getDownloadDirPath(activity, targetDir)
-                    val isDownloadSubdir = downloadDirPath != null && targetDir.startsWith(downloadDirPath)
                     // download subdirectories can be created later by Media Store insertion
-                    if (!isDownloadSubdir) {
+                    if (!isDownloadSubdir(activity, targetDir)) {
                         callback.onFailure(Exception("failed to create directory at path=$targetDir"))
                         return
                     }
@@ -625,9 +624,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val downloadDirPath = StorageUtils.getDownloadDirPath(activity, targetDir)
-            val isDownloadSubdir = downloadDirPath != null && targetDir.startsWith(downloadDirPath)
-            if (isDownloadSubdir) {
+            if (isDownloadSubdir(activity, targetDir)) {
                 return insertByMediaStore(
                     activity = activity,
                     targetDir = targetDir,
@@ -645,6 +642,13 @@ class MediaStoreImageProvider : ImageProvider() {
             targetNameWithoutExtension = targetNameWithoutExtension,
             write = write,
         )
+    }
+
+    private fun isDownloadSubdir(context: Context, dir: String): Boolean {
+        val volumePath = StorageUtils.getVolumePath(context, dir) ?: return false
+        val downloadDirPath = ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path)
+        // effective download path may have a different case
+        return dir.lowercase().startsWith(downloadDirPath.lowercase())
     }
 
     private fun insertByFile(

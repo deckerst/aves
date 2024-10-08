@@ -1145,6 +1145,7 @@ All notable changes to this project will be documented in this file.
 
 - app launching on some devices
 - corrupting motion photo exif editing (e.g. rotation)
+- accessing files in `Download` directory when not using reference case
 
 ## [v1.4.9] - 2021-08-20
 

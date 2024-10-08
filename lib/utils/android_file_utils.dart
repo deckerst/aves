@@ -48,7 +48,8 @@ class AndroidFileUtils {
     primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? separator;
     // standard
     dcimPath = pContext.join(primaryStorage, 'DCIM');
-    downloadPath = pContext.join(primaryStorage, 'Download');
+    // effective download path may have a different case
+    downloadPath = pContext.join(primaryStorage, 'Download').toLowerCase();
     moviesPath = pContext.join(primaryStorage, 'Movies');
     picturesPath = pContext.join(primaryStorage, 'Pictures');
     avesVideoCapturesPath = pContext.join(dcimPath, 'Video Captures');
@@ -78,7 +79,7 @@ class AndroidFileUtils {
 
   bool isVideoCapturesPath(String path) => videoCapturesPaths.contains(path);
 
-  bool isDownloadPath(String path) => path == downloadPath;
+  bool isDownloadPath(String path) => path.toLowerCase() == downloadPath;
 
   StorageVolume? getStorageVolume(String? path) {
     if (path == null) return null;
