@@ -17,18 +17,25 @@ mixin PermissionAwareMixin {
   }
 
   Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> storageDirs, {Set<AvesEntry>? entries}) async {
-    final restrictedDirs = await storageService.getRestrictedDirectories();
+    final restrictedDirsLowerCase = await storageService.getRestrictedDirectoriesLowerCase();
     while (true) {
       final dirs = await storageService.getInaccessibleDirectories(storageDirs);
 
-      final restrictedInaccessibleDirs = dirs.where(restrictedDirs.contains).toSet();
+      final restrictedInaccessibleDirs = dirs
+          .map((dir) => dir.copyWith(
+                relativeDir: dir.relativeDir.toLowerCase(),
+              ))
+          .where(restrictedDirsLowerCase.contains)
+          .toSet();
       if (restrictedInaccessibleDirs.isNotEmpty) {
         if (entries != null && await storageService.canRequestMediaFileBulkAccess()) {
           // request media file access for items in restricted directories
           final uris = <String>[], mimeTypes = <String>[];
           entries.where((entry) {
-            final dir = entry.directory;
-            return dir != null && restrictedInaccessibleDirs.contains(androidFileUtils.relativeDirectoryFromPath(dir));
+            final dirPath = entry.directory;
+            if (dirPath == null) return false;
+            final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
+            return restrictedInaccessibleDirs.contains(dir?.copyWith(relativeDir: dir.relativeDir.toLowerCase()));
           }).forEach((entry) {
             uris.add(entry.uri);
             mimeTypes.add(entry.mimeType);

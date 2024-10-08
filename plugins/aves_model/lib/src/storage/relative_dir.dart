@@ -26,4 +26,14 @@ class VolumeRelativeDirectory extends Equatable {
         'volumePath': volumePath,
         'relativeDir': relativeDir,
       };
+
+  VolumeRelativeDirectory copyWith({
+    String? volumePath,
+    String? relativeDir,
+  }) {
+    return VolumeRelativeDirectory(
+      volumePath: volumePath ?? this.volumePath,
+      relativeDir: relativeDir ?? this.relativeDir,
+    );
+  }
 }

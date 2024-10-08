@@ -120,10 +120,6 @@ object StorageUtils {
         return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }
     }
 
-    fun getDownloadDirPath(context: Context, anyPath: String): String? {
-        return getVolumePath(context, anyPath)?.let { volumePath -> ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path) }
-    }
-
     private fun getPathStepIterator(context: Context, anyPath: String, root: String?): Iterator<String?>? {
         val rootLength = (root ?: getVolumePath(context, anyPath))?.length ?: return null
 
