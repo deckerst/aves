@@ -9,6 +9,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class ExplorerActionDelegate with FeedbackMixin {
         return isMain && device.canPinShortcut;
       case ExplorerAction.setHome:
         return isMain && !useTvLayout;
+      case ExplorerAction.hide:
       case ExplorerAction.stats:
         return isMain;
     }
@@ -39,6 +41,7 @@ class ExplorerActionDelegate with FeedbackMixin {
     switch (action) {
       case ExplorerAction.addShortcut:
       case ExplorerAction.setHome:
+      case ExplorerAction.hide:
       case ExplorerAction.stats:
         return true;
     }
@@ -51,14 +54,17 @@ class ExplorerActionDelegate with FeedbackMixin {
         _addShortcut(context);
       case ExplorerAction.setHome:
         _setHome(context);
+      case ExplorerAction.hide:
+        _hide(context);
       case ExplorerAction.stats:
         _goToStats(context);
     }
   }
 
+  PathFilter _getPathFilter() => PathFilter(directory.dirPath);
+
   Future<void> _addShortcut(BuildContext context) async {
-    final path = directory.dirPath;
-    final filter = PathFilter(path);
+    final filter = _getPathFilter();
     final defaultName = filter.getLabel(context);
     final collection = CollectionLens(
       source: context.read<CollectionSource>(),
@@ -78,7 +84,7 @@ class ExplorerActionDelegate with FeedbackMixin {
     final (coverEntry, name) = result;
     if (name.isEmpty) return;
 
-    await appService.pinToHomeScreen(name, coverEntry, explorerPath: path);
+    await appService.pinToHomeScreen(name, coverEntry, explorerPath: filter.path);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }
@@ -89,12 +95,14 @@ class ExplorerActionDelegate with FeedbackMixin {
     showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
   }
 
+  void _hide(BuildContext context) {
+    ChipActionDelegate().onActionSelected(context, _getPathFilter(), ChipAction.hide);
+  }
+
   void _goToStats(BuildContext context) {
-    final path = directory.dirPath;
-    final filter = PathFilter(path);
     final collection = CollectionLens(
       source: context.read<CollectionSource>(),
-      filters: {filter},
+      filters: {_getPathFilter()},
     );
 
     Navigator.maybeOf(context)?.push(

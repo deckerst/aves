@@ -7,6 +7,5 @@
     <string name="analysis_notification_default_title">Scanner medier</string>
     <string name="analysis_notification_action_stop">Stop</string>
     <string name="app_name">Aves</string>
-    <string name="safe_mode_shortcut_short_label">Sikker tilstand</string>
     <string name="search_shortcut_short_label">Søg</string>
 </resources>

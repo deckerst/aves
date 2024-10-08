@@ -8,5 +8,4 @@
     <string name="analysis_notification_default_title">Scanarea suporturilor</string>
     <string name="analysis_notification_action_stop">Stop</string>
     <string name="search_shortcut_short_label">Căutare</string>
-    <string name="safe_mode_shortcut_short_label">Modul de siguranță</string>
 </resources>

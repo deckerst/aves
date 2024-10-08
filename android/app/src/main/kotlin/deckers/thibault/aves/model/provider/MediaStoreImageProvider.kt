@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -51,10 +52,9 @@ class MediaStoreImageProvider : ImageProvider() {
         context: Context,
         knownEntries: Map<Long?, Int?>,
         directory: String?,
-        safe: Boolean,
         handleNewEntry: NewEntryHandler,
     ) {
-        Log.d(LOG_TAG, "fetching all media store items for ${knownEntries.size} known entries, directory=$directory safe=$safe")
+        Log.d(LOG_TAG, "fetching all media store items for ${knownEntries.size} known entries, directory=$directory")
         val isModified = fun(contentId: Long, dateModifiedSecs: Int): Boolean {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
@@ -84,8 +84,8 @@ class MediaStoreImageProvider : ImageProvider() {
         } else {
             handleNew = handleNewEntry
         }
-        fetchFrom(context, isModified, handleNew, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs, safe = safe)
-        fetchFrom(context, isModified, handleNew, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs, safe = safe)
+        fetchFrom(context, isModified, handleNew, IMAGE_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs)
+        fetchFrom(context, isModified, handleNew, VIDEO_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs)
     }
 
     // the provided URI can point to the wrong media collection,
@@ -208,7 +208,6 @@ class MediaStoreImageProvider : ImageProvider() {
         selection: String? = null,
         selectionArgs: Array<String>? = null,
         fileMimeType: String? = null,
-        safe: Boolean = false,
     ): Boolean {
         var found = false
         val orderBy = "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
@@ -302,7 +301,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                 // missing some attributes such as width, height, orientation.
                                 // Also, the reported size of raw images is inconsistent across devices
                                 // and Android versions (sometimes the raw size, sometimes the decoded size).
-                                val entry = SourceEntry(entryMap).fillPreCatalogMetadata(context, safe)
+                                val entry = SourceEntry(entryMap).fillPreCatalogMetadata(context)
                                 entryMap = entry.toMap()
                             }
 
@@ -454,10 +453,8 @@ class MediaStoreImageProvider : ImageProvider() {
                 effectiveTargetDir = targetDir
                 targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
                 if (!File(targetDir).exists()) {
-                    val downloadDirPath = StorageUtils.getDownloadDirPath(activity, targetDir)
-                    val isDownloadSubdir = downloadDirPath != null && targetDir.startsWith(downloadDirPath)
                     // download subdirectories can be created later by Media Store insertion
-                    if (!isDownloadSubdir) {
+                    if (!isDownloadSubdir(activity, targetDir)) {
                         callback.onFailure(Exception("failed to create directory at path=$targetDir"))
                         return
                     }
@@ -627,9 +624,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val downloadDirPath = StorageUtils.getDownloadDirPath(activity, targetDir)
-            val isDownloadSubdir = downloadDirPath != null && targetDir.startsWith(downloadDirPath)
-            if (isDownloadSubdir) {
+            if (isDownloadSubdir(activity, targetDir)) {
                 return insertByMediaStore(
                     activity = activity,
                     targetDir = targetDir,
@@ -647,6 +642,13 @@ class MediaStoreImageProvider : ImageProvider() {
             targetNameWithoutExtension = targetNameWithoutExtension,
             write = write,
         )
+    }
+
+    private fun isDownloadSubdir(context: Context, dir: String): Boolean {
+        val volumePath = StorageUtils.getVolumePath(context, dir) ?: return false
+        val downloadDirPath = ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path)
+        // effective download path may have a different case
+        return dir.lowercase().startsWith(downloadDirPath.lowercase())
     }
 
     private fun insertByFile(

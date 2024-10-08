@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.14"></a>[v1.11.14] - 2024-10-09
+
+### Added
+
+- Map: OpenTopoMap raster layer
+- Map: OSM Liberty vector layer (hosted by OSM Americana)
+- Interoperability: receiving `geo:` URI generally opens map page at location
+- Interoperability: receiving `geo:` URI when editing item location fills in coordinates
+- Map basic app shortcut
+- Enterprise: support for work profile switching from the drawer
+- Settings: hidden path filters are merged with others and can be toggled
+
+### Removed
+
+- `Safe mode` basic app shortcut
+
+### Fixed
+
+- hanging when cataloguing some JPEG MPF images
+- Apple HDR image detection
+
 ## <a id="v1.11.13"></a>[v1.11.13] - 2024-09-17
 
 ### Added
@@ -1126,6 +1147,7 @@ All notable changes to this project will be documented in this file.
 
 - app launching on some devices
 - corrupting motion photo exif editing (e.g. rotation)
+- accessing files in `Download` directory when not using reference case
 
 ## [v1.4.9] - 2021-08-20
 

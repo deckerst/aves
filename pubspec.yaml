@@ -7,7 +7,7 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.11.13+132
+version: 1.11.14+133
 publish_to: none
 
 environment:
@@ -78,6 +78,7 @@ dependencies:
   flutter_markdown:
   flutter_staggered_animations:
   get_it:
+  http:
   intl:
   latlong2:
   leak_tracker:
@@ -111,7 +112,9 @@ dependencies:
       url: https://github.com/deckerst/aves_streams_channel.git
   transparent_image:
   url_launcher:
+  vector_map_tiles:
   vector_math:
+  vector_tile_renderer:
   volume_controller:
   xml:
 

@@ -8,5 +8,4 @@
     <string name="analysis_notification_action_stop">থামান</string>
     <string name="app_name">আভেস</string>
     <string name="app_widget_label">ছবির ফ্রেম</string>
-    <string name="safe_mode_shortcut_short_label">নিরাপদ মোড</string>
 </resources>

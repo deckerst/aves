@@ -43,15 +43,19 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class MapPage extends StatelessWidget {
-  static const routeName = '/collection/map';
+  static const routeName = '/map';
 
   final CollectionLens collection;
+  final LatLng? initialLocation;
+  final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
 
   const MapPage({
     super.key,
     required this.collection,
+    this.initialLocation,
+    this.initialZoom,
     this.initialEntry,
     this.overlayEntry,
   });
@@ -70,6 +74,8 @@ class MapPage extends StatelessWidget {
           bottom: true,
           child: _Content(
             collection: collection,
+            initialLocation: initialLocation,
+            initialZoom: initialZoom,
             initialEntry: initialEntry,
             overlayEntry: overlayEntry,
           ),
@@ -81,11 +87,15 @@ class MapPage extends StatelessWidget {
 
 class _Content extends StatefulWidget {
   final CollectionLens collection;
+  final LatLng? initialLocation;
+  final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
 
   const _Content({
     required this.collection,
+    this.initialLocation,
+    this.initialZoom,
     this.initialEntry,
     this.overlayEntry,
   });
@@ -252,19 +262,20 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   Widget _buildMap() {
+    final canPop = Navigator.maybeOf(context)?.canPop() == true;
     Widget child = MapTheme(
       interactive: true,
       showCoordinateFilter: true,
-      navigationButton: MapNavigationButton.back,
+      navigationButton: canPop ? MapNavigationButton.back : MapNavigationButton.close,
       scale: _overlayScale,
       child: GeoMap(
         // key is expected by test driver
         key: const Key('map_view'),
         controller: _mapController,
-        collectionListenable: openingCollection,
-        entries: openingCollection.sortedEntries,
+        collection: openingCollection,
         availableSize: MediaQuery.sizeOf(context),
-        initialCenter: widget.initialEntry?.latLng ?? widget.overlayEntry?.center,
+        initialCenter: widget.initialLocation ?? widget.initialEntry?.latLng ?? widget.overlayEntry?.center,
+        initialZoom: widget.initialZoom,
         isAnimatingNotifier: _isPageAnimatingNotifier,
         dotLocationNotifier: _dotLocationNotifier,
         overlayOpacityNotifier: _overlayOpacityNotifier,

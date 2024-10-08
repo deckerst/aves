@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/geo/uri.dart';
+import 'package:aves/model/app/intent.dart';
 import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/app/intent.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -29,6 +31,7 @@ import 'package:aves/widgets/editor/entry_editor_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
@@ -38,6 +41,7 @@ import 'package:aves/widgets/wallpaper_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -62,12 +66,14 @@ class _HomePageState extends State<HomePage> {
   String? _initialRouteName, _initialSearchQuery;
   Set<CollectionFilter>? _initialFilters;
   String? _initialExplorerPath;
+  (LatLng, double?)? _initialLocationZoom;
   List<String>? _secureUris;
 
   static const allowedShortcutRoutes = [
     AlbumListPage.routeName,
     CollectionPage.routeName,
     ExplorerPage.routeName,
+    MapPage.routeName,
     SearchPage.routeName,
   ];
 
@@ -92,7 +98,6 @@ class _HomePageState extends State<HomePage> {
     var appMode = AppMode.main;
     var error = false;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
-    final safeMode = (intentData[IntentDataKeys.safeMode] as bool?) ?? false;
     final intentAction = intentData[IntentDataKeys.action] as String?;
     _initialFilters = null;
     _initialExplorerPath = null;
@@ -118,6 +123,17 @@ class _HomePageState extends State<HomePage> {
         case IntentActions.view:
           appMode = AppMode.view;
           _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
+        case IntentActions.viewGeo:
+          error = true;
+          if (intentUri != null) {
+            final locationZoom = parseGeoUri(intentUri);
+            if (locationZoom != null) {
+              _initialRouteName = MapPage.routeName;
+              _initialLocationZoom = locationZoom;
+              error = false;
+            }
+          }
+          break;
         case IntentActions.edit:
           appMode = AppMode.edit;
         case IntentActions.setWallpaper:
@@ -197,7 +213,6 @@ class _HomePageState extends State<HomePage> {
 
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
-    debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
 
     switch (appMode) {
       case AppMode.main:
@@ -207,19 +222,16 @@ class _HomePageState extends State<HomePage> {
         unawaited(GlobalSearch.registerCallback());
         unawaited(AnalysisService.registerCallback());
         final source = context.read<CollectionSource>();
-        source.safeMode = safeMode;
-        if (source.initState != SourceInitializationState.full) {
-          await reportService.log('Initialize source (init state=${source.initState.name}) to start app with mode=$appMode');
-          await source.init(
-            loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
-          );
+        if (source.scope != SourceScope.full) {
+          await reportService.log('Initialize source (init state=${source.scope.name}) to start app with mode=$appMode');
+          final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
+          await source.init(loadTopEntriesFirst: loadTopEntriesFirst);
         }
       case AppMode.screenSaver:
-        final source = context.read<CollectionSource>();
         await reportService.log('Initialize source to start screen saver');
-        await source.init(
-          canAnalyze: false,
-        );
+        final source = context.read<CollectionSource>();
+        source.canAnalyze = false;
+        await source.init();
       case AppMode.view:
         if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
           final directory = _viewerEntry?.directory;
@@ -227,10 +239,8 @@ class _HomePageState extends State<HomePage> {
             unawaited(AnalysisService.registerCallback());
             await reportService.log('Initialize source to view item in directory $directory');
             final source = context.read<CollectionSource>();
-            await source.init(
-              directory: directory,
-              canAnalyze: false,
-            );
+            source.canAnalyze = false;
+            await source.init(albumFilter: AlbumFilter(directory, null));
           }
         } else {
           await _initViewerEssentials();
@@ -241,6 +251,8 @@ class _HomePageState extends State<HomePage> {
       default:
         break;
     }
+
+    debugPrint('Home setup complete in ${stopwatch.elapsed.inMilliseconds}ms');
 
     // `pushReplacement` is not enough in some edge cases
     // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
@@ -293,7 +305,7 @@ class _HomePageState extends State<HomePage> {
         CollectionLens? collection;
 
         final source = context.read<CollectionSource>();
-        if (source.initState != SourceInitializationState.none) {
+        if (source.scope != SourceScope.none) {
           final album = viewerEntry.directory;
           if (album != null) {
             // wait for collection to pass the `loading` state
@@ -361,6 +373,18 @@ class _HomePageState extends State<HomePage> {
         return buildRoute((context) => const AlbumListPage());
       case TagListPage.routeName:
         return buildRoute((context) => const TagListPage());
+      case MapPage.routeName:
+        return buildRoute((context) {
+          final mapCollection = CollectionLens(
+            source: source,
+            filters: {LocationFilter.located},
+          );
+          return MapPage(
+            collection: mapCollection,
+            initialLocation: _initialLocationZoom?.$1,
+            initialZoom: _initialLocationZoom?.$2,
+          );
+        });
       case ExplorerPage.routeName:
         final path = _initialExplorerPath ?? settings.homeCustomExplorerPath;
         return buildRoute((context) => ExplorerPage(path: path));

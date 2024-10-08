@@ -10,6 +10,7 @@ import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_video/aves_video.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 
 class VideoProgressBar extends StatefulWidget {
@@ -44,12 +45,6 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   Widget build(BuildContext context) {
     final blurred = settings.enableBlurEffect;
     final theme = Theme.of(context);
-    final textStyle = TextStyle(
-      shadows: theme.isDark ? AStyles.embossShadows : null,
-    );
-    const strutStyle = StrutStyle(
-      forceStrutHeight: true,
-    );
     return SizeTransition(
       sizeFactor: widget.scale,
       child: BlurredRRect.all(
@@ -106,18 +101,10 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                                       builder: (context, snapshot) {
                                         // do not use stream snapshot because it is obsolete when switching between videos
                                         final position = controller?.currentPosition.floor() ?? 0;
-                                        return Text(
-                                          formatFriendlyDuration(Duration(milliseconds: position)),
-                                          style: textStyle,
-                                          strutStyle: strutStyle,
-                                        );
+                                        return _buildText(formatFriendlyDuration(Duration(milliseconds: position)));
                                       }),
                                   const Spacer(),
-                                  Text(
-                                    formatFriendlyDuration(Duration(milliseconds: controller?.duration ?? 0)),
-                                    style: textStyle,
-                                    strutStyle: strutStyle,
-                                  ),
+                                  _buildText(formatFriendlyDuration(Duration(milliseconds: controller?.duration ?? 0))),
                                 ],
                               ),
                               ClipRRect(
@@ -132,7 +119,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                                         if (!progress.isFinite) progress = 0.0;
                                         return LinearProgressIndicator(
                                           value: progress,
-                                          backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(.2),
+                                          backgroundColor: theme.colorScheme.onSurface.withOpacity(.2),
                                         );
                                       }),
                                 ),
@@ -141,12 +128,8 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                                 children: [
                                   _buildSpeedIndicator(),
                                   _buildMuteIndicator(),
-                                  Text(
-                                    // fake text below to match the height of the text above and center the whole thing
-                                    '',
-                                    style: textStyle,
-                                    strutStyle: strutStyle,
-                                  ),
+                                  // fake text below to match the height of the text above and center the whole thing
+                                  _buildText(''),
                                 ],
                               ),
                             ],
@@ -160,6 +143,18 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildText(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,
+      ),
+      strutStyle: const StrutStyle(
+        forceStrutHeight: true,
       ),
     );
   }
@@ -185,7 +180,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
           return speed != 1
               ? Padding(
                   padding: const EdgeInsetsDirectional.only(end: 8),
-                  child: Text('x$speed'),
+                  child: _buildText('x$speed'),
                 )
               : const SizedBox();
         },
@@ -199,9 +194,10 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
           return isMuted
               ? Padding(
                   padding: const EdgeInsetsDirectional.only(end: 8),
-                  child: Icon(
+                  child: DecoratedIcon(
                     AIcons.mute,
                     size: textScaler.scale(16),
+                    shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,
                   ),
                 )
               : const SizedBox();

@@ -7,6 +7,7 @@ import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/poi.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
@@ -32,10 +33,11 @@ import 'package:provider/provider.dart';
 
 class GeoMap extends StatefulWidget {
   final AvesMapController? controller;
-  final Listenable? collectionListenable;
-  final List<AvesEntry> entries;
+  final CollectionLens? collection;
+  final List<AvesEntry>? entries;
   final Size availableSize;
   final LatLng? initialCenter;
+  final double? initialZoom;
   final ValueNotifier<bool> isAnimatingNotifier;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
   final ValueNotifier<double>? overlayOpacityNotifier;
@@ -58,10 +60,11 @@ class GeoMap extends StatefulWidget {
   const GeoMap({
     super.key,
     this.controller,
-    this.collectionListenable,
-    required this.entries,
+    this.collection,
+    this.entries,
     required this.availableSize,
     this.initialCenter,
+    this.initialZoom,
     required this.isAnimatingNotifier,
     this.dotLocationNotifier,
     this.overlayOpacityNotifier,
@@ -71,7 +74,7 @@ class GeoMap extends StatefulWidget {
     this.onMarkerTap,
     this.onMarkerLongPress,
     this.openMapPage,
-  });
+  }) : assert(collection != null || entries != null);
 
   @override
   State<GeoMap> createState() => _GeoMapState();
@@ -90,7 +93,7 @@ class _GeoMapState extends State<GeoMap> {
   Fluster<GeoEntry<AvesEntry>>? _slowMarkerCluster;
   final AChangeNotifier _clusterChangeNotifier = AChangeNotifier();
 
-  List<AvesEntry> get entries => widget.entries;
+  List<AvesEntry> get entries => widget.collection?.sortedEntries ?? widget.entries ?? [];
 
   // cap initial zoom to avoid a zoom change
   // when toggling overlay on Google map initial state
@@ -119,7 +122,7 @@ class _GeoMapState extends State<GeoMap> {
   }
 
   void _registerWidget(GeoMap widget) {
-    widget.collectionListenable?.addListener(_onCollectionChanged);
+    widget.collection?.addListener(_onCollectionChanged);
     final controller = widget.controller;
     if (controller != null) {
       _subscriptions.add(controller.markerLocationChanges.listen((event) => _onCollectionChanged()));
@@ -127,7 +130,7 @@ class _GeoMapState extends State<GeoMap> {
   }
 
   void _unregisterWidget(GeoMap widget) {
-    widget.collectionListenable?.removeListener(_onCollectionChanged);
+    widget.collection?.removeListener(_onCollectionChanged);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -185,6 +188,8 @@ class _GeoMapState extends State<GeoMap> {
                 onMarkerTap: _onMarkerTap,
                 onMarkerLongPress: onMarkerLongPress,
               );
+            case EntryMapStyle.osmLiberty:
+            case EntryMapStyle.openTopoMap:
             case EntryMapStyle.osmHot:
             case EntryMapStyle.stamenWatercolor:
               child = EntryLeafletMap<AvesEntry>(
@@ -311,6 +316,8 @@ class _GeoMapState extends State<GeoMap> {
         );
       }
     }
+
+    final initialZoom = widget.initialZoom ?? settings.infoMapZoom;
     if (bounds == null) {
       LatLng? centerToSave;
       final initialCenter = widget.initialCenter;
@@ -318,7 +325,7 @@ class _GeoMapState extends State<GeoMap> {
         // fit map for specified center and user zoom
         bounds = ZoomedBounds.fromPoints(
           points: {initialCenter},
-          collocationZoom: settings.infoMapZoom,
+          collocationZoom: initialZoom,
         );
         centerToSave = initialCenter;
       } else {
@@ -343,7 +350,7 @@ class _GeoMapState extends State<GeoMap> {
       }
       bounds = ZoomedBounds.fromPoints(
         points: {center},
-        collocationZoom: settings.infoMapZoom,
+        collocationZoom: initialZoom,
       );
     }
 

@@ -10,18 +10,6 @@ plugins {
 
 def packageName = "deckers.thibault.aves"
 
-// Flutter properties
-
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
-}
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-
 // Keys
 
 def keystoreProperties = new Properties()
@@ -53,22 +41,12 @@ android {
         targetCompatibility JavaVersion.VERSION_21
     }
 
-    lint {
-        checkAllWarnings true
-        warningsAsErrors true
-        disable 'InvalidPackage'
-    }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
     defaultConfig {
         applicationId packageName
         minSdk flutter.minSdkVersion
         targetSdk 35
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode flutter.versionCode
+        versionName flutter.versionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>"]
         multiDexEnabled true
     }
@@ -189,7 +167,7 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.lifecycle:lifecycle-process:2.8.5'
+    implementation 'androidx.lifecycle:lifecycle-process:2.8.6'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'

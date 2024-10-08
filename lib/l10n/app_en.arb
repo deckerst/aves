@@ -238,6 +238,8 @@
   "mapStyleGoogleNormal": "Google Maps",
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
   "mapStyleGoogleTerrain": "Google Maps (Terrain)",
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "mapStyleOpenTopoMap": "OpenTopoMap",
   "mapStyleOsmHot": "Humanitarian OSM",
   "mapStyleStamenWatercolor": "Stamen Watercolor",
 
@@ -944,13 +946,8 @@
   "settingsHiddenItemsTile": "Hidden items",
   "settingsHiddenItemsPageTitle": "Hidden Items",
 
-  "settingsHiddenItemsTabFilters": "Hidden Filters",
   "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
   "settingsHiddenFiltersEmpty": "No hidden filters",
-
-  "settingsHiddenItemsTabPaths": "Hidden Paths",
-  "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
-  "addPathTooltip": "Add path",
 
   "settingsStorageAccessTile": "Storage access",
   "settingsStorageAccessPageTitle": "Storage Access",
@@ -1032,8 +1029,11 @@
   "mapZoomInTooltip": "Zoom in",
   "mapZoomOutTooltip": "Zoom out",
   "mapPointNorthUpTooltip": "Point north up",
-  "mapAttributionOsmHot": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
-  "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionOsmData": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors",
+  "mapAttributionOsmLiberty": "Tiles by [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)",
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles by [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "mapAttributionOsmHot": "Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionStamen": "Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "openMapPageTooltip": "View on Map page",
   "mapEmptyRegion": "No images in this region",
 

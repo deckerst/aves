@@ -7,6 +7,7 @@ class IntentActions {
   static const search = 'search';
   static const setWallpaper = 'set_wallpaper';
   static const view = 'view';
+  static const viewGeo = 'view_geo';
   static const widgetOpen = 'widget_open';
   static const widgetSettings = 'widget_settings';
 }
@@ -20,7 +21,6 @@ class IntentDataKeys {
   static const mimeType = 'mimeType';
   static const page = 'page';
   static const query = 'query';
-  static const safeMode = 'safeMode';
   static const secureUris = 'secureUris';
   static const uri = 'uri';
   static const widgetId = 'widgetId';

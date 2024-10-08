@@ -8,6 +8,7 @@ import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/locales.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -56,12 +57,49 @@ class AppDrawer extends StatefulWidget {
   }
 }
 
-class _AppDrawerState extends State<AppDrawer> {
+class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
   // using the default controller conflicts
   // with bottom nav bar primary scroll monitoring
   final ScrollController _scrollController = ScrollController();
+  late Future<List<dynamic>> _profileSwitchFuture;
+  bool _profileSwitchPermissionRequested = false;
 
   CollectionLens? get currentCollection => widget.currentCollection;
+
+  @override
+  void initState() {
+    super.initState();
+    _initProfileSwitchFuture();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if (_profileSwitchPermissionRequested) {
+          _profileSwitchPermissionRequested = false;
+          _initProfileSwitchFuture();
+          setState(() {});
+        }
+      default:
+        break;
+    }
+  }
+
+  void _initProfileSwitchFuture() {
+    _profileSwitchFuture = Future.wait([
+      appProfileService.canRequestInteractAcrossProfiles(),
+      appProfileService.canInteractAcrossProfiles(),
+      appProfileService.getProfileSwitchingLabel(),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,44 +171,44 @@ class _AppDrawerState extends State<AppDrawer> {
       color: colorScheme.primary,
       child: SafeArea(
         bottom: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 6),
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Wrap(
-                spacing: 16,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  const AvesLogo(size: 48),
-                  OutlinedText(
-                    textSpans: [
-                      TextSpan(
-                        text: l10n.appName,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 38,
-                          fontWeight: FontWeight.w300,
-                          letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
-                          fontFeatures: const [FontFeature.enable('smcp')],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        child: OutlinedButtonTheme(
+          data: OutlinedButtonThemeData(
+            style: ButtonStyle(
+              foregroundColor: WidgetStateProperty.all<Color>(onPrimary),
+              overlayColor: WidgetStateProperty.all<Color>(onPrimary.withOpacity(.12)),
+              side: WidgetStateProperty.all<BorderSide>(BorderSide(width: 1, color: onPrimary.withOpacity(.24))),
             ),
-            const SizedBox(height: 8),
-            OutlinedButtonTheme(
-              data: OutlinedButtonThemeData(
-                style: ButtonStyle(
-                  foregroundColor: WidgetStateProperty.all<Color>(onPrimary),
-                  overlayColor: WidgetStateProperty.all<Color>(onPrimary.withOpacity(.12)),
-                  side: WidgetStateProperty.all<BorderSide>(BorderSide(width: 1, color: onPrimary.withOpacity(.24))),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 6),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Wrap(
+                  spacing: 16,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    const AvesLogo(size: 48),
+                    OutlinedText(
+                      textSpans: [
+                        TextSpan(
+                          text: l10n.appName,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 38,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
+                            fontFeatures: const [FontFeature.enable('smcp')],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              child: Wrap(
+              const SizedBox(height: 8),
+              Wrap(
                 spacing: 8,
                 children: [
                   OutlinedButton.icon(
@@ -191,9 +229,34 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 8),
-          ],
+              FutureBuilder<List<dynamic>>(
+                future: _profileSwitchFuture,
+                builder: (context, snapshot) {
+                  final flags = snapshot.data;
+                  if (flags == null) return const SizedBox();
+
+                  final [
+                    bool canRequestInteractAcrossProfiles,
+                    bool canSwitchProfile,
+                    String profileSwitchingLabel,
+                  ] = flags;
+                  if ((!canRequestInteractAcrossProfiles && !canSwitchProfile) || profileSwitchingLabel.isEmpty) return const SizedBox();
+
+                  return OutlinedButton(
+                    onPressed: () async {
+                      if (canSwitchProfile) {
+                        await appProfileService.switchProfile();
+                      } else {
+                        _profileSwitchPermissionRequested = await appProfileService.requestInteractAcrossProfiles();
+                      }
+                    },
+                    child: Text(profileSwitchingLabel),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
     );

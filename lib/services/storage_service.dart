@@ -24,7 +24,9 @@ abstract class StorageService {
 
   Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths);
 
-  Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories();
+  // returns directories with restricted access,
+  // with the relative part in lowercase, for case-insensitive comparison
+  Future<Set<VolumeRelativeDirectory>> getRestrictedDirectoriesLowerCase();
 
   Future<void> revokeDirectoryAccess(String path);
 
@@ -155,11 +157,17 @@ class PlatformStorageService implements StorageService {
   }
 
   @override
-  Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories() async {
+  Future<Set<VolumeRelativeDirectory>> getRestrictedDirectoriesLowerCase() async {
     try {
       final result = await _platform.invokeMethod('getRestrictedDirectories');
       if (result != null) {
-        return (result as List).cast<Map>().map(VolumeRelativeDirectory.fromMap).toSet();
+        return (result as List)
+            .cast<Map>()
+            .map(VolumeRelativeDirectory.fromMap)
+            .map((dir) => dir.copyWith(
+                  relativeDir: dir.relativeDir.toLowerCase(),
+                ))
+            .toSet();
       }
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -176,7 +184,6 @@ class PlatformStorageService implements StorageService {
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
-    return;
   }
 
   // returns number of deleted directories

@@ -895,7 +895,7 @@
   "@chipActionGoToExplorerPage": {},
   "videoRepeatActionSetEnd": "Ange slut",
   "@videoRepeatActionSetEnd": {},
-  "moveUndatedConfirmationDialogMessage": "Registrera datum på filerna innan vi går vidare?",
+  "moveUndatedConfirmationDialogMessage": "Registrera datum för filerna innan vi går vidare?",
   "@moveUndatedConfirmationDialogMessage": {},
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
@@ -923,7 +923,7 @@
   "@aboutLicensesDartPackagesSectionTitle": {},
   "collectionActionShowTitleSearch": "Visa titelfilter",
   "@collectionActionShowTitleSearch": {},
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytta denna fil tillpapperskorgen?} other{Flytta dessa {count} filer till papperskorgen?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytta denna fil till papperskorgen?} other{Flytta dessa {count} filer till papperskorgen?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -941,7 +941,7 @@
   "@aboutLicensesFlutterPackagesSectionTitle": {},
   "editEntryDialogTargetFieldsHeader": "Fällt att modifiera",
   "@editEntryDialogTargetFieldsHeader": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort detta album samt filen som den innehåller?} other{Ta bort detta album och de {count} filer som den innehåller?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort detta album samt det objektet som den innehåller?} other{Ta bort detta album och de {count} objekt som den innehåller?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -949,7 +949,7 @@
       }
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort dessa album samt den fil som dem innehåller?} other{Ta bort dessa album samt de {count} filer som dem innehåller?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort dessa album samt det objekt som de innehåller?} other{Ta bort dessa album samt de {count} objekt som de innehåller?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -1117,10 +1117,6 @@
   "@settingsThumbnailShowTagIcon": {},
   "settingsThumbnailShowFavouriteIcon": "Visa favoritikon",
   "@settingsThumbnailShowFavouriteIcon": {},
-  "settingsHiddenItemsTabPaths": "Dolda kataloger",
-  "@settingsHiddenItemsTabPaths": {},
-  "settingsHiddenPathsBanner": "Foton och filmer i dessa kataloger, samt i alla underkataloger till dessa, kommer inte att visas i din samling.",
-  "@settingsHiddenPathsBanner": {},
   "settingsDisplayRefreshRateModeDialogTitle": "Uppdateringshastighet",
   "@settingsDisplayRefreshRateModeDialogTitle": {},
   "settingsLanguageTile": "Språk",
@@ -1463,12 +1459,8 @@
   "@settingsHiddenItemsTile": {},
   "settingsHiddenItemsPageTitle": "Gömda Objekt",
   "@settingsHiddenItemsPageTitle": {},
-  "settingsHiddenItemsTabFilters": "Gömda Filter",
-  "@settingsHiddenItemsTabFilters": {},
   "settingsHiddenFiltersEmpty": "Inga dolda filter",
   "@settingsHiddenFiltersEmpty": {},
-  "addPathTooltip": "Lägg till sökväg",
-  "@addPathTooltip": {},
   "settingsRemoveAnimationsTile": "Inaktivera animationer",
   "@settingsRemoveAnimationsTile": {},
   "settingsTimeToTakeActionTile": "Tid innan åtgärd vidtages",
@@ -1559,9 +1551,9 @@
   "@mapStyleDialogTitle": {},
   "mapStyleTooltip": "Välj stil på karta",
   "@mapStyleTooltip": {},
-  "mapAttributionOsmHot": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Brickor av [HOT](https://www.hotosm.org/) • Tillhandahållen av [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "Brickor av [HOT](https://www.hotosm.org/) • Tillhandahållen av [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
-  "mapAttributionStamen": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare • Brickor av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
+  "mapAttributionStamen": "Brickor av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
   "tagEditorSectionPlaceholders": "Platshållare",
   "@tagEditorSectionPlaceholders": {},
@@ -1569,6 +1561,16 @@
   "@tagEditorDiscardDialogMessage": {},
   "tagPlaceholderCountry": "Land",
   "@tagPlaceholderCountry": {},
-  "tagPlaceholderState": "Stat",
-  "@tagPlaceholderState": {}
+  "tagPlaceholderState": "Delstat",
+  "@tagPlaceholderState": {},
+  "mapStyleOpenTopoMap": "OpenTopoMap",
+  "@mapStyleOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Brickor av [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Tillhandahållen av [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {},
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Brickor av [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapAttributionOsmData": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare",
+  "@mapAttributionOsmData": {}
 }
