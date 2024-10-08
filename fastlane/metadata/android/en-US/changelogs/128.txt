@@ -1,5 +1,0 @@
-In v1.11.9:
-- peruse more options to tag or move via quick actions
-- read long descriptions right from the overlay
-- sort videos by duration
-Full changelog available on GitHub

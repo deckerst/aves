@@ -1,4 +1,0 @@
-In v1.11.5:
-- explore your collection with the... explorer
-- convert your motion photos to stills in bulk
-Full changelog available on GitHub
