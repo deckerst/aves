@@ -895,7 +895,7 @@
   "@chipActionGoToExplorerPage": {},
   "videoRepeatActionSetEnd": "Ange slut",
   "@videoRepeatActionSetEnd": {},
-  "moveUndatedConfirmationDialogMessage": "Registrera datum på filerna innan vi går vidare?",
+  "moveUndatedConfirmationDialogMessage": "Registrera datum för filerna innan vi går vidare?",
   "@moveUndatedConfirmationDialogMessage": {},
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
@@ -923,7 +923,7 @@
   "@aboutLicensesDartPackagesSectionTitle": {},
   "collectionActionShowTitleSearch": "Visa titelfilter",
   "@collectionActionShowTitleSearch": {},
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytta denna fil tillpapperskorgen?} other{Flytta dessa {count} filer till papperskorgen?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytta denna fil till papperskorgen?} other{Flytta dessa {count} filer till papperskorgen?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -941,7 +941,7 @@
   "@aboutLicensesFlutterPackagesSectionTitle": {},
   "editEntryDialogTargetFieldsHeader": "Fällt att modifiera",
   "@editEntryDialogTargetFieldsHeader": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort detta album samt filen som den innehåller?} other{Ta bort detta album och de {count} filer som den innehåller?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort detta album samt det objektet som den innehåller?} other{Ta bort detta album och de {count} objekt som den innehåller?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -949,7 +949,7 @@
       }
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort dessa album samt den fil som dem innehåller?} other{Ta bort dessa album samt de {count} filer som dem innehåller?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ta bort dessa album samt det objekt som de innehåller?} other{Ta bort dessa album samt de {count} objekt som de innehåller?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -1561,7 +1561,7 @@
   "@tagEditorDiscardDialogMessage": {},
   "tagPlaceholderCountry": "Land",
   "@tagPlaceholderCountry": {},
-  "tagPlaceholderState": "Stat",
+  "tagPlaceholderState": "Delstat",
   "@tagPlaceholderState": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
