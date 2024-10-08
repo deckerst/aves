@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.15"></a>[v1.11.15] - 2024-10-09
+
+### Changed
+
+- Enterprise: do not request `INTERACT_ACROSS_PROFILES` permission (Play Store compatibility)
+
 ## <a id="v1.11.14"></a>[v1.11.14] - 2024-10-09
 
 ### Added
