@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- case-insensitive access to restricted directories
+
 ## <a id="v1.11.15"></a>[v1.11.15] - 2024-10-09
 
 ### Changed
