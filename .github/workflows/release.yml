@@ -13,7 +13,9 @@ jobs:
     name: GitHub release
     runs-on: ubuntu-latest
     permissions:
+      attestations: write
       contents: write
+      id-token: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
@@ -71,6 +73,11 @@ jobs:
           AVES_KEY_ALIAS: ${{ secrets.AVES_KEY_ALIAS }}
           AVES_KEY_PASSWORD: ${{ secrets.AVES_KEY_PASSWORD }}
           AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: 'outputs/*'
 
       - name: Create GitHub release
         uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5 # v1.14.0
