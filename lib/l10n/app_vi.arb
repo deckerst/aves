@@ -1529,7 +1529,7 @@
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Khám phá",
   "@explorerPageTitle": {},
-  "mapAttributionOsmData": "Dữ liệu bản đồ © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors",
+  "mapAttributionOsmData": "Dữ liệu bản đồ © [OpenStreetMap](https://www.openstreetmap.org/copyright) đóng góp",
   "@mapAttributionOsmData": {},
   "setHomeCustom": "Tùy chỉnh",
   "@setHomeCustom": {},

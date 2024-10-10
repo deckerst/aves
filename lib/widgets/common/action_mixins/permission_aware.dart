@@ -19,15 +19,15 @@ mixin PermissionAwareMixin {
   Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> storageDirs, {Set<AvesEntry>? entries}) async {
     final restrictedDirsLowerCase = await storageService.getRestrictedDirectoriesLowerCase();
     while (true) {
-      final dirs = await storageService.getInaccessibleDirectories(storageDirs);
+      final inaccessibleDirs = await storageService.getInaccessibleDirectories(storageDirs);
 
-      final restrictedInaccessibleDirs = dirs
+      final restrictedInaccessibleDirsLowerCase = inaccessibleDirs
           .map((dir) => dir.copyWith(
                 relativeDir: dir.relativeDir.toLowerCase(),
               ))
           .where(restrictedDirsLowerCase.contains)
           .toSet();
-      if (restrictedInaccessibleDirs.isNotEmpty) {
+      if (restrictedInaccessibleDirsLowerCase.isNotEmpty) {
         if (entries != null && await storageService.canRequestMediaFileBulkAccess()) {
           // request media file access for items in restricted directories
           final uris = <String>[], mimeTypes = <String>[];
@@ -35,27 +35,27 @@ mixin PermissionAwareMixin {
             final dirPath = entry.directory;
             if (dirPath == null) return false;
             final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
-            return restrictedInaccessibleDirs.contains(dir?.copyWith(relativeDir: dir.relativeDir.toLowerCase()));
+            return restrictedInaccessibleDirsLowerCase.contains(dir?.copyWith(relativeDir: dir.relativeDir.toLowerCase()));
           }).forEach((entry) {
             uris.add(entry.uri);
             mimeTypes.add(entry.mimeType);
           });
           final granted = await storageService.requestMediaFileAccess(uris, mimeTypes);
           if (!granted) return false;
-        } else if (entries == null && await storageService.canInsertMedia(restrictedInaccessibleDirs)) {
+        } else if (entries == null && await storageService.canInsertMedia(restrictedInaccessibleDirsLowerCase)) {
           // insertion in restricted directories
         } else {
           // cannot proceed further
-          await showRestrictedDirectoryDialog(context, restrictedInaccessibleDirs.first);
+          await showRestrictedDirectoryDialog(context, restrictedInaccessibleDirsLowerCase.first);
           return false;
         }
         // clear restricted directories
-        dirs.removeAll(restrictedInaccessibleDirs);
+        inaccessibleDirs.removeWhere((dir) => restrictedInaccessibleDirsLowerCase.contains(dir.copyWith(relativeDir: dir.relativeDir.toLowerCase())));
       }
 
-      if (dirs.isEmpty) return true;
+      if (inaccessibleDirs.isEmpty) return true;
 
-      final dir = dirs.first;
+      final dir = inaccessibleDirs.first;
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) {

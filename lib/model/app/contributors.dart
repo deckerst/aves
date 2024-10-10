@@ -103,6 +103,7 @@ class Contributors {
     Contributor('Leo Aaua Felix', 'g00g7el@gmail.com'),
     Contributor('-J-', 'heyj0e@tuta.io'),
     Contributor('bittin1ddc447d824349b2', 'bittin@reimu.nl'),
+    Contributor('splice11', 'trenchedgrandpa@protonmail.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese

@@ -1384,5 +1384,13 @@
   "chipActionGoToExplorerPage": "Tampilkan di Explorer",
   "@chipActionGoToExplorerPage": {},
   "mapAttributionOsmData": "Data peta © [OpenStreetMap](https://www.openstreetmap.org/copyright) kontributor",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "mapStyleOpenTopoMap": "OpenTopoMap",
+  "@mapStyleOpenTopoMap": {},
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Ubin oleh [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "Ubin oleh [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Disediakan oleh [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }

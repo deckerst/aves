@@ -483,6 +483,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.collectionBurstPatternsKey:
             case SettingKeys.pinnedFiltersKey:
             case SettingKeys.hiddenFiltersKey:
+            case SettingKeys.deactivatedHiddenFiltersKey:
             case SettingKeys.collectionBrowsingQuickActionsKey:
             case SettingKeys.collectionSelectionQuickActionsKey:
             case SettingKeys.viewerQuickActionsKey:
