@@ -50,7 +50,7 @@ class AppDrawer extends StatefulWidget {
     final source = context.read<CollectionSource>();
     final specialAlbums = source.rawAlbums.where((album) {
       final type = androidFileUtils.getAlbumType(album);
-      return [AlbumType.camera, AlbumType.screenshots].contains(type);
+      return [AlbumType.camera, AlbumType.download, AlbumType.screenshots].contains(type);
     }).toList()
       ..sort(source.compareAlbumsByName);
     return specialAlbums;
