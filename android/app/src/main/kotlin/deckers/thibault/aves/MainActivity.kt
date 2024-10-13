@@ -432,33 +432,49 @@ open class MainActivity : FlutterFragmentActivity() {
 
     open fun submitPickedItems(call: MethodCall, result: MethodChannel.Result) {
         val pickedUris = call.argument<List<String>>("uris")
-        try {
-            if (!pickedUris.isNullOrEmpty()) {
-                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this@MainActivity, Uri.parse(uriString)) }
-                val intent = Intent().apply {
-                    val firstUri = toUri(pickedUris.first())
-                    if (pickedUris.size == 1) {
-                        data = firstUri
-                    } else {
-                        clipData = ClipData.newUri(contentResolver, null, firstUri).apply {
-                            pickedUris.drop(1).forEach {
-                                addItem(ClipData.Item(toUri(it)))
-                            }
-                        }
-                    }
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-                setResult(RESULT_OK, intent)
-            } else {
-                setResult(RESULT_CANCELED)
-            }
+        if (pickedUris.isNullOrEmpty()) {
+            setResult(RESULT_CANCELED)
             // move code triggering `Binder` call off the main thread
             defaultScope.launch { finish() }
-        } catch (e: Exception) {
-            if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
-                result.error("submitPickedItems-large", "transaction too large with ${pickedUris?.size} URIs", e)
+            return
+        }
+
+        val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this@MainActivity, Uri.parse(uriString)) }
+        val intent = Intent().apply {
+            val firstUri = toUri(pickedUris.first())
+            if (pickedUris.size == 1) {
+                data = firstUri
             } else {
-                result.error("submitPickedItems-exception", "failed to pick ${pickedUris?.size} URIs", e)
+                clipData = ClipData.newUri(contentResolver, null, firstUri).apply {
+                    pickedUris.drop(1).forEach {
+                        addItem(ClipData.Item(toUri(it)))
+                    }
+                }
+            }
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        }
+        // move code triggering `Binder` call off the main thread
+        defaultScope.launch {
+            submitPickedItemsIntent(intent, result)
+        }
+    }
+
+    private fun submitPickedItemsIntent(intent: Intent, result: MethodChannel.Result) {
+        try {
+            setResult(RESULT_OK, intent)
+            finish()
+        } catch (e: Exception) {
+            if (e is SecurityException && intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
+                // in some environments, providing the write flag yields a `SecurityException`:
+                // "UID XXXX does not have permission to content://XXXX"
+                // so we retry without it
+                Log.i(LOG_TAG, "retry submitting picked items without FLAG_GRANT_WRITE_URI_PERMISSION")
+                intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
+                submitPickedItemsIntent(intent, result)
+            } else if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
+                result.error("submitPickedItems-large", "transaction too large with ${intent.clipData?.itemCount} URIs", e)
+            } else {
+                result.error("submitPickedItems-exception", "failed to pick ${intent.clipData?.itemCount} URIs", e)
             }
         }
     }
