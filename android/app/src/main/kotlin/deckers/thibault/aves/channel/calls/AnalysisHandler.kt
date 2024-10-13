@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import android.app.ActivityManager
 import android.content.Context
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -49,6 +50,17 @@ class AnalysisHandler(private val activity: FlutterFragmentActivity, private val
         if (force == null) {
             result.error("startAnalysis-args", "missing arguments", null)
             return
+        }
+
+        val activityManager: ActivityManager = activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val runningAppProcesses = activityManager.runningAppProcesses
+        if (runningAppProcesses != null) {
+            val importance = runningAppProcesses[0].importance
+            if (importance < ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                // the app is in the background
+                result.error("startAnalysis-background", "app is in the background (process importance=$importance)", null)
+                return
+            }
         }
 
         // can be null or empty
