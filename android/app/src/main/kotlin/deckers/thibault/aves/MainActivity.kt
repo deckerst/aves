@@ -370,7 +370,8 @@ open class MainActivity : FlutterFragmentActivity() {
                 return hashMapOf(
                     INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_ITEMS,
                     INTENT_DATA_KEY_MIME_TYPE to intent.type,
-                    INTENT_DATA_KEY_ALLOW_MULTIPLE to (intent.extras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE) ?: false),
+                    INTENT_DATA_KEY_MIME_TYPES to intent.getStringArrayExtra(Intent.EXTRA_MIME_TYPES)?.toList(),
+                    INTENT_DATA_KEY_ALLOW_MULTIPLE to intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false),
                 )
             }
 
@@ -568,6 +569,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_EXPLORER_PATH = "explorerPath"
         const val INTENT_DATA_KEY_FILTERS = "filters"
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
+        const val INTENT_DATA_KEY_MIME_TYPES = "mimeTypes"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_QUERY = "query"
         const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
