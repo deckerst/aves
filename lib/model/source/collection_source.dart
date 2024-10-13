@@ -495,6 +495,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           }
         }
       }
+      // TODO TLAD check whether app is in foreground before starting service
       if (startAnalysisService) {
         await AnalysisService.startService(
           force: force,
