@@ -79,7 +79,7 @@ class MediaStoreSource extends CollectionSource {
     String? directory,
     required bool loadTopEntriesFirst,
   }) async {
-    unawaited(reportService.log('$runtimeType load start'));
+    unawaited(reportService.log('$runtimeType load (known) start'));
     final stopwatch = Stopwatch()..start();
     state = SourceState.loading;
     clearEntries();
@@ -146,20 +146,29 @@ class MediaStoreSource extends CollectionSource {
       await localMediaDb.removeIds(removedEntries.map((entry) => entry.id).toSet());
     }
 
-    // verify paths because some apps move files without updating their `last modified date`
-    debugPrint('$runtimeType load ${stopwatch.elapsed} check obsolete paths');
-    final knownPathByContentId = Map.fromEntries(knownLiveEntries.map((entry) => MapEntry(entry.contentId, entry.path)));
-    final movedContentIds = (await mediaStoreService.checkObsoletePaths(knownPathByContentId)).toSet();
-    movedContentIds.forEach((contentId) {
-      // make obsolete by resetting its modified date
-      knownDateByContentId[contentId] = 0;
-    });
+    unawaited(reportService.log('$runtimeType load (known) done in ${stopwatch.elapsed.inSeconds}s for ${knownEntries.length} known, ${removedEntries.length} removed'));
 
-    if (!_canAnalyze) {
+    if (_canAnalyze) {
       // it can discover new entries only if it can analyze them
+      await _loadNewEntries(
+        analysisController: analysisController,
+        directory: directory,
+        knownLiveEntries: knownLiveEntries,
+        knownDateByContentId: knownDateByContentId,
+      );
+    } else {
       state = SourceState.ready;
-      return;
     }
+  }
+
+  Future<void> _loadNewEntries({
+    required AnalysisController? analysisController,
+    required String? directory,
+    required Set<AvesEntry> knownLiveEntries,
+    required Map<int?, int?> knownDateByContentId,
+  }) async {
+    unawaited(reportService.log('$runtimeType load (new) start'));
+    final stopwatch = Stopwatch()..start();
 
     // items to add to the collection
     final newEntries = <AvesEntry>{};
@@ -170,8 +179,18 @@ class MediaStoreSource extends CollectionSource {
       newEntries.addAll(await recoverUntrackedTrashItems());
     }
 
+    // verify paths because some apps move files without updating their `last modified date`
+    debugPrint('$runtimeType load ${stopwatch.elapsed} check obsolete paths');
+    final knownPathByContentId = Map.fromEntries(knownLiveEntries.map((entry) => MapEntry(entry.contentId, entry.path)));
+    final movedContentIds = (await mediaStoreService.checkObsoletePaths(knownPathByContentId)).toSet();
+    movedContentIds.forEach((contentId) {
+      // make obsolete by resetting its modified date
+      knownDateByContentId[contentId] = 0;
+    });
+
     // fetch new & modified entries
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch new entries');
+    final knownContentIds = knownDateByContentId.keys.toSet();
     mediaStoreService.getEntries(knownDateByContentId, directory: directory).listen(
       (entry) {
         // when discovering modified entry with known content ID,
@@ -220,7 +239,7 @@ class MediaStoreSource extends CollectionSource {
         // so we manually notify change for potential home screen filters
         notifyAlbumsChanged();
 
-        unawaited(reportService.log('$runtimeType load done in ${stopwatch.elapsed.inSeconds}s for ${knownEntries.length} known, ${newEntries.length} new, ${removedEntries.length} removed'));
+        unawaited(reportService.log('$runtimeType load (new) done in ${stopwatch.elapsed.inSeconds}s for ${newEntries.length} new entries'));
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
