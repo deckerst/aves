@@ -1542,5 +1542,13 @@
   "sortOrderLongestFirst": "Спершу найдовше",
   "@sortOrderLongestFirst": {},
   "mapAttributionOsmData": "Картографічні дані © [OpenStreetMap](https://www.openstreetmap.org/copyright) помічники",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "mapStyleOpenTopoMap": "OpenTopoMap",
+  "@mapStyleOpenTopoMap": {},
+  "mapAttributionOsmLiberty": "Плитки від [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Розміщено на [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {},
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Плитки від [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {}
 }
