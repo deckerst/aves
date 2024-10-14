@@ -4,7 +4,7 @@ version '1.0-SNAPSHOT'
 buildscript {
     ext {
         kotlin_version = '1.9.24'
-        agp_version = '8.6.1'
+        agp_version = '8.7.0'
     }
 
     repositories {
@@ -28,14 +28,13 @@ allprojects {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+kotlin {
+    jvmToolchain 17
+}
+
 android {
     namespace 'deckers.thibault.aves.aves_screen_state'
     compileSdk 35
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
-    }
 
     lintOptions {
         checkAllWarnings true
