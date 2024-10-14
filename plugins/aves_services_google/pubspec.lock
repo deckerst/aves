@@ -89,10 +89,10 @@ packages:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: a7fd703482b391a87d60b6061d04dfdeab07826b96f9abd8f5ed98068acc0074
+      sha256: db03b2d2a3fa466a4627709e1db58692c3f7f658e36a5942d342d86efedc4091
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.2"
+    version: "11.0.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -211,18 +211,18 @@ packages:
     dependency: "direct main"
     description:
       name: google_maps_flutter_android
-      sha256: a591ff8d0816436e6a4d9f32bbdf10ebb30bb26f72f6db2a51ddb2426ff7d9ec
+      sha256: "6caec25edb8014ec7d503babc597794de2d4c1baf3e3d20b57c41bd3e439b916"
       url: "https://pub.dev"
     source: hosted
-    version: "2.14.8"
+    version: "2.14.10"
   google_maps_flutter_ios:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
-      sha256: "3a484846fc56f15e47e3de1f5ea80a7ff2b31721d2faa88f390f3b3cf580c953"
+      sha256: "753ebf6a2bc24c5eba8e714c901345d858abd9694b1f878c43614fd3f06b8060"
       url: "https://pub.dev"
     source: hosted
-    version: "2.13.0"
+    version: "2.13.1"
   google_maps_flutter_platform_interface:
     dependency: "direct main"
     description:
@@ -456,10 +456,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "4d45dc9069dba4619dc0ebd93c7cec5e66d8482cb625a370ac806dcc8165f2ec"
+      sha256: e5c39a90447e7c81cfec14b041cdbd0d0916bd9ebbc7fe02ab69568be703b9bd
       url: "https://pub.dev"
     source: hosted
-    version: "5.5.5"
+    version: "5.6.0"
   win32_registry:
     dependency: transitive
     description:

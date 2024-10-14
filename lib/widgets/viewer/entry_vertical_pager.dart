@@ -331,7 +331,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       _systemBrightness?.then((system) {
         final value = lerpDouble(maximumBrightness, system, ((1 - page).abs() * 2).clamp(0, 1))!;
-        AvesApp.screenBrightness?.setScreenBrightness(value);
+        AvesApp.screenBrightness?.setApplicationScreenBrightness(value);
       });
     }
 
