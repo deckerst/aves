@@ -12,7 +12,7 @@ extension ExtraSwipeAction on SwipeAction {
   Future<double> get() {
     switch (this) {
       case SwipeAction.brightness:
-        return AvesApp.screenBrightness?.current ?? Future.value(1);
+        return AvesApp.screenBrightness?.application ?? Future.value(1);
       case SwipeAction.volume:
         return VolumeController().getVolume();
     }
@@ -21,7 +21,7 @@ extension ExtraSwipeAction on SwipeAction {
   Future<void> set(double value) async {
     switch (this) {
       case SwipeAction.brightness:
-        await AvesApp.screenBrightness?.setScreenBrightness(value);
+        await AvesApp.screenBrightness?.setApplicationScreenBrightness(value);
       case SwipeAction.volume:
         VolumeController().setVolume(value, showSystemUI: false);
     }

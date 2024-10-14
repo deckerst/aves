@@ -564,9 +564,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       switch (settings.maxBrightness) {
         case MaxBrightness.never:
         case MaxBrightness.viewerOnly:
-          AvesApp.screenBrightness?.resetScreenBrightness();
+          AvesApp.screenBrightness?.resetApplicationScreenBrightness();
         case MaxBrightness.always:
-          AvesApp.screenBrightness?.setScreenBrightness(1);
+          AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
       }
     }
 
