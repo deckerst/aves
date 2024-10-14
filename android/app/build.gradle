@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id 'com.android.application'
     id 'com.google.devtools.ksp'
@@ -30,16 +28,15 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties["googleApiKey"] = System.getenv("AVES_GOOGLE_API_KEY") ?: "<NONE>"
 }
 
+kotlin {
+    jvmToolchain 17
+}
+
 android {
     namespace 'deckers.thibault.aves'
     compileSdk 35
     // cf https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
     ndkVersion '26.1.10909125'
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
-    }
 
     defaultConfig {
         applicationId packageName
@@ -131,15 +128,6 @@ android {
             }
         }
     }
-}
-
-tasks.withType(KotlinCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
-kotlin {
-    jvmToolchain(21)
 }
 
 flutter {
