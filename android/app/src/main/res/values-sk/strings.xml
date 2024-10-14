@@ -8,4 +8,5 @@
     <string name="analysis_notification_action_stop">Zastaviť</string>
     <string name="analysis_channel_name">Skenovanie médií</string>
     <string name="analysis_notification_default_title">Skenovanie média</string>
+    <string name="map_shortcut_short_label">Mapa</string>
 </resources>
