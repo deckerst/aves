@@ -148,7 +148,8 @@ class AIcons {
   static final setCover = MdiIcons.imageEditOutline;
   static const share = Icons.share_outlined;
   static const show = Icons.visibility_outlined;
-  static final showFullscreen = MdiIcons.arrowExpand;
+  static final showFullscreenArrows = MdiIcons.arrowExpand;
+  static const showFullscreenCorners = Icons.fullscreen_outlined;
   static const slideshow = Icons.slideshow_outlined;
   static const speed = Icons.speed_outlined;
   static const stats = Icons.donut_small_outlined;

@@ -153,6 +153,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     _selectedIndexNotifier.addListener(_onThumbnailIndexChanged);
     Future.delayed(ADurations.pageTransitionLoose * timeDilation + const Duration(seconds: 1), () {
+      if (!mounted) return;
       final regionEntries = regionCollection?.sortedEntries ?? [];
       final initialEntry = widget.initialEntry ?? regionEntries.firstOrNull;
       if (initialEntry != null) {
@@ -268,6 +269,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       showCoordinateFilter: true,
       navigationButton: canPop ? MapNavigationButton.back : MapNavigationButton.close,
       scale: _overlayScale,
+      attributionPadding: const EdgeInsets.symmetric(horizontal: 8),
       child: GeoMap(
         // key is expected by test driver
         key: const Key('map_view'),

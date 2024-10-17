@@ -52,7 +52,7 @@ class MapButtonPanel extends StatelessWidget {
       case MapNavigationButton.map:
         if (openMapPage != null) {
           navigationButton = MapOverlayButton(
-            icon: const Icon(AIcons.map),
+            icon: const Icon(AIcons.showFullscreenCorners),
             onPressed: () => openMapPage?.call(context),
             tooltip: context.l10n.openMapPageTooltip,
           );
@@ -62,8 +62,8 @@ class MapButtonPanel extends StatelessWidget {
     }
 
     final showCoordinateFilter = context.select<MapThemeData, bool>((v) => v.showCoordinateFilter);
-    final visualDensity = context.select<MapThemeData, VisualDensity?>((v) => v.visualDensity);
-    final double padding = visualDensity == VisualDensity.compact ? 4 : 8;
+    final visualDensity = context.select<MapThemeData, VisualDensity>((v) => v.visualDensity);
+    final double padding = 8 + visualDensity.horizontal * 2;
 
     return Positioned.fill(
       child: TooltipTheme(
@@ -133,9 +133,9 @@ class MapButtonPanel extends StatelessWidget {
                       // key is expected by test driver
                       child: Column(
                         children: [
-                          _buildButton(context, MapAction.selectStyle, buttonKey: const Key('map-menu-layers')),
+                          _buildActionButton(context, MapAction.openMapApp),
                           SizedBox(height: padding),
-                          _buildButton(context, MapAction.openMapApp),
+                          _buildActionButton(context, MapAction.selectStyle, buttonKey: const Key('map-menu-layers')),
                         ],
                       ),
                     ),
@@ -148,9 +148,9 @@ class MapButtonPanel extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildButton(context, MapAction.zoomIn),
+                    _buildActionButton(context, MapAction.zoomIn),
                     SizedBox(height: padding),
-                    _buildButton(context, MapAction.zoomOut),
+                    _buildActionButton(context, MapAction.zoomOut),
                   ],
                 ),
               ),
@@ -161,7 +161,7 @@ class MapButtonPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(BuildContext context, MapAction action, {Key? buttonKey}) => MapOverlayButton(
+  Widget _buildActionButton(BuildContext context, MapAction action, {Key? buttonKey}) => MapOverlayButton(
         buttonKey: buttonKey,
         icon: action.getIcon(),
         onPressed: () => MapActionDelegate(controller).onActionSelected(context, action),
