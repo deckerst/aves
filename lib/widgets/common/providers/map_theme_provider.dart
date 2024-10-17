@@ -7,8 +7,9 @@ class MapTheme extends StatelessWidget {
   final bool interactive, showCoordinateFilter;
   final MapNavigationButton navigationButton;
   final Animation<double> scale;
-  final VisualDensity? visualDensity;
+  final VisualDensity visualDensity;
   final double? mapHeight;
+  final EdgeInsets attributionPadding;
   final Widget child;
 
   const MapTheme({
@@ -17,8 +18,9 @@ class MapTheme extends StatelessWidget {
     required this.showCoordinateFilter,
     required this.navigationButton,
     this.scale = kAlwaysCompleteAnimation,
-    this.visualDensity,
+    this.visualDensity = VisualDensity.standard,
     this.mapHeight,
+    this.attributionPadding = EdgeInsets.zero,
     required this.child,
   });
 
@@ -33,6 +35,7 @@ class MapTheme extends StatelessWidget {
           scale: scale,
           visualDensity: visualDensity,
           mapHeight: mapHeight,
+          attributionPadding: attributionPadding,
         );
       },
       child: child,

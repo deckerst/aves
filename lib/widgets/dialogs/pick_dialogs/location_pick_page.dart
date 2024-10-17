@@ -133,6 +133,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       interactive: true,
       showCoordinateFilter: false,
       navigationButton: MapNavigationButton.back,
+      attributionPadding: const EdgeInsets.symmetric(horizontal: 8),
       child: GeoMap(
         controller: _mapController,
         collection: openingCollection,
