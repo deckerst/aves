@@ -31,6 +31,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   static const trashTable = 'trash';
   static const videoPlaybackTable = 'videoPlayback';
 
+  static const _queryCursorBufferSize = 1000;
   static int _lastId = 0;
 
   @override
@@ -180,6 +181,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       whereArgs.add(origin);
     }
 
+    final entries = <AvesEntry>{};
     if (directory != null) {
       final separator = pContext.separator;
       if (!directory.endsWith(separator)) {
@@ -188,21 +190,25 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
       where = '${where != null ? '$where AND ' : ''}path LIKE ?';
       whereArgs.add('$directory%');
-      final rows = await _db.query(entryTable, where: where, whereArgs: whereArgs);
+      final cursor = await _db.queryCursor(entryTable, where: where, whereArgs: whereArgs, bufferSize: _queryCursorBufferSize);
 
       final dirLength = directory.length;
-      return rows
-          .whereNot((row) {
-            // skip entries in subfolders
-            final path = row['path'] as String?;
-            return path == null || path.substring(dirLength).contains(separator);
-          })
-          .map(AvesEntry.fromMap)
-          .toSet();
+      while (await cursor.moveNext()) {
+        final row = cursor.current;
+        // skip entries in subfolders
+        final path = row['path'] as String?;
+        if (path != null && !path.substring(dirLength).contains(separator)) {
+          entries.add(AvesEntry.fromMap(row));
+        }
+      }
+    } else {
+      final cursor = await _db.queryCursor(entryTable, where: where, whereArgs: whereArgs, bufferSize: _queryCursorBufferSize);
+      while (await cursor.moveNext()) {
+        entries.add(AvesEntry.fromMap(cursor.current));
+      }
     }
 
-    final rows = await _db.query(entryTable, where: where, whereArgs: whereArgs);
-    return rows.map(AvesEntry.fromMap).toSet();
+    return entries;
   }
 
   @override
@@ -278,8 +284,13 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Map<int?, int?>> loadDates() async {
-    final rows = await _db.query(dateTakenTable);
-    return Map.fromEntries(rows.map((map) => MapEntry(map['id'] as int, (map['dateMillis'] ?? 0) as int)));
+    final result = <int?, int?>{};
+    final cursor = await _db.queryCursor(dateTakenTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      final row = cursor.current;
+      result[row['id'] as int] = row['dateMillis'] as int? ?? 0;
+    }
+    return result;
   }
 
   // catalog metadata
@@ -292,8 +303,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Set<CatalogMetadata>> loadCatalogMetadata() async {
-    final rows = await _db.query(metadataTable);
-    return rows.map(CatalogMetadata.fromMap).toSet();
+    final result = <CatalogMetadata>{};
+    final cursor = await _db.queryCursor(metadataTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      result.add(CatalogMetadata.fromMap(cursor.current));
+    }
+    return result;
   }
 
   @override
@@ -351,8 +366,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Set<AddressDetails>> loadAddresses() async {
-    final rows = await _db.query(addressTable);
-    return rows.map(AddressDetails.fromMap).toSet();
+    final result = <AddressDetails>{};
+    final cursor = await _db.queryCursor(addressTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      result.add(AddressDetails.fromMap(cursor.current));
+    }
+    return result;
   }
 
   @override
@@ -395,8 +414,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Set<VaultDetails>> loadAllVaults() async {
-    final rows = await _db.query(vaultTable);
-    return rows.map(VaultDetails.fromMap).toSet();
+    final result = <VaultDetails>{};
+    final cursor = await _db.queryCursor(vaultTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      result.add(VaultDetails.fromMap(cursor.current));
+    }
+    return result;
   }
 
   @override
@@ -443,8 +466,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Set<TrashDetails>> loadAllTrashDetails() async {
-    final rows = await _db.query(trashTable);
-    return rows.map(TrashDetails.fromMap).toSet();
+    final result = <TrashDetails>{};
+    final cursor = await _db.queryCursor(trashTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      result.add(TrashDetails.fromMap(cursor.current));
+    }
+    return result;
   }
 
   @override
@@ -474,8 +501,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Set<FavouriteRow>> loadAllFavourites() async {
-    final rows = await _db.query(favouriteTable);
-    return rows.map(FavouriteRow.fromMap).toSet();
+    final result = <FavouriteRow>{};
+    final cursor = await _db.queryCursor(favouriteTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      result.add(FavouriteRow.fromMap(cursor.current));
+    }
+    return result;
   }
 
   @override
@@ -524,8 +555,15 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Set<CoverRow>> loadAllCovers() async {
-    final rows = await _db.query(coverTable);
-    return rows.map(CoverRow.fromMap).whereNotNull().toSet();
+    final result = <CoverRow>{};
+    final cursor = await _db.queryCursor(coverTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      final row = CoverRow.fromMap(cursor.current);
+      if (row != null) {
+        result.add(row);
+      }
+    }
+    return result;
   }
 
   @override
@@ -587,14 +625,19 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   @override
   Future<Set<VideoPlaybackRow>> loadAllVideoPlayback() async {
-    final rows = await _db.query(videoPlaybackTable);
-    return rows.map(VideoPlaybackRow.fromMap).whereNotNull().toSet();
+    final result = <VideoPlaybackRow>{};
+    final cursor = await _db.queryCursor(videoPlaybackTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      final row = VideoPlaybackRow.fromMap(cursor.current);
+      if (row != null) {
+        result.add(row);
+      }
+    }
+    return result;
   }
 
   @override
-  Future<VideoPlaybackRow?> loadVideoPlayback(int? id) async {
-    if (id == null) return null;
-
+  Future<VideoPlaybackRow?> loadVideoPlayback(int id) async {
     final rows = await _db.query(videoPlaybackTable, where: 'id = ?', whereArgs: [id]);
     if (rows.isEmpty) return null;
 
@@ -631,11 +674,13 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   // convenience methods
 
   Future<Set<T>> _getByIds<T>(Set<int> ids, String table, T Function(Map<String, Object?> row) mapRow) async {
-    if (ids.isEmpty) return {};
-    final rows = await _db.query(
-      table,
-      where: 'id IN (${ids.join(',')})',
-    );
-    return rows.map(mapRow).toSet();
+    final result = <T>{};
+    if (ids.isNotEmpty) {
+      final cursor = await _db.queryCursor(table, where: 'id IN (${ids.join(',')})', bufferSize: _queryCursorBufferSize);
+      while (await cursor.moveNext()) {
+        result.add(mapRow(cursor.current));
+      }
+    }
+    return result;
   }
 }
