@@ -115,7 +115,7 @@ abstract class LocalMediaDb {
 
   Future<Set<VideoPlaybackRow>> loadAllVideoPlayback();
 
-  Future<VideoPlaybackRow?> loadVideoPlayback(int? id);
+  Future<VideoPlaybackRow?> loadVideoPlayback(int id);
 
   Future<void> addVideoPlayback(Set<VideoPlaybackRow> rows);
 
