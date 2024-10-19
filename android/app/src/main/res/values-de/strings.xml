@@ -8,4 +8,5 @@
     <string name="analysis_channel_name">Analyse von Medien</string>
     <string name="analysis_notification_default_title">Medien scannen</string>
     <string name="analysis_notification_action_stop">Abbrechen</string>
+    <string name="map_shortcut_short_label">Karte</string>
 </resources>
