@@ -35,6 +35,7 @@ class XmpNamespaceView {
     XmpNamespaces.gImage: 'Google Image',
     XmpNamespaces.gPano: 'Google Panorama',
     XmpNamespaces.gSpherical: 'Google Spherical',
+    XmpNamespaces.gPhotoScan: 'Google PhotoScan',
     XmpNamespaces.gettyImagesGift: 'Getty Images',
     XmpNamespaces.gimp210: 'GIMP 2.10',
     XmpNamespaces.gimpXmp: 'GIMP',

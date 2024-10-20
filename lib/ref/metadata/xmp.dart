@@ -38,6 +38,7 @@ class XmpNamespaces {
   static const gFocus = 'http://ns.google.com/photos/1.0/focus/';
   static const gImage = 'http://ns.google.com/photos/1.0/image/';
   static const gPano = 'http://ns.google.com/photos/1.0/panorama/';
+  static const gPhotoScan = 'http://ns.google.com/photos/1.0/photoscan/';
   static const gSpherical = 'http://ns.google.com/videos/1.0/spherical/';
   static const gettyImagesGift = 'http://xmp.gettyimages.com/gift/1.0/';
   static const gimp210 = 'http://www.gimp.org/ns/2.10/';
