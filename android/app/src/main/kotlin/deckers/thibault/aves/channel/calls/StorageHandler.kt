@@ -29,6 +29,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getDataUsage" -> ioScope.launch { safe(call, result, ::getDataUsage) }
             "getStorageVolumes" -> ioScope.launch { safe(call, result, ::getStorageVolumes) }
+            "getCacheDirectory" -> ioScope.launch { safe(call, result, ::getCacheDirectory) }
             "getUntrackedTrashPaths" -> ioScope.launch { safe(call, result, ::getUntrackedTrashPaths) }
             "getUntrackedVaultPaths" -> ioScope.launch { safe(call, result, ::getUntrackedVaultPaths) }
             "getVaultRoot" -> ioScope.launch { safe(call, result, ::getVaultRoot) }
@@ -121,6 +122,18 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         }
         result.success(volumes)
     }
+
+    private fun getCacheDirectory(call: MethodCall, result: MethodChannel.Result) {
+        val external = call.argument<Boolean>("external")
+        if (external == null) {
+            result.error("getCacheDirectory-args", "missing arguments", null)
+            return
+        }
+
+        val dir = (if (external) context.externalCacheDir else context.cacheDir)
+        result.success(dir!!.path)
+    }
+
 
     private fun getUntrackedTrashPaths(call: MethodCall, result: MethodChannel.Result) {
         val knownPaths = call.argument<List<String>>("knownPaths")
