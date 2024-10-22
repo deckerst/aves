@@ -10,6 +10,7 @@ class SupportedLocales {
     'de': 'Deutsch',
     'el': 'Ελληνικά',
     'en': 'English',
+    'en_Shaw': '𐑦𐑙𐑜𐑤𐑦𐑖 (𐑖𐑱𐑝𐑰𐑩𐑯)',
     'es': 'Español (México)',
     'eu': 'Euskara',
     'fa': 'فارسی',
