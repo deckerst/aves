@@ -9,13 +9,13 @@ import 'package:latlong2/latlong.dart' as ll;
 import 'package:provider/provider.dart';
 
 class EntryGoogleMap<T> extends StatefulWidget {
-  final AvesMapController? controller;
+  final AvesMapController controller;
   final Listenable clusterListenable;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final double? minZoom, maxZoom;
   final EntryMapStyle style;
   final TransitionBuilder decoratorBuilder;
-  final ButtonPanelBuilder buttonPanelBuilder;
+  final WidgetBuilder buttonPanelBuilder;
   final MarkerClusterBuilder<T> markerClusterBuilder;
   final MarkerWidgetBuilder<T> markerWidgetBuilder;
   final MarkerImageReadyChecker<T> markerImageReadyChecker;
@@ -29,7 +29,7 @@ class EntryGoogleMap<T> extends StatefulWidget {
 
   const EntryGoogleMap({
     super.key,
-    this.controller,
+    required this.controller,
     required this.clusterListenable,
     required this.boundsNotifier,
     this.minZoom,
@@ -93,10 +93,9 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
 
   void _registerWidget(EntryGoogleMap<T> widget) {
     final avesMapController = widget.controller;
-    if (avesMapController != null) {
-      _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(_toServiceLatLng(event.latLng))));
-      _subscriptions.add(avesMapController.zoomCommands.listen((event) => _zoomBy(event.delta)));
-    }
+    _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(_toServiceLatLng(event.latLng))));
+    _subscriptions.add(avesMapController.zoomCommands.listen((event) => _zoomBy(event.delta)));
+    _subscriptions.add(avesMapController.rotationResetCommands.listen((_) => _resetRotation()));
     widget.clusterListenable.addListener(_updateMarkers);
   }
 
@@ -125,7 +124,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
           },
         ),
         widget.decoratorBuilder(context, _buildMap()),
-        widget.buttonPanelBuilder(_resetRotation),
+        widget.buttonPanelBuilder(context),
       ],
     );
   }
@@ -241,7 +240,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
 
   void _onIdle() {
     if (!mounted) return;
-    widget.controller?.notifyIdle(bounds);
+    widget.controller.notifyIdle(bounds);
     _updateMarkers();
   }
 

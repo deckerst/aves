@@ -46,12 +46,12 @@ class PlatformMobileServices extends MobileServices {
 
   @override
   Widget buildMap<T>({
-    required AvesMapController? controller,
+    required AvesMapController controller,
     required Listenable clusterListenable,
     required ValueNotifier<ZoomedBounds> boundsNotifier,
     required EntryMapStyle style,
     required TransitionBuilder decoratorBuilder,
-    required ButtonPanelBuilder buttonPanelBuilder,
+    required WidgetBuilder buttonPanelBuilder,
     required MarkerClusterBuilder<T> markerClusterBuilder,
     required MarkerWidgetBuilder<T> markerWidgetBuilder,
     required MarkerImageReadyChecker<T> markerImageReadyChecker,

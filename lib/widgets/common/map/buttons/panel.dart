@@ -1,7 +1,9 @@
+import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/buttons/button.dart';
 import 'package:aves/widgets/common/map/buttons/coordinate_filter.dart';
@@ -10,23 +12,43 @@ import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-class MapButtonPanel extends StatelessWidget {
-  final AvesMapController? controller;
+class MapButtonPanel extends StatefulWidget {
+  final AvesMapController controller;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final void Function(BuildContext context)? openMapPage;
-  final VoidCallback? resetRotation;
 
   const MapButtonPanel({
     super.key,
     required this.controller,
     required this.boundsNotifier,
     this.openMapPage,
-    this.resetRotation,
   });
+
+  @override
+  State<MapButtonPanel> createState() => _MapButtonPanelState();
+}
+
+class _MapButtonPanelState extends State<MapButtonPanel> {
+  late MapActionDelegate _actionDelegate;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateDelegate();
+  }
+
+  @override
+  void didUpdateWidget(covariant MapButtonPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateDelegate();
+  }
+
+  void _updateDelegate() => _actionDelegate = MapActionDelegate(widget.controller);
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +59,24 @@ class MapButtonPanel extends StatelessWidget {
     switch (context.select<MapThemeData, MapNavigationButton>((v) => v.navigationButton)) {
       case MapNavigationButton.back:
         if (!settings.useTvLayout) {
-          navigationButton = MapOverlayButton(
+          navigationButton = MapOverlayButton.icon(
             icon: const BackButtonIcon(),
             onPressed: () => Navigator.maybeOf(context)?.pop(),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           );
         }
       case MapNavigationButton.close:
-        navigationButton = MapOverlayButton(
+        navigationButton = MapOverlayButton.icon(
           icon: const CloseButtonIcon(),
           onPressed: SystemNavigator.pop,
           tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
         );
       case MapNavigationButton.map:
-        if (openMapPage != null) {
-          navigationButton = MapOverlayButton(
+        final _openMapPage = widget.openMapPage;
+        if (_openMapPage != null) {
+          navigationButton = MapOverlayButton.icon(
             icon: const Icon(AIcons.showFullscreenCorners),
-            onPressed: () => openMapPage?.call(context),
+            onPressed: () => _openMapPage.call(context),
             tooltip: context.l10n.openMapPageTooltip,
           );
         }
@@ -64,6 +87,11 @@ class MapButtonPanel extends StatelessWidget {
     final showCoordinateFilter = context.select<MapThemeData, bool>((v) => v.showCoordinateFilter);
     final visualDensity = context.select<MapThemeData, VisualDensity>((v) => v.visualDensity);
     final double padding = 8 + visualDensity.horizontal * 2;
+
+    final actions = [
+      MapAction.openMapApp,
+      MapAction.addShortcut,
+    ].where((action) => _actionDelegate.isVisible(context, action)).toList();
 
     return Positioned.fill(
       child: TooltipTheme(
@@ -90,7 +118,7 @@ class MapButtonPanel extends StatelessWidget {
                             SizedBox(height: padding),
                           ],
                           ValueListenableBuilder<ZoomedBounds>(
-                            valueListenable: boundsNotifier,
+                            valueListenable: widget.boundsNotifier,
                             builder: (context, bounds, child) {
                               final degrees = bounds.rotation;
                               final opacity = degrees == 0 ? .0 : 1.0;
@@ -99,7 +127,7 @@ class MapButtonPanel extends StatelessWidget {
                                 child: AnimatedOpacity(
                                   opacity: opacity,
                                   duration: context.select<DurationsData, Duration>((v) => v.viewerOverlayAnimation),
-                                  child: MapOverlayButton(
+                                  child: MapOverlayButton.icon(
                                     icon: Transform(
                                       origin: iconSize.center(Offset.zero),
                                       transform: Matrix4.rotationZ(degToRadian(degrees)),
@@ -110,7 +138,7 @@ class MapButtonPanel extends StatelessWidget {
                                         size: iconSize,
                                       ),
                                     ),
-                                    onPressed: () => resetRotation?.call(),
+                                    onPressed: widget.controller.resetRotation,
                                     tooltip: context.l10n.mapPointNorthUpTooltip,
                                   ),
                                 ),
@@ -123,7 +151,7 @@ class MapButtonPanel extends StatelessWidget {
                     showCoordinateFilter
                         ? Expanded(
                             child: OverlayCoordinateFilterChip(
-                              boundsNotifier: boundsNotifier,
+                              boundsNotifier: widget.boundsNotifier,
                               padding: padding,
                             ),
                           )
@@ -133,8 +161,31 @@ class MapButtonPanel extends StatelessWidget {
                       // key is expected by test driver
                       child: Column(
                         children: [
-                          _buildActionButton(context, MapAction.openMapApp),
+                          if (actions.length == 1) _buildActionButton(context, actions.first),
+                          if (actions.length > 1)
+                            MapOverlayButton(builder: (context, visualDensity, child) {
+                              final animations = context.read<Settings>().accessibilityAnimations;
+                              return PopupMenuButton<MapAction>(
+                                itemBuilder: (context) => actions
+                                    .map((action) => PopupMenuItem(
+                                          value: action,
+                                          child: MenuRow(
+                                            text: action.getText(context),
+                                            icon: action.getIcon(),
+                                          ),
+                                        ))
+                                    .toList(),
+                                onSelected: (action) async {
+                                  // wait for the popup menu to hide before proceeding with the action
+                                  await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+                                  _actionDelegate.onActionSelected(context, action);
+                                },
+                                iconSize: MapOverlayButton.iconSize(visualDensity),
+                                popUpAnimationStyle: animations.popUpAnimationStyle,
+                              );
+                            }),
                           SizedBox(height: padding),
+                          // key is expected by test driver
                           _buildActionButton(context, MapAction.selectStyle, buttonKey: const Key('map-menu-layers')),
                         ],
                       ),
@@ -161,10 +212,10 @@ class MapButtonPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(BuildContext context, MapAction action, {Key? buttonKey}) => MapOverlayButton(
+  Widget _buildActionButton(BuildContext context, MapAction action, {Key? buttonKey}) => MapOverlayButton.icon(
         buttonKey: buttonKey,
         icon: action.getIcon(),
-        onPressed: () => MapActionDelegate(controller).onActionSelected(context, action),
+        onPressed: () => _actionDelegate.onActionSelected(context, action),
         tooltip: action.getText(context),
       );
 }

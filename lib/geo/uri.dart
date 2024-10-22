@@ -1,3 +1,4 @@
+import 'package:aves/utils/math_utils.dart';
 import 'package:latlong2/latlong.dart';
 
 // e.g. `geo:44.4361283,26.1027248?z=4.0(Bucharest)`
@@ -23,4 +24,14 @@ import 'package:latlong2/latlong.dart';
     }
   }
   return null;
+}
+
+String toGeoUri(LatLng latLng, {double? zoom}) {
+  final latitude = roundToPrecision(latLng.latitude, decimals: 6);
+  final longitude = roundToPrecision(latLng.longitude, decimals: 6);
+  var uri = 'geo:$latitude,$longitude?q=$latitude,$longitude';
+  if (zoom != null) {
+    uri += '&z=$zoom';
+  }
+  return uri;
 }

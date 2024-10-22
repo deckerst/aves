@@ -314,6 +314,7 @@ open class MainActivity : FlutterFragmentActivity() {
                         return hashMapOf(
                             INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW_GEO,
                             INTENT_DATA_KEY_URI to uri.toString(),
+                            INTENT_DATA_KEY_FILTERS to extractFiltersFromIntent(intent),
                         )
                     }
 
@@ -584,6 +585,8 @@ open class MainActivity : FlutterFragmentActivity() {
 
         // dart page routes
         const val COLLECTION_PAGE_ROUTE_NAME = "/collection"
+        const val ENTRY_VIEWER_PAGE_ROUTE_NAME = "/viewer"
+        const val EXPLORER_PAGE_ROUTE_NAME = "/explorer"
         const val MAP_PAGE_ROUTE_NAME = "/map"
         const val SEARCH_PAGE_ROUTE_NAME = "/search"
 

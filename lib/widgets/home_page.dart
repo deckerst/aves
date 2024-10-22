@@ -377,7 +377,10 @@ class _HomePageState extends State<HomePage> {
         return buildRoute((context) {
           final mapCollection = CollectionLens(
             source: source,
-            filters: {LocationFilter.located},
+            filters: {
+              LocationFilter.located,
+              if (filters != null) ...filters,
+            },
           );
           return MapPage(
             collection: mapCollection,
