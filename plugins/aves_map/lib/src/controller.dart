@@ -16,6 +16,8 @@ class AvesMapController {
 
   Stream<MapControllerZoomEvent> get zoomCommands => _events.where((event) => event is MapControllerZoomEvent).cast<MapControllerZoomEvent>();
 
+  Stream<MapControllerRotationResetEvent> get rotationResetCommands => _events.where((event) => event is MapControllerRotationResetEvent).cast<MapControllerRotationResetEvent>();
+
   Stream<MapIdleUpdate> get idleUpdates => _events.where((event) => event is MapIdleUpdate).cast<MapIdleUpdate>();
 
   Stream<MapMarkerLocationChangeEvent> get markerLocationChanges => _events.where((event) => event is MapMarkerLocationChangeEvent).cast<MapMarkerLocationChangeEvent>();
@@ -41,6 +43,8 @@ class AvesMapController {
 
   void zoomBy(double delta) => _streamController.add(MapControllerZoomEvent(delta));
 
+  void resetRotation() => _streamController.add(MapControllerRotationResetEvent());
+
   void notifyIdle(ZoomedBounds bounds) {
     _idleBounds = bounds;
     _streamController.add(MapIdleUpdate(bounds));
@@ -60,6 +64,8 @@ class MapControllerZoomEvent {
 
   MapControllerZoomEvent(this.delta);
 }
+
+class MapControllerRotationResetEvent {}
 
 class MapIdleUpdate {
   final ZoomedBounds bounds;

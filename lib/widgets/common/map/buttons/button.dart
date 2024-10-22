@@ -4,18 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MapOverlayButton extends StatelessWidget {
-  final Key? buttonKey;
-  final Widget icon;
-  final String tooltip;
-  final VoidCallback? onPressed;
+  final ValueWidgetBuilder<VisualDensity> builder;
 
   const MapOverlayButton({
     super.key,
-    this.buttonKey,
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
+    required this.builder,
   });
+
+  factory MapOverlayButton.icon({
+    Key? buttonKey,
+    required Widget icon,
+    required String tooltip,
+    VoidCallback? onPressed,
+  }) {
+    return MapOverlayButton(
+      builder: (context, visualDensity, child) => IconButton(
+        key: buttonKey,
+        iconSize: iconSize(visualDensity),
+        visualDensity: visualDensity,
+        icon: icon,
+        onPressed: onPressed,
+        tooltip: tooltip,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +39,10 @@ class MapOverlayButton extends StatelessWidget {
       ),
       child: Selector<MapThemeData, VisualDensity>(
         selector: (context, v) => v.visualDensity,
-        builder: (context, visualDensity, child) => IconButton(
-          key: buttonKey,
-          iconSize: 20 + 1.5 * visualDensity.horizontal,
-          visualDensity: visualDensity,
-          icon: icon,
-          onPressed: onPressed,
-          tooltip: tooltip,
-        ),
+        builder: builder,
       ),
     );
   }
+
+  static double iconSize(VisualDensity visualDensity) => 20 + 1.5 * visualDensity.horizontal;
 }

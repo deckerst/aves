@@ -33,7 +33,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class GeoMap extends StatefulWidget {
-  final AvesMapController? controller;
+  final AvesMapController controller;
   final CollectionLens? collection;
   final List<AvesEntry>? entries;
   final Size availableSize;
@@ -60,7 +60,7 @@ class GeoMap extends StatefulWidget {
 
   const GeoMap({
     super.key,
-    this.controller,
+    required this.controller,
     this.collection,
     this.entries,
     required this.availableSize,
@@ -124,10 +124,7 @@ class _GeoMapState extends State<GeoMap> {
 
   void _registerWidget(GeoMap widget) {
     widget.collection?.addListener(_onCollectionChanged);
-    final controller = widget.controller;
-    if (controller != null) {
-      _subscriptions.add(controller.markerLocationChanges.listen((event) => _onCollectionChanged()));
-    }
+    _subscriptions.add(widget.controller.markerLocationChanges.listen((event) => _onCollectionChanged()));
   }
 
   void _unregisterWidget(GeoMap widget) {
@@ -164,7 +161,6 @@ class _GeoMapState extends State<GeoMap> {
             );
         bool _isMarkerImageReady(MarkerKey<AvesEntry> key) => key.entry.isThumbnailReady(extent: MapThemeData.markerImageExtent);
 
-        final controller = widget.controller;
         Widget child = const SizedBox();
         if (mapStyle != null) {
           switch (mapStyle) {
@@ -172,7 +168,7 @@ class _GeoMapState extends State<GeoMap> {
             case EntryMapStyle.googleHybrid:
             case EntryMapStyle.googleTerrain:
               child = mobileServices.buildMap<AvesEntry>(
-                controller: controller,
+                controller: widget.controller,
                 clusterListenable: _clusterChangeNotifier,
                 boundsNotifier: _boundsNotifier,
                 style: mapStyle,
@@ -194,7 +190,7 @@ class _GeoMapState extends State<GeoMap> {
             case EntryMapStyle.osmHot:
             case EntryMapStyle.stamenWatercolor:
               child = EntryLeafletMap<AvesEntry>(
-                controller: controller,
+                controller: widget.controller,
                 clusterListenable: _clusterChangeNotifier,
                 boundsNotifier: _boundsNotifier,
                 minZoom: 2,
@@ -324,11 +320,7 @@ class _GeoMapState extends State<GeoMap> {
               Widget replacement = Stack(
                 children: [
                   const MapDecorator(),
-                  MapButtonPanel(
-                    controller: controller,
-                    boundsNotifier: _boundsNotifier,
-                    openMapPage: widget.openMapPage,
-                  ),
+                  _buildButtonPanel(context),
                 ],
               );
               if (mapHeight != null) {
@@ -560,13 +552,12 @@ class _GeoMapState extends State<GeoMap> {
 
   Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child);
 
-  Widget _buildButtonPanel(VoidCallback resetRotation) {
+  Widget _buildButtonPanel(BuildContext context) {
     if (settings.useTvLayout) return const SizedBox();
     return MapButtonPanel(
       controller: widget.controller,
       boundsNotifier: _boundsNotifier,
       openMapPage: widget.openMapPage,
-      resetRotation: resetRotation,
     );
   }
 }

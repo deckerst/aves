@@ -14,13 +14,13 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class EntryLeafletMap<T> extends StatefulWidget {
-  final AvesMapController? controller;
+  final AvesMapController controller;
   final Listenable clusterListenable;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final double minZoom, maxZoom;
   final EntryMapStyle style;
   final TransitionBuilder decoratorBuilder;
-  final ButtonPanelBuilder buttonPanelBuilder;
+  final WidgetBuilder buttonPanelBuilder;
   final MarkerClusterBuilder<T> markerClusterBuilder;
   final MarkerWidgetBuilder<T> markerWidgetBuilder;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
@@ -34,7 +34,7 @@ class EntryLeafletMap<T> extends StatefulWidget {
 
   const EntryLeafletMap({
     super.key,
-    this.controller,
+    required this.controller,
     required this.clusterListenable,
     required this.boundsNotifier,
     this.minZoom = 0,
@@ -94,11 +94,10 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
 
   void _registerWidget(EntryLeafletMap<T> widget) {
     final avesMapController = widget.controller;
-    if (avesMapController != null) {
-      _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(event.latLng)));
-      _subscriptions.add(avesMapController.zoomCommands.listen((event) => _zoomBy(event.delta)));
-    }
-    _subscriptions.add(_leafletMapController.mapEventStream.listen((event) => _updateVisibleRegion()));
+    _subscriptions.add(avesMapController.moveCommands.listen((event) => _moveTo(event.latLng)));
+    _subscriptions.add(avesMapController.zoomCommands.listen((event) => _zoomBy(event.delta)));
+    _subscriptions.add(avesMapController.rotationResetCommands.listen((_) => _resetRotation()));
+    _subscriptions.add(_leafletMapController.mapEventStream.listen((_) => _updateVisibleRegion()));
     widget.clusterListenable.addListener(_updateMarkers);
     widget.boundsNotifier.addListener(_onBoundsChanged);
   }
@@ -116,7 +115,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     return Stack(
       children: [
         widget.decoratorBuilder(context, _buildMap()),
-        widget.buttonPanelBuilder(_resetRotation),
+        widget.buttonPanelBuilder(context),
       ],
     );
   }
@@ -240,7 +239,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
 
   void _onIdle() {
     if (!mounted) return;
-    widget.controller?.notifyIdle(bounds);
+    widget.controller.notifyIdle(bounds);
     _updateMarkers();
   }
 

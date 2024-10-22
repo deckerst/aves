@@ -5,8 +5,9 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/media/geotiff.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/media/geotiff.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -62,10 +63,15 @@ class MapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // do not rely on the `HighlightInfoProvider` app level
-    // as the map can be stacked on top of other pages
-    // that catch highlight events and will not let it bubble up
-    return HighlightInfoProvider(
+    return MultiProvider(
+      providers: [
+        // do not rely on the `HighlightInfoProvider` app level
+        // as the map can be stacked on top of other pages
+        // that catch highlight events and will not let it bubble up
+        HighlightInfoProvider(),
+        // opening collection can be used by map actions
+        ChangeNotifierProvider<CollectionLens>.value(value: collection),
+      ],
       child: AvesScaffold(
         body: SafeArea(
           left: false,
@@ -442,10 +448,16 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(
-          source: openingCollection.source,
-          filters: {...openingCollection.filters, filter},
-        ),
+        builder: (context) {
+          final filters = {...openingCollection.filters, filter};
+          if (filter is CoordinateFilter) {
+            filters.removeWhere((v) => (v is CoordinateFilter && v != filter) || v == LocationFilter.located);
+          }
+          return CollectionPage(
+            source: openingCollection.source,
+            filters: filters,
+          );
+        },
       ),
       (route) => false,
     );

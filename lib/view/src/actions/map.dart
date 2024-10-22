@@ -11,6 +11,7 @@ extension ExtraMapActionView on MapAction {
       MapAction.openMapApp => l10n.entryActionOpenMap,
       MapAction.zoomIn => l10n.mapZoomInTooltip,
       MapAction.zoomOut => l10n.mapZoomOutTooltip,
+      MapAction.addShortcut => l10n.collectionActionAddShortcut,
     };
   }
 
@@ -22,6 +23,7 @@ extension ExtraMapActionView on MapAction {
       MapAction.openMapApp => AIcons.openOutside,
       MapAction.zoomIn => AIcons.zoomIn,
       MapAction.zoomOut => AIcons.zoomOut,
+      MapAction.addShortcut => AIcons.addShortcut,
     };
   }
 }

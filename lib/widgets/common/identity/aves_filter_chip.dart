@@ -423,17 +423,20 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     );
 
     final animate = context.select<Settings, bool>((v) => v.animate);
-    if (animate && (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped)) {
-      chip = Hero(
-        tag: filter,
-        transitionOnUserGestures: true,
-        child: MediaQueryDataProvider(
-          child: DefaultTextStyle(
-            style: const TextStyle(),
-            child: chip,
+    if (animate) {
+      final heroType = widget.heroType;
+      if (heroType == HeroType.always || (heroType == HeroType.onTap && _tapped)) {
+        chip = Hero(
+          tag: filter,
+          transitionOnUserGestures: true,
+          child: MediaQueryDataProvider(
+            child: DefaultTextStyle(
+              style: const TextStyle(),
+              child: chip,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
     return chip;
   }

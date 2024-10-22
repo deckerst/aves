@@ -106,6 +106,7 @@ class Contributors {
     Contributor('splice11', 'trenchedgrandpa@protonmail.com'),
     Contributor('Ihor Hordiichuk', 'igor_ck@outlook.com'),
     Contributor('João Palmeiro', 'joaommpalmeiro@gmail.com'),
+    Contributor('Whoever4976', 'wolffjonas47@gmail.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
