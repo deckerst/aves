@@ -1545,10 +1545,10 @@
   "@explorerPageTitle": {},
   "mapAttributionOsmData": "Údaje máp © [OpenStreetMap](https://www.openstreetmap.org/copyright) prispievatelia",
   "@mapAttributionOsmData": {},
-  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) WP Tiles [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) Dlaždice podľa [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "mapStyleOsmLiberty": "OSM Slobody",
   "@mapStyleOsmLiberty": {},
-  "mapAttributionOsmLiberty": "Tiles [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hostovaný [OSM Americana](https://tile.ourmap.us)",
+  "mapAttributionOsmLiberty": "Dlaždice podľa [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hostovaný [OSM Americana](https://tile.ourmap.us)",
   "@mapAttributionOsmLiberty": {}
 }
