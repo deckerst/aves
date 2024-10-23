@@ -56,6 +56,7 @@ import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
 import deckers.thibault.aves.channel.streams.SettingsChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -466,6 +467,7 @@ open class MainActivity : FlutterFragmentActivity() {
             setResult(RESULT_OK, intent)
             finish()
         } catch (e: Exception) {
+            setResult(RESULT_CANCELED)
             if (e is SecurityException && intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
                 // in some environments, providing the write flag yields a `SecurityException`:
                 // "UID XXXX does not have permission to content://XXXX"
@@ -473,7 +475,7 @@ open class MainActivity : FlutterFragmentActivity() {
                 Log.i(LOG_TAG, "retry submitting picked items without FLAG_GRANT_WRITE_URI_PERMISSION")
                 intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
                 submitPickedItemsIntent(intent, result)
-            } else if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
+            } else if (e.anyCauseIs<TransactionTooLargeException>()) {
                 result.error("submitPickedItems-large", "transaction too large with ${intent.clipData?.itemCount} URIs", e)
             } else {
                 result.error("submitPickedItems-exception", "failed to pick ${intent.clipData?.itemCount} URIs", e)
