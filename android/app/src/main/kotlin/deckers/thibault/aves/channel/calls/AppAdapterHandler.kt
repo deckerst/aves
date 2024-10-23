@@ -39,6 +39,7 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getApplicationInfoCompat
 import deckers.thibault.aves.utils.queryIntentActivitiesCompat
 import io.flutter.plugin.common.MethodCall
@@ -307,7 +308,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             val started = safeStartActivityChooser(title, intent)
             result.success(started)
         } catch (e: Exception) {
-            if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
+            if (e.anyCauseIs<TransactionTooLargeException>()) {
                 result.error("share-large", "transaction too large with ${uriList.size} URIs", e)
             } else {
                 result.error("share-exception", "failed to share ${uriList.size} URIs", e)
