@@ -112,6 +112,7 @@ class Contributors {
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
     // Contributor('Grooty12', 'Rasmus@rosendahl-kaa.name'), // Danish
     // Contributor('Victor M', 'victormorita@tuta.io'), // Danish
+    // Contributor('Paranoid Android', 'f.cherdzhiev@innopolis.university'), // English (Shavian)
     // Contributor('Åzze', 'laitinen.jere222@gmail.com'), // Finnish
     // Contributor('Olli', 'ollinen@ollit.dev'), // Finnish
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
