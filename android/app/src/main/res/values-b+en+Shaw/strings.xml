@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">𐑱𐑝𐑰𐑟</string>
+    <string name="app_widget_label">𐑓𐑴𐑑𐑴 𐑓𐑮𐑱𐑥</string>
+    <string name="wallpaper">𐑢𐑷𐑤𐑐𐑱𐑐𐑼</string>
+    <string name="map_shortcut_short_label">𐑥𐑨𐑐</string>
+    <string name="search_shortcut_short_label">𐑕𐑻𐑗</string>
+    <string name="videos_shortcut_short_label">𐑝𐑦𐑛𐑦𐑴𐑟</string>
+    <string name="analysis_channel_name">𐑥𐑰𐑛𐑾 𐑕𐑒𐑨𐑯</string>
+    <string name="analysis_notification_default_title">𐑕𐑒𐑨𐑯𐑦𐑙 𐑥𐑰𐑛𐑾</string>
+    <string name="analysis_notification_action_stop">𐑕𐑑𐑪𐑐</string>
 </resources>
