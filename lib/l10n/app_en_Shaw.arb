@@ -1,5 +1,102 @@
 {
   "@@locale": "en_Shaw",
   "appName": "𐑱𐑝𐑰𐑟",
-  "@appName": {}
+  "@appName": {},
+  "welcomeOptional": "𐑪𐑐𐑖𐑩𐑯𐑩𐑤",
+  "@welcomeOptional": {},
+  "welcomeTermsToggle": "𐑲 𐑩𐑜𐑮𐑰 𐑑 𐑞 𐑑𐑻𐑥𐑟 𐑯 𐑒𐑩𐑯𐑛𐑦𐑖𐑩𐑯𐑟",
+  "@welcomeTermsToggle": {},
+  "welcomeMessage": "𐑢𐑧𐑤𐑒𐑩𐑥 𐑑 ·𐑱𐑝𐑰𐑟",
+  "@welcomeMessage": {},
+  "timeSeconds": "{count, plural, =1{{count} 𐑕𐑧𐑒𐑩𐑯𐑛} other{{count} 𐑕𐑧𐑒𐑩𐑯𐑛𐑟}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "itemCount": "{count, plural, =1{{count} 𐑲𐑑𐑩𐑥} other{{count} 𐑲𐑑𐑩𐑥𐑟}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "columnCount": "{count, plural, =1{{count} 𐑒𐑪𐑤𐑩𐑥} other{{count} 𐑒𐑪𐑤𐑩𐑥𐑟}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeMinutes": "{count, plural, =1{{count} 𐑥𐑦𐑯𐑦𐑑} other{{count} 𐑥𐑦𐑯𐑦𐑑𐑕}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeDays": "{count, plural, =1{{count} 𐑛𐑱} other{{count} 𐑛𐑱𐑟}}",
+  "@timeDays": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "focalLength": "{length} 𐑥𐑥",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "applyButtonLabel": "𐑩𐑐𐑤𐑲",
+  "@applyButtonLabel": {},
+  "deleteButtonLabel": "𐑛𐑦𐑤𐑰𐑑",
+  "@deleteButtonLabel": {},
+  "nextButtonLabel": "𐑯𐑧𐑒𐑕𐑑",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "𐑖𐑴",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "𐑣𐑲𐑛",
+  "@hideButtonLabel": {},
+  "continueButtonLabel": "𐑒𐑩𐑯𐑑𐑦𐑯𐑿",
+  "@continueButtonLabel": {},
+  "saveCopyButtonLabel": "𐑕𐑱𐑝 𐑒𐑪𐑐𐑦",
+  "@saveCopyButtonLabel": {},
+  "applyTooltip": "𐑩𐑐𐑤𐑲",
+  "@applyTooltip": {},
+  "cancelTooltip": "𐑒𐑨𐑯𐑕𐑩𐑤",
+  "@cancelTooltip": {},
+  "changeTooltip": "𐑗𐑱𐑯𐑡",
+  "@changeTooltip": {},
+  "clearTooltip": "𐑒𐑤𐑽",
+  "@clearTooltip": {},
+  "previousTooltip": "𐑐𐑮𐑰𐑝𐑾𐑕",
+  "@previousTooltip": {},
+  "nextTooltip": "𐑯𐑧𐑒𐑕𐑑",
+  "@nextTooltip": {},
+  "showTooltip": "𐑖𐑴",
+  "@showTooltip": {},
+  "hideTooltip": "𐑣𐑲𐑛",
+  "@hideTooltip": {},
+  "actionRemove": "𐑮𐑦𐑥𐑵𐑝",
+  "@actionRemove": {},
+  "resetTooltip": "𐑮𐑰𐑕𐑧𐑑",
+  "@resetTooltip": {},
+  "saveTooltip": "𐑕𐑱𐑝",
+  "@saveTooltip": {},
+  "stopTooltip": "𐑕𐑑𐑪𐑐",
+  "@stopTooltip": {},
+  "pickTooltip": "𐑐𐑦𐑒",
+  "@pickTooltip": {},
+  "doubleBackExitMessage": "𐑑𐑨𐑐 «𐑚𐑨𐑒» 𐑩𐑜𐑧𐑯 𐑑 𐑧𐑒𐑕𐑦𐑑.",
+  "@doubleBackExitMessage": {}
 }
