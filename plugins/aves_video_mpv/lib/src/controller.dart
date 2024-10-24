@@ -59,6 +59,12 @@ class MpvVideoController extends AvesVideoController {
         title: entry.bestTitle ?? entry.uri,
         libass: false,
         logLevel: MPVLogLevel.warn,
+        protocolWhitelist: [
+          ...const PlayerConfiguration().protocolWhitelist,
+          // Android `content` URIs are considered unsafe by default,
+          // as they are transferred via a custom `fd` protocol
+          'fd',
+        ],
       ),
     );
     _initController();
@@ -204,6 +210,15 @@ class MpvVideoController extends AvesVideoController {
     }
     targetMillis = abRepeatNotifier.value?.clamp(targetMillis) ?? targetMillis;
     await _instance.seek(Duration(milliseconds: targetMillis));
+  }
+
+  @override
+  Future<void> skipFrames(int frameCount) async {
+    if (frameCount > 0) {
+      await _instance.frameStep();
+    } else if (frameCount < 0) {
+      await _instance.frameBackStep();
+    }
   }
 
   @override

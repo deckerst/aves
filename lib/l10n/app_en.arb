@@ -138,6 +138,8 @@
   "videoActionPlay": "Play",
   "videoActionReplay10": "Seek backward 10 seconds",
   "videoActionSkip10": "Seek forward 10 seconds",
+  "videoActionShowPreviousFrame": "Show previous frame",
+  "videoActionShowNextFrame": "Show next frame",
   "videoActionSelectStreams": "Select tracks",
   "videoActionSetSpeed": "Playback speed",
   "videoActionABRepeat": "A-B repeat",

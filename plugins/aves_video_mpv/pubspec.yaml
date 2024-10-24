@@ -17,9 +17,20 @@ dependencies:
   collection:
   media_kit:
   media_kit_libs_android_video:
-  media_kit_native_event_loop:
   media_kit_video:
   path:
+
+dependency_overrides:
+  media_kit:
+    git:
+      url: https://github.com/deckerst/media-kit.git
+      ref: frame-stepping
+      path: media_kit
+  media_kit_video:
+    git:
+      url: https://github.com/deckerst/media-kit.git
+      ref: frame-stepping
+      path: media_kit_video
 
 dev_dependencies:
   flutter_lints:

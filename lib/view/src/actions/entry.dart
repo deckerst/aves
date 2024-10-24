@@ -43,6 +43,8 @@ extension ExtraEntryActionView on EntryAction {
         l10n.videoActionPlay,
       EntryAction.videoReplay10 => l10n.videoActionReplay10,
       EntryAction.videoSkip10 => l10n.videoActionSkip10,
+      EntryAction.videoShowPreviousFrame => l10n.videoActionShowPreviousFrame,
+      EntryAction.videoShowNextFrame => l10n.videoActionShowNextFrame,
       // external
       EntryAction.edit => l10n.entryActionEdit,
       EntryAction.open || EntryAction.openVideo => l10n.entryActionOpen,
@@ -118,6 +120,8 @@ extension ExtraEntryActionView on EntryAction {
         AIcons.play,
       EntryAction.videoReplay10 => AIcons.replay10,
       EntryAction.videoSkip10 => AIcons.skip10,
+      EntryAction.videoShowPreviousFrame => AIcons.previousFrame,
+      EntryAction.videoShowNextFrame => AIcons.nextFrame,
       // external
       EntryAction.edit => AIcons.edit,
       EntryAction.open || EntryAction.openVideo => AIcons.openOutside,
