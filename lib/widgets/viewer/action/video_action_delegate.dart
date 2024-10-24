@@ -74,6 +74,10 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await controller.seekTo(max(controller.currentPosition - 10000, 0));
       case EntryAction.videoSkip10:
         await controller.seekTo(controller.currentPosition + 10000);
+      case EntryAction.videoShowPreviousFrame:
+        await controller.skipFrames(-1);
+      case EntryAction.videoShowNextFrame:
+        await controller.skipFrames(1);
       case EntryAction.openVideo:
         await appService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);

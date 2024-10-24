@@ -131,6 +131,8 @@ class AIcons {
   static const repeat = Icons.repeat_outlined;
   static final repeatOff = MdiIcons.repeatOff;
   static const replay10 = Icons.replay_10_outlined;
+  static const previousFrame = Icons.skip_previous_outlined;
+  static const nextFrame = Icons.skip_next_outlined;
   static final resetBounds = MdiIcons.rayStartEnd;
   static const reverse = Icons.invert_colors_outlined;
   static const skip10 = Icons.forward_10_outlined;

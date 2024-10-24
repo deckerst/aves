@@ -901,12 +901,13 @@ packages:
     source: hosted
     version: "7.0.7296"
   media_kit:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: media_kit
-      sha256: "1f1deee148533d75129a6f38251ff8388e33ee05fc2d20a6a80e57d6051b7b62"
-      url: "https://pub.dev"
-    source: hosted
+      path: media_kit
+      ref: frame-stepping
+      resolved-ref: "209221d605a0b2c34379e799a8e001cc359e6183"
+      url: "https://github.com/deckerst/media-kit.git"
+    source: git
     version: "1.1.11"
   media_kit_libs_android_video:
     dependency: transitive
@@ -916,21 +917,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.6"
-  media_kit_native_event_loop:
-    dependency: transitive
-    description:
-      name: media_kit_native_event_loop
-      sha256: "7d82e3b3e9ded5c35c3146c5ba1da3118d1dd8ac3435bac7f29f458181471b40"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.9"
   media_kit_video:
     dependency: "direct overridden"
     description:
-      name: media_kit_video
-      sha256: "2cc3b966679963ba25a4ce5b771e532a521ebde7c6aa20e9802bec95d9916c8f"
-      url: "https://pub.dev"
-    source: hosted
+      path: media_kit_video
+      ref: frame-stepping
+      resolved-ref: "209221d605a0b2c34379e799a8e001cc359e6183"
+      url: "https://github.com/deckerst/media-kit.git"
+    source: git
     version: "1.2.5"
   meta:
     dependency: transitive
@@ -1306,10 +1300,10 @@ packages:
     dependency: transitive
     description:
       name: safe_local_storage
-      sha256: ede4eb6cb7d88a116b3d3bf1df70790b9e2038bc37cb19112e381217c74d9440
+      sha256: e9a21b6fec7a8aa62cc2585ff4c1b127df42f3185adbd2aca66b47abe2e80236
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "2.0.1"
   sanitize_html:
     dependency: transitive
     description:
@@ -1322,10 +1316,10 @@ packages:
     dependency: "direct main"
     description:
       name: screen_brightness
-      sha256: "970d1cc68f8ed7bf3a539924a3cd51c06af138bbf345b6daa4af8ce4e8527ebf"
+      sha256: a43fdbccd5b90044f68057412dde7715cd7499a4c24f5d5da7e01ed4cf41e0af
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0+1"
+    version: "2.0.0+2"
   screen_brightness_android:
     dependency: transitive
     description:
@@ -1664,10 +1658,10 @@ packages:
     dependency: transitive
     description:
       name: uri_parser
-      sha256: "6543c9fd86d2862fac55d800a43e67c0dcd1a41677cb69c2f8edfe73bbcf1835"
+      sha256: ff4d2c720aca3f4f7d5445e23b11b2d15ef8af5ddce5164643f38ff962dcb270
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "3.0.0"
   url_launcher:
     dependency: "direct main"
     description:

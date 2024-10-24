@@ -102,6 +102,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoTogglePlay:
         case EntryAction.videoReplay10:
         case EntryAction.videoSkip10:
+        case EntryAction.videoShowPreviousFrame:
+        case EntryAction.videoShowNextFrame:
         case EntryAction.openVideo:
           return targetEntry.isPureVideo;
         case EntryAction.rotateScreen:
@@ -242,6 +244,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoTogglePlay:
       case EntryAction.videoReplay10:
       case EntryAction.videoSkip10:
+      case EntryAction.videoShowPreviousFrame:
+      case EntryAction.videoShowNextFrame:
       case EntryAction.openVideo:
         final controller = context.read<VideoConductor>().getController(targetEntry);
         if (controller != null) {

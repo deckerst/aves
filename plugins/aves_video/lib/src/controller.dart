@@ -69,6 +69,8 @@ abstract class AvesVideoController with ABRepeatMixin {
 
   Future<void> seekToProgress(double progress) => seekTo((duration * progress.clamp(0, 1)).toInt());
 
+  Future<void> skipFrames(int frameCount);
+
   Listenable get playCompletedListenable;
 
   VideoStatus get status;

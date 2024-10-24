@@ -120,8 +120,17 @@ dependencies:
 
 dependency_overrides:
   # media_kit_video v1.2.4 depends on a specific old version of screen_brightness
-  media_kit_video: ^1.0.0
   screen_brightness: ^2.0.0
+  media_kit:
+    git:
+      url: https://github.com/deckerst/media-kit.git
+      ref: frame-stepping
+      path: media_kit
+  media_kit_video:
+    git:
+      url: https://github.com/deckerst/media-kit.git
+      ref: frame-stepping
+      path: media_kit_video
 
 dev_dependencies:
   flutter_test:
