@@ -20,7 +20,6 @@ import 'package:aves/widgets/common/map/attribution.dart';
 import 'package:aves/widgets/common/map/buttons/panel.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
-import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
@@ -242,50 +241,6 @@ class _GeoMapState extends State<GeoMap> {
           child = _decorateMap(context, overlay);
         }
 
-        child = Hero(
-          tag: 'map',
-          flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
-            final pushing = flightDirection == HeroFlightDirection.push;
-            final fromMediaQuery = MediaQuery.of(fromHeroContext);
-            final toMediaQuery = MediaQuery.of(toHeroContext);
-            final fromRenderBox = fromHeroContext.findRenderObject()! as RenderBox;
-            final toRenderBox = toHeroContext.findRenderObject()! as RenderBox;
-            final fromTheme = fromHeroContext.read<MapThemeData>();
-            final toTheme = toHeroContext.read<MapThemeData>();
-
-            return DefaultTextStyle(
-              style: DefaultTextStyle.of(toHeroContext).style,
-              child: AnimatedBuilder(
-                animation: animation,
-                builder: (context, child) {
-                  final t = pushing ? animation.value : 1 - animation.value;
-                  return MapTheme(
-                    interactive: false,
-                    showCoordinateFilter: false,
-                    navigationButton: toTheme.navigationButton,
-                    visualDensity: VisualDensity.lerp(fromTheme.visualDensity, toTheme.visualDensity, t),
-                    child: MediaQuery(
-                      data: toMediaQuery.copyWith(
-                        padding: EdgeInsets.lerp(fromMediaQuery.padding, toMediaQuery.padding, t),
-                        viewPadding: EdgeInsets.lerp(fromMediaQuery.viewPadding, toMediaQuery.viewPadding, t),
-                      ),
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: SizedBox.fromSize(
-                          size: Size.lerp(fromRenderBox.size, toRenderBox.size, t),
-                          child: child,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: toHeroContext.widget,
-              ),
-            );
-          },
-          child: child,
-        );
-
         final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +274,9 @@ class _GeoMapState extends State<GeoMap> {
               }
               Widget replacement = Stack(
                 children: [
-                  const MapDecorator(),
+                  const MapDecorator(
+                    child: SizedBox(),
+                  ),
                   _buildButtonPanel(context),
                 ],
               );
@@ -550,7 +507,7 @@ class _GeoMapState extends State<GeoMap> {
     );
   }
 
-  Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child);
+  Widget _decorateMap(BuildContext context, Widget? child) => MapDecorator(child: child!);
 
   Widget _buildButtonPanel(BuildContext context) {
     if (settings.useTvLayout) return const SizedBox();
