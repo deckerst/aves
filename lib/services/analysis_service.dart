@@ -13,6 +13,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AnalysisService {
@@ -99,7 +100,7 @@ class Analyzer with WidgetsBindingObserver {
   Analyzer() {
     debugPrint('$runtimeType create');
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$Analyzer',
         object: this,
@@ -113,7 +114,7 @@ class Analyzer with WidgetsBindingObserver {
   void dispose() {
     debugPrint('$runtimeType dispose');
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _stopUpdateTimer();
     _controller?.dispose();

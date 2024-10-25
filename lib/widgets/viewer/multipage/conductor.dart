@@ -4,6 +4,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class MultiPageConductor {
   final List<MultiPageController> _controllers = [];
@@ -12,7 +13,7 @@ class MultiPageConductor {
 
   MultiPageConductor() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$MultiPageConductor',
         object: this,
@@ -22,7 +23,7 @@ class MultiPageConductor {
 
   Future<void> dispose() async {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     await _disposeAll();
     _controllers.clear();

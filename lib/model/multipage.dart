@@ -4,6 +4,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class MultiPageInfo {
   final AvesEntry mainEntry;
@@ -18,7 +19,7 @@ class MultiPageInfo {
     required List<SinglePageInfo> pages,
   }) : _pages = pages {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$MultiPageInfo',
         object: this,
@@ -44,7 +45,7 @@ class MultiPageInfo {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _transientEntries.forEach((entry) => entry.dispose());
   }

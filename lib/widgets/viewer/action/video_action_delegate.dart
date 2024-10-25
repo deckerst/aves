@@ -25,6 +25,7 @@ import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 import 'package:provider/provider.dart';
 
 class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
@@ -35,7 +36,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     required this.collection,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$VideoActionDelegate',
         object: this,
@@ -45,7 +46,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     stopOverlayHidingTimer();
   }
