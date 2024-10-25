@@ -141,7 +141,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
           final rawTags = formatCount.map((key, value) {
             final count = value.length;
             // remove duplicate names, so number of displayed names may not match displayed count
-            final names = value.whereNotNull().toSet().toList()..sort(compareAsciiUpperCase);
+            final names = value.nonNulls.toSet().toList()..sort(compareAsciiUpperCase);
             return MapEntry(key, '$count items: ${names.join(', ')}');
           });
           directories.add(MetadataDirectory('Attachments', _toSortedTags(rawTags)));
@@ -157,7 +157,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
       if (value.isEmpty) return null;
       final tagName = tagKV.key as String;
       return MapEntry(tagName, value);
-    }).whereNotNull()));
+    }).nonNulls));
     return tags;
   }
 }

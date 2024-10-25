@@ -7,12 +7,11 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Set<AvesEntry> entries) {
-    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
+    final storageDirs = entries.map((e) => e.storageDirectory).nonNulls.toSet();
     return checkStoragePermissionForAlbums(context, storageDirs, entries: entries);
   }
 

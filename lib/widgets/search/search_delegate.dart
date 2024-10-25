@@ -29,7 +29,6 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -124,7 +123,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                       filters: [
                         queryFilter,
                         ...visibleTypeFilters,
-                      ].whereNotNull().where((f) => containQuery(f.getLabel(context))).toList(),
+                      ].nonNulls.where((f) => containQuery(f.getLabel(context))).toList(),
                       // usually perform hero animation only on tapped chips,
                       // but we also need to animate the query chip when it is selected by submitting the search query
                       heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,

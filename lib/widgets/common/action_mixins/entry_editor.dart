@@ -109,7 +109,7 @@ mixin EntryEditorMixin {
   Future<Set<String>> getTagsFromFilters(Set<CollectionFilter> filters, AvesEntry entry) async {
     final tags = filters.whereType<TagFilter>().map((v) => v.tag).toSet();
     final placeholderTags = await Future.wait(filters.whereType<PlaceholderFilter>().map((v) => v.toTag(entry)));
-    tags.addAll(placeholderTags.whereNotNull().where((v) => v.isNotEmpty));
+    tags.addAll(placeholderTags.nonNulls.where((v) => v.isNotEmpty));
     return tags;
   }
 

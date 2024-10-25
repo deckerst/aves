@@ -1,5 +1,4 @@
 import 'package:aves/model/db/db_sqflite.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -338,11 +337,11 @@ class LocalMediaDbUpgrader {
 
     // clean duplicates introduced before Aves v1.7.1
     final duplicatedContentIdRows = await db.query(entryTable, columns: ['contentId'], groupBy: 'contentId', having: 'COUNT(id) > 1 AND contentId IS NOT NULL');
-    final duplicatedContentIds = duplicatedContentIdRows.map((row) => row['contentId'] as int?).whereNotNull().toSet();
+    final duplicatedContentIds = duplicatedContentIdRows.map((row) => row['contentId'] as int?).nonNulls.toSet();
     final duplicateIds = <int>{};
     await Future.forEach(duplicatedContentIds, (contentId) async {
       final rows = await db.query(entryTable, columns: ['id'], where: 'contentId = ?', whereArgs: [contentId]);
-      final ids = rows.map((row) => row['id'] as int?).whereNotNull().toList()..sort();
+      final ids = rows.map((row) => row['id'] as int?).nonNulls.toList()..sort();
       if (ids.length > 1) {
         ids.removeAt(0);
         duplicateIds.addAll(ids);

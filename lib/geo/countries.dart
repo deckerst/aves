@@ -41,7 +41,7 @@ class CountryTopology {
     return Map.fromEntries(numericMap.entries.map((kv) {
       final code = _countryOfNumeric(kv.key);
       return code != null ? MapEntry(code, kv.value) : null;
-    }).whereNotNull());
+    }).nonNulls);
   }
 
   // returns a map of the given positions by the ISO 3166-1 numeric code of the country containing them

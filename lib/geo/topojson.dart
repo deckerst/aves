@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 // cf https://github.com/topojson/topojson-specification
@@ -60,7 +59,7 @@ class Topology extends TopologyJsonObject {
           final name = kv.key;
           final geometry = Geometry.build(kv.value);
           return geometry != null ? MapEntry(name, geometry) : null;
-        }).whereNotNull()),
+        }).nonNulls),
         arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<List>().map((position) => position.cast<num>()).toList()).toList(),
         transform = data.containsKey('transform') ? Transform.parse((data['transform'] as Map).cast<String, dynamic>()) : null,
         super.parse();
@@ -238,7 +237,7 @@ class GeometryCollection extends Geometry {
   final List<Geometry> geometries;
 
   GeometryCollection.parse(super.data)
-      : geometries = (data['geometries'] as List).cast<Map<String, dynamic>>().map(Geometry.build).whereNotNull().toList(),
+      : geometries = (data['geometries'] as List).cast<Map<String, dynamic>>().map(Geometry.build).nonNulls.toList(),
         super.parse();
 
   @override

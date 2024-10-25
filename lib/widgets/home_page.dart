@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
       unawaited(appInventory.initAppNames());
     }
 
-    if (intentData.values.whereNotNull().isNotEmpty) {
+    if (intentData.values.nonNulls.isNotEmpty) {
       await reportService.log('Intent data=$intentData');
       var intentUri = intentData[IntentDataKeys.uri] as String?;
       final intentMimeType = intentData[IntentDataKeys.mimeType] as String?;
@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage> {
       }
       if (_initialFilters == null) {
         final extraFilters = (intentData[IntentDataKeys.filters] as List?)?.cast<String>();
-        _initialFilters = extraFilters?.map(CollectionFilter.fromJson).whereNotNull().toSet();
+        _initialFilters = extraFilters?.map(CollectionFilter.fromJson).nonNulls.toSet();
       }
       _initialExplorerPath = intentData[IntentDataKeys.explorerPath] as String?;
 

@@ -163,7 +163,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       context: context,
       builder: (context) => VideoStreamSelectionDialog(
         streams: Map.fromEntries(streams.map((stream) {
-          final selectedStream = currentSelectedStreams.whereNotNull().firstWhereOrNull((v) => v.type == stream.type);
+          final selectedStream = currentSelectedStreams.nonNulls.firstWhereOrNull((v) => v.type == stream.type);
           final selected = selectedStream != null && selectedStream.index == stream.index;
           return MapEntry(stream, selected);
         })),

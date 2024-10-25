@@ -7,7 +7,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 typedef XmpExtractedCard = (Map<String, XmpProp>, List<XmpCardData>?);
@@ -28,7 +27,7 @@ class XmpCard extends StatefulWidget {
   }) {
     directStruct = structByIndex[null];
 
-    final length = structByIndex.keys.whereNotNull().fold(0, max);
+    final length = structByIndex.keys.nonNulls.fold(0, max);
     indexedStructs = length > 0 ? [for (var i = 0; i < length; i++) structByIndex[i + 1] ?? const ({}, null)] : null;
   }
 

@@ -398,7 +398,7 @@ class _GeoMapState extends State<GeoMap> {
                 )
               : null;
         })
-        .whereNotNull()
+        .nonNulls
         .toList();
 
     return Fluster<GeoEntry<AvesEntry>>(

@@ -82,7 +82,7 @@ class SvgMetadataService {
         ..._textElements.map((name) {
           final value = root.getElement(name)?.innerText;
           return value != null ? MapEntry(formatKey(name), value) : null;
-        }).whereNotNull(),
+        }).nonNulls,
       ]);
 
       final metadata = root.getElement(_metadataElement);

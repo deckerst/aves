@@ -12,7 +12,6 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 enum EntryDataType { basic, aspectRatio, catalog, address, references }
@@ -392,7 +391,7 @@ class AvesEntry with AvesEntryBase {
       _addressDetails?.countryName,
       _addressDetails?.adminArea,
       _addressDetails?.locality,
-    }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
+    }.nonNulls.where((v) => v.isNotEmpty).join(', ');
   }
 
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {

@@ -23,7 +23,7 @@ mixin CountryMixin on SourceBase {
     } else {
       countryCodes ??= {};
       if (entries != null) {
-        countryCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull());
+        countryCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).nonNulls);
       }
       countryCodes.forEach((countryCode) {
         _filterEntryCountMap.remove(countryCode);

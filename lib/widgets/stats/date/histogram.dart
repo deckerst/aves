@@ -78,7 +78,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         _firstDate = normalizeDate(firstDate);
         _lastDate = normalizeDate(lastDate);
 
-        final dates = entriesByDateDescending.map((entry) => entry.bestDate).whereNotNull();
+        final dates = entriesByDateDescending.map((entry) => entry.bestDate).nonNulls;
         _entryCountPerDate.addAll(groupBy<DateTime, DateTime>(dates, normalizeDate).map((k, v) => MapEntry(k, v.length)));
         if (_entryCountPerDate.isNotEmpty) {
           // discrete points

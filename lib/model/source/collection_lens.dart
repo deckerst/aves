@@ -54,7 +54,7 @@ class CollectionLens with ChangeNotifier {
     this.stackDevelopedRaws = true,
     this.fixedSort = false,
     this.fixedSelection,
-  })  : filters = (filters ?? {}).whereNotNull().toSet(),
+  })  : filters = (filters ?? {}).nonNulls.toSet(),
         burstPatterns = settings.collectionBurstPatterns,
         sectionFactor = settings.collectionSectionFactor,
         sortFactor = settings.collectionSortFactor,

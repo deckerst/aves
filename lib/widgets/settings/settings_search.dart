@@ -5,7 +5,6 @@ import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class SettingsSearchDelegate extends AvesSearchDelegate {
@@ -64,7 +63,7 @@ class SettingsSearchDelegate extends AvesSearchDelegate {
             final loaders = snapshot.data;
             if (loaders == null) return const SizedBox();
 
-            final children = loaders.whereNotNull().expand((builder) => builder(context)).toList();
+            final children = loaders.nonNulls.expand((builder) => builder(context)).toList();
             return children.isEmpty
                 ? EmptyContent(
                     icon: AIcons.settings,
