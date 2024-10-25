@@ -8,6 +8,7 @@ import 'package:aves/model/vaults/details.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_screen_state/aves_screen_state.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,9 @@ class Vaults extends ChangeNotifier {
 
   static const _fileScheme = 'file';
 
-  Vaults._private();
+  Vaults._private() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllVaults();

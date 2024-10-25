@@ -5,6 +5,10 @@ import 'package:flutter/painting.dart';
 class HighlightInfo extends ChangeNotifier {
   final EventBus eventBus = EventBus();
 
+  HighlightInfo() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
+
   void trackItem<T>(
     T? item, {
     TrackPredicate? predicate,

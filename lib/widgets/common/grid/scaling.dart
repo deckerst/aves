@@ -196,12 +196,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     _scaledSizeNotifier!.dispose();
     _scaledSizeNotifier = null;
 
-    final overlayEntry = _overlayEntry;
+    _overlayEntry
+      ?..remove()
+      ..dispose();
     _overlayEntry = null;
-    if (overlayEntry != null) {
-      overlayEntry.remove();
-      overlayEntry.dispose();
-    }
 
     _applyingScale = true;
     final tileExtentController = context.read<TileExtentController>();
