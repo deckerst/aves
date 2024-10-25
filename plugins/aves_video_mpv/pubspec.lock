@@ -180,8 +180,8 @@ packages:
     dependency: "direct main"
     description:
       path: media_kit
-      ref: frame-stepping
-      resolved-ref: "209221d605a0b2c34379e799a8e001cc359e6183"
+      ref: fd-support
+      resolved-ref: f5d6f97bc74bed33f231ea238fb47af0c57d2e07
       url: "https://github.com/deckerst/media-kit.git"
     source: git
     version: "1.1.11"
@@ -197,8 +197,8 @@ packages:
     dependency: "direct main"
     description:
       path: media_kit_video
-      ref: frame-stepping
-      resolved-ref: "209221d605a0b2c34379e799a8e001cc359e6183"
+      ref: HEAD
+      resolved-ref: fe317dba5d9e1bc25cb0b564a1f25607b0c7de2f
       url: "https://github.com/deckerst/media-kit.git"
     source: git
     version: "1.2.5"

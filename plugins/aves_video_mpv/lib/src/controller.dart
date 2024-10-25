@@ -214,10 +214,15 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   Future<void> skipFrames(int frameCount) async {
-    if (frameCount > 0) {
-      await _instance.frameStep();
-    } else if (frameCount < 0) {
-      await _instance.frameBackStep();
+    final platform = _instance.platform;
+    if (platform is NativePlayer) {
+      if (frameCount > 0) {
+        await platform.command(['frame-step']);
+      } else if (frameCount < 0) {
+        await platform.command(['frame-back-step']);
+      }
+    } else {
+      throw Exception('Platform player ${platform.runtimeType} does not support frame stepping');
     }
   }
 

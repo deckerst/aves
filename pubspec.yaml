@@ -124,12 +124,11 @@ dependency_overrides:
   media_kit:
     git:
       url: https://github.com/deckerst/media-kit.git
-      ref: frame-stepping
+      ref: fd-support
       path: media_kit
   media_kit_video:
     git:
       url: https://github.com/deckerst/media-kit.git
-      ref: frame-stepping
       path: media_kit_video
 
 dev_dependencies:
