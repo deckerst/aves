@@ -59,6 +59,7 @@ class CollectionLens with ChangeNotifier {
         sectionFactor = settings.collectionSectionFactor,
         sortFactor = settings.collectionSortFactor,
         sortReverse = settings.collectionSortReverse {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;

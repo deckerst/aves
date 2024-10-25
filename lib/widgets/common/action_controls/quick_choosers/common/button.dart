@@ -99,12 +99,10 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
   }
 
   void _clearChooserOverlayEntry() {
-    final overlayEntry = _chooserOverlayEntry;
+    _chooserOverlayEntry
+      ?..remove()
+      ..dispose();
     _chooserOverlayEntry = null;
-    if (overlayEntry != null) {
-      overlayEntry.remove();
-      overlayEntry.dispose();
-    }
   }
 
   void _showChooser(LongPressStartDetails details) {

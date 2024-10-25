@@ -33,8 +33,8 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
@@ -56,7 +56,9 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
   @override
   SettingsStore get store => settingsStore;
 
-  Settings._private();
+  Settings._private() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
 
   Future<void> init({required bool monitorPlatformSettings}) async {
     await store.init();

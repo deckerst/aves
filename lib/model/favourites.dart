@@ -12,7 +12,9 @@ final Favourites favourites = Favourites._private();
 class Favourites with ChangeNotifier {
   Set<FavouriteRow> _rows = {};
 
-  Favourites._private();
+  Favourites._private() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllFavourites();

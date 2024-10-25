@@ -310,12 +310,10 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
               onScaleEnd = (details) {
                 valueNotifier?.dispose();
 
-                final overlayEntry = _actionFeedbackOverlayEntry;
+                _actionFeedbackOverlayEntry
+                  ?..remove()
+                  ..dispose();
                 _actionFeedbackOverlayEntry = null;
-                if (overlayEntry != null) {
-                  overlayEntry.remove();
-                  overlayEntry.dispose();
-                }
               };
             }
 

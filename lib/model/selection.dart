@@ -9,6 +9,10 @@ class Selection<T> extends ChangeNotifier {
 
   Set<T> get selectedItems => _selectedItems;
 
+  Selection() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
+
   void browse() {
     if (!_isSelecting) return;
     _isSelecting = false;
