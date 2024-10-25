@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Map: create shortcut to custom region and filters
 - Video: frame stepping forward/backward actions
 
+### Changed
+
+- upgraded Flutter to stable v3.24.4
+
 ### Fixed
 
 - crash when loading large collection
