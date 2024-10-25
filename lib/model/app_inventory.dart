@@ -71,7 +71,7 @@ class Package {
         currentLabel,
         englishLabel,
         ...ownedDirs,
-      ].whereNotNull().map(normalizePotentialDir).toSet();
+      ].nonNulls.map(normalizePotentialDir).toSet();
 
   static String normalizePotentialDir(String dir) {
     return dir.replaceAll('_', ' ').trim().toLowerCase();

@@ -35,7 +35,7 @@ class OrFilter extends CollectionFilter {
 
   factory OrFilter.fromMap(Map<String, dynamic> json) {
     return OrFilter(
-      (json['filters'] as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet(),
+      (json['filters'] as List).cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet(),
       reversed: json['reversed'] ?? false,
     );
   }

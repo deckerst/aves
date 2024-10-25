@@ -71,7 +71,7 @@ mixin AlbumMixin on SourceBase {
 
   void addDirectories({required Set<String?> albums, bool notify = true}) {
     if (!_directories.containsAll(albums)) {
-      _directories.addAll(albums.whereNotNull());
+      _directories.addAll(albums.nonNulls);
       _onAlbumChanged(notify: notify);
     }
   }
@@ -119,7 +119,7 @@ mixin AlbumMixin on SourceBase {
     } else {
       directories ??= {};
       if (entries != null) {
-        directories.addAll(entries.map((entry) => entry.directory).whereNotNull());
+        directories.addAll(entries.map((entry) => entry.directory).nonNulls);
       }
       directories.forEach((directory) {
         _filterEntryCountMap.remove(directory);
@@ -202,7 +202,7 @@ mixin AlbumMixin on SourceBase {
       return dirPath;
     }
 
-    final otherAlbumsOnDevice = _directories.whereNotNull().where((item) => item != dirPath).map((v) => v.toLowerCase()).toSet();
+    final otherAlbumsOnDevice = _directories.nonNulls.where((item) => item != dirPath).map((v) => v.toLowerCase()).toSet();
     final uniqueNameInDevice = unique(dirPath, otherAlbumsOnDevice);
     if (uniqueNameInDevice.length <= relativeDir.length) {
       return uniqueNameInDevice;

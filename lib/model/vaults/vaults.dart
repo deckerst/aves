@@ -53,7 +53,7 @@ class Vaults extends ChangeNotifier {
   }
 
   Future<void> remove(Set<String> dirPaths) async {
-    final details = dirPaths.map(detailsForPath).whereNotNull().toSet();
+    final details = dirPaths.map(detailsForPath).nonNulls.toSet();
     if (details.isEmpty) return;
 
     await localMediaDb.removeVaults(details);
@@ -160,7 +160,7 @@ class Vaults extends ChangeNotifier {
     final vaultName = detailsForPath(dirPath)?.name;
     if (vaultName == null) return newEntries;
 
-    final knownPaths = source.allEntries.where((v) => v.origin == EntryOrigins.vault && v.directory == dirPath).map((v) => v.path).whereNotNull().toSet();
+    final knownPaths = source.allEntries.where((v) => v.origin == EntryOrigins.vault && v.directory == dirPath).map((v) => v.path).nonNulls.toSet();
     final untrackedPaths = await storageService.getUntrackedVaultPaths(vaultName, knownPaths);
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked vault items');

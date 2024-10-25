@@ -152,9 +152,9 @@ mixin LocationMixin on CountryMixin, StateMixin {
   }
 
   void updateLocations() {
-    final locations = visibleEntries.map((entry) => entry.addressDetails).whereNotNull().toList();
+    final locations = visibleEntries.map((entry) => entry.addressDetails).nonNulls.toList();
 
-    final updatedPlaces = locations.map((address) => address.place).whereNotNull().where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
+    final updatedPlaces = locations.map((address) => address.place).nonNulls.where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedPlaces, sortedPlaces)) {
       sortedPlaces = List.unmodifiable(updatedPlaces);
       eventBus.fire(PlacesChangedEvent());
@@ -195,7 +195,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       final code = getCode(address);
       if (code == null || code.isEmpty) return null;
       return MapEntry(code, getName(address));
-    }).whereNotNull());
+    }).nonNulls);
     return namesByCode.entries.map((kv) {
       final code = kv.key;
       final name = kv.value;

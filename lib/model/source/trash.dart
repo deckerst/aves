@@ -41,7 +41,7 @@ mixin TrashMixin on SourceBase {
   Future<Set<AvesEntry>> recoverUntrackedTrashItems() async {
     final newEntries = <AvesEntry>{};
 
-    final knownPaths = allEntries.map((v) => v.trashDetails?.path).whereNotNull().toSet();
+    final knownPaths = allEntries.map((v) => v.trashDetails?.path).nonNulls.toSet();
     final untrackedPaths = await storageService.getUntrackedTrashPaths(knownPaths);
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked bin items');

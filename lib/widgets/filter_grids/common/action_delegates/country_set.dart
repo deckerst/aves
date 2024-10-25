@@ -8,7 +8,6 @@ import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart'
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/states_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter> {
@@ -95,7 +94,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
 
   void _showStates(BuildContext context) {
     final filters = getSelectedFilters(context);
-    final countryCodes = filters.map((v) => v.code).where(GeoStates.stateCountryCodes.contains).whereNotNull().toSet();
+    final countryCodes = filters.map((v) => v.code).where(GeoStates.stateCountryCodes.contains).nonNulls.toSet();
     Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StateListPage.routeName),

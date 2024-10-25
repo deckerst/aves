@@ -1,7 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 
 mixin NavigationSettings on SettingsAccess {
   bool get mustBackTwiceToExit => getBool(SettingKeys.mustBackTwiceToExitKey) ?? SettingsDefaults.mustBackTwiceToExit;
@@ -14,7 +13,7 @@ mixin NavigationSettings on SettingsAccess {
 
   HomePageSetting get homePage => getEnumOrDefault(SettingKeys.homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
-  Set<CollectionFilter> get homeCustomCollection => (getStringList(SettingKeys.homeCustomCollectionKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+  Set<CollectionFilter> get homeCustomCollection => (getStringList(SettingKeys.homeCustomCollectionKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
   String? get homeCustomExplorerPath => getString(SettingKeys.homeCustomExplorerPathKey);
 

@@ -146,7 +146,7 @@ class Covers {
             if (colorValue != null) 'color': colorValue,
           };
         })
-        .whereNotNull()
+        .nonNulls
         .toList();
     return jsonList.isNotEmpty ? jsonList : null;
   }

@@ -302,7 +302,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
+    final storageDirs = entries.map((e) => e.storageDirectory).nonNulls.toSet();
     final todoCount = entries.length;
 
     if (!await showSkippableConfirmationDialog(
@@ -408,14 +408,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     Future<Set<EntryDataType>> Function(AvesEntry entry) op, {
     bool showResult = true,
   }) async {
-    final selectionDirs = todoItems.map((e) => e.directory).whereNotNull().toSet();
+    final selectionDirs = todoItems.map((e) => e.directory).nonNulls.toSet();
     final todoCount = todoItems.length;
 
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoItems)) return;
 
     Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
-    Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
-    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).whereNotNull().toSet();
+    Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).nonNulls.toSet();
+    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).nonNulls.toSet();
 
     final dataTypes = <EntryDataType>{};
     final source = context.read<CollectionSource>();

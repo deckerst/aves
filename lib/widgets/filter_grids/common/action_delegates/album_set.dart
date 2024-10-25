@@ -282,7 +282,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoAlbums = filters.map((v) => v.album).toSet();
-    final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
+    final filledAlbums = todoEntries.map((e) => e.directory).nonNulls.toSet();
     final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
 
     if (enableBin && filledAlbums.isNotEmpty) {
@@ -338,7 +338,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     if (todoEntries.isEmpty) return;
 
     final source = context.read<CollectionSource>();
-    final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
+    final filledAlbums = todoEntries.map((e) => e.directory).nonNulls.toSet();
 
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);

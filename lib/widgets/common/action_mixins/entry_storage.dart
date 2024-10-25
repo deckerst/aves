@@ -106,7 +106,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final exportedOps = successOps.where((e) => !e.skipped).toSet();
-        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet();
+        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).nonNulls.toSet();
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
         source.resumeMonitoring();
@@ -176,7 +176,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return;
 
     // permission for modification at origins
-    final originAlbums = entries.map((e) => e.directory).whereNotNull().toSet();
+    final originAlbums = entries.map((e) => e.directory).nonNulls.toSet();
     if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return;
 
     final hasEnoughSpaceByDestination = await Future.wait(destinationAlbums.map((destinationAlbum) {
@@ -232,7 +232,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
         // move
         final movedOps = successOps.where((v) => !v.skipped && !v.deleted).toSet();
-        final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).whereNotNull().toSet();
+        final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).nonNulls.toSet();
         await source.updateAfterMove(
           todoEntries: entries,
           moveType: moveType,

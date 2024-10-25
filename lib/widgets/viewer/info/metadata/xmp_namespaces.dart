@@ -99,7 +99,7 @@ class XmpNamespace extends Equatable {
           cards.forEach((card) => extracted |= card.extract(prop));
           return extracted ? null : prop;
         })
-        .whereNotNull()
+        .nonNulls
         .toList()
       ..sort();
 

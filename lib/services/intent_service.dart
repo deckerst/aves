@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
@@ -54,7 +53,7 @@ class IntentService {
         'initialFilters': initialFilters?.map((filter) => filter.toJson()).toList(),
       }).listen(
         (data) {
-          final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet();
+          final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
           completer.complete(result);
         },
         onError: completer.completeError,

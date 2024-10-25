@@ -265,11 +265,11 @@ class MediaStoreSource extends CollectionSource {
       final contentId = int.tryParse(idString);
       if (contentId == null) return null;
       return MapEntry(contentId, uri);
-    }).whereNotNull());
+    }).nonNulls);
 
     // clean up obsolete entries
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(changedUriByContentId.keys.toList())).toSet();
-    final obsoleteUris = obsoleteContentIds.map((contentId) => changedUriByContentId[contentId]).whereNotNull().toSet();
+    final obsoleteUris = obsoleteContentIds.map((contentId) => changedUriByContentId[contentId]).nonNulls.toSet();
     await removeEntries(obsoleteUris, includeTrash: false);
     obsoleteContentIds.forEach(changedUriByContentId.remove);
 
