@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Map: create shortcut to custom region and filters
 - Video: frame stepping forward/backward actions
+- English (Shavian) translation (thanks Paranoid Android)
 
 ### Changed
 
