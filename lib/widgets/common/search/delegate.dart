@@ -5,6 +5,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 import 'package:provider/provider.dart';
 
 abstract class AvesSearchDelegate extends SearchDelegate {
@@ -21,7 +22,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     required super.searchFieldStyle,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesSearchDelegate',
         object: this,
@@ -137,7 +138,7 @@ abstract class AvesSearchDelegate extends SearchDelegate {
   @mustCallSuper
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     currentBodyNotifier.dispose();
     queryTextController.dispose();

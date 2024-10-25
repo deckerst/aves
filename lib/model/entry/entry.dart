@@ -13,6 +13,7 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 enum EntryDataType { basic, aspectRatio, catalog, address, references }
 
@@ -72,7 +73,7 @@ class AvesEntry with AvesEntryBase {
     this.stackedEntries,
   }) : id = id ?? 0 {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesEntry',
         object: this,
@@ -188,7 +189,7 @@ class AvesEntry with AvesEntryBase {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     visualChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
