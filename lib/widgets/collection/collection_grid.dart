@@ -421,7 +421,7 @@ class _CollectionScaler extends StatelessWidget {
       ),
       mosaicItemBuilder: (index, targetExtent) => DecoratedBox(
         decoration: BoxDecoration(
-          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withOpacity(.9),
+          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withAlpha((255.0 * .9).round()),
           border: Border.all(
             color: borderColor,
             width: borderWidth,

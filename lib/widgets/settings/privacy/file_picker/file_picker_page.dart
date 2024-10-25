@@ -141,7 +141,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
       height: kMinInteractiveDimension,
       child: DefaultTextStyle(
         style: crumbStyle.copyWith(
-          color: crumbStyle.color!.withOpacity(.4),
+          color: crumbStyle.color!.withAlpha((255.0 * .4).round()),
           fontWeight: FontWeight.w500,
         ),
         child: CrumbLine(

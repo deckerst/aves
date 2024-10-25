@@ -103,7 +103,7 @@ class _ContentState extends State<_Content> {
                   return ListTile(
                     title: DefaultTextStyle(
                       style: theme.textTheme.bodyLarge!.copyWith(
-                        color: isSelected ? colors.primary : colors.onSurface.withOpacity(0.64),
+                        color: isSelected ? colors.primary : colors.onSurface.withAlpha((255.0 * .64).round()),
                       ),
                       child: _getTitle(_Section.values[index]),
                     ),

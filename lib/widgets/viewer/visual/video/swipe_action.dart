@@ -43,9 +43,9 @@ class SwipeActionFeedback extends StatelessWidget {
   static const Radius radius = Radius.circular(width / 2);
   static const double borderWidth = 2;
   static const Color borderColor = Colors.white;
-  static final Color fillColor = Colors.white.withOpacity(.8);
-  static final Color backgroundColor = Colors.black.withOpacity(.2);
-  static final Color innerBorderColor = Colors.black.withOpacity(.5);
+  static final Color fillColor = Colors.white.withAlpha((255.0 * .8).round());
+  static final Color backgroundColor = Colors.black.withAlpha((255.0 * .2).round());
+  static final Color innerBorderColor = Colors.black.withAlpha((255.0 * .5).round());
   static const Color iconColor = Colors.white;
   static const Color shadowColor = Colors.black;
 
