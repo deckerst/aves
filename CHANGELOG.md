@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Map: create shortcut to custom region and filters
+- Video: frame stepping forward/backward actions
 
 ### Fixed
 
