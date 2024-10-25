@@ -16,7 +16,7 @@ class SliverAppBarTitleWrapper extends StatelessWidget {
     final toolbarOpacity = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!.toolbarOpacity;
     final baseColor = (DefaultTextStyle.of(context).style.color ?? Theme.of(context).textTheme.titleLarge!.color!);
     return DefaultTextStyle.merge(
-      style: TextStyle(color: baseColor.withOpacity(toolbarOpacity)),
+      style: TextStyle(color: baseColor.withAlpha((255.0 * toolbarOpacity).round())),
       child: child,
     );
   }

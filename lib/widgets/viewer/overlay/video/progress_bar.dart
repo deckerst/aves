@@ -119,7 +119,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                                         if (!progress.isFinite) progress = 0.0;
                                         return LinearProgressIndicator(
                                           value: progress,
-                                          backgroundColor: theme.colorScheme.onSurface.withOpacity(.2),
+                                          backgroundColor: theme.colorScheme.onSurface.withAlpha((255.0 * .2).round()),
                                         );
                                       }),
                                 ),

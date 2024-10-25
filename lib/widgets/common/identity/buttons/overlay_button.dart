@@ -175,7 +175,7 @@ class OverlayTextButton extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
           foregroundColor: WidgetStateProperty.all<Color>(theme.colorScheme.onSurface),
-          overlayColor: theme.isDark ? WidgetStateProperty.all<Color>(Colors.white.withOpacity(0.12)) : null,
+          overlayColor: theme.isDark ? WidgetStateProperty.all<Color>(Colors.white.withAlpha((255.0 * .12).round())) : null,
           minimumSize: _minSize,
           side: WidgetStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
           shape: WidgetStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(

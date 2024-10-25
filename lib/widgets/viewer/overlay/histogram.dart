@@ -138,7 +138,7 @@ class _HistogramPainter extends CustomPainter {
         Path()..addPolygon(polyline, true),
         Paint()
           ..style = PaintingStyle.fill
-          ..color = color.withOpacity(.5));
+          ..color = color.withAlpha((255.0 * .5).round()));
   }
 
   Color _getChannelColor(HistogramChannel channel) {

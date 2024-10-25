@@ -25,7 +25,7 @@ class EmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary.withOpacity(.5);
+    final color = Theme.of(context).colorScheme.primary.withAlpha((255.0 * .5).round());
     final durations = context.watch<DurationsData>();
     return Padding(
       padding: safeBottom

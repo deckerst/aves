@@ -43,7 +43,7 @@ class PageNavTile extends StatelessWidget {
             ? Builder(
                 builder: (context) => DefaultTextStyle.merge(
                   style: TextStyle(
-                    color: IconTheme.of(context).color!.withOpacity(.6),
+                    color: IconTheme.of(context).color!.withAlpha((255.0 * .6).round()),
                   ),
                   child: trailing!,
                 ),
