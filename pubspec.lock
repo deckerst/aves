@@ -473,10 +473,10 @@ packages:
     dependency: "direct main"
     description:
       name: floating
-      sha256: "62924c96915823ce955da32b26766e11583ce437990a601032191d6d4b0b0764"
+      sha256: aaebbbf0cef0454f68476edb6d79ca9734ee0e0080a03cee75db42fcc462efb5
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "5.0.0"
   fluster:
     dependency: "direct main"
     description:
@@ -904,9 +904,9 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit
-      ref: fd-support
-      resolved-ref: f5d6f97bc74bed33f231ea238fb47af0c57d2e07
-      url: "https://github.com/deckerst/media-kit.git"
+      ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
+      resolved-ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
+      url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.1.11"
   media_kit_libs_android_video:
@@ -921,9 +921,9 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit_video
-      ref: HEAD
-      resolved-ref: fe317dba5d9e1bc25cb0b564a1f25607b0c7de2f
-      url: "https://github.com/deckerst/media-kit.git"
+      ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
+      resolved-ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
+      url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.2.5"
   meta:
@@ -1060,10 +1060,10 @@ packages:
     dependency: transitive
     description:
       name: path_parsing
-      sha256: e3e67b1629e6f7e8100b367d3db6ba6af4b1f0bb80f64db18ef1fbabd2fa9ccf
+      sha256: "45f7d6bba1128761de5540f39d5ca000ea8a1f22f06b76b61094a60a2997bd0e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   path_provider:
     dependency: transitive
     description:
