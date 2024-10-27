@@ -6,6 +6,7 @@ import 'package:aves_magnifier/src/scale/scale_level.dart';
 import 'package:aves_magnifier/src/scale/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class AvesMagnifierController {
   final StreamController<MagnifierState> _stateStreamController = StreamController.broadcast();
@@ -21,7 +22,7 @@ class AvesMagnifierController {
     MagnifierState? initialState,
   }) : super() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesMagnifierController',
         object: this,
@@ -41,7 +42,7 @@ class AvesMagnifierController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _disposed = true;
     _stateStreamController.close();

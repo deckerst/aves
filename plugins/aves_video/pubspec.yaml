@@ -12,6 +12,7 @@ dependencies:
     path: ../aves_model
   aves_utils:
     path: ../aves_utils
+  leak_tracker:
 
 dev_dependencies:
   flutter_lints:
