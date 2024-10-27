@@ -17,6 +17,7 @@ dependencies:
   flutter_map:
   intl:
   latlong2:
+  leak_tracker:
   provider:
 
 dev_dependencies:

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves_map/src/zoomed_bounds.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class AvesMapController {
   final StreamController _streamController = StreamController.broadcast();
@@ -24,7 +25,7 @@ class AvesMapController {
 
   AvesMapController() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesMapController',
         object: this,
@@ -34,7 +35,7 @@ class AvesMapController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _streamController.close();
   }
