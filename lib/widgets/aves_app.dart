@@ -49,7 +49,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localization_nn/flutter_localization_nn.dart';
+import 'package:flutter_localizations_plus/flutter_localizations_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -305,8 +305,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 themeMode: themeBrightness.appThemeMode,
                                 locale: settingsLocale,
                                 localizationsDelegates: const [
-                                  ...AppLocalizations.localizationsDelegates,
+                                  // order matters for resolution of sublocales (e.g. `en_Shaw` before `en`)
+                                  ...LocalizationsEnShaw.delegates,
                                   ...LocalizationsNn.delegates,
+                                  ...AppLocalizations.localizationsDelegates,
                                 ],
                                 supportedLocales: AvesApp.supportedLocales,
                                 scrollBehavior: AvesScrollBehavior(),

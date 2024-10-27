@@ -71,9 +71,9 @@ dependencies:
   fluster:
   flutter_displaymode:
   flutter_highlight:
-  flutter_localization_nn:
+  flutter_localizations_plus:
     git:
-      url: https://github.com/deckerst/flutter_localization_nn.git
+      url: https://github.com/deckerst/flutter_localizations_plus.git
   flutter_map:
   flutter_markdown:
   flutter_staggered_animations:

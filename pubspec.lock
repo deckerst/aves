@@ -527,20 +527,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
-  flutter_localization_nn:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: f35b88327b98a1494426cf40ff7c30281cc7f937
-      url: "https://github.com/deckerst/flutter_localization_nn.git"
-    source: git
-    version: "0.0.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_localizations_plus:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "3ce50168ea196acc8d18e09377a3e88bb13cb125"
+      url: "https://github.com/deckerst/flutter_localizations_plus.git"
+    source: git
+    version: "0.0.1"
   flutter_map:
     dependency: "direct main"
     description:
