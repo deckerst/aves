@@ -442,9 +442,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
-      if (source.scope != SourceScope.none) {
-        await source.removeEntries({targetEntry.uri}, includeTrash: true);
-      }
+      await source.removeEntries({targetEntry.uri}, includeTrash: true);
       EntryDeletedNotification({targetEntry}).dispatch(context);
     }
   }

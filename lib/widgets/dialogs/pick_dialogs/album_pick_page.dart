@@ -35,11 +35,11 @@ Future<String?> pickAlbum({
   required MoveType? moveType,
 }) async {
   final source = context.read<CollectionSource>();
-  if (source.scope != SourceScope.full) {
+  if (source.targetScope != CollectionSource.fullScope) {
     await reportService.log('Complete source initialization to pick album');
     // source may not be fully initialized in view mode
     source.canAnalyze = true;
-    await source.init();
+    await source.init(scope: CollectionSource.fullScope);
   }
   final filter = await Navigator.maybeOf(context)?.push(
     MaterialPageRoute<AlbumFilter>(
