@@ -32,7 +32,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-enum SourceScope { none, album, full }
+typedef SourceScope = Set<CollectionFilter>?;
 
 mixin SourceBase {
   EventBus get eventBus;
@@ -63,6 +63,8 @@ mixin SourceBase {
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
+  static const fullScope = <CollectionFilter>{};
+
   CollectionSource() {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
@@ -428,11 +430,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     eventBus.fire(EntryMovedEvent(MoveType.move, movedEntries));
   }
 
-  SourceScope get scope => SourceScope.none;
+  SourceScope get loadedScope;
+
+  SourceScope get targetScope;
 
   Future<void> init({
+    required SourceScope scope,
     AnalysisController? analysisController,
-    AlbumFilter? albumFilter,
     bool loadTopEntriesFirst = false,
   });
 

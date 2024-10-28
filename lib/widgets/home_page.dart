@@ -222,16 +222,17 @@ class _HomePageState extends State<HomePage> {
         unawaited(GlobalSearch.registerCallback());
         unawaited(AnalysisService.registerCallback());
         final source = context.read<CollectionSource>();
-        if (source.scope != SourceScope.full) {
-          await reportService.log('Initialize source (init state=${source.scope.name}) to start app with mode=$appMode');
+        if (source.loadedScope != CollectionSource.fullScope) {
+          await reportService.log('Initialize source to start app with mode=$appMode, loaded scope=${source.loadedScope}');
           final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
-          await source.init(loadTopEntriesFirst: loadTopEntriesFirst);
+          source.canAnalyze = true;
+          await source.init(scope: CollectionSource.fullScope, loadTopEntriesFirst: loadTopEntriesFirst);
         }
       case AppMode.screenSaver:
         await reportService.log('Initialize source to start screen saver');
         final source = context.read<CollectionSource>();
         source.canAnalyze = false;
-        await source.init();
+        await source.init(scope: settings.screenSaverCollectionFilters);
       case AppMode.view:
         if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
           final directory = _viewerEntry?.directory;
@@ -240,7 +241,7 @@ class _HomePageState extends State<HomePage> {
             await reportService.log('Initialize source to view item in directory $directory');
             final source = context.read<CollectionSource>();
             source.canAnalyze = false;
-            await source.init(albumFilter: AlbumFilter(directory, null));
+            await source.init(scope: {AlbumFilter(directory, null)});
           }
         } else {
           await _initViewerEssentials();
@@ -305,38 +306,38 @@ class _HomePageState extends State<HomePage> {
         CollectionLens? collection;
 
         final source = context.read<CollectionSource>();
-        if (source.scope != SourceScope.none) {
-          final album = viewerEntry.directory;
-          if (album != null) {
-            // wait for collection to pass the `loading` state
-            final completer = Completer();
-            void _onSourceStateChanged() {
-              if (source.state != SourceState.loading) {
-                source.stateNotifier.removeListener(_onSourceStateChanged);
-                completer.complete();
-              }
+        final album = viewerEntry.directory;
+        if (album != null) {
+          // wait for collection to pass the `loading` state
+          final completer = Completer();
+          final stateNotifier = source.stateNotifier;
+          void _onSourceStateChanged() {
+            if (stateNotifier.value != SourceState.loading) {
+              stateNotifier.removeListener(_onSourceStateChanged);
+              completer.complete();
             }
+          }
 
-            source.stateNotifier.addListener(_onSourceStateChanged);
-            await completer.future;
+          stateNotifier.addListener(_onSourceStateChanged);
+          _onSourceStateChanged();
+          await completer.future;
 
-            collection = CollectionLens(
-              source: source,
-              filters: {AlbumFilter(album, source.getAlbumDisplayName(context, album))},
-              listenToSource: false,
-              // if we group bursts, opening a burst sub-entry should:
-              // - identify and select the containing main entry,
-              // - select the sub-entry in the Viewer page.
-              stackBursts: false,
-            );
-            final viewerEntryPath = viewerEntry.path;
-            final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
-            if (collectionEntry != null) {
-              viewerEntry = collectionEntry;
-            } else {
-              debugPrint('collection does not contain viewerEntry=$viewerEntry');
-              collection = null;
-            }
+          collection = CollectionLens(
+            source: source,
+            filters: {AlbumFilter(album, source.getAlbumDisplayName(context, album))},
+            listenToSource: false,
+            // if we group bursts, opening a burst sub-entry should:
+            // - identify and select the containing main entry,
+            // - select the sub-entry in the Viewer page.
+            stackBursts: false,
+          );
+          final viewerEntryPath = viewerEntry.path;
+          final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
+          if (collectionEntry != null) {
+            viewerEntry = collectionEntry;
+          } else {
+            debugPrint('collection does not contain viewerEntry=$viewerEntry');
+            collection = null;
           }
         }
 

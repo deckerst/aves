@@ -21,38 +21,40 @@ class MediaStoreSource extends CollectionSource {
   final Debouncer _changeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
   int? _lastGeneration;
-  SourceScope _scope = SourceScope.none;
+  SourceScope _loadedScope, _targetScope;
   bool _canAnalyze = true;
 
   @override
   set canAnalyze(bool enabled) => _canAnalyze = enabled;
 
   @override
-  SourceScope get scope => _scope;
+  SourceScope get loadedScope => _loadedScope;
+
+  @override
+  SourceScope get targetScope => _targetScope;
 
   @override
   Future<void> init({
+    required SourceScope scope,
     AnalysisController? analysisController,
-    AlbumFilter? albumFilter,
     bool loadTopEntriesFirst = false,
   }) async {
-    await reportService.log('$runtimeType init album=${albumFilter?.album}');
-    if (_scope == SourceScope.none) {
-      await _loadEssentials();
-    }
-    if (_scope != SourceScope.full) {
-      _scope = albumFilter != null ? SourceScope.album : SourceScope.full;
-    }
+    _targetScope = scope;
+    await reportService.log('$runtimeType init target scope=$scope');
+    await _loadEssentials();
     addDirectories(albums: settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).toSet());
     await updateGeneration();
     unawaited(_loadEntries(
       analysisController: analysisController,
-      directory: albumFilter?.album,
       loadTopEntriesFirst: loadTopEntriesFirst,
     ));
   }
 
+  bool _areEssentialsLoaded = false;
+
   Future<void> _loadEssentials() async {
+    if (_areEssentialsLoaded) return;
+
     final stopwatch = Stopwatch()..start();
     state = SourceState.loading;
     await localMediaDb.init();
@@ -63,26 +65,28 @@ class MediaStoreSource extends CollectionSource {
     if (currentTimeZoneOffset != null) {
       final catalogTimeZoneOffset = settings.catalogTimeZoneRawOffsetMillis;
       if (currentTimeZoneOffset != catalogTimeZoneOffset) {
-        // clear catalog metadata to get correct date/times when moving to a different time zone
-        debugPrint('$runtimeType clear catalog metadata to get correct date/times');
+        unawaited(reportService.log('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.'));
         await localMediaDb.clearDates();
         await localMediaDb.clearCatalogMetadata();
         settings.catalogTimeZoneRawOffsetMillis = currentTimeZoneOffset;
       }
     }
     await loadDates();
+    _areEssentialsLoaded = true;
     debugPrint('$runtimeType load essentials complete in ${stopwatch.elapsed.inMilliseconds}ms');
   }
 
   Future<void> _loadEntries({
     AnalysisController? analysisController,
-    String? directory,
     required bool loadTopEntriesFirst,
   }) async {
     unawaited(reportService.log('$runtimeType load (known) start'));
     final stopwatch = Stopwatch()..start();
     state = SourceState.loading;
     clearEntries();
+
+    final scopeAlbumFilters = _targetScope?.whereType<AlbumFilter>();
+    final scopeDirectory = scopeAlbumFilters != null && scopeAlbumFilters.length == 1 ? scopeAlbumFilters.first.album : null;
 
     final Set<AvesEntry> topEntries = {};
     if (loadTopEntriesFirst) {
@@ -95,7 +99,7 @@ class MediaStoreSource extends CollectionSource {
     }
 
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch known entries');
-    final knownEntries = await localMediaDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: directory);
+    final knownEntries = await localMediaDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: scopeDirectory);
     final knownLiveEntries = knownEntries.where((entry) => !entry.trashed).toSet();
 
     debugPrint('$runtimeType load ${stopwatch.elapsed} check obsolete entries');
@@ -114,18 +118,20 @@ class MediaStoreSource extends CollectionSource {
     // add entries without notifying, so that the collection is not refreshed
     // with items that may be hidden right away because of their metadata
     addEntries(knownEntries, notify: false);
+    // but use album notification without waiting for cataloguing
+    // so that it is more reactive when picking an album in view mode
+    notifyAlbumsChanged();
 
-    await _loadVaultEntries(directory);
+    await _loadVaultEntries(scopeDirectory);
 
     debugPrint('$runtimeType load ${stopwatch.elapsed} load metadata');
-    if (directory != null) {
+    if (scopeDirectory != null) {
       final ids = knownLiveEntries.map((entry) => entry.id).toSet();
       await loadCatalogMetadata(ids: ids);
       await loadAddresses(ids: ids);
     } else {
       await loadCatalogMetadata();
       await loadAddresses();
-      updateDerivedFilters();
 
       // trash
       await loadTrashDetails();
@@ -139,6 +145,7 @@ class MediaStoreSource extends CollectionSource {
         onError: (error) => debugPrint('failed to evict expired trash error=$error'),
       ));
     }
+    updateDerivedFilters();
 
     // clean up obsolete entries
     if (removedEntries.isNotEmpty) {
@@ -146,13 +153,14 @@ class MediaStoreSource extends CollectionSource {
       await localMediaDb.removeIds(removedEntries.map((entry) => entry.id).toSet());
     }
 
+    _loadedScope = _targetScope;
     unawaited(reportService.log('$runtimeType load (known) done in ${stopwatch.elapsed.inSeconds}s for ${knownEntries.length} known, ${removedEntries.length} removed'));
 
     if (_canAnalyze) {
       // it can discover new entries only if it can analyze them
       await _loadNewEntries(
         analysisController: analysisController,
-        directory: directory,
+        directory: scopeDirectory,
         knownLiveEntries: knownLiveEntries,
         knownDateByContentId: knownDateByContentId,
       );
@@ -252,7 +260,7 @@ class MediaStoreSource extends CollectionSource {
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
   @override
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController}) async {
-    if (_scope == SourceScope.none || !canRefresh || !isReady) return changedUris;
+    if (!canRefresh || !_areEssentialsLoaded || !isReady) return changedUris;
 
     state = SourceState.loading;
 

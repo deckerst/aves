@@ -5,6 +5,7 @@ import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -148,7 +149,7 @@ class Analyzer with WidgetsBindingObserver {
     settings.systemLocalesFallback = await deviceService.getLocales();
     _l10n = await AppLocalizations.delegate.load(settings.appliedLocale);
     _serviceStateNotifier.value = AnalyzerState.running;
-    await _source.init(analysisController: _controller);
+    await _source.init(scope: CollectionSource.fullScope, analysisController: _controller);
 
     _notificationUpdateTimer = Timer.periodic(notificationUpdateInterval, (_) async {
       if (!isRunning) return;

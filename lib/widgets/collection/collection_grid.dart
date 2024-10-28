@@ -498,7 +498,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       _checkingStoragePermission = false;
       _isStoragePermissionGranted.then((granted) {
         if (granted) {
-          widget.collection.source.init();
+          widget.collection.source.init(scope: CollectionSource.fullScope);
         }
       });
     }
