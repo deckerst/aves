@@ -23,6 +23,7 @@ class MediaStoreSource extends CollectionSource {
   int? _lastGeneration;
   SourceScope _loadedScope, _targetScope;
   bool _canAnalyze = true;
+  Future<void>? _essentialLoader;
 
   @override
   set canAnalyze(bool enabled) => _canAnalyze = enabled;
@@ -41,7 +42,8 @@ class MediaStoreSource extends CollectionSource {
   }) async {
     _targetScope = scope;
     await reportService.log('$runtimeType init target scope=$scope');
-    await _loadEssentials();
+    _essentialLoader ??= _loadEssentials();
+    await _essentialLoader;
     addDirectories(albums: settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).toSet());
     await updateGeneration();
     unawaited(_loadEntries(
@@ -50,11 +52,7 @@ class MediaStoreSource extends CollectionSource {
     ));
   }
 
-  bool _areEssentialsLoaded = false;
-
   Future<void> _loadEssentials() async {
-    if (_areEssentialsLoaded) return;
-
     final stopwatch = Stopwatch()..start();
     state = SourceState.loading;
     await localMediaDb.init();
@@ -72,7 +70,6 @@ class MediaStoreSource extends CollectionSource {
       }
     }
     await loadDates();
-    _areEssentialsLoaded = true;
     debugPrint('$runtimeType load essentials complete in ${stopwatch.elapsed.inMilliseconds}ms');
   }
 
@@ -260,7 +257,7 @@ class MediaStoreSource extends CollectionSource {
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
   @override
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController}) async {
-    if (!canRefresh || !_areEssentialsLoaded || !isReady) return changedUris;
+    if (!canRefresh || _essentialLoader == null || !isReady) return changedUris;
 
     state = SourceState.loading;
 

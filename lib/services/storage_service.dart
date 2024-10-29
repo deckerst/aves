@@ -265,20 +265,20 @@ class PlatformStorageService implements StorageService {
   @override
   Future<bool> requestDirectoryAccess(String path) async {
     try {
-      final completer = Completer<bool>();
+      final opCompleter = Completer<bool>();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'requestDirectoryAccess',
         'path': path,
       }).listen(
-        (data) => completer.complete(data as bool),
-        onError: completer.completeError,
+        (data) => opCompleter.complete(data as bool),
+        onError: opCompleter.completeError,
         onDone: () {
-          if (!completer.isCompleted) completer.complete(false);
+          if (!opCompleter.isCompleted) opCompleter.complete(false);
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      return await completer.future;
+      return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -289,21 +289,21 @@ class PlatformStorageService implements StorageService {
   @override
   Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes) async {
     try {
-      final completer = Completer<bool>();
+      final opCompleter = Completer<bool>();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'requestMediaFileAccess',
         'uris': uris,
         'mimeTypes': mimeTypes,
       }).listen(
-        (data) => completer.complete(data as bool),
-        onError: completer.completeError,
+        (data) => opCompleter.complete(data as bool),
+        onError: opCompleter.completeError,
         onDone: () {
-          if (!completer.isCompleted) completer.complete(false);
+          if (!opCompleter.isCompleted) opCompleter.complete(false);
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      return await completer.future;
+      return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       final message = e.message;
       // mute issue in the specific case when an item:
@@ -320,22 +320,22 @@ class PlatformStorageService implements StorageService {
   @override
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes) async {
     try {
-      final completer = Completer<bool?>();
+      final opCompleter = Completer<bool?>();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'createFile',
         'name': name,
         'mimeType': mimeType,
         'bytes': bytes,
       }).listen(
-        (data) => completer.complete(data as bool?),
-        onError: completer.completeError,
+        (data) => opCompleter.complete(data as bool?),
+        onError: opCompleter.completeError,
         onDone: () {
-          if (!completer.isCompleted) completer.complete(false);
+          if (!opCompleter.isCompleted) opCompleter.complete(false);
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      return await completer.future;
+      return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -345,7 +345,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<Uint8List> openFile([String? mimeType]) async {
     try {
-      final completer = Completer<Uint8List>.sync();
+      final opCompleter = Completer<Uint8List>();
       final sink = OutputBuffer();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'openFile',
@@ -355,15 +355,15 @@ class PlatformStorageService implements StorageService {
           final chunk = data as Uint8List;
           sink.add(chunk);
         },
-        onError: completer.completeError,
+        onError: opCompleter.completeError,
         onDone: () {
           sink.close();
-          completer.complete(sink.bytes);
+          opCompleter.complete(sink.bytes);
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      return await completer.future;
+      return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

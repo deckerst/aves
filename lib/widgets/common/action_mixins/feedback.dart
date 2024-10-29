@@ -138,7 +138,7 @@ mixin FeedbackMixin {
     VoidCallback? onCancel,
     Future<void> Function(Set<T> processed)? onDone,
   }) async {
-    final completer = Completer();
+    final opCompleter = Completer();
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -149,12 +149,12 @@ mixin FeedbackMixin {
         onDone: (processed) async {
           Navigator.maybeOf(context)?.pop();
           await onDone?.call(processed);
-          completer.complete();
+          opCompleter.complete();
         },
       ),
       routeSettings: const RouteSettings(name: ReportOverlay.routeName),
     );
-    return completer.future;
+    return opCompleter.future;
   }
 }
 

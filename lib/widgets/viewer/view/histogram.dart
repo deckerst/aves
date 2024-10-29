@@ -13,27 +13,26 @@ typedef HistogramLevels = Map<HistogramChannel, List<double>>;
 
 mixin HistogramMixin {
   HistogramLevels _levels = {};
-  Completer? _completer;
+  Future<void>? _loader;
 
   static const int bins = 256;
 
   Future<HistogramLevels> getHistogramLevels(ImageInfo info, bool forceUpdate) async {
     if (_levels.isEmpty || forceUpdate) {
-      if (_completer == null) {
-        _completer = Completer();
-        final data = (await info.image.toByteData(format: ImageByteFormat.rawStraightRgba))!;
-        _levels = switch (settings.overlayHistogramStyle) {
-          OverlayHistogramStyle.rgb => await compute<ByteData, HistogramLevels>(_computeRgbLevels, data),
-          OverlayHistogramStyle.luminance => await compute<ByteData, HistogramLevels>(_computeLuminanceLevels, data),
-          _ => <HistogramChannel, List<double>>{},
-        };
-        _completer?.complete();
-      } else {
-        await _completer?.future;
-        _completer = null;
-      }
+      _loader ??= _getLevels(info);
+      await _loader;
+      _loader = null;
     }
     return _levels;
+  }
+
+  Future<void> _getLevels(ImageInfo info) async {
+    final data = (await info.image.toByteData(format: ImageByteFormat.rawStraightRgba))!;
+    _levels = switch (settings.overlayHistogramStyle) {
+      OverlayHistogramStyle.rgb => await compute<ByteData, HistogramLevels>(_computeRgbLevels, data),
+      OverlayHistogramStyle.luminance => await compute<ByteData, HistogramLevels>(_computeLuminanceLevels, data),
+      _ => <HistogramChannel, List<double>>{},
+    };
   }
 
   static HistogramLevels _computeRgbLevels(ByteData data) {

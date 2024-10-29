@@ -461,17 +461,17 @@ class AvesEntry with AvesEntryBase {
   }
 
   Future<bool> delete() {
-    final completer = Completer<bool>();
+    final opCompleter = Completer<bool>();
     mediaEditService.delete(entries: {this}).listen(
-      (event) => completer.complete(event.success && !event.skipped),
-      onError: completer.completeError,
+      (event) => opCompleter.complete(event.success && !event.skipped),
+      onError: opCompleter.completeError,
       onDone: () {
-        if (!completer.isCompleted) {
-          completer.complete(false);
+        if (!opCompleter.isCompleted) {
+          opCompleter.complete(false);
         }
       },
     );
-    return completer.future;
+    return opCompleter.future;
   }
 
   // when the MIME type or the image itself changed (e.g. after rotation)
