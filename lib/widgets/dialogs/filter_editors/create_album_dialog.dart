@@ -147,23 +147,43 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     );
   }
 
-  String _buildAlbumPath(String name) {
+  String _sanitize(String input) => input.trim();
+
+  String? _buildAlbumPath(String name) {
     final selectedVolume = _selectedVolume;
-    if (selectedVolume == null || name.isEmpty) return '';
+    if (selectedVolume == null || name.isEmpty) return null;
     return pContext.join(selectedVolume.path, 'Pictures', name);
   }
 
   Future<void> _validate() async {
-    final newName = _nameController.text;
+    final newName = _sanitize(_nameController.text);
     final path = _buildAlbumPath(newName);
-    final exists = newName.isNotEmpty && await Directory(path).exists();
+    // this check ignores case
+    final exists = path != null && await Directory(path).exists();
     _existsNotifier.value = exists;
-    _isValidNotifier.value = newName.isNotEmpty && !exists;
+    _isValidNotifier.value = path != null && newName.isNotEmpty;
   }
 
-  void _submit(BuildContext context) {
-    if (_isValidNotifier.value) {
-      Navigator.maybeOf(context)?.pop(_buildAlbumPath(_nameController.text));
+  Future<void> _submit(BuildContext context) async {
+    if (!_isValidNotifier.value) return;
+
+    final newName = _sanitize(_nameController.text);
+    final albumPath = _buildAlbumPath(newName);
+    final volumePath = _selectedVolume?.path;
+    if (albumPath == null || volumePath == null) return;
+
+    // uses resolved directory name case if it exists
+    var resolvedPath = volumePath;
+    final relativePathSegments = pContext.split(pContext.relative(albumPath, from: volumePath));
+    for (final targetSegment in relativePathSegments) {
+      String? resolvedSegment;
+      final directory = Directory(resolvedPath);
+      if (await directory.exists()) {
+        final lowerTargetSegment = targetSegment.toLowerCase();
+        resolvedSegment = directory.listSync().map((v) => pContext.basename(v.path)).firstWhereOrNull((v) => v.toLowerCase() == lowerTargetSegment);
+      }
+      resolvedPath = pContext.join(resolvedPath, resolvedSegment ?? targetSegment);
     }
+    Navigator.maybeOf(context)?.pop(resolvedPath);
   }
 }
