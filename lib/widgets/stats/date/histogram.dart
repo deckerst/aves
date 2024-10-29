@@ -292,8 +292,8 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            accentColor.withAlpha(0),
             accentColor,
+            accentColor.withAlpha(0),
           ],
         ).createShader,
         blendMode: BlendMode.srcIn,
