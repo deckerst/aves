@@ -19,7 +19,6 @@ import 'package:aves/model/settings/modules/navigation.dart';
 import 'package:aves/model/settings/modules/privacy.dart';
 import 'package:aves/model/settings/modules/search.dart';
 import 'package:aves/model/settings/modules/viewer.dart';
-import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/ref/bursts.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
