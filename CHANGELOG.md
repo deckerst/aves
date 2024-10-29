@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when loading large collection
+- Viewer: copying content URI item
 
 ## <a id="v1.11.16"></a>[v1.11.16] - 2024-10-10
 
