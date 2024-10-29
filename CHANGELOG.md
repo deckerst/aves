@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 - crash when loading large collection
 - Viewer: copying content URI item
+- Albums: creating album with same name as existing empty directory
 
 ## <a id="v1.11.16"></a>[v1.11.16] - 2024-10-10
 
