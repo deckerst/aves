@@ -82,10 +82,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         _onFilterVisibilityChanged(newlyVisibleFilters);
       }
     });
-    vaults.addListener(() {
-      final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
-      _onFilterVisibilityChanged(newlyVisibleFilters);
-    });
+    vaults.addListener(_onVaultsChanged);
   }
 
   @mustCallSuper
@@ -93,6 +90,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
+    vaults.removeListener(_onVaultsChanged);
     _rawEntries.forEach((v) => v.dispose());
   }
 
@@ -597,6 +595,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       final candidateEntries = visibleEntries.where((entry) => newlyVisibleFilters.any((f) => f.test(entry))).toSet();
       analyze(null, entries: candidateEntries);
     }
+  }
+
+  void _onVaultsChanged() {
+    final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
+    _onFilterVisibilityChanged(newlyVisibleFilters);
   }
 }
 
