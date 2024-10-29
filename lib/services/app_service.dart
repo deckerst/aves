@@ -104,21 +104,21 @@ class PlatformAppService implements AppService {
   @override
   Future<Map<String, dynamic>> edit(String uri, String mimeType) async {
     try {
-      final completer = Completer<Map?>();
+      final opCompleter = Completer<Map?>();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'edit',
         'uri': uri,
         'mimeType': mimeType,
       }).listen(
-        (data) => completer.complete(data as Map?),
-        onError: completer.completeError,
+        (data) => opCompleter.complete(data as Map?),
+        onError: opCompleter.completeError,
         onDone: () {
-          if (!completer.isCompleted) completer.complete({'error': 'cancelled'});
+          if (!opCompleter.isCompleted) opCompleter.complete({'error': 'cancelled'});
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      final result = await completer.future;
+      final result = await opCompleter.future;
       if (result == null) return {'error': 'cancelled'};
       return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {

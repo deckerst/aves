@@ -120,7 +120,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     BytesReceivedCallback? onBytesReceived,
   }) async {
     try {
-      final completer = Completer<Uint8List>.sync();
+      final opCompleter = Completer<Uint8List>();
       final sink = OutputBuffer();
       var bytesReceived = 0;
       _byteStream.receiveBroadcastStream(<String, dynamic>{
@@ -139,20 +139,20 @@ class PlatformMediaFetchService implements MediaFetchService {
             try {
               onBytesReceived(bytesReceived, sizeBytes);
             } catch (error, stack) {
-              completer.completeError(error, stack);
+              opCompleter.completeError(error, stack);
               return;
             }
           }
         },
-        onError: completer.completeError,
+        onError: opCompleter.completeError,
         onDone: () {
           sink.close();
-          completer.complete(sink.bytes);
+          opCompleter.complete(sink.bytes);
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      return await completer.future;
+      return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       if (_isUnknownVisual(mimeType)) {
         await reportService.recordError(e, stack);

@@ -309,18 +309,18 @@ class _HomePageState extends State<HomePage> {
         final album = viewerEntry.directory;
         if (album != null) {
           // wait for collection to pass the `loading` state
-          final completer = Completer();
+          final loadingCompleter = Completer();
           final stateNotifier = source.stateNotifier;
           void _onSourceStateChanged() {
             if (stateNotifier.value != SourceState.loading) {
               stateNotifier.removeListener(_onSourceStateChanged);
-              completer.complete();
+              loadingCompleter.complete();
             }
           }
 
           stateNotifier.addListener(_onSourceStateChanged);
           _onSourceStateChanged();
-          await completer.future;
+          await loadingCompleter.future;
 
           collection = CollectionLens(
             source: source,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
@@ -6,8 +8,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
-
-enum _State { uninitialized, initializing, initialized }
 
 class AndroidFileUtils {
   // cf https://developer.android.com/reference/android/content/ContentResolver#SCHEME_CONTENT
@@ -29,16 +29,13 @@ class AndroidFileUtils {
   late final String dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;
   late final Set<String> videoCapturesPaths;
   Set<StorageVolume> storageVolumes = {};
-  _State _initialized = _State.uninitialized;
+  Future<void>? _loader;
 
   AndroidFileUtils._private();
 
   Future<void> init() async {
-    if (_initialized == _State.uninitialized) {
-      _initialized = _State.initializing;
-      await _doInit();
-      _initialized = _State.initialized;
-    }
+    _loader ??= _doInit();
+    await _loader;
   }
 
   Future<void> _doInit() async {

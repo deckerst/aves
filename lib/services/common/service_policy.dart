@@ -24,32 +24,32 @@ class ServicePolicy {
     int priority = ServiceCallPriority.normal,
     Object? key,
   }) {
-    Completer<T> completer;
+    Completer<T> taskCompleter;
     _Task<T> task;
     key ??= platformCall.hashCode;
     final toResume = _paused.remove(key);
     if (toResume != null) {
       priority = toResume.$1;
       task = toResume.$2 as _Task<T>;
-      completer = task.completer;
+      taskCompleter = task.completer;
     } else {
-      completer = Completer<T>();
+      taskCompleter = Completer<T>();
       task = _Task<T>(
         () async {
           try {
-            completer.complete(await platformCall());
+            taskCompleter.complete(await platformCall());
           } catch (error, stack) {
-            completer.completeError(error, stack);
+            taskCompleter.completeError(error, stack);
           }
           _runningQueue.remove(key);
           _pickNext();
         },
-        completer,
+        taskCompleter,
       );
     }
     _getQueue(priority)[key] = task;
     _pickNext();
-    return completer.future;
+    return taskCompleter.future;
   }
 
   Future<T>? resume<T>(Object key) {

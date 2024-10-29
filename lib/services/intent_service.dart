@@ -47,23 +47,23 @@ class IntentService {
 
   static Future<Set<CollectionFilter>?> pickCollectionFilters(Set<CollectionFilter>? initialFilters) async {
     try {
-      final completer = Completer<Set<CollectionFilter>?>();
+      final opCompleter = Completer<Set<CollectionFilter>?>();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'pickCollectionFilters',
         'initialFilters': initialFilters?.map((filter) => filter.toJson()).toList(),
       }).listen(
         (data) {
           final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
-          completer.complete(result);
+          opCompleter.complete(result);
         },
-        onError: completer.completeError,
+        onError: opCompleter.completeError,
         onDone: () {
-          if (!completer.isCompleted) completer.complete(null);
+          if (!opCompleter.isCompleted) opCompleter.complete(null);
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      return await completer.future;
+      return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
