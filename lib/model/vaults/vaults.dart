@@ -184,8 +184,10 @@ class Vaults extends ChangeNotifier {
 
   void _onScreenOff() => lock(all.where((v) => v.autoLockScreenOff).map((v) => v.path).toSet());
 
+  bool get needProtection => _unlockedDirPaths.isNotEmpty;
+
   void _onLockStateChanged() {
-    windowService.secureScreen(_unlockedDirPaths.isNotEmpty);
+    windowService.secureScreen(needProtection);
     notifyListeners();
   }
 }
