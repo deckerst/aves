@@ -40,6 +40,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.io.SyncFailedException
+import java.util.Date
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
@@ -478,64 +479,62 @@ class MediaStoreImageProvider : ImageProvider() {
                     "success" to false,
                 )
 
-                if (sourcePath != null) {
-                    // on API 30 we cannot get access granted directly to a volume root from its document tree,
-                    // but it is still less constraining to use tree document files than to rely on the Media Store
-                    //
-                    // Relying on `DocumentFile`, we can create an item via `DocumentFile.createFile()`, but:
-                    // - we need to scan the file to get the Media Store content URI
-                    // - the underlying document provider controls the new file name
-                    //
-                    // Relying on the Media Store, we can create an item via `ContentResolver.insert()`
-                    // with a path, and retrieve its content URI, but:
-                    // - the Media Store isolates content by storage volume (e.g. `MediaStore.Images.Media.getContentUri(volumeName)`)
-                    // - the volume name should be lower case, not exactly as the `StorageVolume` UUID
-                    //   cf new method in API 30 `StorageVolume.getMediaStoreVolumeName()`
-                    // - inserting on a removable volume works on API 29, but not on API 25 nor 26 (on which API/devices does it work?)
-                    // - there is no documentation regarding support for usage with removable storage
-                    // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
-                    try {
-                        val appDir = when {
-                            toBin -> StorageUtils.trashDirFor(activity, sourcePath)
-                            toVault -> File(targetDir)
-                            else -> null
-                        }
-                        if (appDir != null) {
-                            effectiveTargetDir = ensureTrailingSeparator(appDir.path)
-                            targetDirDocFile = DocumentFileCompat.fromFile(appDir)
-
-                            if (toVault) {
-                                appDir.mkdirs()
-                            }
-                        }
-
-                        if (effectiveTargetDir != null) {
-                            val newFields = if (isCancelledOp()) skippedFieldMap else {
-                                val sourceFile = File(sourcePath)
-                                if (!sourceFile.exists() && toBin) {
-                                    delete(activity, sourceUri, sourcePath, mimeType = mimeType)
-                                    deletedFieldMap
-                                } else {
-                                    moveSingle(
-                                        activity = activity,
-                                        sourceFile = sourceFile,
-                                        sourceUri = sourceUri,
-                                        targetDir = effectiveTargetDir,
-                                        targetDirDocFile = targetDirDocFile,
-                                        desiredName = desiredName ?: sourceFile.name,
-                                        nameConflictStrategy = nameConflictStrategy,
-                                        mimeType = mimeType,
-                                        copy = copy,
-                                        toBin = toBin,
-                                    )
-                                }
-                            }
-                            result["newFields"] = newFields
-                            result["success"] = true
-                        }
-                    } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to move to targetDir=$targetDir entry with sourcePath=$sourcePath", e)
+                // on API 30 we cannot get access granted directly to a volume root from its document tree,
+                // but it is still less constraining to use tree document files than to rely on the Media Store
+                //
+                // Relying on `DocumentFile`, we can create an item via `DocumentFile.createFile()`, but:
+                // - we need to scan the file to get the Media Store content URI
+                // - the underlying document provider controls the new file name
+                //
+                // Relying on the Media Store, we can create an item via `ContentResolver.insert()`
+                // with a path, and retrieve its content URI, but:
+                // - the Media Store isolates content by storage volume (e.g. `MediaStore.Images.Media.getContentUri(volumeName)`)
+                // - the volume name should be lower case, not exactly as the `StorageVolume` UUID
+                //   cf new method in API 30 `StorageVolume.getMediaStoreVolumeName()`
+                // - inserting on a removable volume works on API 29, but not on API 25 nor 26 (on which API/devices does it work?)
+                // - there is no documentation regarding support for usage with removable storage
+                // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
+                try {
+                    val appDir = when {
+                        toBin -> StorageUtils.trashDirFor(activity, sourcePath ?: StorageUtils.getPrimaryVolumePath(activity))
+                        toVault -> File(targetDir)
+                        else -> null
                     }
+                    if (appDir != null) {
+                        effectiveTargetDir = ensureTrailingSeparator(appDir.path)
+                        targetDirDocFile = DocumentFileCompat.fromFile(appDir)
+
+                        if (toVault) {
+                            appDir.mkdirs()
+                        }
+                    }
+
+                    if (effectiveTargetDir != null) {
+                        val newFields = if (isCancelledOp()) skippedFieldMap else {
+                            val sourceFile = if (sourcePath != null) File(sourcePath) else null
+                            if (sourceFile != null && !sourceFile.exists() && toBin) {
+                                delete(activity, sourceUri, sourcePath, mimeType = mimeType)
+                                deletedFieldMap
+                            } else {
+                                moveSingle(
+                                    activity = activity,
+                                    sourceFile = sourceFile,
+                                    sourceUri = sourceUri,
+                                    targetDir = effectiveTargetDir,
+                                    targetDirDocFile = targetDirDocFile,
+                                    desiredName = desiredName ?: sourceFile?.name ?: sourceUri.lastPathSegment ?: createTimeStampFileName(),
+                                    nameConflictStrategy = nameConflictStrategy,
+                                    mimeType = mimeType,
+                                    copy = copy,
+                                    toBin = toBin,
+                                )
+                            }
+                        }
+                        result["newFields"] = newFields
+                        result["success"] = true
+                    }
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to move to targetDir=$targetDir entry with sourcePath=$sourcePath", e)
                 }
                 callback.onSuccess(result)
             }
@@ -544,7 +543,7 @@ class MediaStoreImageProvider : ImageProvider() {
 
     private suspend fun moveSingle(
         activity: Activity,
-        sourceFile: File,
+        sourceFile: File?,
         sourceUri: Uri,
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
@@ -554,8 +553,8 @@ class MediaStoreImageProvider : ImageProvider() {
         copy: Boolean,
         toBin: Boolean,
     ): FieldMap {
-        val sourcePath = sourceFile.path
-        val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
+        val sourcePath = sourceFile?.path
+        val sourceDir = sourceFile?.parent?.let { ensureTrailingSeparator(it) }
         if (sourceDir == targetDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
             // nothing to do unless it's a renamed copy
             return skippedFieldMap

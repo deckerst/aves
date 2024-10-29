@@ -137,8 +137,7 @@ abstract class ImageProvider {
                 "success" to false,
             )
 
-            // prevent naming with a `.` prefix as it would hide the file and remove it from the Media Store
-            if (sourcePath != null && !desiredName.startsWith('.')) {
+            if (sourcePath != null) {
                 try {
                     var newFields: FieldMap = skippedFieldMap
                     if (!isCancelledOp()) {
@@ -570,6 +569,20 @@ abstract class ImageProvider {
         }
     }
 
+    fun createTimeStampFileName() = Date().time.toString()
+
+    private fun sanitizeDesiredFileName(desiredName: String): String {
+        var name = desiredName
+        // prevent creating hidden files
+        while (name.isNotEmpty() && name.startsWith(".")) {
+            name = name.substring(1)
+        }
+        if (name.isEmpty()) {
+            name = createTimeStampFileName()
+        }
+        return name
+    }
+
     // returns available name to use, or `null` to skip it
     suspend fun resolveTargetFileNameWithoutExtension(
         contextWrapper: ContextWrapper,
@@ -578,18 +591,19 @@ abstract class ImageProvider {
         mimeType: String,
         conflictStrategy: NameConflictStrategy,
     ): NameConflictResolution {
-        var resolvedName: String? = desiredNameWithoutExtension
+        val sanitizedNameWithoutExtension = sanitizeDesiredFileName(desiredNameWithoutExtension)
+        var resolvedName: String? = sanitizedNameWithoutExtension
         var replacementFile: File? = null
 
         val extension = extensionFor(mimeType)
-        val targetFile = File(dir, "$desiredNameWithoutExtension$extension")
+        val targetFile = File(dir, "$sanitizedNameWithoutExtension$extension")
         when (conflictStrategy) {
             NameConflictStrategy.RENAME -> {
-                var nameWithoutExtension = desiredNameWithoutExtension
+                var nameWithoutExtension = sanitizedNameWithoutExtension
                 var i = 0
                 while (File(dir, "$nameWithoutExtension$extension").exists()) {
                     i++
-                    nameWithoutExtension = "$desiredNameWithoutExtension ($i)"
+                    nameWithoutExtension = "$sanitizedNameWithoutExtension ($i)"
                 }
                 resolvedName = nameWithoutExtension
             }
