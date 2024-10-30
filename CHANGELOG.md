@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.17"></a>[v1.11.17] - 2024-10-30
+
 ### Added
 
 - Map: create shortcut to custom region and filters
