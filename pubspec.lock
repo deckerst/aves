@@ -752,10 +752,10 @@ packages:
     dependency: transitive
     description:
       name: js
-      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
+      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.7"
+    version: "0.7.1"
   latlong2:
     dependency: "direct main"
     description:
@@ -904,8 +904,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit
-      ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
-      resolved-ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
+      ref: "18f155fe81cae93db712307411a17b2b93760eb6"
+      resolved-ref: "18f155fe81cae93db712307411a17b2b93760eb6"
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.1.11"
@@ -921,8 +921,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit_video
-      ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
-      resolved-ref: "3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e"
+      ref: "18f155fe81cae93db712307411a17b2b93760eb6"
+      resolved-ref: "18f155fe81cae93db712307411a17b2b93760eb6"
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.2.5"
