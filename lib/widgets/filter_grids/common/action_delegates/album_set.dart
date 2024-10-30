@@ -139,7 +139,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   @override
   void onActionSelected(BuildContext context, ChipSetAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
       case ChipSetAction.createAlbum:

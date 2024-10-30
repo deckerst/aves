@@ -92,7 +92,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   }
 
   Future<void> onActionSelected(BuildContext context, AvesEntry targetEntry, CollectionLens? collection, EntryAction action) async {
-    await reportService.log('$action');
+    await reportService.log('$runtimeType handles $action');
     _eventStreamController.add(ActionStartedEvent(action));
     switch (action) {
       // general

@@ -65,7 +65,7 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
 
   @override
   void onActionSelected(BuildContext context, ChipSetAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       // single/multiple filters
       case ChipSetAction.delete:
