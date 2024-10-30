@@ -24,12 +24,12 @@ dependency_overrides:
   media_kit:
     git:
       url: https://github.com/media-kit/media-kit.git
-      ref: 3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e
+      ref: 18f155fe81cae93db712307411a17b2b93760eb6
       path: media_kit
   media_kit_video:
     git:
       url: https://github.com/media-kit/media-kit.git
-      ref: 3e7812ac2db4ec19ea501a387c1bf7a9c79bb64e
+      ref: 18f155fe81cae93db712307411a17b2b93760eb6
       path: media_kit_video
 
 dev_dependencies:
