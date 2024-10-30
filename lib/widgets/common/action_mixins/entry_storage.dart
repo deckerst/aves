@@ -327,7 +327,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         type: ConfirmationDialog.moveToBin,
         message: l10n.binEntriesConfirmationDialogMessage(entries.length),
         confirmationButtonLabel: l10n.deleteButtonLabel,
-      )) return;
+      )) {
+        return;
+      }
     }
 
     final entriesByDestination = <String, Set<AvesEntry>>{};
