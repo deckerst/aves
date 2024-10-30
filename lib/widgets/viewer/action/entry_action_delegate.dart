@@ -186,7 +186,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   void onActionSelected(BuildContext context, EntryAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     final targetEntry = _getTargetEntry(context, action);
 
     switch (action) {

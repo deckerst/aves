@@ -49,7 +49,7 @@ class ExplorerActionDelegate with FeedbackMixin {
   }
 
   void onActionSelected(BuildContext context, ExplorerAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       case ExplorerAction.addShortcut:
         _addShortcut(context);

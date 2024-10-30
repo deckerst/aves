@@ -169,7 +169,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void onActionSelected(BuildContext context, EntrySetAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
       case EntrySetAction.configureView:
