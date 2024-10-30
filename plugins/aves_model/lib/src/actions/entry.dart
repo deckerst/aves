@@ -33,7 +33,7 @@ enum EntryAction {
   // external
   edit,
   open,
-  openVideo,
+  openVideoPlayer,
   openMap,
   setAs,
   cast,

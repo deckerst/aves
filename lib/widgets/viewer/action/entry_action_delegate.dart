@@ -104,7 +104,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoSkip10:
         case EntryAction.videoShowPreviousFrame:
         case EntryAction.videoShowNextFrame:
-        case EntryAction.openVideo:
+        case EntryAction.openVideoPlayer:
           return targetEntry.isPureVideo;
         case EntryAction.rotateScreen:
           return !settings.useTvLayout && settings.isRotationLocked;
@@ -246,7 +246,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoSkip10:
       case EntryAction.videoShowPreviousFrame:
       case EntryAction.videoShowNextFrame:
-      case EntryAction.openVideo:
+      case EntryAction.openVideoPlayer:
         final controller = context.read<VideoConductor>().getController(targetEntry);
         if (controller != null) {
           VideoActionNotification(
