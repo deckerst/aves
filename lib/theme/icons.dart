@@ -120,7 +120,8 @@ class AIcons {
   static final move = MdiIcons.fileMoveOutline;
   static const rename = Icons.abc_outlined;
   static const openOutside = Icons.open_in_new_outlined;
-  static final openVideo = MdiIcons.moviePlayOutline;
+  static final openVideoPlayer = MdiIcons.openInApp;
+  static final openVideoPart = MdiIcons.moviePlayOutline;
   static const pin = Icons.push_pin_outlined;
   static final unpin = MdiIcons.pinOffOutline;
   static const print = Icons.print_outlined;

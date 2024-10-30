@@ -39,7 +39,7 @@ class VideoControlRow extends StatelessWidget {
           final action = actions.first;
           return Padding(
             padding: const EdgeInsets.only(left: padding),
-            child: _buildOverlayButton(context, action),
+            child: _buildOverlayButton(context, action, const BorderRadius.all(radius)),
           );
         }
 
@@ -49,13 +49,13 @@ class VideoControlRow extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             textDirection: ViewerBottomOverlay.actionsDirection,
             children: actions.map((action) {
-              var borderRadius = const BorderRadius.all(Radius.zero);
+              var borderRadius = BorderRadius.zero;
               if (action == actions.first) {
-                borderRadius = const BorderRadius.only(topLeft: radius, bottomLeft: radius);
+                borderRadius = const BorderRadius.horizontal(left: radius);
               } else if (action == actions.last) {
-                borderRadius = const BorderRadius.only(topRight: radius, bottomRight: radius);
+                borderRadius = const BorderRadius.horizontal(right: radius);
               }
-              return _buildOverlayButton(context, action, borderRadius: borderRadius);
+              return _buildOverlayButton(context, action, borderRadius);
             }).toList(),
           ),
         );
@@ -65,9 +65,9 @@ class VideoControlRow extends StatelessWidget {
 
   Widget _buildOverlayButton(
     BuildContext context,
-    EntryAction action, {
-    BorderRadius? borderRadius,
-  }) {
+    EntryAction action,
+    BorderRadius borderRadius,
+  ) {
     Widget child;
     if (action == EntryAction.videoTogglePlay) {
       child = PlayToggler(
@@ -75,13 +75,21 @@ class VideoControlRow extends StatelessWidget {
         onPressed: () => onActionSelected(action),
       );
     } else {
-      final enabled = action == EntryAction.openVideo ? !entry.trashed : true;
+      final enabled = action == EntryAction.openVideoPlayer ? !entry.trashed : true;
       child = IconButton(
         icon: action.getIcon(),
         onPressed: enabled ? () => onActionSelected(action) : null,
         tooltip: action.getText(context),
       );
     }
+
+    child = Padding(
+      padding: EdgeInsets.only(
+        left: borderRadius.topLeft.x > 0 ? padding / 3 : 0,
+        right: borderRadius.topRight.x > 0 ? padding / 3 : 0,
+      ),
+      child: child,
+    );
 
     return OverlayButton(
       scale: scale,

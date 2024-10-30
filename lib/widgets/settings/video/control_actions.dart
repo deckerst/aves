@@ -17,7 +17,7 @@ class VideoControlButtonsPage extends StatefulWidget {
 class _VideoControlButtonsPageState extends State<VideoControlButtonsPage> {
   late final Set<EntryAction> _selectedActions;
 
-  static const _availableActions = [...EntryActions.videoPlayback, EntryAction.openVideo];
+  static const _availableActions = [...EntryActions.videoPlayback, EntryAction.openVideoPlayer];
 
   @override
   void initState() {

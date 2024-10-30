@@ -79,7 +79,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await controller.skipFrames(-1);
       case EntryAction.videoShowNextFrame:
         await controller.skipFrames(1);
-      case EntryAction.openVideo:
+      case EntryAction.openVideoPlayer:
         await appService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
