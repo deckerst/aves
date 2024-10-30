@@ -112,7 +112,7 @@ extension ExtraEntryActionView on EntryAction {
         // different data depending on toggle state
         AIcons.mute,
       EntryAction.videoSelectStreams => AIcons.selectStreams,
-      EntryAction.videoSetSpeed => AIcons.speed,
+      EntryAction.videoSetSpeed => AIcons.setSpeed,
       EntryAction.videoABRepeat => AIcons.repeat,
       EntryAction.videoSettings => AIcons.videoSettings,
       EntryAction.videoTogglePlay =>

@@ -19,11 +19,6 @@ class AIcons {
   static const checked = Icons.done_outlined;
   static final count = MdiIcons.counter;
   static const counter = Icons.plus_one_outlined;
-  static const date = Icons.calendar_today_outlined;
-  static const dateByDay = Icons.today_outlined;
-  static const dateByMonth = Icons.calendar_month_outlined;
-  static const dateRecent = Icons.today_outlined;
-  static const dateUndated = Icons.event_busy_outlined;
   static const description = Icons.description_outlined;
   static const descriptionUntitled = Icons.comments_disabled_outlined;
   static const disc = Icons.fiber_manual_record;
@@ -32,7 +27,6 @@ class AIcons {
   static const error = Icons.error_outline;
   static const explorer = Icons.account_tree_outlined;
   static const folder = Icons.folder_outlined;
-  static const geoBounds = Icons.public_outlined;
   static final github = MdiIcons.github;
   static const home = Icons.home_outlined;
 
@@ -43,11 +37,6 @@ class AIcons {
 
   static const language = Icons.translate_outlined;
   static final legal = MdiIcons.scaleBalance;
-  static const location = Icons.place_outlined;
-  static const locationUnlocated = Icons.location_off_outlined;
-  static const country = Icons.flag_outlined;
-  static const state = Icons.flag_outlined;
-  static const place = Icons.place_outlined;
   static const mimeType = Icons.code_outlined;
   static const name = Icons.abc_outlined;
   static const newTier = Icons.fiber_new_outlined;
@@ -76,6 +65,19 @@ class AIcons {
   static const volumeMin = Icons.volume_mute_outlined;
   static const volumeMax = Icons.volume_up_outlined;
 
+  // time/space
+  static const date = Icons.calendar_today_outlined;
+  static const dateByDay = Icons.today_outlined;
+  static const dateByMonth = Icons.calendar_month_outlined;
+  static const dateRecent = Icons.today_outlined;
+  static const dateUndated = Icons.event_busy_outlined;
+  static const geoBounds = Icons.public_outlined;
+  static const location = Icons.place_outlined;
+  static const locationUnlocated = Icons.location_off_outlined;
+  static const country = Icons.flag_outlined;
+  static const state = Icons.flag_outlined;
+  static const place = Icons.place_outlined;
+
   // view
   static const group = Icons.group_work_outlined;
   static const layout = Icons.grid_view_outlined;
@@ -91,7 +93,6 @@ class AIcons {
   static const add = Icons.add_circle_outline;
   static const addShortcut = Icons.add_to_home_screen_outlined;
   static const cancel = Icons.cancel_outlined;
-  static const captureFrame = Icons.screenshot_outlined;
   static const cast = Icons.cast_outlined;
   static const clear = Icons.clear_outlined;
   static const clipboard = Icons.content_copy_outlined;
@@ -117,25 +118,15 @@ class AIcons {
   static const map = Icons.map_outlined;
   static const more = Icons.more_horiz_outlined;
   static final move = MdiIcons.fileMoveOutline;
-  static const mute = Icons.volume_off_outlined;
-  static const unmute = Icons.volume_up_outlined;
   static const rename = Icons.abc_outlined;
   static const openOutside = Icons.open_in_new_outlined;
   static final openVideo = MdiIcons.moviePlayOutline;
   static const pin = Icons.push_pin_outlined;
   static final unpin = MdiIcons.pinOffOutline;
-  static const play = Icons.play_arrow;
-  static const pause = Icons.pause;
   static const print = Icons.print_outlined;
   static const refresh = Icons.refresh_outlined;
-  static const repeat = Icons.repeat_outlined;
-  static final repeatOff = MdiIcons.repeatOff;
-  static const replay10 = Icons.replay_10_outlined;
-  static const previousFrame = Icons.skip_previous_outlined;
-  static const nextFrame = Icons.skip_next_outlined;
   static final resetBounds = MdiIcons.rayStartEnd;
   static const reverse = Icons.invert_colors_outlined;
-  static const skip10 = Icons.forward_10_outlined;
   static const reset = Icons.restart_alt_outlined;
   static const restore = Icons.restore_outlined;
   static const rotateLeft = Icons.rotate_left_outlined;
@@ -143,7 +134,6 @@ class AIcons {
   static const rotateScreen = Icons.screen_rotation_outlined;
   static const search = Icons.search_outlined;
   static const select = Icons.select_all_outlined;
-  static const selectStreams = Icons.translate_outlined;
   static const setAs = Icons.wallpaper_outlined;
   static final setBoundEnd = MdiIcons.rayEnd;
   static final setBoundStart = MdiIcons.rayStart;
@@ -153,14 +143,12 @@ class AIcons {
   static final showFullscreenArrows = MdiIcons.arrowExpand;
   static const showFullscreenCorners = Icons.fullscreen_outlined;
   static const slideshow = Icons.slideshow_outlined;
-  static const speed = Icons.speed_outlined;
   static const stats = Icons.donut_small_outlined;
-  static const vaultLock = Icons.lock_outline;
+  static const vaultLock = Icons.lock_outlined;
   static const vaultAdd = Icons.enhanced_encryption_outlined;
   static final vaultConfigure = MdiIcons.shieldLockOutline;
-  static const videoSettings = Icons.video_settings_outlined;
   static const view = Icons.grid_view_outlined;
-  static const viewerLock = Icons.lock_outline;
+  static const viewerLock = Icons.lock_outlined;
   static const viewerUnlock = Icons.lock_open_outlined;
   static const zoomIn = Icons.add_outlined;
   static const zoomOut = Icons.remove_outlined;
@@ -170,6 +158,23 @@ class AIcons {
   static const down = Icons.keyboard_arrow_down_outlined;
   static const previous = Icons.chevron_left_outlined;
   static const next = Icons.chevron_right_outlined;
+
+  // video actions
+  // `play` and `pause` icon should be consistent with `AnimatedIcons.play_pause`
+  static const play = Icons.play_arrow;
+  static const pause = Icons.pause;
+  static const previousFrame = Icons.skip_previous_outlined;
+  static const nextFrame = Icons.skip_next_outlined;
+  static const replay10 = Icons.replay_10_outlined;
+  static const skip10 = Icons.forward_10_outlined;
+  static const mute = Icons.volume_off_outlined;
+  static const unmute = Icons.volume_up_outlined;
+  static const captureFrame = Icons.screenshot_outlined;
+  static const repeat = Icons.repeat_outlined;
+  static final repeatOff = MdiIcons.repeatOff;
+  static const selectStreams = Icons.translate_outlined;
+  static const setSpeed = Icons.speed_outlined;
+  static const videoSettings = Icons.video_settings_outlined;
 
   // editor
   static const transform = Icons.crop_rotate_outlined;
@@ -185,7 +190,7 @@ class AIcons {
   static const downloadAlbum = Icons.file_download;
   static const screenshotAlbum = Icons.screenshot_outlined;
   static const recordingAlbum = Icons.smartphone_outlined;
-  static const locked = Icons.lock_outline;
+  static const locked = Icons.lock_outlined;
   static const unlocked = Icons.lock_open_outlined;
 
   // thumbnail overlay
@@ -196,8 +201,8 @@ class AIcons {
   static const multiPage = Icons.burst_mode_outlined;
   static const panorama = Icons.vrpano_outlined;
   static const sphericalVideo = Icons.threesixty_outlined;
-  static const videoThumb = Icons.play_circle_outline;
-  static const selected = Icons.check_circle_outline;
+  static const videoThumb = Icons.play_circle_outlined;
+  static const selected = Icons.check_circle_outlined;
   static const unselected = Icons.radio_button_unchecked;
 
   // Material Icons references to make constant instances of `IconData`
