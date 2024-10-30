@@ -375,14 +375,8 @@
   "@vaultLockTypePassword": {},
   "settingsVideoEnablePip": "Bild-i-bild",
   "@settingsVideoEnablePip": {},
-  "videoControlsPlay": "Spela",
-  "@videoControlsPlay": {},
-  "videoControlsPlaySeek": "Spela & spola bakåt/framåt",
-  "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "Öppna med annan spelare",
   "@videoControlsPlayOutside": {},
-  "videoControlsNone": "Inga",
-  "@videoControlsNone": {},
   "videoLoopModeNever": "Aldrig",
   "@videoLoopModeNever": {},
   "videoLoopModeShortOnly": "Bara korta videor",
@@ -1572,5 +1566,9 @@
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Brickor av [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "mapAttributionOsmData": "Kartdata © [OpenStreetMap](https://www.openstreetmap.org/copyright) bidragsgivare",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "videoActionShowPreviousFrame": "Visa föregående bildruta",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Visa nästa bildruta",
+  "@videoActionShowNextFrame": {}
 }

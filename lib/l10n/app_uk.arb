@@ -209,12 +209,8 @@
   "@videoLoopModeNever": {},
   "videoLoopModeAlways": "Завжди",
   "@videoLoopModeAlways": {},
-  "videoControlsPlay": "Відтворити",
-  "@videoControlsPlay": {},
   "videoControlsPlayOutside": "Відкрити в іншому відеоплеєрі",
   "@videoControlsPlayOutside": {},
-  "videoControlsNone": "Нічого",
-  "@videoControlsNone": {},
   "mapStyleGoogleNormal": "Google Карти",
   "@mapStyleGoogleNormal": {},
   "mapStyleGoogleHybrid": "Google Карти (Гібрид)",
@@ -715,8 +711,6 @@
   "@filterTypeAnimatedLabel": {},
   "videoLoopModeShortOnly": "Тільки короткі відео",
   "@videoLoopModeShortOnly": {},
-  "videoControlsPlaySeek": "Відтворити та перемотати назад/вперед",
-  "@videoControlsPlaySeek": {},
   "mapStyleStamenWatercolor": "Stamen Watercolor",
   "@mapStyleStamenWatercolor": {},
   "widgetOpenPageCollection": "Відкрити колекцію",
@@ -1550,5 +1544,9 @@
   "mapAttributionOsmLiberty": "Плитки від [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Розміщено на [OSM Americana](https://tile.ourmap.us)",
   "@mapAttributionOsmLiberty": {},
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Плитки від [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "@mapAttributionOpenTopoMap": {},
+  "videoActionShowPreviousFrame": "Показати попередній кадр",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Показати наступний кадр",
+  "@videoActionShowNextFrame": {}
 }
