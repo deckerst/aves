@@ -22,9 +22,9 @@ mixin VideoSettings on SettingsAccess {
 
   set videoResumptionMode(VideoResumptionMode newValue) => set(SettingKeys.videoResumptionModeKey, newValue.toString());
 
-  VideoControls get videoControls => getEnumOrDefault(SettingKeys.videoControlsKey, SettingsDefaults.videoControls, VideoControls.values);
+  List<EntryAction> get videoControlActions => getEnumListOrDefault(SettingKeys.videoControlActionsKey, SettingsDefaults.videoControlActions, EntryAction.values);
 
-  set videoControls(VideoControls newValue) => set(SettingKeys.videoControlsKey, newValue.toString());
+  set videoControlActions(List<EntryAction> newValue) => set(SettingKeys.videoControlActionsKey, newValue.map((v) => v.toString()).toList());
 
   bool get videoGestureDoubleTapTogglePlay => getBool(SettingKeys.videoGestureDoubleTapTogglePlayKey) ?? SettingsDefaults.videoGestureDoubleTapTogglePlay;
 

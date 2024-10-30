@@ -28,11 +28,9 @@ class VideoControlRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<Settings, VideoControls>(
-      selector: (context, s) => s.videoControls,
-      builder: (context, videoControls, child) {
-        final actions = _toActions(videoControls);
-
+    return Selector<Settings, List<EntryAction>>(
+      selector: (context, s) => s.videoControlActions,
+      builder: (context, actions, child) {
         if (actions.isEmpty) {
           return const SizedBox();
         }
@@ -63,23 +61,6 @@ class VideoControlRow extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<EntryAction> _toActions(VideoControls videoControls) {
-    switch (videoControls) {
-      case VideoControls.play:
-        return [EntryAction.videoTogglePlay];
-      case VideoControls.playSeek:
-        return [
-          EntryAction.videoReplay10,
-          EntryAction.videoTogglePlay,
-          EntryAction.videoSkip10,
-        ];
-      case VideoControls.playOutside:
-        return [EntryAction.openVideo];
-      case VideoControls.none:
-        return [];
-    }
   }
 
   Widget _buildOverlayButton(

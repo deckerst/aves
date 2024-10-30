@@ -272,10 +272,7 @@
 
   "settingsVideoEnablePip": "Picture-in-picture",
 
-  "videoControlsPlay": "Play",
-  "videoControlsPlaySeek": "Play & seek backward/forward",
   "videoControlsPlayOutside": "Open with other player",
-  "videoControlsNone": "None",
 
   "videoLoopModeNever": "Never",
   "videoLoopModeShortOnly": "Short videos only",

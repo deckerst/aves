@@ -109,7 +109,7 @@ class SettingKeys {
   static const videoAutoPlayModeKey = 'video_auto_play_mode';
   static const videoLoopModeKey = 'video_loop';
   static const videoResumptionModeKey = 'video_resumption_mode';
-  static const videoControlsKey = 'video_controls';
+  static const videoControlActionsKey = 'video_control_actions';
   static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
   static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';
   static const videoGestureVerticalDragBrightnessVolumeKey = 'video_gesture_vertical_drag_brightness_volume';

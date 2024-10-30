@@ -117,8 +117,6 @@ class EntryActions {
     EntryAction.videoToggleMute,
     EntryAction.videoSetSpeed,
     EntryAction.videoABRepeat,
-    EntryAction.videoShowPreviousFrame,
-    EntryAction.videoShowNextFrame,
     EntryAction.videoSelectStreams,
     EntryAction.videoSettings,
     EntryAction.lockViewer,
@@ -126,7 +124,9 @@ class EntryActions {
 
   static const videoPlayback = [
     EntryAction.videoReplay10,
+    EntryAction.videoShowPreviousFrame,
     EntryAction.videoTogglePlay,
+    EntryAction.videoShowNextFrame,
     EntryAction.videoSkip10,
   ];
 
