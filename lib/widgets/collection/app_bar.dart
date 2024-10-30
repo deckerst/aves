@@ -36,7 +36,6 @@ import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -357,7 +356,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       ...EntrySetActions.general,
       ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
-    ].whereNotNull().where(isVisible).map((action) {
+    ].nonNulls.where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
         iconButtonBuilder: (context, focusNode) => _buildButtonIcon(

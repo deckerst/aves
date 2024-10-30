@@ -23,6 +23,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  clock:
+    dependency: transitive
+    description:
+      name: clock
+      sha256: cb6d7f03e1de671e34607e909a7213e31d7752be4fb66a86d29fe1eb14bfb5cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   collection:
     dependency: transitive
     description:
@@ -52,6 +60,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  leak_tracker:
+    dependency: "direct main"
+    description:
+      name: leak_tracker
+      sha256: c35baad643ba394b40aac41080300150a4f08fd0fd6a10378f8f7c6bc161acec
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.0.8"
   lints:
     dependency: transitive
     description:
@@ -76,6 +92,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  path:
+    dependency: transitive
+    description:
+      name: path
+      sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.9.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -89,5 +113,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vm_service:
+    dependency: transitive
+    description:
+      name: vm_service
+      sha256: "0968250880a6c5fe7edc067ed0a13d4bae1577fe2771dcf3010d52c4a9d3ca14"
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.3.1"
 sdks:
   dart: ">=3.5.0 <4.0.0"

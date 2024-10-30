@@ -249,6 +249,11 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   Future<void> _goToViewer(CollectionLens collection, AvesEntry entry) async {
     // track viewer entry for dynamic hero placeholder
     final viewerEntryNotifier = context.read<ViewerEntryNotifier>();
+
+    // prevent navigating again to the same entry until fully back,
+    // as a workaround for the hero pop/push diversion animation issue
+    // (cf `ThumbnailImage` `Hero` usage)
+    if (viewerEntryNotifier.value == entry) return;
     WidgetsBinding.instance.addPostFrameCallback((_) => viewerEntryNotifier.value = entry);
 
     final selection = context.read<Selection<AvesEntry>>();
@@ -421,7 +426,7 @@ class _CollectionScaler extends StatelessWidget {
       ),
       mosaicItemBuilder: (index, targetExtent) => DecoratedBox(
         decoration: BoxDecoration(
-          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withOpacity(.9),
+          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withAlpha((255.0 * .9).round()),
           border: Border.all(
             color: borderColor,
             width: borderWidth,
@@ -498,7 +503,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       _checkingStoragePermission = false;
       _isStoragePermissionGranted.then((granted) {
         if (granted) {
-          widget.collection.source.init();
+          widget.collection.source.init(scope: CollectionSource.fullScope);
         }
       });
     }

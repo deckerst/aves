@@ -269,7 +269,10 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
       final backgroundColor = background.isColor ? background.color : null;
       image = Hero(
         tag: heroTag,
-        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+        flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
+          // as of Flutter v3.27.0-0.1.pre, the flight `animation` is incorrect when diverting a pop:
+          // - diverting a push (t = 0 -> 1) with a pop (t = 1 -> 0) works as expected (t = 0 -> [0,1] -> 0)
+          // - diverting a pop (t = 1 -> 0) with a push (t = 0 -> 1) finishes the pop (t = 1 -> [0,1] -> 0) instead of diverting (t = 1 -> [0,1] -> 1)
           Widget child = TransitionImage(
             image: entry.bestCachedThumbnail,
             animation: animation,
@@ -304,11 +307,11 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     if (animate && heroTag != null) {
       child = Hero(
         tag: heroTag,
-        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+        flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
           return MediaQueryDataProvider(
             child: DefaultTextStyle(
-              style: DefaultTextStyle.of(toHero).style,
-              child: toHero.widget,
+              style: DefaultTextStyle.of(toHeroContext).style,
+              child: toHeroContext.widget,
             ),
           );
         },

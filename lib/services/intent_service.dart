@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
@@ -48,23 +47,23 @@ class IntentService {
 
   static Future<Set<CollectionFilter>?> pickCollectionFilters(Set<CollectionFilter>? initialFilters) async {
     try {
-      final completer = Completer<Set<CollectionFilter>?>();
+      final opCompleter = Completer<Set<CollectionFilter>?>();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'pickCollectionFilters',
         'initialFilters': initialFilters?.map((filter) => filter.toJson()).toList(),
       }).listen(
         (data) {
-          final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet();
-          completer.complete(result);
+          final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
+          opCompleter.complete(result);
         },
-        onError: completer.completeError,
+        onError: opCompleter.completeError,
         onDone: () {
-          if (!completer.isCompleted) completer.complete(null);
+          if (!opCompleter.isCompleted) opCompleter.complete(null);
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      return await completer.future;
+      return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

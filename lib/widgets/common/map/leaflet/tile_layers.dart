@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:aves/model/device.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/map/leaflet/vector_style_reader_extra.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -115,6 +118,10 @@ class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
               sprites: style.sprites,
               // `vector` is higher quality and follows map orientation, but it is slower
               layerMode: VectorTileLayerMode.raster,
+              cacheFolder: () async {
+                final cacheRoot = await storageService.getExternalCacheDirectory();
+                return Directory(pContext.join(cacheRoot, 'map_vector_tiles'));
+              },
             );
           },
         );

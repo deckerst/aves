@@ -104,11 +104,11 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
     if (animate) {
       child = Hero(
         tag: 'nav-bar',
-        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+        flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
           return MediaQuery.removeViewInsets(
             context: context,
             removeBottom: true,
-            child: toHero.widget,
+            child: toHeroContext.widget,
           );
         },
         child: child,

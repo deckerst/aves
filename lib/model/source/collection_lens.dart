@@ -54,11 +54,12 @@ class CollectionLens with ChangeNotifier {
     this.stackDevelopedRaws = true,
     this.fixedSort = false,
     this.fixedSelection,
-  })  : filters = (filters ?? {}).whereNotNull().toSet(),
+  })  : filters = (filters ?? {}).nonNulls.toSet(),
         burstPatterns = settings.collectionBurstPatterns,
         sectionFactor = settings.collectionSectionFactor,
         sortFactor = settings.collectionSortFactor,
         sortReverse = settings.collectionSortReverse {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;

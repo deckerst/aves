@@ -8,4 +8,5 @@
     <string name="analysis_channel_name">Digitalização de mídia</string>
     <string name="analysis_notification_default_title">Digitalizando mídia</string>
     <string name="analysis_notification_action_stop">Pare</string>
+    <string name="map_shortcut_short_label">Mapa</string>
 </resources>

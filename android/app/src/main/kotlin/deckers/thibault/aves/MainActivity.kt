@@ -56,6 +56,7 @@ import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
 import deckers.thibault.aves.channel.streams.SettingsChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -314,6 +315,7 @@ open class MainActivity : FlutterFragmentActivity() {
                         return hashMapOf(
                             INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW_GEO,
                             INTENT_DATA_KEY_URI to uri.toString(),
+                            INTENT_DATA_KEY_FILTERS to extractFiltersFromIntent(intent),
                         )
                     }
 
@@ -370,7 +372,8 @@ open class MainActivity : FlutterFragmentActivity() {
                 return hashMapOf(
                     INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_ITEMS,
                     INTENT_DATA_KEY_MIME_TYPE to intent.type,
-                    INTENT_DATA_KEY_ALLOW_MULTIPLE to (intent.extras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE) ?: false),
+                    INTENT_DATA_KEY_MIME_TYPES to intent.getStringArrayExtra(Intent.EXTRA_MIME_TYPES)?.toList(),
+                    INTENT_DATA_KEY_ALLOW_MULTIPLE to intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false),
                 )
             }
 
@@ -432,33 +435,50 @@ open class MainActivity : FlutterFragmentActivity() {
 
     open fun submitPickedItems(call: MethodCall, result: MethodChannel.Result) {
         val pickedUris = call.argument<List<String>>("uris")
-        try {
-            if (!pickedUris.isNullOrEmpty()) {
-                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this@MainActivity, Uri.parse(uriString)) }
-                val intent = Intent().apply {
-                    val firstUri = toUri(pickedUris.first())
-                    if (pickedUris.size == 1) {
-                        data = firstUri
-                    } else {
-                        clipData = ClipData.newUri(contentResolver, null, firstUri).apply {
-                            pickedUris.drop(1).forEach {
-                                addItem(ClipData.Item(toUri(it)))
-                            }
-                        }
-                    }
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-                setResult(RESULT_OK, intent)
-            } else {
-                setResult(RESULT_CANCELED)
-            }
+        if (pickedUris.isNullOrEmpty()) {
+            setResult(RESULT_CANCELED)
             // move code triggering `Binder` call off the main thread
             defaultScope.launch { finish() }
-        } catch (e: Exception) {
-            if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
-                result.error("submitPickedItems-large", "transaction too large with ${pickedUris?.size} URIs", e)
+            return
+        }
+
+        val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this@MainActivity, Uri.parse(uriString)) }
+        val intent = Intent().apply {
+            val firstUri = toUri(pickedUris.first())
+            if (pickedUris.size == 1) {
+                data = firstUri
             } else {
-                result.error("submitPickedItems-exception", "failed to pick ${pickedUris?.size} URIs", e)
+                clipData = ClipData.newUri(contentResolver, null, firstUri).apply {
+                    pickedUris.drop(1).forEach {
+                        addItem(ClipData.Item(toUri(it)))
+                    }
+                }
+            }
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        }
+        // move code triggering `Binder` call off the main thread
+        defaultScope.launch {
+            submitPickedItemsIntent(intent, result)
+        }
+    }
+
+    private fun submitPickedItemsIntent(intent: Intent, result: MethodChannel.Result) {
+        try {
+            setResult(RESULT_OK, intent)
+            finish()
+        } catch (e: Exception) {
+            setResult(RESULT_CANCELED)
+            if (e is SecurityException && intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
+                // in some environments, providing the write flag yields a `SecurityException`:
+                // "UID XXXX does not have permission to content://XXXX"
+                // so we retry without it
+                Log.i(LOG_TAG, "retry submitting picked items without FLAG_GRANT_WRITE_URI_PERMISSION")
+                intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
+                submitPickedItemsIntent(intent, result)
+            } else if (e.anyCauseIs<TransactionTooLargeException>()) {
+                result.error("submitPickedItems-large", "transaction too large with ${intent.clipData?.itemCount} URIs", e)
+            } else {
+                result.error("submitPickedItems-exception", "failed to pick ${intent.clipData?.itemCount} URIs", e)
             }
         }
     }
@@ -552,6 +572,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_EXPLORER_PATH = "explorerPath"
         const val INTENT_DATA_KEY_FILTERS = "filters"
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
+        const val INTENT_DATA_KEY_MIME_TYPES = "mimeTypes"
         const val INTENT_DATA_KEY_PAGE = "page"
         const val INTENT_DATA_KEY_QUERY = "query"
         const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
@@ -566,6 +587,8 @@ open class MainActivity : FlutterFragmentActivity() {
 
         // dart page routes
         const val COLLECTION_PAGE_ROUTE_NAME = "/collection"
+        const val ENTRY_VIEWER_PAGE_ROUTE_NAME = "/viewer"
+        const val EXPLORER_PAGE_ROUTE_NAME = "/explorer"
         const val MAP_PAGE_ROUTE_NAME = "/map"
         const val SEARCH_PAGE_ROUTE_NAME = "/search"
 

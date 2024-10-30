@@ -49,7 +49,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localization_nn/flutter_localization_nn.dart';
+import 'package:flutter_localizations_plus/flutter_localizations_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -305,8 +305,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 themeMode: themeBrightness.appThemeMode,
                                 locale: settingsLocale,
                                 localizationsDelegates: const [
-                                  ...AppLocalizations.localizationsDelegates,
+                                  // order matters for resolution of sublocales (e.g. `en_Shaw` before `en`)
+                                  ...LocalizationsEnShaw.delegates,
                                   ...LocalizationsNn.delegates,
+                                  ...AppLocalizations.localizationsDelegates,
                                 ],
                                 supportedLocales: AvesApp.supportedLocales,
                                 scrollBehavior: AvesScrollBehavior(),
@@ -564,9 +566,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       switch (settings.maxBrightness) {
         case MaxBrightness.never:
         case MaxBrightness.viewerOnly:
-          AvesApp.screenBrightness?.resetScreenBrightness();
+          AvesApp.screenBrightness?.resetApplicationScreenBrightness();
         case MaxBrightness.always:
-          AvesApp.screenBrightness?.setScreenBrightness(1);
+          AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
       }
     }
 
@@ -655,7 +657,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       final shouldReset = _exitedMainByPop;
       _exitedMainByPop = false;
 
-      if (!shouldReset && (intentData ?? {}).values.whereNotNull().isEmpty) {
+      if (!shouldReset && (intentData ?? {}).values.nonNulls.isEmpty) {
         reportService.log('Relaunch');
         return;
       }
@@ -683,11 +685,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _onAnalysisCompletion() async {
     debugPrint('Analysis completed');
-    if (_mediaStoreSource.scope != SourceScope.none) {
-      await _mediaStoreSource.loadCatalogMetadata();
-      await _mediaStoreSource.loadAddresses();
-      _mediaStoreSource.updateDerivedFilters();
-    }
+    await _mediaStoreSource.loadCatalogMetadata();
+    await _mediaStoreSource.loadAddresses();
+    _mediaStoreSource.updateDerivedFilters();
   }
 
   void _onError(String? error) => reportService.recordError(error, null);

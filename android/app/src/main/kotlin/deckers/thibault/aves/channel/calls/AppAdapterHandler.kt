@@ -23,11 +23,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.MainActivity.Companion.COLLECTION_PAGE_ROUTE_NAME
+import deckers.thibault.aves.MainActivity.Companion.ENTRY_VIEWER_PAGE_ROUTE_NAME
+import deckers.thibault.aves.MainActivity.Companion.EXPLORER_PAGE_ROUTE_NAME
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_EXPLORER_PATH
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_ARRAY
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_STRING
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_PAGE
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_STRING_ARRAY_SEPARATOR
+import deckers.thibault.aves.MainActivity.Companion.MAP_PAGE_ROUTE_NAME
 import deckers.thibault.aves.R
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -35,6 +39,7 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getApplicationInfoCompat
 import deckers.thibault.aves.utils.queryIntentActivitiesCompat
 import io.flutter.plugin.common.MethodCall
@@ -303,7 +308,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             val started = safeStartActivityChooser(title, intent)
             result.success(started)
         } catch (e: Exception) {
-            if (e is TransactionTooLargeException || e.cause is TransactionTooLargeException) {
+            if (e.anyCauseIs<TransactionTooLargeException>()) {
                 result.error("share-large", "transaction too large with ${uriList.size} URIs", e)
             } else {
                 result.error("share-exception", "failed to share ${uriList.size} URIs", e)
@@ -354,12 +359,17 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     // shortcuts
 
     private fun pinShortcut(call: MethodCall, result: MethodChannel.Result) {
+        // common arguments
         val label = call.argument<String>("label")
         val iconBytes = call.argument<ByteArray>("iconBytes")
+        val route = call.argument<String>("route")
+        // route dependent arguments
         val filters = call.argument<List<String>>("filters")
-        val explorerPath = call.argument<String>("explorerPath")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        if (label == null) {
+        val explorerPath = call.argument<String>("path")
+        val viewUri = call.argument<String>("viewUri")?.let { Uri.parse(it) }
+        val geoUri = call.argument<String>("geoUri")?.let { Uri.parse(it) }
+
+        if (label == null || route == null) {
             result.error("pin-args", "missing arguments", null)
             return
         }
@@ -383,24 +393,60 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             // so that foreground is rendered at the intended scale
             val supportAdaptiveIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
-            icon = IconCompat.createWithResource(context, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_collection else R.drawable.ic_shortcut_collection)
+            val resId = when (route) {
+                MAP_PAGE_ROUTE_NAME -> if (supportAdaptiveIcon) R.mipmap.ic_shortcut_map else R.drawable.ic_shortcut_map
+                else -> if (supportAdaptiveIcon) R.mipmap.ic_shortcut_collection else R.drawable.ic_shortcut_collection
+            }
+            icon = IconCompat.createWithResource(context, resId)
         }
 
-        val intent = when {
-            filters != null -> Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
-                .putExtra(EXTRA_KEY_PAGE, "/collection")
-                .putExtra(EXTRA_KEY_FILTERS_ARRAY, filters.toTypedArray())
-                // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
-                // so we use a joined `String` as fallback
-                .putExtra(EXTRA_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
+        val intent: Intent = when (route) {
+            COLLECTION_PAGE_ROUTE_NAME -> {
+                if (filters == null) {
+                    result.error("pin-filters", "collection shortcut requires filters", null)
+                    return
+                }
+                Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
+                    .putExtra(EXTRA_KEY_PAGE, route)
+                    .putExtra(EXTRA_KEY_FILTERS_ARRAY, filters.toTypedArray())
+                    // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
+                    // so we use a joined `String` as fallback
+                    .putExtra(EXTRA_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
+            }
 
-            explorerPath != null -> Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
-                .putExtra(EXTRA_KEY_PAGE, "/explorer")
-                .putExtra(EXTRA_KEY_EXPLORER_PATH, explorerPath)
+            ENTRY_VIEWER_PAGE_ROUTE_NAME -> {
+                if (viewUri == null) {
+                    result.error("pin-viewUri", "viewer shortcut requires URI", null)
+                    return
+                }
+                Intent(Intent.ACTION_VIEW, viewUri, context, MainActivity::class.java)
+            }
 
-            uri != null -> Intent(Intent.ACTION_VIEW, uri, context, MainActivity::class.java)
+            EXPLORER_PAGE_ROUTE_NAME -> {
+                Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
+                    .putExtra(EXTRA_KEY_PAGE, route)
+                    .putExtra(EXTRA_KEY_EXPLORER_PATH, explorerPath)
+            }
+
+            MAP_PAGE_ROUTE_NAME -> {
+                if (geoUri == null) {
+                    result.error("pin-geoUri", "map shortcut requires URI", null)
+                    return
+                }
+                Intent(Intent.ACTION_VIEW, geoUri, context, MainActivity::class.java).apply {
+                    putExtra(EXTRA_KEY_PAGE, route)
+                    // filters are optional
+                    filters?.let {
+                        putExtra(EXTRA_KEY_FILTERS_ARRAY, it.toTypedArray())
+                        // on API 25, `String[]` or `ArrayList` extras are null when using the shortcut
+                        // so we use a joined `String` as fallback
+                        putExtra(EXTRA_KEY_FILTERS_STRING, it.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
+                    }
+                }
+            }
+
             else -> {
-                result.error("pin-intent", "failed to build intent", null)
+                result.error("pin-route", "unsupported shortcut route=$route", null)
                 return
             }
         }

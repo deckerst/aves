@@ -541,8 +541,6 @@
   "@settingsEnableBin": {},
   "entryActionViewMotionPhotoVideo": "فتح الفيديو",
   "@entryActionViewMotionPhotoVideo": {},
-  "videoControlsNone": "لا شيء",
-  "@videoControlsNone": {},
   "otherDirectoryDescription": "دليل «{name}»",
   "@otherDirectoryDescription": {
     "placeholders": {
@@ -757,8 +755,6 @@
   "@drawerCollectionFavourites": {},
   "filterTypeRawLabel": "خام",
   "@filterTypeRawLabel": {},
-  "videoControlsPlaySeek": "تشغيل وتقدم للأمام/ للخلف",
-  "@videoControlsPlaySeek": {},
   "settingsSubtitleThemeTextAlignmentCenter": "وسط",
   "@settingsSubtitleThemeTextAlignmentCenter": {},
   "keepScreenOnVideoPlayback": "أثناء تشغيل الفيديو",
@@ -1031,8 +1027,6 @@
   "@viewerErrorDoesNotExist": {},
   "albumCamera": "الكاميرا",
   "@albumCamera": {},
-  "videoControlsPlay": "تشغيل",
-  "@videoControlsPlay": {},
   "settingsNavigationSectionTitle": "التنقل",
   "@settingsNavigationSectionTitle": {},
   "settingsDisplayRefreshRateModeDialogTitle": "معدل التحديث",
@@ -1544,5 +1538,11 @@
   "mapStyleOpenTopoMap": "الخريطة الطبوغرافية المفتوحة",
   "@mapStyleOpenTopoMap": {},
   "mapAttributionOsmData": "بيانات الخريطة © [OpenStreetMap](https://www.openstreetmap.org/copyright) المساهمين",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | البلاط بواسطة [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "حرية خرائط OSM",
+  "@mapStyleOsmLiberty": {},
+  "mapAttributionOsmLiberty": "البلاط بواسطة [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • مُستضاف بواسطة [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }

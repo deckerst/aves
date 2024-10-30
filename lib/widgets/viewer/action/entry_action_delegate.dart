@@ -34,6 +34,7 @@ import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
@@ -101,7 +102,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.videoTogglePlay:
         case EntryAction.videoReplay10:
         case EntryAction.videoSkip10:
-        case EntryAction.openVideo:
+        case EntryAction.videoShowPreviousFrame:
+        case EntryAction.videoShowNextFrame:
+        case EntryAction.openVideoPlayer:
           return targetEntry.isPureVideo;
         case EntryAction.rotateScreen:
           return !settings.useTvLayout && settings.isRotationLocked;
@@ -183,7 +186,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   void onActionSelected(BuildContext context, EntryAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     final targetEntry = _getTargetEntry(context, action);
 
     switch (action) {
@@ -241,7 +244,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.videoTogglePlay:
       case EntryAction.videoReplay10:
       case EntryAction.videoSkip10:
-      case EntryAction.openVideo:
+      case EntryAction.videoShowPreviousFrame:
+      case EntryAction.videoShowNextFrame:
+      case EntryAction.openVideoPlayer:
         final controller = context.read<VideoConductor>().getController(targetEntry);
         if (controller != null) {
           VideoActionNotification(
@@ -395,7 +400,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final name = result.$2;
     if (name.isEmpty) return;
 
-    await appService.pinToHomeScreen(name, targetEntry, uri: targetEntry.uri);
+    await appService.pinToHomeScreen(name, targetEntry, route: EntryViewerPage.routeName, viewUri: targetEntry.uri);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }
@@ -429,7 +434,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(1),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    )) return;
+    )) {
+      return;
+    }
 
     if (!await checkStoragePermission(context, {targetEntry})) return;
 
@@ -437,9 +444,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
     } else {
       final source = context.read<CollectionSource>();
-      if (source.scope != SourceScope.none) {
-        await source.removeEntries({targetEntry.uri}, includeTrash: true);
-      }
+      await source.removeEntries({targetEntry.uri}, includeTrash: true);
       EntryDeletedNotification({targetEntry}).dispatch(context);
     }
   }

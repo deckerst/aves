@@ -8,6 +8,7 @@ import 'package:aves/model/vaults/details.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_screen_state/aves_screen_state.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,9 @@ class Vaults extends ChangeNotifier {
 
   static const _fileScheme = 'file';
 
-  Vaults._private();
+  Vaults._private() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllVaults();
@@ -53,7 +56,7 @@ class Vaults extends ChangeNotifier {
   }
 
   Future<void> remove(Set<String> dirPaths) async {
-    final details = dirPaths.map(detailsForPath).whereNotNull().toSet();
+    final details = dirPaths.map(detailsForPath).nonNulls.toSet();
     if (details.isEmpty) return;
 
     await localMediaDb.removeVaults(details);
@@ -160,7 +163,7 @@ class Vaults extends ChangeNotifier {
     final vaultName = detailsForPath(dirPath)?.name;
     if (vaultName == null) return newEntries;
 
-    final knownPaths = source.allEntries.where((v) => v.origin == EntryOrigins.vault && v.directory == dirPath).map((v) => v.path).whereNotNull().toSet();
+    final knownPaths = source.allEntries.where((v) => v.origin == EntryOrigins.vault && v.directory == dirPath).map((v) => v.path).nonNulls.toSet();
     final untrackedPaths = await storageService.getUntrackedVaultPaths(vaultName, knownPaths);
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked vault items');
@@ -181,8 +184,10 @@ class Vaults extends ChangeNotifier {
 
   void _onScreenOff() => lock(all.where((v) => v.autoLockScreenOff).map((v) => v.path).toSet());
 
+  bool get needProtection => _unlockedDirPaths.isNotEmpty;
+
   void _onLockStateChanged() {
-    windowService.secureScreen(_unlockedDirPaths.isNotEmpty);
+    windowService.secureScreen(needProtection);
     notifyListeners();
   }
 }

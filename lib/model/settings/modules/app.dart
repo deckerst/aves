@@ -1,12 +1,16 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 mixin AppSettings on SettingsAccess {
   static const int recentFilterHistoryMax = 20;
+
+  void initAppSettings() {
+    vaults.addListener(_onVaultsChanged);
+  }
 
   bool get hasAcceptedTerms => getBool(SettingKeys.hasAcceptedTermsKey) ?? SettingsDefaults.hasAcceptedTerms;
 
@@ -99,15 +103,32 @@ mixin AppSettings on SettingsAccess {
 
   set entryRenamingPattern(String newValue) => set(SettingKeys.entryRenamingPatternKey, newValue);
 
-  List<int>? get topEntryIds => getStringList(SettingKeys.topEntryIdsKey)?.map(int.tryParse).whereNotNull().toList();
+  List<int>? get topEntryIds => getStringList(SettingKeys.topEntryIdsKey)?.map(int.tryParse).nonNulls.toList();
 
-  set topEntryIds(List<int>? newValue) => set(SettingKeys.topEntryIdsKey, newValue?.map((id) => id.toString()).whereNotNull().toList());
+  set topEntryIds(List<int>? newValue) => set(SettingKeys.topEntryIdsKey, newValue?.map((id) => id.toString()).nonNulls.toList());
 
   List<String> get recentDestinationAlbums => getStringList(SettingKeys.recentDestinationAlbumsKey) ?? [];
 
   set recentDestinationAlbums(List<String> newValue) => set(SettingKeys.recentDestinationAlbumsKey, newValue.take(recentFilterHistoryMax).toList());
 
-  List<CollectionFilter> get recentTags => (getStringList(SettingKeys.recentTagsKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
+  // recent tags
 
-  set recentTags(List<CollectionFilter> newValue) => set(SettingKeys.recentTagsKey, newValue.take(recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
+  List<CollectionFilter> get _recentTags => (getStringList(SettingKeys.recentTagsKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toList();
+
+  set _recentTags(List<CollectionFilter> newValue) => set(SettingKeys.recentTagsKey, newValue.take(recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
+
+  // when vaults are unlocked, recent tags are transient and not persisted
+  List<CollectionFilter>? _protectedRecentTags;
+
+  List<CollectionFilter> get recentTags => vaults.needProtection ? _protectedRecentTags ?? List.of(_recentTags) : _recentTags;
+
+  set recentTags(List<CollectionFilter> newValue) {
+    if (vaults.needProtection) {
+      _protectedRecentTags = newValue;
+    } else {
+      _recentTags = newValue;
+    }
+  }
+
+  void _onVaultsChanged() => _protectedRecentTags = null;
 }

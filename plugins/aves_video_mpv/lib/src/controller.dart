@@ -59,6 +59,12 @@ class MpvVideoController extends AvesVideoController {
         title: entry.bestTitle ?? entry.uri,
         libass: false,
         logLevel: MPVLogLevel.warn,
+        protocolWhitelist: [
+          ...const PlayerConfiguration().protocolWhitelist,
+          // Android `content` URIs are considered unsafe by default,
+          // as they are transferred via a custom `fd` protocol
+          'fd',
+        ],
       ),
     );
     _initController();
@@ -204,6 +210,20 @@ class MpvVideoController extends AvesVideoController {
     }
     targetMillis = abRepeatNotifier.value?.clamp(targetMillis) ?? targetMillis;
     await _instance.seek(Duration(milliseconds: targetMillis));
+  }
+
+  @override
+  Future<void> skipFrames(int frameCount) async {
+    final platform = _instance.platform;
+    if (platform is NativePlayer) {
+      if (frameCount > 0) {
+        await platform.command(['frame-step']);
+      } else if (frameCount < 0) {
+        await platform.command(['frame-back-step']);
+      }
+    } else {
+      throw Exception('Platform player ${platform.runtimeType} does not support frame stepping');
+    }
   }
 
   @override

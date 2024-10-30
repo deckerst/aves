@@ -138,7 +138,7 @@ mixin FeedbackMixin {
     VoidCallback? onCancel,
     Future<void> Function(Set<T> processed)? onDone,
   }) async {
-    final completer = Completer();
+    final opCompleter = Completer();
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -149,12 +149,12 @@ mixin FeedbackMixin {
         onDone: (processed) async {
           Navigator.maybeOf(context)?.pop();
           await onDone?.call(processed);
-          completer.complete();
+          opCompleter.complete();
         },
       ),
       routeSettings: const RouteSettings(name: ReportOverlay.routeName),
     );
-    return completer.future;
+    return opCompleter.future;
   }
 }
 
@@ -257,7 +257,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   percent: percent,
                   lineWidth: strokeWidth,
                   radius: diameter / 2,
-                  backgroundColor: colorScheme.onSurface.withOpacity(.2),
+                  backgroundColor: colorScheme.onSurface.withAlpha((255.0 * .2).round()),
                   progressColor: progressColor,
                   animation: animate,
                   center: total != null
@@ -314,7 +314,7 @@ class ReportProgressIndicator extends StatelessWidget {
       height: diameter,
       padding: const EdgeInsets.all(strokeWidth / 2),
       child: CircularProgressIndicator(
-        color: progressColor.withOpacity(opacity),
+        color: progressColor.withAlpha((255.0 * opacity).round()),
         strokeWidth: strokeWidth,
       ),
     );
@@ -422,7 +422,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                   style: contentTextStyle.copyWith(
                     shadows: [
                       Shadow(
-                        color: timerChangeShadowColor.withOpacity(0),
+                        color: timerChangeShadowColor.withAlpha(0),
                         blurRadius: 0,
                       )
                     ],

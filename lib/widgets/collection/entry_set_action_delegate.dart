@@ -26,6 +26,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -168,7 +169,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void onActionSelected(BuildContext context, EntrySetAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
       case EntrySetAction.configureView:
@@ -301,7 +302,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
+    final storageDirs = entries.map((e) => e.storageDirectory).nonNulls.toSet();
     final todoCount = entries.length;
 
     if (!await showSkippableConfirmationDialog(
@@ -309,7 +310,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    )) return;
+    )) {
+      return;
+    }
 
     if (!await checkStoragePermissionForAlbums(context, storageDirs, entries: entries)) return;
 
@@ -407,14 +410,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     Future<Set<EntryDataType>> Function(AvesEntry entry) op, {
     bool showResult = true,
   }) async {
-    final selectionDirs = todoItems.map((e) => e.directory).whereNotNull().toSet();
+    final selectionDirs = todoItems.map((e) => e.directory).nonNulls.toSet();
     final todoCount = todoItems.length;
 
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoItems)) return;
 
     Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
-    Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
-    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).whereNotNull().toSet();
+    Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).nonNulls.toSet();
+    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).nonNulls.toSet();
 
     final dataTypes = <EntryDataType>{};
     final source = context.read<CollectionSource>();
@@ -746,7 +749,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final (coverEntry, name) = result;
     if (name.isEmpty) return;
 
-    await appService.pinToHomeScreen(name, coverEntry, filters: filters);
+    await appService.pinToHomeScreen(name, coverEntry, route: CollectionPage.routeName, filters: filters);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }

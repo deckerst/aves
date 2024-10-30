@@ -33,8 +33,8 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
@@ -56,7 +56,9 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
   @override
   SettingsStore get store => settingsStore;
 
-  Settings._private();
+  Settings._private() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
 
   Future<void> init({required bool monitorPlatformSettings}) async {
     await store.init();
@@ -67,6 +69,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
         ..clear();
       _subscriptions.add(_platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?)));
     }
+    initAppSettings();
   }
 
   Future<void> reload() => store.reload();
@@ -130,7 +133,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
     viewerGestureSideTapNext = false;
     viewerUseCutout = true;
     videoBackgroundMode = VideoBackgroundMode.disabled;
-    videoControls = VideoControls.none;
+    videoControlActions = [];
     videoGestureDoubleTapTogglePlay = false;
     videoGestureSideDoubleTapSeek = false;
     enableBin = false;
@@ -243,7 +246,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
 
   set screenSaverInterval(int newValue) => set(SettingKeys.screenSaverIntervalKey, newValue);
 
-  Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(SettingKeys.screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+  Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(SettingKeys.screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
   set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => set(SettingKeys.screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -287,7 +290,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
 
   void setWidgetShape(int widgetId, WidgetShape newValue) => set('${SettingKeys.widgetShapePrefixKey}$widgetId', newValue.toString());
 
-  Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId') ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+  Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId') ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
   void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => set('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId', newValue.map((filter) => filter.toJson()).toList());
 
@@ -456,7 +459,6 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.videoBackgroundModeKey:
             case SettingKeys.videoLoopModeKey:
             case SettingKeys.videoResumptionModeKey:
-            case SettingKeys.videoControlsKey:
             case SettingKeys.subtitleTextAlignmentKey:
             case SettingKeys.subtitleTextPositionKey:
             case SettingKeys.tagEditorExpandedSectionKey:
@@ -487,6 +489,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.collectionBrowsingQuickActionsKey:
             case SettingKeys.collectionSelectionQuickActionsKey:
             case SettingKeys.viewerQuickActionsKey:
+            case SettingKeys.videoControlActionsKey:
             case SettingKeys.screenSaverCollectionFiltersKey:
               if (newValue is List) {
                 store.setStringList(key, newValue.cast<String>());

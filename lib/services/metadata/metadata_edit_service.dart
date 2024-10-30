@@ -7,7 +7,6 @@ import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_report/aves_report.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:stack_trace/stack_trace.dart';
@@ -65,7 +64,7 @@ class PlatformMetadataEditService implements MetadataEditService {
         'entry': entry.toPlatformEntryMap(),
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftSeconds': modifier.shiftSeconds,
-        'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toPlatform).whereNotNull().toList(),
+        'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toPlatform).nonNulls.toList(),
       });
       if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e, stack) {

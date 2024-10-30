@@ -121,7 +121,7 @@ class ThumbnailOverlayPage extends StatelessWidget {
           icon,
           key: ValueKey(key),
           size: _getIconSize(context),
-          color: _getIconColor(context).withOpacity(disabled ? SettingsSwitchListTile.disabledOpacity : 1.0),
+          color: _getIconColor(context).withAlpha((255.0 * (disabled ? SettingsSwitchListTile.disabledOpacity : 1.0)).round()),
         ),
       ),
     );

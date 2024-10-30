@@ -23,7 +23,7 @@ class AvesCaption extends StatelessWidget {
       style: subtitleStyle.copyWith(
         shadows: [
           Shadow(
-            color: subtitleChangeShadowColor.withOpacity(0),
+            color: subtitleChangeShadowColor.withAlpha(0),
             blurRadius: 0,
           )
         ],

@@ -229,14 +229,8 @@
   "@videoLoopModeShortOnly": {},
   "videoLoopModeAlways": "Toujours",
   "@videoLoopModeAlways": {},
-  "videoControlsPlay": "Lecture",
-  "@videoControlsPlay": {},
-  "videoControlsPlaySeek": "Lecture & déplacement",
-  "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "Ouvrir avec un autre lecteur",
   "@videoControlsPlayOutside": {},
-  "videoControlsNone": "Aucun",
-  "@videoControlsNone": {},
   "mapStyleGoogleNormal": "Google Maps",
   "@mapStyleGoogleNormal": {},
   "mapStyleGoogleHybrid": "Google Maps (Satellite)",
@@ -1392,5 +1386,9 @@
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Fond de carte par [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "mapAttributionOsmData": "Données © les contributeurs d’[OpenStreetMap](https://www.openstreetmap.org/copyright)",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "videoActionShowNextFrame": "Montrer l’image suivante",
+  "@videoActionShowNextFrame": {},
+  "videoActionShowPreviousFrame": "Montrer l’image précédente",
+  "@videoActionShowPreviousFrame": {}
 }

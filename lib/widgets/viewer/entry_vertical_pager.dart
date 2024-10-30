@@ -178,7 +178,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           builder: (context, overlayOpacity, child) {
             final background = Theme.of(context).isDark ? Colors.black : Color.lerp(Colors.black, Colors.white, overlayOpacity)!;
             return Container(
-              color: background.withOpacity(backgroundOpacity),
+              color: background.withAlpha((255.0 * backgroundOpacity).round()),
               child: child,
             );
           },
@@ -331,7 +331,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       _systemBrightness?.then((system) {
         final value = lerpDouble(maximumBrightness, system, ((1 - page).abs() * 2).clamp(0, 1))!;
-        AvesApp.screenBrightness?.setScreenBrightness(value);
+        AvesApp.screenBrightness?.setApplicationScreenBrightness(value);
       });
     }
 

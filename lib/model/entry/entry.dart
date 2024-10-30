@@ -12,8 +12,8 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 enum EntryDataType { basic, aspectRatio, catalog, address, references }
 
@@ -73,7 +73,7 @@ class AvesEntry with AvesEntryBase {
     this.stackedEntries,
   }) : id = id ?? 0 {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesEntry',
         object: this,
@@ -189,7 +189,7 @@ class AvesEntry with AvesEntryBase {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     visualChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
@@ -392,7 +392,7 @@ class AvesEntry with AvesEntryBase {
       _addressDetails?.countryName,
       _addressDetails?.adminArea,
       _addressDetails?.locality,
-    }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
+    }.nonNulls.where((v) => v.isNotEmpty).join(', ');
   }
 
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {
@@ -461,17 +461,17 @@ class AvesEntry with AvesEntryBase {
   }
 
   Future<bool> delete() {
-    final completer = Completer<bool>();
+    final opCompleter = Completer<bool>();
     mediaEditService.delete(entries: {this}).listen(
-      (event) => completer.complete(event.success && !event.skipped),
-      onError: completer.completeError,
+      (event) => opCompleter.complete(event.success && !event.skipped),
+      onError: opCompleter.completeError,
       onDone: () {
-        if (!completer.isCompleted) {
-          completer.complete(false);
+        if (!opCompleter.isCompleted) {
+          opCompleter.complete(false);
         }
       },
     );
-    return completer.future;
+    return opCompleter.future;
   }
 
   // when the MIME type or the image itself changed (e.g. after rotation)

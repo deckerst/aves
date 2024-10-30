@@ -43,9 +43,12 @@ extension ExtraEntryActionView on EntryAction {
         l10n.videoActionPlay,
       EntryAction.videoReplay10 => l10n.videoActionReplay10,
       EntryAction.videoSkip10 => l10n.videoActionSkip10,
+      EntryAction.videoShowPreviousFrame => l10n.videoActionShowPreviousFrame,
+      EntryAction.videoShowNextFrame => l10n.videoActionShowNextFrame,
       // external
       EntryAction.edit => l10n.entryActionEdit,
-      EntryAction.open || EntryAction.openVideo => l10n.entryActionOpen,
+      EntryAction.open => l10n.entryActionOpen,
+      EntryAction.openVideoPlayer => l10n.videoControlsPlayOutside,
       EntryAction.openMap => l10n.entryActionOpenMap,
       EntryAction.setAs => l10n.entryActionSetAs,
       EntryAction.cast => l10n.entryActionCast,
@@ -110,7 +113,7 @@ extension ExtraEntryActionView on EntryAction {
         // different data depending on toggle state
         AIcons.mute,
       EntryAction.videoSelectStreams => AIcons.selectStreams,
-      EntryAction.videoSetSpeed => AIcons.speed,
+      EntryAction.videoSetSpeed => AIcons.setSpeed,
       EntryAction.videoABRepeat => AIcons.repeat,
       EntryAction.videoSettings => AIcons.videoSettings,
       EntryAction.videoTogglePlay =>
@@ -118,9 +121,12 @@ extension ExtraEntryActionView on EntryAction {
         AIcons.play,
       EntryAction.videoReplay10 => AIcons.replay10,
       EntryAction.videoSkip10 => AIcons.skip10,
+      EntryAction.videoShowPreviousFrame => AIcons.previousFrame,
+      EntryAction.videoShowNextFrame => AIcons.nextFrame,
       // external
       EntryAction.edit => AIcons.edit,
-      EntryAction.open || EntryAction.openVideo => AIcons.openOutside,
+      EntryAction.open => AIcons.openOutside,
+      EntryAction.openVideoPlayer => AIcons.openVideoPlayer,
       EntryAction.openMap => AIcons.map,
       EntryAction.setAs => AIcons.setAs,
       EntryAction.cast => AIcons.cast,
@@ -138,7 +144,7 @@ extension ExtraEntryActionView on EntryAction {
       EntryAction.showGeoTiffOnMap => AIcons.map,
       // metadata / motion photo
       EntryAction.convertMotionPhotoToStillImage => AIcons.convertToStillImage,
-      EntryAction.viewMotionPhotoVideo => AIcons.openVideo,
+      EntryAction.viewMotionPhotoVideo => AIcons.openVideoPart,
       // debug
       EntryAction.debug => AIcons.debug,
     };

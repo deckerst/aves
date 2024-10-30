@@ -42,7 +42,7 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
   }
 
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       case ChipAction.goToAlbumPage:
         _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());

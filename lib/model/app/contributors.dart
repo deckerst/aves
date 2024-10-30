@@ -69,7 +69,7 @@ class Contributors {
     Contributor('Henning Bunk', 'henningtbunk@gmail.com'),
     Contributor('Samirah Ail', 'samiratalzahrani@gmail.com'),
     Contributor('Salih Ail', 'rrrfff444@gmail.com'),
-    Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'),
+    Contributor('Nasreddine Loukriz', 'nasreddineloukriz@gmail.com'),
     Contributor('Mohamed Zeroug', 'mzeroug19@gmail.com'),
     Contributor('ssantos', 'ssantos@web.de'),
     Contributor('Сергій', 'sergiy.goncharuk.1@gmail.com'),
@@ -102,8 +102,14 @@ class Contributors {
     Contributor('Taufan', 'taufanxxx@gmail.com'),
     Contributor('Leo Aaua Felix', 'g00g7el@gmail.com'),
     Contributor('-J-', 'heyj0e@tuta.io'),
-    Contributor('bittin1ddc447d824349b2', 'bittin@reimu.nl'),
+    Contributor('bittin', 'bittin@reimu.nl'),
     Contributor('splice11', 'trenchedgrandpa@protonmail.com'),
+    Contributor('Ihor Hordiichuk', 'igor_ck@outlook.com'),
+    Contributor('João Palmeiro', 'joaommpalmeiro@gmail.com'),
+    Contributor('Whoever4976', 'wolffjonas47@gmail.com'),
+    Contributor('Your Average Code', 'neumeiersi91358@th-nuernberg.de'),
+    Contributor('Paranoid Android', 'f.cherdzhiev@innopolis.university'),
+    Contributor('Noah Kenzie Rodriguez-Beus', 'noahbeus@protonmail.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese

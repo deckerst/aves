@@ -78,7 +78,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         _firstDate = normalizeDate(firstDate);
         _lastDate = normalizeDate(lastDate);
 
-        final dates = entriesByDateDescending.map((entry) => entry.bestDate).whereNotNull();
+        final dates = entriesByDateDescending.map((entry) => entry.bestDate).nonNulls;
         _entryCountPerDate.addAll(groupBy<DateTime, DateTime>(dates, normalizeDate).map((k, v) => MapEntry(k, v.length)));
         if (_entryCountPerDate.isNotEmpty) {
           // discrete points
@@ -198,7 +198,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     final colorScheme = Theme.of(context).colorScheme;
     final accentColor = colorScheme.primary;
     final axisColor = charts.ColorUtil.fromDartColor(drawPoints ? colorScheme.onSurface : Colors.transparent);
-    final measureLineColor = charts.ColorUtil.fromDartColor(drawPoints ? colorScheme.onSurface.withOpacity(.1) : Colors.transparent);
+    final measureLineColor = charts.ColorUtil.fromDartColor(drawPoints ? colorScheme.onSurface.withAlpha((255.0 * .1).round()) : Colors.transparent);
     final histogramLineColor = charts.ColorUtil.fromDartColor(drawLine ? accentColor : Colors.white);
     final histogramPointStrikeColor = charts.ColorUtil.fromDartColor(drawPoints ? colorScheme.onSurface : Colors.transparent);
     final histogramPointFillColor = charts.ColorUtil.fromDartColor(Themes.firstLayerColor(context));
@@ -292,8 +292,8 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            accentColor.withOpacity(0),
             accentColor,
+            accentColor.withAlpha(0),
           ],
         ).createShader,
         blendMode: BlendMode.srcIn,

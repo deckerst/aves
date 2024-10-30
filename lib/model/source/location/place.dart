@@ -23,7 +23,7 @@ mixin PlaceMixin on SourceBase {
     } else {
       places ??= {};
       if (entries != null) {
-        places.addAll(entries.map((entry) => entry.addressDetails?.place).whereNotNull());
+        places.addAll(entries.map((entry) => entry.addressDetails?.place).nonNulls);
       }
       places.forEach((place) {
         _filterEntryCountMap.remove(place);

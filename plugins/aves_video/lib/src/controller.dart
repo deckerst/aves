@@ -4,6 +4,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 abstract class AvesVideoControllerFactory {
   void init();
@@ -31,7 +32,7 @@ abstract class AvesVideoController with ABRepeatMixin {
     required this.settings,
   }) : _entry = entry {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesVideoController',
         object: this,
@@ -45,7 +46,7 @@ abstract class AvesVideoController with ABRepeatMixin {
     assert(!_disposed);
     _disposed = true;
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     abRepeatNotifier.dispose();
     _entry.visualChangeNotifier.removeListener(onVisualChanged);
@@ -68,6 +69,8 @@ abstract class AvesVideoController with ABRepeatMixin {
   Future<void> seekTo(int targetMillis);
 
   Future<void> seekToProgress(double progress) => seekTo((duration * progress.clamp(0, 1)).toInt());
+
+  Future<void> skipFrames(int frameCount);
 
   Listenable get playCompletedListenable;
 

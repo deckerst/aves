@@ -19,8 +19,8 @@ class CropperPainter extends CustomPainter {
   static const double gridWidth = 1;
 
   static const cornerColor = Colors.white;
-  static final borderColor = Colors.white.withOpacity(.5);
-  static final gridColor = Colors.white.withOpacity(.5);
+  static final borderColor = Colors.white.withAlpha((255.0 * .5).round());
+  static final gridColor = Colors.white.withAlpha((255.0 * .5).round());
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -32,7 +32,7 @@ class CropperPainter extends CustomPainter {
     final gridPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = gridWidth
-      ..color = gridColor.withOpacity(gridColor.opacity * gridOpacity);
+      ..color = gridColor.withAlpha((255.0 * gridColor.opacity * gridOpacity).round());
 
     final xLeft = rect.left;
     final yTop = rect.top;
@@ -118,7 +118,7 @@ class ScrimPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final scrimPaint = Paint()
       ..style = PaintingStyle.fill
-      ..color = scrimColor.withOpacity(opacity);
+      ..color = scrimColor.withAlpha((255.0 * opacity).round());
 
     final outside = Path()
       ..addRect(Rect.fromLTWH(0, 0, size.width, size.height).inflate(.5))

@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:aves/geo/uri.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/math_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
@@ -30,7 +30,15 @@ abstract class AppService {
 
   Future<bool> shareSingle(String uri, String mimeType);
 
-  Future<void> pinToHomeScreen(String label, AvesEntry? coverEntry, {Set<CollectionFilter>? filters, String? explorerPath, String? uri});
+  Future<void> pinToHomeScreen(
+    String label,
+    AvesEntry? coverEntry, {
+    required String route,
+    Set<CollectionFilter>? filters,
+    String? path,
+    String? viewUri,
+    String? geoUri,
+  });
 }
 
 class PlatformAppService implements AppService {
@@ -96,21 +104,21 @@ class PlatformAppService implements AppService {
   @override
   Future<Map<String, dynamic>> edit(String uri, String mimeType) async {
     try {
-      final completer = Completer<Map?>();
+      final opCompleter = Completer<Map?>();
       _stream.receiveBroadcastStream(<String, dynamic>{
         'op': 'edit',
         'uri': uri,
         'mimeType': mimeType,
       }).listen(
-        (data) => completer.complete(data as Map?),
-        onError: completer.completeError,
+        (data) => opCompleter.complete(data as Map?),
+        onError: opCompleter.completeError,
         onDone: () {
-          if (!completer.isCompleted) completer.complete({'error': 'cancelled'});
+          if (!opCompleter.isCompleted) opCompleter.complete({'error': 'cancelled'});
         },
         cancelOnError: true,
       );
       // `await` here, so that `completeError` will be caught below
-      final result = await completer.future;
+      final result = await opCompleter.future;
       if (result == null) return {'error': 'cancelled'};
       return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
@@ -138,13 +146,9 @@ class PlatformAppService implements AppService {
 
   @override
   Future<bool> openMap(LatLng latLng) async {
-    final latitude = roundToPrecision(latLng.latitude, decimals: 6);
-    final longitude = roundToPrecision(latLng.longitude, decimals: 6);
-    final geoUri = 'geo:$latitude,$longitude?q=$latitude,$longitude';
-
     try {
       final result = await _platform.invokeMethod('openMap', <String, dynamic>{
-        'geoUri': geoUri,
+        'geoUri': toGeoUri(latLng),
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {
@@ -203,7 +207,15 @@ class PlatformAppService implements AppService {
   // app shortcuts
 
   @override
-  Future<void> pinToHomeScreen(String label, AvesEntry? coverEntry, {Set<CollectionFilter>? filters, String? explorerPath, String? uri}) async {
+  Future<void> pinToHomeScreen(
+    String label,
+    AvesEntry? coverEntry, {
+    required String route,
+    Set<CollectionFilter>? filters,
+    String? path,
+    String? viewUri,
+    String? geoUri,
+  }) async {
     Uint8List? iconBytes;
     if (coverEntry != null) {
       final size = coverEntry.isVideo ? 0.0 : 256.0;
@@ -221,9 +233,11 @@ class PlatformAppService implements AppService {
       await _platform.invokeMethod('pinShortcut', <String, dynamic>{
         'label': label,
         'iconBytes': iconBytes,
+        'route': route,
         'filters': filters?.map((filter) => filter.toJson()).toList(),
-        'explorerPath': explorerPath,
-        'uri': uri,
+        'path': path,
+        'viewUri': viewUri,
+        'geoUri': geoUri,
       });
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);

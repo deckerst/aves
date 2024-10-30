@@ -12,7 +12,9 @@ final Favourites favourites = Favourites._private();
 class Favourites with ChangeNotifier {
   Set<FavouriteRow> _rows = {};
 
-  Favourites._private();
+  Favourites._private() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllFavourites();
@@ -58,7 +60,7 @@ class Favourites with ChangeNotifier {
   Map<String, List<String>>? export(CollectionSource source) {
     final visibleEntries = source.visibleEntries;
     final ids = favourites.all;
-    final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).whereNotNull().toSet();
+    final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).nonNulls.toSet();
     final byVolume = groupBy<String, StorageVolume?>(paths, androidFileUtils.getStorageVolume);
     final jsonMap = Map.fromEntries(byVolume.entries.map((kv) {
       final volume = kv.key?.path;
@@ -66,7 +68,7 @@ class Favourites with ChangeNotifier {
       final rootLength = volume.length;
       final relativePaths = kv.value.map((v) => v.substring(rootLength)).toList();
       return MapEntry(volume, relativePaths);
-    }).whereNotNull());
+    }).nonNulls);
     return jsonMap.isNotEmpty ? jsonMap : null;
   }
 

@@ -8,4 +8,5 @@
     <string name="analysis_notification_default_title">يتم فحص الوسائط</string>
     <string name="analysis_notification_action_stop">إيقاف</string>
     <string name="app_name">Aves</string>
+    <string name="map_shortcut_short_label">خريطة</string>
 </resources>

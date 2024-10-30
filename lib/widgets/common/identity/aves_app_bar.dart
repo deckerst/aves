@@ -142,28 +142,28 @@ class AvesAppBar extends StatelessWidget {
   static Widget _flightShuttleBuilder(
     BuildContext flightContext,
     Animation<double> animation,
-    HeroFlightDirection direction,
-    BuildContext fromHero,
-    BuildContext toHero,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
   ) {
-    final pushing = direction == HeroFlightDirection.push;
+    final pushing = flightDirection == HeroFlightDirection.push;
     Widget popBuilder(context, child) => Opacity(opacity: 1 - animation.value, child: child);
     Widget pushBuilder(context, child) => Opacity(opacity: animation.value, child: child);
     return Material(
       type: MaterialType.transparency,
       child: DefaultTextStyle(
-        style: DefaultTextStyle.of(toHero).style,
+        style: DefaultTextStyle.of(toHeroContext).style,
         child: Stack(
           children: [
             AnimatedBuilder(
               animation: animation,
               builder: pushing ? popBuilder : pushBuilder,
-              child: fromHero.widget,
+              child: fromHeroContext.widget,
             ),
             AnimatedBuilder(
               animation: animation,
               builder: pushing ? pushBuilder : popBuilder,
-              child: toHero.widget,
+              child: toHeroContext.widget,
             ),
           ],
         ),
@@ -237,7 +237,9 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   void didPopNext() {
     // post to prevent single frame flash during hero
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isBlurAllowedNotifier.value = true;
+      if (mounted) {
+        _isBlurAllowedNotifier.value = true;
+      }
     });
   }
 
@@ -245,7 +247,9 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   void didPushNext() {
     // post to prevent single frame flash during hero
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isBlurAllowedNotifier.value = false;
+      if (mounted) {
+        _isBlurAllowedNotifier.value = false;
+      }
     });
   }
 
@@ -270,7 +274,7 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
             borderRadius: AvesFloatingBar.borderRadius,
             child: widget.builder(
               context,
-              blurred ? backgroundColor.withOpacity(.85) : backgroundColor,
+              blurred ? backgroundColor.withAlpha((255.0 * .85).round()) : backgroundColor,
               widget.child,
             ),
           ),

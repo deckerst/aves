@@ -47,12 +47,10 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
         SwitchListTile(
           value: _taskQueueOverlayEntry != null,
           onChanged: (v) {
-            final overlayEntry = _taskQueueOverlayEntry;
+            _taskQueueOverlayEntry
+              ?..remove()
+              ..dispose();
             _taskQueueOverlayEntry = null;
-            if (overlayEntry != null) {
-              overlayEntry.remove();
-              overlayEntry.dispose();
-            }
             if (v) {
               _taskQueueOverlayEntry = OverlayEntry(
                 builder: (context) => const DebugTaskQueueOverlay(),
@@ -62,6 +60,20 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
             setState(() {});
           },
           title: const Text('Show tasks overlay'),
+        ),
+        ElevatedButton(
+          onPressed: () => LeakTracking.collectLeaks().then((leaks) {
+            const config = LeakDiagnosticConfig(
+              collectRetainingPathForNotGCed: true,
+              collectStackTraceOnStart: true,
+              collectStackTraceOnDisposal: true,
+            );
+            LeakTracking.phase = const PhaseSettings(
+              leakDiagnosticConfig: config,
+            );
+            debugPrint('Setup leak tracking phase with config=$config');
+          }),
+          child: const Text('Setup leak tracking phase'),
         ),
         ElevatedButton(
           onPressed: () => LeakTracking.collectLeaks().then((leaks) {

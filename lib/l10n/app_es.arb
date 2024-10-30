@@ -217,12 +217,6 @@
   "@videoLoopModeShortOnly": {},
   "videoLoopModeAlways": "Siempre",
   "@videoLoopModeAlways": {},
-  "videoControlsNone": "Ninguno",
-  "@videoControlsNone": {},
-  "videoControlsPlay": "Reproducir",
-  "@videoControlsPlay": {},
-  "videoControlsPlaySeek": "Reproducir y buscar",
-  "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "Reproducir externamente",
   "@videoControlsPlayOutside": {},
   "mapStyleGoogleNormal": "Google Maps",
@@ -1392,5 +1386,9 @@
   "mapAttributionOsmLiberty": "Mosaicos por [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Alojado por [OSM Americana](https://tile.ourmap.us)",
   "@mapAttributionOsmLiberty": {},
   "mapStyleOsmLiberty": "OSM Liberty",
-  "@mapStyleOsmLiberty": {}
+  "@mapStyleOsmLiberty": {},
+  "videoActionShowPreviousFrame": "Mostrar fotograma anterior",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Mostrar fotograma siguiente",
+  "@videoActionShowNextFrame": {}
 }

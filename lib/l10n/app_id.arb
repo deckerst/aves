@@ -225,14 +225,8 @@
   "@videoLoopModeShortOnly": {},
   "videoLoopModeAlways": "Selalu",
   "@videoLoopModeAlways": {},
-  "videoControlsPlay": "Putar",
-  "@videoControlsPlay": {},
-  "videoControlsPlaySeek": "Putar dan cari",
-  "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "Buka dengan pemutar lain",
   "@videoControlsPlayOutside": {},
-  "videoControlsNone": "Tidak ada",
-  "@videoControlsNone": {},
   "mapStyleGoogleNormal": "Google Maps",
   "@mapStyleGoogleNormal": {},
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
@@ -1392,5 +1386,9 @@
   "mapStyleOsmLiberty": "OSM Liberty",
   "@mapStyleOsmLiberty": {},
   "mapAttributionOsmLiberty": "Ubin oleh [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Disediakan oleh [OSM Americana](https://tile.ourmap.us)",
-  "@mapAttributionOsmLiberty": {}
+  "@mapAttributionOsmLiberty": {},
+  "videoActionShowPreviousFrame": "Tampilkan bingkai sebelumnya",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Tampilkan bingkai berikutnya",
+  "@videoActionShowNextFrame": {}
 }

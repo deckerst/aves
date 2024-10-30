@@ -104,7 +104,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void initState() {
     super.initState();
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
-      AvesApp.screenBrightness?.setScreenBrightness(1);
+      AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       windowService.keepScreenOn(true);
@@ -915,9 +915,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     switch (settings.maxBrightness) {
       case MaxBrightness.never:
       case MaxBrightness.viewerOnly:
-        await AvesApp.screenBrightness?.resetScreenBrightness();
+        await AvesApp.screenBrightness?.resetApplicationScreenBrightness();
       case MaxBrightness.always:
-        await AvesApp.screenBrightness?.setScreenBrightness(1);
+        await AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);

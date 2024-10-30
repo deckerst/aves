@@ -9,6 +9,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -48,7 +49,7 @@ class ExplorerActionDelegate with FeedbackMixin {
   }
 
   void onActionSelected(BuildContext context, ExplorerAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       case ExplorerAction.addShortcut:
         _addShortcut(context);
@@ -84,7 +85,7 @@ class ExplorerActionDelegate with FeedbackMixin {
     final (coverEntry, name) = result;
     if (name.isEmpty) return;
 
-    await appService.pinToHomeScreen(name, coverEntry, explorerPath: filter.path);
+    await appService.pinToHomeScreen(name, coverEntry, route: ExplorerPage.routeName, path: filter.path);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }

@@ -24,24 +24,24 @@ mixin TrashMixin on SourceBase {
     if (expiredEntries.isEmpty) return {};
 
     final processed = <ImageOpEvent>{};
-    final completer = Completer<Set<String>>();
+    final opCompleter = Completer<Set<String>>();
     mediaEditService.delete(entries: expiredEntries).listen(
       processed.add,
-      onError: completer.completeError,
+      onError: opCompleter.completeError,
       onDone: () async {
         final successOps = processed.where((e) => e.success).toSet();
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
         final deletedUris = deletedOps.map((event) => event.uri).toSet();
-        completer.complete(deletedUris);
+        opCompleter.complete(deletedUris);
       },
     );
-    return await completer.future;
+    return await opCompleter.future;
   }
 
   Future<Set<AvesEntry>> recoverUntrackedTrashItems() async {
     final newEntries = <AvesEntry>{};
 
-    final knownPaths = allEntries.map((v) => v.trashDetails?.path).whereNotNull().toSet();
+    final knownPaths = allEntries.map((v) => v.trashDetails?.path).nonNulls.toSet();
     final untrackedPaths = await storageService.getUntrackedTrashPaths(knownPaths);
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked bin items');

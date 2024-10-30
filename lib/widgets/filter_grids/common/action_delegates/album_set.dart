@@ -139,7 +139,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
 
   @override
   void onActionSelected(BuildContext context, ChipSetAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
       case ChipSetAction.createAlbum:
@@ -206,7 +206,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         type: ConfirmationDialog.createVault,
         message: l10n.newVaultWarningDialogMessage,
         confirmationButtonLabel: l10n.continueButtonLabel,
-      )) return;
+      )) {
+        return;
+      }
 
       final details = await showDialog<VaultDetails>(
         context: context,
@@ -282,7 +284,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoAlbums = filters.map((v) => v.album).toSet();
-    final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
+    final filledAlbums = todoEntries.map((e) => e.directory).nonNulls.toSet();
     final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
 
     if (enableBin && filledAlbums.isNotEmpty) {
@@ -338,7 +340,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
     if (todoEntries.isEmpty) return;
 
     final source = context.read<CollectionSource>();
-    final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
+    final filledAlbums = todoEntries.map((e) => e.directory).nonNulls.toSet();
 
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);

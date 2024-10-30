@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.17"></a>[v1.11.17] - 2024-10-30
+
+### Added
+
+- Map: create shortcut to custom region and filters
+- Video: frame stepping forward/backward
+- Video: custom playback buttons
+- English (Shavian) translation (thanks Paranoid Android)
+
+### Changed
+
+- upgraded Flutter to stable v3.24.4
+
+### Fixed
+
+- crash when loading large collection
+- Viewer: copying content URI item
+- Albums: creating album with same name as existing empty directory
+- Privacy: tagging while vaults are unlocked does not yield recent tags visible when vaults are locked
+
 ## <a id="v1.11.16"></a>[v1.11.16] - 2024-10-10
 
 ### Fixed

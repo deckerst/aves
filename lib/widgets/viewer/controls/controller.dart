@@ -10,6 +10,7 @@ import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class ViewerController with CastMixin {
   final ValueNotifier<AvesEntry?> entryNotifier = ValueNotifier(null);
@@ -51,7 +52,7 @@ class ViewerController with CastMixin {
     this.autopilotAnimatedZoom = false,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$ViewerController',
         object: this,
@@ -66,7 +67,7 @@ class ViewerController with CastMixin {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     entryNotifier.removeListener(_onEntryChanged);
     windowService.setHdrColorMode(false);

@@ -108,7 +108,7 @@ class ThumbnailZoomOverlay extends StatelessWidget {
                   width: interactiveDimension,
                   height: interactiveDimension,
                   child: Icon(
-                    AIcons.showFullscreen,
+                    AIcons.showFullscreenArrows,
                     size: context.select<GridThemeData, double>((t) => t.iconSize),
                     color: Colors.white70,
                   ),

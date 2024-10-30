@@ -223,12 +223,14 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   bool get canGoUp {
     if (!_scrollController.hasClients) return false;
     final position = _scrollController.position;
+    if (!position.hasContentDimensions) return false;
     return reversed ? position.pixels < position.maxScrollExtent : 0 < position.pixels;
   }
 
   bool get canGoDown {
     if (!_scrollController.hasClients) return false;
     final position = _scrollController.position;
+    if (!position.hasContentDimensions) return false;
     return reversed ? 0 < position.pixels : position.pixels < position.maxScrollExtent;
   }
 

@@ -30,8 +30,9 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
-enum SourceScope { none, album, full }
+typedef SourceScope = Set<CollectionFilter>?;
 
 mixin SourceBase {
   EventBus get eventBus;
@@ -62,9 +63,11 @@ mixin SourceBase {
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
+  static const fullScope = <CollectionFilter>{};
+
   CollectionSource() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$CollectionSource',
         object: this,
@@ -74,22 +77,20 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     settings.updateStream.where((event) => event.key == SettingKeys.hiddenFiltersKey).listen((event) {
       final oldValue = event.oldValue;
       if (oldValue is List<String>?) {
-        final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+        final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
         final newlyVisibleFilters = oldHiddenFilters.whereNot(settings.hiddenFilters.contains).toSet();
         _onFilterVisibilityChanged(newlyVisibleFilters);
       }
     });
-    vaults.addListener(() {
-      final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
-      _onFilterVisibilityChanged(newlyVisibleFilters);
-    });
+    vaults.addListener(_onVaultsChanged);
   }
 
   @mustCallSuper
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
+    vaults.removeListener(_onVaultsChanged);
     _rawEntries.forEach((v) => v.dispose());
   }
 
@@ -337,7 +338,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           final existingEntry = _rawEntries.firstWhereOrNull((entry) => entry.path == targetPath && !entry.trashed);
           return existingEntry?.uri;
         })
-        .whereNotNull()
+        .nonNulls
         .toSet();
     await removeEntries(replacedUris, includeTrash: false);
 
@@ -367,8 +368,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         }
       });
       await localMediaDb.insertEntries(movedEntries);
-      await localMediaDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
-      await localMediaDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).whereNotNull().toSet());
+      await localMediaDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).nonNulls.toSet());
+      await localMediaDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).nonNulls.toSet());
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
         final newFields = movedOp.newFields;
@@ -393,7 +394,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         addEntries(movedEntries);
       case MoveType.move:
       case MoveType.export:
-        cleanEmptyAlbums(fromAlbums.whereNotNull().toSet());
+        cleanEmptyAlbums(fromAlbums.nonNulls.toSet());
         addDirectories(albums: destinationAlbums);
       case MoveType.toBin:
       case MoveType.fromBin:
@@ -427,11 +428,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     eventBus.fire(EntryMovedEvent(MoveType.move, movedEntries));
   }
 
-  SourceScope get scope => SourceScope.none;
+  SourceScope get loadedScope;
+
+  SourceScope get targetScope;
 
   Future<void> init({
+    required SourceScope scope,
     AnalysisController? analysisController,
-    AlbumFilter? albumFilter,
     bool loadTopEntriesFirst = false,
   });
 
@@ -592,6 +595,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       final candidateEntries = visibleEntries.where((entry) => newlyVisibleFilters.any((f) => f.test(entry))).toSet();
       analyze(null, entries: candidateEntries);
     }
+  }
+
+  void _onVaultsChanged() {
+    final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
+    _onFilterVisibilityChanged(newlyVisibleFilters);
   }
 }
 

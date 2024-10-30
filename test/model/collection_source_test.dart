@@ -91,7 +91,7 @@ void main() {
         readyCompleter.complete();
       }
     });
-    await source.init();
+    await source.init(scope: CollectionSource.fullScope);
     await readyCompleter.future;
     return source;
   }
@@ -107,9 +107,9 @@ void main() {
     (mediaFetchService as FakeMediaFetchService).entries = {refreshEntry};
 
     final source = MediaStoreSource();
-    unawaited(source.init());
+    unawaited(source.init(scope: CollectionSource.fullScope));
     await Future.delayed(const Duration(milliseconds: 10));
-    expect(source.scope, SourceScope.full);
+    expect(source.targetScope, CollectionSource.fullScope);
     await source.refreshUris({refreshEntry.uri});
 
     await Future.delayed(const Duration(seconds: 1));

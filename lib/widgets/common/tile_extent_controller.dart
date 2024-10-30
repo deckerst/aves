@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class TileExtentController {
   final String settingsRouteKey;
@@ -28,7 +29,7 @@ class TileExtentController {
     required this.horizontalPadding,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$TileExtentController',
         object: this,
@@ -42,7 +43,7 @@ class TileExtentController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _subscriptions
       ..forEach((sub) => sub.cancel())

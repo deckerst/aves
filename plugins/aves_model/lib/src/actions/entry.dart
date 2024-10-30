@@ -28,10 +28,12 @@ enum EntryAction {
   videoTogglePlay,
   videoReplay10,
   videoSkip10,
+  videoShowPreviousFrame,
+  videoShowNextFrame,
   // external
   edit,
   open,
-  openVideo,
+  openVideoPlayer,
   openMap,
   setAs,
   cast,
@@ -97,6 +99,8 @@ class EntryActions {
     EntryAction.videoTogglePlay,
     EntryAction.videoReplay10,
     EntryAction.videoSkip10,
+    EntryAction.videoShowPreviousFrame,
+    EntryAction.videoShowNextFrame,
     EntryAction.rotateCCW,
     EntryAction.rotateCW,
     EntryAction.flip,
@@ -120,7 +124,9 @@ class EntryActions {
 
   static const videoPlayback = [
     EntryAction.videoReplay10,
+    EntryAction.videoShowPreviousFrame,
     EntryAction.videoTogglePlay,
+    EntryAction.videoShowNextFrame,
     EntryAction.videoSkip10,
   ];
 
