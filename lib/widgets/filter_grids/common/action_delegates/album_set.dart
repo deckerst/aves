@@ -206,7 +206,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         type: ConfirmationDialog.createVault,
         message: l10n.newVaultWarningDialogMessage,
         confirmationButtonLabel: l10n.continueButtonLabel,
-      )) return;
+      )) {
+        return;
+      }
 
       final details = await showDialog<VaultDetails>(
         context: context,

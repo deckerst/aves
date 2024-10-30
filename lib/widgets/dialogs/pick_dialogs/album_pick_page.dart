@@ -263,7 +263,9 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
       type: ConfirmationDialog.createVault,
       message: l10n.newVaultWarningDialogMessage,
       confirmationButtonLabel: l10n.continueButtonLabel,
-    )) return;
+    )) {
+      return;
+    }
 
     final details = await showDialog<VaultDetails>(
       context: context,

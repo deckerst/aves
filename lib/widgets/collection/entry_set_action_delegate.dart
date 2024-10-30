@@ -310,7 +310,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    )) return;
+    )) {
+      return;
+    }
 
     if (!await checkStoragePermissionForAlbums(context, storageDirs, entries: entries)) return;
 

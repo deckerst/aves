@@ -434,7 +434,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(1),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    )) return;
+    )) {
+      return;
+    }
 
     if (!await checkStoragePermission(context, {targetEntry})) return;
 

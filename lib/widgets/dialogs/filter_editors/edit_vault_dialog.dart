@@ -134,7 +134,9 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
                       context: context,
                       message: l10n.settingsDisablingBinWarningDialogMessage,
                       confirmationButtonLabel: l10n.applyButtonLabel,
-                    )) return;
+                    )) {
+                      return;
+                    }
                   }
                 }
               }
