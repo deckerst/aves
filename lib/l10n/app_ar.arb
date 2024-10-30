@@ -541,8 +541,6 @@
   "@settingsEnableBin": {},
   "entryActionViewMotionPhotoVideo": "فتح الفيديو",
   "@entryActionViewMotionPhotoVideo": {},
-  "videoControlsNone": "لا شيء",
-  "@videoControlsNone": {},
   "otherDirectoryDescription": "دليل «{name}»",
   "@otherDirectoryDescription": {
     "placeholders": {
@@ -757,8 +755,6 @@
   "@drawerCollectionFavourites": {},
   "filterTypeRawLabel": "خام",
   "@filterTypeRawLabel": {},
-  "videoControlsPlaySeek": "تشغيل وتقدم للأمام/ للخلف",
-  "@videoControlsPlaySeek": {},
   "settingsSubtitleThemeTextAlignmentCenter": "وسط",
   "@settingsSubtitleThemeTextAlignmentCenter": {},
   "keepScreenOnVideoPlayback": "أثناء تشغيل الفيديو",
@@ -1031,8 +1027,6 @@
   "@viewerErrorDoesNotExist": {},
   "albumCamera": "الكاميرا",
   "@albumCamera": {},
-  "videoControlsPlay": "تشغيل",
-  "@videoControlsPlay": {},
   "settingsNavigationSectionTitle": "التنقل",
   "@settingsNavigationSectionTitle": {},
   "settingsDisplayRefreshRateModeDialogTitle": "معدل التحديث",

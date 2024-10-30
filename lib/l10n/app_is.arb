@@ -463,8 +463,6 @@
   "@settingsEnableBin": {},
   "entryActionViewMotionPhotoVideo": "Opna myndskeið",
   "@entryActionViewMotionPhotoVideo": {},
-  "videoControlsNone": "Ekkert",
-  "@videoControlsNone": {},
   "otherDirectoryDescription": "„{name}“ möppu",
   "@otherDirectoryDescription": {
     "placeholders": {
@@ -673,8 +671,6 @@
   "@drawerCollectionFavourites": {},
   "filterTypeRawLabel": "RAW",
   "@filterTypeRawLabel": {},
-  "videoControlsPlaySeek": "Spila og leita afturábak/áfram",
-  "@videoControlsPlaySeek": {},
   "settingsSubtitleThemeTextAlignmentCenter": "Miðjað",
   "@settingsSubtitleThemeTextAlignmentCenter": {},
   "keepScreenOnVideoPlayback": "Á meðan myndskeið er í spilun",
@@ -918,8 +914,6 @@
   "@viewerErrorDoesNotExist": {},
   "albumCamera": "Myndavél",
   "@albumCamera": {},
-  "videoControlsPlay": "Afspilun",
-  "@videoControlsPlay": {},
   "settingsNavigationSectionTitle": "Flakk",
   "@settingsNavigationSectionTitle": {},
   "settingsDisplayRefreshRateModeDialogTitle": "Uppfærslutíðni",

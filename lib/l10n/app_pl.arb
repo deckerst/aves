@@ -211,8 +211,6 @@
   "@filterAspectRatioPortraitLabel": {},
   "filterNoAddressLabel": "Brak adresu",
   "@filterNoAddressLabel": {},
-  "videoControlsPlaySeek": "Odtwórz oraz przeszukuj",
-  "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "Odtwórz innym odtwarzaczem",
   "@videoControlsPlayOutside": {},
   "mapStyleGoogleNormal": "Mapy Google",
@@ -325,8 +323,6 @@
   "@unitSystemImperial": {},
   "videoLoopModeNever": "Nigdy",
   "@videoLoopModeNever": {},
-  "videoControlsNone": "Brak",
-  "@videoControlsNone": {},
   "accessibilityAnimationsRemove": "Zapobiegaj efektom ekranu",
   "@accessibilityAnimationsRemove": {},
   "accessibilityAnimationsKeep": "Zachowaj efekty ekranu",
@@ -355,8 +351,6 @@
   "@coordinateDmsWest": {},
   "unitSystemMetric": "Metryczne",
   "@unitSystemMetric": {},
-  "videoControlsPlay": "Odtwórz",
-  "@videoControlsPlay": {},
   "albumTierPinned": "Przypięty",
   "@albumTierPinned": {},
   "videoResumeButtonLabel": "WZNÓW",
@@ -1550,5 +1544,9 @@
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Kafelki od [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "mapAttributionOsmData": "Dane mapy © [OpenStreetMap](https://www.openstreetmap.org/copyright) współtwórcy",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "videoActionShowPreviousFrame": "Pokaż poprzednią klatkę",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Pokaż kolejną klatkę",
+  "@videoActionShowNextFrame": {}
 }

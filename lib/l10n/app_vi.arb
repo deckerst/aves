@@ -633,8 +633,6 @@
   "@patternDialogEnter": {},
   "settingsEnableBin": "Dùng thùng rác",
   "@settingsEnableBin": {},
-  "videoControlsNone": "Không có",
-  "@videoControlsNone": {},
   "otherDirectoryDescription": "“{name}” thư mục",
   "@otherDirectoryDescription": {
     "placeholders": {
@@ -833,8 +831,6 @@
   "@drawerCollectionFavourites": {},
   "filterTypeRawLabel": "RAW",
   "@filterTypeRawLabel": {},
-  "videoControlsPlaySeek": "Phát & kéo lùi lại/tiến tới",
-  "@videoControlsPlaySeek": {},
   "settingsSubtitleThemeTextAlignmentCenter": "Trung tâm",
   "@settingsSubtitleThemeTextAlignmentCenter": {},
   "keepScreenOnVideoPlayback": "Khi phát lại video",
@@ -1077,8 +1073,6 @@
   "@viewerErrorDoesNotExist": {},
   "albumCamera": "Máy Ảnh",
   "@albumCamera": {},
-  "videoControlsPlay": "Phát",
-  "@videoControlsPlay": {},
   "settingsNavigationSectionTitle": "Điều hướng",
   "@settingsNavigationSectionTitle": {},
   "settingsDisplayRefreshRateModeDialogTitle": "Tốc độ làm mới",

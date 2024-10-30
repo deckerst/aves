@@ -232,8 +232,6 @@
   "@filterTypeMotionPhotoLabel": {},
   "unitSystemImperial": "مایلی",
   "@unitSystemImperial": {},
-  "videoControlsPlaySeek": "پخش، برگشت به عقب، جلو رفتن",
-  "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "باز کردن با برنامه‌ای دیگر",
   "@videoControlsPlayOutside": {},
   "videoLoopModeShortOnly": "فقط برای ویدئو های کوتاه",
@@ -252,8 +250,6 @@
   "@menuActionStats": {},
   "exportEntryDialogWidth": "عرض",
   "@exportEntryDialogWidth": {},
-  "videoControlsPlay": "پخش",
-  "@videoControlsPlay": {},
   "mapZoomInTooltip": "بزرگ نمایی",
   "@mapZoomInTooltip": {},
   "chipActionFilterOut": "پاک‌کردن از پالایش",
@@ -417,8 +413,6 @@
   "@filterAspectRatioPortraitLabel": {},
   "filterTypeGeotiffLabel": "GeoTIFF",
   "@filterTypeGeotiffLabel": {},
-  "videoControlsNone": "هیچ‌کدام",
-  "@videoControlsNone": {},
   "otherDirectoryDescription": "شاخهٔ «{name}»",
   "@otherDirectoryDescription": {
     "placeholders": {

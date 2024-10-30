@@ -229,14 +229,8 @@
   "@videoLoopModeShortOnly": {},
   "videoLoopModeAlways": "항상 반복",
   "@videoLoopModeAlways": {},
-  "videoControlsPlay": "재생",
-  "@videoControlsPlay": {},
-  "videoControlsPlaySeek": "재생 및 앞뒤로 가기",
-  "@videoControlsPlaySeek": {},
   "videoControlsPlayOutside": "다른 앱에서 열기",
   "@videoControlsPlayOutside": {},
-  "videoControlsNone": "없음",
-  "@videoControlsNone": {},
   "mapStyleGoogleNormal": "Google 지도",
   "@mapStyleGoogleNormal": {},
   "mapStyleGoogleHybrid": "Google 지도 (위성)",
@@ -1392,5 +1386,9 @@
   "mapAttributionOsmLiberty": "타일 [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • 호스팅 [OSM Americana](https://tile.ourmap.us)",
   "@mapAttributionOsmLiberty": {},
   "mapStyleOsmLiberty": "OSM Liberty",
-  "@mapStyleOsmLiberty": {}
+  "@mapStyleOsmLiberty": {},
+  "videoActionShowNextFrame": "다음 프레임 보기",
+  "@videoActionShowNextFrame": {},
+  "videoActionShowPreviousFrame": "이전 프레임 보기",
+  "@videoActionShowPreviousFrame": {}
 }
