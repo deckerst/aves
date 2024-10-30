@@ -78,9 +78,9 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                   ),
                 ),
                 VideoControlRow(
-                  entry: entry,
                   controller: controller,
                   scale: scale,
+                  canOpenVideoPlayer: !entry.trashed,
                   onActionSelected: widget.onActionSelected,
                 ),
               ],

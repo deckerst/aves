@@ -7,7 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Map: create shortcut to custom region and filters
-- Video: frame stepping forward/backward actions
+- Video: frame stepping forward/backward
+- Video: custom playback buttons
 - English (Shavian) translation (thanks Paranoid Android)
 
 ### Changed
