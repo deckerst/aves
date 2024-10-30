@@ -174,18 +174,6 @@ extension ExtraVideoBackgroundModeView on VideoBackgroundMode {
   }
 }
 
-extension ExtraVideoControlsView on VideoControls {
-  String getName(BuildContext context) {
-    final l10n = context.l10n;
-    return switch (this) {
-      VideoControls.play => l10n.videoControlsPlay,
-      VideoControls.playSeek => l10n.videoControlsPlaySeek,
-      VideoControls.playOutside => l10n.videoControlsPlayOutside,
-      VideoControls.none => l10n.videoControlsNone,
-    };
-  }
-}
-
 extension ExtraVideoLoopModeView on VideoLoopMode {
   String getName(BuildContext context) {
     final l10n = context.l10n;

@@ -133,7 +133,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
     viewerGestureSideTapNext = false;
     viewerUseCutout = true;
     videoBackgroundMode = VideoBackgroundMode.disabled;
-    videoControls = VideoControls.none;
+    videoControlActions = [];
     videoGestureDoubleTapTogglePlay = false;
     videoGestureSideDoubleTapSeek = false;
     enableBin = false;
@@ -459,7 +459,6 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.videoBackgroundModeKey:
             case SettingKeys.videoLoopModeKey:
             case SettingKeys.videoResumptionModeKey:
-            case SettingKeys.videoControlsKey:
             case SettingKeys.subtitleTextAlignmentKey:
             case SettingKeys.subtitleTextPositionKey:
             case SettingKeys.tagEditorExpandedSectionKey:
@@ -490,6 +489,7 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.collectionBrowsingQuickActionsKey:
             case SettingKeys.collectionSelectionQuickActionsKey:
             case SettingKeys.viewerQuickActionsKey:
+            case SettingKeys.videoControlActionsKey:
             case SettingKeys.screenSaverCollectionFiltersKey:
               if (newValue is List) {
                 store.setStringList(key, newValue.cast<String>());

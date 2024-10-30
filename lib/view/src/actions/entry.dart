@@ -47,7 +47,8 @@ extension ExtraEntryActionView on EntryAction {
       EntryAction.videoShowNextFrame => l10n.videoActionShowNextFrame,
       // external
       EntryAction.edit => l10n.entryActionEdit,
-      EntryAction.open || EntryAction.openVideo => l10n.entryActionOpen,
+      EntryAction.open => l10n.entryActionOpen,
+      EntryAction.openVideo => l10n.videoControlsPlayOutside,
       EntryAction.openMap => l10n.entryActionOpenMap,
       EntryAction.setAs => l10n.entryActionSetAs,
       EntryAction.cast => l10n.entryActionCast,
