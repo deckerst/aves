@@ -31,76 +31,81 @@ class VideoControlRow extends StatelessWidget {
     return Selector<Settings, VideoControls>(
       selector: (context, s) => s.videoControls,
       builder: (context, videoControls, child) {
-        switch (videoControls) {
-          case VideoControls.play:
-            return Padding(
-              padding: const EdgeInsets.only(left: padding),
-              child: _buildOverlayButton(
-                child: PlayToggler(
-                  controller: controller,
-                  onPressed: () => onActionSelected(EntryAction.videoTogglePlay),
-                ),
-              ),
-            );
-          case VideoControls.playSeek:
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              textDirection: ViewerBottomOverlay.actionsDirection,
-              children: [
-                const SizedBox(width: padding),
-                _buildIconButton(
-                  context,
-                  EntryAction.videoReplay10,
-                  borderRadius: const BorderRadius.only(topLeft: radius, bottomLeft: radius),
-                ),
-                _buildOverlayButton(
-                  child: PlayToggler(
-                    controller: controller,
-                    onPressed: () => onActionSelected(EntryAction.videoTogglePlay),
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.zero),
-                ),
-                _buildIconButton(
-                  context,
-                  EntryAction.videoSkip10,
-                  borderRadius: const BorderRadius.only(topRight: radius, bottomRight: radius),
-                ),
-              ],
-            );
-          case VideoControls.playOutside:
-            return Padding(
-              padding: const EdgeInsets.only(left: padding),
-              child: _buildIconButton(context, EntryAction.openVideo, enabled: !entry.trashed),
-            );
-          case VideoControls.none:
-            return const SizedBox();
+        final actions = _toActions(videoControls);
+
+        if (actions.isEmpty) {
+          return const SizedBox();
         }
+
+        if (actions.length == 1) {
+          final action = actions.first;
+          return Padding(
+            padding: const EdgeInsets.only(left: padding),
+            child: _buildOverlayButton(context, action),
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(left: padding),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            textDirection: ViewerBottomOverlay.actionsDirection,
+            children: actions.map((action) {
+              var borderRadius = const BorderRadius.all(Radius.zero);
+              if (action == actions.first) {
+                borderRadius = const BorderRadius.only(topLeft: radius, bottomLeft: radius);
+              } else if (action == actions.last) {
+                borderRadius = const BorderRadius.only(topRight: radius, bottomRight: radius);
+              }
+              return _buildOverlayButton(context, action, borderRadius: borderRadius);
+            }).toList(),
+          ),
+        );
       },
     );
   }
 
-  Widget _buildOverlayButton({
-    BorderRadius? borderRadius,
-    required Widget child,
-  }) =>
-      OverlayButton(
-        scale: scale,
-        borderRadius: borderRadius,
-        child: child,
-      );
+  List<EntryAction> _toActions(VideoControls videoControls) {
+    switch (videoControls) {
+      case VideoControls.play:
+        return [EntryAction.videoTogglePlay];
+      case VideoControls.playSeek:
+        return [
+          EntryAction.videoReplay10,
+          EntryAction.videoTogglePlay,
+          EntryAction.videoSkip10,
+        ];
+      case VideoControls.playOutside:
+        return [EntryAction.openVideo];
+      case VideoControls.none:
+        return [];
+    }
+  }
 
-  Widget _buildIconButton(
+  Widget _buildOverlayButton(
     BuildContext context,
     EntryAction action, {
-    bool enabled = true,
     BorderRadius? borderRadius,
-  }) =>
-      _buildOverlayButton(
-        borderRadius: borderRadius,
-        child: IconButton(
-          icon: action.getIcon(),
-          onPressed: enabled ? () => onActionSelected(action) : null,
-          tooltip: action.getText(context),
-        ),
+  }) {
+    Widget child;
+    if (action == EntryAction.videoTogglePlay) {
+      child = PlayToggler(
+        controller: controller,
+        onPressed: () => onActionSelected(action),
       );
+    } else {
+      final enabled = action == EntryAction.openVideo ? !entry.trashed : true;
+      child = IconButton(
+        icon: action.getIcon(),
+        onPressed: enabled ? () => onActionSelected(action) : null,
+        tooltip: action.getText(context),
+      );
+    }
+
+    return OverlayButton(
+      scale: scale,
+      borderRadius: borderRadius,
+      child: child,
+    );
+  }
 }
