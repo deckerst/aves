@@ -109,6 +109,7 @@ class Contributors {
     Contributor('Whoever4976', 'wolffjonas47@gmail.com'),
     Contributor('Your Average Code', 'neumeiersi91358@th-nuernberg.de'),
     Contributor('Paranoid Android', 'f.cherdzhiev@innopolis.university'),
+    Contributor('Noah Kenzie Rodriguez-Beus', 'noahbeus@protonmail.com'),
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
