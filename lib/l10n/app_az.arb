@@ -1,0 +1,121 @@
+{
+  "columnCount": "{count, plural, =1{{count} sütun} other{{count} sütun}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeSeconds": "{count, plural, =1{{count} saniyə} other{{count} saniyə}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "hideTooltip": "Gizlət",
+  "@hideTooltip": {},
+  "chipActionGoToAlbumPage": "Albomlarda Göstər",
+  "@chipActionGoToAlbumPage": {},
+  "chipActionGoToCountryPage": "Ölkələrdə Göstər",
+  "@chipActionGoToCountryPage": {},
+  "welcomeOptional": "Zəruri deyil",
+  "@welcomeOptional": {},
+  "welcomeTermsToggle": "Mən hökm və şərtlərlə razıyam",
+  "@welcomeTermsToggle": {},
+  "itemCount": "{count, plural, =1{{count} element}\n other{{count} element}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeMinutes": "{count, plural, =1{{count} dəqiqə} other{{count} dəqiqə}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeDays": "{count, plural, =1{{count} gün} other{{count} gün}}",
+  "@timeDays": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "focalLength": "{length} mm",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "applyButtonLabel": "TƏTBİQ ET",
+  "@applyButtonLabel": {},
+  "deleteButtonLabel": "SİL",
+  "@deleteButtonLabel": {},
+  "nextButtonLabel": "NÖVBƏTİ",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "GÖSTƏR",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "GİZLƏT",
+  "@hideButtonLabel": {},
+  "continueButtonLabel": "DAVAM ET",
+  "@continueButtonLabel": {},
+  "saveCopyButtonLabel": "NÜSXƏNİ SAXLA",
+  "@saveCopyButtonLabel": {},
+  "applyTooltip": "Tətbiq et",
+  "@applyTooltip": {},
+  "cancelTooltip": "Ləğv et",
+  "@cancelTooltip": {},
+  "changeTooltip": "Dəyişdir",
+  "@changeTooltip": {},
+  "clearTooltip": "Təmizlə",
+  "@clearTooltip": {},
+  "previousTooltip": "Əvvəlki",
+  "@previousTooltip": {},
+  "nextTooltip": "Növbəti",
+  "@nextTooltip": {},
+  "showTooltip": "Göstər",
+  "@showTooltip": {},
+  "actionRemove": "Təmizlə",
+  "@actionRemove": {},
+  "resetTooltip": "Sıfırla",
+  "@resetTooltip": {},
+  "saveTooltip": "Saxla",
+  "@saveTooltip": {},
+  "stopTooltip": "Dayandır",
+  "@stopTooltip": {},
+  "pickTooltip": "Seçin",
+  "@pickTooltip": {},
+  "doubleBackExitMessage": "Çıxmaq üçün təkrar “geri”-yə kliklə.",
+  "@doubleBackExitMessage": {},
+  "doNotAskAgain": "Təkrar soruşma",
+  "@doNotAskAgain": {},
+  "sourceStateLoading": "Yüklənilir",
+  "@sourceStateLoading": {},
+  "sourceStateCataloguing": "Sənədləşdirmə",
+  "@sourceStateCataloguing": {},
+  "sourceStateLocatingCountries": "Ölkələr yerləşdirilir",
+  "@sourceStateLocatingCountries": {},
+  "sourceStateLocatingPlaces": "Yerlər müəyyənləşdirilir",
+  "@sourceStateLocatingPlaces": {},
+  "chipActionDelete": "Sil",
+  "@chipActionDelete": {},
+  "chipActionShowCollection": "Kolleksiyada Göstər",
+  "@chipActionShowCollection": {},
+  "chipActionGoToPlacePage": "Yerlərdə Göstər",
+  "@chipActionGoToPlacePage": {},
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeMessage": "Aves-ə Xoş Gəlmisiniz",
+  "@welcomeMessage": {}
+}
