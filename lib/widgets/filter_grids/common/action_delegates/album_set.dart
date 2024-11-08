@@ -186,7 +186,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
       },
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
-    // wait for the dialog to hide as applying the change may block the UI
+    // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
       sortFactor = value.$1!;
@@ -199,6 +199,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
   void _createAlbum(BuildContext context, {required bool locked}) async {
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
+
+    // get navigator beforehand because
+    // local context may be deactivated when action is triggered after navigation
+    final navigator = Navigator.maybeOf(context);
+
     late final String? directory;
     if (locked) {
       if (!await showSkippableConfirmationDialog(
@@ -226,36 +231,46 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> with
         routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
       );
       if (directory == null) return;
-    }
-    source.createAlbum(directory);
 
+      // wait for the dialog to hide
+      await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    }
     final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
-    // get navigator beforehand because
+
+    final albumExists = source.rawAlbums.contains(directory);
+    if (albumExists) {
+      // album already exists, so we just need to highlight it
+      await _showAlbum(navigator, filter);
+    } else {
+      // create the album and mark it as new
+      source.createAlbum(directory);
+
+      final showAction = SnackBarAction(
+        label: l10n.showButtonLabel,
+        onPressed: () => _showAlbum(navigator, filter),
+      );
+      showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
+    }
+  }
+
+  Future<void> _showAlbum(NavigatorState? navigator, AlbumFilter filter) async {
     // local context may be deactivated when action is triggered after navigation
-    final navigator = Navigator.maybeOf(context);
-    final showAction = SnackBarAction(
-      label: l10n.showButtonLabel,
-      onPressed: () async {
-        // local context may be deactivated when action is triggered after navigation
-        if (navigator != null) {
-          final context = navigator.context;
-          final highlightInfo = context.read<HighlightInfo>();
-          if (context.currentRouteName == AlbumListPage.routeName) {
-            highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
-          } else {
-            highlightInfo.set(filter);
-            await navigator.pushAndRemoveUntil(
-              MaterialPageRoute(
-                settings: const RouteSettings(name: AlbumListPage.routeName),
-                builder: (_) => const AlbumListPage(),
-              ),
-              (route) => false,
-            );
-          }
-        }
-      },
-    );
-    showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
+    if (navigator != null) {
+      final context = navigator.context;
+      final highlightInfo = context.read<HighlightInfo>();
+      if (context.currentRouteName == AlbumListPage.routeName) {
+        highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
+      } else {
+        highlightInfo.set(filter);
+        await navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: AlbumListPage.routeName),
+            builder: (_) => const AlbumListPage(),
+          ),
+          (route) => false,
+        );
+      }
+    }
   }
 
   Future<void> _delete(BuildContext context) async {

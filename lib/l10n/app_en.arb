@@ -423,6 +423,7 @@
 
   "newAlbumDialogTitle": "New Album",
   "newAlbumDialogNameLabel": "Album name",
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Album already exists",
   "newAlbumDialogNameLabelAlreadyExistsHelper": "Directory already exists",
   "newAlbumDialogStorageLabel": "Storage:",
 

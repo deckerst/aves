@@ -147,8 +147,10 @@ mixin AlbumMixin on SourceBase {
   // new albums
 
   void createAlbum(String directory) {
-    _newAlbums.add(directory);
-    addDirectories(albums: {directory});
+    if (!_directories.contains(directory)) {
+      _newAlbums.add(directory);
+      addDirectories(albums: {directory});
+    }
   }
 
   void renameNewAlbum(String source, String destination) {

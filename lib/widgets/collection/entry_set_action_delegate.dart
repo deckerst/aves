@@ -512,7 +512,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
     if (confirmed == null || !confirmed) return null;
 
-    // wait for the dialog to hide as applying the change may block the UI
+    // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     return supported;
   }
