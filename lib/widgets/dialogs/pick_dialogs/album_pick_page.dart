@@ -250,7 +250,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     );
     if (directory == null) return;
 
-    // wait for the dialog to hide as applying the change may block the UI
+    // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
 
     _pickAlbum(directory);
@@ -274,7 +274,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     );
     if (details == null) return;
 
-    // wait for the dialog to hide as applying the change may block the UI
+    // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
 
     await vaults.create(details);

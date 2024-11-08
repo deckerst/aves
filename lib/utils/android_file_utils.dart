@@ -19,6 +19,11 @@ class AndroidFileUtils {
   // cf https://developer.android.com/reference/android/provider/MediaStore#VOLUME_EXTERNAL
   static const externalVolume = 'external';
 
+  static const standardDirDcim = 'DCIM';
+  static const standardDirDownloads = 'Download';
+  static const standardDirMovies = 'Movies';
+  static const standardDirPictures = 'Pictures';
+
   static const mediaStoreUriRoot = '$contentScheme://$mediaStoreAuthority/';
   static const mediaUriPathRoots = {'/$externalVolume/images/', '/$externalVolume/video/'};
 
@@ -43,12 +48,13 @@ class AndroidFileUtils {
     await _initStorageVolumes();
     vaultRoot = await storageService.getVaultRoot();
     primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? separator;
-    // standard
-    dcimPath = pContext.join(primaryStorage, 'DCIM');
+    // standard dirs
+    dcimPath = pContext.join(primaryStorage, standardDirDcim);
     // effective download path may have a different case
-    downloadPath = pContext.join(primaryStorage, 'Download').toLowerCase();
-    moviesPath = pContext.join(primaryStorage, 'Movies');
-    picturesPath = pContext.join(primaryStorage, 'Pictures');
+    downloadPath = pContext.join(primaryStorage, standardDirDownloads).toLowerCase();
+    moviesPath = pContext.join(primaryStorage, standardDirMovies);
+    picturesPath = pContext.join(primaryStorage, standardDirPictures);
+    // custom dirs
     avesVideoCapturesPath = pContext.join(dcimPath, 'Video Captures');
     videoCapturesPaths = {
       // from Samsung

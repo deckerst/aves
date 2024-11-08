@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -9,6 +10,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateAlbumDialog extends StatefulWidget {
   static const routeName = '/dialog/create_album';
@@ -23,7 +25,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _nameController = TextEditingController();
   final FocusNode _nameFieldFocusNode = FocusNode();
-  final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _directoryExistsNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _albumExistsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
   late Set<StorageVolume> _allVolumes;
   late StorageVolume? _primaryVolume, _selectedVolume;
@@ -43,13 +46,14 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     _nameController.dispose();
     _nameFieldFocusNode.removeListener(_onFocus);
     _nameFieldFocusNode.dispose();
-    _existsNotifier.dispose();
+    _directoryExistsNotifier.dispose();
     _isValidNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: AvesDialog.defaultHorizontalContentPadding);
 
     final volumeTiles = <Widget>[];
@@ -61,7 +65,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       volumeTiles.addAll([
         Padding(
           padding: contentHorizontalPadding + const EdgeInsets.only(top: 20),
-          child: Text(context.l10n.newAlbumDialogStorageLabel),
+          child: Text(l10n.newAlbumDialogStorageLabel),
         ),
         ...primaryVolumes.map((volume) => _buildVolumeTile(context, volume)),
         ...otherVolumes.map((volume) => _buildVolumeTile(context, volume)),
@@ -70,21 +74,27 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     }
 
     return AvesDialog(
-      title: context.l10n.newAlbumDialogTitle,
+      title: l10n.newAlbumDialogTitle,
       scrollController: _scrollController,
       scrollableContent: [
         ...volumeTiles,
         Padding(
           padding: contentHorizontalPadding + const EdgeInsets.only(bottom: 8),
-          child: ValueListenableBuilder<bool>(
-              valueListenable: _existsNotifier,
-              builder: (context, exists, child) {
+          child: AnimatedBuilder(
+              animation: Listenable.merge([_albumExistsNotifier, _directoryExistsNotifier]),
+              builder: (context, child) {
+                var helperText = '';
+                if (_albumExistsNotifier.value) {
+                  helperText = l10n.newAlbumDialogAlbumAlreadyExistsHelper;
+                } else if (_directoryExistsNotifier.value) {
+                  helperText = l10n.newAlbumDialogNameLabelAlreadyExistsHelper;
+                }
                 return TextField(
                   controller: _nameController,
                   focusNode: _nameFieldFocusNode,
                   decoration: InputDecoration(
-                    labelText: context.l10n.newAlbumDialogNameLabel,
-                    helperText: exists ? context.l10n.newAlbumDialogNameLabelAlreadyExistsHelper : '',
+                    labelText: l10n.newAlbumDialogNameLabel,
+                    helperText: helperText,
                   ),
                   autofocus: _allVolumes.length == 1,
                   onChanged: (_) => _validate(),
@@ -96,11 +106,16 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       actions: [
         const CancelButton(),
         ValueListenableBuilder<bool>(
-          valueListenable: _isValidNotifier,
-          builder: (context, isValid, child) {
-            return TextButton(
-              onPressed: isValid ? () => _submit(context) : null,
-              child: Text(context.l10n.createAlbumButtonLabel),
+          valueListenable: _albumExistsNotifier,
+          builder: (context, albumExists, child) {
+            return ValueListenableBuilder<bool>(
+              valueListenable: _isValidNotifier,
+              builder: (context, isValid, child) {
+                return TextButton(
+                  onPressed: isValid ? () => _submit(context) : null,
+                  child: Text(albumExists ? l10n.showButtonLabel : l10n.createAlbumButtonLabel),
+                );
+              },
             );
           },
         ),
@@ -147,34 +162,18 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     );
   }
 
-  String _sanitize(String input) => input.trim();
+  Future<String?> _buildAlbumPath() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) return null;
 
-  String? _buildAlbumPath(String name) {
-    final selectedVolume = _selectedVolume;
-    if (selectedVolume == null || name.isEmpty) return null;
-    return pContext.join(selectedVolume.path, 'Pictures', name);
-  }
-
-  Future<void> _validate() async {
-    final newName = _sanitize(_nameController.text);
-    final path = _buildAlbumPath(newName);
-    // this check ignores case
-    final exists = path != null && await Directory(path).exists();
-    _existsNotifier.value = exists;
-    _isValidNotifier.value = path != null && newName.isNotEmpty;
-  }
-
-  Future<void> _submit(BuildContext context) async {
-    if (!_isValidNotifier.value) return;
-
-    final newName = _sanitize(_nameController.text);
-    final albumPath = _buildAlbumPath(newName);
     final volumePath = _selectedVolume?.path;
-    if (albumPath == null || volumePath == null) return;
+    if (volumePath == null) return null;
+
+    final candidatePath = pContext.join(volumePath, AndroidFileUtils.standardDirPictures, name);
 
     // uses resolved directory name case if it exists
     var resolvedPath = volumePath;
-    final relativePathSegments = pContext.split(pContext.relative(albumPath, from: volumePath));
+    final relativePathSegments = pContext.split(pContext.relative(candidatePath, from: volumePath));
     for (final targetSegment in relativePathSegments) {
       String? resolvedSegment;
       final directory = Directory(resolvedPath);
@@ -184,6 +183,22 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       }
       resolvedPath = pContext.join(resolvedPath, resolvedSegment ?? targetSegment);
     }
-    Navigator.maybeOf(context)?.pop(resolvedPath);
+
+    return resolvedPath;
+  }
+
+  Future<void> _validate() async {
+    final path = await _buildAlbumPath();
+    final isValid = path != null;
+    _isValidNotifier.value = isValid;
+    _directoryExistsNotifier.value = isValid && await Directory(path).exists();
+    _albumExistsNotifier.value = isValid && context.read<CollectionSource>().rawAlbums.contains(path);
+  }
+
+  Future<void> _submit(BuildContext context) async {
+    final path = await _buildAlbumPath();
+    if (path == null) return;
+
+    Navigator.maybeOf(context)?.pop(path);
   }
 }
