@@ -1544,5 +1544,9 @@
   "mapStyleOsmLiberty": "OSM Slobody",
   "@mapStyleOsmLiberty": {},
   "mapAttributionOsmLiberty": "Dlaždice podľa [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hostovaný [OSM Americana](https://tile.ourmap.us)",
-  "@mapAttributionOsmLiberty": {}
+  "@mapAttributionOsmLiberty": {},
+  "videoActionShowPreviousFrame": "Zobraziť predchádzajúci rám",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Zobraziť ďalší rám",
+  "@videoActionShowNextFrame": {}
 }
