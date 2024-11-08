@@ -269,7 +269,7 @@
   "@tileLayoutGrid": {},
   "settingsDisplayUseTvInterface": "واجهة أندرويد TV",
   "@settingsDisplayUseTvInterface": {},
-  "settingsTimeToTakeActionTile": "حان الوقت لاتخاذ الإجراءات اللازمة",
+  "settingsTimeToTakeActionTile": "وقت إتخاذ الإجراءات",
   "@settingsTimeToTakeActionTile": {},
   "aboutCreditsWorldAtlas1": "يستخدم هذا التطبيق ملف TopoJSON من",
   "@aboutCreditsWorldAtlas1": {},
@@ -1544,5 +1544,9 @@
   "mapStyleOsmLiberty": "حرية خرائط OSM",
   "@mapStyleOsmLiberty": {},
   "mapAttributionOsmLiberty": "البلاط بواسطة [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • مُستضاف بواسطة [OSM Americana](https://tile.ourmap.us)",
-  "@mapAttributionOsmLiberty": {}
+  "@mapAttributionOsmLiberty": {},
+  "videoActionShowPreviousFrame": "إظهار الإطار السابق",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "إظهار الإطار التالي",
+  "@videoActionShowNextFrame": {}
 }
