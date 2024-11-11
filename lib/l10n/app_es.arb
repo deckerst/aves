@@ -1390,5 +1390,7 @@
   "videoActionShowPreviousFrame": "Mostrar fotograma anterior",
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "Mostrar fotograma siguiente",
-  "@videoActionShowNextFrame": {}
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "El álbum ya existe",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }
