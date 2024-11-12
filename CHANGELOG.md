@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- Albums: improved album creation feedback
+
+### Fixed
+
+- crash when playing video with DCL restriction enabled
+- printing multi-page items containing some unprintable pages
+- English (Shavian) locale tags for store listing
+
 ## <a id="v1.11.17"></a>[v1.11.17] - 2024-10-30
 
 ### Added
