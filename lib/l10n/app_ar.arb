@@ -1548,5 +1548,7 @@
   "videoActionShowPreviousFrame": "إظهار الإطار السابق",
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "إظهار الإطار التالي",
-  "@videoActionShowNextFrame": {}
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "الألبوم موجود بالفعل",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }

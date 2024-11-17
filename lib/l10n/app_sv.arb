@@ -1571,6 +1571,6 @@
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "Visa nästa bildruta",
   "@videoActionShowNextFrame": {},
-  "newAlbumDialogAlbumAlreadyExistsHelper": "Album existerar redan",
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Albumet existerar redan",
   "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }

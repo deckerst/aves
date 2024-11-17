@@ -1392,5 +1392,7 @@
   "videoActionShowNextFrame": "Volgend frame weergeven",
   "@videoActionShowNextFrame": {},
   "videoActionShowPreviousFrame": "Vorig frame weergeven",
-  "@videoActionShowPreviousFrame": {}
+  "@videoActionShowPreviousFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Album bestaat al",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }
