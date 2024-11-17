@@ -1382,5 +1382,13 @@
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 图块由 [OpenTopoMap](https://opentopomap.org/)提供，[CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "mapAttributionOsmData": "地图数据由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 贡献",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "videoActionShowPreviousFrame": "显示上一帧",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "显示下一帧",
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "相册已存在",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "mapAttributionOsmLiberty": "绘制于 [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • 主办方 [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {}
 }

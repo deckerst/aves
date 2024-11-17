@@ -1386,5 +1386,11 @@
   "mapAttributionOsmLiberty": "Blocos por [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hospedado por [OSM Americana](https://tile.ourmap.us)",
   "@mapAttributionOsmLiberty": {},
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Blocos por [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "@mapAttributionOpenTopoMap": {},
+  "videoActionShowNextFrame": "Mostrar próximo quadro",
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "O álbum já existe",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "videoActionShowPreviousFrame": "Mostrar quadro anterior",
+  "@videoActionShowPreviousFrame": {}
 }
