@@ -1390,5 +1390,7 @@
   "videoActionShowPreviousFrame": "Tampilkan bingkai sebelumnya",
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "Tampilkan bingkai berikutnya",
-  "@videoActionShowNextFrame": {}
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Album sudah ada",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }

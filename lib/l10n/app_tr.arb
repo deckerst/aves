@@ -1386,5 +1386,11 @@
   "mapAttributionOsmLiberty": "Döşemeler [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Barındıran [OSM Americana](https://tile.ourmap.us)",
   "@mapAttributionOsmLiberty": {},
   "mapAttributionOsmData": "Harita verileri © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanlar",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "videoActionShowNextFrame": "Sonraki kareyi göster",
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Böyle bir albüm zaten var",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "videoActionShowPreviousFrame": "Önceki kareyi göster",
+  "@videoActionShowPreviousFrame": {}
 }
