@@ -99,9 +99,12 @@ object MimeTypes {
         else -> true
     }
 
-    // as of `ExifInterface` v1.3.1, `isSupportedMimeType` reports
-    // no support for TIFF images, but it can actually open them (maybe other formats too)
-    fun canReadWithExifInterface(mimeType: String, strict: Boolean = true) = ExifInterface.isSupportedMimeType(mimeType) || !strict
+    // as of `ExifInterface` v1.4.0-alpha01, `isSupportedMimeType` reports
+    // no support for AVIF/TIFF images, but it can actually open them (maybe other formats too)
+    fun canReadWithExifInterface(mimeType: String, strict: Boolean = true): Boolean {
+        if (!strict) return true
+        return ExifInterface.isSupportedMimeType(mimeType) || mimeType == AVIF
+    }
 
     // as of latest PixyMeta
     fun canReadWithPixyMeta(mimeType: String) = when (mimeType) {
@@ -143,7 +146,7 @@ object MimeTypes {
         return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             true
         } else when (mimeType) {
-            DNG, DNG_ADOBE, HEIC, HEIF, PNG, WEBP -> true
+            AVIF, DNG, DNG_ADOBE, HEIC, HEIF, PNG, WEBP -> true
             else -> false
         }
     }

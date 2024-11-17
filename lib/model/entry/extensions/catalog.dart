@@ -33,7 +33,13 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       if ((isVideo && (!isSized || durationMillis == 0)) || mimeType == MimeTypes.avif) {
         // exotic video that is not sized during loading
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
-        await applyNewFields(fields, persist: persist);
+        // check size as the video interpreter may fail on some AVIF stills
+        final width = fields['width'];
+        final height = fields['height'];
+        final isValid = (width == null || width > 0) && (height == null || height > 0);
+        if (isValid) {
+          await applyNewFields(fields, persist: persist);
+        }
       }
 
       // cataloguing on platform
