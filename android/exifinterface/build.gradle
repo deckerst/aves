@@ -26,5 +26,6 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.8.2'
+    implementation 'androidx.annotation:annotation:1.9.1'
+    implementation 'org.jspecify:jspecify:1.0.0'
 }
