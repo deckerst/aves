@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Albums: improved album creation feedback
+- upgraded Flutter to stable v3.24.5
 
 ### Fixed
 
