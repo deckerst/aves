@@ -69,7 +69,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@9278e421667d5d90a2839487a482448c4ec7df4d # v3.27.2
+        uses: github/codeql-action/init@ea9e4e37992a54ee68a9622e985e60c8e8f12d9f # v3.27.4
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
@@ -83,6 +83,6 @@ jobs:
           ./flutterw build apk --profile -t lib/main_play.dart --flavor play
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@9278e421667d5d90a2839487a482448c4ec7df4d # v3.27.2
+        uses: github/codeql-action/analyze@ea9e4e37992a54ee68a9622e985e60c8e8f12d9f # v3.27.4
         with:
           category: "/language:${{matrix.language}}"
