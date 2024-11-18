@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when playing video with DCL restriction enabled
+- cataloguing images with wrong MPF offsets
 - printing multi-page items containing some unprintable pages
 - English (Shavian) locale tags for store listing
 

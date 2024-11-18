@@ -792,7 +792,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun hasAppleHdrGainMap(uri: Uri, sizeBytes: Long?): Boolean {
         val mpEntries = MultiPage.getJpegMpfEntries(context, uri, sizeBytes) ?: return false
-        mpEntries.filter { it.type == MpEntry.TYPE_UNDEFINED }.forEach { mpEntry ->
+        mpEntries.filter { it.type == MpEntry.TYPE_UNDEFINED }.forEachIndexed { mpIndex, mpEntry ->
             var dataOffset = mpEntry.dataOffset
             if (dataOffset > 0) {
                 val baseOffset = MultiPage.getJpegMpfBaseOffset(context, uri, sizeBytes)
@@ -802,9 +802,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
             StorageUtils.openInputStream(context, uri)?.let { input ->
                 input.skip(dataOffset)
-                val pageMetadata = Helper.safeRead(input, sizeBytes)
-                if (pageMetadata.getDirectoriesOfType(XmpDirectory::class.java).any { it.xmpMeta.hasHdrGainMap() }) {
-                    return true
+                try {
+                    val pageMetadata = Helper.safeRead(input, sizeBytes)
+                    if (pageMetadata.getDirectoriesOfType(XmpDirectory::class.java).any { it.xmpMeta.hasHdrGainMap() }) {
+                        return true
+                    }
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for uri=$uri mpIndex=$mpIndex mpEntry=$mpEntry", e)
                 }
             }
         }
