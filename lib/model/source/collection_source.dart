@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -26,6 +27,7 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
@@ -498,11 +500,19 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           }
         }
       }
+
       if (startAnalysisService) {
-        await AnalysisService.startService(
-          force: force,
-          entryIds: entries?.map((entry) => entry.id).toList(),
-        );
+        final lifecycleState = AvesApp.lifecycleStateNotifier.value;
+        switch (lifecycleState) {
+          case AppLifecycleState.resumed:
+          case AppLifecycleState.inactive:
+            await AnalysisService.startService(
+              force: force,
+              entryIds: entries?.map((entry) => entry.id).toList(),
+            );
+          default:
+            unawaited(reportService.log('analysis service not started because app is in state=$lifecycleState'));
+        }
       } else {
         // explicit GC before cataloguing multiple items
         await deviceService.requestGarbageCollection();
