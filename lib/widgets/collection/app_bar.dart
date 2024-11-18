@@ -689,7 +689,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       },
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
-    // wait for the dialog to hide as applying the change may block the UI
+    // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
       settings.collectionSortFactor = value.$1!;

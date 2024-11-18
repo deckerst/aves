@@ -1390,5 +1390,7 @@
   "videoActionShowNextFrame": "다음 프레임 보기",
   "@videoActionShowNextFrame": {},
   "videoActionShowPreviousFrame": "이전 프레임 보기",
-  "@videoActionShowPreviousFrame": {}
+  "@videoActionShowPreviousFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "앨범이 이미 있습니다",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }

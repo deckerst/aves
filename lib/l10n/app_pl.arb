@@ -1548,5 +1548,7 @@
   "videoActionShowPreviousFrame": "Pokaż poprzednią klatkę",
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "Pokaż kolejną klatkę",
-  "@videoActionShowNextFrame": {}
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Album już istnieje",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }

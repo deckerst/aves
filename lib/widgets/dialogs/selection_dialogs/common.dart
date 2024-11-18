@@ -13,7 +13,7 @@ Future<void> showSelectionDialog<T>({
     builder: builder,
     routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
   );
-  // wait for the dialog to hide as applying the change may block the UI
+  // wait for the dialog to hide
   await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
   if (value != null) {
     onSelection(value);

@@ -31,7 +31,7 @@ class LocaleTile extends StatelessWidget {
             builder: (context) => const LocaleSelectionPage(),
           ),
         );
-        // wait for the dialog to hide as applying the change may block the UI
+        // wait for the dialog to hide
         await Future.delayed(ADurations.pageTransitionLoose * timeDilation);
         if (value != null) {
           settings.locale = value == systemLocaleOption ? null : value;

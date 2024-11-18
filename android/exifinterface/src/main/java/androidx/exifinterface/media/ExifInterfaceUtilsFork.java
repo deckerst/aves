@@ -18,12 +18,10 @@ package androidx.exifinterface.media;
 
 import android.media.MediaDataSource;
 import android.media.MediaMetadataRetriever;
-import android.os.Build;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
 
-import androidx.annotation.DoNotInline;
 import androidx.annotation.RequiresApi;
 
 import java.io.Closeable;
@@ -32,12 +30,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/*
+ * Forked from 'androidx.exifinterface:exifinterface:1.4.0-alpha01' on 2024/11/17
+ * Named differently to let ExifInterface be loaded as subdependency.
+ * cf https://github.com/androidx/androidx/tree/androidx-main/exifinterface/exifinterface/src/main/java/androidx/exifinterface/media
+ */
+
 class ExifInterfaceUtilsFork {
     private static final String TAG = "ExifInterfaceUtils";
 
     private ExifInterfaceUtilsFork() {
         // Prevent instantiation
     }
+
     /**
      * Copies all of the bytes from {@code in} to {@code out}. Neither stream is closed.
      * Returns the total number of bytes transferred.
@@ -146,45 +151,18 @@ class ExifInterfaceUtilsFork {
      * Closes a file descriptor that has been duplicated.
      */
     static void closeFileDescriptor(FileDescriptor fd) {
-        // Os.dup and Os.close was introduced in API 21 so this method shouldn't be called
-        // in API < 21.
-        if (Build.VERSION.SDK_INT >= 21) {
-            try {
-                Api21Impl.close(fd);
-                // Catching ErrnoException will raise error in API < 21
-            } catch (Exception ex) {
-                Log.e(TAG, "Error closing fd.");
-            }
-        } else {
-            Log.e(TAG, "closeFileDescriptor is called in API < 21, which must be wrong.");
-        }
-    }
-
-    @RequiresApi(21)
-    static class Api21Impl {
-        private Api21Impl() {}
-
-        @DoNotInline
-        static FileDescriptor dup(FileDescriptor fileDescriptor) throws ErrnoException {
-            return Os.dup(fileDescriptor);
-        }
-
-        @DoNotInline
-        static long lseek(FileDescriptor fd, long offset, int whence) throws ErrnoException {
-            return Os.lseek(fd, offset, whence);
-        }
-
-        @DoNotInline
-        static void close(FileDescriptor fd) throws ErrnoException {
+        try {
             Os.close(fd);
+        } catch (ErrnoException ex) {
+            Log.e(TAG, "Error closing fd.", ex);
         }
     }
 
     @RequiresApi(23)
     static class Api23Impl {
-        private Api23Impl() {}
+        private Api23Impl() {
+        }
 
-        @DoNotInline
         static void setDataSource(MediaMetadataRetriever retriever, MediaDataSource dataSource) {
             retriever.setDataSource(dataSource);
         }
