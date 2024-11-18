@@ -1390,5 +1390,7 @@
   "mapAttributionOsmLiberty": "Kacheln von [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Gehostet von [OSM Americana](https://tile.ourmap.us)",
   "@mapAttributionOsmLiberty": {},
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Kacheln von [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
-  "@mapAttributionOpenTopoMap": {}
+  "@mapAttributionOpenTopoMap": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Album existiert bereits",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }
