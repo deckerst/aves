@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- integrate with OS app language settings on Android >=14
+
 ## <a id="v1.11.18"></a>[v1.11.18] - 2024-11-18
 
 ### Changed
