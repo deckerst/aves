@@ -464,5 +464,178 @@
   "videoLoopModeAlways": "Alati",
   "@videoLoopModeAlways": {},
   "unitSystemMetric": "Meetermõõdustik",
-  "@unitSystemMetric": {}
+  "@unitSystemMetric": {},
+  "viewerTransitionZoomIn": "Sissesuumimine",
+  "@viewerTransitionZoomIn": {},
+  "wallpaperTargetLock": "Lukustusvaade",
+  "@wallpaperTargetLock": {},
+  "wallpaperTargetHomeLock": "Avaleht ja lukustusvaade",
+  "@wallpaperTargetHomeLock": {},
+  "widgetDisplayedItemRandom": "Juhuslik",
+  "@widgetDisplayedItemRandom": {},
+  "widgetDisplayedItemMostRecent": "Viimane",
+  "@widgetDisplayedItemMostRecent": {},
+  "widgetOpenPageHome": "Mine avalehele",
+  "@widgetOpenPageHome": {},
+  "widgetOpenPageCollection": "Ava kogumik",
+  "@widgetOpenPageCollection": {},
+  "widgetOpenPageViewer": "Ava sirvija",
+  "@widgetOpenPageViewer": {},
+  "widgetTapUpdateWidget": "Värskenda vidinat",
+  "@widgetTapUpdateWidget": {},
+  "storageVolumeDescriptionFallbackPrimary": "Sisemine andmehoidla",
+  "@storageVolumeDescriptionFallbackPrimary": {},
+  "rootDirectoryDescription": "juurkaust",
+  "@rootDirectoryDescription": {},
+  "viewerTransitionNone": "Määratlemata",
+  "@viewerTransitionNone": {},
+  "wallpaperTargetHome": "Avaleht",
+  "@wallpaperTargetHome": {},
+  "storageVolumeDescriptionFallbackNonPrimary": "SD-kaart",
+  "@storageVolumeDescriptionFallbackNonPrimary": {},
+  "unitSystemImperial": "Inglise mõõdustik",
+  "@unitSystemImperial": {},
+  "viewerTransitionSlide": "Äraliuglemine",
+  "@viewerTransitionSlide": {},
+  "viewerTransitionFade": "Hajumine",
+  "@viewerTransitionFade": {},
+  "viewerTransitionParallax": "Parallaks",
+  "@viewerTransitionParallax": {},
+  "otherDirectoryDescription": "„{name}“ kaust",
+  "@otherDirectoryDescription": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Pictures",
+        "description": "the name of a specific directory"
+      }
+    }
+  },
+  "notEnoughSpaceDialogMessage": "See tegevus vajab „{volume}“ andmeruumis „{neededSize}“ vaba andmemahtu, kuid alles on vaid „{freeSize}“.",
+  "@notEnoughSpaceDialogMessage": {
+    "placeholders": {
+      "neededSize": {
+        "type": "String",
+        "example": "314 MB"
+      },
+      "freeSize": {
+        "type": "String",
+        "example": "123 MB"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "missingSystemFilePickerDialogMessage": "Süsteemi failihaldur/failivalija on puudu või kasutuselt eemaldatud. Palun pane ta tööle ja proovi siis uuesti.",
+  "@missingSystemFilePickerDialogMessage": {},
+  "nameConflictDialogSingleSourceMessage": "Mõnedel sihtkausta failidel on sama nimi.",
+  "@nameConflictDialogSingleSourceMessage": {},
+  "videoStartOverButtonLabel": "ALUSTA UUESTI",
+  "@videoStartOverButtonLabel": {},
+  "videoResumeButtonLabel": "JÄTKA",
+  "@videoResumeButtonLabel": {},
+  "setCoverDialogLatest": "Viimane objekt",
+  "@setCoverDialogLatest": {},
+  "setCoverDialogAuto": "Automaatne",
+  "@setCoverDialogAuto": {},
+  "nameConflictDialogMultipleSourceMessage": "Mõnedel failidel on sama nimi.",
+  "@nameConflictDialogMultipleSourceMessage": {},
+  "addShortcutDialogLabel": "Kiirnupu silt",
+  "@addShortcutDialogLabel": {},
+  "addShortcutButtonLabel": "LISA",
+  "@addShortcutButtonLabel": {},
+  "noMatchingAppDialogMessage": "Pole rakendusi, mis oskaks seda kasutada.",
+  "@noMatchingAppDialogMessage": {},
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Kas viskame selle objekti prügikasti?} other{Kas viskame need {count} objekti prügikasti?}}",
+  "@binEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "moveUndatedConfirmationDialogMessage": "Kas enne jätkamist salvestame objekti kuupäevad?",
+  "@moveUndatedConfirmationDialogMessage": {},
+  "moveUndatedConfirmationDialogSetDate": "Salvesta kuupäevad",
+  "@moveUndatedConfirmationDialogSetDate": {},
+  "videoResumeDialogMessage": "Kas sa soovid jätkata esitamist {time} kohalt?",
+  "@videoResumeDialogMessage": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "13:37"
+      }
+    }
+  },
+  "patternDialogEnter": "Sisesta viipemuster",
+  "@patternDialogEnter": {},
+  "patternDialogConfirm": "Korda viipemustrit",
+  "@patternDialogConfirm": {},
+  "pinDialogEnter": "Sisesta PIN-kood",
+  "@pinDialogEnter": {},
+  "pinDialogConfirm": "Korda PIN-koodi",
+  "@pinDialogConfirm": {},
+  "passwordDialogEnter": "Sisesta salasõna",
+  "@passwordDialogEnter": {},
+  "passwordDialogConfirm": "Korda salasõna",
+  "@passwordDialogConfirm": {},
+  "renameAlbumDialogLabel": "Uus nimi",
+  "@renameAlbumDialogLabel": {},
+  "renameAlbumDialogLabelAlreadyExistsHelper": "Selline kaust on juba olemas",
+  "@renameAlbumDialogLabelAlreadyExistsHelper": {},
+  "renameEntrySetPageTitle": "Muuda nime",
+  "@renameEntrySetPageTitle": {},
+  "renameEntrySetPagePatternFieldLabel": "Failide nimemuster",
+  "@renameEntrySetPagePatternFieldLabel": {},
+  "renameEntrySetPageInsertTooltip": "Lisa väli",
+  "@renameEntrySetPageInsertTooltip": {},
+  "renameEntrySetPagePreviewSectionTitle": "Eelvaade",
+  "@renameEntrySetPagePreviewSectionTitle": {},
+  "renameProcessorCounter": "Loendur",
+  "@renameProcessorCounter": {},
+  "renameProcessorHash": "Räsi",
+  "@renameProcessorHash": {},
+  "renameProcessorName": "Nimi",
+  "@renameProcessorName": {},
+  "storageAccessDialogMessage": "Palun anna sellele rakendusele järgmises ekraanivaates õigused „{directory}“ kaustale „{volume}“ andmekogus.",
+  "@storageAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "restrictedAccessDialogMessage": "Sellel rakendusel pole õigusi muuta faile „{volume}“ andmekogu „{directory}“ kaustas.\n\nPalun kasuta failihaldurit või galeriirakendust failide tõstmiseks muude asukohta.",
+  "@restrictedAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String",
+        "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+      },
+      "volume": {
+        "type": "String",
+        "example": "SD card",
+        "description": "the name of a storage volume"
+      }
+    }
+  },
+  "setCoverDialogCustom": "Sinu valik",
+  "@setCoverDialogCustom": {},
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Kas kustutame selle objekti?} other{Kas kustutame need {count} objekti?}}",
+  "@deleteEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  }
 }
