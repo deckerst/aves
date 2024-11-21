@@ -12,6 +12,8 @@ abstract class DeviceService {
 
   Future<List<Locale>> getLocales();
 
+  Future<void> setLocaleConfig(List<Locale> locales);
+
   Future<int> getPerformanceClass();
 
   Future<bool> isLocked();
@@ -78,6 +80,17 @@ class PlatformDeviceService implements DeviceService {
       await reportService.recordError(e, stack);
     }
     return [];
+  }
+
+  @override
+  Future<void> setLocaleConfig(List<Locale> locales) async {
+    try {
+      await _platform.invokeMethod('setLocaleConfig', <String, dynamic>{
+        'locales': locales.map((v) => v.toLanguageTag()).toList(),
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
   }
 
   @override
