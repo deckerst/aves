@@ -21,7 +21,7 @@ class FakeReportService extends ReportService {
   Future<void> setCustomKeys(Map<String, Object> map) => SynchronousFuture(null);
 
   @override
-  Future<void> recordError(dynamic exception, StackTrace? stack) => SynchronousFuture(null);
+  Future<void> recordError(dynamic exception, [StackTrace? stack]) => SynchronousFuture(null);
 
   @override
   Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails) => SynchronousFuture(null);

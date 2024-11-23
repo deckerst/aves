@@ -62,7 +62,7 @@ class MediaStoreSource extends CollectionSource {
     final currentTimeZoneOffset = DateTime.now().timeZoneOffset.inMilliseconds;
     final catalogTimeZoneOffset = settings.catalogTimeZoneOffsetMillis;
     if (currentTimeZoneOffset != catalogTimeZoneOffset) {
-      unawaited(reportService.recordError('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.', null));
+      unawaited(reportService.recordError('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.'));
       await localMediaDb.clearDates();
       await localMediaDb.clearCatalogMetadata();
       settings.catalogTimeZoneOffsetMillis = currentTimeZoneOffset;
@@ -212,7 +212,7 @@ class MediaStoreSource extends CollectionSource {
           // TODO TLAD find duplication cause
           final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
           if (duplicates.isNotEmpty) {
-            unawaited(reportService.recordError(Exception('Loading entries yielded duplicates=${duplicates.join(', ')}'), StackTrace.current));
+            unawaited(reportService.recordError(Exception('Loading entries yielded duplicates=${duplicates.join(', ')}')));
             // post-error cleanup
             await localMediaDb.removeIds(duplicates.map((v) => v.id).toSet());
             for (final duplicate in duplicates) {
@@ -325,7 +325,7 @@ class MediaStoreSource extends CollectionSource {
       // TODO TLAD find duplication cause
       final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
       if (duplicates.isNotEmpty) {
-        unawaited(reportService.recordError(Exception('Refreshing entries yielded duplicates=${duplicates.join(', ')}'), StackTrace.current));
+        unawaited(reportService.recordError(Exception('Refreshing entries yielded duplicates=${duplicates.join(', ')}')));
         // post-error cleanup
         await localMediaDb.removeIds(duplicates.map((v) => v.id).toSet());
         for (final duplicate in duplicates) {

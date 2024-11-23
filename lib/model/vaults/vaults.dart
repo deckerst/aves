@@ -175,7 +175,7 @@ class Vaults extends ChangeNotifier {
           sourceEntry.origin = EntryOrigins.vault;
           newEntries.add(sourceEntry);
         } else {
-          await reportService.recordError('Failed to recover untracked vault item at uri=$uri', null);
+          await reportService.recordError('Failed to recover untracked vault item at uri=$uri');
         }
       });
     }
