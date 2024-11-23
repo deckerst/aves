@@ -15,7 +15,7 @@ abstract class ReportService {
 
   Future<void> setCustomKeys(Map<String, Object> map);
 
-  Future<void> recordError(dynamic exception, StackTrace? stack);
+  Future<void> recordError(dynamic exception, [StackTrace? stack]);
 
   Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails);
 

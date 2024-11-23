@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/media/video/channel_layouts.dart';
 import 'package:aves/model/media/video/codecs.dart';
 import 'package:aves/model/media/video/profiles/aac.dart';
 import 'package:aves/model/media/video/profiles/h264.dart';
 import 'package:aves/model/media/video/profiles/hevc.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -99,7 +99,7 @@ class VideoMetadataFormatter {
     if (isDefined(dateString)) {
       dateMillis = parseVideoDate(dateString);
       if (dateMillis == null && !isAmbiguousDate(dateString)) {
-        await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry', null);
+        await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry');
       }
     }
 

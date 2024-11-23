@@ -96,8 +96,8 @@ mixin CastMixin {
       );
       debugPrint('cast: play entry=$entry');
       unawaited(renderer.play());
-    } catch (error, stack) {
-      await reportService.recordError(error, stack);
+    } catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
