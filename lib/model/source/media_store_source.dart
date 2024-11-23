@@ -59,15 +59,13 @@ class MediaStoreSource extends CollectionSource {
     await vaults.init();
     await favourites.init();
     await covers.init();
-    final currentTimeZoneOffset = await deviceService.getDefaultTimeZoneRawOffsetMillis();
-    if (currentTimeZoneOffset != null) {
-      final catalogTimeZoneOffset = settings.catalogTimeZoneRawOffsetMillis;
-      if (currentTimeZoneOffset != catalogTimeZoneOffset) {
-        unawaited(reportService.recordError('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.', null));
-        await localMediaDb.clearDates();
-        await localMediaDb.clearCatalogMetadata();
-        settings.catalogTimeZoneRawOffsetMillis = currentTimeZoneOffset;
-      }
+    final currentTimeZoneOffset = DateTime.now().timeZoneOffset.inMilliseconds;
+    final catalogTimeZoneOffset = settings.catalogTimeZoneOffsetMillis;
+    if (currentTimeZoneOffset != catalogTimeZoneOffset) {
+      unawaited(reportService.recordError('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.', null));
+      await localMediaDb.clearDates();
+      await localMediaDb.clearCatalogMetadata();
+      settings.catalogTimeZoneOffsetMillis = currentTimeZoneOffset;
     }
     await loadDates();
     debugPrint('$runtimeType load essentials complete in ${stopwatch.elapsed.inMilliseconds}ms');

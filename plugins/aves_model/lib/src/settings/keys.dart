@@ -3,7 +3,7 @@ class SettingKeys {
 
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
-    catalogTimeZoneRawOffsetMillisKey,
+    catalogTimeZoneOffsetMillisKey,
     searchHistoryKey,
     platformAccelerometerRotationKey,
     platformTransitionAnimationScaleKey,
@@ -21,7 +21,7 @@ class SettingKeys {
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
   static const forceWesternArabicNumeralsKey = 'force_western_arabic_numerals';
-  static const catalogTimeZoneRawOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
+  static const catalogTimeZoneOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';

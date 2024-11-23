@@ -87,9 +87,9 @@ mixin AppSettings on SettingsAccess {
 
   set forceWesternArabicNumerals(bool newValue) => set(SettingKeys.forceWesternArabicNumeralsKey, newValue);
 
-  int get catalogTimeZoneRawOffsetMillis => getInt(SettingKeys.catalogTimeZoneRawOffsetMillisKey) ?? 0;
+  int get catalogTimeZoneOffsetMillis => getInt(SettingKeys.catalogTimeZoneOffsetMillisKey) ?? 0;
 
-  set catalogTimeZoneRawOffsetMillis(int newValue) => set(SettingKeys.catalogTimeZoneRawOffsetMillisKey, newValue);
+  set catalogTimeZoneOffsetMillis(int newValue) => set(SettingKeys.catalogTimeZoneOffsetMillisKey, newValue);
 
   double getTileExtent(String routeName) => getDouble(SettingKeys.tileExtentPrefixKey + routeName) ?? 0;
 
