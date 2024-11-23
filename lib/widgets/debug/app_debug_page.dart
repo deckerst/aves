@@ -37,7 +37,7 @@ class AppDebugPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return Directionality(
       textDirection: TextDirection.ltr,
       child: AvesScaffold(

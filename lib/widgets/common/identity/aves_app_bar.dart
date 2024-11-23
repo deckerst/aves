@@ -260,7 +260,7 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
     return ValueListenableBuilder<bool>(
       valueListenable: _isBlurAllowedNotifier,
       builder: (context, isBlurAllowed, child) {
-        final blurred = isBlurAllowed && context.select<Settings, bool>((s) => s.enableBlurEffect);
+        final blurred = isBlurAllowed && context.select<Settings, bool>((v) => v.enableBlurEffect);
         return Container(
           foregroundDecoration: BoxDecoration(
             border: Border.all(
