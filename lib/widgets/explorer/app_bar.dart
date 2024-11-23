@@ -104,7 +104,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
   }
 
   List<Widget> _buildActions(BuildContext context, double maxWidth) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return [
       IconButton(
         icon: const Icon(AIcons.search),

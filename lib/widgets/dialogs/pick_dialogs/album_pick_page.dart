@@ -211,7 +211,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     required bool Function(ChipSetAction action) isVisible,
     required void Function(ChipSetAction action) onActionSelected,
   }) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return [
       if (widget.moveType != null)
         ..._quickActions.where(isVisible).map(
