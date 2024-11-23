@@ -6,10 +6,8 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:aves_report/aves_report.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:stack_trace/stack_trace.dart';
 
 abstract class MetadataEditService {
   Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise});
@@ -135,24 +133,22 @@ class PlatformMetadataEditService implements MetadataEditService {
     }
   }
 
-  StackTrace? _currentStack() => ReportService.buildReportStack(Trace.current(), level: 1);
-
   // distinct exceptions to convince Crashlytics to split reports into distinct issues
   // The distinct debug statement is there to make the body unique, so that the methods are not merged at compile time.
 
   Future<void> mp4LargeMoov(CustomPlatformException e) {
     debugPrint('mp4LargeMoov $e');
-    return reportService.recordError(e, _currentStack());
+    return reportService.recordError(e);
   }
 
   Future<void> mp4LargeOther(CustomPlatformException e) {
     debugPrint('mp4LargeOther $e');
-    return reportService.recordError(e, _currentStack());
+    return reportService.recordError(e);
   }
 
   Future<void> fileNotFound(CustomPlatformException e) {
     debugPrint('fileNotFound $e');
-    return reportService.recordError(e, _currentStack());
+    return reportService.recordError(e);
   }
 }
 

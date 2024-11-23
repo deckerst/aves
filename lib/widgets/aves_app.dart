@@ -693,7 +693,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _mediaStoreSource.updateDerivedFilters();
   }
 
-  void _onError(String? error) => reportService.recordError(error, null);
+  void _onError(String? error) => reportService.recordError(error);
 
   void _onAppModeChanged() {
     final appMode = _appModeNotifier.value;
