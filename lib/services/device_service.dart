@@ -8,8 +8,6 @@ abstract class DeviceService {
 
   Future<Map<String, dynamic>> getCapabilities();
 
-  Future<int?> getDefaultTimeZoneRawOffsetMillis();
-
   Future<List<Locale>> getLocales();
 
   Future<void> setLocaleConfig(List<Locale> locales);
@@ -50,16 +48,6 @@ class PlatformDeviceService implements DeviceService {
       await reportService.recordError(e, stack);
     }
     return {};
-  }
-
-  @override
-  Future<int?> getDefaultTimeZoneRawOffsetMillis() async {
-    try {
-      return await _platform.invokeMethod('getDefaultTimeZoneRawOffsetMillis');
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return null;
   }
 
   @override
