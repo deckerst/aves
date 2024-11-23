@@ -33,7 +33,6 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "canManageMedia" -> safe(call, result, ::canManageMedia)
             "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
-            "getDefaultTimeZoneRawOffsetMillis" -> safe(call, result, ::getDefaultTimeZoneRawOffsetMillis)
             "getLocales" -> safe(call, result, ::getLocales)
             "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
@@ -65,10 +64,6 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )
         )
-    }
-
-    private fun getDefaultTimeZoneRawOffsetMillis(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(TimeZone.getDefault().rawOffset)
     }
 
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
