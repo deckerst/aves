@@ -66,7 +66,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    final showVideo = context.select<Settings, bool>((s) => !s.hiddenFilters.contains(MimeFilter.video));
+    final showVideo = context.select<Settings, bool>((v) => !v.hiddenFilters.contains(MimeFilter.video));
 
     final items = [
       const AvesBottomNavItem(route: CollectionPage.routeName),

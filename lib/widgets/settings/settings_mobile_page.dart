@@ -46,7 +46,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
 
   @override
   Widget build(BuildContext context) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return AvesScaffold(
       appBar: AppBar(
         title: InteractiveAppBarTitle(

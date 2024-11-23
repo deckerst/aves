@@ -59,7 +59,7 @@ class _FilePickerPageState extends State<FilePickerPage> {
         return !isHidden;
       }
     }).toList();
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return PopScope(
       canPop: _directory.relativeDir.isEmpty,
       onPopInvokedWithResult: (didPop, result) {

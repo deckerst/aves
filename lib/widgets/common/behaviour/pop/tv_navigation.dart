@@ -20,7 +20,7 @@ class TvNavigationPopHandler implements PopHandler {
 
   @override
   bool canPop(BuildContext context) {
-    if (context.select<Settings, bool>((s) => !s.useTvLayout)) return true;
+    if (context.select<Settings, bool>((v) => !v.useTvLayout)) return true;
     if (_isHome(context)) return true;
     return false;
   }

@@ -329,7 +329,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           (action) => _buildButtonIcon(context, actionDelegate, action, enabled: canApply(action)),
         );
 
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return [
       ...quickActionButtons,
       PopupMenuButton<ChipSetAction>(

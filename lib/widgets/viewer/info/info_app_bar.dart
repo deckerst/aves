@@ -50,7 +50,7 @@ class InfoAppBar extends StatelessWidget {
     final commonActions = EntryActions.commonMetadataActions.where(isVisible);
     final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where(isVisible);
     final useTvLayout = settings.useTvLayout;
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return SliverAppBar(
       leading: useTvLayout
           ? null

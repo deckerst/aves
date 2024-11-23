@@ -88,7 +88,7 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.select<Settings, double>((s) => s.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
+    final spacing = context.select<Settings, double>((v) => v.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
     if (_tileExtentController?.spacing != spacing) {
       _tileExtentController = TileExtentController(
         settingsRouteKey: settingsRouteKey,
@@ -136,7 +136,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   Widget build(BuildContext context) {
     final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
     final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
-    final tileLayout = context.select<Settings, TileLayout>((s) => s.getTileLayout(settingsRouteKey));
+    final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
