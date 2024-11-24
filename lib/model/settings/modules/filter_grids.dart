@@ -51,7 +51,7 @@ mixin FilterGridsSettings on SettingsAccess {
 
   set pinnedFilters(Set<CollectionFilter> newValue) => set(SettingKeys.pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
-  bool get showAlbumPickQuery => getBool(SettingKeys.showAlbumPickQueryKey) ?? false;
+  bool getShowTitleQuery(String routeName) => getBool(SettingKeys.showTitleQueryPrefixKey + routeName) ?? false;
 
-  set showAlbumPickQuery(bool newValue) => set(SettingKeys.showAlbumPickQueryKey, newValue);
+  void setShowTitleQuery(String routeName, bool newValue) => set(SettingKeys.showTitleQueryPrefixKey + routeName, newValue);
 }

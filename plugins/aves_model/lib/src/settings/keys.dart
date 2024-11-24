@@ -86,7 +86,7 @@ class SettingKeys {
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
   static const deactivatedHiddenFiltersKey = 'deactivated_hidden_filters';
-  static const showAlbumPickQueryKey = 'show_album_pick_query';
+  static const showTitleQueryPrefixKey = 'show_title_query_';
 
   // viewer
   static const viewerQuickActionsKey = 'viewer_quick_actions';

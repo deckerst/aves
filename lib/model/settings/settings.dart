@@ -360,6 +360,12 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
           } else {
             debugPrint('failed to import key=$key, value=$newValue is not a string');
           }
+        } else if (key.startsWith(SettingKeys.showTitleQueryPrefixKey)) {
+          if (newValue is bool) {
+            store.setBool(key, newValue);
+          } else {
+            debugPrint('failed to import key=$key, value=$newValue is not a bool');
+          }
         } else {
           switch (key) {
             case SettingKeys.subtitleTextColorKey:
@@ -404,7 +410,6 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.stateSortReverseKey:
             case SettingKeys.placeSortReverseKey:
             case SettingKeys.tagSortReverseKey:
-            case SettingKeys.showAlbumPickQueryKey:
             case SettingKeys.showOverlayOnOpeningKey:
             case SettingKeys.showOverlayMinimapKey:
             case SettingKeys.showOverlayInfoKey:
