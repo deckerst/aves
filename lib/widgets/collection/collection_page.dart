@@ -91,6 +91,7 @@ class _CollectionPageState extends State<CollectionPage> {
         selector: (context, selection) => selection.selectedItems.isNotEmpty,
         builder: (context, hasSelection, child) {
           final body = QueryProvider(
+            startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
             initialQuery: liveFilter?.query,
             child: Builder(
               builder: (context) {

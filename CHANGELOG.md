@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - integrate with OS app language settings on Android >=14
 
+### Changed
+
+- remember title filter visibility by page
+
 ## <a id="v1.11.18"></a>[v1.11.18] - 2024-11-18
 
 ### Changed

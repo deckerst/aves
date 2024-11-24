@@ -114,13 +114,13 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
               final gridItems = AlbumListPage.getAlbumGridItems(context, source);
               return SelectionProvider<FilterGridItem<AlbumFilter>>(
                 child: QueryProvider(
-                  enabled: settings.showAlbumPickQuery,
+                  startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
                   child: FilterGridPage<AlbumFilter>(
                     settingsRouteKey: AlbumListPage.routeName,
                     appBar: FilterGridAppBar(
                       source: source,
                       title: title,
-                      actionDelegate: _AlbumChipSetPickActionDelegate(gridItems),
+                      actionDelegate: AlbumChipSetActionDelegate(gridItems),
                       actionsBuilder: _buildActions,
                       isEmpty: false,
                       appBarHeightNotifier: _appBarHeightNotifier,
@@ -285,17 +285,5 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     source.createAlbum(directory);
     final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
     Navigator.maybeOf(context)?.pop<AlbumFilter>(filter);
-  }
-}
-
-class _AlbumChipSetPickActionDelegate extends AlbumChipSetActionDelegate {
-  _AlbumChipSetPickActionDelegate(super.items);
-
-  @override
-  void onActionSelected(BuildContext context, ChipSetAction action) {
-    if (action == ChipSetAction.toggleTitleSearch) {
-      settings.showAlbumPickQuery = !settings.showAlbumPickQuery;
-    }
-    super.onActionSelected(context, action);
   }
 }
