@@ -399,7 +399,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return [
       ...quickActionButtons,
       PopupMenuButton<EntrySetAction>(

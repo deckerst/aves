@@ -1,11 +1,13 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:collection/collection.dart';
@@ -49,6 +51,7 @@ class _ItemPickPageState extends State<ItemPickPage> {
       child: AvesScaffold(
         body: SelectionProvider<AvesEntry>(
           child: QueryProvider(
+            startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
             initialQuery: liveFilter?.query,
             child: GestureAreaProtectorStack(
               child: SafeArea(

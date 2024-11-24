@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.19"></a>[v1.11.19] - 2024-11-24
+
+### Added
+
+- integrate with OS app language settings on Android >=14
+
+### Changed
+
+- remember title filter visibility by page
+
 ## <a id="v1.11.18"></a>[v1.11.18] - 2024-11-18
 
 ### Changed

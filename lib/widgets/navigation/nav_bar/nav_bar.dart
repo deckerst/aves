@@ -66,7 +66,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    final showVideo = context.select<Settings, bool>((s) => !s.hiddenFilters.contains(MimeFilter.video));
+    final showVideo = context.select<Settings, bool>((v) => !v.hiddenFilters.contains(MimeFilter.video));
 
     final items = [
       const AvesBottomNavItem(route: CollectionPage.routeName),
@@ -91,6 +91,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
                 .toList(),
             onTap: (index) => _goTo(context, items, index),
             currentIndex: _getCurrentIndex(context, items),
+            elevation: 0,
             type: BottomNavigationBarType.fixed,
             backgroundColor: backgroundColor,
             showSelectedLabels: false,

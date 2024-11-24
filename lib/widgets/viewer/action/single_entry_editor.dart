@@ -61,8 +61,8 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
       } else {
         showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
       }
-    } catch (error, stack) {
-      await reportService.recordError(error, stack);
+    } catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
     source?.resumeMonitoring();
   }

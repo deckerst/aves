@@ -424,13 +424,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didHaveMemoryPressure() {
-    super.didHaveMemoryPressure();
-    debugPrint('App memory pressure');
-    imageCache.clear();
-  }
-
-  @override
   void didChangeMetrics() => _updateCutoutInsets();
 
   Future<void> _updateCutoutInsets() async {
@@ -502,6 +495,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _monitorSettings();
     videoControllerFactory.init();
 
+    unawaited(deviceService.setLocaleConfig(AvesApp.supportedLocales));
     unawaited(storageService.deleteTempDirectory());
     unawaited(_setupErrorReporting());
 
@@ -692,7 +686,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _mediaStoreSource.updateDerivedFilters();
   }
 
-  void _onError(String? error) => reportService.recordError(error, null);
+  void _onError(String? error) => reportService.recordError(error);
 
   void _onAppModeChanged() {
     final appMode = _appModeNotifier.value;

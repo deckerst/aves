@@ -76,7 +76,7 @@ mixin TrashMixin on SourceBase {
             sourceEntry.trashDetails = _buildTrashDetails(id);
             newEntries.add(sourceEntry);
           } else {
-            await reportService.recordError('Failed to recover untracked bin item at uri=$uri', null);
+            await reportService.recordError('Failed to recover untracked bin item at uri=$uri');
           }
         }
       });

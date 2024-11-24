@@ -179,6 +179,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.search:
         _goToSearch(context);
       case ChipSetAction.toggleTitleSearch:
+        final routeName = context.currentRouteName!;
+        settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));
         context.read<Query>().toggle();
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:

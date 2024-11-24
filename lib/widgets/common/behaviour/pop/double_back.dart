@@ -20,7 +20,7 @@ class DoubleBackPopHandler extends PopHandler {
 
   @override
   bool canPop(BuildContext context) {
-    if (context.select<Settings, bool>((s) => !s.mustBackTwiceToExit)) return true;
+    if (context.select<Settings, bool>((v) => !v.mustBackTwiceToExit)) return true;
     if (Navigator.canPop(context)) return true;
     return false;
   }

@@ -252,7 +252,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
     final exportActions = widget.exportActions;
     final videoActions = widget.videoActions;
     final hasOverflowMenu = pageEntry.canRotate || pageEntry.canFlip || topLevelActions.isNotEmpty || exportActions.isNotEmpty || videoActions.isNotEmpty;
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return Selector<VideoConductor, AvesVideoController?>(
       selector: (context, vc) => vc.getController(pageEntry),
       builder: (context, videoController, child) {

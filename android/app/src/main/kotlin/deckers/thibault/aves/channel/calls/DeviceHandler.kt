@@ -1,11 +1,14 @@
 package deckers.thibault.aves.channel.calls
 
+import android.app.LocaleConfig
+import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
+import android.os.LocaleList
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -30,8 +33,8 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "canManageMedia" -> safe(call, result, ::canManageMedia)
             "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
-            "getDefaultTimeZoneRawOffsetMillis" -> safe(call, result, ::getDefaultTimeZoneRawOffsetMillis)
             "getLocales" -> safe(call, result, ::getLocales)
+            "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
             "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
@@ -63,10 +66,6 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         )
     }
 
-    private fun getDefaultTimeZoneRawOffsetMillis(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(TimeZone.getDefault().rawOffset)
-    }
-
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         fun toMap(locale: Locale): FieldMap = hashMapOf(
             "language" to locale.language,
@@ -86,6 +85,21 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             locales.add(toMap(Locale.getDefault()))
         }
         result.success(locales)
+    }
+
+    private fun setLocaleConfig(call: MethodCall, result: MethodChannel.Result) {
+        val locales = call.argument<List<String>>("locales")
+        if (locales.isNullOrEmpty()) {
+            result.error("setLocaleConfig-args", "missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            val lm = context.getSystemService(Context.LOCALE_SERVICE) as? LocaleManager
+            lm?.overrideLocaleConfig = LocaleConfig(LocaleList.forLanguageTags(locales.joinToString(",")))
+        }
+
+        result.success(true)
     }
 
     private fun getPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

@@ -181,6 +181,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.searchCollection:
         _goToSearch(context);
       case EntrySetAction.toggleTitleSearch:
+        final routeName = context.currentRouteName!;
+        settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));
         context.read<Query>().toggle();
       case EntrySetAction.addShortcut:
         _addShortcut(context);

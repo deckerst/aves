@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 class PlatformReportService extends ReportService {
   FirebaseCrashlytics? get _instance {
@@ -65,11 +66,12 @@ class PlatformReportService extends ReportService {
   }
 
   @override
-  Future<void> recordError(dynamic exception, StackTrace? stack) async {
+  Future<void> recordError(dynamic exception, [StackTrace? stack]) async {
     if (exception is PlatformException && stack != null) {
       stack = ReportService.buildReportStack(stack, level: 2);
     }
     if (exception is! UnreportedStateError) {
+      stack ??= ReportService.buildReportStack(Trace.current(), level: 1);
       return _instance?.recordError(exception, stack);
     }
   }

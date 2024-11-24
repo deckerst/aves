@@ -59,15 +59,13 @@ class MediaStoreSource extends CollectionSource {
     await vaults.init();
     await favourites.init();
     await covers.init();
-    final currentTimeZoneOffset = await deviceService.getDefaultTimeZoneRawOffsetMillis();
-    if (currentTimeZoneOffset != null) {
-      final catalogTimeZoneOffset = settings.catalogTimeZoneRawOffsetMillis;
-      if (currentTimeZoneOffset != catalogTimeZoneOffset) {
-        unawaited(reportService.recordError('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.', null));
-        await localMediaDb.clearDates();
-        await localMediaDb.clearCatalogMetadata();
-        settings.catalogTimeZoneRawOffsetMillis = currentTimeZoneOffset;
-      }
+    final currentTimeZoneOffset = DateTime.now().timeZoneOffset.inMilliseconds;
+    final catalogTimeZoneOffset = settings.catalogTimeZoneOffsetMillis;
+    if (currentTimeZoneOffset != catalogTimeZoneOffset) {
+      unawaited(reportService.recordError('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.'));
+      await localMediaDb.clearDates();
+      await localMediaDb.clearCatalogMetadata();
+      settings.catalogTimeZoneOffsetMillis = currentTimeZoneOffset;
     }
     await loadDates();
     debugPrint('$runtimeType load essentials complete in ${stopwatch.elapsed.inMilliseconds}ms');
@@ -214,7 +212,7 @@ class MediaStoreSource extends CollectionSource {
           // TODO TLAD find duplication cause
           final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
           if (duplicates.isNotEmpty) {
-            unawaited(reportService.recordError(Exception('Loading entries yielded duplicates=${duplicates.join(', ')}'), StackTrace.current));
+            unawaited(reportService.recordError(Exception('Loading entries yielded duplicates=${duplicates.join(', ')}')));
             // post-error cleanup
             await localMediaDb.removeIds(duplicates.map((v) => v.id).toSet());
             for (final duplicate in duplicates) {
@@ -327,7 +325,7 @@ class MediaStoreSource extends CollectionSource {
       // TODO TLAD find duplication cause
       final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
       if (duplicates.isNotEmpty) {
-        unawaited(reportService.recordError(Exception('Refreshing entries yielded duplicates=${duplicates.join(', ')}'), StackTrace.current));
+        unawaited(reportService.recordError(Exception('Refreshing entries yielded duplicates=${duplicates.join(', ')}')));
         // post-error cleanup
         await localMediaDb.removeIds(duplicates.map((v) => v.id).toSet());
         for (final duplicate in duplicates) {

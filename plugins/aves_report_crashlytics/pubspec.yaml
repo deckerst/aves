@@ -14,6 +14,7 @@ dependencies:
   # so that the transitive `path` gets upgraded to v1.8.3
   firebase_core: ">=2.10.0"
   firebase_crashlytics:
+  stack_trace:
 
 dev_dependencies:
   flutter_lints:
