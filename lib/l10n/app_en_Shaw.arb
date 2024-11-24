@@ -1589,5 +1589,7 @@
   "videoActionShowPreviousFrame": "𐑖𐑴 𐑐𐑮𐑰𐑝𐑾𐑕 𐑓𐑮𐑱𐑥",
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "𐑖𐑴 𐑯𐑧𐑒𐑕𐑑 𐑓𐑮𐑱𐑥",
-  "@videoActionShowNextFrame": {}
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "𐑨𐑤𐑚𐑩𐑥 𐑷𐑤𐑮𐑧𐑛𐑦 𐑦𐑜𐑟𐑦𐑕𐑑𐑕",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }

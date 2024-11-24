@@ -1390,5 +1390,7 @@
   "mapStyleOsmLiberty": "OSM Liberty",
   "@mapStyleOsmLiberty": {},
   "mapAttributionOsmLiberty": "Tiles by [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)",
-  "@mapAttributionOsmLiberty": {}
+  "@mapAttributionOsmLiberty": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Альбом уже существует",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
 }

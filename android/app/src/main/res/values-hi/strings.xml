@@ -8,4 +8,5 @@
     <string name="analysis_channel_name">मीडिया जाँचे</string>
     <string name="app_name">ऐवीज</string>
     <string name="videos_shortcut_short_label">वीडियो</string>
+    <string name="map_shortcut_short_label">मैप</string>
 </resources>
