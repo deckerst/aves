@@ -65,6 +65,7 @@ class AvesApp extends StatefulWidget {
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
   static final _unsupportedLocales = {
     'az', // Azerbaijani
+    'bg', // Bulgarian
     'bn', // Bengali
     'ckb', // Kurdish (Central)
     'da', // Danish
