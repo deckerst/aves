@@ -912,12 +912,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
     await viewerController.stopCast();
 
-    switch (settings.maxBrightness) {
-      case MaxBrightness.never:
-      case MaxBrightness.viewerOnly:
-        await AvesApp.screenBrightness?.resetApplicationScreenBrightness();
-      case MaxBrightness.always:
-        await AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
+    try {
+      switch (settings.maxBrightness) {
+        case MaxBrightness.never:
+        case MaxBrightness.viewerOnly:
+          await AvesApp.screenBrightness?.resetApplicationScreenBrightness();
+        case MaxBrightness.always:
+          await AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
+      }
+    } on PlatformException catch (e, stack) {
+      // `screen_brightness` plugin may fail
+      unawaited(reportService.recordError(e, stack));
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);
