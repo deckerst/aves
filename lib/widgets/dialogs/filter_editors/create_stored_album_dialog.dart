@@ -12,16 +12,16 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CreateAlbumDialog extends StatefulWidget {
-  static const routeName = '/dialog/create_album';
+class CreateStoredAlbumDialog extends StatefulWidget {
+  static const routeName = '/dialog/create_stored_album';
 
-  const CreateAlbumDialog({super.key});
+  const CreateStoredAlbumDialog({super.key});
 
   @override
-  State<CreateAlbumDialog> createState() => _CreateAlbumDialogState();
+  State<CreateStoredAlbumDialog> createState() => _CreateStoredAlbumDialogState();
 }
 
-class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
+class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _nameController = TextEditingController();
   final FocusNode _nameFieldFocusNode = FocusNode();

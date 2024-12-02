@@ -7,10 +7,10 @@ import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -75,7 +75,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         object: this,
       );
     }
-    settings.updateStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => invalidateAlbumDisplayNames());
+    settings.updateStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => invalidateStoredAlbumDisplayNames());
     settings.updateStream.where((event) => event.key == SettingKeys.hiddenFiltersKey).listen((event) {
       final oldValue = event.oldValue;
       if (oldValue is List<String>?) {
@@ -144,7 +144,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   Set<CollectionFilter> _getAppHiddenFilters() => {
         ...settings.hiddenFilters,
-        ...vaults.vaultDirectories.where(vaults.isLocked).map((v) => AlbumFilter(v, null)),
+        ...vaults.vaultDirectories.where(vaults.isLocked).map((v) => StoredAlbumFilter(v, null)),
       };
 
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
@@ -288,11 +288,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     }
   }
 
-  Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> entries, Set<MoveOpEvent> movedOps) async {
-    final oldFilter = AlbumFilter(sourceAlbum, null);
-    final newFilter = AlbumFilter(destinationAlbum, null);
+  Future<void> renameStoredAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> entries, Set<MoveOpEvent> movedOps) async {
+    final oldFilter = StoredAlbumFilter(sourceAlbum, null);
+    final newFilter = StoredAlbumFilter(destinationAlbum, null);
 
-    final bookmark = settings.drawerAlbumBookmarks?.indexOf(sourceAlbum);
     final pinned = settings.pinnedFilters.contains(oldFilter);
 
     if (vaults.isVault(sourceAlbum)) {
@@ -315,10 +314,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       movedOps: movedOps,
     );
 
-    // restore bookmark and pin, as the obsolete album got removed and its associated state cleaned
-    if (bookmark != null && bookmark != -1) {
-      settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..insert(bookmark, destinationAlbum);
+    // update bookmark
+    final albumBookmarks = settings.drawerAlbumBookmarks;
+    if (albumBookmarks != null) {
+      final index = albumBookmarks.indexWhere((v) => v is StoredAlbumFilter && v.album == sourceAlbum);
+      if (index >= 0) {
+        albumBookmarks.removeAt(index);
+        albumBookmarks.insert(index, newFilter);
+        settings.drawerAlbumBookmarks = albumBookmarks;
+      }
     }
+    // restore pin, as the obsolete album got removed and its associated state cleaned
     if (pinned) {
       settings.pinnedFilters = settings.pinnedFilters
         ..remove(oldFilter)
@@ -541,8 +547,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   // filter summary
 
   int count(CollectionFilter filter) {
-    if (filter is AlbumFilter) return albumEntryCount(filter);
-    if (filter is LocationFilter) {
+    if (filter is AlbumBaseFilter) {
+      return albumEntryCount(filter);
+    } else if (filter is LocationFilter) {
       switch (filter.level) {
         case LocationLevel.country:
           return countryEntryCount(filter);
@@ -551,14 +558,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         case LocationLevel.place:
           return placeEntryCount(filter);
       }
+    } else if (filter is TagFilter) {
+      return tagEntryCount(filter);
     }
-    if (filter is TagFilter) return tagEntryCount(filter);
     return 0;
   }
 
   int size(CollectionFilter filter) {
-    if (filter is AlbumFilter) return albumSize(filter);
-    if (filter is LocationFilter) {
+    if (filter is AlbumBaseFilter) {
+      return albumSize(filter);
+    } else if (filter is LocationFilter) {
       switch (filter.level) {
         case LocationLevel.country:
           return countrySize(filter);
@@ -567,14 +576,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         case LocationLevel.place:
           return placeSize(filter);
       }
+    } else if (filter is TagFilter) {
+      return tagSize(filter);
     }
-    if (filter is TagFilter) return tagSize(filter);
     return 0;
   }
 
   AvesEntry? recentEntry(CollectionFilter filter) {
-    if (filter is AlbumFilter) return albumRecentEntry(filter);
-    if (filter is LocationFilter) {
+    if (filter is AlbumBaseFilter) {
+      return albumRecentEntry(filter);
+    } else if (filter is LocationFilter) {
       switch (filter.level) {
         case LocationLevel.country:
           return countryRecentEntry(filter);
@@ -583,8 +594,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         case LocationLevel.place:
           return placeRecentEntry(filter);
       }
+    } else if (filter is TagFilter) {
+      return tagRecentEntry(filter);
     }
-    if (filter is TagFilter) return tagRecentEntry(filter);
     return null;
   }
 
@@ -608,7 +620,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 
   void _onVaultsChanged() {
-    final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
+    final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => StoredAlbumFilter(v, null)).toSet();
     _onFilterVisibilityChanged(newlyVisibleFilters);
   }
 }

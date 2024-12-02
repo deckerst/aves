@@ -1,9 +1,9 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/or.dart';
+import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -107,6 +107,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.showCollection:
         return appMode.canNavigate;
       case ChipSetAction.delete:
+      case ChipSetAction.remove:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
         return false;
@@ -148,6 +149,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return (!isSelecting && hasItems) || (isSelecting && hasSelection);
       // selecting (single/multiple filters)
       case ChipSetAction.delete:
+      case ChipSetAction.remove:
       case ChipSetAction.hide:
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
@@ -204,6 +206,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.showCollection:
         _goToCollection(context);
       case ChipSetAction.delete:
+      case ChipSetAction.remove:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
         break;
@@ -264,7 +267,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final filters = getSelectedFilters(context);
     if (filters.isEmpty) return;
 
-    final filter = filters.length > 1 ? OrFilter(filters) : filters.first;
+    final filter = filters.length > 1 ? SetOrFilter(filters) : filters.first;
     await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
@@ -378,7 +381,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     );
     if (selectedCover == null) return;
 
-    if (filter is AlbumFilter) {
+    if (filter is StoredAlbumFilter) {
       context.read<AvesColorsData>().clearAppColor(filter.album);
     }
 

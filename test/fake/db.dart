@@ -1,5 +1,6 @@
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -112,6 +113,9 @@ class FakeAvesDb extends Fake implements LocalMediaDb {
 
   @override
   Future<void> removeCovers(Set<CollectionFilter> filters) => SynchronousFuture(null);
+
+  @override
+  Future<Set<DynamicAlbumRow>> loadAllDynamicAlbums() => SynchronousFuture({});
 
   // video playback
 

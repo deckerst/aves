@@ -70,5 +70,5 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
 
   bool _showAlbumName(BuildContext context, AvesEntry entry) => _hasMultipleSections(context) && entry.directory != null;
 
-  String _getAlbumName(BuildContext context, AvesEntry entry) => context.read<CollectionSource>().getAlbumDisplayName(context, entry.directory!);
+  String _getAlbumName(BuildContext context, AvesEntry entry) => context.read<CollectionSource>().getStoredAlbumDisplayName(context, entry.directory!);
 }

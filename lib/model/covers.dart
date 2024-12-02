@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -15,6 +15,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 final Covers covers = Covers._private();
+
+typedef CoverProps = (int? entryId, String? packageName, Color? color);
 
 class Covers {
   final StreamController<Set<CollectionFilter>?> _entryChangeStreamController = StreamController.broadcast();
@@ -39,11 +41,48 @@ class Covers {
 
   Set<CoverRow> get all => Set.unmodifiable(_rows);
 
-  (int? entryId, String? packageName, Color? color)? of(CollectionFilter filter) {
-    if (filter is AlbumFilter && vaults.isLocked(filter.album)) return null;
+  CoverProps? of(CollectionFilter filter) {
+    if (filter is StoredAlbumFilter && vaults.isLocked(filter.album)) return null;
 
     final row = _rows.firstWhereOrNull((row) => row.filter == filter);
     return row != null ? (row.entryId, row.packageName, row.color) : null;
+  }
+
+  Future<CoverProps?> remove(CollectionFilter filter, {bool notify = true}) async {
+    final props = of(filter);
+    if (props != null) {
+      await set(filter: filter, entryId: null, packageName: null, color: null);
+
+      if (notify) {
+        final (entryId, packageName, color) = props;
+        if (entryId != null) _entryChangeStreamController.add({filter});
+        if (packageName != null) _packageChangeStreamController.add({filter});
+        if (color != null) _colorChangeStreamController.add({filter});
+      }
+    }
+    return props;
+  }
+
+  Future<void> removeAll(Set<CollectionFilter> filters, {bool notify = true}) async {
+    final entryIdChanged = <CollectionFilter>{};
+    final packageNameChanged = <CollectionFilter>{};
+    final colorChanged = <CollectionFilter>{};
+
+    for (final filter in filters) {
+      final props = await remove(filter, notify: false);
+      if (notify && props != null) {
+        final (entryId, packageName, color) = props;
+        if (entryId != null) entryIdChanged.add(filter);
+        if (packageName != null) packageNameChanged.add(filter);
+        if (color != null) colorChanged.add(filter);
+      }
+    }
+
+    if (notify) {
+      if (entryIdChanged.isNotEmpty) _entryChangeStreamController.add(entryIdChanged);
+      if (packageNameChanged.isNotEmpty) _packageChangeStreamController.add(packageNameChanged);
+      if (colorChanged.isNotEmpty) _colorChangeStreamController.add(colorChanged);
+    }
   }
 
   Future<void> set({
@@ -51,10 +90,11 @@ class Covers {
     required int? entryId,
     required String? packageName,
     required Color? color,
+    bool notify = true,
   }) async {
     // erase contextual properties from filters before saving them
-    if (filter is AlbumFilter) {
-      filter = AlbumFilter(filter.album, null);
+    if (filter is StoredAlbumFilter) {
+      filter = StoredAlbumFilter(filter.album, null);
     }
 
     final oldRows = _rows.where((row) => row.filter == filter).toSet();
@@ -77,9 +117,11 @@ class Covers {
       await localMediaDb.addCovers({row});
     }
 
-    if (oldEntry != entryId) _entryChangeStreamController.add({filter});
-    if (oldPackage != packageName) _packageChangeStreamController.add({filter});
-    if (oldColor != color) _colorChangeStreamController.add({filter});
+    if (notify) {
+      if (oldEntry != entryId) _entryChangeStreamController.add({filter});
+      if (oldPackage != packageName) _packageChangeStreamController.add({filter});
+      if (oldColor != color) _colorChangeStreamController.add({filter});
+    }
   }
 
   Future<void> _removeEntryFromRows(Set<CoverRow> rows) {
@@ -112,7 +154,7 @@ class Covers {
   }
 
   AlbumType effectiveAlbumType(String albumPath) {
-    final filterPackage = of(AlbumFilter(albumPath, null))?.$2;
+    final filterPackage = of(StoredAlbumFilter(albumPath, null))?.$2;
     if (filterPackage != null) {
       return filterPackage.isEmpty ? AlbumType.regular : AlbumType.app;
     } else {
@@ -121,7 +163,7 @@ class Covers {
   }
 
   String? effectiveAlbumPackage(String albumPath) {
-    final filterPackage = of(AlbumFilter(albumPath, null))?.$2;
+    final filterPackage = of(StoredAlbumFilter(albumPath, null))?.$2;
     return filterPackage ?? appInventory.getAlbumAppPackageName(albumPath);
   }
 
@@ -129,7 +171,7 @@ class Covers {
 
   List<Map<String, dynamic>>? export(CollectionSource source) {
     final visibleEntries = source.visibleEntries;
-    final jsonList = covers.all
+    final jsonList = all
         .map((row) {
           final entryId = row.entryId;
           final path = visibleEntries.firstWhereOrNull((entry) => entryId == entry.id)?.path;
@@ -180,7 +222,7 @@ class Covers {
       }
 
       if (entry != null || packageName != null || colorValue != null) {
-        covers.set(
+        set(
           filter: filter,
           entryId: entry?.id,
           packageName: packageName,

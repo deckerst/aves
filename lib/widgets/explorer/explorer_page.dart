@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/source/album.dart';
@@ -194,7 +194,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
             final album = _getAlbumPath(source, Directory(dirPath));
             if (album != null) {
               bottom = AvesFilterChip(
-                filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
+                filter: StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album)),
                 maxWidth: double.infinity,
                 onTap: (filter) => _goToCollectionPage(context, filter),
                 onLongPress: null,
@@ -237,7 +237,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
           ? IconTheme.merge(
               data: baseIconTheme,
               child: AvesFilterChip(
-                filter: AlbumFilter(album, source.getAlbumDisplayName(context, album)),
+                filter: StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album)),
                 showText: false,
                 maxWidth: leadingDim,
                 onTap: (filter) => _goToCollectionPage(context, filter),

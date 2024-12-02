@@ -1,4 +1,4 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -35,9 +35,9 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.reverse:
         return true;
       case ChipAction.hide:
-        return !(filter is AlbumFilter && vaults.isVault(filter.album));
+        return !(filter is StoredAlbumFilter && vaults.isVault(filter.album));
       case ChipAction.lockVault:
-        return (filter is AlbumFilter && vaults.isVault(filter.album) && !vaults.isLocked(filter.album));
+        return (filter is StoredAlbumFilter && vaults.isVault(filter.album) && !vaults.isLocked(filter.album));
     }
   }
 
@@ -54,7 +54,7 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
       case ChipAction.goToExplorerPage:
         String? path;
-        if (filter is AlbumFilter) {
+        if (filter is StoredAlbumFilter) {
           path = filter.album;
         } else if (filter is PathFilter) {
           path = filter.path;
@@ -77,7 +77,7 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.hide:
         _hide(context, filter);
       case ChipAction.lockVault:
-        if (filter is AlbumFilter) {
+        if (filter is StoredAlbumFilter) {
           lockFilters({filter});
         }
     }

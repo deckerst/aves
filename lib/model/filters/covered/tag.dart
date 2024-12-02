@@ -1,9 +1,10 @@
+import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
-class TagFilter extends CoveredCollectionFilter {
+class TagFilter extends CollectionFilter with CoveredFilter {
   static const type = 'tag';
 
   final String tag;

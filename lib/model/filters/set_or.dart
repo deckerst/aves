@@ -1,11 +1,11 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-class OrFilter extends CollectionFilter {
+class SetOrFilter extends CollectionFilter {
   static const type = 'or';
 
   late final List<CollectionFilter> _filters;
@@ -18,11 +18,11 @@ class OrFilter extends CollectionFilter {
 
   CollectionFilter get _first => _filters.first;
 
-  OrFilter(Set<CollectionFilter> filters, {super.reversed = false}) {
+  SetOrFilter(Set<CollectionFilter> filters, {super.reversed = false}) {
     _filters = filters.toList().sorted();
     _test = (entry) => _filters.any((v) => v.test(entry));
     switch (_first) {
-      case AlbumFilter():
+      case StoredAlbumFilter():
         _genericIcon = AIcons.album;
       case LocationFilter(level: LocationLevel.country):
         _genericIcon = AIcons.country;
@@ -33,9 +33,12 @@ class OrFilter extends CollectionFilter {
     }
   }
 
-  factory OrFilter.fromMap(Map<String, dynamic> json) {
-    return OrFilter(
-      (json['filters'] as List).cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet(),
+  static SetOrFilter? fromMap(Map<String, dynamic> json) {
+    final filters = (json['filters'] as List).cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
+    if (filters.isEmpty) return null;
+
+    return SetOrFilter(
+      filters,
       reversed: json['reversed'] ?? false,
     );
   }

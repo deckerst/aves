@@ -1,5 +1,5 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -19,7 +19,7 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
-import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
@@ -30,9 +30,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-Future<String?> pickAlbum({
+Future<AlbumBaseFilter?> pickAlbum({
   required BuildContext context,
   required MoveType? moveType,
+  required bool storedAlbumsOnly,
 }) async {
   final source = context.read<CollectionSource>();
   if (source.targetScope != CollectionSource.fullScope) {
@@ -41,13 +42,12 @@ Future<String?> pickAlbum({
     source.canAnalyze = true;
     await source.init(scope: CollectionSource.fullScope);
   }
-  final filter = await Navigator.maybeOf(context)?.push(
-    MaterialPageRoute<AlbumFilter>(
+  return await Navigator.maybeOf(context)?.push(
+    MaterialPageRoute<AlbumBaseFilter>(
       settings: const RouteSettings(name: _AlbumPickPage.routeName),
-      builder: (context) => _AlbumPickPage(source: source, moveType: moveType),
+      builder: (context) => _AlbumPickPage(source: source, moveType: moveType, storedAlbumsOnly: storedAlbumsOnly),
     ),
   );
-  return filter?.album;
 }
 
 class _AlbumPickPage extends StatefulWidget {
@@ -55,10 +55,12 @@ class _AlbumPickPage extends StatefulWidget {
 
   final CollectionSource source;
   final MoveType? moveType;
+  final bool storedAlbumsOnly;
 
   const _AlbumPickPage({
     required this.source,
     required this.moveType,
+    required this.storedAlbumsOnly,
   });
 
   @override
@@ -111,11 +113,11 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
           return StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
             builder: (context, snapshot) {
-              final gridItems = AlbumListPage.getAlbumGridItems(context, source);
-              return SelectionProvider<FilterGridItem<AlbumFilter>>(
+              final gridItems = AlbumListPage.getAlbumGridItems(context, source, storedAlbumsOnly: widget.storedAlbumsOnly);
+              return SelectionProvider<FilterGridItem<AlbumBaseFilter>>(
                 child: QueryProvider(
                   startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
-                  child: FilterGridPage<AlbumFilter>(
+                  child: FilterGridPage<AlbumBaseFilter>(
                     settingsRouteKey: AlbumListPage.routeName,
                     appBar: FilterGridAppBar(
                       source: source,
@@ -150,7 +152,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   List<Widget> _buildActions(
     BuildContext context,
     AppMode appMode,
-    Selection<FilterGridItem<AlbumFilter>> selection,
+    Selection<FilterGridItem<AlbumBaseFilter>> selection,
     AlbumChipSetActionDelegate actionDelegate,
   ) {
     final itemCount = actionDelegate.allItems.length;
@@ -245,8 +247,8 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   Future<void> _createAlbum() async {
     final directory = await showDialog<String>(
       context: context,
-      builder: (context) => const CreateAlbumDialog(),
-      routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
+      builder: (context) => const CreateStoredAlbumDialog(),
+      routeSettings: const RouteSettings(name: CreateStoredAlbumDialog.routeName),
     );
     if (directory == null) return;
 
@@ -282,8 +284,8 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   }
 
   void _pickAlbum(String directory) {
-    source.createAlbum(directory);
-    final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
-    Navigator.maybeOf(context)?.pop<AlbumFilter>(filter);
+    source.createStoredAlbum(directory);
+    final filter = StoredAlbumFilter(directory, source.getStoredAlbumDisplayName(context, directory));
+    Navigator.maybeOf(context)?.pop<StoredAlbumFilter>(filter);
   }
 }
