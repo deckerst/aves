@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -140,7 +140,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
                         source: source,
-                        filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                        filters: {StoredAlbumFilter(destinationAlbum, source.getStoredAlbumDisplayName(context, destinationAlbum))},
                         highlightTest: (entry) => entry.uri == newUri,
                       ),
                     ),

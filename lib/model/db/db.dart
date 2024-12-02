@@ -1,4 +1,5 @@
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -108,6 +109,16 @@ abstract class LocalMediaDb {
   Future<void> updateCoverEntryId(int id, CoverRow row);
 
   Future<void> removeCovers(Set<CollectionFilter> filters);
+
+  // dynamic albums
+
+  Future<void> clearDynamicAlbums();
+
+  Future<Set<DynamicAlbumRow>> loadAllDynamicAlbums();
+
+  Future<void> addDynamicAlbums(Set<DynamicAlbumRow> rows);
+
+  Future<void> removeDynamicAlbums(Set<String> names);
 
   // video playback
 

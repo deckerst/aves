@@ -2,13 +2,17 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/device.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/query.dart';
@@ -39,7 +43,9 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
+import 'package:aves/widgets/dialogs/filter_editors/add_dynamic_album_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -75,28 +81,29 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case EntrySetAction.searchCollection:
-        return !useTvLayout && appMode.canNavigate && !isSelecting;
+        return appMode.canNavigate && !isSelecting && !useTvLayout;
       case EntrySetAction.toggleTitleSearch:
-        return !useTvLayout && !isSelecting;
+        return !isSelecting && !useTvLayout;
       case EntrySetAction.addShortcut:
         return isMain && !isSelecting && !isTrash && device.canPinShortcut;
+      case EntrySetAction.addDynamicAlbum:
       case EntrySetAction.setHome:
         return isMain && !isSelecting && !isTrash && !useTvLayout;
       case EntrySetAction.emptyBin:
-        return canWrite && isMain && isTrash;
+        return isMain && isTrash && canWrite;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.slideshow:
       case EntrySetAction.stats:
         return isMain;
       case EntrySetAction.rescan:
-        return !useTvLayout && isMain && !isTrash && isSelecting;
+        return isMain && isSelecting && !isTrash && !useTvLayout;
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.toggleFavourite:
         return isMain && isSelecting && !isTrash;
       case EntrySetAction.delete:
-        return canWrite && isMain && isSelecting;
+        return isMain && isSelecting && canWrite;
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
@@ -110,18 +117,19 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
-        return canWrite && isMain && isSelecting && !isTrash;
+        return isMain && isSelecting && !isTrash && canWrite;
       case EntrySetAction.restore:
-        return canWrite && isMain && isSelecting && isTrash;
+        return isMain && isSelecting && isTrash && canWrite;
     }
   }
 
   bool canApply(
     EntrySetAction action, {
     required bool isSelecting,
-    required int itemCount,
+    required CollectionLens collection,
     required int selectedItemCount,
   }) {
+    final itemCount = collection.entryCount;
     final hasItems = itemCount > 0;
     final hasSelection = selectedItemCount > 0;
 
@@ -139,6 +147,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.addShortcut:
       case EntrySetAction.setHome:
         return true;
+      case EntrySetAction.addDynamicAlbum:
+        return collection.filters.isNotEmpty;
       case EntrySetAction.emptyBin:
         return !isSelecting && hasItems;
       case EntrySetAction.map:
@@ -184,6 +194,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final routeName = context.currentRouteName!;
         settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));
         context.read<Query>().toggle();
+      case EntrySetAction.addDynamicAlbum:
+        _addDynamicAlbum(context);
       case EntrySetAction.addShortcut:
         _addShortcut(context);
       case EntrySetAction.setHome:
@@ -727,10 +739,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
   }
 
-  Future<void> _addShortcut(BuildContext context) async {
-    final collection = context.read<CollectionLens>();
-    final filters = collection.filters;
-
+  static String? _getDefaultNameForFilters(BuildContext context, Set<CollectionFilter> filters) {
     String? defaultName;
     if (filters.isNotEmpty) {
       // we compute the default name beforehand
@@ -738,6 +747,67 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
     }
+    return defaultName;
+  }
+
+  Future<void> _addDynamicAlbum(BuildContext context) async {
+    final l10n = context.l10n;
+    final collection = context.read<CollectionLens>();
+    final filters = collection.filters;
+    if (filters.isEmpty) return;
+
+    // get navigator beforehand because
+    // local context may be deactivated when action is triggered after navigation
+    final navigator = Navigator.maybeOf(context);
+
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) => const AddDynamicAlbumDialog(),
+      routeSettings: const RouteSettings(name: AddDynamicAlbumDialog.routeName),
+    );
+    if (name == null) return;
+
+    final existingAlbum = dynamicAlbums.get(name);
+    if (existingAlbum != null) {
+      // album already exists, so we just need to highlight it
+      await _showDynamicAlbum(navigator, existingAlbum);
+    } else {
+      final album = DynamicAlbumFilter(name, filters.length == 1 ? filters.first : SetAndFilter(filters));
+      await dynamicAlbums.add(album);
+
+      final showAction = SnackBarAction(
+        label: l10n.showButtonLabel,
+        onPressed: () => _showDynamicAlbum(navigator, album),
+      );
+      showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
+    }
+  }
+
+  Future<void> _showDynamicAlbum(NavigatorState? navigator, DynamicAlbumFilter album) async {
+    // local context may be deactivated when action is triggered after navigation
+    if (navigator != null) {
+      final context = navigator.context;
+      final highlightInfo = context.read<HighlightInfo>();
+      if (context.currentRouteName == AlbumListPage.routeName) {
+        highlightInfo.trackItem(FilterGridItem(album, null), highlightItem: album);
+      } else {
+        highlightInfo.set(album);
+        await navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: AlbumListPage.routeName),
+            builder: (_) => const AlbumListPage(),
+          ),
+          (route) => false,
+        );
+      }
+    }
+  }
+
+  Future<void> _addShortcut(BuildContext context) async {
+    final collection = context.read<CollectionLens>();
+    final filters = collection.filters;
+
+    String? defaultName = _getDefaultNameForFilters(context, filters);
     final result = await showDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(

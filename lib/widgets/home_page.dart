@@ -7,9 +7,9 @@ import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -241,7 +241,7 @@ class _HomePageState extends State<HomePage> {
             await reportService.log('Initialize source to view item in directory $directory');
             final source = context.read<CollectionSource>();
             source.canAnalyze = false;
-            await source.init(scope: {AlbumFilter(directory, null)});
+            await source.init(scope: {StoredAlbumFilter(directory, null)});
           }
         } else {
           await _initViewerEssentials();
@@ -324,7 +324,7 @@ class _HomePageState extends State<HomePage> {
 
           collection = CollectionLens(
             source: source,
-            filters: {AlbumFilter(album, source.getAlbumDisplayName(context, album))},
+            filters: {StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))},
             listenToSource: false,
             // if we group bursts, opening a burst sub-entry should:
             // - identify and select the containing main entry,

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
@@ -46,6 +46,6 @@ class AlbumQuickChooser extends StatelessWidget with FilterQuickChooserMixin<Str
   @override
   CollectionFilter buildFilter(BuildContext context, String option) {
     final source = context.read<CollectionSource>();
-    return AlbumFilter(option, source.getAlbumDisplayName(context, option));
+    return StoredAlbumFilter(option, source.getStoredAlbumDisplayName(context, option));
   }
 }

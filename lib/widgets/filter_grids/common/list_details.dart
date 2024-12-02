@@ -1,5 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/format.dart';
@@ -116,11 +117,12 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
 
   Widget _buildCountRow(BuildContext context, FilterListDetailsThemeData detailsTheme, bool hasTitleLeading) {
     final _filter = filter;
-    final removableStorage = _filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(_filter.album);
+    final removableStorage = _filter is StoredAlbumFilter && androidFileUtils.isOnRemovableStorage(_filter.album);
 
     List<Widget> leadingIcons = [
       if (pinned) const Icon(AIcons.pin),
       if (removableStorage) const Icon(AIcons.storageCard),
+      if (_filter is DynamicAlbumFilter) const Icon(AIcons.dynamicAlbum),
     ];
 
     Widget? leading;

@@ -1,4 +1,5 @@
 import 'package:aves/model/device.dart';
+import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/emoji_utils.dart';
@@ -6,7 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-class LocationFilter extends CoveredCollectionFilter {
+class LocationFilter extends CollectionFilter with CoveredFilter {
   static const type = 'location';
   static const locationSeparator = ';';
 

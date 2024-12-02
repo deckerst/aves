@@ -25,6 +25,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       ChipSetAction.stats => l10n.menuActionStats,
       // selecting (single/multiple filters)
       ChipSetAction.delete => l10n.chipActionDelete,
+      ChipSetAction.remove => l10n.chipActionRemove,
       ChipSetAction.hide => l10n.chipActionHide,
       ChipSetAction.pin => l10n.chipActionPin,
       ChipSetAction.unpin => l10n.chipActionUnpin,
@@ -60,6 +61,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       ChipSetAction.stats => AIcons.stats,
       // selecting (single/multiple filters)
       ChipSetAction.delete => AIcons.delete,
+      ChipSetAction.remove => AIcons.remove,
       ChipSetAction.hide => AIcons.hide,
       ChipSetAction.pin => AIcons.pin,
       ChipSetAction.unpin => AIcons.unpin,

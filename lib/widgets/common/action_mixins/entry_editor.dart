@@ -3,7 +3,7 @@ import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';

@@ -322,7 +322,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     bool canApply(EntrySetAction action) => _actionDelegate.canApply(
           action,
           isSelecting: isSelecting,
-          itemCount: collection.entryCount,
+          collection: collection,
           selectedItemCount: selectedItemCount,
         );
 
@@ -462,7 +462,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return selection.selectedItems.expand((entry) => entry.stackedEntries ?? {entry}).toSet();
   }
 
-  // key is expected by test driver (e.g. 'menu-configureView', 'menu-map')
+  // key is expected by test driver
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.name}');
 
   Widget _buildButtonIcon(
@@ -636,6 +636,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       // browsing
       case EntrySetAction.searchCollection:
       case EntrySetAction.toggleTitleSearch:
+      case EntrySetAction.addDynamicAlbum:
       case EntrySetAction.addShortcut:
       case EntrySetAction.setHome:
       // browsing or selecting

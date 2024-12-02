@@ -1,5 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';

@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
@@ -69,11 +70,18 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       builder: (context, snapshot) => Consumer<CollectionSource>(
         builder: (context, source, child) {
           switch (filter) {
-            case AlbumFilter filter:
+            case StoredAlbumFilter filter:
               {
                 final album = filter.album;
-                return StreamBuilder<AlbumSummaryInvalidatedEvent>(
-                  stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
+                return StreamBuilder<StoredAlbumSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<StoredAlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            case DynamicAlbumFilter _:
+              {
+                return StreamBuilder<DynamicAlbumSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<DynamicAlbumSummaryInvalidatedEvent>(),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
@@ -103,10 +111,10 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
 
   Widget _buildChip(BuildContext context, CollectionSource source) {
     final _filter = filter;
-    final entry = _filter is AlbumFilter && vaults.isLocked(_filter.album) ? null : source.coverEntry(_filter);
+    final entry = _filter is StoredAlbumFilter && vaults.isLocked(_filter.album) ? null : source.coverEntry(_filter);
     final titlePadding = min<double>(4.0, extent / 32);
     Key? chipKey;
-    if (_filter is AlbumFilter) {
+    if (_filter is StoredAlbumFilter) {
       // when we asynchronously fetch installed app names,
       // album filters themselves do not change, but decoration derived from it does
       chipKey = ValueKey(appInventory.areAppNamesReadyNotifier.value);
@@ -172,52 +180,35 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   Color _detailColor(BuildContext context) => Theme.of(context).colorScheme.onSurfaceVariant;
 
   Widget _buildDetails(BuildContext context, CollectionSource source, T filter) {
-    final countFormatter = NumberFormat.decimalPattern(context.locale);
-
-    final padding = min<double>(8.0, extent / 16);
-    final iconSize = detailIconSize(extent);
-    final fontSize = detailFontSize(extent);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (pinned)
-          AnimatedPadding(
-            padding: EdgeInsetsDirectional.only(end: padding),
-            duration: ADurations.chipDecorationAnimation,
-            child: Icon(
-              AIcons.pin,
-              color: _detailColor(context),
-              size: iconSize,
-            ),
-          ),
-        if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
-          AnimatedPadding(
-            padding: EdgeInsetsDirectional.only(end: padding),
-            duration: ADurations.chipDecorationAnimation,
-            child: Icon(
-              AIcons.storageCard,
-              color: _detailColor(context),
-              size: iconSize,
-            ),
-          ),
-        if (filter is AlbumFilter && vaults.isVault(filter.album))
-          AnimatedPadding(
-            padding: EdgeInsetsDirectional.only(end: padding),
-            duration: ADurations.chipDecorationAnimation,
-            child: Icon(
-              AIcons.locked,
-              color: _detailColor(context),
-              size: iconSize,
-            ),
-          ),
+        if (pinned) _buildDetailIcon(context, AIcons.pin),
+        if (filter is StoredAlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)) _buildDetailIcon(context, AIcons.storageCard),
+        if (filter is StoredAlbumFilter && vaults.isVault(filter.album)) _buildDetailIcon(context, AIcons.locked),
+        if (filter is DynamicAlbumFilter) _buildDetailIcon(context, AIcons.dynamicAlbum),
         Text(
-          locked ? AText.valueNotAvailable : countFormatter.format(source.count(filter)),
+          locked ? AText.valueNotAvailable : NumberFormat.decimalPattern(context.locale).format(source.count(filter)),
           style: TextStyle(
             color: _detailColor(context),
-            fontSize: fontSize,
+            fontSize: detailFontSize(extent),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDetailIcon(BuildContext context, IconData icon) {
+    final padding = min<double>(8.0, extent / 16);
+    final iconSize = detailIconSize(extent);
+    return AnimatedPadding(
+      padding: EdgeInsetsDirectional.only(end: padding),
+      duration: ADurations.chipDecorationAnimation,
+      child: Icon(
+        icon,
+        color: _detailColor(context),
+        size: iconSize,
+      ),
     );
   }
 }

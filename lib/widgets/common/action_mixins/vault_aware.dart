@@ -1,4 +1,4 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -80,10 +80,10 @@ mixin VaultAwareMixin on FeedbackMixin {
   }
 
   Future<bool> unlockFilter(BuildContext context, CollectionFilter filter) {
-    return filter is AlbumFilter ? unlockAlbum(context, filter.album) : Future.value(true);
+    return filter is StoredAlbumFilter ? unlockAlbum(context, filter.album) : Future.value(true);
   }
 
-  Future<bool> unlockFilters(BuildContext context, Set<AlbumFilter> filters) async {
+  Future<bool> unlockFilters(BuildContext context, Set<StoredAlbumFilter> filters) async {
     var unlocked = true;
     await Future.forEach(filters, (filter) async {
       if (unlocked) {
@@ -93,7 +93,7 @@ mixin VaultAwareMixin on FeedbackMixin {
     return unlocked;
   }
 
-  void lockFilters(Set<AlbumFilter> filters) => vaults.lock(filters.map((v) => v.album).toSet());
+  void lockFilters(Set<StoredAlbumFilter> filters) => vaults.lock(filters.map((v) => v.album).toSet());
 
   Future<bool> setVaultPass(BuildContext context, VaultDetails details) async {
     switch (details.lockType) {

@@ -1,6 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
@@ -50,7 +50,7 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
     final isMain = appMode == AppMode.main;
 
     switch (action) {
-      case ChipSetAction.delete:
+      case ChipSetAction.remove:
         return isMain && isSelecting && !settings.isReadOnly;
       default:
         return super.isVisible(
@@ -68,30 +68,31 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
     reportService.log('$runtimeType handles $action');
     switch (action) {
       // single/multiple filters
-      case ChipSetAction.delete:
-        _delete(context);
+      case ChipSetAction.remove:
+        _remove(context);
       default:
         break;
     }
     super.onActionSelected(context, action);
   }
 
-  Future<void> _delete(BuildContext context) async {
+  Future<void> _remove(BuildContext context) async {
     final filters = getSelectedFilters(context);
 
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoTags = filters.map((v) => v.tag).toSet();
 
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AvesDialog(
-        content: Text(context.l10n.genericDangerWarningDialogMessage),
+        content: Text(l10n.genericDangerWarningDialogMessage),
         actions: [
           const CancelButton(),
           TextButton(
             onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(context.l10n.applyButtonLabel),
+            child: Text(l10n.applyButtonLabel),
           ),
         ],
       ),

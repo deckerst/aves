@@ -1,15 +1,16 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/dynamic_albums.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -192,23 +193,27 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildAlbumFilters(_ContainQuery containQuery) {
-    return StreamBuilder(
-      stream: source.eventBus.on<AlbumsChangedEvent>(),
-      builder: (context, snapshot) {
-        final filters = source.rawAlbums
-            .map((album) => AlbumFilter(
-                  album,
-                  source.getAlbumDisplayName(context, album),
-                ))
-            .where((filter) => containQuery(filter.displayName ?? filter.album))
-            .toList()
-          ..sort();
-        return _buildFilterRow(
-          context: context,
-          title: context.l10n.searchAlbumsSectionTitle,
-          filters: filters,
-        );
-      },
+    return AnimatedBuilder(
+      animation: dynamicAlbums,
+      builder: (context, child) => StreamBuilder(
+        stream: source.eventBus.on<AlbumsChangedEvent>(),
+        builder: (context, snapshot) {
+          final filters = <AlbumBaseFilter>[
+            ...source.rawAlbums
+                .map((album) => StoredAlbumFilter(
+                      album,
+                      source.getStoredAlbumDisplayName(context, album),
+                    ))
+                .where((filter) => containQuery(filter.displayName ?? filter.album)),
+            ...dynamicAlbums.all,
+          ]..sort();
+          return _buildFilterRow(
+            context: context,
+            title: context.l10n.searchAlbumsSectionTitle,
+            filters: filters,
+          );
+        },
+      ),
     );
   }
 

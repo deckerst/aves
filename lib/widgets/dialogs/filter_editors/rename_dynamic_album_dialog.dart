@@ -1,32 +1,28 @@
-import 'dart:io';
-
-import 'package:aves/services/common/services.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
-class RenameAlbumDialog extends StatefulWidget {
-  static const routeName = '/dialog/rename_album';
+class RenameDynamicAlbumDialog extends StatefulWidget {
+  static const routeName = '/dialog/rename_dynamic_album';
 
-  final String album;
+  final String name;
 
-  const RenameAlbumDialog({
+  const RenameDynamicAlbumDialog({
     super.key,
-    required this.album,
+    required this.name,
   });
 
   @override
-  State<RenameAlbumDialog> createState() => _RenameAlbumDialogState();
+  State<RenameDynamicAlbumDialog> createState() => _RenameDynamicAlbumDialogState();
 }
 
-class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
+class _RenameDynamicAlbumDialogState extends State<RenameDynamicAlbumDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  String get album => widget.album;
-
-  String get initialValue => pContext.basename(album);
+  String get initialValue => widget.name;
 
   @override
   void initState() {
@@ -53,7 +49,7 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
               controller: _nameController,
               decoration: InputDecoration(
                 labelText: context.l10n.renameAlbumDialogLabel,
-                helperText: exists ? context.l10n.renameAlbumDialogLabelAlreadyExistsHelper : '',
+                helperText: exists ? context.l10n.dynamicAlbumAlreadyExists : '',
               ),
               autofocus: true,
               onChanged: (_) => _validate(),
@@ -75,22 +71,22 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
     );
   }
 
-  String _buildAlbumPath(String name) {
-    if (name.isEmpty) return '';
-    return pContext.join(pContext.dirname(album), name);
+  String? _formatAlbumName() {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) return null;
+
+    return name;
   }
 
   Future<void> _validate() async {
-    final newName = _nameController.text;
-    final path = _buildAlbumPath(newName);
-    final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
-    _existsNotifier.value = exists && newName != initialValue;
-    _isValidNotifier.value = newName.isNotEmpty;
+    final newName = _formatAlbumName();
+    _isValidNotifier.value = newName != null && !dynamicAlbums.contains(newName);
+    _existsNotifier.value = newName != null && dynamicAlbums.contains(newName) && newName != initialValue;
   }
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.maybeOf(context)?.pop(_nameController.text);
+      Navigator.maybeOf(context)?.pop(_formatAlbumName());
     }
   }
 }

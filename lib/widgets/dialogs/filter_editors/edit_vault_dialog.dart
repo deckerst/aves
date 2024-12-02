@@ -1,5 +1,5 @@
 import 'package:aves/model/device.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/details.dart';
@@ -127,7 +127,7 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
               if (!v) {
                 final album = initialDetails?.path;
                 if (album != null) {
-                  final filter = AlbumFilter(album, null);
+                  final filter = StoredAlbumFilter(album, null);
                   final source = context.read<CollectionSource>();
                   if (source.trashedEntries.any(filter.test)) {
                     if (!await showConfirmationDialog(

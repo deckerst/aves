@@ -9,6 +9,7 @@ class LocalMediaDbUpgrader {
   static const addressTable = SqfliteLocalMediaDb.addressTable;
   static const favouriteTable = SqfliteLocalMediaDb.favouriteTable;
   static const coverTable = SqfliteLocalMediaDb.coverTable;
+  static const dynamicAlbumTable = SqfliteLocalMediaDb.dynamicAlbumTable;
   static const vaultTable = SqfliteLocalMediaDb.vaultTable;
   static const trashTable = SqfliteLocalMediaDb.trashTable;
   static const videoPlaybackTable = SqfliteLocalMediaDb.videoPlaybackTable;
@@ -38,6 +39,8 @@ class LocalMediaDbUpgrader {
           await _upgradeFrom9(db);
         case 10:
           await _upgradeFrom10(db);
+        case 11:
+          await _upgradeFrom11(db);
       }
       oldVersion++;
     }
@@ -374,6 +377,15 @@ class LocalMediaDbUpgrader {
         ', autoLock INTEGER'
         ', useBin INTEGER'
         ', lockType TEXT'
+        ')');
+  }
+
+  static Future<void> _upgradeFrom11(Database db) async {
+    debugPrint('upgrading DB from v11');
+
+    await db.execute('CREATE TABLE $dynamicAlbumTable('
+        'name TEXT PRIMARY KEY'
+        ', filter TEXT'
         ')');
   }
 }

@@ -1,22 +1,23 @@
 import 'dart:convert';
 
-import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
-import 'package:aves/model/filters/or.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/theme/colors.dart';
@@ -31,8 +32,11 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   static const List<String> categoryOrder = [
     TrashFilter.type,
     QueryFilter.type,
+    SetAndFilter.type,
+    SetOrFilter.type,
     MimeFilter.type,
-    AlbumFilter.type,
+    DynamicAlbumFilter.type,
+    StoredAlbumFilter.type,
     TypeFilter.type,
     RecentlyAddedFilter.type,
     DateFilter.type,
@@ -44,7 +48,6 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     AspectRatioFilter.type,
     MissingFilter.type,
     PathFilter.type,
-    OrFilter.type,
   ];
 
   final bool reversed;
@@ -54,14 +57,14 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   static CollectionFilter? _fromMap(Map<String, dynamic> jsonMap) {
     final type = jsonMap['type'];
     switch (type) {
-      case AlbumFilter.type:
-        return AlbumFilter.fromMap(jsonMap);
       case AspectRatioFilter.type:
         return AspectRatioFilter.fromMap(jsonMap);
       case CoordinateFilter.type:
         return CoordinateFilter.fromMap(jsonMap);
       case DateFilter.type:
         return DateFilter.fromMap(jsonMap);
+      case DynamicAlbumFilter.type:
+        return DynamicAlbumFilter.fromMap(jsonMap);
       case FavouriteFilter.type:
         return FavouriteFilter.fromMap(jsonMap);
       case LocationFilter.type:
@@ -70,8 +73,10 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return MimeFilter.fromMap(jsonMap);
       case MissingFilter.type:
         return MissingFilter.fromMap(jsonMap);
-      case OrFilter.type:
-        return OrFilter.fromMap(jsonMap);
+      case SetAndFilter.type:
+        return SetAndFilter.fromMap(jsonMap);
+      case SetOrFilter.type:
+        return SetOrFilter.fromMap(jsonMap);
       case PathFilter.type:
         return PathFilter.fromMap(jsonMap);
       case PlaceholderFilter.type:
@@ -82,6 +87,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return RatingFilter.fromMap(jsonMap);
       case RecentlyAddedFilter.type:
         return RecentlyAddedFilter.fromMap(jsonMap);
+      case StoredAlbumFilter.type:
+        return StoredAlbumFilter.fromMap(jsonMap);
       case TagFilter.type:
         return TagFilter.fromMap(jsonMap);
       case TypeFilter.type:
@@ -152,20 +159,6 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     final c = displayPriority.compareTo(other.displayPriority);
     // assume we compare context-independent labels
     return c != 0 ? c : compareAsciiUpperCaseNatural(universalLabel, other.universalLabel);
-  }
-}
-
-@immutable
-abstract class CoveredCollectionFilter extends CollectionFilter {
-  const CoveredCollectionFilter({required super.reversed});
-
-  @override
-  Future<Color> color(BuildContext context) {
-    final customColor = covers.of(this)?.$3;
-    if (customColor != null) {
-      return SynchronousFuture(customColor);
-    }
-    return super.color(context);
   }
 }
 

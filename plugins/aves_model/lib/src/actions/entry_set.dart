@@ -7,6 +7,7 @@ enum EntrySetAction {
   // browsing
   searchCollection,
   toggleTitleSearch,
+  addDynamicAlbum,
   addShortcut,
   setHome,
   emptyBin,
@@ -47,6 +48,7 @@ class EntrySetActions {
   static const pageBrowsing = [
     EntrySetAction.searchCollection,
     EntrySetAction.toggleTitleSearch,
+    EntrySetAction.addDynamicAlbum,
     EntrySetAction.addShortcut,
     EntrySetAction.setHome,
     null,

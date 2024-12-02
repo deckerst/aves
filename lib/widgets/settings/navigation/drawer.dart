@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -28,7 +29,7 @@ class NavigationDrawerEditorPage extends StatefulWidget {
 class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage> {
   final List<CollectionFilter?> _typeItems = [];
   final Set<CollectionFilter?> _visibleTypes = {};
-  final List<String> _albumItems = [];
+  final List<AlbumBaseFilter> _albumItems = [];
   final List<String> _pageItems = [];
   final Set<String> _visiblePages = {};
 
@@ -54,7 +55,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
     _typeItems.addAll(userTypeLinks);
     _typeItems.addAll(_typeOptions.where((v) => !userTypeLinks.contains(v)));
 
-    _albumItems.addAll(settings.drawerAlbumBookmarks ?? AppDrawer.getDefaultAlbums(context));
+    _albumItems.addAll(AppDrawer.effectiveAlbumBookmarks(context));
 
     final userPageLinks = settings.drawerPageBookmarks;
     _visiblePages.addAll(userPageLinks);

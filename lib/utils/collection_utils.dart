@@ -1,11 +1,18 @@
-
-
 extension ExtraList<E> on List<E> {
   bool replace(E old, E newItem) {
     final index = indexOf(old);
     if (index == -1) return false;
 
     this[index] = newItem;
+    return true;
+  }
+}
+
+extension ExtraSet<E> on Set<E> {
+  bool replace(E old, E newItem) {
+    if (!remove(old)) return false;
+
+    add(newItem);
     return true;
   }
 }
