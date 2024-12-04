@@ -355,7 +355,7 @@
   "@setCoverDialogCustom": {},
   "hideFilterConfirmationDialogMessage": "Les images et vidéos correspondantes n’apparaîtront plus dans votre collection. Vous pouvez les montrer à nouveau via les réglages de « Confidentialité ».\n\nVoulez-vous vraiment les masquer ?",
   "@hideFilterConfirmationDialogMessage": {},
-  "newAlbumDialogTitle": "Nouvel Album",
+  "newAlbumDialogTitle": "Nouvel album",
   "@newAlbumDialogTitle": {},
   "newAlbumDialogNameLabel": "Nom de l’album",
   "@newAlbumDialogNameLabel": {},
@@ -1392,5 +1392,17 @@
   "videoActionShowPreviousFrame": "Montrer l’image précédente",
   "@videoActionShowPreviousFrame": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "L’album existe déjà",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "chipActionRemove": "Retirer",
+  "@chipActionRemove": {},
+  "albumTierDynamic": "Dynamique",
+  "@albumTierDynamic": {},
+  "newDynamicAlbumDialogTitle": "Nouvel album dynamique",
+  "@newDynamicAlbumDialogTitle": {},
+  "dynamicAlbumAlreadyExists": "L’album dynamique existe déjà",
+  "@dynamicAlbumAlreadyExists": {},
+  "appExportDynamicAlbums": "Albums dynamiques",
+  "@appExportDynamicAlbums": {},
+  "collectionActionAddDynamicAlbum": "Ajouter un album dynamique",
+  "@collectionActionAddDynamicAlbum": {}
 }

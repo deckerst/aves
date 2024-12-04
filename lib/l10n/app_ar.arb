@@ -1550,5 +1550,17 @@
   "videoActionShowNextFrame": "إظهار الإطار التالي",
   "@videoActionShowNextFrame": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "الألبوم موجود بالفعل",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "albumTierDynamic": "ديناميكي",
+  "@albumTierDynamic": {},
+  "collectionActionAddDynamicAlbum": "إضافة ألبوم ديناميكي",
+  "@collectionActionAddDynamicAlbum": {},
+  "chipActionRemove": "إزالة",
+  "@chipActionRemove": {},
+  "dynamicAlbumAlreadyExists": "الألبوم الديناميكي موجود بالفعل",
+  "@dynamicAlbumAlreadyExists": {},
+  "appExportDynamicAlbums": "الألبومات الديناميكية",
+  "@appExportDynamicAlbums": {},
+  "newDynamicAlbumDialogTitle": "ألبوم ديناميكي جديد",
+  "@newDynamicAlbumDialogTitle": {}
 }
