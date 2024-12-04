@@ -1392,5 +1392,17 @@
   "videoActionShowNextFrame": "Tampilkan bingkai berikutnya",
   "@videoActionShowNextFrame": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "Album sudah ada",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "chipActionRemove": "Hapus",
+  "@chipActionRemove": {},
+  "collectionActionAddDynamicAlbum": "Tambahkan album dinamis",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "Album dinamis",
+  "@appExportDynamicAlbums": {},
+  "albumTierDynamic": "Dinamis",
+  "@albumTierDynamic": {},
+  "dynamicAlbumAlreadyExists": "Album dinamis sudah ada",
+  "@dynamicAlbumAlreadyExists": {},
+  "newDynamicAlbumDialogTitle": "Album Dinamis Baru",
+  "@newDynamicAlbumDialogTitle": {}
 }

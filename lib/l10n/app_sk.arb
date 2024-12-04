@@ -1548,5 +1548,19 @@
   "videoActionShowPreviousFrame": "Zobraziť predchádzajúci rám",
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "Zobraziť ďalší rám",
-  "@videoActionShowNextFrame": {}
+  "@videoActionShowNextFrame": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Album už existuje",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "appExportDynamicAlbums": "Dynamické albumy",
+  "@appExportDynamicAlbums": {},
+  "collectionActionAddDynamicAlbum": "Pridať dynamický album",
+  "@collectionActionAddDynamicAlbum": {},
+  "chipActionRemove": "Odstrániť",
+  "@chipActionRemove": {},
+  "albumTierDynamic": "Dynamické",
+  "@albumTierDynamic": {},
+  "newDynamicAlbumDialogTitle": "Nový dynamický album",
+  "@newDynamicAlbumDialogTitle": {},
+  "dynamicAlbumAlreadyExists": "Dynamický album už existuje",
+  "@dynamicAlbumAlreadyExists": {}
 }
