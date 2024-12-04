@@ -1392,5 +1392,17 @@
   "videoActionShowNextFrame": "Mostrar fotograma siguiente",
   "@videoActionShowNextFrame": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "El álbum ya existe",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "chipActionRemove": "Remover",
+  "@chipActionRemove": {},
+  "dynamicAlbumAlreadyExists": "El álbum dinámico ya existe",
+  "@dynamicAlbumAlreadyExists": {},
+  "collectionActionAddDynamicAlbum": "Añadir álbum dinámico",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "Álbumes dinámicos",
+  "@appExportDynamicAlbums": {},
+  "albumTierDynamic": "Dinámico",
+  "@albumTierDynamic": {},
+  "newDynamicAlbumDialogTitle": "Nuevo álbum dinámico",
+  "@newDynamicAlbumDialogTitle": {}
 }

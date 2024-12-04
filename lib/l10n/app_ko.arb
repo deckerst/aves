@@ -1392,5 +1392,17 @@
   "videoActionShowPreviousFrame": "이전 프레임 보기",
   "@videoActionShowPreviousFrame": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "앨범이 이미 있습니다",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "chipActionRemove": "제거",
+  "@chipActionRemove": {},
+  "albumTierDynamic": "동적",
+  "@albumTierDynamic": {},
+  "newDynamicAlbumDialogTitle": "새 동적 앨범",
+  "@newDynamicAlbumDialogTitle": {},
+  "dynamicAlbumAlreadyExists": "동적 앨범이 이미 있습니다",
+  "@dynamicAlbumAlreadyExists": {},
+  "collectionActionAddDynamicAlbum": "동적 앨범 추가",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "동적 앨범",
+  "@appExportDynamicAlbums": {}
 }

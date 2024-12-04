@@ -1390,5 +1390,19 @@
   "newAlbumDialogAlbumAlreadyExistsHelper": "相册已存在",
   "@newAlbumDialogAlbumAlreadyExistsHelper": {},
   "mapAttributionOsmLiberty": "绘制于 [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • 主办方 [OSM Americana](https://tile.ourmap.us)",
-  "@mapAttributionOsmLiberty": {}
+  "@mapAttributionOsmLiberty": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "albumTierDynamic": "动态",
+  "@albumTierDynamic": {},
+  "chipActionRemove": "删除",
+  "@chipActionRemove": {},
+  "newDynamicAlbumDialogTitle": "新动态专辑",
+  "@newDynamicAlbumDialogTitle": {},
+  "collectionActionAddDynamicAlbum": "添加动态专辑",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "动态专辑",
+  "@appExportDynamicAlbums": {},
+  "dynamicAlbumAlreadyExists": "动态专辑已存在",
+  "@dynamicAlbumAlreadyExists": {}
 }
