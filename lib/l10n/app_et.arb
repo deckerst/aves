@@ -637,5 +637,72 @@
         "format": "decimalPattern"
       }
     }
-  }
+  },
+  "newDynamicAlbumDialogTitle": "Uus dünaamiline album",
+  "@newDynamicAlbumDialogTitle": {},
+  "dynamicAlbumAlreadyExists": "Selline dünaamiline album on juba olemas",
+  "@dynamicAlbumAlreadyExists": {},
+  "editEntryDialogCopyFromItem": "Kopi teisest objektist",
+  "@editEntryDialogCopyFromItem": {},
+  "editEntryDialogTargetFieldsHeader": "Muudetavad väljad",
+  "@editEntryDialogTargetFieldsHeader": {},
+  "editEntryDateDialogTitle": "Kuupäev ja kellaaeg",
+  "@editEntryDateDialogTitle": {},
+  "editEntryDateDialogSetCustom": "Määra soovitud kuupäev",
+  "@editEntryDateDialogSetCustom": {},
+  "unsupportedTypeDialogMessage": "{count, plural, =1{See tegevus pole toetatud antud tüüpi objekti puhul: {types}.} other{See tegevus pole toetatud antud tüüpi objektide puhul: {types}.}}",
+  "@unsupportedTypeDialogMessage": {
+    "placeholders": {
+      "count": {},
+      "types": {
+        "type": "String",
+        "example": "GIF, TIFF, MP4",
+        "description": "a list of unsupported types"
+      }
+    }
+  },
+  "newAlbumDialogTitle": "Uus album",
+  "@newAlbumDialogTitle": {},
+  "newAlbumDialogNameLabel": "Albumi nimi",
+  "@newAlbumDialogNameLabel": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Sellise nimega album on juba olemas",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "newAlbumDialogNameLabelAlreadyExistsHelper": "Selline kaust on juba olemas",
+  "@newAlbumDialogNameLabelAlreadyExistsHelper": {},
+  "newAlbumDialogStorageLabel": "Andmeruum:",
+  "@newAlbumDialogStorageLabel": {},
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Kas kustutame need albumis koos seal leiduva ühe objektiga?} other{Kas kustutame need albumis koos seal leiduva {count} objektiga?}}",
+  "@deleteMultiAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportEntryDialogWriteMetadata": "Salvesta metainfo",
+  "@exportEntryDialogWriteMetadata": {},
+  "renameEntryDialogLabel": "Uus nimi",
+  "@renameEntryDialogLabel": {},
+  "editEntryDateDialogCopyField": "Kopeeri muust kuupäevast",
+  "@editEntryDateDialogCopyField": {},
+  "exportEntryDialogHeight": "Kõrgus",
+  "@exportEntryDialogHeight": {},
+  "exportEntryDialogQuality": "Kvaliteet",
+  "@exportEntryDialogQuality": {},
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Kas kustutame selle albumi koos seal leiduva ühe objektiga?} other{Kas kustutame selle albumi koos seal leiduva {count} objektiga?}}",
+  "@deleteSingleAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "exportEntryDialogFormat": "Vorming:",
+  "@exportEntryDialogFormat": {},
+  "chipActionRemove": "Eemalda",
+  "@chipActionRemove": {},
+  "exportEntryDialogWidth": "Laius",
+  "@exportEntryDialogWidth": {},
+  "albumTierDynamic": "Dünaamiline",
+  "@albumTierDynamic": {}
 }
