@@ -136,6 +136,7 @@ class Contributors {
     // Contributor('Prasanta-Hembram', 'Prasantahembram720@gmail.com'), // Santali
     // Contributor('Enenra', 'nnra2210@gmail.com'), // Serbian
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
+    // Contributor('தமிழ்நேரம்', 'anishprabu.t@gmail.com'), // Tamil
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
   };
 }
