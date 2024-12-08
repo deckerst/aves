@@ -1394,5 +1394,17 @@
   "videoActionShowPreviousFrame": "Vorig frame weergeven",
   "@videoActionShowPreviousFrame": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "Album bestaat al",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "albumTierDynamic": "Dynamisch",
+  "@albumTierDynamic": {},
+  "newDynamicAlbumDialogTitle": "Nieuw dynamisch album",
+  "@newDynamicAlbumDialogTitle": {},
+  "dynamicAlbumAlreadyExists": "Dynamisch album bestaat al",
+  "@dynamicAlbumAlreadyExists": {},
+  "collectionActionAddDynamicAlbum": "Dynamisch album toevoegen",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "Dynamische albums",
+  "@appExportDynamicAlbums": {},
+  "chipActionRemove": "Verwijderen",
+  "@chipActionRemove": {}
 }
