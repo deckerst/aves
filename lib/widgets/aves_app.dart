@@ -65,7 +65,6 @@ class AvesApp extends StatefulWidget {
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
   static final _unsupportedLocales = {
     'az', // Azerbaijani
-    'bg', // Bulgarian
     'bn', // Bengali
     'ckb', // Kurdish (Central)
     'da', // Danish
@@ -81,7 +80,6 @@ class AvesApp extends StatefulWidget {
     'sat', // Santali
     'sl', // Slovenian
     'sr', // Serbian
-    'ta', // Tamil
     'th', // Thai
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
