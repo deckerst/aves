@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Albums: dynamic albums from filter sets
+- Bulgarian translation (thanks Petrov)
+- Tamil translation (thanks தமிழ்நேரம்)
 
 ## <a id="v1.11.19"></a>[v1.11.19] - 2024-11-24
 
