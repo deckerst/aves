@@ -1572,5 +1572,17 @@
   "videoActionShowNextFrame": "Visa nästa bildruta",
   "@videoActionShowNextFrame": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "Albumet existerar redan",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "chipActionRemove": "Ta bort",
+  "@chipActionRemove": {},
+  "albumTierDynamic": "Dynamisk",
+  "@albumTierDynamic": {},
+  "newDynamicAlbumDialogTitle": "Nytt dynamiskt album",
+  "@newDynamicAlbumDialogTitle": {},
+  "collectionActionAddDynamicAlbum": "Lägg till dynamiskt album",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "Dynamiska album",
+  "@appExportDynamicAlbums": {},
+  "dynamicAlbumAlreadyExists": "Dynamiskt album existerar redan",
+  "@dynamicAlbumAlreadyExists": {}
 }

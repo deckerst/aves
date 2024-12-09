@@ -1,7 +1,7 @@
 {
   "appName": "Aves",
   "@appName": {},
-  "welcomeMessage": "Benvenuto in Aves",
+  "welcomeMessage": "Benvenuto ad Aves",
   "@welcomeMessage": {},
   "welcomeOptional": "Opzionale",
   "@welcomeOptional": {},
@@ -1378,5 +1378,23 @@
   "chipActionGoToExplorerPage": "Mostra nell'Esploratore",
   "@chipActionGoToExplorerPage": {},
   "mapAttributionOsmData": "Dati della mappa © collaboratori di [OpenStreetMap](https://www.openstreetmap.org/copyright)",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Album già esistente",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "chipActionRemove": "Rimuovi",
+  "@chipActionRemove": {},
+  "videoActionShowPreviousFrame": "Mostra fotogramma precedente",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Mostra fotogramma successivo",
+  "@videoActionShowNextFrame": {},
+  "albumTierDynamic": "Dinamico",
+  "@albumTierDynamic": {},
+  "newDynamicAlbumDialogTitle": "Nuovo Album Dinamico",
+  "@newDynamicAlbumDialogTitle": {},
+  "collectionActionAddDynamicAlbum": "Aggiunti album dinamico",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "Album dinamici",
+  "@appExportDynamicAlbums": {},
+  "dynamicAlbumAlreadyExists": "Album dinamico già esistente",
+  "@dynamicAlbumAlreadyExists": {}
 }

@@ -8,4 +8,5 @@
     <string name="analysis_channel_name">Scansione media</string>
     <string name="analysis_notification_default_title">Scansione in corso</string>
     <string name="analysis_notification_action_stop">Annulla</string>
+    <string name="map_shortcut_short_label">Mappa</string>
 </resources>
