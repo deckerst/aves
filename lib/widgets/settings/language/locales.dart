@@ -5,6 +5,7 @@ class SupportedLocales {
   static const languagesByLanguageCode = {
     'ar': 'العربية',
     'be': 'Беларуская мова',
+    'bg': 'Български',
     'ca': 'Català',
     'cs': 'Čeština',
     'de': 'Deutsch',
@@ -31,6 +32,7 @@ class SupportedLocales {
     'ru': 'Русский',
     'sk': 'Slovenčina',
     'sv': 'Svenska',
+    'ta': 'தமிழ்',
     'tr': 'Türkçe',
     'uk': 'Українська',
     'vi': 'Tiếng Việt',
