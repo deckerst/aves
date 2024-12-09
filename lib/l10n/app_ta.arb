@@ -67,7 +67,7 @@
   "@viewDialogGroupSectionTitle": {},
   "viewDialogLayoutSectionTitle": "மனையமைவு",
   "@viewDialogLayoutSectionTitle": {},
-  "viewDialogReverseSortOrder": "தலைகீழ் வரிசை வரிசை",
+  "viewDialogReverseSortOrder": "தலைகீழ் வரிசை முறை",
   "@viewDialogReverseSortOrder": {},
   "tileLayoutMosaic": "மொசைக்",
   "@tileLayoutMosaic": {},
@@ -161,7 +161,7 @@
   "@collectionActionRescan": {},
   "collectionActionEdit": "தொகு",
   "@collectionActionEdit": {},
-  "collectionGroupAlbum": "ஆல்பம்",
+  "collectionGroupAlbum": "ஆல்பத்தால்",
   "@collectionGroupAlbum": {},
   "collectionGroupMonth": "மாதத்திற்குள்",
   "@collectionGroupMonth": {},
@@ -185,7 +185,7 @@
   "@welcomeOptional": {},
   "welcomeTermsToggle": "விதிமுறைகள் மற்றும் நிபந்தனைகளை நான் ஒப்புக்கொள்கிறேன்",
   "@welcomeTermsToggle": {},
-  "collectionRenameFailureFeedback": "{count, plural, =1{Failed to rename 1 item} other{{count} உருப்படிகள் என மறுபெயரிடுவதில் தோல்வி}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{மறுபெயரிடுவதில் தோல்வி 1 உருப்படி} other{மறுபெயரிடுவதில் தோல்வி {count} உருப்படிகள்}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
       "count": {
@@ -193,7 +193,7 @@
       }
     }
   },
-  "collectionEditFailureFeedback": "{count, plural, =1{Failed to edit 1 item} other{திருத்துவதில் தோல்வியுற்றது {count} உருப்படிகள்}}",
+  "collectionEditFailureFeedback": "{count, plural, =1{திருத்துவதில் தோல்வியுற்றது 1 உருப்படி} other{திருத்துவதில் தோல்வியுற்றது {count} உருப்படிகள்}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {
@@ -201,7 +201,7 @@
       }
     }
   },
-  "collectionExportFailureFeedback": "{count, plural, =1{Failed to export 1 page} other{ஏற்றுமதி செய்வதில் தோல்வி {count} பக்கங்கள்}}",
+  "collectionExportFailureFeedback": "{count, plural, =1{ஏற்றுமதி செய்வதில் தோல்வி 1 பக்கம்} other{ஏற்றுமதி செய்வதில் தோல்வி {count} பக்கங்கள்}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {
@@ -209,7 +209,7 @@
       }
     }
   },
-  "collectionCopySuccessFeedback": "{count, plural, =1{Copied 1 item} other{நகலெடுக்கப்பட்டது {count} உருப்படிகள்}}",
+  "collectionCopySuccessFeedback": "{count, plural, =1{நகலெடுக்கப்பட்டது 1 உருப்படி} other{நகலெடுக்கப்பட்டது {count} உருப்படிகள்}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {
@@ -217,7 +217,7 @@
       }
     }
   },
-  "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{நகர்த்தப்பட்ட {count} உருப்படிகள்}}",
+  "collectionMoveSuccessFeedback": "{count, plural, =1{நகர்த்தப்பட்ட 1 உருப்படி} other{நகர்த்தப்பட்ட {count} உருப்படிகள்}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {
@@ -225,7 +225,7 @@
       }
     }
   },
-  "collectionRenameSuccessFeedback": "{count, plural, =1{Renamed 1 item} other{மறுபெயரிடப்பட்டது {count} உருப்படிகள்}}",
+  "collectionRenameSuccessFeedback": "{count, plural, =1{மறுபெயரிடப்பட்டது 1 உருப்படி} other{மறுபெயரிடப்பட்டது {count} உருப்படிகள்}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {
@@ -233,7 +233,7 @@
       }
     }
   },
-  "collectionEditSuccessFeedback": "{count, plural, =1{Edited 1 item} other{திருத்தப்பட்ட {count} உருப்படிகள்}}",
+  "collectionEditSuccessFeedback": "{count, plural, =1{திருத்தப்பட்ட 1 உருப்படி} other{திருத்தப்பட்ட {count} உருப்படிகள்}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {
@@ -313,7 +313,7 @@
   "@sortOrderLargestFirst": {},
   "sortOrderSmallestFirst": "முதலில் சிறியது",
   "@sortOrderSmallestFirst": {},
-  "sortOrderShortestFirst": "முதல் முதல்",
+  "sortOrderShortestFirst": "சிறியது முதலில்",
   "@sortOrderShortestFirst": {},
   "sortOrderLongestFirst": "முதலில் நீளமானது",
   "@sortOrderLongestFirst": {},
@@ -347,7 +347,7 @@
   "@albumVideoCaptures": {},
   "albumPageTitle": "ஆல்பம்",
   "@albumPageTitle": {},
-  "albumEmpty": "ஆல்பம்",
+  "albumEmpty": "ஆல்பங்கள் இல்லை",
   "@albumEmpty": {},
   "createAlbumButtonLabel": "உருவாக்கு",
   "@createAlbumButtonLabel": {},
@@ -584,7 +584,7 @@
   },
   "entryActionRename": "மறுபெயரிடுங்கள்",
   "@entryActionRename": {},
-  "entryActionRestore": "மீட்டமை",
+  "entryActionRestore": "மீட்டெடு",
   "@entryActionRestore": {},
   "entryActionRotateCCW": "எதிரெதிர் திசையில் சுழற்றுங்கள்",
   "@entryActionRotateCCW": {},
@@ -704,7 +704,7 @@
   "@settingsLanguageTile": {},
   "statsPageTitle": "புள்ளிவிவரங்கள்",
   "@statsPageTitle": {},
-  "statsWithGps": "{count, plural, =1{1 item with location} other{{count} இருப்பிடத்துடன் உருப்படிகள்}}",
+  "statsWithGps": "{count, plural, =1{1 இடம் கொண்ட உருப்படி} other{{count} இருப்பிடத்துடன் உருப்படிகள்}}",
   "@statsWithGps": {
     "placeholders": {
       "count": {
@@ -728,7 +728,7 @@
   "@viewerInfoSearchSuggestionDescription": {},
   "viewerInfoSearchSuggestionDimensions": "பரிமாணங்கள்",
   "@viewerInfoSearchSuggestionDimensions": {},
-  "collectionDeleteFailureFeedback": "{count, plural, =1{Failed to delete 1 item} other{{count} உருப்படிகளை நீக்குவதில் தோல்வி}}",
+  "collectionDeleteFailureFeedback": "{count, plural, =1{நீக்குவதில் தோல்வி 1 உருப்படி} other{நீக்குவதில் தோல்வி {count} உருப்படிகள்}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
       "count": {
@@ -736,7 +736,7 @@
       }
     }
   },
-  "collectionCopyFailureFeedback": "{count, plural, =1{Failed to copy 1 item} other{{count} உருப்படிகளை நகலெடுப்பதில் தோல்வி}}",
+  "collectionCopyFailureFeedback": "{count, plural, =1{நகலெடுப்பதில் தோல்வி 1 உருப்படி} other{நகலெடுப்பதில் தோல்வி {count} உருப்படிகள்}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {
@@ -744,7 +744,7 @@
       }
     }
   },
-  "collectionMoveFailureFeedback": "{count, plural, =1{Failed to move 1 item} other{நகர்த்துவதில் தோல்வி {count} உருப்படிகள்}}",
+  "collectionMoveFailureFeedback": "{count, plural, =1{நகர்த்துவதில் தோல்வி 1 உருப்படி} other{நகர்த்துவதில் தோல்வி {count} உருப்படிகள்}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {
@@ -810,9 +810,9 @@
   "@applyTooltip": {},
   "cancelTooltip": "ரத்துசெய்",
   "@cancelTooltip": {},
-  "changeTooltip": "மாற்றம்",
+  "changeTooltip": "மாற்று",
   "@changeTooltip": {},
-  "clearTooltip": "தெளிவான",
+  "clearTooltip": "துடை",
   "@clearTooltip": {},
   "previousTooltip": "முந்தைய",
   "@previousTooltip": {},
@@ -860,9 +860,9 @@
   "@chipActionGoToTagPage": {},
   "chipActionGoToExplorerPage": "எக்ச்ப்ளோரரில் காட்டு",
   "@chipActionGoToExplorerPage": {},
-  "chipActionFilterOut": "வடிகட்டவும்",
+  "chipActionFilterOut": "வடிகட்டி நீக்கு",
   "@chipActionFilterOut": {},
-  "chipActionFilterIn": "வடிகட்டவும்",
+  "chipActionFilterIn": "வடிகட்டி வை",
   "@chipActionFilterIn": {},
   "chipActionHide": "மறை",
   "@chipActionHide": {},
@@ -876,7 +876,7 @@
   "@chipActionRename": {},
   "chipActionSetCover": "கவர் அமைக்கவும்",
   "@chipActionSetCover": {},
-  "chipActionShowCountryStates": "மாநிலங்கள்",
+  "chipActionShowCountryStates": "நிலைகளைக் காட்டு",
   "@chipActionShowCountryStates": {},
   "chipActionCreateAlbum": "ஆல்பத்தை உருவாக்கவும்",
   "@chipActionCreateAlbum": {},
@@ -888,7 +888,7 @@
   "@entryActionCopyToClipboard": {},
   "entryActionDelete": "நீக்கு",
   "@entryActionDelete": {},
-  "entryActionConvert": "மாற்றவும்",
+  "entryActionConvert": "நிலைமாற்று",
   "@entryActionConvert": {},
   "entryActionExport": "ஏற்றுமதி",
   "@entryActionExport": {},
@@ -938,7 +938,7 @@
   "@videoActionPause": {},
   "videoActionPlay": "விளையாடுங்கள்",
   "@videoActionPlay": {},
-  "videoActionABRepeat": "A-b மீண்டும்",
+  "videoActionABRepeat": "A-B மீண்டும்",
   "@videoActionABRepeat": {},
   "videoRepeatActionSetStart": "தொடக்கத்தை அமைக்கவும்",
   "@videoRepeatActionSetStart": {},
@@ -1105,7 +1105,7 @@
   "@maxBrightnessAlways": {},
   "nameConflictStrategyRename": "மறுபெயரிடுங்கள்",
   "@nameConflictStrategyRename": {},
-  "nameConflictStrategyReplace": "மாற்றவும்",
+  "nameConflictStrategyReplace": "மாற்றிவை",
   "@nameConflictStrategyReplace": {},
   "nameConflictStrategySkip": "தவிர்",
   "@nameConflictStrategySkip": {},
@@ -1167,7 +1167,7 @@
   "@widgetOpenPageViewer": {},
   "widgetTapUpdateWidget": "விட்செட்டைப் புதுப்பிக்கவும்",
   "@widgetTapUpdateWidget": {},
-  "storageAccessDialogMessage": "இந்த பயன்பாட்டு அணுகலை வழங்க அடுத்த திரையில் உள்ள “{directory}” இன் {volume} ஐத் தேர்ந்தெடுக்கவும்.",
+  "storageAccessDialogMessage": "இந்த பயன்பாட்டு அணுகலை வழங்க அடுத்த திரையில் உள்ள “{volume}” இன் {directory} ஐத் தேர்ந்தெடுக்கவும்.",
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -1181,7 +1181,7 @@
       }
     }
   },
-  "restrictedAccessDialogMessage": "இந்த பயன்பாடு “{volume}” இன் {directory} in இல் உள்ள கோப்புகளை மாற்ற அனுமதிக்கப்படவில்லை.\n\n உருப்படிகளை மற்றொரு கோப்பகத்திற்கு நகர்த்துவதற்கு முன்பே நிறுவப்பட்ட கோப்பு மேலாளர் அல்லது கேலரி பயன்பாட்டைப் பயன்படுத்தவும்.",
+  "restrictedAccessDialogMessage": "இந்தப் பயன்பாடு “{volume}” இன் {directory} இல் உள்ள கோப்புகளை மாற்ற அனுமதிக்கப்படவில்லை.\n\nஉருப்படிகளை மற்றொரு கோப்பகத்திற்கு நகர்த்துவதற்கு முன்பே நிறுவப்பட்ட கோப்பு மேலாளர் அல்லது கேலரி பயன்பாட்டைப் பயன்படுத்தவும்.",
   "@restrictedAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -1195,7 +1195,7 @@
       }
     }
   },
-  "notEnoughSpaceDialogMessage": "இந்த செயல்பாட்டிற்கு “{neededSize}” இல் இலவச இடத்தின் {volume} தேவை, ஆனால் {freeSize} மட்டுமே உள்ளது.",
+  "notEnoughSpaceDialogMessage": "இந்தச் செயல்பாட்டிற்கு “{volume}” இல் இலவச இடத்தின் {neededSize} தேவை, ஆனால் {freeSize} மட்டுமே உள்ளது.",
   "@notEnoughSpaceDialogMessage": {
     "placeholders": {
       "neededSize": {
@@ -1252,7 +1252,7 @@
   "@moveUndatedConfirmationDialogMessage": {},
   "moveUndatedConfirmationDialogSetDate": "தேதிகளை சேமிக்கவும்",
   "@moveUndatedConfirmationDialogSetDate": {},
-  "videoResumeDialogMessage": "{time} at இல் மீண்டும் விளையாடுவதை விரும்புகிறீர்களா?",
+  "videoResumeDialogMessage": "{time} இல் மீண்டும் விளையாடுவதை விரும்புகிறீர்களா?",
   "@videoResumeDialogMessage": {
     "placeholders": {
       "time": {
@@ -1313,7 +1313,7 @@
   "@exportEntryDialogFormat": {},
   "exportEntryDialogQuality": "தகுதி",
   "@exportEntryDialogQuality": {},
-  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{ this இந்த ஆல்பத்தையும் அதில் உள்ள உருப்படியையும் நீக்கு?} other{இந்த ஆல்பத்தையும் அதில் உள்ள {count} உருப்படிகளையும் நீக்கு?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{இந்த ஆல்பத்தையும் அதில் உள்ள உருப்படியையும் நீக்கு?} other{இந்த ஆல்பத்தையும் அதில் உள்ள {count} உருப்படிகளையும் நீக்கு?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -1321,7 +1321,7 @@
       }
     }
   },
-  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{ this இந்த ஆல்பங்களையும் அவற்றில் உள்ள உருப்படியையும் நீக்கு?} other{இந்த ஆல்பங்களையும் அவற்றில் உள்ள {count} உருப்படிகளையும் நீக்கு?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{இந்த ஆல்பங்களையும் அவற்றில் உள்ள உருப்படியையும் நீக்கு?} other{இந்த ஆல்பங்களையும் அவற்றில் உள்ள {count} உருப்படிகளையும் நீக்கு?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -1543,11 +1543,11 @@
   "@mapPointNorthUpTooltip": {},
   "mapAttributionOsmData": "வரைபட தரவு © [OpenStreetMap](https://www.openstreetmap.org/copyright) பங்களிப்பாளர்கள்",
   "@mapAttributionOsmData": {},
-  "mapAttributionOsmLiberty": "[OpenMapTiles](https://www.openmaptiles.org/) மூலம் ஓடுகள், [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)",
+  "mapAttributionOsmLiberty": "[OpenMapTiles](https://www.openmaptiles.org/) மூலம் ஓடுகள், [CC BY](http://creativecommons.org/licenses/by/4.0) • [OSM Americana](https://tile.ourmap.us) மூலம் புரவலசேவை",
   "@mapAttributionOsmLiberty": {},
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | [OpenTopoMap](https://opentopomap.org/) மூலம் ஓடுகள், [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
-  "mapAttributionOsmHot": "[HOT](https://www.hotosm.org/) மூலம் ஓடுகள் • Hosted by [OSM France](https://openstreetmap.fr/)",
+  "mapAttributionOsmHot": "[HOT](https://www.hotosm.org/) மூலம் ஓடுகள் • [OSM France](https://openstreetmap.fr/) மூலம் புரவலசேவை",
   "@mapAttributionOsmHot": {},
   "mapAttributionStamen": "[Stamen Design](https://stamen.com) மூலம் ஓடுகள், [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
   "@mapAttributionStamen": {},
