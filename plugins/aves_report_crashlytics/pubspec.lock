@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: "71c01c1998c40b3af1944ad0a5f374b4e6fef7f3d2df487f3970dbeadaeb25a1"
+      sha256: eae3133cbb06de9205899b822e3897fc6a8bc278ad4c944b4ce612689369694b
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.46"
+    version: "1.3.47"
   async:
     dependency: transitive
     description:
@@ -68,42 +68,42 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_core
-      sha256: "2438a75ad803e818ad3bd5df49137ee619c46b6fc7101f4dbc23da07305ce553"
+      sha256: fef81a53ba1ca618def1f8bef4361df07968434e62cb204c1fb90bb880a03da2
       url: "https://pub.dev"
     source: hosted
-    version: "3.8.0"
+    version: "3.8.1"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
-      sha256: e30da58198a6d4b49d5bce4e852f985c32cb10db329ebef9473db2b9f09ce810
+      sha256: b94b217e3ad745e784960603d33d99471621ecca151c99c670869b76e50ad2a6
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
-      sha256: f967a7138f5d2ffb1ce15950e2a382924239eaa521150a8f144af34e68b3b3e5
+      sha256: "9e69806bb3d905aeec3c1242e0e1475de6ea6d48f456af29d598fb229a2b4e5e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.18.1"
+    version: "2.18.2"
   firebase_crashlytics:
     dependency: "direct main"
     description:
       name: firebase_crashlytics
-      sha256: "4e80ef22428dfecf609df8049419c7446c6e1d797d7f307cad3c7ab70e72ddc5"
+      sha256: e235c8452d5622fc271404592388fde179e4b62c50e777ad3c8c3369296104ed
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.5"
+    version: "4.2.0"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
-      sha256: "1104f428ec5249fff62016985719bb232ca91c4bde0d1a033af9b7d8b7451d70"
+      sha256: "4ddadf44ed0a202f3acad053f12c083877940fa8cc1a9f747ae09e1ef4372160"
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.46"
+    version: "3.7.0"
   flutter:
     dependency: "direct main"
     description: flutter

@@ -151,7 +151,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
 
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation 'androidx.core:core-ktx:1.15.0'
@@ -167,7 +167,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation 'com.google.android.material:material:1.12.0'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.14'
+    implementation 'org.slf4j:slf4j-simple:2.0.16'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
@@ -179,7 +179,7 @@ dependencies {
     implementation 'com.github.deckerst:pixymeta-android:9ec7097f17'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
 
     kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
