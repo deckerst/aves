@@ -2,4 +2,4 @@
 
 <b>پیمایش و جستجو</b>یک بخش مهم از <i>اِیوْز</i> است. هدف این است که کاربران به راحتی از آلبوم ها به عکس ها به برچسب ها به نقشه ها و غیره دست پیدا کنند.
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>اِیوْز</i> با اندروید سازگار است (شامل تلوزیون اندرویدی) با قابلیت هایی مانند <b>ابزارک ها</b>, <b>میانبر ها</b>, <b>ذخیره نیرو</b> و <b>جستجو عمومی</b> و همچنین میتوان از آن به عنوان <b>نمایشگر و انتخابگر رسانه</b> استفاده کرد.
