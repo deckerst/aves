@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.11.20"></a>[v1.11.20] - 2024-12-11
+
 ### Added
 
 - Albums: dynamic albums from filter sets
