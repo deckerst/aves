@@ -2,4 +2,4 @@
 
 <b>Flakk og leit</b> eru mikilvægir hlutar <i>Aves</i>. Markmiðið er að notendur eigi auðvelt með að flæða úr albúmum yfir í ljósmyndir yfir í merki eða landakort, o.s.frv.
 
-<i>Aves</i> samtvinnast við Android (frá KitKat til Android 14, að meðtöldu Android TV) með eiginleikum á borð við <b>viðmótshluta</b>, <b>flýtileiðir í forrit</b>, <b>skjáhvílu</b> og <b>víðværa leit</b>. Það virkar einnig sem <b>margmiðlunarskoðari og veljari</b>.
+<i>Aves</i> samtvinnast við Android (að meðtöldu Android TV) með eiginleikum á borð við <b>viðmótshluta</b>, <b>flýtileiðir í forrit</b>, <b>skjáhvílu</b> og <b>víðværa leit</b>. Það virkar einnig sem <b>margmiðlunarskoðari og veljari</b>.
