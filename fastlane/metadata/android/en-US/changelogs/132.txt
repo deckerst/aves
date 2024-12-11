@@ -1,3 +1,0 @@
-In v1.11.13:
-- review photos from the lock screen
-Full changelog available on GitHub
