@@ -2,4 +2,4 @@
 
 <b>Naršymas ir paieška</b> yra svarbi <i>„Aves”</i> dalis. Tikslas yra, kad vartotojai galėtų lengvai pereiti nuo albumų prie nuotraukų, žymų, žemėlapių ir kt.
 
-<i>„Aves”</i> integruojasi su „Android” (nuo 19 iki 34 API, t. y. nuo „KitKat” iki 14 versijos „Android”) su tokiomis funkcijomis kaip <b>valdiklių</b>, <b>programėlių nuorodų</b> , <b>ekrano užsklandų</b> ir <b>globalios paieškos</b> palaikymu. Ji taip pat veikia kaip <b>medijos peržiūros priemonė ir rinkiklis</b>.
+<i>„Aves”</i> integruojasi su „Android” su tokiomis funkcijomis kaip <b>valdiklių</b>, <b>programėlių nuorodų</b> , <b>ekrano užsklandų</b> ir <b>globalios paieškos</b> palaikymu. Ji taip pat veikia kaip <b>medijos peržiūros priemonė ir rinkiklis</b>.

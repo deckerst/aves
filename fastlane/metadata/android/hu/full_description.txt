@@ -2,4 +2,4 @@ Az <i>Aves</i> mindenféle képet és videót képes kezelni, beleértve a tipik
 
 A <b>navigáció és a keresés</b> fontos része az <i>Aves</i>-nek. A cél, hogy a felhasználók egyszerűen tudjanak váltani az albumokról a fotókra, címkézni vagy helyadatokkal ellátni az elemeket, stb.
 
-Az <i>Aves</i> beépül az Android-ba (a KitKat-tól az Android 14-ig, beleértve az Android TV-t) olyan funkciókkal, mint a <b>widgetek</b>, <b>alkalmazás parancsikonok</b>, <b>képernyővédő</b> és <b>globális keresés</b> kezelése. <b>Média fájlok megnyitására és kezelésére</b> is használható.
+Az <i>Aves</i> beépül az Android-ba (beleértve az Android TV-t) olyan funkciókkal, mint a <b>widgetek</b>, <b>alkalmazás parancsikonok</b>, <b>képernyővédő</b> és <b>globális keresés</b> kezelése. <b>Média fájlok megnyitására és kezelésére</b> is használható.
