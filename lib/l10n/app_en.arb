@@ -85,6 +85,7 @@
   "sourceStateLocatingPlaces": "Locating places",
 
   "chipActionDelete": "Delete",
+  "chipActionRemove": "Remove",
   "chipActionShowCollection": "Show in Collection",
   "chipActionGoToAlbumPage": "Show in Albums",
   "chipActionGoToCountryPage": "Show in Countries",
@@ -204,6 +205,7 @@
   "albumTierSpecial": "Common",
   "albumTierApps": "Apps",
   "albumTierVaults": "Vaults",
+  "albumTierDynamic": "Dynamic",
   "albumTierRegular": "Others",
 
   "coordinateFormatDms": "DMS",
@@ -427,6 +429,9 @@
   "newAlbumDialogNameLabelAlreadyExistsHelper": "Directory already exists",
   "newAlbumDialogStorageLabel": "Storage:",
 
+  "newDynamicAlbumDialogTitle": "New Dynamic Album",
+  "dynamicAlbumAlreadyExists": "Dynamic album already exists",
+
   "newVaultWarningDialogMessage": "Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.",
   "newVaultDialogTitle": "New Vault",
   "configureVaultDialogTitle": "Configure Vault",
@@ -595,6 +600,7 @@
 
   "collectionActionShowTitleSearch": "Show title filter",
   "collectionActionHideTitleSearch": "Hide title filter",
+  "collectionActionAddDynamicAlbum": "Add dynamic album",
   "collectionActionAddShortcut": "Add shortcut",
   "collectionActionSetHome": "Set as home",
   "collectionActionEmptyBin": "Empty bin",
@@ -806,6 +812,7 @@
   "settingsActionImportDialogTitle": "Import",
 
   "appExportCovers": "Covers",
+  "appExportDynamicAlbums": "Dynamic albums",
   "appExportFavourites": "Favorites",
   "appExportSettings": "Settings",
 

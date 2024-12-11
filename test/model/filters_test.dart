@@ -1,10 +1,10 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/path.dart';
@@ -12,7 +12,7 @@ import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:latlong2/latlong.dart';
@@ -35,7 +35,7 @@ void main() {
   test('Filter serialization', () {
     CollectionFilter? jsonRoundTrip(filter) => CollectionFilter.fromJson(filter.toJson());
 
-    final album = AlbumFilter('path/to/album', 'album');
+    final album = StoredAlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));
 
     final aspectRatio = AspectRatioFilter.landscape;

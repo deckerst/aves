@@ -1,5 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -17,13 +18,13 @@ mixin AlbumMixin on SourceBase {
 
   List<String> get rawAlbums => List.unmodifiable(_directories);
 
-  Set<AlbumFilter> getNewAlbumFilters(BuildContext context) => Set.unmodifiable(_newAlbums.map((v) => AlbumFilter(v, getAlbumDisplayName(context, v))));
+  Set<StoredAlbumFilter> getNewAlbumFilters(BuildContext context) => Set.unmodifiable(_newAlbums.map((v) => StoredAlbumFilter(v, getStoredAlbumDisplayName(context, v))));
 
   int compareAlbumsByName(String? a, String? b) {
     a ??= '';
     b ??= '';
-    final ua = getAlbumDisplayName(null, a);
-    final ub = getAlbumDisplayName(null, b);
+    final ua = getStoredAlbumDisplayName(null, a);
+    final ub = getStoredAlbumDisplayName(null, b);
     final c = compareAsciiUpperCaseNatural(ua, ub);
     if (c != 0) return c;
     final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
@@ -36,7 +37,7 @@ mixin AlbumMixin on SourceBase {
   }
 
   void _onAlbumChanged({bool notify = true}) {
-    invalidateAlbumDisplayNames();
+    invalidateStoredAlbumDisplayNames();
     if (notify) {
       notifyAlbumsChanged();
     }
@@ -82,12 +83,6 @@ mixin AlbumMixin on SourceBase {
       _directories.removeAll(removableAlbums);
       _onAlbumChanged();
       invalidateAlbumFilterSummary(directories: removableAlbums);
-
-      final bookmarks = settings.drawerAlbumBookmarks;
-      removableAlbums.forEach((album) {
-        bookmarks?.remove(album);
-      });
-      settings.drawerAlbumBookmarks = bookmarks;
     }
   }
 
@@ -95,13 +90,13 @@ mixin AlbumMixin on SourceBase {
     if (visibleEntries.any((entry) => entry.directory == album)) return false;
     if (_newAlbums.contains(album)) return false;
     if (vaults.isVault(album)) return false;
-    if (settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).contains(album)) return false;
+    if (settings.pinnedFilters.whereType<StoredAlbumFilter>().map((v) => v.album).contains(album)) return false;
     return true;
   }
 
   // filter summary
 
-  // by directory
+  // by filter key
   final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
   final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
@@ -117,36 +112,53 @@ mixin AlbumMixin on SourceBase {
       _filterSizeMap.clear();
       _filterRecentEntryMap.clear();
     } else {
+      // clear entries only for modified album directories
       directories ??= {};
       if (entries != null) {
         directories.addAll(entries.map((entry) => entry.directory).nonNulls);
       }
-      directories.forEach((directory) {
-        _filterEntryCountMap.remove(directory);
-        _filterSizeMap.remove(directory);
-        _filterRecentEntryMap.remove(directory);
+      directories.nonNulls.map((v) => StoredAlbumFilter(v, null).key).forEach((key) {
+        _filterEntryCountMap.remove(key);
+        _filterSizeMap.remove(key);
+        _filterRecentEntryMap.remove(key);
       });
+
+      // clear entries for all dynamic albums
+      invalidateDynamicAlbumFilterSummary(notify: false);
     }
     if (notify) {
-      eventBus.fire(AlbumSummaryInvalidatedEvent(directories));
+      eventBus.fire(StoredAlbumSummaryInvalidatedEvent(directories));
+      eventBus.fire(const DynamicAlbumSummaryInvalidatedEvent());
     }
   }
 
-  int albumEntryCount(AlbumFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter.album, () => visibleEntries.where(filter.test).length);
+  void invalidateDynamicAlbumFilterSummary({bool notify = true}) {
+    _filterEntryCountMap.removeWhere(_isDynamicAlbumKey);
+    _filterSizeMap.removeWhere(_isDynamicAlbumKey);
+    _filterRecentEntryMap.removeWhere(_isDynamicAlbumKey);
+
+    if (notify) {
+      eventBus.fire(const DynamicAlbumSummaryInvalidatedEvent());
+    }
   }
 
-  int albumSize(AlbumFilter filter) {
-    return _filterSizeMap.putIfAbsent(filter.album, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
+  bool _isDynamicAlbumKey(String key, _) => key.startsWith('${DynamicAlbumFilter.type}-');
+
+  int albumEntryCount(AlbumBaseFilter filter) {
+    return _filterEntryCountMap.putIfAbsent(filter.key, () => visibleEntries.where(filter.test).length);
   }
 
-  AvesEntry? albumRecentEntry(AlbumFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
+  int albumSize(AlbumBaseFilter filter) {
+    return _filterSizeMap.putIfAbsent(filter.key, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
+  }
+
+  AvesEntry? albumRecentEntry(AlbumBaseFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.key, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
 
   // new albums
 
-  void createAlbum(String directory) {
+  void createStoredAlbum(String directory) {
     if (!_directories.contains(directory)) {
       _newAlbums.add(directory);
       addDirectories(albums: {directory});
@@ -156,7 +168,7 @@ mixin AlbumMixin on SourceBase {
   void renameNewAlbum(String source, String destination) {
     if (_newAlbums.remove(source)) {
       cleanEmptyAlbums({source});
-      createAlbum(destination);
+      createStoredAlbum(destination);
     }
   }
 
@@ -168,12 +180,12 @@ mixin AlbumMixin on SourceBase {
 
   final Map<String, String> _albumDisplayNamesWithContext = {}, _albumDisplayNamesWithoutContext = {};
 
-  void invalidateAlbumDisplayNames() {
+  void invalidateStoredAlbumDisplayNames() {
     _albumDisplayNamesWithContext.clear();
     _albumDisplayNamesWithoutContext.clear();
   }
 
-  String _computeDisplayName(BuildContext? context, String dirPath) {
+  String _computeStoredAlbumDisplayName(BuildContext? context, String dirPath) {
     final separator = pContext.separator;
     assert(!dirPath.endsWith(separator));
 
@@ -222,16 +234,20 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
-  String getAlbumDisplayName(BuildContext? context, String dirPath) {
+  String getStoredAlbumDisplayName(BuildContext? context, String dirPath) {
     final names = (context != null ? _albumDisplayNamesWithContext : _albumDisplayNamesWithoutContext);
-    return names.putIfAbsent(dirPath, () => _computeDisplayName(context, dirPath));
+    return names.putIfAbsent(dirPath, () => _computeStoredAlbumDisplayName(context, dirPath));
   }
 }
 
 class AlbumsChangedEvent {}
 
-class AlbumSummaryInvalidatedEvent {
+class DynamicAlbumSummaryInvalidatedEvent {
+  const DynamicAlbumSummaryInvalidatedEvent();
+}
+
+class StoredAlbumSummaryInvalidatedEvent {
   final Set<String?>? directories;
 
-  const AlbumSummaryInvalidatedEvent(this.directories);
+  const StoredAlbumSummaryInvalidatedEvent(this.directories);
 }

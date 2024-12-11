@@ -687,7 +687,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       sectionLayouts.forEach((section) {
         final directory = (section.sectionKey as EntryAlbumSectionKey).directory;
         if (directory != null) {
-          final label = source.getAlbumDisplayName(context, directory);
+          final label = source.getStoredAlbumDisplayName(context, directory);
           crumbs[section.minOffset / maxOffset] = label;
         }
       });

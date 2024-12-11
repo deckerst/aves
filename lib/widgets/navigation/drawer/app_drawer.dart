@@ -1,4 +1,5 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -46,14 +47,29 @@ class AppDrawer extends StatefulWidget {
   @override
   State<AppDrawer> createState() => _AppDrawerState();
 
-  static List<String> getDefaultAlbums(BuildContext context) {
+  static List<AlbumBaseFilter> _getDefaultAlbums(BuildContext context) {
     final source = context.read<CollectionSource>();
     final specialAlbums = source.rawAlbums.where((album) {
       final type = androidFileUtils.getAlbumType(album);
       return [AlbumType.camera, AlbumType.download, AlbumType.screenshots].contains(type);
     }).toList()
       ..sort(source.compareAlbumsByName);
-    return specialAlbums;
+    return specialAlbums.map((v) => StoredAlbumFilter(v, source.getStoredAlbumDisplayName(context, v))).toList();
+  }
+
+  static List<AlbumBaseFilter>? _getCustomAlbums(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    return settings.drawerAlbumBookmarks?.map((v) {
+      if (v is StoredAlbumFilter) {
+        final album = v.album;
+        return StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album));
+      }
+      return v;
+    }).toList();
+  }
+
+  static List<AlbumBaseFilter> effectiveAlbumBookmarks(BuildContext context) {
+    return _getCustomAlbums(context) ?? _getDefaultAlbums(context);
   }
 }
 
@@ -288,17 +304,22 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     return StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {
-          final albums = settings.drawerAlbumBookmarks ?? AppDrawer.getDefaultAlbums(context);
+          final albums = AppDrawer.effectiveAlbumBookmarks(context);
           if (albums.isEmpty) return const SizedBox();
           return Column(
             children: [
               const Divider(),
-              ...albums.map((album) => AlbumNavTile(
-                    album: album,
+              ...albums.map((filter) => AlbumNavTile(
+                    filter: filter,
                     isSelected: () {
                       if (currentFilters == null || currentFilters.length > 1) return false;
                       final currentFilter = currentFilters.firstOrNull;
-                      return currentFilter is AlbumFilter && currentFilter.album == album;
+                      if (currentFilter is StoredAlbumFilter && filter is StoredAlbumFilter) {
+                        return currentFilter.album == filter.album;
+                      } else if (currentFilter is DynamicAlbumFilter && filter is DynamicAlbumFilter) {
+                        return currentFilter.name == filter.name;
+                      }
+                      return false;
                     },
                   )),
             ],

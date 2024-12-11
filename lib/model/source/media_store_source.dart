@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/origins.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -44,7 +45,7 @@ class MediaStoreSource extends CollectionSource {
     await reportService.log('$runtimeType init target scope=$scope');
     _essentialLoader ??= _loadEssentials();
     await _essentialLoader;
-    addDirectories(albums: settings.pinnedFilters.whereType<AlbumFilter>().map((v) => v.album).toSet());
+    addDirectories(albums: settings.pinnedFilters.whereType<StoredAlbumFilter>().map((v) => v.album).toSet());
     await updateGeneration();
     unawaited(_loadEntries(
       analysisController: analysisController,
@@ -59,13 +60,15 @@ class MediaStoreSource extends CollectionSource {
     await vaults.init();
     await favourites.init();
     await covers.init();
-    final currentTimeZoneOffset = DateTime.now().timeZoneOffset.inMilliseconds;
-    final catalogTimeZoneOffset = settings.catalogTimeZoneOffsetMillis;
-    if (currentTimeZoneOffset != catalogTimeZoneOffset) {
-      unawaited(reportService.recordError('Time zone offset change: $currentTimeZoneOffset -> $catalogTimeZoneOffset. Clear catalog metadata to get correct date/times.'));
+    await dynamicAlbums.init();
+
+    final deviceOffset = DateTime.now().timeZoneOffset.inMilliseconds;
+    final catalogOffset = settings.catalogTimeZoneOffsetMillis;
+    if (deviceOffset != catalogOffset) {
+      unawaited(reportService.recordError('Time zone offset change: $catalogOffset -> $deviceOffset. Clear catalog metadata to get correct date/times.'));
       await localMediaDb.clearDates();
       await localMediaDb.clearCatalogMetadata();
-      settings.catalogTimeZoneOffsetMillis = currentTimeZoneOffset;
+      settings.catalogTimeZoneOffsetMillis = deviceOffset;
     }
     await loadDates();
     debugPrint('$runtimeType load essentials complete in ${stopwatch.elapsed.inMilliseconds}ms');
@@ -80,7 +83,7 @@ class MediaStoreSource extends CollectionSource {
     state = SourceState.loading;
     clearEntries();
 
-    final scopeAlbumFilters = _targetScope?.whereType<AlbumFilter>();
+    final scopeAlbumFilters = _targetScope?.whereType<StoredAlbumFilter>();
     final scopeDirectory = scopeAlbumFilters != null && scopeAlbumFilters.length == 1 ? scopeAlbumFilters.first.album : null;
 
     final Set<AvesEntry> topEntries = {};

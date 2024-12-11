@@ -2,4 +2,4 @@
 
 La <b>navegación y búsqueda</b> son las partes más importantes de <i>Aves</i>. Su propósito es que los usuarios puedan fácilmente ir de álbumes a fotos, etiquetas, mapas, etc.
 
-<i>Aves</i> se integra con Android (desde KitKat hasta Android 14, incluido Android TV) con funciones como <b>complementos</b>, <b>accesos directos a aplicaciones</b>, <b>protector de pantalla</b> y <b>búsqueda global</b>. También funciona como un <b>visor y selector de medios</b>.
+<i>Aves</i> se integra con Android (incluido Android TV) con funciones como <b>complementos</b>, <b>accesos directos a aplicaciones</b>, <b>protector de pantalla</b> y <b>búsqueda global</b>. También funciona como un <b>visor y selector de medios</b>.

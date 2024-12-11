@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db.dart';
 import 'package:aves/model/db/db_sqflite_upgrade.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -27,6 +28,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   static const addressTable = 'address';
   static const favouriteTable = 'favourites';
   static const coverTable = 'covers';
+  static const dynamicAlbumTable = 'dynamicAlbums';
   static const vaultTable = 'vaults';
   static const trashTable = 'trash';
   static const videoPlaybackTable = 'videoPlayback';
@@ -93,6 +95,10 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
             ', packageName TEXT'
             ', color INTEGER'
             ')');
+        await db.execute('CREATE TABLE $dynamicAlbumTable('
+            'name TEXT PRIMARY KEY'
+            ', filter TEXT'
+            ')');
         await db.execute('CREATE TABLE $vaultTable('
             'name TEXT PRIMARY KEY'
             ', autoLock INTEGER'
@@ -110,7 +116,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
             ')');
       },
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 11,
+      version: 12,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
@@ -137,7 +143,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
     final _dataTypes = dataTypes ?? EntryDataType.values.toSet();
 
-    // using array in `whereArgs` and using it with `where id IN ?` is a pain, so we prefer `batch` instead
+    // using array in `whereArgs` and using it with `where arg IN ?` is a pain, so we prefer `batch` instead
     final batch = _db.batch();
     const where = 'id = ?';
     const coverWhere = 'entryId = ?';
@@ -450,7 +456,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<void> removeVaults(Set<VaultDetails> rows) async {
     if (rows.isEmpty) return;
 
-    // using array in `whereArgs` and using it with `where id IN ?` is a pain, so we prefer `batch` instead
+    // using array in `whereArgs` and using it with `where arg IN ?` is a pain, so we prefer `batch` instead
     final batch = _db.batch();
     rows.map((v) => v.name).forEach((name) => batch.delete(vaultTable, where: 'name = ?', whereArgs: [name]));
     await batch.commit(noResult: true);
@@ -539,7 +545,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     final ids = rows.map((row) => row.entryId);
     if (ids.isEmpty) return;
 
-    // using array in `whereArgs` and using it with `where id IN ?` is a pain, so we prefer `batch` instead
+    // using array in `whereArgs` and using it with `where arg IN ?` is a pain, so we prefer `batch` instead
     final batch = _db.batch();
     ids.forEach((id) => batch.delete(favouriteTable, where: 'id = ?', whereArgs: [id]));
     await batch.commit(noResult: true);
@@ -609,9 +615,57 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       }
     });
 
-    // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
+    // using array in `whereArgs` and using it with `where arg IN ?` is a pain, so we prefer `batch` instead
     final batch = _db.batch();
     obsoleteFilterJson.forEach((filterJson) => batch.delete(coverTable, where: 'filter = ?', whereArgs: [filterJson]));
+    await batch.commit(noResult: true);
+  }
+
+  // dynamic albums
+
+  @override
+  Future<void> clearDynamicAlbums() async {
+    final count = await _db.delete(dynamicAlbumTable, where: '1');
+    debugPrint('$runtimeType clearDynamicAlbums deleted $count rows');
+  }
+
+  @override
+  Future<Set<DynamicAlbumRow>> loadAllDynamicAlbums() async {
+    final result = <DynamicAlbumRow>{};
+    final cursor = await _db.queryCursor(dynamicAlbumTable, bufferSize: _queryCursorBufferSize);
+    while (await cursor.moveNext()) {
+      final row = DynamicAlbumRow.fromMap(cursor.current);
+      if (row != null) {
+        result.add(row);
+      }
+    }
+    return result;
+  }
+
+  @override
+  Future<void> addDynamicAlbums(Set<DynamicAlbumRow> rows) async {
+    if (rows.isEmpty) return;
+
+    final batch = _db.batch();
+    rows.forEach((row) => _batchInsertDynamicAlbum(batch, row));
+    await batch.commit(noResult: true);
+  }
+
+  void _batchInsertDynamicAlbum(Batch batch, DynamicAlbumRow row) {
+    batch.insert(
+      dynamicAlbumTable,
+      row.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  Future<void> removeDynamicAlbums(Set<String> names) async {
+    if (names.isEmpty) return;
+
+    // using array in `whereArgs` and using it with `where arg IN ?` is a pain, so we prefer `batch` instead
+    final batch = _db.batch();
+    names.forEach((name) => batch.delete(dynamicAlbumTable, where: 'name = ?', whereArgs: [name]));
     await batch.commit(noResult: true);
   }
 
@@ -665,7 +719,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<void> removeVideoPlayback(Set<int> ids) async {
     if (ids.isEmpty) return;
 
-    // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
+    // using array in `whereArgs` and using it with `where arg IN ?` is a pain, so we prefer `batch` instead
     final batch = _db.batch();
     ids.forEach((id) => batch.delete(videoPlaybackTable, where: 'id = ?', whereArgs: [id]));
     await batch.commit(noResult: true);

@@ -1,6 +1,5 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -8,10 +7,9 @@ import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DrawerAlbumTab extends StatefulWidget {
-  final List<String> items;
+  final List<AlbumBaseFilter> items;
 
   const DrawerAlbumTab({
     super.key,
@@ -23,11 +21,10 @@ class DrawerAlbumTab extends StatefulWidget {
 }
 
 class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
-  List<String> get items => widget.items;
+  List<AlbumBaseFilter> get items => widget.items;
 
   @override
   Widget build(BuildContext context) {
-    final source = context.read<CollectionSource>();
     return Column(
       children: [
         if (!settings.useTvLayout) ...[
@@ -37,11 +34,10 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
         Flexible(
           child: ReorderableListView.builder(
             itemBuilder: (context, index) {
-              final album = items[index];
-              final filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
-              void onPressed() => setState(() => items.remove(album));
+              final filter = items[index];
+              void onPressed() => setState(() => items.remove(filter));
               return ListTile(
-                key: ValueKey(album),
+                key: ValueKey(filter.key),
                 leading: DrawerFilterIcon(filter: filter),
                 title: DrawerFilterTitle(filter: filter),
                 trailing: IconButton(
@@ -68,9 +64,9 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
           icon: const Icon(AIcons.add),
           label: context.l10n.settingsNavigationDrawerAddAlbum,
           onPressed: () async {
-            final album = await pickAlbum(context: context, moveType: null);
-            if (album == null || items.contains(album)) return;
-            setState(() => items.add(album));
+            final albumFilter = await pickAlbum(context: context, moveType: null, storedAlbumsOnly: false);
+            if (albumFilter == null || items.contains(albumFilter)) return;
+            setState(() => items.add(albumFilter));
           },
         ),
       ],

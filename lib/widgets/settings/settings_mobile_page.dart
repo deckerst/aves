@@ -170,8 +170,8 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
               return item.import(importable[item], source);
             });
             showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
-          } catch (error) {
-            debugPrint('failed to import app json, error=$error');
+          } catch (error, stack) {
+            debugPrint('failed to import app json, error=$error\n$stack');
             showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
           }
         }

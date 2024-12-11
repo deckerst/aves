@@ -559,12 +559,17 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     void _applyDisplayRefreshRateMode() => settings.displayRefreshRateMode.apply();
 
     void _applyMaxBrightness() {
-      switch (settings.maxBrightness) {
-        case MaxBrightness.never:
-        case MaxBrightness.viewerOnly:
-          AvesApp.screenBrightness?.resetApplicationScreenBrightness();
-        case MaxBrightness.always:
-          AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
+      try {
+        switch (settings.maxBrightness) {
+          case MaxBrightness.never:
+          case MaxBrightness.viewerOnly:
+            AvesApp.screenBrightness?.resetApplicationScreenBrightness();
+          case MaxBrightness.always:
+            AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
+        }
+      } on PlatformException catch (e, stack) {
+        // `screen_brightness` plugin may fail
+        reportService.recordError(e, stack);
       }
     }
 

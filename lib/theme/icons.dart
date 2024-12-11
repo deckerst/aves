@@ -126,6 +126,7 @@ class AIcons {
   static final unpin = MdiIcons.pinOffOutline;
   static const print = Icons.print_outlined;
   static const refresh = Icons.refresh_outlined;
+  static const remove = Icons.remove_outlined;
   static final resetBounds = MdiIcons.rayStartEnd;
   static const reverse = Icons.invert_colors_outlined;
   static const reset = Icons.restart_alt_outlined;
@@ -187,6 +188,7 @@ class AIcons {
 
   // albums
   static const album = Icons.photo_album_outlined;
+  static const dynamicAlbum = Icons.image_search_outlined;
   static const cameraAlbum = Icons.photo_camera_outlined;
   static const downloadAlbum = Icons.file_download;
   static const screenshotAlbum = Icons.screenshot_outlined;

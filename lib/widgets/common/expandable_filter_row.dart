@@ -167,7 +167,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
   Widget _buildChip(CollectionFilter filter) {
     return AvesFilterChip(
-      // key `album-{path}` is expected by test driver
+      // key is expected by test driver
       key: Key(filter.key),
       filter: filter,
       allowGenericIcon: showGenericIcon,

@@ -59,7 +59,7 @@ class Favourites with ChangeNotifier {
 
   Map<String, List<String>>? export(CollectionSource source) {
     final visibleEntries = source.visibleEntries;
-    final ids = favourites.all;
+    final ids = all;
     final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).nonNulls.toSet();
     final byVolume = groupBy<String, StorageVolume?>(paths, androidFileUtils.getStorageVolume);
     final jsonMap = Map.fromEntries(byVolume.entries.map((kv) {
@@ -97,7 +97,7 @@ class Favourites with ChangeNotifier {
       }
 
       if (foundEntries.isNotEmpty) {
-        favourites.add(foundEntries);
+        add(foundEntries);
       }
       if (missedPaths.isNotEmpty) {
         debugPrint('failed to import favourites with ${missedPaths.length} missed paths');

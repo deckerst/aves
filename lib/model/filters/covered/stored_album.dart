@@ -1,15 +1,30 @@
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class AlbumFilter extends CoveredCollectionFilter {
+abstract class AlbumBaseFilter extends CollectionFilter {
+  const AlbumBaseFilter({required super.reversed});
+
+  bool match(String query);
+
+  StorageVolume? get storageVolume;
+
+  bool get canRename;
+
+  bool get isVault;
+}
+
+class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   static const type = 'album';
 
   final String album;
@@ -19,12 +34,12 @@ class AlbumFilter extends CoveredCollectionFilter {
   @override
   List<Object?> get props => [album, reversed];
 
-  AlbumFilter(this.album, this.displayName, {super.reversed = false}) {
+  StoredAlbumFilter(this.album, this.displayName, {super.reversed = false}) {
     _test = (entry) => entry.directory == album;
   }
 
-  factory AlbumFilter.fromMap(Map<String, dynamic> json) {
-    return AlbumFilter(
+  factory StoredAlbumFilter.fromMap(Map<String, dynamic> json) {
+    return StoredAlbumFilter(
       json['album'],
       json['uniqueName'],
       reversed: json['reversed'] ?? false,
@@ -95,7 +110,25 @@ class AlbumFilter extends CoveredCollectionFilter {
   @override
   String get category => type;
 
-  // key `album-{path}` is expected by test driver
+  // key is expected by test driver
   @override
   String get key => '$type-$reversed-$album';
+
+  @override
+  bool match(String query) => (displayName ?? album).toUpperCase().contains(query);
+
+  @override
+  StorageVolume? get storageVolume => androidFileUtils.getStorageVolume(album);
+
+  @override
+  bool get canRename {
+    if (isVault) return true;
+
+    // do not allow renaming volume root
+    final dir = androidFileUtils.relativeDirectoryFromPath(album);
+    return dir != null && dir.relativeDir.isNotEmpty;
+  }
+
+  @override
+  bool get isVault => vaults.isVault(album);
 }

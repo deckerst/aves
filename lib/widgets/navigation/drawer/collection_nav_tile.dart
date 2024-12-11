@@ -1,8 +1,7 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
@@ -69,23 +68,21 @@ class CollectionNavTile extends StatelessWidget {
 }
 
 class AlbumNavTile extends StatelessWidget {
-  final String album;
+  final AlbumBaseFilter filter;
   final bool Function() isSelected;
 
   const AlbumNavTile({
     super.key,
-    required this.album,
+    required this.filter,
     required this.isSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    final source = context.read<CollectionSource>();
-    final filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
     return CollectionNavTile(
       leading: DrawerFilterIcon(filter: filter),
       title: DrawerFilterTitle(filter: filter),
-      trailing: androidFileUtils.isOnRemovableStorage(album)
+      trailing: filter.storageVolume?.isRemovable ?? false
           ? const Icon(
               AIcons.storageCard,
               size: 16,
