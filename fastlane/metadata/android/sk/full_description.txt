@@ -2,4 +2,4 @@
 
 <b>Navigácia a vyhľadávanie</b> je dôležitou súčasťou aplikácie <i>Aves</i>. Jej cieľom je poskytnúť užívateľom jednoduchý prechod z albumov, do fotiek, tagov, máp, atď.
 
-<i>Aves</i> je schopný pracovať s Android (od KitKat do Android 14, včetne Android TV) a ponúka rozšírenia ako <b>miniaplikácie (widgety)</b>, <b>skratky aplikácie</b>, <b>šetrič obrazovky</b> a <b>globálne vyhľadávanie</b>. Rovnako poskytuje <b>prehľadávnie médií</b>.
+<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.

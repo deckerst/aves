@@ -2,4 +2,4 @@
 
 <b>Navigasjon og søk</b> er en viktig del av <i>Aves</i>. Målet er at brukere enkelt skal kunne ta seg fra album, til bilder, til etiketter, til kart, osv.
 
-<i>Aves</i> integrerer seg med Android (fra <b>API 19 til 34</b>, altså fra KitKat til Android 14) med funksjoner som f.eks. <b>miniprogrammer</b>, <b>programsnarveier</b>, <b>skjermsparer</b> og <b>søk i hele programmet</b>. Det fungerer også som <b>mediaviser og utvelger</b>.
+<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.

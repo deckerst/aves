@@ -2,4 +2,4 @@
 
 <b>Nawigacja i wyszukiwanie</b> jest ważną częścią <i>Aves</i>. Celem jest aby użytkownicy mogli łatwo przechodzić od albumów do zdjęć, tagów, map itd.
 
-<i>Aves</i> integruje się z Androidem (od <b>API 19 do 34</b>, czyli od KitKata do Androida 14) z funkcjami takimi jak <b>widżety</b>, <b>skróty do aplikacji</b>, <b>wygaszacz ekranu</b> i <b>obsługa globalnego wyszukiwania</b>. Działa również jako <b>przeglądarka i selektor mediów</b>.
+<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
