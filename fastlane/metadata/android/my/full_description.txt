@@ -2,4 +2,4 @@
 
 <b>အလွယ်တကူ ရှာဖွေကြည့်ရှုနိုင်တာက</b> <i>Aves</i> ရဲ့ အဓိကကျတဲ့အစိတ်အပိုင်းတစ်ခုဖြစ်ပါတယ်။ အသုံးပြုသူတွေကို အယ်လ်ဘမ်တွေကနေ ပုံတွေ၊ ပုံတွေကနေ tag တွေ၊ tag တွေကနေ မြေပုံတွေ၊ အစရှိသဖြင့် အလွယ်လေးကူးပြောင်းနိုင်စေဖို့က <i>Aves</i> ရဲ့ ပန်းတိုင်ဖြစ်ပါတယ်။
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> ဟာ Android (Android တီဗီအပါအဝင်) ဖြင့်ပေါင်းစပ်ပြီး <b>ဝစ်ဂျက်တွေ</b>၊ <b>အက်ပ်ဖြတ်လမ်းတိုတွေ</b>၊ <b>screen saver တွေ</b>နဲ့ <b>နေရာအနှံ့ရှာဖွေမှုတွေကိုပါ</b> ကိုင်တွယ်နိုင်ပါတယ်။ ဒါ့အပြင် <b>မီဒီယာကြည့်ဖို့၊ မီဒီယာရွေးချယ်ဖို့</b>အတွက်လည်း သုံးလို့ရပါသေးတယ်။
