@@ -2,4 +2,4 @@
 
 <b>Навігацыя і пошук</b> з'яўляюцца важнай часткай <i>Aves</i>. Мэта складаецца ў тым, каб карыстальнікі лёгка пераходзілі ад альбомаў да фатаграфій да тэгаў да карт і г.д.
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> інтэгруецца з Android (уключаючы Android TV) з такімі функцыямі, як <b>віджэты</b>, <b>ярлыкі праграм</b>, <b>застаўка</b> і апрацоўка <b>глабальнага пошуку</b>. Ён таксама працуе як <b>сродак прагляду і выбару мультымедыя</b>.
