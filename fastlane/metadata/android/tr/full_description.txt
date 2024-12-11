@@ -2,4 +2,4 @@
 
 <b>Gezinme ve arama</b> <i>Aves'in</i> önemli bir parçasıdır. Amaç, kullanıcıların albümlerden fotoğraflara, etiketlerden haritalara vb. kolayca geçmesini sağlamaktır.
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i>, <b>uygulama kısayolları</b> ve <b>global arama</b> işleme gibi özelliklerle Android ile entegre olur. Ayrıca bir <b>medya görüntüleyici ve alıcı</b> olarak da çalışır.
