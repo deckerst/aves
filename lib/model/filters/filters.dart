@@ -99,18 +99,18 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     return null;
   }
 
-  static CollectionFilter? fromJson(String jsonString) {
-    if (jsonString.isEmpty) return null;
+  static CollectionFilter? fromJson(String? jsonString) {
+    if (jsonString == null || jsonString.isEmpty) return null;
 
     try {
       final jsonMap = jsonDecode(jsonString);
       if (jsonMap is Map<String, dynamic>) {
         return _fromMap(jsonMap);
       }
+      debugPrint('failed to parse filter from json=$jsonString');
     } catch (error, stack) {
       debugPrint('failed to parse filter from json=$jsonString error=$error\n$stack');
     }
-    debugPrint('failed to parse filter from json=$jsonString');
     return null;
   }
 

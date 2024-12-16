@@ -9,6 +9,7 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -178,14 +179,14 @@ class Covers {
           final volume = androidFileUtils.getStorageVolume(path)?.path;
           final relativePath = volume != null ? path?.substring(volume.length) : null;
           final packageName = row.packageName;
-          final colorValue = row.color?.value;
+          final colorJson = row.color?.toJson();
 
           return {
             'filter': row.filter.toJson(),
             if (volume != null) 'volume': volume,
             if (relativePath != null) 'relativePath': relativePath,
             if (packageName != null) 'packageName': packageName,
-            if (colorValue != null) 'color': colorValue,
+            if (colorJson != null) 'color': colorJson,
           };
         })
         .nonNulls
@@ -201,33 +202,39 @@ class Covers {
 
     final visibleEntries = source.visibleEntries;
     jsonList.forEach((row) {
-      final filter = CollectionFilter.fromJson(row['filter']);
-      if (filter == null) {
-        debugPrint('failed to import cover for row=$row');
-        return;
-      }
-
-      final volume = row['volume'] as String?;
-      final relativePath = row['relativePath'] as String?;
-      final packageName = row['packageName'] as String?;
-      final colorValue = row['color'] as int?;
-
-      AvesEntry? entry;
-      if (volume != null && relativePath != null) {
-        final path = pContext.join(volume, relativePath);
-        entry = visibleEntries.firstWhereOrNull((entry) => entry.path == path && filter.test(entry));
-        if (entry == null) {
-          debugPrint('failed to import cover entry for path=$path, filter=$filter');
+      try {
+        final filter = CollectionFilter.fromJson(row['filter']);
+        if (filter == null) {
+          debugPrint('failed to import cover for row=$row');
+          return;
         }
-      }
 
-      if (entry != null || packageName != null || colorValue != null) {
-        set(
-          filter: filter,
-          entryId: entry?.id,
-          packageName: packageName,
-          color: colorValue != null ? Color(colorValue) : null,
-        );
+        final volume = row['volume'] as String?;
+        final relativePath = row['relativePath'] as String?;
+        final packageName = row['packageName'] as String?;
+        final color = row['color'];
+        // for backward compatibility, color used to be an `int`, now a `string`
+        final colorJson = color is String ? color : null;
+
+        AvesEntry? entry;
+        if (volume != null && relativePath != null) {
+          final path = pContext.join(volume, relativePath);
+          entry = visibleEntries.firstWhereOrNull((entry) => entry.path == path && filter.test(entry));
+          if (entry == null) {
+            debugPrint('failed to import cover entry for path=$path, filter=$filter');
+          }
+        }
+
+        if (entry != null || packageName != null || colorJson != null) {
+          set(
+            filter: filter,
+            entryId: entry?.id,
+            packageName: packageName,
+            color: ExtraColor.fromJson(colorJson),
+          );
+        }
+      } catch (error, stack) {
+        debugPrint('failed to import cover for row=$row with error=$error\n$stack');
       }
     });
   }
@@ -254,13 +261,15 @@ class CoverRow extends Equatable {
     final filter = CollectionFilter.fromJson(map['filter']);
     if (filter == null) return null;
 
-    final colorValue = map['color'] as int?;
-    final color = colorValue != null ? Color(colorValue) : null;
+    final entryId = map['entryId'] as int?;
+    final packageName = map['packageName'] as String?;
+    final colorJson = map['color'] as String?;
+
     return CoverRow(
       filter: filter,
-      entryId: map['entryId'] as int?,
-      packageName: map['packageName'] as String?,
-      color: color,
+      entryId: entryId,
+      packageName: packageName,
+      color: ExtraColor.fromJson(colorJson),
     );
   }
 
@@ -268,6 +277,6 @@ class CoverRow extends Equatable {
         'filter': filter.toJson(),
         'entryId': entryId,
         'packageName': packageName,
-        'color': color?.value,
+        'color': color?.toJson(),
       };
 }

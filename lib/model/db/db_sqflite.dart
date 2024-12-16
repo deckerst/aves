@@ -33,7 +33,8 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   static const trashTable = 'trash';
   static const videoPlaybackTable = 'videoPlayback';
 
-  static const _queryCursorBufferSize = 1000;
+  static const _entryInsertSliceMaxCount = 10000; // number of entries
+  static const _queryCursorBufferSize = 1000; // number of rows
   static int _lastId = 0;
 
   @override
@@ -93,7 +94,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
             'filter TEXT PRIMARY KEY'
             ', entryId INTEGER'
             ', packageName TEXT'
-            ', color INTEGER'
+            ', color TEXT'
             ')');
         await db.execute('CREATE TABLE $dynamicAlbumTable('
             'name TEXT PRIMARY KEY'
@@ -116,7 +117,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
             ')');
       },
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 12,
+      version: 13,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
@@ -224,9 +225,15 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<void> insertEntries(Set<AvesEntry> entries) async {
     if (entries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
-    final batch = _db.batch();
-    entries.forEach((entry) => _batchInsertEntry(batch, entry));
-    await batch.commit(noResult: true);
+    // slice entries to avoid memory issues
+    int inserted = 0;
+    await Future.forEach(entries.slices(_entryInsertSliceMaxCount), (slice) async {
+      debugPrint('$runtimeType saveEntries inserting slice of [${inserted + 1}, ${inserted + slice.length}] entries');
+      final batch = _db.batch();
+      slice.forEach((entry) => _batchInsertEntry(batch, entry));
+      await batch.commit(noResult: true);
+      inserted += slice.length;
+    });
     debugPrint('$runtimeType saveEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
   }
 

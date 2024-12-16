@@ -13,8 +13,23 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.24.5
-  sdk: '>=3.5.0 <4.0.0'
+  flutter: 3.27.0
+  sdk: ^3.6.0
+workspace:
+  - plugins/aves_magnifier
+  - plugins/aves_map
+  - plugins/aves_model
+  - plugins/aves_platform_meta
+  - plugins/aves_report
+  - plugins/aves_report_crashlytics
+  - plugins/aves_screen_state
+  - plugins/aves_services
+  - plugins/aves_services_google
+  - plugins/aves_ui
+  - plugins/aves_utils
+  - plugins/aves_video
+  - plugins/aves_video_ffmpeg
+  - plugins/aves_video_mpv
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
 dependencies:

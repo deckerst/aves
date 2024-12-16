@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -80,8 +81,8 @@ mixin HistogramMixin {
         final b = view[i + 2];
         // `Color.computeLuminance()` is more accurate, but slower
         // and photo software typically use the simpler formula
-        final luminance = (r * 0.3 + g * 0.59 + b * 0.11) / 255;
-        lumLevels[(luminance * normMax).round()]++;
+        final l = ColorUtils.luma(r, g, b);
+        lumLevels[(l * normMax).round()]++;
       }
     }
 

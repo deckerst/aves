@@ -164,7 +164,7 @@ class CaptionedButtonText extends StatelessWidget {
   Widget build(BuildContext context) {
     var style = DefaultTextStyle.of(context).style;
     if (!enabled) {
-      style = style.copyWith(color: style.color!.withAlpha((255.0 * .2).round()));
+      style = style.copyWith(color: style.color!.withValues(alpha: .2));
     }
 
     return Text(

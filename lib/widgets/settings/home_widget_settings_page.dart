@@ -48,8 +48,8 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
     begin: gradient.begin,
     end: gradient.end,
     colors: gradient.colors.map((v) {
-      final l = (v.computeLuminance() * 0xFF).toInt();
-      return Color.fromARGB(0xFF, l, l, l);
+      final l = v.computeLuminance();
+      return Color.from(alpha: 1, red: l, green: l, blue: l);
     }).toList(),
     stops: gradient.stops,
     tileMode: gradient.tileMode,

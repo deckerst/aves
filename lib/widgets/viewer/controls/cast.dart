@@ -127,7 +127,7 @@ mixin CastMixin {
   }
 }
 
-extension DLNADeviceExtra on DLNADevice {
+extension ExtraDLNADevice on DLNADevice {
   Future<String> requestCustom({
     required String serviceId,
     required String serviceType,

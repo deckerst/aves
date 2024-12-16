@@ -15,10 +15,10 @@ class ActionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = highlight ? theme.colorScheme.primary : Color.alphaBlend(theme.colorScheme.surfaceTint.withAlpha((255.0 * .2).round()), Themes.secondLayerColor(context));
+    final color = highlight ? theme.colorScheme.primary : Color.alphaBlend(theme.colorScheme.surfaceTint.withValues(alpha: .2), Themes.secondLayerColor(context));
     return AnimatedContainer(
       foregroundDecoration: BoxDecoration(
-        color: color.withAlpha((255.0 * .2).round()),
+        color: color.withValues(alpha: .2),
         border: Border.fromBorderSide(BorderSide(
           color: color,
           width: highlight ? 2 : 1,

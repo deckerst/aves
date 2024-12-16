@@ -23,7 +23,7 @@ class TextBackgroundPainter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final backgroundColor = style.backgroundColor;
-    if (backgroundColor == null || backgroundColor.alpha == 0) {
+    if (backgroundColor == null || backgroundColor.a == 0) {
       return child;
     }
 
