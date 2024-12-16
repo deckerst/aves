@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.27.0
 
+### Fixed
+
+- crash when loading many new items on low memory devices
+
 ## <a id="v1.11.20"></a>[v1.11.20] - 2024-12-11
 
 ### Added
