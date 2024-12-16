@@ -119,8 +119,8 @@ class SettingKeys {
   static const subtitleTextAlignmentKey = 'subtitle_text_alignment';
   static const subtitleTextPositionKey = 'subtitle_text_position';
   static const subtitleShowOutlineKey = 'subtitle_show_outline';
-  static const subtitleTextColorKey = 'subtitle_text_color';
-  static const subtitleBackgroundColorKey = 'subtitle_background_color';
+  static const subtitleTextColorKey = 'subtitle_text_color_string';
+  static const subtitleBackgroundColorKey = 'subtitle_background_color_string';
 
   // info
   static const infoMapZoomKey = 'info_map_zoom';

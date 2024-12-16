@@ -257,7 +257,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   percent: percent,
                   lineWidth: strokeWidth,
                   radius: diameter / 2,
-                  backgroundColor: colorScheme.onSurface.withAlpha((255.0 * .2).round()),
+                  backgroundColor: colorScheme.onSurface.withValues(alpha: .2),
                   progressColor: progressColor,
                   animation: animate,
                   center: total != null
@@ -314,7 +314,7 @@ class ReportProgressIndicator extends StatelessWidget {
       height: diameter,
       padding: const EdgeInsets.all(strokeWidth / 2),
       child: CircularProgressIndicator(
-        color: progressColor.withAlpha((255.0 * opacity).round()),
+        color: progressColor.withValues(alpha: opacity),
         strokeWidth: strokeWidth,
       ),
     );

@@ -1,4 +1,8 @@
+import 'dart:ui';
+
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db_sqflite.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -41,6 +45,8 @@ class LocalMediaDbUpgrader {
           await _upgradeFrom10(db);
         case 11:
           await _upgradeFrom11(db);
+        case 12:
+          await _upgradeFrom12(db);
       }
       oldVersion++;
     }
@@ -387,5 +393,55 @@ class LocalMediaDbUpgrader {
         'name TEXT PRIMARY KEY'
         ', filter TEXT'
         ')');
+  }
+
+  static Future<void> _upgradeFrom12(Database db) async {
+    debugPrint('upgrading DB from v12');
+
+    // retrieve covers stored with `int` color value
+    final rows = <CoverRow>{};
+    final cursor = await db.queryCursor(coverTable);
+    while (await cursor.moveNext()) {
+      final Map map = cursor.current;
+      final filter = CollectionFilter.fromJson(map['filter']);
+      if (filter != null) {
+        final colorValue = map['color'] as int?;
+        final color = colorValue != null ? Color(colorValue) : null;
+        final row = CoverRow(
+          filter: filter,
+          entryId: map['entryId'] as int?,
+          packageName: map['packageName'] as String?,
+          color: color,
+        );
+        rows.add(row);
+      }
+    }
+
+    // convert `color` column type from value number to JSON string
+    await db.transaction((txn) async {
+      const newCoverTable = '${coverTable}TEMP';
+      await db.execute('CREATE TABLE $newCoverTable('
+          'filter TEXT PRIMARY KEY'
+          ', entryId INTEGER'
+          ', packageName TEXT'
+          ', color TEXT'
+          ')');
+
+      // insert covers with `string` color value
+      if (rows.isNotEmpty) {
+        final batch = db.batch();
+        rows.forEach((row) {
+          batch.insert(
+            newCoverTable,
+            row.toMap(),
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        });
+        await batch.commit(noResult: true);
+      }
+
+      await db.execute('DROP TABLE $coverTable;');
+      await db.execute('ALTER TABLE $newCoverTable RENAME TO $coverTable;');
+    });
   }
 }

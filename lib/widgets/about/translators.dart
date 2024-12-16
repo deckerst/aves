@@ -62,19 +62,19 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
 
     final color = widget.color;
     _baseStyle = TextStyle(
-      color: color.withAlpha((255.0 * .7).round()),
+      color: color.withValues(alpha: .7),
       shadows: [
         Shadow(
-          color: color.withAlpha(0),
+          color: color.withValues(alpha: 0),
           blurRadius: 0,
         )
       ],
     );
     final highlightStyle = TextStyle(
-      color: color.withAlpha(255),
+      color: color.withValues(alpha: 1),
       shadows: [
         Shadow(
-          color: color.withAlpha(255),
+          color: color.withValues(alpha: 1),
           blurRadius: 3,
         )
       ],

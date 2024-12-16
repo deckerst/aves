@@ -368,8 +368,6 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
           }
         } else {
           switch (key) {
-            case SettingKeys.subtitleTextColorKey:
-            case SettingKeys.subtitleBackgroundColorKey:
             case SettingKeys.convertQualityKey:
             case SettingKeys.screenSaverIntervalKey:
             case SettingKeys.slideshowIntervalKey:
@@ -466,6 +464,8 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
             case SettingKeys.videoResumptionModeKey:
             case SettingKeys.subtitleTextAlignmentKey:
             case SettingKeys.subtitleTextPositionKey:
+            case SettingKeys.subtitleTextColorKey:
+            case SettingKeys.subtitleBackgroundColorKey:
             case SettingKeys.tagEditorExpandedSectionKey:
             case SettingKeys.convertMimeTypeKey:
             case SettingKeys.mapStyleKey:

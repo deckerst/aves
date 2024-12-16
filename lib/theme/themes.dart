@@ -41,11 +41,11 @@ class Themes {
 
   static Color _schemeThirdLayer(ColorScheme colors) => _isDarkTheme(colors) ? colors.surfaceContainerHighest : colors.surfaceContainerHigh;
 
-  static Color _unselectedWidgetColor(ColorScheme colors) => colors.onSurface.withAlpha((255.0 * .6).round());
+  static Color _unselectedWidgetColor(ColorScheme colors) => colors.onSurface.withValues(alpha: .6);
 
   static Color backgroundTextColor(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Color.alphaBlend(colors.surfaceTint, colors.onSurface).withAlpha((255.0 * .5).round());
+    return Color.alphaBlend(colors.surfaceTint, colors.onSurface).withValues(alpha: .5);
   }
 
   static final _typography = Typography.material2021(platform: TargetPlatform.android);
@@ -98,7 +98,7 @@ class Themes {
         // adapted from M3 defaults
         final TextStyle style = textTheme.labelLarge!;
         if (states.contains(WidgetState.disabled)) {
-          return style.apply(color: colors.onSurface.withAlpha((255.0 * .38).round()));
+          return style.apply(color: colors.onSurface.withValues(alpha: .38));
         }
         return style.apply(color: colors.onSurface);
       }),
@@ -118,12 +118,12 @@ class Themes {
         fillColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
             if (states.contains(WidgetState.disabled)) {
-              return colors.onSurface.withAlpha((255.0 * .38).round());
+              return colors.onSurface.withValues(alpha: .38);
             }
             return colors.primary;
           }
           if (states.contains(WidgetState.disabled)) {
-            return colors.onSurface.withAlpha((255.0 * .38).round());
+            return colors.onSurface.withValues(alpha: .38);
           }
           if (states.contains(WidgetState.pressed)) {
             return colors.onSurface;
@@ -139,7 +139,7 @@ class Themes {
       );
 
   static SliderThemeData _sliderTheme(ColorScheme colors) => SliderThemeData(
-        inactiveTrackColor: colors.primary.withAlpha((255.0 * .24).round()),
+        inactiveTrackColor: colors.primary.withValues(alpha: .24),
       );
 
   static SnackBarThemeData _snackBarTheme(ColorScheme colors) => SnackBarThemeData(

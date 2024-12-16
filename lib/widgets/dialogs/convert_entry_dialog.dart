@@ -188,7 +188,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
     // used by the drop down to match input decoration
     final textFieldDecorationBorder = Border(
       bottom: BorderSide(
-        color: colorScheme.onSurface.withAlpha((255.0 * .38).round()),
+        color: colorScheme.onSurface.withValues(alpha: .38),
         width: 1.0,
       ),
     );

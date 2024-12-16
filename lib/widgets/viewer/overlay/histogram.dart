@@ -126,19 +126,21 @@ class _HistogramPainter extends CustomPainter {
 
     final polyline = values.mapIndexed((i, v) => Offset(i * xFactor, size.height - v * yFactor)).toList();
     canvas.drawPoints(
-        PointMode.polygon,
-        polyline,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = color);
+      PointMode.polygon,
+      polyline,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..color = color,
+    );
 
     polyline.add(Offset(size.width, size.height));
     polyline.add(Offset(0, size.height));
     canvas.drawPath(
-        Path()..addPolygon(polyline, true),
-        Paint()
-          ..style = PaintingStyle.fill
-          ..color = color.withAlpha((255.0 * .5).round()));
+      Path()..addPolygon(polyline, true),
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = color.withValues(alpha: .5),
+    );
   }
 
   Color _getChannelColor(HistogramChannel channel) {

@@ -209,7 +209,7 @@ class MediaStoreSource extends CollectionSource {
       },
       onDone: () async {
         if (newEntries.isNotEmpty) {
-          debugPrint('$runtimeType load ${stopwatch.elapsed} save new entries');
+          debugPrint('$runtimeType load ${stopwatch.elapsed} save ${newEntries.length} new entries');
           await localMediaDb.insertEntries(newEntries);
 
           // TODO TLAD find duplication cause

@@ -35,7 +35,7 @@ class CollectionNavTile extends StatelessWidget {
         trailing: trailing != null
             ? Builder(
                 builder: (context) {
-                  final trailingColor = IconTheme.of(context).color!.withAlpha((255.0 * .6).round());
+                  final trailingColor = IconTheme.of(context).color!.withValues(alpha: .6);
                   return IconTheme.merge(
                     data: IconThemeData(color: trailingColor),
                     child: DefaultTextStyle.merge(

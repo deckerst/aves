@@ -151,7 +151,7 @@ class AssParser {
                 // \c or \1c: fill color
                 final color = _parseColor(param);
                 if (color != null) {
-                  textStyle = textStyle.copyWith(color: color.withAlpha(textStyle.color?.alpha ?? 0xFF));
+                  textStyle = textStyle.copyWith(color: color.withValues(alpha: textStyle.color?.a ?? 1));
                 }
               }
             case '3c':
@@ -160,7 +160,7 @@ class AssParser {
                 final color = _parseColor(param);
                 if (color != null) {
                   extraStyle = extraStyle.copyWith(
-                    borderColor: color.withAlpha(extraStyle.borderColor?.alpha ?? 0xFF),
+                    borderColor: color.withValues(alpha: extraStyle.borderColor?.a ?? 1),
                   );
                 }
               }
@@ -172,7 +172,7 @@ class AssParser {
                   textStyle = textStyle.copyWith(
                       shadows: textStyle.shadows
                           ?.map((v) => Shadow(
-                                color: color.withAlpha(v.color.alpha),
+                                color: color.withValues(alpha: v.color.a),
                                 offset: v.offset,
                                 blurRadius: v.blurRadius,
                               ))
