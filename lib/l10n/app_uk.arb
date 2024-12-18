@@ -1548,5 +1548,19 @@
   "videoActionShowPreviousFrame": "Показати попередній кадр",
   "@videoActionShowPreviousFrame": {},
   "videoActionShowNextFrame": "Показати наступний кадр",
-  "@videoActionShowNextFrame": {}
+  "@videoActionShowNextFrame": {},
+  "dynamicAlbumAlreadyExists": "Динамічний альбом уже існує",
+  "@dynamicAlbumAlreadyExists": {},
+  "chipActionRemove": "видалити",
+  "@chipActionRemove": {},
+  "albumTierDynamic": "Динамічний",
+  "@albumTierDynamic": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "Альбом вже існує",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "newDynamicAlbumDialogTitle": "Новий динамічний альбом",
+  "@newDynamicAlbumDialogTitle": {},
+  "collectionActionAddDynamicAlbum": "Додати динамічний альбом",
+  "@collectionActionAddDynamicAlbum": {},
+  "appExportDynamicAlbums": "Динамічні альбоми",
+  "@appExportDynamicAlbums": {}
 }
