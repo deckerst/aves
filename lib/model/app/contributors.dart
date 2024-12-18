@@ -116,6 +116,8 @@ class Contributors {
     Contributor('Thomas Di Cristofaro', 'hostedweblate.8347@tdc.akamail.it'),
     Contributor('Petrov', 'i_v_c@mail.ru'),
     Contributor('தமிழ்நேரம்', 'anishprabu.t@gmail.com'),
+    Contributor('bovirus', 'roberto.boriotti@canon.it'),
+    Contributor('Максим Горпиніч', 'mgorpinic2005@gmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
