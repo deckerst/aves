@@ -167,6 +167,7 @@ class OverlayTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final blurred = settings.enableBlurEffect;
     final theme = Theme.of(context);
+    final foreground = theme.colorScheme.onSurface;
     return BlurredRRect.all(
       enabled: blurred,
       borderRadius: _borderRadius,
@@ -174,9 +175,10 @@ class OverlayTextButton extends StatelessWidget {
         onPressed: onPressed,
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.all<Color>(Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred)),
-          foregroundColor: WidgetStateProperty.all<Color>(theme.colorScheme.onSurface),
-          overlayColor: theme.isDark ? WidgetStateProperty.all<Color>(Colors.white.withAlpha((255.0 * .12).round())) : null,
+          foregroundColor: WidgetStateProperty.all<Color>(foreground),
+          overlayColor: theme.isDark ? WidgetStateProperty.all<Color>(Colors.white.withValues(alpha: .12)) : null,
           minimumSize: _minSize,
+          iconColor: WidgetStateProperty.all<Color>(foreground),
           side: WidgetStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
           shape: WidgetStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),

@@ -22,7 +22,7 @@ class SubtitleSample extends StatelessWidget {
       builder: (context, settings, child) {
         final textAlign = settings.subtitleTextAlignment;
         final textPosition = settings.subtitleTextPosition;
-        final outlineColor = Colors.black.withAlpha((255.0 * settings.subtitleTextColor.opacity).round());
+        final outlineColor = Colors.black.withValues(alpha: settings.subtitleTextColor.a);
         final shadows = [
           Shadow(
             color: outlineColor,

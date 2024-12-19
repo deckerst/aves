@@ -137,8 +137,6 @@ class AvesMagnifierController {
         return boundaries.clampScale(ScaleLevel.scaleForCovering(boundaries.viewportSize, boundaries.contentSize));
       case ScaleState.originalSize:
         return boundaries.clampScale(boundaries.originalScale);
-      default:
-        return null;
     }
   }
 }

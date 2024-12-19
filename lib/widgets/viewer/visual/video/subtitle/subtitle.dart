@@ -44,7 +44,7 @@ class VideoSubtitles extends StatelessWidget {
               final baseTextAlign = settings.subtitleTextAlignment;
               final baseTextAlignY = settings.subtitleTextPosition.toTextAlignVertical();
               final baseOutlineWidth = settings.subtitleShowOutline ? 1 : 0;
-              final baseOutlineColor = Colors.black.withAlpha((255.0 * settings.subtitleTextColor.opacity).round());
+              final baseOutlineColor = Colors.black.withValues(alpha: settings.subtitleTextColor.a);
               final baseShadows = [
                 Shadow(
                   color: baseOutlineColor,

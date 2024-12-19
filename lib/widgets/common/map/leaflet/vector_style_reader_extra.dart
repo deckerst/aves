@@ -6,7 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart';
 
-extension StyleReaderExtra on StyleReader {
+extension ExtraStyleReader on StyleReader {
   Future<Style> readExtra({required bool skipSources}) async {
     final styleText = await _httpGet(uri);
     final style = await compute(jsonDecode, styleText);

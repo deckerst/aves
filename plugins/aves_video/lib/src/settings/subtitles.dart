@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/src/settings/defaults.dart';
 
 mixin SubtitlesSettings on SettingsAccess {
@@ -20,11 +21,11 @@ mixin SubtitlesSettings on SettingsAccess {
 
   set subtitleShowOutline(bool newValue) => set(SettingKeys.subtitleShowOutlineKey, newValue);
 
-  Color get subtitleTextColor => Color(getInt(SettingKeys.subtitleTextColorKey) ?? SettingsDefaults.subtitleTextColor.value);
+  Color get subtitleTextColor => ExtraColor.fromJson(getString(SettingKeys.subtitleTextColorKey)) ?? SettingsDefaults.subtitleTextColor;
 
-  set subtitleTextColor(Color newValue) => set(SettingKeys.subtitleTextColorKey, newValue.value);
+  set subtitleTextColor(Color newValue) => set(SettingKeys.subtitleTextColorKey, newValue.toJson());
 
-  Color get subtitleBackgroundColor => Color(getInt(SettingKeys.subtitleBackgroundColorKey) ?? SettingsDefaults.subtitleBackgroundColor.value);
+  Color get subtitleBackgroundColor => ExtraColor.fromJson(getString(SettingKeys.subtitleBackgroundColorKey)) ?? SettingsDefaults.subtitleBackgroundColor;
 
-  set subtitleBackgroundColor(Color newValue) => set(SettingKeys.subtitleBackgroundColorKey, newValue.value);
+  set subtitleBackgroundColor(Color newValue) => set(SettingKeys.subtitleBackgroundColorKey, newValue.toJson());
 }

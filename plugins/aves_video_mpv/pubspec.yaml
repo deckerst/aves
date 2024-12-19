@@ -3,7 +3,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: ^3.6.0
+resolution: workspace
 
 dependencies:
   flutter:
@@ -19,18 +20,6 @@ dependencies:
   media_kit_libs_android_video:
   media_kit_video:
   path:
-
-dependency_overrides:
-  media_kit:
-    git:
-      url: https://github.com/media-kit/media-kit.git
-      ref: d094ba83715b0ac893e546781b2862e855d34502
-      path: media_kit
-  media_kit_video:
-    git:
-      url: https://github.com/media-kit/media-kit.git
-      ref: d094ba83715b0ac893e546781b2862e855d34502
-      path: media_kit_video
 
 dev_dependencies:
   flutter_lints:

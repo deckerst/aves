@@ -178,7 +178,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           builder: (context, overlayOpacity, child) {
             final background = Theme.of(context).isDark ? Colors.black : Color.lerp(Colors.black, Colors.white, overlayOpacity)!;
             return Container(
-              color: background.withAlpha((255.0 * backgroundOpacity).round()),
+              color: background.withValues(alpha: backgroundOpacity),
               child: child,
             );
           },

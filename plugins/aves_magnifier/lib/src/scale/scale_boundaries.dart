@@ -78,7 +78,6 @@ class ScaleBoundaries extends Equatable {
       case ScaleReference.covered:
         return factor * ScaleLevel.scaleForCovering(viewportSize, contentSize);
       case ScaleReference.absolute:
-      default:
         return factor;
     }
   }

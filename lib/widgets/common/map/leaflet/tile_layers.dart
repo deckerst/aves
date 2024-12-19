@@ -82,7 +82,7 @@ class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
   void initState() {
     super.initState();
 
-    _tileProviderFuture = StyleReaderExtra.readProviderByName(
+    _tileProviderFuture = ExtraStyleReader.readProviderByName(
       {
         _openMapTileProviderSource: {
           'url': _americanaTileProviderUri,

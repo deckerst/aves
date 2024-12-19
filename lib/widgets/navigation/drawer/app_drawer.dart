@@ -191,8 +191,9 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
           data: OutlinedButtonThemeData(
             style: ButtonStyle(
               foregroundColor: WidgetStateProperty.all<Color>(onPrimary),
-              overlayColor: WidgetStateProperty.all<Color>(onPrimary.withAlpha((255.0 * .12).round())),
-              side: WidgetStateProperty.all<BorderSide>(BorderSide(width: 1, color: onPrimary.withAlpha((255.0 * .24).round()))),
+              overlayColor: WidgetStateProperty.all<Color>(onPrimary.withValues(alpha: .12)),
+              iconColor: WidgetStateProperty.all<Color>(onPrimary),
+              side: WidgetStateProperty.all<BorderSide>(BorderSide(width: 1, color: onPrimary.withValues(alpha: .24))),
             ),
           ),
           child: Column(

@@ -15,14 +15,16 @@ class AvesOutlinedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final foreground = WidgetStateProperty.resolveWith<Color>((states) {
+      return states.contains(WidgetState.disabled) ? theme.disabledColor : theme.colorScheme.onSurface;
+    });
     final style = ButtonStyle(
+      foregroundColor: foreground,
+      iconColor: foreground,
       side: WidgetStateProperty.resolveWith<BorderSide>((states) {
         return BorderSide(
           color: states.contains(WidgetState.disabled) ? theme.disabledColor : theme.colorScheme.primary,
         );
-      }),
-      foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
-        return states.contains(WidgetState.disabled) ? theme.disabledColor : theme.colorScheme.onSurface;
       }),
     );
     return icon != null
