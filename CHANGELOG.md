@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Countries: show states for Mexico
+- Estonian translation (thanks Priit Jõerüüt)
 
 ### Changed
 
