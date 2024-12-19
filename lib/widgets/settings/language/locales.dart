@@ -13,6 +13,7 @@ class SupportedLocales {
     'en': 'English',
     'en_Shaw': '𐑦𐑙𐑜𐑤𐑦𐑖 (𐑖𐑱𐑝𐑰𐑩𐑯)',
     'es': 'Español (México)',
+    'et': 'Eesti',
     'eu': 'Euskara',
     'fa': 'فارسی',
     'fr': 'Français',
