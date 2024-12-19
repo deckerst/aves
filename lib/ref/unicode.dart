@@ -135,6 +135,75 @@ class EmojiStateCodes {
     inWestBengal,
   };
 
+  // MX
+  static const mxAguascalientes = 'mxagu';
+  static const mxBajaCalifornia = 'mxbcn';
+  static const mxBajaCaliforniaSur = 'mxbcs';
+  static const mxCampeche = 'mxcam';
+  static const mxChiapas = 'mxchp';
+  static const mxChihuahua = 'mxchh';
+  static const mxCiudadDeMexico = 'mxcmx';
+  static const mxCoahuila = 'mxcoa';
+  static const mxColima = 'mxcol';
+  static const mxDurango = 'mxdur';
+  static const mxGuanajuato = 'mxgua';
+  static const mxGuerrero = 'mxgro';
+  static const mxHidalgo = 'mxhid';
+  static const mxJalisco = 'mxjal';
+  static const mxMexicoState = 'mxmex';
+  static const mxMichoacan = 'mxmic';
+  static const mxMorelos = 'mxmor';
+  static const mxNayarit = 'mxnay';
+  static const mxNuevoLeon = 'mxnle';
+  static const mxOaxaca = 'mxoax';
+  static const mxPuebla = 'mxpue';
+  static const mxQueretaro = 'mxque';
+  static const mxQuintanaRoo = 'mxroo';
+  static const mxSanLuisPotosi = 'mxslp';
+  static const mxSinaloa = 'mxsin';
+  static const mxSonora = 'mxson';
+  static const mxTabasco = 'mxtab';
+  static const mxTamaulipas = 'mxtam';
+  static const mxTlaxcala = 'mxtla';
+  static const mxVeracruz = 'mxver';
+  static const mxYucatan = 'mxyuc';
+  static const mxZacatecas = 'mxzac';
+
+  static const mex = {
+    mxAguascalientes,
+    mxBajaCalifornia,
+    mxBajaCaliforniaSur,
+    mxCampeche,
+    mxChiapas,
+    mxChihuahua,
+    mxCiudadDeMexico,
+    mxCoahuila,
+    mxColima,
+    mxDurango,
+    mxGuanajuato,
+    mxGuerrero,
+    mxHidalgo,
+    mxJalisco,
+    mxMexicoState,
+    mxMichoacan,
+    mxMorelos,
+    mxNayarit,
+    mxNuevoLeon,
+    mxOaxaca,
+    mxPuebla,
+    mxQueretaro,
+    mxQuintanaRoo,
+    mxSanLuisPotosi,
+    mxSinaloa,
+    mxSonora,
+    mxTabasco,
+    mxTamaulipas,
+    mxTlaxcala,
+    mxVeracruz,
+    mxYucatan,
+    mxZacatecas,
+  };
+
   // US
   static const usAlabama = 'usal';
   static const usAlaska = 'usak';
