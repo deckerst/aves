@@ -511,7 +511,7 @@
       }
     }
   },
-  "notEnoughSpaceDialogMessage": "See tegevus vajab „{volume}“ andmeruumis „{neededSize}“ vaba andmemahtu, kuid alles on vaid „{freeSize}“.",
+  "notEnoughSpaceDialogMessage": "See tegevus vajab „{volume}“ andmeruumis {neededSize} vaba andmemahtu, kuid alles on vaid {freeSize}.",
   "@notEnoughSpaceDialogMessage": {
     "placeholders": {
       "neededSize": {
@@ -600,7 +600,7 @@
   "@renameProcessorHash": {},
   "renameProcessorName": "Nimi",
   "@renameProcessorName": {},
-  "storageAccessDialogMessage": "Palun anna sellele rakendusele järgmises ekraanivaates õigused „{directory}“ kaustale „{volume}“ andmekogus.",
+  "storageAccessDialogMessage": "Palun anna sellele rakendusele järgmises ekraanivaates õigused {directory} kaustale „{volume}“ andmekogus.",
   "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -614,7 +614,7 @@
       }
     }
   },
-  "restrictedAccessDialogMessage": "Sellel rakendusel pole õigusi muuta faile „{volume}“ andmekogu „{directory}“ kaustas.\n\nPalun kasuta failihaldurit või galeriirakendust failide tõstmiseks muude asukohta.",
+  "restrictedAccessDialogMessage": "Sellel rakendusel pole õigusi muuta faile „{volume}“ andmekogu {directory} kaustas.\n\nPalun kasuta failihaldurit või galeriirakendust failide tõstmiseks muude asukohta.",
   "@restrictedAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -1305,7 +1305,7 @@
   "@settingsViewerOverlayTile": {},
   "settingsViewerShowOverlayOnOpening": "Näita avamisel",
   "@settingsViewerShowOverlayOnOpening": {},
-  "settingsViewerShowHistogram": "Näita histogrammi (sagedusjaotuse tulpdiagrammi)",
+  "settingsViewerShowHistogram": "Näita histogrammi",
   "@settingsViewerShowHistogram": {},
   "settingsViewerShowMinimap": "Näita minikaarti",
   "@settingsViewerShowMinimap": {},
