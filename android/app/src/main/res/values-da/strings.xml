@@ -3,9 +3,10 @@
     <string name="app_widget_label">Fotoramme</string>
     <string name="wallpaper">Baggrund</string>
     <string name="videos_shortcut_short_label">Videoer</string>
-    <string name="analysis_channel_name">Mediascanning</string>
+    <string name="analysis_channel_name">Mediescanning</string>
     <string name="analysis_notification_default_title">Scanner medier</string>
     <string name="analysis_notification_action_stop">Stop</string>
     <string name="app_name">Aves</string>
     <string name="search_shortcut_short_label">Søg</string>
+    <string name="map_shortcut_short_label">Kort</string>
 </resources>
