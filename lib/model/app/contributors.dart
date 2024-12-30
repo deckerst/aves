@@ -27,7 +27,7 @@ class Contributors {
     Contributor('Oğuz Ersen', 'oguz@ersen.moe'),
     Contributor('Allan Nordhøy', 'epost@anotheragency.no'),
     Contributor('pemibe', 'pemibe4634@dmonies.com'),
-    Contributor('Linerly', 'linerly@protonmail.com'),
+    Contributor('Linerly', 'linerly@proton.me'),
     Contributor('Skrripy', 'rozihrash.ya6w7@simplelogin.com'),
     Contributor('vesp', 'vesp@post.cz'),
     Contributor('Dan', 'denqwerta@gmail.com'),
@@ -119,12 +119,14 @@ class Contributors {
     Contributor('bovirus', 'roberto.boriotti@canon.it'),
     Contributor('Максим Горпиніч', 'mgorpinic2005@gmail.com'),
     Contributor('Priit Jõerüüt', 'hwlate@joeruut.com'),
+    Contributor('Dr Hieu', 'v7pvas7m@anonaddy.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
     // Contributor('Grooty12', 'Rasmus@rosendahl-kaa.name'), // Danish
     // Contributor('Victor M', 'victormorita@tuta.io'), // Danish
+    // Contributor('cat', 'catsnote@proton.me'), // Danish
     // Contributor('Åzze', 'laitinen.jere222@gmail.com'), // Finnish
     // Contributor('Olli', 'ollinen@ollit.dev'), // Finnish
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
