@@ -493,17 +493,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         // cataloguing
         if (!startAnalysisService) {
           final opCount = (force ? todoEntries : todoEntries.where(TagMixin.catalogEntriesTest)).length;
-          if (opCount > TagMixin.commitCountThreshold) {
-            startAnalysisService = true;
-          }
+          startAnalysisService = opCount > TagMixin.commitCountThreshold;
         }
         // ignore locating countries
         // locating places
         if (!startAnalysisService && await availability.canLocatePlaces) {
           final opCount = (force ? todoEntries.where((entry) => entry.hasGps) : todoEntries.where(LocationMixin.locatePlacesTest)).length;
-          if (opCount > LocationMixin.commitCountThreshold) {
-            startAnalysisService = true;
-          }
+          startAnalysisService = opCount > LocationMixin.commitCountThreshold;
         }
       }
 
