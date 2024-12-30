@@ -14,7 +14,7 @@ mixin TrashMixin on SourceBase {
   static const Duration binKeepDuration = Duration(days: 30);
 
   Future<void> loadTrashDetails() async {
-    final saved = await metadataDb.loadAllTrashDetails();
+    final saved = await localMediaDb.loadAllTrashDetails();
     final idMap = entryById;
     saved.forEach((details) => idMap[details.id]?.trashDetails = details);
   }
@@ -24,24 +24,24 @@ mixin TrashMixin on SourceBase {
     if (expiredEntries.isEmpty) return {};
 
     final processed = <ImageOpEvent>{};
-    final completer = Completer<Set<String>>();
+    final opCompleter = Completer<Set<String>>();
     mediaEditService.delete(entries: expiredEntries).listen(
       processed.add,
-      onError: completer.completeError,
+      onError: opCompleter.completeError,
       onDone: () async {
         final successOps = processed.where((e) => e.success).toSet();
         final deletedOps = successOps.where((e) => !e.skipped).toSet();
         final deletedUris = deletedOps.map((event) => event.uri).toSet();
-        completer.complete(deletedUris);
+        opCompleter.complete(deletedUris);
       },
     );
-    return await completer.future;
+    return await opCompleter.future;
   }
 
   Future<Set<AvesEntry>> recoverUntrackedTrashItems() async {
     final newEntries = <AvesEntry>{};
 
-    final knownPaths = allEntries.map((v) => v.trashDetails?.path).whereNotNull().toSet();
+    final knownPaths = allEntries.map((v) => v.trashDetails?.path).nonNulls.toSet();
     final untrackedPaths = await storageService.getUntrackedTrashPaths(knownPaths);
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked bin items');
@@ -63,20 +63,20 @@ mixin TrashMixin on SourceBase {
           entry.trashed = true;
           entry.trashDetails = _buildTrashDetails(id);
           // persist
-          await metadataDb.updateEntry(id, entry);
-          await metadataDb.updateTrash(id, entry.trashDetails);
+          await localMediaDb.updateEntry(id, entry);
+          await localMediaDb.updateTrash(id, entry.trashDetails);
         } else {
           // there is no matching entry
           final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
           if (sourceEntry != null) {
-            final id = metadataDb.nextId;
+            final id = localMediaDb.nextId;
             sourceEntry.id = id;
             sourceEntry.path = pContext.join(recoveryPath, pContext.basename(untrackedPath));
             sourceEntry.trashed = true;
             sourceEntry.trashDetails = _buildTrashDetails(id);
             newEntries.add(sourceEntry);
           } else {
-            await reportService.recordError('Failed to recover untracked bin item at uri=$uri', null);
+            await reportService.recordError('Failed to recover untracked bin item at uri=$uri');
           }
         }
       });

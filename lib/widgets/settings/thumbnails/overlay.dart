@@ -121,7 +121,7 @@ class ThumbnailOverlayPage extends StatelessWidget {
           icon,
           key: ValueKey(key),
           size: _getIconSize(context),
-          color: _getIconColor(context).withOpacity(disabled ? SettingsSwitchListTile.disabledOpacity : 1.0),
+          color: _getIconColor(context).withValues(alpha: disabled ? SettingsSwitchListTile.disabledOpacity : 1),
         ),
       ),
     );
@@ -143,7 +143,7 @@ class SettingsTileThumbnailLocationIcon extends SettingsTile {
       );
 
   Widget _buildTrailing(BuildContext context) {
-    final iconType = context.select<Settings, ThumbnailOverlayLocationIcon>((s) => s.thumbnailLocationIcon);
+    final iconType = context.select<Settings, ThumbnailOverlayLocationIcon>((v) => v.thumbnailLocationIcon);
     return ThumbnailOverlayPage.buildTrailingIcon(
       context: context,
       key: iconType,
@@ -168,7 +168,7 @@ class SettingsTileThumbnailTagIcon extends SettingsTile {
       );
 
   Widget _buildTrailing(BuildContext context) {
-    final iconType = context.select<Settings, ThumbnailOverlayTagIcon>((s) => s.thumbnailTagIcon);
+    final iconType = context.select<Settings, ThumbnailOverlayTagIcon>((v) => v.thumbnailTagIcon);
     return ThumbnailOverlayPage.buildTrailingIcon(
       context: context,
       key: iconType,

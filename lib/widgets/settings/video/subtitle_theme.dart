@@ -62,23 +62,23 @@ class SubtitleThemePage extends StatelessWidget {
                       ),
                       ColorListTile(
                         title: context.l10n.settingsSubtitleThemeTextColor,
-                        value: settings.subtitleTextColor.withOpacity(1),
-                        onChanged: (v) => settings.subtitleTextColor = v.withOpacity(settings.subtitleTextColor.opacity),
+                        value: settings.subtitleTextColor.withValues(alpha: 1),
+                        onChanged: (v) => settings.subtitleTextColor = v.withValues(alpha: settings.subtitleTextColor.a),
                       ),
                       SliderListTile(
                         title: context.l10n.settingsSubtitleThemeTextOpacity,
-                        value: settings.subtitleTextColor.opacity,
-                        onChanged: (v) => settings.subtitleTextColor = settings.subtitleTextColor.withOpacity(v),
+                        value: settings.subtitleTextColor.a,
+                        onChanged: (v) => settings.subtitleTextColor = settings.subtitleTextColor.withValues(alpha: v),
                       ),
                       ColorListTile(
                         title: context.l10n.settingsSubtitleThemeBackgroundColor,
-                        value: settings.subtitleBackgroundColor.withOpacity(1),
-                        onChanged: (v) => settings.subtitleBackgroundColor = v.withOpacity(settings.subtitleBackgroundColor.opacity),
+                        value: settings.subtitleBackgroundColor.withValues(alpha: 1),
+                        onChanged: (v) => settings.subtitleBackgroundColor = v.withValues(alpha: settings.subtitleBackgroundColor.a),
                       ),
                       SliderListTile(
                         title: context.l10n.settingsSubtitleThemeBackgroundOpacity,
-                        value: settings.subtitleBackgroundColor.opacity,
-                        onChanged: (v) => settings.subtitleBackgroundColor = settings.subtitleBackgroundColor.withOpacity(v),
+                        value: settings.subtitleBackgroundColor.a,
+                        onChanged: (v) => settings.subtitleBackgroundColor = settings.subtitleBackgroundColor.withValues(alpha: v),
                       ),
                       SettingsSwitchListTile(
                         selector: (context, s) => s.subtitleShowOutline,

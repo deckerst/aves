@@ -1,4 +1,4 @@
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -44,7 +44,7 @@ class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
     final options = settings.recentDestinationAlbums.where(rawAlbums.contains).toList();
     final takeCount = FilterQuickChooserMixin.maxTotalOptionCount - options.length;
     if (takeCount > 0) {
-      final filters = rawAlbums.whereNot(options.contains).map((album) => AlbumFilter(album, null)).toSet();
+      final filters = rawAlbums.whereNot(options.contains).map((album) => StoredAlbumFilter(album, null)).toSet();
       final allMapEntries = filters.map((filter) => FilterGridItem(filter, source.recentEntry(filter))).toList();
       allMapEntries.sort(FilterNavigationPage.compareFiltersByDate);
       options.addAll(allMapEntries.take(takeCount).map((v) => v.filter.album));

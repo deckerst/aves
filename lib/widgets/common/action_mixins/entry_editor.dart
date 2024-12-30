@@ -3,7 +3,7 @@ import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -109,7 +109,7 @@ mixin EntryEditorMixin {
   Future<Set<String>> getTagsFromFilters(Set<CollectionFilter> filters, AvesEntry entry) async {
     final tags = filters.whereType<TagFilter>().map((v) => v.tag).toSet();
     final placeholderTags = await Future.wait(filters.whereType<PlaceholderFilter>().map((v) => v.toTag(entry)));
-    tags.addAll(placeholderTags.whereNotNull().where((v) => v.isNotEmpty));
+    tags.addAll(placeholderTags.nonNulls.where((v) => v.isNotEmpty));
     return tags;
   }
 

@@ -286,7 +286,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
     final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
-    final tileLayout = context.select<Settings, TileLayout>((s) => s.getTileLayout(settingsRouteKey));
+    final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
     return Selector<Query, bool>(
       selector: (context, query) => query.enabled,
       builder: (context, queryEnabled, child) {
@@ -592,7 +592,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
       ),
       mosaicItemBuilder: (index, targetExtent) => DecoratedBox(
         decoration: BoxDecoration(
-          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withOpacity(.9),
+          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withValues(alpha: .9),
           border: Border.all(
             color: context.read<AvesColorsData>().neutral,
             width: AvesFilterChip.outlineWidth,

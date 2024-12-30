@@ -16,9 +16,9 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/select_storage_dialog.dart';
+import 'package:aves/widgets/explorer/crumb_line.dart';
 import 'package:aves/widgets/explorer/explorer_action_delegate.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:aves/widgets/settings/privacy/file_picker/crumb_line.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +104,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
   }
 
   List<Widget> _buildActions(BuildContext context, double maxWidth) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return [
       IconButton(
         icon: const Icon(AIcons.search),
@@ -117,6 +117,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           return [
             ExplorerAction.addShortcut,
             ExplorerAction.setHome,
+            ExplorerAction.hide,
             null,
             ExplorerAction.stats,
           ].map<PopupMenuEntry<ExplorerAction>>((v) {

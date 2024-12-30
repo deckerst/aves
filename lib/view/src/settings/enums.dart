@@ -68,6 +68,8 @@ extension ExtraEntryMapStyleView on EntryMapStyle {
       EntryMapStyle.googleNormal => l10n.mapStyleGoogleNormal,
       EntryMapStyle.googleHybrid => l10n.mapStyleGoogleHybrid,
       EntryMapStyle.googleTerrain => l10n.mapStyleGoogleTerrain,
+      EntryMapStyle.osmLiberty => l10n.mapStyleOsmLiberty,
+      EntryMapStyle.openTopoMap => l10n.mapStyleOpenTopoMap,
       EntryMapStyle.osmHot => l10n.mapStyleOsmHot,
       EntryMapStyle.stamenWatercolor => l10n.mapStyleStamenWatercolor,
     };
@@ -168,18 +170,6 @@ extension ExtraVideoBackgroundModeView on VideoBackgroundMode {
     return switch (this) {
       VideoBackgroundMode.disabled => l10n.settingsDisabled,
       VideoBackgroundMode.pip => l10n.settingsVideoEnablePip,
-    };
-  }
-}
-
-extension ExtraVideoControlsView on VideoControls {
-  String getName(BuildContext context) {
-    final l10n = context.l10n;
-    return switch (this) {
-      VideoControls.play => l10n.videoControlsPlay,
-      VideoControls.playSeek => l10n.videoControlsPlaySeek,
-      VideoControls.playOutside => l10n.videoControlsPlayOutside,
-      VideoControls.none => l10n.videoControlsNone,
     };
   }
 }

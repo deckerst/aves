@@ -96,8 +96,8 @@ mixin CastMixin {
       );
       debugPrint('cast: play entry=$entry');
       unawaited(renderer.play());
-    } catch (error, stack) {
-      await reportService.recordError(error, stack);
+    } catch (e, stack) {
+      await reportService.recordError(e, stack);
     }
   }
 
@@ -127,7 +127,7 @@ mixin CastMixin {
   }
 }
 
-extension DLNADeviceExtra on DLNADevice {
+extension ExtraDLNADevice on DLNADevice {
   Future<String> requestCustom({
     required String serviceId,
     required String serviceType,

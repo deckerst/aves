@@ -17,6 +17,7 @@ import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
+import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
 object PermissionManager {
@@ -86,6 +87,7 @@ object PermissionManager {
     fun getInaccessibleDirectories(context: Context, dirPaths: List<String>): List<Map<String, String>> {
         val concreteDirPaths = dirPaths.filter { it != StorageUtils.TRASH_PATH_PLACEHOLDER }
         val accessibleDirs = getAccessibleDirs(context)
+        val restrictedPrimaryDirectoriesLower = getRestrictedPrimaryDirectories().map { it.lowercase(Locale.ROOT) }
 
         // find set of inaccessible directories for each volume
         val dirsPerVolume = HashMap<String, MutableSet<String>>()
@@ -96,12 +98,12 @@ object PermissionManager {
                 segments.volumePath?.let { volumePath ->
                     val dirSet = dirsPerVolume[volumePath] ?: HashSet()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        // request primary directory on volume from Android 11
+                        // request primary directory on volume from Android 11 (API 30)
                         val relativeDir = segments.relativeDir
                         if (relativeDir != null) {
                             val dirSegments = relativeDir.split(File.separator).takeWhile { it.isNotEmpty() }
                             val primaryDir = dirSegments.firstOrNull()
-                            if (getRestrictedPrimaryDirectories().contains(primaryDir) && dirSegments.size > 1) {
+                            if (dirSegments.size > 1 && restrictedPrimaryDirectoriesLower.contains(primaryDir?.lowercase(Locale.ROOT))) {
                                 // request secondary directory (if any) for restricted primary directory
                                 val dir = dirSegments.take(2).joinToString(File.separator)
                                 // only register directories that exist on storage, so they can be selected for access grant
@@ -140,10 +142,11 @@ object PermissionManager {
 
     fun canInsertByMediaStore(directories: List<FieldMap>): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val insertionDirsLower = MEDIA_STORE_INSERTION_PRIMARY_DIRS.map { it.lowercase(Locale.ROOT) }
             directories.all {
                 val relativeDir = it["relativeDir"] as String
                 val segments = relativeDir.split(File.separator)
-                segments.isNotEmpty() && MEDIA_STORE_INSERTION_PRIMARY_DIRS.contains(segments.first())
+                segments.isNotEmpty() && insertionDirsLower.contains(segments.first().lowercase(Locale.ROOT))
             }
         } else {
             true
@@ -172,7 +175,6 @@ object PermissionManager {
         val accessibleDirs = HashSet(getGrantedDirs(context))
         accessibleDirs.addAll(context.getExternalFilesDirs(null).filterNotNull().map { it.path })
 
-        // from API 19 / Android 4.4 / KitKat, removable storage requires access permission, at the file level
         // from API 21 / Android 5.0 / Lollipop, removable storage requires access permission, but directory access grant is possible
         // from API 30 / Android 11 / R, any storage requires access permission
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {

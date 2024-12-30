@@ -77,7 +77,7 @@ class FixedExtentGridPainter extends CustomPainter {
       ..shader = strokeShader;
     final fillPaint = Paint()
       ..style = PaintingStyle.fill
-      ..color = color.withOpacity(.25);
+      ..color = color.withValues(alpha: .25);
 
     final chipWidth = chipSize.width;
     final chipHeight = chipSize.height;

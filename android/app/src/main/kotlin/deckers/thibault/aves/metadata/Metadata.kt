@@ -2,8 +2,9 @@ package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.net.Uri
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
+import android.util.Log
 import deckers.thibault.aves.utils.FileUtils.transferFrom
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.File
@@ -14,8 +15,11 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import java.util.regex.Pattern
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object Metadata {
+    private val LOG_TAG = LogUtils.createTag<Metadata>()
+
     const val IPTC_MARKER_BYTE: Byte = 0x1c
 
     // Pattern to extract latitude & longitude from a video location tag (cf ISO 6709)
@@ -135,29 +139,42 @@ object Metadata {
 
     private fun getSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): Uri {
         // formats known to yield OOM for large files
-        return if ((MimeTypes.isImage(mimeType) || mimeType == MimeTypes.MP4)) {
-            if (isDangerouslyLarge(sizeBytes)) {
-                // make a preview from the beginning of the file,
-                // hoping the metadata is accessible in the copied chunk
-                var previewFile = previewFiles[uri]
-                if (previewFile == null) {
-                    previewFile = createPreviewFile(context, uri)
-                    previewFiles[uri] = previewFile
+        return when (mimeType) {
+            // formats known to yield OOM for large files
+            MimeTypes.DNG,
+            MimeTypes.DNG_ADOBE,
+            MimeTypes.HEIC,
+            MimeTypes.HEIF,
+            MimeTypes.MP4,
+            MimeTypes.PSD_VND,
+            MimeTypes.PSD_X,
+            MimeTypes.TIFF ->
+                if (isDangerouslyLarge(sizeBytes)) {
+                    Log.d(LOG_TAG, "Dangerously large file with uri=$uri, mimeType=$mimeType, size=$sizeBytes")
+                    // make a preview from the beginning of the file,
+                    // hoping the metadata is accessible in the copied chunk
+                    var previewFile = previewFiles[uri]
+                    if (previewFile == null) {
+                        previewFile = createPreviewFile(context, uri)
+                        previewFiles[uri] = previewFile
+                    }
+                    Uri.fromFile(previewFile)
+                } else {
+                    // small enough to be safe as it is
+                    uri
                 }
-                Uri.fromFile(previewFile)
-            } else {
-                // small enough to be safe as it is
+
+            else ->
+                // *probably* safe
                 uri
-            }
-        } else {
-            // *probably* safe
-            uri
         }
     }
 
     fun createPreviewFile(context: Context, uri: Uri): File {
+        val size = PREVIEW_SIZE
+        Log.d(LOG_TAG, "create preview of size=$size for uri=$uri")
         return StorageUtils.createTempFile(context).apply {
-            transferFrom(StorageUtils.openInputStream(context, uri), PREVIEW_SIZE)
+            transferFrom(StorageUtils.openInputStream(context, uri), size)
         }
     }
 

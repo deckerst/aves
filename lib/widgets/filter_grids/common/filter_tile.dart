@@ -1,5 +1,5 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -134,7 +134,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final filter = gridItem.filter;
     final pinned = settings.pinnedFilters.contains(filter);
-    final locked = filter is AlbumFilter && vaults.isLocked(filter.album);
+    final locked = filter is StoredAlbumFilter && vaults.isLocked(filter.album);
     final onChipTap = onTap != null ? (filter) => onTap?.call() : null;
 
     switch (tileLayout) {

@@ -1,5 +1,3 @@
-library aves_model;
-
 export 'src/actions/chip.dart';
 export 'src/actions/chip_set.dart';
 export 'src/actions/entry.dart';

@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.Date
 import kotlin.math.roundToInt
 
 class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
@@ -44,7 +45,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         val defaultSizeDip = call.argument<Number>("defaultSizeDip")?.toDouble()
         val quality = call.argument<Int>("quality")
 
-        if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null || quality == null) {
+        if (uri == null || mimeType == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null || quality == null) {
             result.error("getThumbnail-args", "missing arguments", null)
             return
         }
@@ -54,7 +55,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
             context = context,
             uri = uri,
             mimeType = mimeType,
-            dateModifiedSecs = dateModifiedSecs,
+            dateModifiedSecs = dateModifiedSecs ?: (Date().time / 1000),
             rotationDegrees = rotationDegrees,
             isFlipped = isFlipped,
             width = (widthDip * density).roundToInt(),

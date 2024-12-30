@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -25,6 +25,7 @@ import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 import 'package:provider/provider.dart';
 
 class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
@@ -35,7 +36,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     required this.collection,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$VideoActionDelegate',
         object: this,
@@ -45,7 +46,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     stopOverlayHidingTimer();
   }
@@ -74,7 +75,11 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await controller.seekTo(max(controller.currentPosition - 10000, 0));
       case EntryAction.videoSkip10:
         await controller.seekTo(controller.currentPosition + 10000);
-      case EntryAction.openVideo:
+      case EntryAction.videoShowPreviousFrame:
+        await controller.skipFrames(-1);
+      case EntryAction.videoShowNextFrame:
+        await controller.skipFrames(1);
+      case EntryAction.openVideoPlayer:
         await appService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
@@ -135,7 +140,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                       settings: const RouteSettings(name: CollectionPage.routeName),
                       builder: (context) => CollectionPage(
                         source: source,
-                        filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                        filters: {StoredAlbumFilter(destinationAlbum, source.getStoredAlbumDisplayName(context, destinationAlbum))},
                         highlightTest: (entry) => entry.uri == newUri,
                       ),
                     ),
@@ -159,7 +164,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       context: context,
       builder: (context) => VideoStreamSelectionDialog(
         streams: Map.fromEntries(streams.map((stream) {
-          final selectedStream = currentSelectedStreams.whereNotNull().firstWhereOrNull((v) => v.type == stream.type);
+          final selectedStream = currentSelectedStreams.nonNulls.firstWhereOrNull((v) => v.type == stream.type);
           final selected = selectedStream != null && selectedStream.index == stream.index;
           return MapEntry(stream, selected);
         })),

@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/db/db_metadata.dart';
+import 'package:aves/model/db/db.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -35,7 +35,7 @@ import '../fake/availability.dart';
 import '../fake/device_service.dart';
 import '../fake/media_fetch_service.dart';
 import '../fake/media_store_service.dart';
-import '../fake/metadata_db.dart';
+import '../fake/db.dart';
 import '../fake/metadata_fetch_service.dart';
 import '../fake/report_service.dart';
 import '../fake/storage_service.dart';
@@ -58,7 +58,7 @@ void main() {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
     getIt.registerLazySingleton<AvesAvailability>(FakeAvesAvailability.new);
-    getIt.registerLazySingleton<MetadataDb>(FakeMetadataDb.new);
+    getIt.registerLazySingleton<LocalMediaDb>(FakeAvesDb.new);
 
     getIt.registerLazySingleton<AppService>(FakeAppService.new);
     getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);
@@ -91,7 +91,7 @@ void main() {
         readyCompleter.complete();
       }
     });
-    await source.init();
+    await source.init(scope: CollectionSource.fullScope);
     await readyCompleter.future;
     return source;
   }
@@ -107,9 +107,9 @@ void main() {
     (mediaFetchService as FakeMediaFetchService).entries = {refreshEntry};
 
     final source = MediaStoreSource();
-    unawaited(source.init());
+    unawaited(source.init(scope: CollectionSource.fullScope));
     await Future.delayed(const Duration(milliseconds: 10));
-    expect(source.initState, SourceInitializationState.full);
+    expect(source.targetScope, CollectionSource.fullScope);
     await source.refreshUris({refreshEntry.uri});
 
     await Future.delayed(const Duration(seconds: 1));
@@ -117,7 +117,7 @@ void main() {
   });
 
   test('album/country/tag hidden on launch when their items are hidden by entry prop', () async {
-    settings.hiddenFilters = {AlbumFilter(testAlbum, 'whatever')};
+    settings.hiddenFilters = {StoredAlbumFilter(testAlbum, 'whatever')};
 
     final image1 = FakeMediaStoreService.newImage(testAlbum, 'image1');
     (mediaStoreService as FakeMediaStoreService).entries = {
@@ -195,7 +195,7 @@ void main() {
     expect(source.rawAlbums.length, 1);
     expect(covers.count, 0);
 
-    final albumFilter = AlbumFilter(testAlbum, 'whatever');
+    final albumFilter = StoredAlbumFilter(testAlbum, 'whatever');
     expect(albumFilter.test(image1), true);
     expect(covers.count, 0);
     expect(covers.of(albumFilter), null);
@@ -217,7 +217,7 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    final albumFilter = AlbumFilter(testAlbum, 'whatever');
+    final albumFilter = StoredAlbumFilter(testAlbum, 'whatever');
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     await source.updateAfterRename(
       todoEntries: {image1},
@@ -241,7 +241,7 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    final albumFilter = AlbumFilter(image1.directory!, 'whatever');
+    final albumFilter = StoredAlbumFilter(image1.directory!, 'whatever');
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     await source.removeEntries({image1.uri}, includeTrash: true);
 
@@ -261,8 +261,8 @@ void main() {
     expect(source.rawAlbums.contains(sourceAlbum), true);
     expect(source.rawAlbums.contains(destinationAlbum), false);
 
-    final sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
-    final destinationAlbumFilter = AlbumFilter(destinationAlbum, 'whatever');
+    final sourceAlbumFilter = StoredAlbumFilter(sourceAlbum, 'whatever');
+    final destinationAlbumFilter = StoredAlbumFilter(destinationAlbum, 'whatever');
     expect(sourceAlbumFilter.test(image1), true);
     expect(destinationAlbumFilter.test(image1), false);
 
@@ -312,7 +312,7 @@ void main() {
 
     final source = await _initSource();
     expect(source.rawAlbums.length, 1);
-    final sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
+    final sourceAlbumFilter = StoredAlbumFilter(sourceAlbum, 'whatever');
     await covers.set(filter: sourceAlbumFilter, entryId: image1.id, packageName: null, color: null);
 
     await source.updateAfterMove(
@@ -337,14 +337,14 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    var albumFilter = AlbumFilter(sourceAlbum, 'whatever');
+    var albumFilter = StoredAlbumFilter(sourceAlbum, 'whatever');
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
-    await source.renameAlbum(sourceAlbum, destinationAlbum, {
+    await source.renameStoredAlbum(sourceAlbum, destinationAlbum, {
       image1
     }, {
       FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
     });
-    albumFilter = AlbumFilter(destinationAlbum, 'whatever');
+    albumFilter = StoredAlbumFilter(destinationAlbum, 'whatever');
 
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
@@ -377,20 +377,20 @@ void main() {
         delegates: AppLocalizations.localizationsDelegates,
         child: Builder(
           builder: (context) {
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Elea/Zeno'), 'Elea/Zeno');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Citium/Zeno'), 'Citium/Zeno');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Cleanthes'), 'Cleanthes');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Chrysippus'), 'Chrysippus');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Chrysippus'), 'Chrysippus (${FakeStorageService.removableDescription})');
-            expect(source.getAlbumDisplayName(context, FakeStorageService.primaryRootAlbum), FakeStorageService.primaryDescription);
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Seneca'), 'Pictures/Seneca');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Cicero'), 'Cicero');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Hannah Arendt'), 'Hannah Arendt');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Arendt'), 'Arendt');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Something'), 'Pictures/Something');
-            expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Movies/SomeThing'), 'Movies/SomeThing');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Elea/Zeno'), 'Elea/Zeno');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Citium/Zeno'), 'Citium/Zeno');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Cleanthes'), 'Cleanthes');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Chrysippus'), 'Chrysippus');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Chrysippus'), 'Chrysippus (${FakeStorageService.removableDescription})');
+            expect(source.getStoredAlbumDisplayName(context, FakeStorageService.primaryRootAlbum), FakeStorageService.primaryDescription);
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Seneca'), 'Pictures/Seneca');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Cicero'), 'Cicero');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Hannah Arendt'), 'Hannah Arendt');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Arendt'), 'Arendt');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Something'), 'Pictures/Something');
+            expect(source.getStoredAlbumDisplayName(context, '${FakeStorageService.primaryPath}Movies/SomeThing'), 'Movies/SomeThing');
             return const Placeholder();
           },
         ),

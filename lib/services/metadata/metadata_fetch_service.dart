@@ -69,7 +69,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
     if (entry.isSvg) return null;
 
     // #977
-    await metadataDb.logCatalog('${DateTime.now().toIso8601String()} ${entry.path ?? entry.uri}');
+    await localMediaDb.logCatalog('${DateTime.now().toIso8601String()} ${entry.path ?? entry.uri}');
 
     Future<CatalogMetadata?> call() async {
       try {

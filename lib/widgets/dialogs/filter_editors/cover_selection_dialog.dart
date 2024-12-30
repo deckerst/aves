@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -49,7 +49,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
 
   CollectionFilter get filter => widget.filter;
 
-  bool get showAppTab => filter is AlbumFilter && settings.isInstalledAppAccessAllowed;
+  bool get showAppTab => filter is StoredAlbumFilter && settings.isInstalledAppAccessAllowed;
 
   bool get showColorTab => settings.themeColorMode == AvesThemeColorMode.polychrome;
 
@@ -205,32 +205,35 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
           overflow: TextOverflow.fade,
           maxLines: 1,
         );
-        return RadioListTile<bool>(
-          value: isCustom,
-          groupValue: _isCustomEntry,
-          onChanged: (v) {
-            if (v == null) return;
-            if (v && _customEntry == null) {
-              _pickEntry();
-              return;
-            }
-            _isCustomEntry = v;
-            setState(() {});
-          },
-          title: isCustom
-              ? Row(
-                  children: [
-                    title,
-                    const Spacer(),
-                    if (_customEntry != null)
-                      ItemPicker(
-                        extent: itemPickerExtent,
-                        entry: _customEntry!,
-                        onTap: _pickEntry,
-                      ),
-                  ],
-                )
-              : title,
+        return ListTileTheme.merge(
+          minVerticalPadding: isCustom && _customEntry != null ? 0 : null,
+          child: RadioListTile<bool>(
+            value: isCustom,
+            groupValue: _isCustomEntry,
+            onChanged: (v) {
+              if (v == null) return;
+              if (v && _customEntry == null) {
+                _pickEntry();
+                return;
+              }
+              _isCustomEntry = v;
+              setState(() {});
+            },
+            title: isCustom
+                ? Row(
+                    children: [
+                      title,
+                      const Spacer(),
+                      if (_customEntry != null)
+                        ItemPicker(
+                          extent: itemPickerExtent,
+                          entry: _customEntry!,
+                          onTap: _pickEntry,
+                        ),
+                    ],
+                  )
+                : title,
+          ),
         );
       },
     ).toList();

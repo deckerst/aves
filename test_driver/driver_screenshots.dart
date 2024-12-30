@@ -33,6 +33,7 @@ Future<void> configureAndLaunch() async {
     ..setHome(HomePageSetting.collection)
     ..enableBottomNavigationBar = true
     ..drawerTypeBookmarks = [null, FavouriteFilter.instance]
+    ..drawerAlbumBookmarks = null
     // collection
     ..collectionSectionFactor = EntryGroupFactor.month
     ..collectionSortFactor = EntrySortFactor.date

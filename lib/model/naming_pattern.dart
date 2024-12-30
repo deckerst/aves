@@ -210,7 +210,7 @@ class MetadataFieldNamingProcessor extends NamingProcessor {
   }
 
   @override
-  Set<MetadataField> getRequiredFields() => {field}.whereNotNull().toSet();
+  Set<MetadataField> getRequiredFields() => {field}.nonNulls.toSet();
 
   @override
   String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
@@ -268,7 +268,7 @@ class HashNamingProcessor extends NamingProcessor {
   }
 
   @override
-  Set<MetadataField> getRequiredFields() => {function}.whereNotNull().toSet();
+  Set<MetadataField> getRequiredFields() => {function}.nonNulls.toSet();
 
   @override
   String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {

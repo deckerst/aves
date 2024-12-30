@@ -5,12 +5,14 @@ class GeoStates {
   static final aus = CountryCode.AU.alpha2;
   static final gbr = CountryCode.GB.alpha2;
   static final ind = CountryCode.IN.alpha2;
+  static final mex = CountryCode.MX.alpha2;
   static final usa = CountryCode.US.alpha2;
 
   static final Set<String> stateCountryCodes = {
     aus,
     gbr,
     ind,
+    mex,
     usa,
   };
 
@@ -18,14 +20,51 @@ class GeoStates {
     aus: EmojiStateCodes.aus,
     gbr: EmojiStateCodes.gbr,
     ind: EmojiStateCodes.ind,
+    mex: EmojiStateCodes.mex,
     usa: EmojiStateCodes.usa,
   };
 
   static const stateCodeByName = {
     ..._australiaEnglish,
     ..._indiaEnglish,
+    ..._mexicoSpanish,
     ..._unitedKingdomEnglish,
     ..._unitedStatesEnglish,
+  };
+
+  static const _mexicoSpanish = {
+    'Aguascalientes': EmojiStateCodes.mxAguascalientes,
+    'Baja California': EmojiStateCodes.mxBajaCalifornia,
+    'Baja California Sur': EmojiStateCodes.mxBajaCaliforniaSur,
+    'Campeche': EmojiStateCodes.mxCampeche,
+    'Chiapas': EmojiStateCodes.mxChiapas,
+    'Chihuahua': EmojiStateCodes.mxChihuahua,
+    'Ciudad de México': EmojiStateCodes.mxCiudadDeMexico,
+    'Coahuila': EmojiStateCodes.mxCoahuila,
+    'Colima': EmojiStateCodes.mxColima,
+    'Durango': EmojiStateCodes.mxDurango,
+    'Guanajuato': EmojiStateCodes.mxGuanajuato,
+    'Guerrero': EmojiStateCodes.mxGuerrero,
+    'Hidalgo': EmojiStateCodes.mxHidalgo,
+    'Jalisco': EmojiStateCodes.mxJalisco,
+    'Estado de México': EmojiStateCodes.mxMexicoState,
+    'Michoacán': EmojiStateCodes.mxMichoacan,
+    'Morelos': EmojiStateCodes.mxMorelos,
+    'Nayarit': EmojiStateCodes.mxNayarit,
+    'Nuevo León': EmojiStateCodes.mxNuevoLeon,
+    'Oaxaca': EmojiStateCodes.mxOaxaca,
+    'Puebla': EmojiStateCodes.mxPuebla,
+    'Querétaro': EmojiStateCodes.mxQueretaro,
+    'Quintana Roo': EmojiStateCodes.mxQuintanaRoo,
+    'San Luis Potosí': EmojiStateCodes.mxSanLuisPotosi,
+    'Sinaloa': EmojiStateCodes.mxSinaloa,
+    'Sonora': EmojiStateCodes.mxSonora,
+    'Tabasco': EmojiStateCodes.mxTabasco,
+    'Tamaulipas': EmojiStateCodes.mxTamaulipas,
+    'Tlaxcala': EmojiStateCodes.mxTlaxcala,
+    'Veracruz': EmojiStateCodes.mxVeracruz,
+    'Yucatán': EmojiStateCodes.mxYucatan,
+    'Zacatecas': EmojiStateCodes.mxZacatecas,
   };
 
   static const _australiaEnglish = {

@@ -36,7 +36,6 @@ import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -323,7 +322,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     bool canApply(EntrySetAction action) => _actionDelegate.canApply(
           action,
           isSelecting: isSelecting,
-          itemCount: collection.entryCount,
+          collection: collection,
           selectedItemCount: selectedItemCount,
         );
 
@@ -357,7 +356,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       ...EntrySetActions.general,
       ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
-    ].whereNotNull().where(isVisible).map((action) {
+    ].nonNulls.where(isVisible).map((action) {
       final enabled = canApply(action);
       return CaptionedButton(
         iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
@@ -400,7 +399,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return [
       ...quickActionButtons,
       PopupMenuButton<EntrySetAction>(
@@ -463,7 +462,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return selection.selectedItems.expand((entry) => entry.stackedEntries ?? {entry}).toSet();
   }
 
-  // key is expected by test driver (e.g. 'menu-configureView', 'menu-map')
+  // key is expected by test driver
   Key _getActionKey(EntrySetAction action) => Key('menu-${action.name}');
 
   Widget _buildButtonIcon(
@@ -637,6 +636,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       // browsing
       case EntrySetAction.searchCollection:
       case EntrySetAction.toggleTitleSearch:
+      case EntrySetAction.addDynamicAlbum:
       case EntrySetAction.addShortcut:
       case EntrySetAction.setHome:
       // browsing or selecting
@@ -690,8 +690,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       },
       routeSettings: const RouteSettings(name: TileViewDialog.routeName),
     );
-    // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
+    // wait for the dialog to hide
+    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
       settings.collectionSortFactor = value.$1!;
       settings.collectionSectionFactor = value.$2!;

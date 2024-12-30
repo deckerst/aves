@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/geo/uri.dart';
+import 'package:aves/model/app/intent.dart';
 import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/app/intent.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -34,6 +36,7 @@ import 'package:aves/widgets/editor/entry_editor_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
@@ -44,6 +47,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -68,12 +72,14 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
   String? _initialRouteName, _initialSearchQuery;
   Set<CollectionFilter>? _initialFilters;
   String? _initialExplorerPath;
+  (LatLng, double?)? _initialLocationZoom;
   List<String>? _secureUris;
 
   static const allowedShortcutRoutes = [
     AlbumListPage.routeName,
     CollectionPage.routeName,
     ExplorerPage.routeName,
+    MapPage.routeName,
     SearchPage.routeName,
   ];
 
@@ -96,17 +102,17 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
     }
 
     var appMode = AppMode.main;
+    var error = false;
     final intentData = widget.intentData ?? await IntentService.getIntentData();
-    final safeMode = intentData[IntentDataKeys.safeMode] ?? false;
     final debug = intentData[IntentDataKeys.debug] ?? false;
-    final intentAction = intentData[IntentDataKeys.action];
+    final intentAction = intentData[IntentDataKeys.action] as String?;
     _initialFilters = null;
     _initialExplorerPath = null;
     _secureUris = null;
 
     if (debug) {
-      await metadataDb.init();
-      final logs = await metadataDb.getCatalogLog();
+      await localMediaDb.init();
+      final logs = await localMediaDb.getCatalogLog();
 
       final success = await storageService.createFile(
         'aves_issue977_logs-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.txt',
@@ -127,6 +133,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
       return;
     }
 
+    await availability.onNewIntent();
     await androidFileUtils.init();
     if (!{
           IntentActions.edit,
@@ -137,63 +144,35 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
       unawaited(appInventory.initAppNames());
     }
 
-    if (intentData.values.whereNotNull().isNotEmpty) {
+    if (intentData.values.nonNulls.isNotEmpty) {
       await reportService.log('Intent data=$intentData');
+      var intentUri = intentData[IntentDataKeys.uri] as String?;
+      final intentMimeType = intentData[IntentDataKeys.mimeType] as String?;
+
       switch (intentAction) {
         case IntentActions.view:
-        case IntentActions.widgetOpen:
-          String? uri, mimeType;
-          final widgetId = intentData[IntentDataKeys.widgetId];
-          if (widgetId != null) {
-            // widget settings may be modified in a different process after channel setup
-            await settings.reload();
-            final page = settings.getWidgetOpenPage(widgetId);
-            switch (page) {
-              case WidgetOpenPage.home:
-              case WidgetOpenPage.updateWidget:
-                break;
-              case WidgetOpenPage.collection:
-                _initialFilters = settings.getWidgetCollectionFilters(widgetId);
-              case WidgetOpenPage.viewer:
-                uri = settings.getWidgetUri(widgetId);
-            }
-            unawaited(WidgetService.update(widgetId));
-          } else {
-            uri = intentData[IntentDataKeys.uri];
-            mimeType = intentData[IntentDataKeys.mimeType];
-          }
-          _secureUris = intentData[IntentDataKeys.secureUris];
-          if (uri != null) {
-            _viewerEntry = await _initViewerEntry(
-              uri: uri,
-              mimeType: mimeType,
-            );
-            if (_viewerEntry != null) {
-              appMode = AppMode.view;
+          appMode = AppMode.view;
+          _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
+        case IntentActions.viewGeo:
+          error = true;
+          if (intentUri != null) {
+            final locationZoom = parseGeoUri(intentUri);
+            if (locationZoom != null) {
+              _initialRouteName = MapPage.routeName;
+              _initialLocationZoom = locationZoom;
+              error = false;
             }
           }
+          break;
         case IntentActions.edit:
-          _viewerEntry = await _initViewerEntry(
-            uri: intentData[IntentDataKeys.uri],
-            mimeType: intentData[IntentDataKeys.mimeType],
-          );
-          if (_viewerEntry != null) {
-            appMode = AppMode.edit;
-          }
+          appMode = AppMode.edit;
         case IntentActions.setWallpaper:
-          _viewerEntry = await _initViewerEntry(
-            uri: intentData[IntentDataKeys.uri],
-            mimeType: intentData[IntentDataKeys.mimeType],
-          );
-          if (_viewerEntry != null) {
-            appMode = AppMode.setWallpaper;
-          }
+          appMode = AppMode.setWallpaper;
         case IntentActions.pickItems:
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
-          String? pickMimeTypes = intentData[IntentDataKeys.mimeType];
-          final multiple = intentData[IntentDataKeys.allowMultiple] ?? false;
-          debugPrint('pick mimeType=$pickMimeTypes multiple=$multiple');
+          final multiple = (intentData[IntentDataKeys.allowMultiple] as bool?) ?? false;
+          debugPrint('pick mimeType=$intentMimeType multiple=$multiple');
           appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
         case IntentActions.pickCollectionFilters:
           appMode = AppMode.pickCollectionFiltersExternal;
@@ -204,26 +183,66 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           _initialRouteName = ScreenSaverSettingsPage.routeName;
         case IntentActions.search:
           _initialRouteName = SearchPage.routeName;
-          _initialSearchQuery = intentData[IntentDataKeys.query];
+          _initialSearchQuery = intentData[IntentDataKeys.query] as String?;
         case IntentActions.widgetSettings:
           _initialRouteName = HomeWidgetSettingsPage.routeName;
-          _widgetId = intentData[IntentDataKeys.widgetId] ?? 0;
+          _widgetId = (intentData[IntentDataKeys.widgetId] as int?) ?? 0;
+        case IntentActions.widgetOpen:
+          final widgetId = intentData[IntentDataKeys.widgetId] as int?;
+          if (widgetId == null) {
+            error = true;
+          } else {
+            // widget settings may be modified in a different process after channel setup
+            await settings.reload();
+            final page = settings.getWidgetOpenPage(widgetId);
+            switch (page) {
+              case WidgetOpenPage.collection:
+                _initialFilters = settings.getWidgetCollectionFilters(widgetId);
+              case WidgetOpenPage.viewer:
+                appMode = AppMode.view;
+                intentUri = settings.getWidgetUri(widgetId);
+              case WidgetOpenPage.home:
+              case WidgetOpenPage.updateWidget:
+                break;
+            }
+            unawaited(WidgetService.update(widgetId));
+          }
         default:
           // do not use 'route' as extra key, as the Flutter framework acts on it
-          final extraRoute = intentData[IntentDataKeys.page];
+          final extraRoute = intentData[IntentDataKeys.page] as String?;
           if (allowedShortcutRoutes.contains(extraRoute)) {
             _initialRouteName = extraRoute;
           }
       }
       if (_initialFilters == null) {
-        final extraFilters = intentData[IntentDataKeys.filters];
-        _initialFilters = extraFilters != null ? (extraFilters as List).cast<String>().map(CollectionFilter.fromJson).whereNotNull().toSet() : null;
+        final extraFilters = (intentData[IntentDataKeys.filters] as List?)?.cast<String>();
+        _initialFilters = extraFilters?.map(CollectionFilter.fromJson).nonNulls.toSet();
       }
-      _initialExplorerPath = intentData[IntentDataKeys.explorerPath];
+      _initialExplorerPath = intentData[IntentDataKeys.explorerPath] as String?;
+
+      switch (appMode) {
+        case AppMode.view:
+        case AppMode.edit:
+        case AppMode.setWallpaper:
+          if (intentUri != null) {
+            _viewerEntry = await _initViewerEntry(
+              uri: intentUri,
+              mimeType: intentMimeType,
+            );
+          }
+          error = _viewerEntry == null;
+        default:
+          break;
+      }
     }
+
+    if (error) {
+      debugPrint('Failed to init app mode=$appMode for intent data=$intentData. Fallback to main mode.');
+      appMode = AppMode.main;
+    }
+
     context.read<ValueNotifier<AppMode>>().value = appMode;
     unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
-    debugPrint('Storage check complete in ${stopwatch.elapsed.inMilliseconds}ms');
 
     switch (appMode) {
       case AppMode.main:
@@ -233,27 +252,26 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         unawaited(GlobalSearch.registerCallback());
         unawaited(AnalysisService.registerCallback());
         final source = context.read<CollectionSource>();
-        source.safeMode = safeMode;
-        if (source.initState != SourceInitializationState.full) {
-          await source.init(
-            loadTopEntriesFirst: settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty,
-          );
+        if (source.loadedScope != CollectionSource.fullScope) {
+          await reportService.log('Initialize source to start app with mode=$appMode, loaded scope=${source.loadedScope}');
+          final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
+          source.canAnalyze = true;
+          await source.init(scope: CollectionSource.fullScope, loadTopEntriesFirst: loadTopEntriesFirst);
         }
       case AppMode.screenSaver:
+        await reportService.log('Initialize source to start screen saver');
         final source = context.read<CollectionSource>();
-        await source.init(
-          canAnalyze: false,
-        );
+        source.canAnalyze = false;
+        await source.init(scope: settings.screenSaverCollectionFilters);
       case AppMode.view:
         if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
           final directory = _viewerEntry?.directory;
           if (directory != null) {
             unawaited(AnalysisService.registerCallback());
+            await reportService.log('Initialize source to view item in directory $directory');
             final source = context.read<CollectionSource>();
-            await source.init(
-              directory: directory,
-              canAnalyze: false,
-            );
+            source.canAnalyze = false;
+            await source.init(scope: {StoredAlbumFilter(directory, null)});
           }
         } else {
           await _initViewerEssentials();
@@ -265,6 +283,8 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         break;
     }
 
+    debugPrint('Home setup complete in ${stopwatch.elapsed.inMilliseconds}ms');
+
     // `pushReplacement` is not enough in some edge cases
     // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
     unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
@@ -275,7 +295,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
 
   Future<void> _initViewerEssentials() async {
     // for video playback storage
-    await metadataDb.init();
+    await localMediaDb.init();
   }
 
   bool _isViewerSourceable(AvesEntry? viewerEntry) {
@@ -316,38 +336,38 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         CollectionLens? collection;
 
         final source = context.read<CollectionSource>();
-        if (source.initState != SourceInitializationState.none) {
-          final album = viewerEntry.directory;
-          if (album != null) {
-            // wait for collection to pass the `loading` state
-            final completer = Completer();
-            void _onSourceStateChanged() {
-              if (source.state != SourceState.loading) {
-                source.stateNotifier.removeListener(_onSourceStateChanged);
-                completer.complete();
-              }
+        final album = viewerEntry.directory;
+        if (album != null) {
+          // wait for collection to pass the `loading` state
+          final loadingCompleter = Completer();
+          final stateNotifier = source.stateNotifier;
+          void _onSourceStateChanged() {
+            if (stateNotifier.value != SourceState.loading) {
+              stateNotifier.removeListener(_onSourceStateChanged);
+              loadingCompleter.complete();
             }
+          }
 
-            source.stateNotifier.addListener(_onSourceStateChanged);
-            await completer.future;
+          stateNotifier.addListener(_onSourceStateChanged);
+          _onSourceStateChanged();
+          await loadingCompleter.future;
 
-            collection = CollectionLens(
-              source: source,
-              filters: {AlbumFilter(album, source.getAlbumDisplayName(context, album))},
-              listenToSource: false,
-              // if we group bursts, opening a burst sub-entry should:
-              // - identify and select the containing main entry,
-              // - select the sub-entry in the Viewer page.
-              stackBursts: false,
-            );
-            final viewerEntryPath = viewerEntry.path;
-            final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
-            if (collectionEntry != null) {
-              viewerEntry = collectionEntry;
-            } else {
-              debugPrint('collection does not contain viewerEntry=$viewerEntry');
-              collection = null;
-            }
+          collection = CollectionLens(
+            source: source,
+            filters: {StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))},
+            listenToSource: false,
+            // if we group bursts, opening a burst sub-entry should:
+            // - identify and select the containing main entry,
+            // - select the sub-entry in the Viewer page.
+            stackBursts: false,
+          );
+          final viewerEntryPath = viewerEntry.path;
+          final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
+          if (collectionEntry != null) {
+            viewerEntry = collectionEntry;
+          } else {
+            debugPrint('collection does not contain viewerEntry=$viewerEntry');
+            collection = null;
           }
         }
 
@@ -384,6 +404,21 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         return buildRoute((context) => const AlbumListPage());
       case TagListPage.routeName:
         return buildRoute((context) => const TagListPage());
+      case MapPage.routeName:
+        return buildRoute((context) {
+          final mapCollection = CollectionLens(
+            source: source,
+            filters: {
+              LocationFilter.located,
+              if (filters != null) ...filters,
+            },
+          );
+          return MapPage(
+            collection: mapCollection,
+            initialLocation: _initialLocationZoom?.$1,
+            initialZoom: _initialLocationZoom?.$2,
+          );
+        });
       case ExplorerPage.routeName:
         final path = _initialExplorerPath ?? settings.homeCustomExplorerPath;
         return buildRoute((context) => ExplorerPage(path: path));

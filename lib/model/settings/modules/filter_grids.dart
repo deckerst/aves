@@ -1,7 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 
 mixin FilterGridsSettings on SettingsAccess {
   AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(SettingKeys.albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipGroupFactor.values);
@@ -48,11 +47,11 @@ mixin FilterGridsSettings on SettingsAccess {
 
   set tagSortReverse(bool newValue) => set(SettingKeys.tagSortReverseKey, newValue);
 
-  Set<CollectionFilter> get pinnedFilters => (getStringList(SettingKeys.pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+  Set<CollectionFilter> get pinnedFilters => (getStringList(SettingKeys.pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => set(SettingKeys.pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
-  bool get showAlbumPickQuery => getBool(SettingKeys.showAlbumPickQueryKey) ?? false;
+  bool getShowTitleQuery(String routeName) => getBool(SettingKeys.showTitleQueryPrefixKey + routeName) ?? false;
 
-  set showAlbumPickQuery(bool newValue) => set(SettingKeys.showAlbumPickQueryKey, newValue);
+  void setShowTitleQuery(String routeName, bool newValue) => set(SettingKeys.showTitleQueryPrefixKey + routeName, newValue);
 }

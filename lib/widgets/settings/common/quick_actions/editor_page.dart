@@ -287,7 +287,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                           effect: WormEffect(
                             dotWidth: 8,
                             dotHeight: 8,
-                            dotColor: colorScheme.onSurface.withOpacity(.2),
+                            dotColor: colorScheme.onSurface.withValues(alpha: .2),
                             activeDotColor: colorScheme.primary,
                           ),
                         ),

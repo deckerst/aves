@@ -21,15 +21,11 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
 
     private var knownEntries: Map<Long?, Int?>? = null
     private var directory: String? = null
-    private var safe: Boolean = false
 
     init {
         if (arguments is Map<*, *>) {
             knownEntries = (arguments["knownEntries"] as? Map<*, *>?)?.map { (it.key as Number?)?.toLong() to it.value as Int? }?.toMap()
             directory = arguments["directory"] as String?
-            // do not use kotlin.collections `getOrDefault` as it crashes on API <24
-            // and there is no warning from Android Studio
-            safe = arguments["safe"] as Boolean? ?: false
         }
     }
 
@@ -63,7 +59,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     }
 
     private fun fetchAll() {
-        MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap(), directory, safe) { success(it) }
+        MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap(), directory) { success(it) }
         endOfStream()
     }
 

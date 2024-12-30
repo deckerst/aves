@@ -3,7 +3,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: ^3.6.0
+resolution: workspace
 
 dependencies:
   flutter:
@@ -11,6 +12,7 @@ dependencies:
   aves_utils:
     path: ../aves_utils
   equatable:
+  leak_tracker:
   provider:
 
 dev_dependencies:

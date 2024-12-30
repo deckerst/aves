@@ -1,6 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
@@ -110,6 +112,7 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
     return SelectionProvider<FilterGridItem<T>>(
       child: Builder(
         builder: (context) => QueryProvider(
+          startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
           child: FilterGridPage<T>(
             appBar: FilterGridAppBar<T, CSAD>(
               source: widget.source,

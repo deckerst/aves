@@ -49,6 +49,8 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
   final reuseEntry = args['reuseEntry'] as bool;
   final isSystemThemeDark = args['isSystemThemeDark'] as bool;
 
+  await reportService.log('Draw widget with widgetId=$widgetId');
+
   final brightness = isSystemThemeDark ? Brightness.dark : Brightness.light;
   final outline = await settings.getWidgetOutline(widgetId).color(brightness);
 
@@ -94,7 +96,8 @@ Future<AvesEntry?> _getWidgetEntry(int widgetId, bool reuseEntry) async {
       readyCompleter.complete();
     }
   });
-  await source.init(canAnalyze: false);
+  source.canAnalyze = false;
+  await source.init(scope: filters);
   await readyCompleter.future;
 
   final entries = CollectionLens(source: source, filters: filters).sortedEntries;

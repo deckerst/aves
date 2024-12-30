@@ -1,13 +1,14 @@
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
@@ -37,29 +38,32 @@ class AlbumListPage extends StatelessWidget {
         return ValueListenableBuilder<bool>(
           valueListenable: appInventory.areAppNamesReadyNotifier,
           builder: (context, areAppNamesReady, child) {
-            return StreamBuilder(
-              stream: source.eventBus.on<AlbumsChangedEvent>(),
-              builder: (context, snapshot) {
-                final gridItems = getAlbumGridItems(context, source);
-                return StreamBuilder<Set<CollectionFilter>?>(
-                  // to update sections by tier
-                  stream: covers.packageChangeStream,
-                  builder: (context, snapshot) => FilterNavigationPage<AlbumFilter, AlbumChipSetActionDelegate>(
-                    source: source,
-                    title: context.l10n.albumPageTitle,
-                    sortFactor: settings.albumSortFactor,
-                    showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-                    actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                    filterSections: groupToSections(context, source, gridItems),
-                    newFilters: source.getNewAlbumFilters(context),
-                    applyQuery: applyQuery,
-                    emptyBuilder: () => EmptyContent(
-                      icon: AIcons.album,
-                      text: context.l10n.albumEmpty,
+            return AnimatedBuilder(
+              animation: dynamicAlbums,
+              builder: (context, child) => StreamBuilder(
+                stream: source.eventBus.on<AlbumsChangedEvent>(),
+                builder: (context, snapshot) {
+                  final gridItems = getAlbumGridItems(context, source);
+                  return StreamBuilder<Set<CollectionFilter>?>(
+                    // to update sections by tier
+                    stream: covers.packageChangeStream,
+                    builder: (context, snapshot) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
+                      source: source,
+                      title: context.l10n.albumPageTitle,
+                      sortFactor: settings.albumSortFactor,
+                      showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+                      actionDelegate: AlbumChipSetActionDelegate(gridItems),
+                      filterSections: groupToSections(context, source, gridItems),
+                      newFilters: source.getNewAlbumFilters(context),
+                      applyQuery: applyQuery,
+                      emptyBuilder: () => EmptyContent(
+                        icon: AIcons.album,
+                        text: context.l10n.albumEmpty,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           },
         );
@@ -69,21 +73,24 @@ class AlbumListPage extends StatelessWidget {
 
   // common with album selection page to move/copy entries
 
-  static List<FilterGridItem<AlbumFilter>> applyQuery(BuildContext context, List<FilterGridItem<AlbumFilter>> filters, String query) {
-    return filters.where((item) => (item.filter.displayName ?? item.filter.album).toUpperCase().contains(query)).toList();
+  static List<FilterGridItem<AlbumBaseFilter>> applyQuery(BuildContext context, List<FilterGridItem<AlbumBaseFilter>> filters, String query) {
+    return filters.where((item) => item.filter.match(query)).toList();
   }
 
-  static List<FilterGridItem<AlbumFilter>> getAlbumGridItems(BuildContext context, CollectionSource source) {
-    final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getAlbumDisplayName(context, album))).toSet();
+  static List<FilterGridItem<AlbumBaseFilter>> getAlbumGridItems(BuildContext context, CollectionSource source, {bool storedAlbumsOnly = false}) {
+    final filters = <AlbumBaseFilter>{
+      ...source.rawAlbums.map((album) => StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))),
+      if (!storedAlbumsOnly) ...dynamicAlbums.all,
+    };
 
     return FilterNavigationPage.sort(settings.albumSortFactor, settings.albumSortReverse, source, filters);
   }
 
-  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> groupToSections(BuildContext context, CollectionSource source, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
+  static Map<ChipSectionKey, List<FilterGridItem<AlbumBaseFilter>>> groupToSections(BuildContext context, CollectionSource source, Iterable<FilterGridItem<AlbumBaseFilter>> sortedMapEntries) {
     final newFilters = source.getNewAlbumFilters(context);
-    final pinned = settings.pinnedFilters.whereType<AlbumFilter>();
+    final pinned = settings.pinnedFilters.whereType<AlbumBaseFilter>();
 
-    final List<FilterGridItem<AlbumFilter>> newMapEntries = [], pinnedMapEntries = [], unpinnedMapEntries = [];
+    final List<FilterGridItem<AlbumBaseFilter>> newMapEntries = [], pinnedMapEntries = [], unpinnedMapEntries = [];
     for (final item in sortedMapEntries) {
       final filter = item.filter;
       if (newFilters.contains(filter)) {
@@ -95,24 +102,31 @@ class AlbumListPage extends StatelessWidget {
       }
     }
 
-    var sections = <ChipSectionKey, List<FilterGridItem<AlbumFilter>>>{};
+    var sections = <ChipSectionKey, List<FilterGridItem<AlbumBaseFilter>>>{};
     switch (settings.albumGroupFactor) {
       case AlbumChipGroupFactor.importance:
         final specialKey = AlbumImportanceSectionKey.special(context);
         final appsKey = AlbumImportanceSectionKey.apps(context);
         final vaultKey = AlbumImportanceSectionKey.vault(context);
         final regularKey = AlbumImportanceSectionKey.regular(context);
-        sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
-          switch (covers.effectiveAlbumType(kv.filter.album)) {
-            case AlbumType.regular:
-              return regularKey;
-            case AlbumType.app:
-              return appsKey;
-            case AlbumType.vault:
-              return vaultKey;
-            default:
-              return specialKey;
+        final dynamicKey = AlbumImportanceSectionKey.dynamic(context);
+        sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
+          final filter = kv.filter;
+          if (filter is StoredAlbumFilter) {
+            switch (covers.effectiveAlbumType(filter.album)) {
+              case AlbumType.regular:
+                return regularKey;
+              case AlbumType.app:
+                return appsKey;
+              case AlbumType.vault:
+                return vaultKey;
+              default:
+                return specialKey;
+            }
+          } else if (filter is DynamicAlbumFilter) {
+            return dynamicKey;
           }
+          return specialKey;
         });
 
         sections = {
@@ -120,11 +134,12 @@ class AlbumListPage extends StatelessWidget {
           if (sections.containsKey(specialKey)) specialKey: sections[specialKey]!,
           if (sections.containsKey(appsKey)) appsKey: sections[appsKey]!,
           if (sections.containsKey(vaultKey)) vaultKey: sections[vaultKey]!,
+          if (sections.containsKey(dynamicKey)) dynamicKey: sections[dynamicKey]!,
           if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
         };
       case AlbumChipGroupFactor.mimeType:
         final visibleEntries = source.visibleEntries;
-        sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
+        sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final matches = visibleEntries.where(kv.filter.test);
           final hasImage = matches.any((v) => v.isImage);
           final hasVideo = matches.any((v) => v.isVideo);
@@ -133,8 +148,8 @@ class AlbumListPage extends StatelessWidget {
           return MimeTypeSectionKey.mixed(context);
         });
       case AlbumChipGroupFactor.volume:
-        sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
-          return StorageVolumeSectionKey(context, androidFileUtils.getStorageVolume(kv.filter.album));
+        sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
+          return StorageVolumeSectionKey(context, kv.filter.storageVolume);
         });
       case AlbumChipGroupFactor.none:
         return {

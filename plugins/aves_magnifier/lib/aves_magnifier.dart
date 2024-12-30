@@ -1,5 +1,3 @@
-library aves_magnifier;
-
 export 'src/controller/controller.dart';
 export 'src/controller/state.dart';
 export 'src/core/core.dart';

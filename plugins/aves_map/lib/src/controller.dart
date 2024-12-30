@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves_map/src/zoomed_bounds.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class AvesMapController {
   final StreamController _streamController = StreamController.broadcast();
@@ -16,13 +17,15 @@ class AvesMapController {
 
   Stream<MapControllerZoomEvent> get zoomCommands => _events.where((event) => event is MapControllerZoomEvent).cast<MapControllerZoomEvent>();
 
+  Stream<MapControllerRotationResetEvent> get rotationResetCommands => _events.where((event) => event is MapControllerRotationResetEvent).cast<MapControllerRotationResetEvent>();
+
   Stream<MapIdleUpdate> get idleUpdates => _events.where((event) => event is MapIdleUpdate).cast<MapIdleUpdate>();
 
   Stream<MapMarkerLocationChangeEvent> get markerLocationChanges => _events.where((event) => event is MapMarkerLocationChangeEvent).cast<MapMarkerLocationChangeEvent>();
 
   AvesMapController() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AvesMapController',
         object: this,
@@ -32,7 +35,7 @@ class AvesMapController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _streamController.close();
   }
@@ -40,6 +43,8 @@ class AvesMapController {
   void moveTo(LatLng latLng) => _streamController.add(MapControllerMoveEvent(latLng));
 
   void zoomBy(double delta) => _streamController.add(MapControllerZoomEvent(delta));
+
+  void resetRotation() => _streamController.add(MapControllerRotationResetEvent());
 
   void notifyIdle(ZoomedBounds bounds) {
     _idleBounds = bounds;
@@ -60,6 +65,8 @@ class MapControllerZoomEvent {
 
   MapControllerZoomEvent(this.delta);
 }
+
+class MapControllerRotationResetEvent {}
 
 class MapIdleUpdate {
   final ZoomedBounds bounds;

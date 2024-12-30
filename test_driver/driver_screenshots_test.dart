@@ -159,7 +159,7 @@ void info() {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
     await driver.scrollY(verticalPageView, -600);
-    await _selectMapStyle('stamenWatercolor');
+    await _selectMapStyle('googleNormal');
 
     await _takeScreenshot(driver, '3');
 

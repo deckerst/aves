@@ -5,7 +5,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
@@ -38,8 +38,10 @@ import 'package:provider/provider.dart';
 
 mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   Future<void> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
-    final destinationAlbum = await pickAlbum(context: context, moveType: MoveType.export);
-    if (destinationAlbum == null) return;
+    final destinationAlbumFilter = await pickAlbum(context: context, moveType: MoveType.export, storedAlbumsOnly: true);
+    if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return;
+
+    final destinationAlbum = destinationAlbumFilter.album;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     if (!await checkFreeSpaceForMove(context, targetEntries, destinationAlbum, MoveType.export)) return;
@@ -106,7 +108,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       onDone: (processed) async {
         final successOps = processed.where((e) => e.success).toSet();
         final exportedOps = successOps.where((e) => !e.skipped).toSet();
-        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).whereNotNull().toSet();
+        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).nonNulls.toSet();
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
         source.resumeMonitoring();
@@ -125,7 +127,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
                         settings: const RouteSettings(name: CollectionPage.routeName),
                         builder: (context) => CollectionPage(
                           source: source,
-                          filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                          filters: {StoredAlbumFilter(destinationAlbum, source.getStoredAlbumDisplayName(context, destinationAlbum))},
                           highlightTest: (entry) => newUris.contains(entry.uri),
                         ),
                       ),
@@ -176,7 +178,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return;
 
     // permission for modification at origins
-    final originAlbums = entries.map((e) => e.directory).whereNotNull().toSet();
+    final originAlbums = entries.map((e) => e.directory).nonNulls.toSet();
     if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return;
 
     final hasEnoughSpaceByDestination = await Future.wait(destinationAlbums.map((destinationAlbum) {
@@ -232,7 +234,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
         // move
         final movedOps = successOps.where((v) => !v.skipped && !v.deleted).toSet();
-        final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).whereNotNull().toSet();
+        final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).nonNulls.toSet();
         await source.updateAfterMove(
           todoEntries: entries,
           moveType: moveType,
@@ -327,7 +329,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         type: ConfirmationDialog.moveToBin,
         message: l10n.binEntriesConfirmationDialogMessage(entries.length),
         confirmationButtonLabel: l10n.deleteButtonLabel,
-      )) return;
+      )) {
+        return;
+      }
     }
 
     final entriesByDestination = <String, Set<AvesEntry>>{};
@@ -335,9 +339,10 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       case MoveType.copy:
       case MoveType.move:
       case MoveType.export:
-        final destinationAlbum = await pickAlbum(context: context, moveType: moveType);
-        if (destinationAlbum == null) return;
+        final destinationAlbumFilter = await pickAlbum(context: context, moveType: moveType, storedAlbumsOnly: true);
+        if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return;
 
+        final destinationAlbum = destinationAlbumFilter.album;
         settings.recentDestinationAlbums = settings.recentDestinationAlbums
           ..remove(destinationAlbum)
           ..insert(0, destinationAlbum);
@@ -450,15 +455,15 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
 
     final collection = context.read<CollectionLens?>();
-    if (collection == null || collection.filters.any((f) => f is AlbumFilter || f is TrashFilter)) {
+    if (collection == null || collection.filters.any((f) => f is StoredAlbumFilter || f is TrashFilter)) {
       final source = context.read<CollectionSource>();
       final targetFilters = collection?.filters.where((f) => f != TrashFilter.instance).toSet() ?? {};
       // we could simply add the filter to the current collection
       // but navigating makes the change less jarring
       if (destinationAlbums.length == 1) {
         final destinationAlbum = destinationAlbums.single;
-        targetFilters.removeWhere((f) => f is AlbumFilter);
-        targetFilters.add(AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum)));
+        targetFilters.removeWhere((f) => f is StoredAlbumFilter);
+        targetFilters.add(StoredAlbumFilter(destinationAlbum, source.getStoredAlbumDisplayName(context, destinationAlbum)));
       }
       unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
         MaterialPageRoute(

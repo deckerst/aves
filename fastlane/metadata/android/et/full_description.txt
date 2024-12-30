@@ -1,0 +1,5 @@
+<i>Aves</i> oskab kasutada eri sorti pildi- ja videofaile, alates tavalistest JPEG-piltidest kuni MP4-videoteni, aga samuti harvaesinevaid <b>mitmelehelisi TIFF-faile, SVG-graafikafaile, vanu AVI-videoid ja palju muud</b>! Skaneerides sinu meediakogu tuvastab ta <b>animeeritud pildifailid</b>, <b>panoraamfotod</b>, <b>360° videod</b>, aga ka <b>GeoTIFF</b>i-failid.
+
+<b>Meedias liikumine ja otsing</b> on oluline osa <i>Avesest</i>. Meie eesmärgiks on see, et rakenduses liikumine oleks sujuv - alates albumitest kuni fotode, siltide, kaartideni jne.
+
+<i>Aves</i> lõimub sujuvalt Androidiga (sh Android TV) kasutades muu hulgas võimalusi nagu <b>vidinad</b>, <b>rakenduse viited</b>, <b>ekraanisäästja</b> ja <b>üldotsing</b>. Ta toimib ka <b>meediaesitajana ja -valijana</b>.

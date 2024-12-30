@@ -17,6 +17,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
       EntrySetAction.toggleTitleSearch =>
         // different data depending on toggle state
         l10n.collectionActionShowTitleSearch,
+      EntrySetAction.addDynamicAlbum => l10n.collectionActionAddDynamicAlbum,
       EntrySetAction.addShortcut => l10n.collectionActionAddShortcut,
       EntrySetAction.setHome => l10n.collectionActionSetHome,
       EntrySetAction.emptyBin => l10n.collectionActionEmptyBin,
@@ -62,6 +63,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
       EntrySetAction.toggleTitleSearch =>
         // different data depending on toggle state
         AIcons.filter,
+      EntrySetAction.addDynamicAlbum => AIcons.dynamicAlbum,
       EntrySetAction.addShortcut => AIcons.addShortcut,
       EntrySetAction.setHome => AIcons.home,
       EntrySetAction.emptyBin => AIcons.emptyBin,

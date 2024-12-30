@@ -3,7 +3,7 @@ class SettingKeys {
 
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
-    catalogTimeZoneRawOffsetMillisKey,
+    catalogTimeZoneOffsetMillisKey,
     searchHistoryKey,
     platformAccelerometerRotationKey,
     platformTransitionAnimationScaleKey,
@@ -21,7 +21,7 @@ class SettingKeys {
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const localeKey = 'locale';
   static const forceWesternArabicNumeralsKey = 'force_western_arabic_numerals';
-  static const catalogTimeZoneRawOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
+  static const catalogTimeZoneOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';
@@ -86,7 +86,7 @@ class SettingKeys {
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
   static const deactivatedHiddenFiltersKey = 'deactivated_hidden_filters';
-  static const showAlbumPickQueryKey = 'show_album_pick_query';
+  static const showTitleQueryPrefixKey = 'show_title_query_';
 
   // viewer
   static const viewerQuickActionsKey = 'viewer_quick_actions';
@@ -109,7 +109,7 @@ class SettingKeys {
   static const videoAutoPlayModeKey = 'video_auto_play_mode';
   static const videoLoopModeKey = 'video_loop';
   static const videoResumptionModeKey = 'video_resumption_mode';
-  static const videoControlsKey = 'video_controls';
+  static const videoControlActionsKey = 'video_control_actions';
   static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
   static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';
   static const videoGestureVerticalDragBrightnessVolumeKey = 'video_gesture_vertical_drag_brightness_volume';
@@ -119,8 +119,8 @@ class SettingKeys {
   static const subtitleTextAlignmentKey = 'subtitle_text_alignment';
   static const subtitleTextPositionKey = 'subtitle_text_position';
   static const subtitleShowOutlineKey = 'subtitle_show_outline';
-  static const subtitleTextColorKey = 'subtitle_text_color';
-  static const subtitleBackgroundColorKey = 'subtitle_background_color';
+  static const subtitleTextColorKey = 'subtitle_text_color_string';
+  static const subtitleBackgroundColorKey = 'subtitle_background_color_string';
 
   // info
   static const infoMapZoomKey = 'info_map_zoom';

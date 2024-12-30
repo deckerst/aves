@@ -5,6 +5,7 @@ import 'package:aves/l10n/l10n.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -13,6 +14,8 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AnalysisService {
   static const _platform = MethodChannel('deckers.thibault/aves/analysis');
@@ -29,6 +32,10 @@ class AnalysisService {
   }
 
   static Future<void> startService({required bool force, List<int>? entryIds}) async {
+    // from Android 13 (API 33), notifications are off by default,
+    // so the user needs to grant the permission to see the service notification
+    unawaited(Permission.notification.request());
+
     await reportService.log('Start analysis service${entryIds != null ? ' for ${entryIds.length} items' : ''}');
     try {
       await _platform.invokeMethod('startAnalysis', <String, dynamic>{
@@ -48,7 +55,7 @@ Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
   await androidFileUtils.init();
-  await metadataDb.init();
+  await localMediaDb.init();
   await device.init();
   await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);
@@ -94,7 +101,7 @@ class Analyzer with WidgetsBindingObserver {
   Analyzer() {
     debugPrint('$runtimeType create');
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$Analyzer',
         object: this,
@@ -108,7 +115,7 @@ class Analyzer with WidgetsBindingObserver {
   void dispose() {
     debugPrint('$runtimeType dispose');
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _stopUpdateTimer();
     _controller?.dispose();
@@ -142,7 +149,7 @@ class Analyzer with WidgetsBindingObserver {
     settings.systemLocalesFallback = await deviceService.getLocales();
     _l10n = await AppLocalizations.delegate.load(settings.appliedLocale);
     _serviceStateNotifier.value = AnalyzerState.running;
-    await _source.init(analysisController: _controller);
+    await _source.init(scope: CollectionSource.fullScope, analysisController: _controller);
 
     _notificationUpdateTimer = Timer.periodic(notificationUpdateInterval, (_) async {
       if (!isRunning) return;

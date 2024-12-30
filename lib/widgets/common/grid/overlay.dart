@@ -31,7 +31,7 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
                   alignment: AlignmentDirectional.topEnd,
                   padding: padding,
                   decoration: BoxDecoration(
-                    color: isSelected ? Theme.of(context).colorScheme.primary.withOpacity(.6) : Colors.transparent,
+                    color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: .6) : Colors.transparent,
                     borderRadius: borderRadius,
                   ),
                   duration: duration,

@@ -26,7 +26,7 @@ class CompassPainter extends CustomPainter {
 
     final fillPaint = Paint()
       ..style = PaintingStyle.fill
-      ..color = color.withOpacity(.6);
+      ..color = color.withValues(alpha: .6);
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke
       ..color = color

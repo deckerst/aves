@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,27 +14,26 @@ typedef HistogramLevels = Map<HistogramChannel, List<double>>;
 
 mixin HistogramMixin {
   HistogramLevels _levels = {};
-  Completer? _completer;
+  Future<void>? _loader;
 
   static const int bins = 256;
 
   Future<HistogramLevels> getHistogramLevels(ImageInfo info, bool forceUpdate) async {
     if (_levels.isEmpty || forceUpdate) {
-      if (_completer == null) {
-        _completer = Completer();
-        final data = (await info.image.toByteData(format: ImageByteFormat.rawStraightRgba))!;
-        _levels = switch (settings.overlayHistogramStyle) {
-          OverlayHistogramStyle.rgb => await compute<ByteData, HistogramLevels>(_computeRgbLevels, data),
-          OverlayHistogramStyle.luminance => await compute<ByteData, HistogramLevels>(_computeLuminanceLevels, data),
-          _ => <HistogramChannel, List<double>>{},
-        };
-        _completer?.complete();
-      } else {
-        await _completer?.future;
-        _completer = null;
-      }
+      _loader ??= _getLevels(info);
+      await _loader;
+      _loader = null;
     }
     return _levels;
+  }
+
+  Future<void> _getLevels(ImageInfo info) async {
+    final data = (await info.image.toByteData(format: ImageByteFormat.rawStraightRgba))!;
+    _levels = switch (settings.overlayHistogramStyle) {
+      OverlayHistogramStyle.rgb => await compute<ByteData, HistogramLevels>(_computeRgbLevels, data),
+      OverlayHistogramStyle.luminance => await compute<ByteData, HistogramLevels>(_computeLuminanceLevels, data),
+      _ => <HistogramChannel, List<double>>{},
+    };
   }
 
   static HistogramLevels _computeRgbLevels(ByteData data) {
@@ -81,8 +81,8 @@ mixin HistogramMixin {
         final b = view[i + 2];
         // `Color.computeLuminance()` is more accurate, but slower
         // and photo software typically use the simpler formula
-        final luminance = (r * 0.3 + g * 0.59 + b * 0.11) / 255;
-        lumLevels[(luminance * normMax).round()]++;
+        final l = ColorUtils.luma(r, g, b);
+        lumLevels[(l * normMax).round()]++;
       }
     }
 

@@ -1,9 +1,8 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
-import 'package:aves_model/aves_model.dart';
+import 'package:aves/widgets/settings/video/control_actions.dart';
 import 'package:flutter/material.dart';
 
 class VideoControlsPage extends StatelessWidget {
@@ -20,12 +19,10 @@ class VideoControlsPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            SettingsSelectionListTile<VideoControls>(
-              values: VideoControls.values,
-              getName: (context, v) => v.getName(context),
-              selector: (context, s) => s.videoControls,
-              onSelection: (v) => settings.videoControls = v,
-              tileTitle: context.l10n.settingsVideoButtonsTile,
+            SettingsSubPageTile(
+              title: context.l10n.settingsVideoButtonsTile,
+              routeName: VideoControlButtonsPage.routeName,
+              builder: (context) => const VideoControlButtonsPage(),
             ),
             SettingsSwitchListTile(
               selector: (context, s) => s.videoGestureDoubleTapTogglePlay,

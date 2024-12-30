@@ -4,13 +4,139 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.0"></a>[v1.12.0] - 2024-12-19
+
+### Added
+
+- Countries: show states for Mexico
+- Estonian translation (thanks Priit Jõerüüt)
+
+### Changed
+
+- upgraded Flutter to stable v3.27.1
+
+### Fixed
+
+- crash when loading many new items on low memory devices
+
+## <a id="v1.11.20"></a>[v1.11.20] - 2024-12-11
+
+### Added
+
+- Albums: dynamic albums from filter sets
+- Bulgarian translation (thanks Petrov)
+- Tamil translation (thanks தமிழ்நேரம்)
+
+## <a id="v1.11.19"></a>[v1.11.19] - 2024-11-24
+
+### Added
+
+- integrate with OS app language settings on Android >=14
+
+### Changed
+
+- remember title filter visibility by page
+
+## <a id="v1.11.18"></a>[v1.11.18] - 2024-11-18
+
+### Changed
+
+- Albums: improved album creation feedback
+- upgraded Flutter to stable v3.24.5
+
+### Fixed
+
+- crash when playing video with DCL restriction enabled
+- cataloguing images with wrong MPF offsets
+- printing multi-page items containing some unprintable pages
+- English (Shavian) locale tags for store listing
+
+## <a id="v1.11.17"></a>[v1.11.17] - 2024-10-30
+
+### Added
+
+- Map: create shortcut to custom region and filters
+- Video: frame stepping forward/backward
+- Video: custom playback buttons
+- English (Shavian) translation (thanks Paranoid Android)
+
+### Changed
+
+- upgraded Flutter to stable v3.24.4
+
+### Fixed
+
+- crash when loading large collection
+- Viewer: copying content URI item
+- Albums: creating album with same name as existing empty directory
+- Privacy: tagging while vaults are unlocked does not yield recent tags visible when vaults are locked
+
+## <a id="v1.11.16"></a>[v1.11.16] - 2024-10-10
+
+### Fixed
+
+- case-insensitive access to restricted directories
+
+## <a id="v1.11.15"></a>[v1.11.15] - 2024-10-09
+
+### Changed
+
+- Enterprise: do not request `INTERACT_ACROSS_PROFILES` permission (Play Store compatibility)
+
+## <a id="v1.11.14"></a>[v1.11.14] - 2024-10-09
+
+### Added
+
+- Map: OpenTopoMap raster layer
+- Map: OSM Liberty vector layer (hosted by OSM Americana)
+- Interoperability: receiving `geo:` URI generally opens map page at location
+- Interoperability: receiving `geo:` URI when editing item location fills in coordinates
+- Map basic app shortcut
+- Enterprise: support for work profile switching from the drawer
+- Settings: hidden path filters are merged with others and can be toggled
+
+### Removed
+
+- `Safe mode` basic app shortcut
+
+### Fixed
+
+- hanging when cataloguing some JPEG MPF images
+- Apple HDR image detection
+
+## <a id="v1.11.13"></a>[v1.11.13] - 2024-09-17
+
+### Added
+
+- support opening from the lock screen
+
+### Changed
+
+- upgraded Flutter to stable v3.24.3
+
+### Fixed
+
+- crash when cataloguing some malformed MP4 files
+- inconsistent launch screen
+
+## <a id="v1.11.12"></a>[v1.11.12] - 2024-09-16 [YANKED AGAIN!]
+
+## <a id="v1.11.11"></a>[v1.11.11] - 2024-09-16 [YANKED]
+
+## <a id="v1.11.10"></a>[v1.11.10] - 2024-09-01
+
 ### Added
 
 - Swedish translation (thanks Shift18, Andreas Håll)
 
 ### Changed
 
+- request notification permission when launching scanning service
 - upgraded Flutter to stable v3.24.1
+
+### Fixed
+
+- duplicates from new item loading/refreshing
 
 ## <a id="v1.11.9"></a>[v1.11.9] - 2024-08-07
 
@@ -1100,6 +1226,7 @@ All notable changes to this project will be documented in this file.
 
 - app launching on some devices
 - corrupting motion photo exif editing (e.g. rotation)
+- accessing files in `Download` directory when not using reference case
 
 ## [v1.4.9] - 2021-08-20
 

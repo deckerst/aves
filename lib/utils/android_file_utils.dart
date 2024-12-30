@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
@@ -6,8 +8,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
-
-enum _State { uninitialized, initializing, initialized }
 
 class AndroidFileUtils {
   // cf https://developer.android.com/reference/android/content/ContentResolver#SCHEME_CONTENT
@@ -19,6 +19,11 @@ class AndroidFileUtils {
   // cf https://developer.android.com/reference/android/provider/MediaStore#VOLUME_EXTERNAL
   static const externalVolume = 'external';
 
+  static const standardDirDcim = 'DCIM';
+  static const standardDirDownloads = 'Download';
+  static const standardDirMovies = 'Movies';
+  static const standardDirPictures = 'Pictures';
+
   static const mediaStoreUriRoot = '$contentScheme://$mediaStoreAuthority/';
   static const mediaUriPathRoots = {'/$externalVolume/images/', '/$externalVolume/video/'};
 
@@ -29,16 +34,13 @@ class AndroidFileUtils {
   late final String dcimPath, downloadPath, moviesPath, picturesPath, avesVideoCapturesPath;
   late final Set<String> videoCapturesPaths;
   Set<StorageVolume> storageVolumes = {};
-  _State _initialized = _State.uninitialized;
+  Future<void>? _loader;
 
   AndroidFileUtils._private();
 
   Future<void> init() async {
-    if (_initialized == _State.uninitialized) {
-      _initialized = _State.initializing;
-      await _doInit();
-      _initialized = _State.initialized;
-    }
+    _loader ??= _doInit();
+    await _loader;
   }
 
   Future<void> _doInit() async {
@@ -46,11 +48,13 @@ class AndroidFileUtils {
     await _initStorageVolumes();
     vaultRoot = await storageService.getVaultRoot();
     primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? separator;
-    // standard
-    dcimPath = pContext.join(primaryStorage, 'DCIM');
-    downloadPath = pContext.join(primaryStorage, 'Download');
-    moviesPath = pContext.join(primaryStorage, 'Movies');
-    picturesPath = pContext.join(primaryStorage, 'Pictures');
+    // standard dirs
+    dcimPath = pContext.join(primaryStorage, standardDirDcim);
+    // effective download path may have a different case
+    downloadPath = pContext.join(primaryStorage, standardDirDownloads).toLowerCase();
+    moviesPath = pContext.join(primaryStorage, standardDirMovies);
+    picturesPath = pContext.join(primaryStorage, standardDirPictures);
+    // custom dirs
     avesVideoCapturesPath = pContext.join(dcimPath, 'Video Captures');
     videoCapturesPaths = {
       // from Samsung
@@ -78,7 +82,7 @@ class AndroidFileUtils {
 
   bool isVideoCapturesPath(String path) => videoCapturesPaths.contains(path);
 
-  bool isDownloadPath(String path) => path == downloadPath;
+  bool isDownloadPath(String path) => path.toLowerCase() == downloadPath;
 
   StorageVolume? getStorageVolume(String? path) {
     if (path == null) return null;

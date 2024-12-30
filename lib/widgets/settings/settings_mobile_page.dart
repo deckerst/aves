@@ -22,7 +22,6 @@ import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/settings/settings_search.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -47,7 +46,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
 
   @override
   Widget build(BuildContext context) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return AvesScaffold(
       appBar: AppBar(
         title: InteractiveAppBarTitle(
@@ -113,7 +112,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
         final allMap = Map.fromEntries(toExport.map((v) {
           final jsonMap = v.export(source);
           return jsonMap != null ? MapEntry(v.name, jsonMap) : null;
-        }).whereNotNull());
+        }).nonNulls);
         allMap[exportVersionKey] = exportVersion;
         final allJsonString = jsonEncode(allMap);
 
@@ -171,8 +170,8 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
               return item.import(importable[item], source);
             });
             showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
-          } catch (error) {
-            debugPrint('failed to import app json, error=$error');
+          } catch (error, stack) {
+            debugPrint('failed to import app json, error=$error\n$stack');
             showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
           }
         }

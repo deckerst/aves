@@ -18,6 +18,7 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/viewer/action/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
@@ -75,7 +76,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late Animation<Offset> _overlayTopOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
-  final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
+  final ValueNotifier<EntryHeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
   Timer? _overlayHidingTimer, _appInactiveReactionTimer;
 
@@ -103,7 +104,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void initState() {
     super.initState();
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
-      AvesApp.screenBrightness?.setScreenBrightness(1);
+      AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       windowService.keepScreenOn(true);
@@ -116,7 +117,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final initialEntry = widget.initialEntry;
     final entry = entries.firstWhereOrNull((entry) => entry.id == initialEntry.id) ?? entries.firstOrNull;
     // opening hero, with viewer as target
-    _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
+    _heroInfoNotifier.value = EntryHeroInfo(collection, entry);
     entryNotifier = viewerController.entryNotifier;
     entryNotifier.value = entry;
     _currentEntryIndex = max(0, entry != null ? entries.indexOf(entry) : -1);
@@ -224,7 +225,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
         _onPopInvoked();
       },
-      child: ValueListenableProvider<HeroInfo?>.value(
+      child: ValueListenableProvider<EntryHeroInfo?>.value(
         value: _heroInfoNotifier,
         child: NotificationListener(
           onNotification: _handleNotification,
@@ -412,17 +413,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Widget _buildSlideshowBottomOverlay(Size availableSize) {
-    return SizedBox.fromSize(
-      size: availableSize,
+    return TooltipTheme(
+      data: TooltipTheme.of(context).copyWith(
+        preferBelow: false,
+      ),
       child: Align(
         alignment: AlignmentDirectional.bottomEnd,
-        child: TooltipTheme(
-          data: TooltipTheme.of(context).copyWith(
-            preferBelow: false,
-          ),
-          child: SlideshowButtons(
-            animationController: _overlayAnimationController,
-          ),
+        child: SlideshowBottomOverlay(
+          animationController: _overlayAnimationController,
+          availableSize: availableSize,
+          viewInsets: _frozenViewInsets,
+          viewPadding: _frozenViewPadding,
         ),
       ),
     );
@@ -568,9 +569,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     } else if (notification is CastNotification) {
       _cast(notification.enabled);
     } else if (notification is FullImageLoadedNotification) {
-      final viewStateController = context.read<ViewStateConductor>().getOrCreateController(notification.entry);
       // microtask so that listeners do not trigger during build
-      scheduleMicrotask(() => viewStateController.fullImageNotifier.value = notification.image);
+      scheduleMicrotask(() {
+        if (!mounted) return;
+        final viewStateController = context.read<ViewStateConductor>().getController(notification.entry);
+        viewStateController?.fullImageNotifier.value = notification.image;
+      });
     } else if (notification is EntryDeletedNotification) {
       _onEntryRemoved(context, notification.entries);
     } else if (notification is EntryMovedNotification) {
@@ -864,7 +868,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       }
 
       // closing hero, with viewer as source
-      final heroInfo = HeroInfo(collection?.id, entryNotifier.value);
+      final heroInfo = EntryHeroInfo(collection, entryNotifier.value);
       if (_heroInfoNotifier.value != heroInfo) {
         _heroInfoNotifier.value = heroInfo;
         // we post closing the viewer page so that hero animation source is ready
@@ -897,6 +901,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
             predicate: (v) => v < 1,
             animate: false,
           );
+      context.read<ViewerEntryNotifier>().value = entry;
     }
   }
 
@@ -907,12 +912,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
     await viewerController.stopCast();
 
-    switch (settings.maxBrightness) {
-      case MaxBrightness.never:
-      case MaxBrightness.viewerOnly:
-        await AvesApp.screenBrightness?.resetScreenBrightness();
-      case MaxBrightness.always:
-        await AvesApp.screenBrightness?.setScreenBrightness(1);
+    try {
+      switch (settings.maxBrightness) {
+        case MaxBrightness.never:
+        case MaxBrightness.viewerOnly:
+          await AvesApp.screenBrightness?.resetApplicationScreenBrightness();
+        case MaxBrightness.always:
+          await AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
+      }
+    } on PlatformException catch (e, stack) {
+      // `screen_brightness` plugin may fail
+      unawaited(reportService.recordError(e, stack));
     }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       await windowService.keepScreenOn(false);

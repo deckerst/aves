@@ -36,3 +36,8 @@ linter:
     prefer_single_quotes: true
     sort_child_properties_last: true
     unawaited_futures: true
+
+    # `const` related, included
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_const_declarations: true

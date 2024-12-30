@@ -15,6 +15,7 @@ enum ChipSetAction {
   stats,
   // selecting (single/multiple filters)
   delete,
+  remove,
   hide,
   pin,
   unpin,
@@ -54,6 +55,7 @@ class ChipSetActions {
     ChipSetAction.pin,
     ChipSetAction.unpin,
     ChipSetAction.delete,
+    ChipSetAction.remove,
     ChipSetAction.rename,
     ChipSetAction.showCountryStates,
     ChipSetAction.hide,

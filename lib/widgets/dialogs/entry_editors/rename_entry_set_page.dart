@@ -71,7 +71,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     final l10n = context.l10n;
     final textScaler = MediaQuery.textScalerOf(context);
     final effectiveThumbnailExtent = max(thumbnailExtent, textScaler.scale(thumbnailExtent));
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return AvesScaffold(
       appBar: AppBar(
         title: Text(l10n.renameEntrySetPageTitle),

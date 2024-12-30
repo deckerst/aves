@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id 'com.android.application'
     id 'com.google.devtools.ksp'
@@ -9,18 +7,6 @@ plugins {
 }
 
 def packageName = "deckers.thibault.aves"
-
-// Flutter properties
-
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
-}
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
 
 // Keys
 
@@ -42,33 +28,22 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties["googleApiKey"] = System.getenv("AVES_GOOGLE_API_KEY") ?: "<NONE>"
 }
 
+kotlin {
+    jvmToolchain 17
+}
+
 android {
     namespace 'deckers.thibault.aves'
     compileSdk 35
     // cf https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
-    ndkVersion '26.1.10909125'
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    lint {
-        checkAllWarnings true
-        warningsAsErrors true
-        disable 'InvalidPackage'
-    }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
+    ndkVersion '27.0.12077973'
 
     defaultConfig {
         applicationId packageName
         minSdk flutter.minSdkVersion
         targetSdk 35
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode flutter.versionCode
+        versionName flutter.versionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>"]
         multiDexEnabled true
     }
@@ -155,15 +130,6 @@ android {
     }
 }
 
-tasks.withType(KotlinCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-kotlin {
-    jvmToolchain(17)
-}
-
 flutter {
     source '../..'
 }
@@ -185,15 +151,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
 
     implementation "androidx.appcompat:appcompat:1.7.0"
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.lifecycle:lifecycle-process:2.8.4'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.8.7'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
-    implementation 'androidx.work:work-runtime-ktx:2.9.0'
+    implementation 'androidx.work:work-runtime-ktx:2.10.0'
 
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'
@@ -201,21 +167,21 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation 'com.google.android.material:material:1.12.0'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.14'
+    implementation 'org.slf4j:slf4j-simple:2.0.16'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:90c06eebf4'
-    implementation 'com.github.deckerst.mp4parser:isoparser:4cc0c5d06c'
-    implementation 'com.github.deckerst.mp4parser:muxer:4cc0c5d06c'
+    implementation 'com.github.deckerst.mp4parser:isoparser:d5caf7a3dd'
+    implementation 'com.github.deckerst.mp4parser:muxer:d5caf7a3dd'
     implementation 'com.github.deckerst:pixymeta-android:9ec7097f17'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
 
-    kapt 'androidx.annotation:annotation:1.8.1'
+    kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')

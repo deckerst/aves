@@ -5,6 +5,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class MultiPageController {
   final AvesEntry entry;
@@ -25,7 +26,7 @@ class MultiPageController {
 
   MultiPageController(this.entry) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$MultiPageController',
         object: this,
@@ -48,7 +49,7 @@ class MultiPageController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _info?.dispose();
     _disposed = true;

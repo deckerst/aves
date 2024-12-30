@@ -2,7 +2,6 @@ import 'package:aves/ref/unicode.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/line.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/span.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/style.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class AssParser {
@@ -152,7 +151,7 @@ class AssParser {
                 // \c or \1c: fill color
                 final color = _parseColor(param);
                 if (color != null) {
-                  textStyle = textStyle.copyWith(color: color.withAlpha(textStyle.color?.alpha ?? 0xFF));
+                  textStyle = textStyle.copyWith(color: color.withValues(alpha: textStyle.color?.a ?? 1));
                 }
               }
             case '3c':
@@ -161,7 +160,7 @@ class AssParser {
                 final color = _parseColor(param);
                 if (color != null) {
                   extraStyle = extraStyle.copyWith(
-                    borderColor: color.withAlpha(extraStyle.borderColor?.alpha ?? 0xFF),
+                    borderColor: color.withValues(alpha: extraStyle.borderColor?.a ?? 1),
                   );
                 }
               }
@@ -173,7 +172,7 @@ class AssParser {
                   textStyle = textStyle.copyWith(
                       shadows: textStyle.shadows
                           ?.map((v) => Shadow(
-                                color: color.withAlpha(v.color.alpha),
+                                color: color.withValues(alpha: v.color.a),
                                 offset: v.offset,
                                 blurRadius: v.blurRadius,
                               ))
@@ -471,7 +470,7 @@ class AssParser {
     pathPattern.allMatches(commands).forEach((match) {
       if (match.groupCount == 2) {
         final command = match.group(1)!;
-        final params = match.group(2)!.trim().split(' ').map(double.tryParse).whereNotNull().map((v) => v / scale).toList();
+        final params = match.group(2)!.trim().split(' ').map(double.tryParse).nonNulls.map((v) => v / scale).toList();
         switch (command) {
           case 'b':
             if (path != null) {
@@ -529,7 +528,7 @@ class AssParser {
       if (g != null) {
         final params = g.split(',');
         if (params.length == 4) {
-          final points = params.map(double.tryParse).whereNotNull().toList();
+          final points = params.map(double.tryParse).nonNulls.toList();
           if (points.length == 4) {
             paths = [
               Path()

@@ -1,5 +1,3 @@
-library aves_report;
-
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:stack_trace/stack_trace.dart';
@@ -17,7 +15,7 @@ abstract class ReportService {
 
   Future<void> setCustomKeys(Map<String, Object> map);
 
-  Future<void> recordError(dynamic exception, StackTrace? stack);
+  Future<void> recordError(dynamic exception, [StackTrace? stack]);
 
   Future<void> recordFlutterError(FlutterErrorDetails flutterErrorDetails);
 

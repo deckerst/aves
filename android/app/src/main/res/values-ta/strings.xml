@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ஏவ்ச்</string>
+    <string name="app_widget_label">புகைப்பட சட்டகம்</string>
+    <string name="wallpaper">வால்பேப்பர்</string>
+    <string name="map_shortcut_short_label">வரைபடம்</string>
+    <string name="search_shortcut_short_label">தேடல்</string>
+    <string name="analysis_notification_default_title">ஊடக ச்கேனிங்</string>
+    <string name="videos_shortcut_short_label">வீடியோக்கள்</string>
+    <string name="analysis_channel_name">மீடியா ச்கேன்</string>
+    <string name="analysis_notification_action_stop">நிறுத்து</string>
+</resources>

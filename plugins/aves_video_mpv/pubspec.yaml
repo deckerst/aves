@@ -3,7 +3,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: ^3.6.0
+resolution: workspace
 
 dependencies:
   flutter:
@@ -17,7 +18,6 @@ dependencies:
   collection:
   media_kit:
   media_kit_libs_android_video:
-  media_kit_native_event_loop:
   media_kit_video:
   path:
 

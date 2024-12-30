@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
@@ -24,7 +24,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
   List<String> sortedPlaces = List.unmodifiable([]);
 
   Future<void> loadAddresses({Set<int>? ids}) async {
-    final saved = await (ids != null ? metadataDb.loadAddressesById(ids) : metadataDb.loadAddresses());
+    final saved = await (ids != null ? localMediaDb.loadAddressesById(ids) : localMediaDb.loadAddresses());
     final idMap = entryById;
     saved.forEach((metadata) => idMap[metadata.id]?.addressDetails = metadata);
     invalidateEntries();
@@ -37,7 +37,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
 
     final unlocatedIds = candidateEntries.where((entry) => !entry.hasGps).map((entry) => entry.id).toSet();
     if (unlocatedIds.isNotEmpty) {
-      await metadataDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
+      await localMediaDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
       onAddressMetadataChanged();
     }
   }
@@ -71,7 +71,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       setProgress(done: ++progressDone, total: progressTotal);
     });
     if (newAddresses.isNotEmpty) {
-      await metadataDb.saveAddresses(Set.unmodifiable(newAddresses));
+      await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
       onAddressMetadataChanged();
     }
   }
@@ -129,7 +129,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       if (entry.hasFineAddress) {
         newAddresses.add(entry.addressDetails!);
         if (newAddresses.length >= commitCountThreshold) {
-          await metadataDb.saveAddresses(Set.unmodifiable(newAddresses));
+          await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
           onAddressMetadataChanged();
           newAddresses.clear();
         }
@@ -141,7 +141,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       setProgress(done: ++progressDone, total: progressTotal);
     }
     if (newAddresses.isNotEmpty) {
-      await metadataDb.saveAddresses(Set.unmodifiable(newAddresses));
+      await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
       onAddressMetadataChanged();
     }
   }
@@ -152,9 +152,9 @@ mixin LocationMixin on CountryMixin, StateMixin {
   }
 
   void updateLocations() {
-    final locations = visibleEntries.map((entry) => entry.addressDetails).whereNotNull().toList();
+    final locations = visibleEntries.map((entry) => entry.addressDetails).nonNulls.toList();
 
-    final updatedPlaces = locations.map((address) => address.place).whereNotNull().where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
+    final updatedPlaces = locations.map((address) => address.place).nonNulls.where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedPlaces, sortedPlaces)) {
       sortedPlaces = List.unmodifiable(updatedPlaces);
       eventBus.fire(PlacesChangedEvent());
@@ -195,7 +195,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       final code = getCode(address);
       if (code == null || code.isEmpty) return null;
       return MapEntry(code, getName(address));
-    }).whereNotNull());
+    }).nonNulls);
     return namesByCode.entries.map((kv) {
       final code = kv.key;
       final name = kv.value;

@@ -78,7 +78,7 @@ class CollectionSectionHeader extends StatelessWidget {
     return AlbumSectionHeader(
       key: ValueKey(sectionKey),
       directory: directory,
-      albumName: directory != null ? source.getAlbumDisplayName(context, directory) : null,
+      albumName: directory != null ? source.getStoredAlbumDisplayName(context, directory) : null,
       selectable: selectable,
     );
   }

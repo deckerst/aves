@@ -1,7 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
@@ -152,7 +152,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                               builder: (context, value, child) {
                                 return IconButton(
                                   icon: const Icon(AIcons.add),
-                                  onPressed: value.text.isEmpty ? null : () => _addCustomTag(_newTagTextController.text),
+                                  onPressed: value.text.trim().isEmpty ? null : () => _addCustomTag(_newTagTextController.text),
                                   tooltip: l10n.tagEditorPageAddTagTooltip,
                                 );
                               },
@@ -296,6 +296,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
   }
 
   void _addCustomTag(String newTag) {
+    newTag = newTag.trim();
     if (newTag.isNotEmpty) {
       _addTag(TagFilter(newTag));
     }

@@ -77,7 +77,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
       _isPageAnimatingNotifier = ValueNotifier(true);
-      Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
+      Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });
@@ -133,10 +133,10 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       interactive: true,
       showCoordinateFilter: false,
       navigationButton: MapNavigationButton.back,
+      attributionPadding: const EdgeInsets.symmetric(horizontal: 8),
       child: GeoMap(
         controller: _mapController,
-        collectionListenable: openingCollection,
-        entries: openingCollection?.sortedEntries ?? [],
+        collection: openingCollection,
         availableSize: MediaQuery.sizeOf(context),
         initialCenter: widget.initialLocation,
         isAnimatingNotifier: _isPageAnimatingNotifier,

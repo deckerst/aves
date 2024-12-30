@@ -43,7 +43,7 @@ class PrivacySection extends SettingsSection {
       SettingsTilePrivacySaveSearchHistory(),
       if (!settings.useTvLayout) SettingsTilePrivacyEnableBin(),
       SettingsTilePrivacyHiddenItems(),
-      if (!settings.useTvLayout && device.canGrantDirectoryAccess) SettingsTilePrivacyStorageAccess(),
+      if (!settings.useTvLayout) SettingsTilePrivacyStorageAccess(),
     ];
   }
 }
@@ -123,7 +123,9 @@ class SettingsTilePrivacyEnableBin extends SettingsTile {
           context: context,
           message: l10n.settingsDisablingBinWarningDialogMessage,
           confirmationButtonLabel: l10n.applyButtonLabel,
-        )) return false;
+        )) {
+          return false;
+        }
 
         // delete forever trashed items
         await EntrySetActionDelegate().doDelete(

@@ -12,10 +12,12 @@ final Favourites favourites = Favourites._private();
 class Favourites with ChangeNotifier {
   Set<FavouriteRow> _rows = {};
 
-  Favourites._private();
+  Favourites._private() {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
 
   Future<void> init() async {
-    _rows = await metadataDb.loadAllFavourites();
+    _rows = await localMediaDb.loadAllFavourites();
   }
 
   int get count => _rows.length;
@@ -29,7 +31,7 @@ class Favourites with ChangeNotifier {
   Future<void> add(Set<AvesEntry> entries) async {
     final newRows = entries.map(_entryToRow).toSet();
 
-    await metadataDb.addFavourites(newRows);
+    await localMediaDb.addFavourites(newRows);
     _rows.addAll(newRows);
 
     notifyListeners();
@@ -40,14 +42,14 @@ class Favourites with ChangeNotifier {
   Future<void> removeIds(Set<int> entryIds) async {
     final removedRows = _rows.where((row) => entryIds.contains(row.entryId)).toSet();
 
-    await metadataDb.removeFavourites(removedRows);
+    await localMediaDb.removeFavourites(removedRows);
     removedRows.forEach(_rows.remove);
 
     notifyListeners();
   }
 
   Future<void> clear() async {
-    await metadataDb.clearFavourites();
+    await localMediaDb.clearFavourites();
     _rows.clear();
 
     notifyListeners();
@@ -57,8 +59,8 @@ class Favourites with ChangeNotifier {
 
   Map<String, List<String>>? export(CollectionSource source) {
     final visibleEntries = source.visibleEntries;
-    final ids = favourites.all;
-    final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).whereNotNull().toSet();
+    final ids = all;
+    final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).nonNulls.toSet();
     final byVolume = groupBy<String, StorageVolume?>(paths, androidFileUtils.getStorageVolume);
     final jsonMap = Map.fromEntries(byVolume.entries.map((kv) {
       final volume = kv.key?.path;
@@ -66,7 +68,7 @@ class Favourites with ChangeNotifier {
       final rootLength = volume.length;
       final relativePaths = kv.value.map((v) => v.substring(rootLength)).toList();
       return MapEntry(volume, relativePaths);
-    }).whereNotNull());
+    }).nonNulls);
     return jsonMap.isNotEmpty ? jsonMap : null;
   }
 
@@ -95,7 +97,7 @@ class Favourites with ChangeNotifier {
       }
 
       if (foundEntries.isNotEmpty) {
-        favourites.add(foundEntries);
+        add(foundEntries);
       }
       if (missedPaths.isNotEmpty) {
         debugPrint('failed to import favourites with ${missedPaths.length} missed paths');

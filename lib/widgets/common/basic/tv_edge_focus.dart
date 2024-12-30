@@ -14,7 +14,7 @@ class TvEdgeFocus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final useTvLayout = context.select<Settings, bool>((s) => s.useTvLayout);
+    final useTvLayout = context.select<Settings, bool>((v) => v.useTvLayout);
     return useTvLayout
         ? Focus(
             focusNode: focusNode,

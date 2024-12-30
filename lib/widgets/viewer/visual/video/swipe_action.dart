@@ -12,7 +12,7 @@ extension ExtraSwipeAction on SwipeAction {
   Future<double> get() {
     switch (this) {
       case SwipeAction.brightness:
-        return AvesApp.screenBrightness?.current ?? Future.value(1);
+        return AvesApp.screenBrightness?.application ?? Future.value(1);
       case SwipeAction.volume:
         return VolumeController().getVolume();
     }
@@ -21,7 +21,7 @@ extension ExtraSwipeAction on SwipeAction {
   Future<void> set(double value) async {
     switch (this) {
       case SwipeAction.brightness:
-        await AvesApp.screenBrightness?.setScreenBrightness(value);
+        await AvesApp.screenBrightness?.setApplicationScreenBrightness(value);
       case SwipeAction.volume:
         VolumeController().setVolume(value, showSystemUI: false);
     }
@@ -43,9 +43,9 @@ class SwipeActionFeedback extends StatelessWidget {
   static const Radius radius = Radius.circular(width / 2);
   static const double borderWidth = 2;
   static const Color borderColor = Colors.white;
-  static final Color fillColor = Colors.white.withOpacity(.8);
-  static final Color backgroundColor = Colors.black.withOpacity(.2);
-  static final Color innerBorderColor = Colors.black.withOpacity(.5);
+  static final Color fillColor = Colors.white.withValues(alpha: .8);
+  static final Color backgroundColor = Colors.black.withValues(alpha: .2);
+  static final Color innerBorderColor = Colors.black.withValues(alpha: .5);
   static const Color iconColor = Colors.white;
   static const Color shadowColor = Colors.black;
 

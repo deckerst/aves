@@ -7,6 +7,8 @@ final _filter = ImageFilter.blur(sigmaX: 4, sigmaY: 4);
 // as it yields performance issues when there are other layers on top
 final _identity = ImageFilter.matrix(Matrix4.identity().storage);
 
+// TODO TLAD [impeller] use `BackdropKey`
+
 class BlurredRect extends StatelessWidget {
   final bool enabled;
   final Widget child;

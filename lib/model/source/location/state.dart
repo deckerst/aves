@@ -1,5 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
@@ -23,7 +23,7 @@ mixin StateMixin on SourceBase {
     } else {
       stateCodes ??= {};
       if (entries != null) {
-        stateCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).whereNotNull());
+        stateCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).nonNulls);
       }
       stateCodes.forEach((stateCode) {
         _filterEntryCountMap.remove(stateCode);

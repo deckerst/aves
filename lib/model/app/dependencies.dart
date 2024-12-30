@@ -284,6 +284,16 @@ class Dependencies {
       license: mit,
       sourceUrl: 'https://github.com/Milad-Akarie/smooth_page_indicator',
     ),
+    Dependency(
+      name: 'Vector Map Tiles',
+      license: bsd3,
+      sourceUrl: 'https://github.com/greensopinion/flutter-vector-map-tiles',
+    ),
+    Dependency(
+      name: 'Vector Tile Renderer',
+      license: bsd3,
+      sourceUrl: 'https://github.com/greensopinion/dart-vector-tile-renderer',
+    ),
   ];
 
   static const List<Dependency> dartPackages = [
@@ -327,6 +337,11 @@ class Dependencies {
       name: 'Get It',
       license: mit,
       sourceUrl: 'https://github.com/fluttercommunity/get_it',
+    ),
+    Dependency(
+      name: 'HTTP',
+      license: bsd3,
+      sourceUrl: 'https://github.com/dart-lang/http',
     ),
     Dependency(
       name: 'Intl',

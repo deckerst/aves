@@ -1,4 +1,5 @@
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata/address.dart';
@@ -31,6 +32,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
   late Future<Set<VaultDetails>> _dbVaultsLoader;
   late Future<Set<FavouriteRow>> _dbFavouritesLoader;
   late Future<Set<CoverRow>> _dbCoversLoader;
+  late Future<Set<DynamicAlbumRow>> _dbDynamicAlbumsLoader;
   late Future<Set<VideoPlaybackRow>> _dbVideoPlaybackLoader;
 
   @override
@@ -70,7 +72,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.reset().then((_) => _reload()),
+                        onPressed: () => localMediaDb.reset().then((_) => _reload()),
                         child: const Text('Reset'),
                       ),
                     ],
@@ -93,7 +95,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearEntries().then((_) => _reload()),
+                        onPressed: () => localMediaDb.clearEntries().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -114,7 +116,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearDates().then((_) => _reload()),
+                        onPressed: () => localMediaDb.clearDates().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -135,7 +137,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearCatalogMetadata().then((_) => _reload()),
+                        onPressed: () => localMediaDb.clearCatalogMetadata().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -156,7 +158,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearAddresses().then((_) => _reload()),
+                        onPressed: () => localMediaDb.clearAddresses().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -177,7 +179,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearTrashDetails().then((_) => _reload()),
+                        onPressed: () => localMediaDb.clearTrashDetails().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -248,6 +250,27 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 },
               ),
               FutureBuilder<Set>(
+                future: _dbDynamicAlbumsLoader,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Text('dynamic album rows: ${snapshot.data!.length} (${dynamicAlbums.count} in memory)'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => dynamicAlbums.clear().then((_) => _reload()),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              FutureBuilder<Set>(
                 future: _dbVideoPlaybackLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -261,7 +284,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () => metadataDb.clearVideoPlayback().then((_) => _reload()),
+                        onPressed: () => localMediaDb.clearVideoPlayback().then((_) => _reload()),
                         child: const Text('Clear'),
                       ),
                     ],
@@ -279,21 +302,22 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
     await _disposeLoadedContent();
     _startDbReport();
   }
-  
+
   void _startDbReport() {
-    _dbFileSizeLoader = metadataDb.dbFileSize();
-    _dbEntryLoader = metadataDb.loadEntries();
-    _dbDateLoader = metadataDb.loadDates();
-    _dbMetadataLoader = metadataDb.loadCatalogMetadata();
-    _dbAddressLoader = metadataDb.loadAddresses();
-    _dbTrashLoader = metadataDb.loadAllTrashDetails();
-    _dbVaultsLoader = metadataDb.loadAllVaults();
-    _dbFavouritesLoader = metadataDb.loadAllFavourites();
-    _dbCoversLoader = metadataDb.loadAllCovers();
-    _dbVideoPlaybackLoader = metadataDb.loadAllVideoPlayback();
+    _dbFileSizeLoader = localMediaDb.dbFileSize();
+    _dbEntryLoader = localMediaDb.loadEntries();
+    _dbDateLoader = localMediaDb.loadDates();
+    _dbMetadataLoader = localMediaDb.loadCatalogMetadata();
+    _dbAddressLoader = localMediaDb.loadAddresses();
+    _dbTrashLoader = localMediaDb.loadAllTrashDetails();
+    _dbVaultsLoader = localMediaDb.loadAllVaults();
+    _dbFavouritesLoader = localMediaDb.loadAllFavourites();
+    _dbCoversLoader = localMediaDb.loadAllCovers();
+    _dbDynamicAlbumsLoader = localMediaDb.loadAllDynamicAlbums();
+    _dbVideoPlaybackLoader = localMediaDb.loadAllVideoPlayback();
     setState(() {});
   }
-  
+
   Future<void> _disposeLoadedContent() async {
     (await _dbEntryLoader).forEach((v) => v.dispose());
   }

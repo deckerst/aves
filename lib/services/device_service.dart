@@ -8,11 +8,13 @@ abstract class DeviceService {
 
   Future<Map<String, dynamic>> getCapabilities();
 
-  Future<int?> getDefaultTimeZoneRawOffsetMillis();
-
   Future<List<Locale>> getLocales();
 
+  Future<void> setLocaleConfig(List<Locale> locales);
+
   Future<int> getPerformanceClass();
+
+  Future<bool> isLocked();
 
   Future<bool> isSystemFilePickerEnabled();
 
@@ -49,16 +51,6 @@ class PlatformDeviceService implements DeviceService {
   }
 
   @override
-  Future<int?> getDefaultTimeZoneRawOffsetMillis() async {
-    try {
-      return await _platform.invokeMethod('getDefaultTimeZoneRawOffsetMillis');
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return null;
-  }
-
-  @override
   Future<List<Locale>> getLocales() async {
     try {
       final result = await _platform.invokeMethod('getLocales');
@@ -79,6 +71,17 @@ class PlatformDeviceService implements DeviceService {
   }
 
   @override
+  Future<void> setLocaleConfig(List<Locale> locales) async {
+    try {
+      await _platform.invokeMethod('setLocaleConfig', <String, dynamic>{
+        'locales': locales.map((v) => v.toLanguageTag()).toList(),
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+  }
+
+  @override
   Future<int> getPerformanceClass() async {
     try {
       final result = await _platform.invokeMethod('getPerformanceClass');
@@ -87,6 +90,17 @@ class PlatformDeviceService implements DeviceService {
       await reportService.recordError(e, stack);
     }
     return 0;
+  }
+
+  @override
+  Future<bool> isLocked() async {
+    try {
+      final result = await _platform.invokeMethod('isLocked');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'dart:math';
 
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -218,15 +219,18 @@ class _TvRailState extends State<TvRail> {
   }
 
   List<_NavEntry> _buildAlbumLinks(BuildContext context) {
-    final source = context.read<CollectionSource>();
     final currentFilters = currentCollection?.filters;
-    final albums = settings.drawerAlbumBookmarks ?? AppDrawer.getDefaultAlbums(context);
-    return albums.map((album) {
-      final filter = AlbumFilter(album, source.getAlbumDisplayName(context, album));
+    final albums = AppDrawer.effectiveAlbumBookmarks(context);
+    return albums.map((filter) {
       bool isSelected() {
         if (currentFilters == null || currentFilters.length > 1) return false;
         final currentFilter = currentFilters.firstOrNull;
-        return currentFilter is AlbumFilter && currentFilter.album == album;
+        if (currentFilter is StoredAlbumFilter && filter is StoredAlbumFilter) {
+          return currentFilter.album == filter.album;
+        } else if (currentFilter is DynamicAlbumFilter && filter is DynamicAlbumFilter) {
+          return currentFilter.name == filter.name;
+        }
+        return false;
       }
 
       return _NavEntry(

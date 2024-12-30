@@ -81,7 +81,7 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
                           height: itemSize.height,
                           duration: transitionDuration,
                           decoration: BoxDecoration(
-                            color: foreground.withOpacity(focused ? .2 : 0),
+                            color: foreground.withValues(alpha: focused ? .2 : 0),
                             borderRadius: const BorderRadius.all(Radius.circular(8)),
                           ),
                         );

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -6,10 +7,10 @@ import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -26,12 +27,14 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
-enum SourceInitializationState { none, directory, full }
+typedef SourceScope = Set<CollectionFilter>?;
 
 mixin SourceBase {
   EventBus get eventBus;
@@ -62,38 +65,38 @@ mixin SourceBase {
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
+  static const fullScope = <CollectionFilter>{};
+
   CollectionSource() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$CollectionSource',
         object: this,
       );
     }
-    settings.updateStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => invalidateAlbumDisplayNames());
+    settings.updateStream.where((event) => event.key == SettingKeys.localeKey).listen((_) => invalidateStoredAlbumDisplayNames());
     settings.updateStream.where((event) => event.key == SettingKeys.hiddenFiltersKey).listen((event) {
       final oldValue = event.oldValue;
       if (oldValue is List<String>?) {
-        final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
+        final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
         final newlyVisibleFilters = oldHiddenFilters.whereNot(settings.hiddenFilters.contains).toSet();
         _onFilterVisibilityChanged(newlyVisibleFilters);
       }
     });
-    vaults.addListener(() {
-      final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => AlbumFilter(v, null)).toSet();
-      _onFilterVisibilityChanged(newlyVisibleFilters);
-    });
+    vaults.addListener(_onVaultsChanged);
   }
 
   @mustCallSuper
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
+    vaults.removeListener(_onVaultsChanged);
     _rawEntries.forEach((v) => v.dispose());
   }
 
-  set safeMode(bool enabled);
+  set canAnalyze(bool enabled);
 
   final EventBus _eventBus = EventBus();
 
@@ -136,12 +139,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   late Map<int?, int?> _savedDates;
 
   Future<void> loadDates() async {
-    _savedDates = Map.unmodifiable(await metadataDb.loadDates());
+    _savedDates = Map.unmodifiable(await localMediaDb.loadDates());
   }
 
   Set<CollectionFilter> _getAppHiddenFilters() => {
         ...settings.hiddenFilters,
-        ...vaults.vaultDirectories.where(vaults.isLocked).map((v) => AlbumFilter(v, null)),
+        ...vaults.vaultDirectories.where(vaults.isLocked).map((v) => StoredAlbumFilter(v, null)),
       };
 
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
@@ -217,7 +220,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     final ids = entries.map((entry) => entry.id).toSet();
     await favourites.removeIds(ids);
     await covers.removeIds(ids);
-    await metadataDb.removeIds(ids);
+    await localMediaDb.removeIds(ids);
 
     ids.forEach((id) => _entryById.remove);
     _rawEntries.removeAll(entries);
@@ -278,18 +281,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (persist) {
       await covers.moveEntry(entry);
       final id = entry.id;
-      await metadataDb.updateEntry(id, entry);
-      await metadataDb.updateCatalogMetadata(id, entry.catalogMetadata);
-      await metadataDb.updateAddress(id, entry.addressDetails);
-      await metadataDb.updateTrash(id, entry.trashDetails);
+      await localMediaDb.updateEntry(id, entry);
+      await localMediaDb.updateCatalogMetadata(id, entry.catalogMetadata);
+      await localMediaDb.updateAddress(id, entry.addressDetails);
+      await localMediaDb.updateTrash(id, entry.trashDetails);
     }
   }
 
-  Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> entries, Set<MoveOpEvent> movedOps) async {
-    final oldFilter = AlbumFilter(sourceAlbum, null);
-    final newFilter = AlbumFilter(destinationAlbum, null);
+  Future<void> renameStoredAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> entries, Set<MoveOpEvent> movedOps) async {
+    final oldFilter = StoredAlbumFilter(sourceAlbum, null);
+    final newFilter = StoredAlbumFilter(destinationAlbum, null);
 
-    final bookmark = settings.drawerAlbumBookmarks?.indexOf(sourceAlbum);
     final pinned = settings.pinnedFilters.contains(oldFilter);
 
     if (vaults.isVault(sourceAlbum)) {
@@ -312,10 +314,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       movedOps: movedOps,
     );
 
-    // restore bookmark and pin, as the obsolete album got removed and its associated state cleaned
-    if (bookmark != null && bookmark != -1) {
-      settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..insert(bookmark, destinationAlbum);
+    // update bookmark
+    final albumBookmarks = settings.drawerAlbumBookmarks;
+    if (albumBookmarks != null) {
+      final index = albumBookmarks.indexWhere((v) => v is StoredAlbumFilter && v.album == sourceAlbum);
+      if (index >= 0) {
+        albumBookmarks.removeAt(index);
+        albumBookmarks.insert(index, newFilter);
+        settings.drawerAlbumBookmarks = albumBookmarks;
+      }
     }
+    // restore pin, as the obsolete album got removed and its associated state cleaned
     if (pinned) {
       settings.pinnedFilters = settings.pinnedFilters
         ..remove(oldFilter)
@@ -337,7 +346,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           final existingEntry = _rawEntries.firstWhereOrNull((entry) => entry.path == targetPath && !entry.trashed);
           return existingEntry?.uri;
         })
-        .whereNotNull()
+        .nonNulls
         .toSet();
     await removeEntries(replacedUris, includeTrash: false);
 
@@ -352,7 +361,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         if (sourceEntry != null) {
           fromAlbums.add(sourceEntry.directory);
           movedEntries.add(sourceEntry.copyWith(
-            id: metadataDb.nextId,
+            id: localMediaDb.nextId,
             uri: newFields['uri'] as String?,
             path: newFields['path'] as String?,
             contentId: newFields['contentId'] as int?,
@@ -366,9 +375,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           debugPrint('failed to find source entry with uri=$sourceUri');
         }
       });
-      await metadataDb.saveEntries(movedEntries);
-      await metadataDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).whereNotNull().toSet());
-      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).whereNotNull().toSet());
+      await localMediaDb.insertEntries(movedEntries);
+      await localMediaDb.saveCatalogMetadata(movedEntries.map((entry) => entry.catalogMetadata).nonNulls.toSet());
+      await localMediaDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).nonNulls.toSet());
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
         final newFields = movedOp.newFields;
@@ -393,7 +402,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         addEntries(movedEntries);
       case MoveType.move:
       case MoveType.export:
-        cleanEmptyAlbums(fromAlbums.whereNotNull().toSet());
+        cleanEmptyAlbums(fromAlbums.nonNulls.toSet());
         addDirectories(albums: destinationAlbums);
       case MoveType.toBin:
       case MoveType.fromBin:
@@ -427,13 +436,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     eventBus.fire(EntryMovedEvent(MoveType.move, movedEntries));
   }
 
-  SourceInitializationState get initState => SourceInitializationState.none;
+  SourceScope get loadedScope;
+
+  SourceScope get targetScope;
 
   Future<void> init({
+    required SourceScope scope,
     AnalysisController? analysisController,
-    String? directory,
     bool loadTopEntriesFirst = false,
-    bool canAnalyze = true,
   });
 
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
@@ -455,7 +465,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       await deviceService.requestGarbageCollection();
       await Future.forEach(entries, (entry) async {
         await entry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
-        await metadataDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
+        await localMediaDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
       });
       onCatalogMetadataChanged();
     }
@@ -463,7 +473,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (dataTypes.contains(EntryDataType.address)) {
       await Future.forEach(entries, (entry) async {
         await entry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
-        await metadataDb.updateAddress(entry.id, entry.addressDetails);
+        await localMediaDb.updateAddress(entry.id, entry.addressDetails);
       });
       onAddressMetadataChanged();
     }
@@ -496,12 +506,19 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           }
         }
       }
+
       if (startAnalysisService) {
-        // TODO TLAD [tiramisu] explain foreground service and request POST_NOTIFICATIONS permission
-        await AnalysisService.startService(
-          force: force,
-          entryIds: entries?.map((entry) => entry.id).toList(),
-        );
+        final lifecycleState = AvesApp.lifecycleStateNotifier.value;
+        switch (lifecycleState) {
+          case AppLifecycleState.resumed:
+          case AppLifecycleState.inactive:
+            await AnalysisService.startService(
+              force: force,
+              entryIds: entries?.map((entry) => entry.id).toList(),
+            );
+          default:
+            unawaited(reportService.log('analysis service not started because app is in state=$lifecycleState'));
+        }
       } else {
         // explicit GC before cataloguing multiple items
         await deviceService.requestGarbageCollection();
@@ -519,19 +536,20 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   // monitoring
 
-  bool _monitoring = true;
+  bool _canRefresh = true;
 
-  void pauseMonitoring() => _monitoring = false;
+  void pauseMonitoring() => _canRefresh = false;
 
-  void resumeMonitoring() => _monitoring = true;
+  void resumeMonitoring() => _canRefresh = true;
 
-  bool get isMonitoring => _monitoring;
+  bool get canRefresh => _canRefresh;
 
   // filter summary
 
   int count(CollectionFilter filter) {
-    if (filter is AlbumFilter) return albumEntryCount(filter);
-    if (filter is LocationFilter) {
+    if (filter is AlbumBaseFilter) {
+      return albumEntryCount(filter);
+    } else if (filter is LocationFilter) {
       switch (filter.level) {
         case LocationLevel.country:
           return countryEntryCount(filter);
@@ -540,14 +558,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         case LocationLevel.place:
           return placeEntryCount(filter);
       }
+    } else if (filter is TagFilter) {
+      return tagEntryCount(filter);
     }
-    if (filter is TagFilter) return tagEntryCount(filter);
     return 0;
   }
 
   int size(CollectionFilter filter) {
-    if (filter is AlbumFilter) return albumSize(filter);
-    if (filter is LocationFilter) {
+    if (filter is AlbumBaseFilter) {
+      return albumSize(filter);
+    } else if (filter is LocationFilter) {
       switch (filter.level) {
         case LocationLevel.country:
           return countrySize(filter);
@@ -556,14 +576,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         case LocationLevel.place:
           return placeSize(filter);
       }
+    } else if (filter is TagFilter) {
+      return tagSize(filter);
     }
-    if (filter is TagFilter) return tagSize(filter);
     return 0;
   }
 
   AvesEntry? recentEntry(CollectionFilter filter) {
-    if (filter is AlbumFilter) return albumRecentEntry(filter);
-    if (filter is LocationFilter) {
+    if (filter is AlbumBaseFilter) {
+      return albumRecentEntry(filter);
+    } else if (filter is LocationFilter) {
       switch (filter.level) {
         case LocationLevel.country:
           return countryRecentEntry(filter);
@@ -572,8 +594,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         case LocationLevel.place:
           return placeRecentEntry(filter);
       }
+    } else if (filter is TagFilter) {
+      return tagRecentEntry(filter);
     }
-    if (filter is TagFilter) return tagRecentEntry(filter);
     return null;
   }
 
@@ -594,6 +617,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       final candidateEntries = visibleEntries.where((entry) => newlyVisibleFilters.any((f) => f.test(entry))).toSet();
       analyze(null, entries: candidateEntries);
     }
+  }
+
+  void _onVaultsChanged() {
+    final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => StoredAlbumFilter(v, null)).toSet();
+    _onFilterVisibilityChanged(newlyVisibleFilters);
   }
 }
 

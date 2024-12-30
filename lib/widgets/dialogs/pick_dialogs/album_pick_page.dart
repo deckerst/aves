@@ -1,5 +1,5 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -8,6 +8,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
@@ -18,7 +19,7 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
-import 'package:aves/widgets/dialogs/filter_editors/create_album_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
@@ -29,22 +30,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-Future<String?> pickAlbum({
+Future<AlbumBaseFilter?> pickAlbum({
   required BuildContext context,
   required MoveType? moveType,
+  required bool storedAlbumsOnly,
 }) async {
   final source = context.read<CollectionSource>();
-  if (source.initState != SourceInitializationState.full) {
+  if (source.targetScope != CollectionSource.fullScope) {
+    await reportService.log('Complete source initialization to pick album');
     // source may not be fully initialized in view mode
-    await source.init();
+    source.canAnalyze = true;
+    await source.init(scope: CollectionSource.fullScope);
   }
-  final filter = await Navigator.maybeOf(context)?.push(
-    MaterialPageRoute<AlbumFilter>(
+  return await Navigator.maybeOf(context)?.push(
+    MaterialPageRoute<AlbumBaseFilter>(
       settings: const RouteSettings(name: _AlbumPickPage.routeName),
-      builder: (context) => _AlbumPickPage(source: source, moveType: moveType),
+      builder: (context) => _AlbumPickPage(source: source, moveType: moveType, storedAlbumsOnly: storedAlbumsOnly),
     ),
   );
-  return filter?.album;
 }
 
 class _AlbumPickPage extends StatefulWidget {
@@ -52,10 +55,12 @@ class _AlbumPickPage extends StatefulWidget {
 
   final CollectionSource source;
   final MoveType? moveType;
+  final bool storedAlbumsOnly;
 
   const _AlbumPickPage({
     required this.source,
     required this.moveType,
+    required this.storedAlbumsOnly,
   });
 
   @override
@@ -108,16 +113,16 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
           return StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
             builder: (context, snapshot) {
-              final gridItems = AlbumListPage.getAlbumGridItems(context, source);
-              return SelectionProvider<FilterGridItem<AlbumFilter>>(
+              final gridItems = AlbumListPage.getAlbumGridItems(context, source, storedAlbumsOnly: widget.storedAlbumsOnly);
+              return SelectionProvider<FilterGridItem<AlbumBaseFilter>>(
                 child: QueryProvider(
-                  enabled: settings.showAlbumPickQuery,
-                  child: FilterGridPage<AlbumFilter>(
+                  startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
+                  child: FilterGridPage<AlbumBaseFilter>(
                     settingsRouteKey: AlbumListPage.routeName,
                     appBar: FilterGridAppBar(
                       source: source,
                       title: title,
-                      actionDelegate: _AlbumChipSetPickActionDelegate(gridItems),
+                      actionDelegate: AlbumChipSetActionDelegate(gridItems),
                       actionsBuilder: _buildActions,
                       isEmpty: false,
                       appBarHeightNotifier: _appBarHeightNotifier,
@@ -147,7 +152,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   List<Widget> _buildActions(
     BuildContext context,
     AppMode appMode,
-    Selection<FilterGridItem<AlbumFilter>> selection,
+    Selection<FilterGridItem<AlbumBaseFilter>> selection,
     AlbumChipSetActionDelegate actionDelegate,
   ) {
     final itemCount = actionDelegate.allItems.length;
@@ -208,7 +213,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     required bool Function(ChipSetAction action) isVisible,
     required void Function(ChipSetAction action) onActionSelected,
   }) {
-    final animations = context.select<Settings, AccessibilityAnimations>((s) => s.accessibilityAnimations);
+    final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return [
       if (widget.moveType != null)
         ..._quickActions.where(isVisible).map(
@@ -242,13 +247,13 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
   Future<void> _createAlbum() async {
     final directory = await showDialog<String>(
       context: context,
-      builder: (context) => const CreateAlbumDialog(),
-      routeSettings: const RouteSettings(name: CreateAlbumDialog.routeName),
+      builder: (context) => const CreateStoredAlbumDialog(),
+      routeSettings: const RouteSettings(name: CreateStoredAlbumDialog.routeName),
     );
     if (directory == null) return;
 
-    // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
+    // wait for the dialog to hide
+    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
 
     _pickAlbum(directory);
   }
@@ -260,7 +265,9 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
       type: ConfirmationDialog.createVault,
       message: l10n.newVaultWarningDialogMessage,
       confirmationButtonLabel: l10n.continueButtonLabel,
-    )) return;
+    )) {
+      return;
+    }
 
     final details = await showDialog<VaultDetails>(
       context: context,
@@ -269,28 +276,16 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
     );
     if (details == null) return;
 
-    // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
+    // wait for the dialog to hide
+    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
 
     await vaults.create(details);
     _pickAlbum(details.path);
   }
 
   void _pickAlbum(String directory) {
-    source.createAlbum(directory);
-    final filter = AlbumFilter(directory, source.getAlbumDisplayName(context, directory));
-    Navigator.maybeOf(context)?.pop<AlbumFilter>(filter);
-  }
-}
-
-class _AlbumChipSetPickActionDelegate extends AlbumChipSetActionDelegate {
-  _AlbumChipSetPickActionDelegate(super.items);
-
-  @override
-  void onActionSelected(BuildContext context, ChipSetAction action) {
-    if (action == ChipSetAction.toggleTitleSearch) {
-      settings.showAlbumPickQuery = !settings.showAlbumPickQuery;
-    }
-    super.onActionSelected(context, action);
+    source.createStoredAlbum(directory);
+    final filter = StoredAlbumFilter(directory, source.getStoredAlbumDisplayName(context, directory));
+    Navigator.maybeOf(context)?.pop<StoredAlbumFilter>(filter);
   }
 }

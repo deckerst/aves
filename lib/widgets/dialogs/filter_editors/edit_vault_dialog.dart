@@ -1,5 +1,5 @@
 import 'package:aves/model/device.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/details.dart';
@@ -42,11 +42,9 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
 
   final List<VaultLockType> _lockTypeOptions = [
     if (device.canAuthenticateUser) VaultLockType.system,
-    if (device.canUseCrypto) ...[
-      VaultLockType.pattern,
-      VaultLockType.pin,
-      VaultLockType.password,
-    ],
+    VaultLockType.pattern,
+    VaultLockType.pin,
+    VaultLockType.password,
   ];
 
   VaultDetails? get initialDetails => widget.initialDetails;
@@ -129,14 +127,16 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
               if (!v) {
                 final album = initialDetails?.path;
                 if (album != null) {
-                  final filter = AlbumFilter(album, null);
+                  final filter = StoredAlbumFilter(album, null);
                   final source = context.read<CollectionSource>();
                   if (source.trashedEntries.any(filter.test)) {
                     if (!await showConfirmationDialog(
                       context: context,
                       message: l10n.settingsDisablingBinWarningDialogMessage,
                       confirmationButtonLabel: l10n.applyButtonLabel,
-                    )) return;
+                    )) {
+                      return;
+                    }
                   }
                 }
               }

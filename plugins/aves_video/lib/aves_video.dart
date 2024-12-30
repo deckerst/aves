@@ -1,5 +1,3 @@
-library aves_video;
-
 export 'src/ab_repeat.dart';
 export 'src/controller.dart';
 export 'src/metadata.dart';

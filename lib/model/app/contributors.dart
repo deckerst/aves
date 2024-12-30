@@ -27,7 +27,7 @@ class Contributors {
     Contributor('Oğuz Ersen', 'oguz@ersen.moe'),
     Contributor('Allan Nordhøy', 'epost@anotheragency.no'),
     Contributor('pemibe', 'pemibe4634@dmonies.com'),
-    Contributor('Linerly', 'linerly@protonmail.com'),
+    Contributor('Linerly', 'linerly@proton.me'),
     Contributor('Skrripy', 'rozihrash.ya6w7@simplelogin.com'),
     Contributor('vesp', 'vesp@post.cz'),
     Contributor('Dan', 'denqwerta@gmail.com'),
@@ -69,7 +69,7 @@ class Contributors {
     Contributor('Henning Bunk', 'henningtbunk@gmail.com'),
     Contributor('Samirah Ail', 'samiratalzahrani@gmail.com'),
     Contributor('Salih Ail', 'rrrfff444@gmail.com'),
-    Contributor('nasreddineloukriz', 'nasreddineloukriz@gmail.com'),
+    Contributor('Nasreddine Loukriz', 'nasreddineloukriz@gmail.com'),
     Contributor('Mohamed Zeroug', 'mzeroug19@gmail.com'),
     Contributor('ssantos', 'ssantos@web.de'),
     Contributor('Сергій', 'sergiy.goncharuk.1@gmail.com'),
@@ -100,22 +100,47 @@ class Contributors {
     Contributor('Andreas Håll', 'ante_skalman@hotmail.com'),
     Contributor('Scorza9999', 'oliva.scorza@gmail.com'),
     Contributor('Taufan', 'taufanxxx@gmail.com'),
+    Contributor('Leo Aaua Felix', 'g00g7el@gmail.com'),
+    Contributor('-J-', 'heyj0e@tuta.io'),
+    Contributor('bittin', 'bittin@reimu.nl'),
+    Contributor('splice11', 'trenchedgrandpa@protonmail.com'),
+    Contributor('Ihor Hordiichuk', 'igor_ck@outlook.com'),
+    Contributor('João Palmeiro', 'joaommpalmeiro@gmail.com'),
+    Contributor('Whoever4976', 'wolffjonas47@gmail.com'),
+    Contributor('Your Average Code', 'neumeiersi91358@th-nuernberg.de'),
+    Contributor('Paranoid Android', 'f.cherdzhiev@innopolis.university'),
+    Contributor('Noah Kenzie Rodriguez-Beus', 'noahbeus@protonmail.com'),
+    Contributor('5FeetUnder', '15950507+5FeetUnder@users.noreply.github.com'),
+    Contributor('Cleverson Cândido', 'optimuspraimu@gmail.com'),
+    Contributor('Hasan Kara', 'hasanbeytullahkara@gmail.com'),
+    Contributor('Thomas Di Cristofaro', 'hostedweblate.8347@tdc.akamail.it'),
+    Contributor('Petrov', 'i_v_c@mail.ru'),
+    Contributor('தமிழ்நேரம்', 'anishprabu.t@gmail.com'),
+    Contributor('bovirus', 'roberto.boriotti@canon.it'),
+    Contributor('Максим Горпиніч', 'mgorpinic2005@gmail.com'),
+    Contributor('Priit Jõerüüt', 'hwlate@joeruut.com'),
+    Contributor('Dr Hieu', 'v7pvas7m@anonaddy.com'),
+    // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
     // Contributor('Grooty12', 'Rasmus@rosendahl-kaa.name'), // Danish
+    // Contributor('Victor M', 'victormorita@tuta.io'), // Danish
+    // Contributor('cat', 'catsnote@proton.me'), // Danish
     // Contributor('Åzze', 'laitinen.jere222@gmail.com'), // Finnish
     // Contributor('Olli', 'ollinen@ollit.dev'), // Finnish
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
     // Contributor('AJ07', 'ajaykumarmeena676@gmail.com'), // Hindi
     // Contributor('Sartaj', 'ssaarrttaajj111@gmail.com'), // Hindi
+    // Contributor('Anurag Samota', 'anuragsamotasamota@gmail.com'), // Hindi
     // Contributor('Chethan', 'chethan@users.noreply.hosted.weblate.org'), // Kannada
     // Contributor('GoRaN', 'gorangharib.909@gmail.com'), // Kurdish (Central)
     // Contributor('Rasti K5', 'rasti.khdhr@gmail.com'), // Kurdish (Central)
     // Contributor('Raman', 'xysed@tutanota.com'), // Malayalam
     // Contributor('Subham Jena', 'subhamjena8465@gmail.com'), // Odia
     // Contributor('Prasanta-Hembram', 'Prasantahembram720@gmail.com'), // Santali
+    // Contributor('Enenra', 'nnra2210@gmail.com'), // Serbian
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
   };

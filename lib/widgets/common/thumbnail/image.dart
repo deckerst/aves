@@ -25,6 +25,7 @@ class ThumbnailImage extends StatefulWidget {
   final bool showLoadingBackground;
   final ValueNotifier<bool>? cancellableNotifier;
   final Object? heroTag;
+  final HeroPlaceholderBuilder? heroPlaceholderBuilder;
 
   const ThumbnailImage({
     super.key,
@@ -37,6 +38,7 @@ class ThumbnailImage extends StatefulWidget {
     this.showLoadingBackground = true,
     this.cancellableNotifier,
     this.heroTag,
+    this.heroPlaceholderBuilder,
   });
 
   @override
@@ -261,12 +263,16 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
             },
           );
 
-    if (animate && widget.heroTag != null) {
+    final heroTag = widget.heroTag;
+    if (animate && heroTag != null) {
       final background = settings.imageBackground;
       final backgroundColor = background.isColor ? background.color : null;
       image = Hero(
-        tag: widget.heroTag!,
-        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+        tag: heroTag,
+        flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
+          // as of Flutter v3.27.0-0.1.pre, the flight `animation` is incorrect when diverting a pop:
+          // - diverting a push (t = 0 -> 1) with a pop (t = 1 -> 0) works as expected (t = 0 -> [0,1] -> 0)
+          // - diverting a pop (t = 1 -> 0) with a push (t = 0 -> 1) finishes the pop (t = 1 -> [0,1] -> 0) instead of diverting (t = 1 -> [0,1] -> 1)
           Widget child = TransitionImage(
             image: entry.bestCachedThumbnail,
             animation: animation,
@@ -282,6 +288,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
           }
           return child;
         },
+        placeholderBuilder: widget.heroPlaceholderBuilder,
         transitionOnUserGestures: true,
         child: image,
       );
@@ -296,14 +303,15 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
       extent: extent,
     );
 
-    if (animate && widget.heroTag != null) {
+    final heroTag = widget.heroTag;
+    if (animate && heroTag != null) {
       child = Hero(
-        tag: widget.heroTag!,
-        flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+        tag: heroTag,
+        flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
           return MediaQueryDataProvider(
             child: DefaultTextStyle(
-              style: DefaultTextStyle.of(toHero).style,
-              child: toHero.widget,
+              style: DefaultTextStyle.of(toHeroContext).style,
+              child: toHeroContext.widget,
             ),
           );
         },

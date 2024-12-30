@@ -3,7 +3,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: ^3.6.0
+resolution: workspace
 
 dependencies:
   flutter:
@@ -14,6 +15,7 @@ dependencies:
   # so that the transitive `path` gets upgraded to v1.8.3
   firebase_core: ">=2.10.0"
   firebase_crashlytics:
+  stack_trace:
 
 dev_dependencies:
   flutter_lints:

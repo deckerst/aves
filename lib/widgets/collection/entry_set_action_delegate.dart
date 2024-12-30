@@ -2,13 +2,17 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/device.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/model/query.dart';
@@ -26,6 +30,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -38,7 +43,9 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
+import 'package:aves/widgets/dialogs/filter_editors/add_dynamic_album_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -74,28 +81,29 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isSelecting && selectedItemCount == itemCount;
       // browsing
       case EntrySetAction.searchCollection:
-        return !useTvLayout && appMode.canNavigate && !isSelecting;
+        return appMode.canNavigate && !isSelecting && !useTvLayout;
       case EntrySetAction.toggleTitleSearch:
-        return !useTvLayout && !isSelecting;
+        return !isSelecting && !useTvLayout;
       case EntrySetAction.addShortcut:
         return isMain && !isSelecting && !isTrash && device.canPinShortcut;
+      case EntrySetAction.addDynamicAlbum:
       case EntrySetAction.setHome:
         return isMain && !isSelecting && !isTrash && !useTvLayout;
       case EntrySetAction.emptyBin:
-        return canWrite && isMain && isTrash;
+        return isMain && isTrash && canWrite;
       // browsing or selecting
       case EntrySetAction.map:
       case EntrySetAction.slideshow:
       case EntrySetAction.stats:
         return isMain;
       case EntrySetAction.rescan:
-        return !useTvLayout && isMain && !isTrash && isSelecting;
+        return isMain && isSelecting && !isTrash && !useTvLayout;
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.toggleFavourite:
         return isMain && isSelecting && !isTrash;
       case EntrySetAction.delete:
-        return canWrite && isMain && isSelecting;
+        return isMain && isSelecting && canWrite;
       case EntrySetAction.copy:
       case EntrySetAction.move:
       case EntrySetAction.rename:
@@ -109,18 +117,19 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
-        return canWrite && isMain && isSelecting && !isTrash;
+        return isMain && isSelecting && !isTrash && canWrite;
       case EntrySetAction.restore:
-        return canWrite && isMain && isSelecting && isTrash;
+        return isMain && isSelecting && isTrash && canWrite;
     }
   }
 
   bool canApply(
     EntrySetAction action, {
     required bool isSelecting,
-    required int itemCount,
+    required CollectionLens collection,
     required int selectedItemCount,
   }) {
+    final itemCount = collection.entryCount;
     final hasItems = itemCount > 0;
     final hasSelection = selectedItemCount > 0;
 
@@ -138,6 +147,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.addShortcut:
       case EntrySetAction.setHome:
         return true;
+      case EntrySetAction.addDynamicAlbum:
+        return collection.filters.isNotEmpty;
       case EntrySetAction.emptyBin:
         return !isSelecting && hasItems;
       case EntrySetAction.map:
@@ -168,7 +179,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void onActionSelected(BuildContext context, EntrySetAction action) {
-    reportService.log('$action');
+    reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
       case EntrySetAction.configureView:
@@ -180,7 +191,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.searchCollection:
         _goToSearch(context);
       case EntrySetAction.toggleTitleSearch:
+        final routeName = context.currentRouteName!;
+        settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));
         context.read<Query>().toggle();
+      case EntrySetAction.addDynamicAlbum:
+        _addDynamicAlbum(context);
       case EntrySetAction.addShortcut:
         _addShortcut(context);
       case EntrySetAction.setHome:
@@ -301,7 +316,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final storageDirs = entries.map((e) => e.storageDirectory).whereNotNull().toSet();
+    final storageDirs = entries.map((e) => e.storageDirectory).nonNulls.toSet();
     final todoCount = entries.length;
 
     if (!await showSkippableConfirmationDialog(
@@ -309,7 +324,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       type: ConfirmationDialog.deleteForever,
       message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
       confirmationButtonLabel: l10n.deleteButtonLabel,
-    )) return;
+    )) {
+      return;
+    }
 
     if (!await checkStoragePermissionForAlbums(context, storageDirs, entries: entries)) return;
 
@@ -407,14 +424,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     Future<Set<EntryDataType>> Function(AvesEntry entry) op, {
     bool showResult = true,
   }) async {
-    final selectionDirs = todoItems.map((e) => e.directory).whereNotNull().toSet();
+    final selectionDirs = todoItems.map((e) => e.directory).nonNulls.toSet();
     final todoCount = todoItems.length;
 
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoItems)) return;
 
     Set<String> obsoleteTags = todoItems.expand((entry) => entry.tags).toSet();
-    Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
-    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).whereNotNull().toSet();
+    Set<String> obsoleteCountryCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).nonNulls.toSet();
+    Set<String> obsoleteStateCodes = todoItems.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).nonNulls.toSet();
 
     final dataTypes = <EntryDataType>{};
     final source = context.read<CollectionSource>();
@@ -509,8 +526,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
     if (confirmed == null || !confirmed) return null;
 
-    // wait for the dialog to hide as applying the change may block the UI
-    await Future.delayed(ADurations.dialogTransitionAnimation * timeDilation);
+    // wait for the dialog to hide
+    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     return supported;
   }
 
@@ -722,10 +739,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
   }
 
-  Future<void> _addShortcut(BuildContext context) async {
-    final collection = context.read<CollectionLens>();
-    final filters = collection.filters;
-
+  static String? _getDefaultNameForFilters(BuildContext context, Set<CollectionFilter> filters) {
     String? defaultName;
     if (filters.isNotEmpty) {
       // we compute the default name beforehand
@@ -733,6 +747,67 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
     }
+    return defaultName;
+  }
+
+  Future<void> _addDynamicAlbum(BuildContext context) async {
+    final l10n = context.l10n;
+    final collection = context.read<CollectionLens>();
+    final filters = collection.filters;
+    if (filters.isEmpty) return;
+
+    // get navigator beforehand because
+    // local context may be deactivated when action is triggered after navigation
+    final navigator = Navigator.maybeOf(context);
+
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) => const AddDynamicAlbumDialog(),
+      routeSettings: const RouteSettings(name: AddDynamicAlbumDialog.routeName),
+    );
+    if (name == null) return;
+
+    final existingAlbum = dynamicAlbums.get(name);
+    if (existingAlbum != null) {
+      // album already exists, so we just need to highlight it
+      await _showDynamicAlbum(navigator, existingAlbum);
+    } else {
+      final album = DynamicAlbumFilter(name, filters.length == 1 ? filters.first : SetAndFilter(filters));
+      await dynamicAlbums.add(album);
+
+      final showAction = SnackBarAction(
+        label: l10n.showButtonLabel,
+        onPressed: () => _showDynamicAlbum(navigator, album),
+      );
+      showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
+    }
+  }
+
+  Future<void> _showDynamicAlbum(NavigatorState? navigator, DynamicAlbumFilter album) async {
+    // local context may be deactivated when action is triggered after navigation
+    if (navigator != null) {
+      final context = navigator.context;
+      final highlightInfo = context.read<HighlightInfo>();
+      if (context.currentRouteName == AlbumListPage.routeName) {
+        highlightInfo.trackItem(FilterGridItem(album, null), highlightItem: album);
+      } else {
+        highlightInfo.set(album);
+        await navigator.pushAndRemoveUntil(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: AlbumListPage.routeName),
+            builder: (_) => const AlbumListPage(),
+          ),
+          (route) => false,
+        );
+      }
+    }
+  }
+
+  Future<void> _addShortcut(BuildContext context) async {
+    final collection = context.read<CollectionLens>();
+    final filters = collection.filters;
+
+    String? defaultName = _getDefaultNameForFilters(context, filters);
     final result = await showDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
@@ -746,7 +821,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final (coverEntry, name) = result;
     if (name.isEmpty) return;
 
-    await appService.pinToHomeScreen(name, coverEntry, filters: filters);
+    await appService.pinToHomeScreen(name, coverEntry, route: CollectionPage.routeName, filters: filters);
     if (!device.showPinShortcutFeedback) {
       showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
     }

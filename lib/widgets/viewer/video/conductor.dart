@@ -10,6 +10,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class VideoConductor {
   final CollectionLens? _collection;
@@ -21,7 +22,7 @@ class VideoConductor {
 
   VideoConductor({CollectionLens? collection}) : _collection = collection {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$VideoConductor',
         object: this,
@@ -31,7 +32,7 @@ class VideoConductor {
 
   Future<void> dispose() async {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _subscriptions
       ..forEach((sub) => sub.cancel())

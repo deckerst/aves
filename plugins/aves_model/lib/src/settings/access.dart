@@ -100,6 +100,6 @@ mixin SettingsAccess {
   }
 
   List<T> getEnumListOrDefault<T extends Object>(String key, List<T> defaultValue, Iterable<T> values) {
-    return store.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).whereNotNull().toList() ?? defaultValue;
+    return store.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).nonNulls.toList() ?? defaultValue;
   }
 }

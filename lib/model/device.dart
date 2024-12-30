@@ -9,8 +9,8 @@ final Device device = Device._private();
 
 class Device {
   late final String _packageName, _packageVersion, _userAgent;
-  late final bool _canAuthenticateUser, _canGrantDirectoryAccess, _canPinShortcut;
-  late final bool _canRenderFlagEmojis, _canRenderSubdivisionFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper, _canUseCrypto;
+  late final bool _canAuthenticateUser, _canPinShortcut;
+  late final bool _canRenderFlagEmojis, _canRenderSubdivisionFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper;
   late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
 
   String get packageName => _packageName;
@@ -21,8 +21,6 @@ class Device {
 
   bool get canAuthenticateUser => _canAuthenticateUser;
 
-  bool get canGrantDirectoryAccess => _canGrantDirectoryAccess;
-
   bool get canPinShortcut => _canPinShortcut;
 
   bool get canRenderFlagEmojis => _canRenderFlagEmojis;
@@ -32,10 +30,6 @@ class Device {
   bool get canRequestManageMedia => _canRequestManageMedia;
 
   bool get canSetLockScreenWallpaper => _canSetLockScreenWallpaper;
-
-  bool get canUseCrypto => _canUseCrypto;
-
-  bool get canUseVaults => canAuthenticateUser || canUseCrypto;
 
   bool get hasGeocoder => _hasGeocoder;
 
@@ -71,13 +65,11 @@ class Device {
     }
 
     final capabilities = await deviceService.getCapabilities();
-    _canGrantDirectoryAccess = capabilities['canGrantDirectoryAccess'] ?? false;
     _canPinShortcut = capabilities['canPinShortcut'] ?? false;
     _canRenderFlagEmojis = capabilities['canRenderFlagEmojis'] ?? false;
     _canRenderSubdivisionFlagEmojis = capabilities['canRenderSubdivisionFlagEmojis'] ?? false;
     _canRequestManageMedia = capabilities['canRequestManageMedia'] ?? false;
     _canSetLockScreenWallpaper = capabilities['canSetLockScreenWallpaper'] ?? false;
-    _canUseCrypto = capabilities['canUseCrypto'] ?? false;
     _hasGeocoder = capabilities['hasGeocoder'] ?? false;
     _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;

@@ -64,7 +64,7 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
             } catch (e: Exception) {
                 // may yield `IllegalArgumentException: Volume external_primary not found`
                 val volumes = MediaStore.getExternalVolumeNames(context).joinToString(", ")
-                result.error("getGeneration-primary", e.message + " (available volumes are $volumes)", e)
+                result.error("getGeneration-primary", e.message + " (available volumes are [$volumes])", e)
                 return
             }
         } else {

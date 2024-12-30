@@ -5,8 +5,9 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/media/geotiff.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/media/geotiff.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -43,25 +44,34 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class MapPage extends StatelessWidget {
-  static const routeName = '/collection/map';
+  static const routeName = '/map';
 
   final CollectionLens collection;
+  final LatLng? initialLocation;
+  final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
 
   const MapPage({
     super.key,
     required this.collection,
+    this.initialLocation,
+    this.initialZoom,
     this.initialEntry,
     this.overlayEntry,
   });
 
   @override
   Widget build(BuildContext context) {
-    // do not rely on the `HighlightInfoProvider` app level
-    // as the map can be stacked on top of other pages
-    // that catch highlight events and will not let it bubble up
-    return HighlightInfoProvider(
+    return MultiProvider(
+      providers: [
+        // do not rely on the `HighlightInfoProvider` app level
+        // as the map can be stacked on top of other pages
+        // that catch highlight events and will not let it bubble up
+        HighlightInfoProvider(),
+        // opening collection can be used by map actions
+        ChangeNotifierProvider<CollectionLens>.value(value: collection),
+      ],
       child: AvesScaffold(
         body: SafeArea(
           left: false,
@@ -70,6 +80,8 @@ class MapPage extends StatelessWidget {
           bottom: true,
           child: _Content(
             collection: collection,
+            initialLocation: initialLocation,
+            initialZoom: initialZoom,
             initialEntry: initialEntry,
             overlayEntry: overlayEntry,
           ),
@@ -81,11 +93,15 @@ class MapPage extends StatelessWidget {
 
 class _Content extends StatefulWidget {
   final CollectionLens collection;
+  final LatLng? initialLocation;
+  final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
 
   const _Content({
     required this.collection,
+    this.initialLocation,
+    this.initialZoom,
     this.initialEntry,
     this.overlayEntry,
   });
@@ -118,7 +134,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
       _isPageAnimatingNotifier.value = true;
-      Future.delayed(ADurations.pageTransitionAnimation * timeDilation).then((_) {
+      Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });
@@ -142,7 +158,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _subscriptions.add(openingCollection.source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _updateRegionCollection()));
 
     _selectedIndexNotifier.addListener(_onThumbnailIndexChanged);
-    Future.delayed(ADurations.pageTransitionAnimation * timeDilation + const Duration(seconds: 1), () {
+    Future.delayed(ADurations.pageTransitionLoose * timeDilation + const Duration(seconds: 1), () {
+      if (!mounted) return;
       final regionEntries = regionCollection?.sortedEntries ?? [];
       final initialEntry = widget.initialEntry ?? regionEntries.firstOrNull;
       if (initialEntry != null) {
@@ -252,19 +269,21 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   Widget _buildMap() {
+    final canPop = Navigator.maybeOf(context)?.canPop() == true;
     Widget child = MapTheme(
       interactive: true,
       showCoordinateFilter: true,
-      navigationButton: MapNavigationButton.back,
+      navigationButton: canPop ? MapNavigationButton.back : MapNavigationButton.close,
       scale: _overlayScale,
+      attributionPadding: const EdgeInsets.symmetric(horizontal: 8),
       child: GeoMap(
         // key is expected by test driver
         key: const Key('map_view'),
         controller: _mapController,
-        collectionListenable: openingCollection,
-        entries: openingCollection.sortedEntries,
+        collection: openingCollection,
         availableSize: MediaQuery.sizeOf(context),
-        initialCenter: widget.initialEntry?.latLng ?? widget.overlayEntry?.center,
+        initialCenter: widget.initialLocation ?? widget.initialEntry?.latLng ?? widget.overlayEntry?.center,
+        initialZoom: widget.initialZoom,
         isAnimatingNotifier: _isPageAnimatingNotifier,
         dotLocationNotifier: _dotLocationNotifier,
         overlayOpacityNotifier: _overlayOpacityNotifier,
@@ -429,10 +448,16 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(
-          source: openingCollection.source,
-          filters: {...openingCollection.filters, filter},
-        ),
+        builder: (context) {
+          final filters = {...openingCollection.filters, filter};
+          if (filter is CoordinateFilter) {
+            filters.removeWhere((v) => (v is CoordinateFilter && v != filter) || v == LocationFilter.located);
+          }
+          return CollectionPage(
+            source: openingCollection.source,
+            filters: filters,
+          );
+        },
       ),
       (route) => false,
     );

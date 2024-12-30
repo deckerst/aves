@@ -15,7 +15,7 @@ abstract class MediaStoreService {
   Future<int?> getGeneration();
 
   // knownEntries: map of contentId -> dateModifiedSecs
-  Stream<AvesEntry> getEntries(bool safe, Map<int?, int?> knownEntries, {String? directory});
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory});
 
   // returns media URI
   Future<Uri?> scanFile(String path, String mimeType);
@@ -69,19 +69,20 @@ class PlatformMediaStoreService implements MediaStoreService {
     try {
       return await _platform.invokeMethod('getGeneration');
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (e.code != 'getGeneration-primary') {
+        await reportService.recordError(e, stack);
+      }
     }
     return null;
   }
 
   @override
-  Stream<AvesEntry> getEntries(bool safe, Map<int?, int?> knownEntries, {String? directory}) {
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) {
     try {
       return _stream
           .receiveBroadcastStream(<String, dynamic>{
             'knownEntries': knownEntries,
             'directory': directory,
-            'safe': safe,
           })
           .where((event) => event is Map)
           .map((event) => AvesEntry.fromMap(event as Map));

@@ -6,7 +6,6 @@
     <string name="analysis_notification_default_title">Сканаванне носьбітаў</string>
     <string name="app_name">Aves</string>
     <string name="app_widget_label">Фотарамка</string>
-    <string name="safe_mode_shortcut_short_label">Бяспечны рэжым</string>
     <string name="search_shortcut_short_label">Пошук</string>
     <string name="analysis_notification_action_stop">Стоп</string>
 </resources>

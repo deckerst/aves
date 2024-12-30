@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-enum MapNavigationButton { back, map, none }
+enum MapNavigationButton { back, close, map, none }
 
 class MapThemeData {
   final bool interactive, showCoordinateFilter;
   final MapNavigationButton navigationButton;
   final Animation<double> scale;
-  final VisualDensity? visualDensity;
+  final VisualDensity visualDensity;
   final double? mapHeight;
+  final EdgeInsets attributionPadding;
 
   const MapThemeData({
     required this.interactive,
@@ -16,6 +17,7 @@ class MapThemeData {
     required this.scale,
     required this.visualDensity,
     required this.mapHeight,
+    required this.attributionPadding,
   });
 
   static const double markerOuterBorderWidth = 1.5;

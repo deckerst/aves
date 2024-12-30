@@ -1,11 +1,14 @@
 package deckers.thibault.aves.channel.calls
 
+import android.app.LocaleConfig
+import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
+import android.os.LocaleList
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -30,9 +33,10 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "canManageMedia" -> safe(call, result, ::canManageMedia)
             "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
-            "getDefaultTimeZoneRawOffsetMillis" -> safe(call, result, ::getDefaultTimeZoneRawOffsetMillis)
             "getLocales" -> safe(call, result, ::getLocales)
+            "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
+            "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             "requestMediaManagePermission" -> safe(call, result, ::requestMediaManagePermission)
             "getAvailableHeapSize" -> safe(call, result, ::getAvailableHeapSize)
@@ -49,23 +53,17 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         val sdkInt = Build.VERSION.SDK_INT
         result.success(
             hashMapOf(
-                "canGrantDirectoryAccess" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.M),
                 "canRenderSubdivisionFlagEmojis" to (sdkInt >= Build.VERSION_CODES.O),
                 "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),
                 "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
-                "canUseCrypto" to (sdkInt >= Build.VERSION_CODES.LOLLIPOP),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
             )
         )
-    }
-
-    private fun getDefaultTimeZoneRawOffsetMillis(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(TimeZone.getDefault().rawOffset)
     }
 
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
@@ -89,6 +87,21 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         result.success(locales)
     }
 
+    private fun setLocaleConfig(call: MethodCall, result: MethodChannel.Result) {
+        val locales = call.argument<List<String>>("locales")
+        if (locales.isNullOrEmpty()) {
+            result.error("setLocaleConfig-args", "missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            val lm = context.getSystemService(Context.LOCALE_SERVICE) as? LocaleManager
+            lm?.overrideLocaleConfig = LocaleConfig(LocaleList.forLanguageTags(locales.joinToString(",")))
+        }
+
+        result.success(true)
+    }
+
     private fun getPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val performanceClass = Build.VERSION.MEDIA_PERFORMANCE_CLASS
@@ -98,6 +111,12 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(Build.VERSION.SDK_INT)
+    }
+
+    private fun isLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
+        val isLocked = keyguardManager.isKeyguardLocked
+        result.success(isLocked)
     }
 
     private fun isSystemFilePickerEnabled(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

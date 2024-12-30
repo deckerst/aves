@@ -5,6 +5,7 @@ import 'package:aves/widgets/editor/transform/crop_region.dart';
 import 'package:aves/widgets/editor/transform/transformation.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class TransformController {
   ValueNotifier<CropAspectRatio> aspectRatioNotifier = ValueNotifier(CropAspectRatio.free);
@@ -34,7 +35,7 @@ class TransformController {
 
   TransformController(this.displaySize) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$TransformController',
         object: this,
@@ -46,7 +47,7 @@ class TransformController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     aspectRatioNotifier.dispose();
   }

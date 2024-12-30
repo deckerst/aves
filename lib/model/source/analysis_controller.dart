@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class AnalysisController {
   final bool canStartService, force;
@@ -15,7 +16,7 @@ class AnalysisController {
     this.progressOffset = 0,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$AnalysisController',
         object: this,
@@ -25,7 +26,7 @@ class AnalysisController {
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _stopSignal.dispose();
   }

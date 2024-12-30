@@ -105,23 +105,27 @@ class EntryPrinter with FeedbackMixin {
   }
 
   Future<pdf.Widget?> _buildPageImage(AvesEntry entry) async {
-    if (entry.isSvg) {
-      final data = await mediaFetchService.getSvg(
-        entry.uri,
-        entry.mimeType,
-        sizeBytes: entry.sizeBytes,
-      );
-      if (data.isNotEmpty) {
-        return pdf.SvgImage(
-          svg: utf8.decode(data),
+    try {
+      if (entry.isSvg) {
+        final data = await mediaFetchService.getSvg(
+          entry.uri,
+          entry.mimeType,
+          sizeBytes: entry.sizeBytes,
+        );
+        if (data.isNotEmpty) {
+          return pdf.SvgImage(
+            svg: utf8.decode(data),
+            fit: _fit,
+          );
+        }
+      } else {
+        return pdf.Image(
+          await flutterImageProvider(entry.uriImage),
           fit: _fit,
         );
       }
-    } else {
-      return pdf.Image(
-        await flutterImageProvider(entry.uriImage),
-        fit: _fit,
-      );
+    } catch (error) {
+      debugPrint('failed to load image for entry=$entry, error=$error');
     }
     return null;
   }

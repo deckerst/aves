@@ -50,7 +50,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
                 },
               ))
           : null;
-    }).whereNotNull());
+    }).nonNulls);
   }
 }
 

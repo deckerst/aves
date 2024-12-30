@@ -81,7 +81,7 @@ mixin FeedbackMixin {
                 final margin = (marginComputer ?? snackBarMarginDefault).call(context);
                 return AnimatedPadding(
                   padding: margin,
-                  duration: ADurations.pageTransitionAnimation,
+                  duration: ADurations.pageTransitionLoose,
                   child: child,
                 );
               },
@@ -138,7 +138,7 @@ mixin FeedbackMixin {
     VoidCallback? onCancel,
     Future<void> Function(Set<T> processed)? onDone,
   }) async {
-    final completer = Completer();
+    final opCompleter = Completer();
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -149,12 +149,12 @@ mixin FeedbackMixin {
         onDone: (processed) async {
           Navigator.maybeOf(context)?.pop();
           await onDone?.call(processed);
-          completer.complete();
+          opCompleter.complete();
         },
       ),
       routeSettings: const RouteSettings(name: ReportOverlay.routeName),
     );
-    return completer.future;
+    return opCompleter.future;
   }
 }
 
@@ -165,6 +165,9 @@ class ReportOverlay<T> extends StatefulWidget {
   final int? itemCount;
   final VoidCallback? onCancel;
   final void Function(Set<T> processed) onDone;
+
+  static const double diameter = 160.0;
+  static const double strokeWidth = 8.0;
 
   const ReportOverlay({
     super.key,
@@ -186,8 +189,6 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   Stream<T> get opStream => widget.opStream;
 
   static const double fontSize = 18.0;
-  static const double diameter = 160.0;
-  static const double strokeWidth = 8.0;
 
   @override
   void initState() {
@@ -222,6 +223,8 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    const diameter = ReportOverlay.diameter;
+    const strokeWidth = ReportOverlay.strokeWidth;
     final percentFormatter = NumberFormat.percentPattern(context.locale);
 
     final theme = Theme.of(context);
@@ -249,21 +252,12 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                     shape: BoxShape.circle,
                   ),
                 ),
-                if (animate)
-                  Container(
-                    width: diameter,
-                    height: diameter,
-                    padding: const EdgeInsets.all(strokeWidth / 2),
-                    child: CircularProgressIndicator(
-                      color: progressColor.withOpacity(.1),
-                      strokeWidth: strokeWidth,
-                    ),
-                  ),
+                if (animate) const ReportProgressIndicator(opacity: .1),
                 CircularPercentIndicator(
                   percent: percent,
                   lineWidth: strokeWidth,
                   radius: diameter / 2,
-                  backgroundColor: colorScheme.onSurface.withOpacity(.2),
+                  backgroundColor: colorScheme.onSurface.withValues(alpha: .2),
                   progressColor: progressColor,
                   animation: animate,
                   center: total != null
@@ -296,6 +290,32 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class ReportProgressIndicator extends StatelessWidget {
+  final double opacity;
+
+  const ReportProgressIndicator({
+    super.key,
+    this.opacity = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const diameter = ReportOverlay.diameter;
+    const strokeWidth = ReportOverlay.strokeWidth;
+    final progressColor = Theme.of(context).colorScheme.primary;
+
+    return Container(
+      width: diameter,
+      height: diameter,
+      padding: const EdgeInsets.all(strokeWidth / 2),
+      child: CircularProgressIndicator(
+        color: progressColor.withValues(alpha: opacity),
+        strokeWidth: strokeWidth,
       ),
     );
   }
@@ -402,7 +422,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                   style: contentTextStyle.copyWith(
                     shadows: [
                       Shadow(
-                        color: timerChangeShadowColor.withOpacity(0),
+                        color: timerChangeShadowColor.withAlpha(0),
                         blurRadius: 0,
                       )
                     ],

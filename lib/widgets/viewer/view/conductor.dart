@@ -5,6 +5,7 @@ import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class ViewStateConductor {
   final List<ViewStateController> _controllers = [];
@@ -14,7 +15,7 @@ class ViewStateConductor {
 
   ViewStateConductor() {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectCreated(
+      LeakTracking.dispatchObjectCreated(
         library: 'aves',
         className: '$ViewStateConductor',
         object: this,
@@ -24,7 +25,7 @@ class ViewStateConductor {
 
   Future<void> dispose() async {
     if (kFlutterMemoryAllocationsEnabled) {
-      FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
+      LeakTracking.dispatchObjectDisposed(object: this);
     }
     _controllers.forEach((v) => v.dispose());
     _controllers.clear();

@@ -1,6 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -147,7 +147,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
           source: source,
-          filters: album != null ? {AlbumFilter(album, source.getAlbumDisplayName(context, album))} : null,
+          filters: album != null ? {StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))} : null,
           highlightTest: (entry) => entry.uri == uri,
         ),
       ),

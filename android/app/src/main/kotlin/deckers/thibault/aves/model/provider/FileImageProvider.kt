@@ -50,9 +50,10 @@ internal class FileImageProvider : ImageProvider() {
                 }
             } catch (e: SecurityException) {
                 callback.onFailure(e)
+                return
             }
         }
-        entry.fillPreCatalogMetadata(context, safe = false)
+        entry.fillPreCatalogMetadata(context)
 
         if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())

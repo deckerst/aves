@@ -6,10 +6,10 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -54,11 +54,12 @@ class CollectionLens with ChangeNotifier {
     this.stackDevelopedRaws = true,
     this.fixedSort = false,
     this.fixedSelection,
-  })  : filters = (filters ?? {}).whereNotNull().toSet(),
+  })  : filters = (filters ?? {}).nonNulls.toSet(),
         burstPatterns = settings.collectionBurstPatterns,
         sectionFactor = settings.collectionSectionFactor,
         sortFactor = settings.collectionSortFactor,
         sortReverse = settings.collectionSortReverse {
+    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;
@@ -142,7 +143,7 @@ class CollectionLens with ChangeNotifier {
   }
 
   bool get showHeaders {
-    bool showAlbumHeaders() => !filters.any((v) => v is AlbumFilter && !v.reversed);
+    bool showAlbumHeaders() => !filters.any((v) => v is StoredAlbumFilter && !v.reversed);
 
     switch (sortFactor) {
       case EntrySortFactor.date:

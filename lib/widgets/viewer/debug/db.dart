@@ -40,12 +40,12 @@ class _DbTabState extends State<DbTab> {
 
   void _loadDatabase() {
     final id = entry.id;
-    _dbDateLoader = metadataDb.loadDates().then((values) => values[id]);
-    _dbEntryLoader = metadataDb.loadEntriesById({id}).then((values) => values.firstOrNull);
-    _dbMetadataLoader = metadataDb.loadCatalogMetadata().then((values) => values.firstWhereOrNull((row) => row.id == id));
-    _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhereOrNull((row) => row.id == id));
-    _dbTrashDetailsLoader = metadataDb.loadAllTrashDetails().then((values) => values.firstWhereOrNull((row) => row.id == id));
-    _dbVideoPlaybackLoader = metadataDb.loadVideoPlayback(id);
+    _dbDateLoader = localMediaDb.loadDates().then((values) => values[id]);
+    _dbEntryLoader = localMediaDb.loadEntriesById({id}).then((values) => values.firstOrNull);
+    _dbMetadataLoader = localMediaDb.loadCatalogMetadata().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbAddressLoader = localMediaDb.loadAddresses().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbTrashDetailsLoader = localMediaDb.loadAllTrashDetails().then((values) => values.firstWhereOrNull((row) => row.id == id));
+    _dbVideoPlaybackLoader = localMediaDb.loadVideoPlayback(id);
     setState(() {});
   }
 
@@ -92,6 +92,15 @@ class _DbTabState extends State<DbTab> {
                       await source.removeEntries({entry.uri}, includeTrash: true);
                     },
                     child: const Text('Untrack entry'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final duplicates = {entry.copyWith(id: localMediaDb.nextId)};
+                      final source = context.read<CollectionSource>();
+                      source.addEntries(duplicates);
+                      await localMediaDb.insertEntries(duplicates);
+                    },
+                    child: const Text('Duplicate entry'),
                   ),
                   InfoRowGroup(
                     info: {
@@ -184,7 +193,7 @@ class _DbTabState extends State<DbTab> {
                   ElevatedButton(
                     onPressed: () async {
                       entry.trashDetails = null;
-                      await metadataDb.updateTrash(entry.id, entry.trashDetails);
+                      await localMediaDb.updateTrash(entry.id, entry.trashDetails);
                       _loadDatabase();
                     },
                     child: const Text('Remove details'),

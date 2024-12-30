@@ -6,12 +6,12 @@ import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -131,7 +131,7 @@ class _BasicSectionState extends State<BasicSection> {
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
       if (dateTime != null) DateFilter(DateLevel.ymd, dateTime.date),
-      if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
+      if (album != null) StoredAlbumFilter(album, collection?.source.getStoredAlbumDisplayName(context, album)),
       if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map(TagFilter.new),
     };

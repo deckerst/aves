@@ -20,6 +20,7 @@ import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/tile.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
@@ -39,6 +40,7 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
+import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
@@ -48,6 +50,7 @@ import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -85,7 +88,7 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.select<Settings, double>((s) => s.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
+    final spacing = context.select<Settings, double>((v) => v.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
     if (_tileExtentController?.spacing != spacing) {
       _tileExtentController = TileExtentController(
         settingsRouteKey: settingsRouteKey,
@@ -116,6 +119,12 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   final ValueNotifier<AppMode> _selectingAppModeNotifier = ValueNotifier(AppMode.pickFilteredMediaInternal);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<ViewerEntryNotifier>().value = null);
+  }
+
+  @override
   void dispose() {
     _focusedItemNotifier.dispose();
     _isScrollingNotifier.dispose();
@@ -127,7 +136,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   Widget build(BuildContext context) {
     final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
     final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
-    final tileLayout = context.select<Settings, TileLayout>((s) => s.getTileLayout(settingsRouteKey));
+    final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
@@ -237,9 +246,18 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
     );
   }
 
-  void _goToViewer(CollectionLens collection, AvesEntry entry) {
+  Future<void> _goToViewer(CollectionLens collection, AvesEntry entry) async {
+    // track viewer entry for dynamic hero placeholder
+    final viewerEntryNotifier = context.read<ViewerEntryNotifier>();
+
+    // prevent navigating again to the same entry until fully back,
+    // as a workaround for the hero pop/push diversion animation issue
+    // (cf `ThumbnailImage` `Hero` usage)
+    if (viewerEntryNotifier.value == entry) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) => viewerEntryNotifier.value = entry);
+
     final selection = context.read<Selection<AvesEntry>>();
-    Navigator.maybeOf(context)?.push(
+    await Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
@@ -265,6 +283,14 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
         },
       ),
     );
+
+    // reset track viewer entry
+    final animate = context.read<Settings>().animate;
+    if (animate) {
+      // TODO TLAD fix timing when transition is incomplete, e.g. when going back while going to the viewer
+      await Future.delayed(ADurations.pageTransitionExact * timeDilation);
+    }
+    viewerEntryNotifier.value = null;
   }
 }
 
@@ -400,7 +426,7 @@ class _CollectionScaler extends StatelessWidget {
       ),
       mosaicItemBuilder: (index, targetExtent) => DecoratedBox(
         decoration: BoxDecoration(
-          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withOpacity(.9),
+          color: ThumbnailImage.computeLoadingBackgroundColor(index * 10, brightness).withValues(alpha: .9),
           border: Border.all(
             color: borderColor,
             width: borderWidth,
@@ -477,7 +503,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       _checkingStoragePermission = false;
       _isStoragePermissionGranted.then((granted) {
         if (granted) {
-          widget.collection.source.init();
+          widget.collection.source.init(scope: CollectionSource.fullScope);
         }
       });
     }
@@ -587,7 +613,13 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       valueListenable: collection.source.stateNotifier,
       builder: (context, sourceState, child) {
         if (sourceState == SourceState.loading) {
-          return const SizedBox();
+          return EmptyContent(
+            text: context.l10n.sourceStateLoading,
+            bottom: const Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: ReportProgressIndicator(),
+            ),
+          );
         }
 
         return FutureBuilder<bool>(
@@ -655,7 +687,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       sectionLayouts.forEach((section) {
         final directory = (section.sectionKey as EntryAlbumSectionKey).directory;
         if (directory != null) {
-          final label = source.getAlbumDisplayName(context, directory);
+          final label = source.getStoredAlbumDisplayName(context, directory);
           crumbs[section.minOffset / maxOffset] = label;
         }
       });
