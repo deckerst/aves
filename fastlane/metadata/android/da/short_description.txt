@@ -1,1 +1,1 @@
-[TODO] Gallery and metadata explorer
+Gallery and metadata explorer
