@@ -10,7 +10,6 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
-import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
@@ -235,7 +234,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
             ),
           );
 
-    return NotificationListener<FilterNotification>(
+    return NotificationListener<SelectFilterNotification>(
       onNotification: (notification) {
         _onFilter(notification.filter);
         return true;
@@ -288,6 +287,6 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   void _onFilter(CollectionFilter filter) {
     if (!mounted) return;
-    FilterSelectedNotification(filter).dispatch(context);
+    SelectFilterNotification(filter).dispatch(context);
   }
 }

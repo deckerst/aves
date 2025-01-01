@@ -4,8 +4,8 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/filters/coordinate.dart';
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/media/geotiff.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -31,7 +31,6 @@ import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/map/scroller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -203,9 +202,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   Widget build(BuildContext context) {
     return NotificationListener(
       onNotification: (notification) {
-        if (notification is FilterSelectedNotification) {
-          _goToCollection(notification.filter);
-        } else if (notification is FilterNotification) {
+        if (notification is SelectFilterNotification) {
           _goToCollection(notification.filter);
         } else if (notification is OpenMapAppNotification) {
           _openMapApp();

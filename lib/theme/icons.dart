@@ -145,6 +145,7 @@ class AIcons {
   static final showFullscreenArrows = MdiIcons.arrowExpand;
   static const showFullscreenCorners = Icons.fullscreen_outlined;
   static const slideshow = Icons.slideshow_outlined;
+  static const split = Icons.call_split_outlined;
   static const stats = Icons.donut_small_outlined;
   static const vaultLock = Icons.lock_outlined;
   static const vaultAdd = Icons.enhanced_encryption_outlined;

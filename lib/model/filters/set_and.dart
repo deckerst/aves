@@ -18,6 +18,8 @@ class SetAndFilter extends CollectionFilter {
 
   CollectionFilter get _first => _filters.first;
 
+  Set<CollectionFilter> get innerFilters => _filters.toSet();
+
   SetAndFilter(Set<CollectionFilter> filters, {super.reversed = false}) {
     _filters = filters.toList().sorted();
     _test = (entry) => _filters.every((v) => v.test(entry));

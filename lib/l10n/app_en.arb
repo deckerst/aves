@@ -92,6 +92,7 @@
   "chipActionGoToPlacePage": "Show in Places",
   "chipActionGoToTagPage": "Show in Tags",
   "chipActionGoToExplorerPage": "Show in Explorer",
+  "chipActionDecompose": "Split",
   "chipActionFilterOut": "Filter out",
   "chipActionFilterIn": "Filter in",
   "chipActionHide": "Hide",

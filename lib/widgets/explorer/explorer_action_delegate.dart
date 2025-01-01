@@ -97,7 +97,12 @@ class ExplorerActionDelegate with FeedbackMixin {
   }
 
   void _hide(BuildContext context) {
-    ChipActionDelegate().onActionSelected(context, _getPathFilter(), ChipAction.hide);
+    final chipActionDelegate = ChipActionDelegate();
+    const action = ChipAction.hide;
+    final pathFilter = _getPathFilter();
+    if (chipActionDelegate.isVisible(action, filter: pathFilter)) {
+      chipActionDelegate.onActionSelected(context, pathFilter, action);
+    }
   }
 
   void _goToStats(BuildContext context) {
