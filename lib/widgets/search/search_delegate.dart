@@ -218,7 +218,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                       source.getStoredAlbumDisplayName(context, album),
                     ))
                 .where((filter) => containQuery(filter.displayName ?? filter.album)),
-            ...dynamicAlbums.all,
+            ...dynamicAlbums.all.where((filter) => containQuery(filter.name)),
           ]..sort();
           return _buildFilterRow(
             context: context,
