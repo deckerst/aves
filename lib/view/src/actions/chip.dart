@@ -16,6 +16,7 @@ extension ExtraChipActionView on ChipAction {
       ChipAction.ratingOrLower =>
         // different data depending on state
         toString(),
+      ChipAction.decompose => l10n.chipActionDecompose,
       ChipAction.reverse =>
         // different data depending on state
         l10n.chipActionFilterOut,
@@ -33,6 +34,7 @@ extension ExtraChipActionView on ChipAction {
         ChipAction.goToTagPage => AIcons.tag,
         ChipAction.goToExplorerPage => AIcons.explorer,
         ChipAction.ratingOrGreater || ChipAction.ratingOrLower => AIcons.rating,
+        ChipAction.decompose => AIcons.split,
         ChipAction.reverse => AIcons.reverse,
         ChipAction.hide => AIcons.hide,
         ChipAction.lockVault => AIcons.vaultLock,

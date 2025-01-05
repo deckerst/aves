@@ -1392,5 +1392,19 @@
   "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Kacheln von [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "newAlbumDialogAlbumAlreadyExistsHelper": "Album existiert bereits",
-  "@newAlbumDialogAlbumAlreadyExistsHelper": {}
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "appExportDynamicAlbums": "Dynamische Alben",
+  "@appExportDynamicAlbums": {},
+  "dynamicAlbumAlreadyExists": "Dynamisches Album existiert bereits",
+  "@dynamicAlbumAlreadyExists": {},
+  "chipActionRemove": "Entfernen",
+  "@chipActionRemove": {},
+  "newDynamicAlbumDialogTitle": "Neues Dynamisches Album",
+  "@newDynamicAlbumDialogTitle": {},
+  "collectionActionAddDynamicAlbum": "Dynamisches Album hinzufügen",
+  "@collectionActionAddDynamicAlbum": {},
+  "albumTierDynamic": "Dynamisch",
+  "@albumTierDynamic": {},
+  "chipActionDecompose": "Aufschlüsseln",
+  "@chipActionDecompose": {}
 }

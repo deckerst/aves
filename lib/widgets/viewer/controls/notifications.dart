@@ -89,13 +89,23 @@ class CastNotification extends Notification with EquatableMixin {
 }
 
 @immutable
-class FilterSelectedNotification extends Notification with EquatableMixin {
+class SelectFilterNotification extends Notification with EquatableMixin {
   final CollectionFilter filter;
 
   @override
   List<Object?> get props => [filter];
 
-  const FilterSelectedNotification(this.filter);
+  const SelectFilterNotification(this.filter);
+}
+
+@immutable
+class DecomposeFilterNotification extends Notification with EquatableMixin {
+  final CollectionFilter filter;
+
+  @override
+  List<Object?> get props => [filter];
+
+  const DecomposeFilterNotification(this.filter);
 }
 
 @immutable

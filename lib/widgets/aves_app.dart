@@ -67,7 +67,6 @@ class AvesApp extends StatefulWidget {
     'az', // Azerbaijani
     'bn', // Bengali
     'ckb', // Kurdish (Central)
-    'da', // Danish
     'fi', // Finnish
     'gl', // Galician
     'he', // Hebrew
@@ -203,7 +202,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
     _updateCutoutInsets();
     _appModeNotifier.addListener(_onAppModeChanged);
+
+    debugPrint('start listening to app lifecycle');
     WidgetsBinding.instance.addObserver(this);
+    AvesApp.lifecycleStateNotifier.value = WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.detached;
   }
 
   @override
@@ -211,7 +213,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+
+    debugPrint('stop listening to app lifecycle');
     WidgetsBinding.instance.removeObserver(this);
+
     _pageTransitionsBuilderNotifier.dispose();
     _tvMediaQueryModifierNotifier.dispose();
     _appModeNotifier.dispose();

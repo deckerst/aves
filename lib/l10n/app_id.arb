@@ -1404,5 +1404,7 @@
   "dynamicAlbumAlreadyExists": "Album dinamis sudah ada",
   "@dynamicAlbumAlreadyExists": {},
   "newDynamicAlbumDialogTitle": "Album Dinamis Baru",
-  "@newDynamicAlbumDialogTitle": {}
+  "@newDynamicAlbumDialogTitle": {},
+  "chipActionDecompose": "Pisah",
+  "@chipActionDecompose": {}
 }

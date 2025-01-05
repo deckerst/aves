@@ -6,6 +6,7 @@ enum ChipAction {
   goToExplorerPage,
   ratingOrGreater,
   ratingOrLower,
+  decompose,
   reverse,
   hide,
   lockVault,
