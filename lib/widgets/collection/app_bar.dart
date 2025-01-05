@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
+import 'package:aves/model/filters/set_and.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -33,8 +35,8 @@ import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
-import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -199,10 +201,22 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                             ),
                           ),
                         if (showFilterBar)
-                          NotificationListener<FilterNotification>(
+                          NotificationListener(
                             onNotification: (notification) {
-                              collection.addFilter(notification.filter);
-                              return true;
+                              if (notification is SelectFilterNotification) {
+                                collection.addFilters({notification.filter});
+                                return true;
+                              } else if (notification is DecomposeFilterNotification) {
+                                final filter = notification.filter;
+                                if (filter is DynamicAlbumFilter) {
+                                  final innerFilter = filter.filter;
+                                  final newFilters = innerFilter is SetAndFilter ? innerFilter.innerFilters : {innerFilter};
+                                  collection.addFilters(newFilters);
+                                  collection.removeFilter(filter);
+                                  return true;
+                                }
+                              }
+                              return false;
                             },
                             child: FilterBar(
                               filters: visibleFilters,

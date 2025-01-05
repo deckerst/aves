@@ -1404,5 +1404,7 @@
   "collectionActionAddDynamicAlbum": "동적 앨범 추가",
   "@collectionActionAddDynamicAlbum": {},
   "appExportDynamicAlbums": "동적 앨범",
-  "@appExportDynamicAlbums": {}
+  "@appExportDynamicAlbums": {},
+  "chipActionDecompose": "나누기",
+  "@chipActionDecompose": {}
 }

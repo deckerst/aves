@@ -1404,5 +1404,7 @@
   "albumTierDynamic": "Dinámico",
   "@albumTierDynamic": {},
   "newDynamicAlbumDialogTitle": "Nuevo álbum dinámico",
-  "@newDynamicAlbumDialogTitle": {}
+  "@newDynamicAlbumDialogTitle": {},
+  "chipActionDecompose": "Separar",
+  "@chipActionDecompose": {}
 }

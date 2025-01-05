@@ -3,12 +3,8 @@ import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
-import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
-import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
@@ -101,21 +97,6 @@ class AvesFilterChip extends StatefulWidget {
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
     if (context.read<ValueNotifier<AppMode>>().value.canNavigate) {
-      final actions = <ChipAction>[
-        if (filter is AlbumBaseFilter) ChipAction.goToAlbumPage,
-        if (filter is StoredAlbumFilter || filter is PathFilter) ChipAction.goToExplorerPage,
-        if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
-        if ((filter is LocationFilter && filter.level == LocationLevel.place)) ChipAction.goToPlacePage,
-        if (filter is TagFilter) ChipAction.goToTagPage,
-        if (filter is RatingFilter && 1 < filter.rating && filter.rating < 5) ...[
-          if (filter.op != RatingFilter.opOrGreater) ChipAction.ratingOrGreater,
-          if (filter.op != RatingFilter.opOrLower) ChipAction.ratingOrLower,
-        ],
-        ChipAction.reverse,
-        ChipAction.hide,
-        ChipAction.lockVault,
-      ];
-
       // remove focus, if any, to prevent the keyboard from showing up
       // after the user is done with the popup menu
       FocusManager.instance.primaryFocus?.unfocus();
@@ -132,7 +113,7 @@ class AvesFilterChip extends StatefulWidget {
             child: Text(filter.getLabel(context)),
           ),
           const PopupMenuDivider(),
-          ...actions.where((action) => actionDelegate.isVisible(action, filter: filter)).map((action) {
+          ...ChipAction.values.where((action) => actionDelegate.isVisible(action, filter: filter)).map((action) {
             late String text;
             switch (action) {
               case ChipAction.reverse:

@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/stored_album.dart';
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/covered/location.dart';
-import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -24,11 +24,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/date/histogram.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/stats/mime_donut.dart';
 import 'package:aves/widgets/stats/percent_text.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -172,7 +172,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
                 ],
               ),
             );
-            child = NotificationListener<FilterNotification>(
+            child = NotificationListener<SelectFilterNotification>(
               onNotification: (notification) {
                 _onFilterSelection(context, notification.filter);
                 return true;
@@ -336,7 +336,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    widget.parentCollection!.addFilter(filter);
+    widget.parentCollection!.addFilters({filter});
     // We delay closing the current page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`.
@@ -384,7 +384,7 @@ class StatsTopPage extends StatelessWidget {
         child: SafeArea(
           bottom: false,
           child: Builder(builder: (context) {
-            return NotificationListener<FilterNotification>(
+            return NotificationListener<SelectFilterNotification>(
               onNotification: (notification) {
                 onFilterSelection(notification.filter);
                 return true;

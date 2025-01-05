@@ -65,7 +65,7 @@ class MediaStoreSource extends CollectionSource {
     final deviceOffset = DateTime.now().timeZoneOffset.inMilliseconds;
     final catalogOffset = settings.catalogTimeZoneOffsetMillis;
     if (deviceOffset != catalogOffset) {
-      unawaited(reportService.recordError('Time zone offset change: $catalogOffset -> $deviceOffset. Clear catalog metadata to get correct date/times.'));
+      unawaited(reportService.log('Time zone offset change: $catalogOffset -> $deviceOffset. Clear catalog metadata to get correct date/times.'));
       await localMediaDb.clearDates();
       await localMediaDb.clearCatalogMetadata();
       settings.catalogTimeZoneOffsetMillis = deviceOffset;

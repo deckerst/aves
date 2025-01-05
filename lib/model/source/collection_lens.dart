@@ -167,10 +167,12 @@ class CollectionLens with ChangeNotifier {
     }
   }
 
-  void addFilter(CollectionFilter filter) {
-    if (filters.contains(filter)) return;
-    filters.removeWhere((other) => !filter.isCompatible(other));
-    filters.add(filter);
+  void addFilters(Set<CollectionFilter> newFilters) {
+    if (filters.containsAll(newFilters)) return;
+    for (final filter in newFilters) {
+      filters.removeWhere((other) => !filter.isCompatible(other));
+    }
+    filters.addAll(newFilters);
     _onFilterChanged();
   }
 

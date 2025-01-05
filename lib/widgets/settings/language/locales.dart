@@ -8,6 +8,7 @@ class SupportedLocales {
     'bg': 'Български',
     'ca': 'Català',
     'cs': 'Čeština',
+    'da': 'Dansk',
     'de': 'Deutsch',
     'el': 'Ελληνικά',
     'en': 'English',

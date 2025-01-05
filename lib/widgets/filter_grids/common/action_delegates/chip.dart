@@ -1,4 +1,7 @@
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -15,6 +18,7 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,12 +30,21 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
   }) {
     switch (action) {
       case ChipAction.goToAlbumPage:
+        return filter is AlbumBaseFilter;
       case ChipAction.goToCountryPage:
+        return filter is LocationFilter && filter.level == LocationLevel.country;
       case ChipAction.goToPlacePage:
+        return filter is LocationFilter && filter.level == LocationLevel.place;
       case ChipAction.goToTagPage:
+        return filter is TagFilter;
       case ChipAction.goToExplorerPage:
+        return filter is StoredAlbumFilter || filter is PathFilter;
       case ChipAction.ratingOrGreater:
+        return filter is RatingFilter && 1 < filter.rating && filter.rating < 5 && filter.op != RatingFilter.opOrGreater;
       case ChipAction.ratingOrLower:
+        return filter is RatingFilter && 1 < filter.rating && filter.rating < 5 && filter.op != RatingFilter.opOrLower;
+      case ChipAction.decompose:
+        return filter is DynamicAlbumFilter;
       case ChipAction.reverse:
         return true;
       case ChipAction.hide:
@@ -69,11 +82,13 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
           );
         }
       case ChipAction.ratingOrGreater:
-        FilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrGreater)).dispatch(context);
+        SelectFilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrGreater)).dispatch(context);
       case ChipAction.ratingOrLower:
-        FilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrLower)).dispatch(context);
+        SelectFilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrLower)).dispatch(context);
+      case ChipAction.decompose:
+        DecomposeFilterNotification(filter).dispatch(context);
       case ChipAction.reverse:
-        FilterNotification(filter.reverse()).dispatch(context);
+        SelectFilterNotification(filter.reverse()).dispatch(context);
       case ChipAction.hide:
         _hide(context, filter);
       case ChipAction.lockVault:
@@ -118,11 +133,4 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
 
     settings.changeFilterVisibility({filter}, false);
   }
-}
-
-@immutable
-class FilterNotification extends Notification {
-  final CollectionFilter filter;
-
-  const FilterNotification(this.filter);
 }

@@ -92,7 +92,7 @@ class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChi
                   useFilterColor: false,
                   background: Themes.overlayBackgroundColor(brightness: theme.brightness, blurred: blurred),
                   maxWidth: double.infinity,
-                  onTap: (filter) => FilterSelectedNotification(CoordinateFilter(bounds.sw, bounds.ne)).dispatch(context),
+                  onTap: (filter) => SelectFilterNotification(CoordinateFilter(bounds.sw, bounds.ne)).dispatch(context),
                 ),
               ),
             );

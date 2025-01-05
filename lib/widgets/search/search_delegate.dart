@@ -1,16 +1,18 @@
 import 'package:aves/model/dynamic_albums.dart';
-import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/filters/set_and.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -29,7 +31,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/page.dart';
-import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
+import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -91,10 +93,21 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     final upQuery = query.trim().toUpperCase();
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
-      child: NotificationListener<FilterNotification>(
+      child: NotificationListener(
         onNotification: (notification) {
-          _select(context, notification.filter);
-          return true;
+          if (notification is SelectFilterNotification) {
+            _select(context, {notification.filter});
+            return true;
+          } else if (notification is DecomposeFilterNotification) {
+            final filter = notification.filter;
+            if (filter is DynamicAlbumFilter) {
+              final innerFilter = filter.filter;
+              final newFilters = innerFilter is SetAndFilter ? innerFilter.innerFilters : {innerFilter};
+              _select(context, newFilters);
+              return true;
+            }
+          }
+          return false;
         },
         child: ValueListenableBuilder<String?>(
           valueListenable: _expandedSectionNotifier,
@@ -159,7 +172,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     required List<CollectionFilter> filters,
     HeroType Function(CollectionFilter filter)? heroTypeBuilder,
   }) {
-    void onTap(filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter);
+    void onTap(filter) => _select(context, {filter is QueryFilter ? QueryFilter(filter.query) : filter});
     const onLongPress = AvesFilterChip.showDefaultLongPressMenu;
     return title != null
         ? TitledExpandableFilterRow(
@@ -205,7 +218,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                       source.getStoredAlbumDisplayName(context, album),
                     ))
                 .where((filter) => containQuery(filter.displayName ?? filter.album)),
-            ...dynamicAlbums.all,
+            ...dynamicAlbums.all.where((filter) => containQuery(filter.name)),
           ]..sort();
           return _buildFilterRow(
             context: context,
@@ -303,7 +316,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
         // `buildResults` is called in the build phase,
         // so we post the call that will filter the collection
         // and possibly trigger a rebuild here
-        _select(context, _buildQueryFilter(true));
+        _select(context, {_buildQueryFilter(true)});
       });
     }
     return const SizedBox();
@@ -314,29 +327,33 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     return cleanQuery.isNotEmpty ? QueryFilter(cleanQuery, colorful: colorful) : null;
   }
 
-  Future<void> _select(BuildContext context, CollectionFilter? filter) async {
-    if (filter == null) {
+  Future<void> _select(BuildContext context, Set<CollectionFilter?> filters) async {
+    final newFilters = filters.nonNulls.toSet();
+    if (newFilters.isEmpty) {
       goBack(context);
       return;
     }
 
-    if (!await unlockFilter(context, filter)) return;
+    for (final filter in newFilters) {
+      if (!await unlockFilter(context, filter)) return;
 
-    if (settings.saveSearchHistory) {
-      final history = settings.searchHistory
-        ..remove(filter)
-        ..insert(0, filter);
-      settings.searchHistory = history.take(searchHistoryCount).toList();
+      if (settings.saveSearchHistory) {
+        final history = settings.searchHistory
+          ..remove(filter)
+          ..insert(0, filter);
+        settings.searchHistory = history.take(searchHistoryCount).toList();
+      }
     }
+
     if (parentCollection != null) {
-      _applyToParentCollectionPage(context, filter);
+      _applyToParentCollectionPage(context, newFilters);
     } else {
-      _jumpToCollectionPage(context, {filter});
+      _jumpToCollectionPage(context, newFilters);
     }
   }
 
-  void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    parentCollection!.addFilter(filter);
+  void _applyToParentCollectionPage(BuildContext context, Set<CollectionFilter> filters) {
+    parentCollection!.addFilters(filters);
     if (Navigator.canPop(context)) {
       // We delay closing the current page after applying the filter selection
       // so that hero animation target is ready in the `FilterBar`,

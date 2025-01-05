@@ -1562,5 +1562,7 @@
   "collectionActionAddDynamicAlbum": "Додати динамічний альбом",
   "@collectionActionAddDynamicAlbum": {},
   "appExportDynamicAlbums": "Динамічні альбоми",
-  "@appExportDynamicAlbums": {}
+  "@appExportDynamicAlbums": {},
+  "chipActionDecompose": "Спліт",
+  "@chipActionDecompose": {}
 }
