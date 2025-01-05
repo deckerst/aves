@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - dynamic album decompose action
+- Danish translation (thanks Grooty12, Victor M, cat)
 
 ## <a id="v1.12.0"></a>[v1.12.0] - 2024-12-19
 
