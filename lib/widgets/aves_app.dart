@@ -67,7 +67,6 @@ class AvesApp extends StatefulWidget {
     'az', // Azerbaijani
     'bn', // Bengali
     'ckb', // Kurdish (Central)
-    'da', // Danish
     'fi', // Finnish
     'gl', // Galician
     'he', // Hebrew
