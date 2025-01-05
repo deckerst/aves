@@ -366,18 +366,18 @@ packages:
     dependency: "direct main"
     description:
       name: flex_color_picker
-      sha256: "12dc855ae8ef5491f529b1fc52c655f06dcdf4114f1f7fdecafa41eec2ec8d79"
+      sha256: c083b79f1c57eaeed9f464368be376951230b3cb1876323b784626152a86e480
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.0"
+    version: "3.7.0"
   flex_seed_scheme:
     dependency: transitive
     description:
       name: flex_seed_scheme
-      sha256: "7639d2c86268eff84a909026eb169f008064af0fb3696a651b24b0fa24a40334"
+      sha256: d3ba3c5c92d2d79d45e94b4c6c71d01fac3c15017da1545880c53864da5dfeb0
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.1"
+    version: "3.5.0"
   floating:
     dependency: "direct main"
     description:
@@ -462,10 +462,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "255b00afa1a7bad19727da6a7780cf3db6c3c12e68d302d85e0ff1fdf173db9e"
+      sha256: e37f4c69a07b07bb92622ef6b131a53c9aae48f64b176340af9e8e5238718487
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.4+3"
+    version: "0.7.5"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -629,10 +629,10 @@ packages:
     dependency: transitive
     description:
       name: http_parser
-      sha256: "76d306a1c3afb33fe82e2bbacad62a61f409b5634c915fceb0d799de1a913360"
+      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2"
   image:
     dependency: transitive
     description:
@@ -701,10 +701,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "4a16b3f03741e1252fda5de3ce712666d010ba2122f8e912c94f9f7b90e1a4c3"
+      sha256: c35bb79562d980e9a453fc715854e1ed39e24e7d0297a880ef54e17f9874a9d7
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.1"
   lists:
     dependency: transitive
     description:
@@ -1273,10 +1273,10 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: "3c7e73920c694a436afaf65ab60ce3453d91f84208d761fbd83fc21182134d93"
+      sha256: a752ce92ea7540fc35a0d19722816e04d0e72828a4200e83a98cf1a1eb524c9a
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.4"
+    version: "2.3.5"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -1430,10 +1430,10 @@ packages:
     dependency: transitive
     description:
       name: sqflite_darwin
-      sha256: "96a698e2bc82bd770a4d6aab00b42396a7c63d9e33513a56945cbccb594c2474"
+      sha256: "22adfd9a2c7d634041e96d6241e6e1c8138ca6817018afc5d443fef91dcefa9c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.1+1"
   sqflite_platform_interface:
     dependency: transitive
     description:
@@ -1695,18 +1695,18 @@ packages:
     dependency: transitive
     description:
       name: wakelock_plus
-      sha256: bf4ee6f17a2fa373ed3753ad0e602b7603f8c75af006d5b9bdade263928c0484
+      sha256: "36c88af0b930121941345306d259ec4cc4ecca3b151c02e3a9e71aede83c615e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.8"
+    version: "1.2.10"
   wakelock_plus_platform_interface:
     dependency: transitive
     description:
       name: wakelock_plus_platform_interface
-      sha256: "422d1cdbb448079a8a62a5a770b69baa489f8f7ca21aef47800c726d404f9d16"
+      sha256: "70e780bc99796e1db82fe764b1e7dcb89a86f1e5b3afb1db354de50f2e41eb7a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.2.2"
   watcher:
     dependency: transitive
     description:
@@ -1759,10 +1759,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "8b338d4486ab3fbc0ba0db9f9b4f5239b6697fcee427939a40e720cbb9ee0a69"
+      sha256: "154360849a56b7b67331c21f09a386562d88903f90a1099c5987afc1912e1f29"
       url: "https://pub.dev"
     source: hosted
-    version: "5.9.0"
+    version: "5.10.0"
   win32_registry:
     dependency: transitive
     description:
@@ -1799,10 +1799,10 @@ packages:
     dependency: transitive
     description:
       name: yaml
-      sha256: "75769501ea3489fca56601ff33454fe45507ea3bfb014161abc3b43ae25989d5"
+      sha256: b9da305ac7c39faa3f030eccd175340f968459dae4af175130b3fc47e40d76ce
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
 sdks:
   dart: ">=3.6.0 <4.0.0"
   flutter: ">=3.27.1"
