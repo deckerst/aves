@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.1"></a>[v1.12.1] - 2025-01-05
+
 ### Added
 
 - dynamic album decompose action
