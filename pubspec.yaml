@@ -127,7 +127,7 @@ dependencies:
       url: https://github.com/deckerst/aves_streams_channel.git
   transparent_image:
   url_launcher:
-  vector_map_tiles:
+  vector_map_tiles: ^8.0.0 # vector_map_tiles v9.0.0-beta.6 has a buggy cross-platform definition for `cacheFolder`
   vector_math:
   vector_tile_renderer:
   volume_controller:
