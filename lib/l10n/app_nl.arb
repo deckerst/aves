@@ -1406,5 +1406,7 @@
   "appExportDynamicAlbums": "Dynamische albums",
   "@appExportDynamicAlbums": {},
   "chipActionRemove": "Verwijderen",
-  "@chipActionRemove": {}
+  "@chipActionRemove": {},
+  "chipActionDecompose": "Splitsen",
+  "@chipActionDecompose": {}
 }

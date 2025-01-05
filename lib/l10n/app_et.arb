@@ -1602,5 +1602,7 @@
   "settingsLanguagePageTitle": "Keel",
   "@settingsLanguagePageTitle": {},
   "viewerInfoViewXmlLinkText": "Vaata XMLi",
-  "@viewerInfoViewXmlLinkText": {}
+  "@viewerInfoViewXmlLinkText": {},
+  "chipActionDecompose": "Poolita",
+  "@chipActionDecompose": {}
 }

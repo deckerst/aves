@@ -1404,5 +1404,7 @@
   "collectionActionAddDynamicAlbum": "Adicionar álbum dinâmico",
   "@collectionActionAddDynamicAlbum": {},
   "appExportDynamicAlbums": "Álbuns dinâmicos",
-  "@appExportDynamicAlbums": {}
+  "@appExportDynamicAlbums": {},
+  "chipActionDecompose": "Separar",
+  "@chipActionDecompose": {}
 }

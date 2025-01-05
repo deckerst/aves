@@ -1562,5 +1562,7 @@
   "appExportDynamicAlbums": "الألبومات الديناميكية",
   "@appExportDynamicAlbums": {},
   "newDynamicAlbumDialogTitle": "ألبوم ديناميكي جديد",
-  "@newDynamicAlbumDialogTitle": {}
+  "@newDynamicAlbumDialogTitle": {},
+  "chipActionDecompose": "فصل",
+  "@chipActionDecompose": {}
 }
