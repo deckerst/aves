@@ -240,7 +240,8 @@ class _HomePageState extends State<HomePage> {
             unawaited(AnalysisService.registerCallback());
             await reportService.log('Initialize source to view item in directory $directory');
             final source = context.read<CollectionSource>();
-            source.canAnalyze = false;
+            // analysis is necessary to display neighbour items when the initial item is a new one
+            source.canAnalyze = true;
             await source.init(scope: {StoredAlbumFilter(directory, null)});
           }
         } else {

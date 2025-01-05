@@ -9,6 +9,12 @@ All notable changes to this project will be documented in this file.
 - dynamic album decompose action
 - Danish translation (thanks Grooty12, Victor M, cat)
 
+### Fixed
+
+- analysis service not triggering because of uninitialized app lifecycle
+- Viewer: displaying neighbour items when the initial item of a view intent is a new one
+- Search: dynamic album name filtering
+
 ## <a id="v1.12.0"></a>[v1.12.0] - 2024-12-19
 
 ### Added
