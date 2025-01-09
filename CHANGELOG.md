@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- Video: use `media-kit` instead of `ffmpeg-kit` for metadata fetch
+- Info: show video chapters
+
+### Fixed
+
+- crash when cataloguing some videos
+
 ## <a id="v1.12.1"></a>[v1.12.1] - 2025-01-05
 
 ### Added

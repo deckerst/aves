@@ -13,5 +13,7 @@ void main() {
 
     expect('H'.toSentenceCase(), 'H');
     expect('LW[1]'.toSentenceCase(), 'LW [1]');
+
+    expect('bits_per_raw_sample'.toSentenceCase(), 'Bits Per Raw Sample');
   });
 }
