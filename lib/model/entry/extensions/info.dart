@@ -9,6 +9,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
+import 'package:aves/theme/format.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
@@ -82,6 +83,21 @@ extension ExtraAvesEntryInfo on AvesEntry {
       directories.add(MetadataDirectory(MetadataDirectory.mediaDirectory, _toSortedTags(formattedMediaTags)));
     }
 
+    if (mediaInfo.containsKey(Keys.chapters)) {
+      final allChapters = (mediaInfo.remove(Keys.chapters) as List).cast<Map>();
+      if (allChapters.isNotEmpty) {
+        allChapters.sortBy((v) => v[Keys.time] as num? ?? 0);
+
+        final chapterTags = SplayTreeMap.of(Map.fromEntries(allChapters.mapIndexed((i, chapter) {
+          final chapterNumber = i + 1;
+          final time = Duration(seconds: (chapter[Keys.time] as num? ?? 0).round());
+          final title = chapter[Keys.title] as String? ?? 'Chapter $chapterNumber';
+          return MapEntry('$chapterNumber${AText.separator}${formatFriendlyDuration(time)}', title);
+        })), compareNatural);
+        directories.add(MetadataDirectory('Chapters', chapterTags));
+      }
+    }
+
     if (mediaInfo.containsKey(Keys.streams)) {
       String getTypeText(Map stream) {
         final type = stream[Keys.streamType] ?? MediaStreamTypes.unknown;
@@ -96,7 +112,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
           case MediaStreamTypes.timedText:
             return 'Text';
           case MediaStreamTypes.video:
-            return stream.containsKey(Keys.fpsDen) ? 'Video' : 'Image';
+            return stream.containsKey(Keys.fpsDen) || stream.containsKey(Keys.fps) ? 'Video' : 'Image';
           case MediaStreamTypes.unknown:
           default:
             return 'Unknown';

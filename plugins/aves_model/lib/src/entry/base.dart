@@ -9,6 +9,8 @@ mixin AvesEntryBase {
 
   int? get pageId;
 
+  String get mimeType;
+
   String? get path;
 
   String? get bestTitle;

@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: daa1d780fdecf8af925680c06c86563cdd445deea995d5c9176f1302a2b10bbe
+      sha256: "27899c95f9e7ec06c8310e6e0eac967707714b9f1450c4a58fa00ca011a4a8ae"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.48"
+    version: "1.3.49"
   _macros:
     dependency: transitive
     description: dart
@@ -289,23 +289,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
-  ffmpeg_kit_flutter:
-    dependency: transitive
-    description:
-      path: "flutter/flutter"
-      ref: background-lts
-      resolved-ref: "24213bd2334265cfc240525fb9a218b85ad4d872"
-      url: "https://github.com/deckerst/ffmpeg-kit.git"
-    source: git
-    version: "6.0.3"
-  ffmpeg_kit_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: ffmpeg_kit_flutter_platform_interface
-      sha256: addf046ae44e190ad0101b2fde2ad909a3cd08a2a109f6106d2f7048b7abedee
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.1"
   file:
     dependency: transitive
     description:
@@ -318,10 +301,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_core
-      sha256: "15d761b95dfa2906dfcc31b7fc6fe293188533d1a3ffe78389ba9e69bd7fdbde"
+      sha256: "0307c1fde82e2b8b97e0be2dab93612aff9a72f31ebe9bfac66ed8b37ef7c568"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.0"
+    version: "3.10.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -342,18 +325,18 @@ packages:
     dependency: transitive
     description:
       name: firebase_crashlytics
-      sha256: e235c8452d5622fc271404592388fde179e4b62c50e777ad3c8c3369296104ed
+      sha256: f6adb65fa3d6391a79f0e60833bb4cdc468ce0c318831c90057ee11e0909cd29
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.0"
+    version: "4.3.0"
   firebase_crashlytics_platform_interface:
     dependency: transitive
     description:
       name: firebase_crashlytics_platform_interface
-      sha256: "4ddadf44ed0a202f3acad053f12c083877940fa8cc1a9f747ae09e1ef4372160"
+      sha256: "6635166c22c6f75f634b8e77b70fcc43b24af4cfee28f975249dbdbd9769a702"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.0"
+    version: "3.8.0"
   fixnum:
     dependency: transitive
     description:
@@ -813,8 +796,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit
-      ref: d094ba83715b0ac893e546781b2862e855d34502
-      resolved-ref: d094ba83715b0ac893e546781b2862e855d34502
+      ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
+      resolved-ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.1.11"
@@ -830,8 +813,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit_video
-      ref: d094ba83715b0ac893e546781b2862e855d34502
-      resolved-ref: d094ba83715b0ac893e546781b2862e855d34502
+      ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
+      resolved-ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.2.5"

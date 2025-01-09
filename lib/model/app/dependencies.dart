@@ -74,11 +74,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color',
     ),
     Dependency(
-      name: 'FFmpegKit (Aves fork)',
-      license: lgpl3,
-      sourceUrl: 'https://github.com/deckerst/ffmpeg-kit',
-    ),
-    Dependency(
       name: 'Floating',
       license: mit,
       sourceUrl: 'https://github.com/wrbl606/floating',

@@ -98,7 +98,7 @@ class FfmpegVideoMetadataFetcher extends AvesVideoMetadataFetcher {
   }
 
   void _normalizeGroup(Map<dynamic, dynamic> stream) {
-    void replaceKey(k1, k2) {
+    void replaceKey(String k1, String k2) {
       final v = stream.remove(k1);
       if (v != null) {
         stream[k2] = v;
@@ -119,16 +119,16 @@ class FfmpegVideoMetadataFetcher extends AvesVideoMetadataFetcher {
     }
 
     <String>{
+      Keys.bitsPerSample,
+      Keys.closedCaptions,
+      Keys.codecLongName,
       Keys.codecProfileId,
+      Keys.filmGrain,
+      Keys.hasBFrames,
       Keys.rFrameRate,
-      'bits_per_sample',
-      'closed_captions',
-      'codec_long_name',
-      'film_grain',
-      'has_b_frames',
-      'start_pts',
-      'start_time',
-      'vendor_id',
+      Keys.startPts,
+      Keys.startTime,
+      Keys.vendorId,
     }.forEach((key) {
       final value = stream[key];
       switch (value) {
