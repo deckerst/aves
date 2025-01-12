@@ -78,7 +78,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   late VideoActionDelegate _videoActionDelegate;
   final ValueNotifier<EntryHeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
-  Timer? _overlayHidingTimer, _appInactiveReactionTimer;
+  Timer? _overlayHidingTimer;
+  late ValueNotifier<AvesVideoController?> _playingVideoControllerNotifier;
 
   @override
   bool get isViewingImage => _currentVerticalPage.value == imagePage;
@@ -168,6 +169,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _videoActionDelegate = VideoActionDelegate(
       collection: collection,
     );
+    _playingVideoControllerNotifier = context.read<VideoConductor>().playingVideoControllerNotifier;
+    _playingVideoControllerNotifier.addListener(_onPlayingVideoControllerChanged);
     initEntryControllers(entry);
     _registerWidget(widget);
     AvesApp.lifecycleStateNotifier.addListener(_onAppLifecycleStateChanged);
@@ -185,6 +188,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   void dispose() {
     AvesApp.pageRouteObserver.unsubscribe(this);
     cleanEntryControllers(entryNotifier.value);
+    _playingVideoControllerNotifier.removeListener(_onPlayingVideoControllerChanged);
+    updatePictureInPicture(context);
     _videoActionDelegate.dispose();
     _verticalPageAnimationController.dispose();
     _overlayButtonScale.dispose();
@@ -201,7 +206,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _verticalScrollNotifier.dispose();
     _heroInfoNotifier.dispose();
     _stopOverlayHidingTimer();
-    _stopAppInactiveTimer();
     AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);
     _unregisterWidget(widget);
     super.dispose();
@@ -253,7 +257,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 // so we do not access status stream directly, but check for support first
                 stream: device.supportPictureInPicture ? Floating().pipStatusStream : Stream.value(PiPStatus.disabled),
                 builder: (context, snapshot) {
-                  var pipEnabled = snapshot.data == PiPStatus.enabled;
+                  final pipEnabled = snapshot.data == PiPStatus.enabled;
                   return ValueListenableBuilder<bool>(
                     valueListenable: _viewLocked,
                     builder: (context, locked, child) {
@@ -328,47 +332,31 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   // lifecycle
 
+  // app lifecycle states:
+  // * rotating screen: resumed -> inactive -> resumed
+  // * going home: resumed -> inactive -> hidden -> paused
+  // * back from home: paused -> hidden -> inactive -> resumed
+  // * app switch / settings / etc: resumed -> inactive
   void _onAppLifecycleStateChanged() {
     switch (AvesApp.lifecycleStateNotifier.value) {
       case AppLifecycleState.inactive:
         // inactive: when losing focus
         // also triggered when app is rotated on Android API >=33
-        _startAppInactiveTimer();
+        break;
+      case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        // paused: when switching to another app
+        // hidden: transient state between `inactive` and `paused`
+        // paused: when using another app
         // detached: when app is without a view
         viewerController.autopilot = false;
-        _stopAppInactiveTimer();
         pauseVideoControllers();
       case AppLifecycleState.resumed:
-        _stopAppInactiveTimer();
-      case AppLifecycleState.hidden:
-        // hidden: transient state between `inactive` and `paused`
         break;
     }
   }
 
-  Future<void> _onAppInactive(AvesVideoController? playingController) async {
-    bool enabledPip = false;
-    if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
-      enabledPip |= await _enablePictureInPicture(playingController);
-    }
-    if (enabledPip) {
-      // ensure playback, in case lifecycle paused/resumed events happened when switching to PiP
-      await playingController?.play();
-    } else {
-      await pauseVideoControllers();
-    }
-  }
-
-  void _startAppInactiveTimer() {
-    _stopAppInactiveTimer();
-    final playingController = context.read<VideoConductor>().getPlayingController();
-    _appInactiveReactionTimer = Timer(ADurations.appInactiveReactionDelay, () => _onAppInactive(playingController));
-  }
-
-  void _stopAppInactiveTimer() => _appInactiveReactionTimer?.cancel();
+  void _onPlayingVideoControllerChanged() => updatePictureInPicture(context);
 
   Widget _decorateOverlay(Widget overlay) {
     return ValueListenableBuilder<double>(
@@ -937,36 +925,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     // from a viewer with a transparent background and no system UI
     // to a regular page with system UI
     await Future.delayed(const Duration(milliseconds: 50));
-  }
-
-  Future<bool> _enablePictureInPicture(AvesVideoController? playingController) async {
-    if (playingController != null) {
-      final entrySize = playingController.entry.displaySize;
-      final aspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
-
-      final viewSize = MediaQuery.sizeOf(context) * MediaQuery.devicePixelRatioOf(context);
-      final fittedSize = applyBoxFit(BoxFit.contain, entrySize, viewSize).destination;
-      final sourceRectHint = Rectangle<int>(
-        ((viewSize.width - fittedSize.width) / 2).round(),
-        ((viewSize.height - fittedSize.height) / 2).round(),
-        fittedSize.width.round(),
-        fittedSize.height.round(),
-      );
-
-      try {
-        final status = await Floating().enable(ImmediatePiP(
-          aspectRatio: aspectRatio,
-          sourceRectHint: sourceRectHint,
-        ));
-        await reportService.log('Enabled picture-in-picture with status=$status');
-        return status == PiPStatus.enabled;
-      } on PlatformException catch (e, stack) {
-        if (e.message != 'Activity must be resumed to enter picture-in-picture') {
-          await reportService.recordError(e, stack);
-        }
-      }
-    }
-    return false;
   }
 
   // overlay
