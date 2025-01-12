@@ -1562,5 +1562,7 @@
   "newDynamicAlbumDialogTitle": "Nový dynamický album",
   "@newDynamicAlbumDialogTitle": {},
   "dynamicAlbumAlreadyExists": "Dynamický album už existuje",
-  "@dynamicAlbumAlreadyExists": {}
+  "@dynamicAlbumAlreadyExists": {},
+  "chipActionDecompose": "Rozdeliť",
+  "@chipActionDecompose": {}
 }
