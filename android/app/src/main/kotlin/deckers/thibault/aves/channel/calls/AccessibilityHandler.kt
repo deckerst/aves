@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import android.view.ViewConfiguration
 import android.view.accessibility.AccessibilityManager
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.utils.LogUtils
@@ -17,6 +18,7 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "areAnimationsRemoved" -> safe(call, result, ::areAnimationsRemoved)
+            "getLongPressTimeout" -> safe(call, result, ::getLongPressTimeout)
             "hasRecommendedTimeouts" -> safe(call, result, ::hasRecommendedTimeouts)
             "getRecommendedTimeoutMillis" -> safe(call, result, ::getRecommendedTimeoutMillis)
             "shouldUseBoldFont" -> safe(call, result, ::shouldUseBoldFont)
@@ -32,6 +34,10 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
             Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
         }
         result.success(removed)
+    }
+
+    private fun getLongPressTimeout(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(ViewConfiguration.getLongPressTimeout())
     }
 
     private fun hasRecommendedTimeouts(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

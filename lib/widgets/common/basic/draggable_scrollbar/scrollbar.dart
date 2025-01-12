@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/scroll_label.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/transition.dart';
+import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:flutter/widgets.dart';
 
 /*
@@ -221,7 +223,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
           // exclude semantics, otherwise this layer will block access to content layers below when using TalkBack
           ExcludeSemantics(
             child: RepaintBoundary(
-              child: GestureDetector(
+              child: AGestureDetector(
                 onLongPressStart: (details) {
                   _longPressLastGlobalPosition = details.globalPosition;
                   _onVerticalDragStart();
@@ -235,6 +237,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
                 onVerticalDragStart: (_) => _onVerticalDragStart(),
                 onVerticalDragUpdate: (details) => _onVerticalDragUpdate(details.delta.dy),
                 onVerticalDragEnd: (_) => _onVerticalDragEnd(),
+                longPressTimeout: settings.longPressTimeout,
                 child: ValueListenableBuilder<double>(
                   valueListenable: _thumbOffsetNotifier,
                   builder: (context, thumbOffset, child) => Container(

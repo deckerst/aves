@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Video: use `media-kit` instead of `ffmpeg-kit` for metadata fetch
 - Info: show video chapters
+- Accessibility: apply system "touch and hold delay" setting
 
 ### Fixed
 

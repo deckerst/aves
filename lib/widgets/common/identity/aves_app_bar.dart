@@ -5,6 +5,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
+import 'package:aves/widgets/common/basic/gestures/ink_well.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
@@ -95,10 +96,13 @@ class AvesAppBar extends StatelessWidget {
           child: AvesFloatingBar(
             builder: (context, backgroundColor, child) => Material(
               color: backgroundColor,
-              child: InkWell(
+              child: AInkResponse(
                 // absorb taps while providing visual feedback
                 onTap: () {},
                 onLongPress: () {},
+                containedInkWell: true,
+                highlightShape: BoxShape.rectangle,
+                longPressTimeout: settings.longPressTimeout,
                 child: child,
               ),
             ),
