@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
@@ -10,8 +14,10 @@ import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
+import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 // state controllers/monitors
@@ -216,4 +222,50 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   }
 
   Future<void> pauseVideoControllers() => context.read<VideoConductor>().pauseAll();
+
+  static const _pipRatioMax = Rational(43, 18);
+  static const _pipRatioMin = Rational(18, 43);
+
+  Future<void> updatePictureInPicture(BuildContext context) async {
+    if (context.mounted) {
+      if (settings.videoBackgroundMode == VideoBackgroundMode.pip) {
+        final playingController = context.read<VideoConductor>().getPlayingController();
+        if (playingController != null) {
+          final entrySize = playingController.entry.displaySize;
+          final entryAspectRatio = entrySize.aspectRatio;
+          final Rational pipAspectRatio;
+          if (entryAspectRatio > _pipRatioMax.aspectRatio) {
+            pipAspectRatio = _pipRatioMax;
+          } else if (entryAspectRatio < _pipRatioMin.aspectRatio) {
+            pipAspectRatio = _pipRatioMin;
+          } else {
+            pipAspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
+          }
+
+          final viewSize = MediaQuery.sizeOf(context) * MediaQuery.devicePixelRatioOf(context);
+          final fittedSize = applyBoxFit(BoxFit.contain, entrySize, viewSize).destination;
+          final sourceRectHint = Rectangle<int>(
+            ((viewSize.width - fittedSize.width) / 2).round(),
+            ((viewSize.height - fittedSize.height) / 2).round(),
+            fittedSize.width.round(),
+            fittedSize.height.round(),
+          );
+
+          try {
+            final status = await Floating().enable(OnLeavePiP(
+              aspectRatio: pipAspectRatio,
+              sourceRectHint: sourceRectHint,
+            ));
+            debugPrint('Enabled picture-in-picture with status=$status');
+            return;
+          } on PlatformException catch (e, stack) {
+            await reportService.recordError(e, stack);
+          }
+        }
+      }
+    }
+
+    debugPrint('Cancelling picture-in-picture');
+    await Floating().cancelOnLeavePiP();
+  }
 }

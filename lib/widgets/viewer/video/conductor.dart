@@ -16,7 +16,9 @@ class VideoConductor {
   final CollectionLens? _collection;
   final List<AvesVideoController> _controllers = [];
   final List<StreamSubscription> _subscriptions = [];
-  final PlaybackStateHandler playbackStateHandler = DatabasePlaybackStateHandler();
+  final PlaybackStateHandler _playbackStateHandler = DatabasePlaybackStateHandler();
+
+  final ValueNotifier<AvesVideoController?> playingVideoControllerNotifier = ValueNotifier(null);
 
   static const _defaultMaxControllerCount = 3;
 
@@ -38,6 +40,7 @@ class VideoConductor {
       ..forEach((sub) => sub.cancel())
       ..clear();
     await _disposeAll();
+    playingVideoControllerNotifier.dispose();
     _controllers.clear();
     if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
       await windowService.keepScreenOn(false);
@@ -51,7 +54,7 @@ class VideoConductor {
     } else {
       controller = videoControllerFactory.buildController(
         entry,
-        playbackStateHandler: playbackStateHandler,
+        playbackStateHandler: _playbackStateHandler,
         settings: settings,
       );
       _subscriptions.add(controller.statusStream.listen((event) => _onControllerStatusChanged(entry, controller!, event)));
@@ -90,6 +93,8 @@ class VideoConductor {
     if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
       await windowService.keepScreenOn(status == VideoStatus.playing);
     }
+
+    playingVideoControllerNotifier.value = getPlayingController();
   }
 
   Future<void> _applyToAll(FutureOr Function(AvesVideoController controller) action) => Future.forEach<AvesVideoController>(_controllers, action);

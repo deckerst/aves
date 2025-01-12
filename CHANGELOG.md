@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when cataloguing some videos
+- switching to PiP for any inactive app state
 
 ## <a id="v1.12.1"></a>[v1.12.1] - 2025-01-05
 
