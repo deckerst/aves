@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
+import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -90,7 +91,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   @override
   Widget build(BuildContext context) {
     final selectable = widget.selectable;
-    return GestureDetector(
+    return AGestureDetector(
       onLongPressStart: selectable
           ? (details) {
               if (_isScrolling) return;
@@ -137,6 +138,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
               selection.toggleSelection(item);
             }
           : null,
+      longPressTimeout: settings.longPressTimeout,
       child: widget.child,
     );
   }
@@ -144,7 +146,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   void _onScrollChanged() {
     _isScrolling = true;
     _stopScrollMonitoringTimer();
-    _scrollMonitoringTimer = Timer(kLongPressTimeout + const Duration(milliseconds: 150), () {
+    _scrollMonitoringTimer = Timer(settings.longPressTimeout + const Duration(milliseconds: 150), () {
       _isScrolling = false;
     });
   }

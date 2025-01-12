@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/widgets.dart';
@@ -72,6 +73,7 @@ class QuickActionButton<T extends Object> extends StatelessWidget {
         // so we rely on `onDraggableCanceled` and `onDragCompleted` instead
         onDraggableCanceled: (velocity, offset) => _setDraggedQuickAction(null),
         onDragCompleted: () => _setDraggedQuickAction(null),
+        delay: settings.longPressTimeout,
         childWhenDragging: child,
         child: child,
       );

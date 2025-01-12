@@ -199,6 +199,12 @@ flutter:
 #  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
 #  adapts from Flutter v3.23.0 `SnackBar` in `/material/snack_bar.dart`
 #
+#  `AGestureDetector` in `/widgets/common/basic/gestures/gesture_detector.dart`
+#  adapts from Flutter v3.21.1 `GestureDetector` in `/widgets/gesture_detector.dart`
+#
+#  `AInkResponse` in `/widgets/common/basic/gestures/ink_well.dart`
+#  adapts from Flutter v3.21.1 `InkResponse` and related classes in `/material/ink_well.dart`
+#
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
 #  adapts from Flutter v3.16.0 `ScaleGestureRecognizer` in `/gestures/scale.dart`
 #

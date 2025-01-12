@@ -188,4 +188,7 @@ class SettingKeys {
 
   // cf Android `Settings.Global.TRANSITION_ANIMATION_SCALE`
   static const platformTransitionAnimationScaleKey = 'transition_animation_scale';
+
+  // cf Android `Settings.Secure.LONG_PRESS_TIMEOUT`
+  static const platformLongPressTimeoutMillisKey = 'long_press_timeout';
 }

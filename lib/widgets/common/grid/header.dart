@@ -4,6 +4,7 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class SectionHeader<T> extends StatelessWidget {
     Widget child = Container(
       padding: padding,
       constraints: BoxConstraints(minHeight: leadingSize.height),
-      child: GestureDetector(
+      child: AGestureDetector(
         onTap: onTap,
         onLongPress: selectable
             ? Feedback.wrapForLongPress(() {
@@ -55,6 +56,7 @@ class SectionHeader<T> extends StatelessWidget {
                 }
               }, context)
             : null,
+        longPressTimeout: settings.longPressTimeout,
         child: Text.rich(
           TextSpan(
             children: [
