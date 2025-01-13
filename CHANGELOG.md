@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.2"></a>[v1.12.2] - 2025-01-13
+
 ### Added
 
 - DDM coordinate format option
