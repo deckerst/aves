@@ -45,6 +45,7 @@ extension ExtraCoordinateFormatView on CoordinateFormat {
     final l10n = context.l10n;
     return switch (this) {
       CoordinateFormat.dms => l10n.coordinateFormatDms,
+      CoordinateFormat.ddm => l10n.coordinateFormatDdm,
       CoordinateFormat.decimal => l10n.coordinateFormatDecimal,
     };
   }
