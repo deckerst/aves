@@ -1,19 +1,10 @@
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 class AccessibilityService {
   static const _platform = MethodChannel('deckers.thibault/aves/accessibility');
-
-  static Future<bool> shouldUseBoldFont() async {
-    try {
-      final result = await _platform.invokeMethod('shouldUseBoldFont');
-      if (result != null) return result as bool;
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return false;
-  }
 
   static Future<bool> areAnimationsRemoved() async {
     try {
@@ -23,6 +14,16 @@ class AccessibilityService {
       await reportService.recordError(e, stack);
     }
     return false;
+  }
+
+  static Future<int> getLongPressTimeout() async {
+    try {
+      final result = await _platform.invokeMethod('getLongPressTimeout');
+      if (result != null) return result as int;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return kLongPressTimeout.inMilliseconds;
   }
 
   static bool? _hasRecommendedTimeouts;
@@ -64,5 +65,15 @@ class AccessibilityService {
       await reportService.recordError(e, stack);
     }
     return originalTimeoutMillis;
+  }
+
+  static Future<bool> shouldUseBoldFont() async {
+    try {
+      final result = await _platform.invokeMethod('shouldUseBoldFont');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 }

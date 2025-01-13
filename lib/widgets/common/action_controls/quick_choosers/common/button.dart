@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/route_layout.dart';
+import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -79,7 +81,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
           onSurfaceVariant: colorScheme.onSurface,
         ),
       ),
-      child: GestureDetector(
+      child: AGestureDetector(
         behavior: HitTestBehavior.opaque,
         onLongPressStart: _hasChooser ? _showChooser : null,
         onLongPressMoveUpdate: _hasChooser ? _moveUpdateStreamController.add : null,
@@ -93,6 +95,7 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
               }
             : null,
         onLongPressCancel: _clearChooserOverlayEntry,
+        longPressTimeout: settings.longPressTimeout,
         child: child,
       ),
     );

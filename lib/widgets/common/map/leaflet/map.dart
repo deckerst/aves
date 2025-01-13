@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:aves/widgets/common/map/leaflet/latlng_tween.dart' as llt;
 import 'package:aves/widgets/common/map/leaflet/scale_layer.dart';
 import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -130,14 +133,19 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
       final markerKey = kv.key;
       final geoEntry = kv.value;
       final latLng = LatLng(geoEntry.latitude!, geoEntry.longitude!);
+      final onMarkerLongPress = widget.onMarkerLongPress;
+      final onLongPress = onMarkerLongPress != null ? Feedback.wrapForLongPress(() => onMarkerLongPress.call(geoEntry, LatLng(geoEntry.latitude!, geoEntry.longitude!)), context) : null;
       return Marker(
         point: latLng,
-        child: GestureDetector(
+        child: AGestureDetector(
           onTap: () => widget.onMarkerTap?.call(geoEntry),
           // marker tap handling prevents the default handling of focal zoom on double tap,
           // so we reimplement the double tap gesture here
           onDoubleTap: interactive ? () => _zoomBy(1, focalPoint: latLng) : null,
-          onLongPress: Feedback.wrapForLongPress(() => widget.onMarkerLongPress?.call(geoEntry, LatLng(geoEntry.latitude!, geoEntry.longitude!)), context),
+          onLongPress: onLongPress,
+          // `MapInteractiveViewer` already declares a `LongPressGestureRecognizer` with the default delay (`kLongPressTimeout`),
+          // so this one should have a shorter delay to win in the gesture arena
+          longPressTimeout: Duration(milliseconds: min(settings.longPressTimeout.inMilliseconds, kLongPressTimeout.inMilliseconds)),
           child: widget.markerWidgetBuilder(markerKey),
         ),
         width: markerSize.width,

@@ -60,6 +60,7 @@ Future<void> _init() async {
   await mobileServices.init();
   await settings.init(monitorPlatformSettings: false);
   await reportService.init();
+  videoMetadataFetcher.init();
 
   final analyzer = Analyzer();
   _channel.setMethodCallHandler((call) {

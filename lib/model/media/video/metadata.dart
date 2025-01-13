@@ -6,6 +6,7 @@ import 'package:aves/model/media/video/codecs.dart';
 import 'package:aves/model/media/video/profiles/aac.dart';
 import 'package:aves/model/media/video/profiles/h264.dart';
 import 'package:aves/model/media/video/profiles/hevc.dart';
+import 'package:aves/model/media/video/stereo_3d_modes.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/ref/locales.dart';
@@ -52,10 +53,10 @@ class VideoMetadataFormatter {
     final streams = mediaInfo[Keys.streams];
     if (streams is List) {
       final allStreamInfo = streams.cast<Map>();
-      final sizedStream = allStreamInfo.firstWhereOrNull((stream) => stream.containsKey(Keys.width) && stream.containsKey(Keys.height));
+      final sizedStream = allStreamInfo.firstWhereOrNull((stream) => stream.containsKey(Keys.videoWidth) && stream.containsKey(Keys.videoHeight));
       if (sizedStream != null) {
-        final width = sizedStream[Keys.width];
-        final height = sizedStream[Keys.height];
+        final width = sizedStream[Keys.videoWidth];
+        final height = sizedStream[Keys.videoHeight];
         if (width is int && height is int) {
           fields['width'] = width;
           fields['height'] = height;
@@ -68,7 +69,7 @@ class VideoMetadataFormatter {
       fields['durationMillis'] = (durationMicros / 1000).round();
     } else {
       final duration = _parseDuration(mediaInfo[Keys.duration]);
-      if (duration != null) {
+      if (duration != null && duration > Duration.zero) {
         fields['durationMillis'] = duration.inMilliseconds;
       }
     }
@@ -82,7 +83,7 @@ class VideoMetadataFormatter {
 
     if (entry.mimeType == MimeTypes.avif) {
       final duration = _parseDuration(mediaInfo[Keys.duration]);
-      if (duration == null) return null;
+      if (duration == null || duration == Duration.zero) return null;
 
       catalogMetadata = catalogMetadata.copyWith(isAnimated: true);
     }
@@ -189,13 +190,14 @@ class VideoMetadataFormatter {
           }
           key = (key ?? (kv.key as String)).toLowerCase();
 
-          void save(String key, String? value) {
+          void save(String key, dynamic value) {
             if (value != null) {
-              dir[keyLanguage != null ? '$key ($keyLanguage)' : key] = value;
+              dir[keyLanguage != null ? '$key ($keyLanguage)' : key] = value.toString();
             }
           }
 
           switch (key) {
+            case Keys.chapters:
             case Keys.codecLevel:
             case Keys.codecTag:
             case Keys.codecTagString:
@@ -219,24 +221,22 @@ class VideoMetadataFormatter {
               break;
             case Keys.androidCaptureFramerate:
               final captureFps = double.parse(value);
-              save('Capture Frame Rate', '${roundToPrecision(captureFps, decimals: 3).toString()} FPS');
+              save('Capture Frame Rate', '${roundToPrecision(captureFps, decimals: 3)} FPS');
             case Keys.androidManufacturer:
               save('Android Manufacturer', value);
             case Keys.androidModel:
               save('Android Model', value);
             case Keys.androidVersion:
               save('Android Version', value);
+            case Keys.audioChannels:
+              save('Audio Channels', value);
             case Keys.bitrate:
             case Keys.bps:
               save('Bit Rate', _formatMetric(value, 'b/s'));
-            case Keys.bitsPerRawSample:
-              save('Bits Per Raw Sample', value);
             case Keys.byteCount:
               save('Size', _formatFilesize(value));
             case Keys.channelLayout:
               save('Channel Layout', _formatChannelLayout(value));
-            case Keys.chromaLocation:
-              save('Chroma Location', value);
             case Keys.codecName:
               if (value != 'none') {
                 save('Format', _formatCodecName(value));
@@ -245,20 +245,28 @@ class VideoMetadataFormatter {
               if (streamType == MediaStreamTypes.video) {
                 // this is just a short name used by FFmpeg
                 // user-friendly descriptions for related enums are defined in libavutil/pixfmt.h
-                save('Pixel Format', (value as String).toUpperCase());
+                save('Pixel Format', value.toString().toUpperCase());
               }
+            case Keys.hwPixelFormat:
+              save('Hardware Pixel Format', value.toString().toUpperCase());
             case Keys.codedHeight:
               save('Coded Height', '$value pixels');
             case Keys.codedWidth:
               save('Coded Width', '$value pixels');
+            case Keys.decoderHeight:
+              save('Decoder Height', '$value pixels');
+            case Keys.decoderWidth:
+              save('Decoder Width', '$value pixels');
+            case Keys.colorMatrix:
+              save('Color Matrix', value.toString().toUpperCase());
             case Keys.colorPrimaries:
-              save('Color Primaries', (value as String).toUpperCase());
+              save('Color Primaries', value.toString().toUpperCase());
             case Keys.colorRange:
-              save('Color Range', (value as String).toUpperCase());
+              save('Color Range', value.toString().toUpperCase());
             case Keys.colorSpace:
-              save('Color Space', (value as String).toUpperCase());
+              save('Color Space', value.toString().toUpperCase());
             case Keys.colorTransfer:
-              save('Color Transfer', (value as String).toUpperCase());
+              save('Color Transfer', value.toString().toUpperCase());
             case Keys.codecProfileId:
               {
                 final profile = int.tryParse(value);
@@ -294,8 +302,6 @@ class VideoMetadataFormatter {
               save('Compatible Brands', formattedBrands);
             case Keys.creationTime:
               save('Creation Time', _formatDate(value));
-            case Keys.dar:
-              save('Display Aspect Ratio', value);
             case Keys.date:
               if (value is String && value != '0') {
                 final charCount = value.length;
@@ -307,18 +313,18 @@ class VideoMetadataFormatter {
               if (value != 0) save('Duration', formatPreciseDuration(Duration(microseconds: value)));
             case Keys.extraDataSize:
               save('Extra Data Size', _formatFilesize(value));
-            case Keys.fieldOrder:
-              save('Field Order', value);
+            case Keys.fps:
+              save('Frame Rate', '${roundToPrecision(info[Keys.fps], decimals: 3)} FPS');
             case Keys.fpsDen:
-              save('Frame Rate', '${roundToPrecision(info[Keys.fpsNum] / info[Keys.fpsDen], decimals: 3).toString()} FPS');
+              save('Frame Rate', '${roundToPrecision(info[Keys.fpsNum] / info[Keys.fpsDen], decimals: 3)} FPS');
             case Keys.frameCount:
               save('Frame Count', value);
-            case Keys.handlerName:
-              save('Handler Name', value);
+            case Keys.gamma:
+              save('Gamma', value.toString().toUpperCase());
             case Keys.hasBFrames:
               save('Has B-Frames', value);
-            case Keys.height:
-              save('Height', '$value pixels');
+            case Keys.hearingImpaired:
+              save('Hearing impaired', value);
             case Keys.language:
               if (value != 'und') save('Language', _formatLanguage(value));
             case Keys.location:
@@ -326,9 +332,7 @@ class VideoMetadataFormatter {
             case Keys.majorBrand:
               save('Major Brand', _formatBrand(value));
             case Keys.mediaFormat:
-              save('Format', (value as String).splitMapJoin(',', onMatch: (s) => ', ', onNonMatch: _formatCodecName));
-            case Keys.mediaType:
-              save('Media Type', value);
+              save('Format', value.toString().splitMapJoin(',', onMatch: (s) => ', ', onNonMatch: _formatCodecName));
             case Keys.minorVersion:
               if (value != '0') save('Minor Version', value);
             case Keys.nalLengthSize:
@@ -347,7 +351,7 @@ class VideoMetadataFormatter {
             case Keys.rotate:
               save('Rotation', '$value°');
             case Keys.sampleFormat:
-              save('Sample Format', (value as String).toUpperCase());
+              save('Sample Format', value.toString().toUpperCase());
             case Keys.sampleRate:
               save('Sample Rate', _formatMetric(value, 'Hz'));
             case Keys.sar:
@@ -371,18 +375,24 @@ class VideoMetadataFormatter {
               save('Stats Writing App', value);
             case Keys.statisticsWritingDateUtc:
               save('Stats Writing Date', _formatDate(value));
+            case Keys.stereo3dMode:
+              save('Stereo 3D Mode', _formatStereo3dMode(value));
             case Keys.timeBase:
               save('Time Base', value);
             case Keys.track:
               if (value != '0') save('Track', value);
             case Keys.vendorId:
               save('Vendor ID', value);
-            case Keys.width:
-              save('Width', '$value pixels');
+            case Keys.videoHeight:
+              save('Video Height', '$value pixels');
+            case Keys.videoWidth:
+              save('Video Width', '$value pixels');
+            case Keys.visualImpaired:
+              save('Visual impaired', value);
             case Keys.xiaomiSlowMoment:
               save('Xiaomi Slow Moment', value);
             default:
-              save(key.toSentenceCase(), value.toString());
+              save(key.toSentenceCase(), value);
           }
         } catch (error) {
           debugPrint('failed to process video info key=${kv.key} value=${kv.value}, error=$error');
@@ -410,6 +420,8 @@ class VideoMetadataFormatter {
     if (date == epoch) return null;
     return date.toIso8601String();
   }
+
+  static String _formatStereo3dMode(String value) => Stereo3dModes.names[value] ?? value;
 
   // input example: '00:00:05.408000000' or '5.408000'
   static Duration? _parseDuration(String? value) {

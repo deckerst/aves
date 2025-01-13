@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.2"></a>[v1.12.2] - 2025-01-13
+
+### Added
+
+- DDM coordinate format option
+
+### Changed
+
+- Video: use `media-kit` instead of `ffmpeg-kit` for metadata fetch
+- Info: show video chapters
+- Accessibility: apply system "touch and hold delay" setting
+
+### Fixed
+
+- crash when cataloguing some videos
+- switching to PiP for any inactive app state
+
 ## <a id="v1.12.1"></a>[v1.12.1] - 2025-01-05
 
 ### Added

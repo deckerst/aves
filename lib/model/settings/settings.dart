@@ -34,6 +34,7 @@ import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -319,6 +320,10 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
           if (value is num) {
             areAnimationsRemoved = value == 0;
           }
+        case SettingKeys.platformLongPressTimeoutMillisKey:
+          if (value is num) {
+            longPressTimeoutMillis = value.toInt();
+          }
       }
     });
   }
@@ -330,6 +335,10 @@ class Settings with ChangeNotifier, SettingsAccess, AppSettings, DisplaySettings
   bool get areAnimationsRemoved => getBool(SettingKeys.platformTransitionAnimationScaleKey) ?? SettingsDefaults.areAnimationsRemoved;
 
   set areAnimationsRemoved(bool newValue) => set(SettingKeys.platformTransitionAnimationScaleKey, newValue);
+
+  Duration get longPressTimeout => Duration(milliseconds: getInt(SettingKeys.platformLongPressTimeoutMillisKey) ?? kLongPressTimeout.inMilliseconds);
+
+  set longPressTimeoutMillis(int newValue) => set(SettingKeys.platformLongPressTimeoutMillisKey, newValue);
 
   // import/export
 

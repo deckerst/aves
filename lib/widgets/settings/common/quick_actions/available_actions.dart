@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -98,6 +99,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
         maxSimultaneousDrags: 1,
         onDragStarted: () => _setDraggedAvailableAction(action),
         onDragEnd: (details) => _setDraggedAvailableAction(null),
+        delay: settings.longPressTimeout,
         childWhenDragging: child,
         child: child,
       );

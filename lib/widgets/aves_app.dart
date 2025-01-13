@@ -494,10 +494,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     await mobileServices.init();
     await settings.init(monitorPlatformSettings: true);
     settings.isRotationLocked = await windowService.isRotationLocked();
+    settings.longPressTimeoutMillis = await AccessibilityService.getLongPressTimeout();
     settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
     await _onTvLayoutChanged();
     _monitorSettings();
     videoControllerFactory.init();
+    videoMetadataFetcher.init();
 
     unawaited(deviceService.setLocaleConfig(AvesApp.supportedLocales));
     unawaited(storageService.deleteTempDirectory());

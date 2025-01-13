@@ -232,6 +232,7 @@ class AvesEntry with AvesEntryBase {
 
   // the MIME type reported by the Media Store is unreliable
   // so we use the one found during cataloguing if possible
+  @override
   String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
 
   bool get isCatalogued => _catalogMetadata != null;

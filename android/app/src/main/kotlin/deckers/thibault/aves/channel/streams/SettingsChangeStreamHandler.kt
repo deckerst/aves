@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.ViewConfiguration
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
@@ -21,6 +22,7 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
     private val contentObserver = object : ContentObserver(null) {
         private var accelerometerRotation: Int = 0
         private var transitionAnimationScale: Float = 1f
+        private var longPressTimeoutMillis: Int = 0
 
         init {
             update()
@@ -36,6 +38,7 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
                     hashMapOf(
                         Settings.System.ACCELEROMETER_ROTATION to accelerometerRotation,
                         Settings.Global.TRANSITION_ANIMATION_SCALE to transitionAnimationScale,
+                        KEY_LONG_PRESS_TIMEOUT_MILLIS to longPressTimeoutMillis,
                     )
                 )
             }
@@ -52,6 +55,11 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
                 val newTransitionAnimationScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE)
                 if (transitionAnimationScale != newTransitionAnimationScale) {
                     transitionAnimationScale = newTransitionAnimationScale
+                    changed = true
+                }
+                val newLongPressTimeout = ViewConfiguration.getLongPressTimeout()
+                if (longPressTimeoutMillis != newLongPressTimeout) {
+                    longPressTimeoutMillis = newLongPressTimeout
                     changed = true
                 }
             } catch (e: Exception) {
@@ -93,5 +101,8 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
     companion object {
         private val LOG_TAG = LogUtils.createTag<SettingsChangeStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/settings_change"
+
+        // cf `Settings.Secure.LONG_PRESS_TIMEOUT`
+        const val KEY_LONG_PRESS_TIMEOUT_MILLIS = "long_press_timeout"
     }
 }

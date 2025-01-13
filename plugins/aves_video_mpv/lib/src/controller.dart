@@ -162,6 +162,12 @@ class MpvVideoController extends AvesVideoController {
   Future<void> _init({int startMillis = 0}) async {
     final playing = _instance.state.playing;
 
+    // Audio quality is better with `audiotrack` than `opensles` (the default).
+    // Calling `setAudioDevice` does not seem to work.
+    // As of 2025/01/13, directly setting audio output via property works for some files but not all,
+    // and switching from a supported file to an unsupported file crashes:
+    // cf https://github.com/media-kit/media-kit/issues/1061
+
     await _applyLoop();
     await _instance.open(Media(entry.uri), play: playing);
     await _instance.setSubtitleTrack(SubtitleTrack.no());

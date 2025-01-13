@@ -13,6 +13,7 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
+import 'package:aves/widgets/common/basic/gestures/ink_well.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -347,13 +348,16 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
             shape: RoundedRectangleBorder(
               borderRadius: borderRadius,
             ),
-            child: InkWell(
+            child: AInkResponse(
               // as of Flutter v2.8.0, `InkWell` does not have `onLongPressStart` like `GestureDetector`,
               // so we get the long press details from the tap instead
               onTapDown: onLongPress != null ? (details) => _tapPosition = details.globalPosition : null,
               onTap: onTap,
               onLongPress: onLongPress,
+              containedInkWell: true,
+              highlightShape: BoxShape.rectangle,
               borderRadius: borderRadius,
+              longPressTimeout: settings.longPressTimeout,
               child: FutureBuilder<Color>(
                 future: _colorFuture,
                 builder: (context, snapshot) {
