@@ -60,12 +60,15 @@ class CoordinateFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    return _formatBounds((latLng) => settings.coordinateFormat.format(
-          context,
-          latLng,
-          minuteSecondPadding: minuteSecondPadding,
-          dmsSecondDecimals: 0,
-        ));
+    return _formatBounds((latLng) {
+      final format = settings.coordinateFormat;
+      return format.format(
+        context,
+        latLng,
+        minuteSecondPadding: minuteSecondPadding,
+        dmsSecondDecimals: format == CoordinateFormat.ddm ? 2 : 0,
+      );
+    });
   }
 
   @override

@@ -8,7 +8,7 @@ enum AvesThemeColorMode { monochrome, polychrome }
 
 enum ConfirmationDialog { createVault, deleteForever, moveToBin, moveUndatedItems }
 
-enum CoordinateFormat { dms, decimal }
+enum CoordinateFormat { dms, ddm, decimal }
 
 enum DisplayRefreshRateMode { auto, highest, lowest }
 
