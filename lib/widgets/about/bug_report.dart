@@ -154,10 +154,11 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final mediaQuery = MediaQuery.of(context);
+    final supportsHdr = await windowService.supportsHdr();
     final connections = await Connectivity().checkConnectivity();
     final storageVolumes = await storageService.getStorageVolumes();
     final storageGrants = await storageService.getGrantedDirectories();
-    final supportsHdr = await windowService.supportsHdr();
     return [
       'Package: ${device.packageName}',
       'Installer: ${packageInfo.installerStore}',
@@ -166,6 +167,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Android version: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
+      'Display: pixel ratio=${mediaQuery.devicePixelRatio}, logical size=${mediaQuery.size}',
       'Support: dynamic colors=${device.isDynamicColorAvailable}, geocoder=${device.hasGeocoder}, HDR=$supportsHdr',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
       'Connectivity: ${connections.map((v) => v.name).join(', ')}',
