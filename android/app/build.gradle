@@ -176,7 +176,7 @@ dependencies {
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:3ed067f021'
     implementation 'com.github.deckerst.mp4parser:isoparser:d5caf7a3dd'
     implementation 'com.github.deckerst.mp4parser:muxer:d5caf7a3dd'
-    implementation 'com.github.deckerst:pixymeta-android:9ec7097f17'
+    implementation 'com.github.deckerst:pixymeta-android:71eee77dc4'
     implementation project(':exifinterface')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
