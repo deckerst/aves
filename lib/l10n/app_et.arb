@@ -1604,5 +1604,7 @@
   "viewerInfoViewXmlLinkText": "Vaata XMLi",
   "@viewerInfoViewXmlLinkText": {},
   "chipActionDecompose": "Poolita",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "KKK",
+  "@coordinateFormatDdm": {}
 }
