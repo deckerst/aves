@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.27.2
 
+### Fixed
+
+- editing TIFF metadata increasing file size
+
 ## <a id="v1.12.2"></a>[v1.12.2] - 2025-01-13
 
 ### Added
