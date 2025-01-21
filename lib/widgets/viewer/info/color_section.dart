@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
@@ -24,27 +26,22 @@ class ColorSectionSliver extends StatefulWidget {
 }
 
 class _ColorSectionSliverState extends State<ColorSectionSliver> {
-  late final Future<PaletteGenerator> _paletteLoader;
+  late final Future<List<Color>> _paletteLoader;
 
   @override
   void initState() {
     super.initState();
     final provider = widget.entry.getThumbnail(extent: min(200, widget.entry.displaySize.longestSide));
-    _paletteLoader = PaletteGenerator.fromImageProvider(
-      provider,
-      maximumColorCount: 10,
-      // do not use the default palette filter
-      filters: [],
-    );
+    _paletteLoader = _loadPalette(provider);
   }
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: FutureBuilder<PaletteGenerator>(
+      child: FutureBuilder<List<Color>>(
         future: _paletteLoader,
         builder: (context, snapshot) {
-          final colors = snapshot.data?.paletteColors;
+          final colors = snapshot.data;
           if (colors == null || colors.isEmpty) return const SizedBox();
 
           final durations = context.watch<DurationsData>();
@@ -67,12 +64,12 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ColorIndicator(value: v.color),
+                        ColorIndicator(value: v),
                         const SizedBox(width: 8),
                         Directionality(
                           textDirection: TextDirection.ltr,
                           child: SelectableText(
-                            '#${v.color.hex}',
+                            '#${v.hex}',
                             style: const TextStyle(fontFamily: 'monospace'),
                           ),
                         ),
@@ -86,5 +83,42 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
         },
       ),
     );
+  }
+
+  // `PaletteGenerator.fromImage()` directly blocks the main isolate,
+  // so we use another isolate to compute the palette
+  Future<List<Color>> _loadPalette(ImageProvider provider) async {
+    final stream = provider.resolve(ImageConfiguration.empty);
+    final imageCompleter = Completer<ui.Image>();
+    late ImageStreamListener listener;
+    listener = ImageStreamListener((info, _) {
+      stream.removeListener(listener);
+      imageCompleter.complete(info.image);
+    });
+    stream.addListener(listener);
+    final image = await imageCompleter.future;
+    final imageData = await image.toByteData();
+    if (imageData == null) {
+      throw StateError('Failed to encode the image.');
+    }
+
+    final encodedImage = EncodedImage(
+      imageData,
+      width: image.width,
+      height: image.height,
+    );
+    final generator = await _getPaletteGenerator(encodedImage);
+    return generator.paletteColors.map((v) => v.color).toList();
+  }
+
+  // the isolate does not start unless called from a static method
+  static Future<PaletteGenerator> _getPaletteGenerator(EncodedImage encodedImage) {
+    // `Isolate.run()` closure supports passing `EncodedImage` but not `ui.Image`
+    return Isolate.run(() => PaletteGenerator.fromByteData(
+          encodedImage,
+          maximumColorCount: 10,
+          // do not use the default palette filter
+          filters: [],
+        ));
   }
 }
