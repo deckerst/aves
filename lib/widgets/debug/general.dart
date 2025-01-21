@@ -1,7 +1,9 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/debug/overlay.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +62,11 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
             setState(() {});
           },
           title: const Text('Show tasks overlay'),
+        ),
+        SettingsSwitchListTile(
+          selector: (context, s) => s.debugShowViewerTiles,
+          onChanged: (v) => settings.debugShowViewerTiles = v,
+          title: 'Show viewer tiles',
         ),
         ElevatedButton(
           onPressed: () => LeakTracking.collectLeaks().then((leaks) {
