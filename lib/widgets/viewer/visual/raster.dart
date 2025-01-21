@@ -429,6 +429,28 @@ class _RegionTileState extends State<_RegionTile> {
       );
     }
 
+    if (settings.debugShowViewerTiles) {
+      final regionRect = widget.regionRect;
+      child = Stack(
+        children: [
+          Positioned.fill(child: child),
+          Text(
+            '\ntile=(${tileRect.left.round()}, ${tileRect.top.round()}) ${tileRect.width.round()} x ${tileRect.height.round()}'
+            '\nregion=(${regionRect.left.round()}, ${regionRect.top.round()}) ${regionRect.width.round()} x ${regionRect.height.round()}'
+            '\nsampleSize=${widget.sampleSize}',
+            style: const TextStyle(backgroundColor: Colors.black87),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.red, width: 1),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Positioned.fromRect(
       rect: tileRect,
       child: child,
