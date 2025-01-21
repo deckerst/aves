@@ -205,9 +205,9 @@
   "@filterMimeImageLabel": {},
   "filterMimeVideoLabel": "동영상",
   "@filterMimeVideoLabel": {},
-  "coordinateFormatDms": "도분초",
+  "coordinateFormatDms": "도, 분, 초",
   "@coordinateFormatDms": {},
-  "coordinateFormatDecimal": "소수점",
+  "coordinateFormatDecimal": "십신 도",
   "@coordinateFormatDecimal": {},
   "coordinateDms": "{direction} {coordinate}",
   "@coordinateDms": {},
@@ -1406,5 +1406,7 @@
   "appExportDynamicAlbums": "동적 앨범",
   "@appExportDynamicAlbums": {},
   "chipActionDecompose": "나누기",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "도, 십진 분",
+  "@coordinateFormatDdm": {}
 }
