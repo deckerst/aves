@@ -81,7 +81,8 @@ object StorageUtils {
             return null
         }
         val trashDir = File(externalFilesDir, "trash")
-        if (!trashDir.exists() && !trashDir.mkdirs()) {
+        trashDir.mkdirs()
+        if (!trashDir.exists()) {
             Log.e(LOG_TAG, "failed to create directories at path=$trashDir")
             return null
         }
@@ -499,7 +500,8 @@ object StorageUtils {
                 parentFile
             } else {
                 val directory = File(cleanDirPath)
-                if (!directory.exists() && !directory.mkdirs()) {
+                directory.mkdirs()
+                if (!directory.exists()) {
                     Log.e(LOG_TAG, "failed to create directories at path=$cleanDirPath")
                     return null
                 }
@@ -712,7 +714,8 @@ object StorageUtils {
 
     fun createTempFile(context: Context, extension: String? = null): File {
         val directory = getTempDirectory(context)
-        if (!directory.exists() && !directory.mkdirs()) {
+        directory.mkdirs()
+        if (!directory.exists()) {
             throw IOException("failed to create directories at path=$directory")
         }
         val tempFile = File.createTempFile("aves", extension, directory)

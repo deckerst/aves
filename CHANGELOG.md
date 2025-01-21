@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - editing TIFF metadata increasing file size
+- region decoding for some RAW files
 
 ## <a id="v1.12.2"></a>[v1.12.2] - 2025-01-13
 

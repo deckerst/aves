@@ -6,12 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import deckers.thibault.aves.decoder.MultiPageImage
-import deckers.thibault.aves.decoder.TiffImage
-import deckers.thibault.aves.decoder.VideoThumbnail
+import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
@@ -130,18 +125,10 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         rotationDegrees: Int,
         isFlipped: Boolean,
     ) {
-        val model: Any = if (pageId != null && MultiPageImage.isSupported(mimeType)) {
-            MultiPageImage(context, uri, mimeType, pageId)
-        } else if (mimeType == MimeTypes.TIFF) {
-            TiffImage(context, uri, pageId)
-        } else {
-            StorageUtils.getGlideSafeUri(context, uri, mimeType, sizeBytes)
-        }
-
         val target = Glide.with(context)
             .asBitmap()
-            .apply(glideOptions)
-            .load(model)
+            .apply(AvesAppGlideModule.uncachedFullImageOptions)
+            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId, sizeBytes))
             .submit()
         try {
             var bitmap = withContext(Dispatchers.IO) { target.get() }
@@ -159,7 +146,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 error("streamImage-image-decode-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
             }
         } catch (e: Exception) {
-            error("streamImage-image-decode-exception", "failed to get image for mimeType=$mimeType uri=$uri model=$model", toErrorDetails(e))
+            error("streamImage-image-decode-exception", "failed to get image for mimeType=$mimeType uri=$uri", toErrorDetails(e))
         } finally {
             Glide.with(context).clear(target)
         }
@@ -168,8 +155,8 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
     private suspend fun streamVideoByGlide(uri: Uri, mimeType: String, sizeBytes: Long?) {
         val target = Glide.with(context)
             .asBitmap()
-            .apply(glideOptions)
-            .load(VideoThumbnail(context, uri))
+            .apply(AvesAppGlideModule.uncachedFullImageOptions)
+            .load(AvesAppGlideModule.getModel(context, uri, mimeType, null, sizeBytes))
             .submit()
         try {
             val bitmap = withContext(Dispatchers.IO) { target.get() }
@@ -218,11 +205,5 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         const val CHANNEL = "deckers.thibault/aves/media_byte_stream"
 
         private const val BUFFER_SIZE = 2 shl 17 // 256kB
-
-        // request a fresh image with the highest quality format
-        private val glideOptions = RequestOptions()
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
     }
 }

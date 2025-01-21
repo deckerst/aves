@@ -11,16 +11,10 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.util.Log
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.FutureTarget
-import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.decoder.MultiPageImage
-import deckers.thibault.aves.decoder.SvgImage
-import deckers.thibault.aves.decoder.TiffImage
+import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
@@ -68,6 +62,7 @@ import java.nio.channels.Channels
 import java.util.Date
 import java.util.TimeZone
 import kotlin.math.absoluteValue
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
@@ -317,27 +312,12 @@ abstract class ImageProvider {
                     }
                 }
 
-                val model: Any = if (pageId != null && MultiPageImage.isSupported(sourceMimeType)) {
-                    MultiPageImage(activity, sourceUri, sourceMimeType, pageId)
-                } else if (sourceMimeType == MimeTypes.TIFF) {
-                    TiffImage(activity, sourceUri, pageId)
-                } else if (sourceMimeType == MimeTypes.SVG) {
-                    SvgImage(activity, sourceUri)
-                } else {
-                    StorageUtils.getGlideSafeUri(activity, sourceUri, sourceMimeType, sourceEntry.sizeBytes)
-                }
-
-                // request a fresh image with the highest quality format
-                val glideOptions = RequestOptions()
-                    .format(DecodeFormat.PREFER_ARGB_8888)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-
                 target = Glide.with(activity.applicationContext)
                     .asBitmap()
-                    .apply(glideOptions)
-                    .load(model)
+                    .apply(AvesAppGlideModule.uncachedFullImageOptions)
+                    .load(AvesAppGlideModule.getModel(activity, sourceUri, sourceMimeType, pageId, sourceEntry.sizeBytes))
                     .submit(targetWidthPx, targetHeightPx)
+
                 var bitmap = withContext(Dispatchers.IO) { target.get() }
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)) {
                     bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)

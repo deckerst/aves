@@ -6,14 +6,14 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.net.Uri
+import android.util.Log
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -30,12 +30,7 @@ class RegionFetcher internal constructor(
 ) {
     private var lastDecoderRef: LastDecoderRef? = null
 
-    private val pageTempUris = HashMap<Pair<Uri, Int>, Uri>()
-
-    private val multiTrackGlideOptions = RequestOptions()
-        .format(DecodeFormat.PREFER_ARGB_8888)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .skipMemoryCache(true)
+    private val exportUris = HashMap<Pair<Uri, Int?>, Uri>()
 
     suspend fun fetch(
         uri: Uri,
@@ -45,25 +40,27 @@ class RegionFetcher internal constructor(
         regionRect: Rect,
         imageWidth: Int,
         imageHeight: Int,
+        requestKey: Pair<Uri, Int?> = Pair(uri, pageId),
         result: MethodChannel.Result,
     ) {
         if (pageId != null && MultiPageImage.isSupported(mimeType)) {
-            val id = Pair(uri, pageId)
+            // use JPEG export for requested page
             fetch(
-                uri = pageTempUris.getOrPut(id) { createJpegForPage(uri, mimeType, pageId) },
+                uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
                 mimeType = MimeTypes.JPEG,
                 pageId = null,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
                 imageHeight = imageHeight,
+                requestKey = requestKey,
                 result = result,
             )
             return
         }
 
         var currentDecoderRef = lastDecoderRef
-        if (currentDecoderRef != null && currentDecoderRef.uri != uri) {
+        if (currentDecoderRef != null && currentDecoderRef.requestKey != requestKey) {
             currentDecoderRef = null
         }
 
@@ -76,7 +73,7 @@ class RegionFetcher internal constructor(
                     result.error("fetch-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
                     return
                 }
-                currentDecoderRef = LastDecoderRef(uri, newDecoder)
+                currentDecoderRef = LastDecoderRef(requestKey, newDecoder)
             }
             val decoder = currentDecoderRef.decoder
             lastDecoderRef = currentDecoderRef
@@ -119,16 +116,35 @@ class RegionFetcher internal constructor(
                 result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
             }
         } catch (e: Exception) {
+            if (mimeType != MimeTypes.JPEG) {
+                // retry with JPEG export on failure,
+                // as some formats are not fully supported by `BitmapRegionDecoder`
+                fetch(
+                    uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
+                    mimeType = MimeTypes.JPEG,
+                    pageId = null,
+                    sampleSize = sampleSize,
+                    regionRect = regionRect,
+                    imageWidth = imageWidth,
+                    imageHeight = imageHeight,
+                    requestKey = requestKey,
+                    result = result,
+                )
+                return
+            }
+
             result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
         }
     }
 
-    private fun createJpegForPage(sourceUri: Uri, mimeType: String, pageId: Int): Uri {
+    private fun createTemporaryJpegExport(uri: Uri, mimeType: String, pageId: Int?): Uri {
+        Log.d(LOG_TAG, "create JPEG export for uri=$uri mimeType=$mimeType pageId=$pageId")
         val target = Glide.with(context)
             .asBitmap()
-            .apply(multiTrackGlideOptions)
-            .load(MultiPageImage(context, sourceUri, mimeType, pageId))
+            .apply(AvesAppGlideModule.uncachedFullImageOptions)
+            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId))
             .submit()
+
         try {
             val bitmap = target.get()
             val tempFile = StorageUtils.createTempFile(context).apply {
@@ -143,7 +159,11 @@ class RegionFetcher internal constructor(
     }
 
     private data class LastDecoderRef(
-        val uri: Uri,
+        val requestKey: Pair<Uri, Int?>,
         val decoder: BitmapRegionDecoder,
     )
+
+    companion object {
+        private val LOG_TAG = LogUtils.createTag<RegionFetcher>()
+    }
 }
