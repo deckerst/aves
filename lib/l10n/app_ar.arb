@@ -1564,5 +1564,7 @@
   "newDynamicAlbumDialogTitle": "ألبوم ديناميكي جديد",
   "@newDynamicAlbumDialogTitle": {},
   "chipActionDecompose": "فصل",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {}
 }

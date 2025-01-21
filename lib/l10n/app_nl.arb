@@ -1408,5 +1408,7 @@
   "chipActionRemove": "Verwijderen",
   "@chipActionRemove": {},
   "chipActionDecompose": "Splitsen",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {}
 }

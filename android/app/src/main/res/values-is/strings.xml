@@ -8,4 +8,5 @@
     <string name="app_name">Aves</string>
     <string name="analysis_channel_name">Skönnun myndefnis</string>
     <string name="search_shortcut_short_label">Leita</string>
+    <string name="map_shortcut_short_label">Landakort</string>
 </resources>

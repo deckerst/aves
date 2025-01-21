@@ -1564,5 +1564,7 @@
   "appExportDynamicAlbums": "Dynamiczne albumy",
   "@appExportDynamicAlbums": {},
   "chipActionDecompose": "Podziel",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {}
 }
