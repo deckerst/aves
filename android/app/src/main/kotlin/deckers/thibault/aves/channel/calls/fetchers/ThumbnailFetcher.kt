@@ -12,10 +12,8 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
-import deckers.thibault.aves.decoder.SvgImage
-import deckers.thibault.aves.decoder.TiffImage
-import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
@@ -122,27 +120,15 @@ class ThumbnailFetcher internal constructor(
             .format(if (quality == 100) DecodeFormat.PREFER_ARGB_8888 else DecodeFormat.PREFER_RGB_565)
             .signature(ObjectKey("$dateModifiedSecs-$rotationDegrees-$isFlipped-$width-$pageId"))
             .override(width, height)
-
-        val target = if (isVideo(mimeType)) {
+        if (isVideo(mimeType)) {
             options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            Glide.with(context)
-                .asBitmap()
-                .apply(options)
-                .load(VideoThumbnail(context, uri))
-                .submit(width, height)
-        } else {
-            val model: Any = when {
-                svgFetch -> SvgImage(context, uri)
-                tiffFetch -> TiffImage(context, uri, pageId)
-                multiPageFetch -> MultiPageImage(context, uri, mimeType, pageId)
-                else -> StorageUtils.getGlideSafeUri(context, uri, mimeType)
-            }
-            Glide.with(context)
-                .asBitmap()
-                .apply(options)
-                .load(model)
-                .submit(width, height)
         }
+
+        val target = Glide.with(context)
+            .asBitmap()
+            .apply(options)
+            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId))
+            .submit(width, height)
 
         return try {
             var bitmap = target.get()
