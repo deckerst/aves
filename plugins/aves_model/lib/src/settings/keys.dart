@@ -10,6 +10,7 @@ class SettingKeys {
     topEntryIdsKey,
     recentDestinationAlbumsKey,
     recentTagsKey,
+    debugShowViewerTilesKey,
   };
 
   static const _widgetKeyPrefix = 'widget_';
@@ -28,6 +29,9 @@ class SettingKeys {
   static const topEntryIdsKey = 'top_entry_ids';
   static const recentDestinationAlbumsKey = 'recent_destination_albums';
   static const recentTagsKey = 'recent_tags';
+
+  // debug
+  static const debugShowViewerTilesKey = 'debug_show_viewer_tiles';
 
   // display
   static const displayRefreshRateModeKey = 'display_refresh_rate_mode';
