@@ -83,7 +83,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
 
     private fun getDevicePixelRatio(): Float = Resources.getSystem().displayMetrics.density
 
-    private fun getWidgetSizesDip(context: Context, widgetInfo: Bundle): List<FieldMap> {
+    private fun getWidgetSizesDip(context: Context, widgetInfo: Bundle): List<SizeF> {
         var sizes: List<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -102,7 +102,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
             sizes = listOf(SizeF(widthDip.toFloat(), heightDip.toFloat()))
         }
 
-        return sizes.map { size -> hashMapOf("widthDip" to size.width, "heightDip" to size.height) }
+        return sizes
     }
 
     private suspend fun getProps(
@@ -116,13 +116,14 @@ class HomeWidgetProvider : AppWidgetProvider() {
         if (sizesDip.isEmpty()) return null
 
         val sizeDip = sizesDip.first()
-        if (sizeDip["widthDip"] == 0 || sizeDip["heightDip"] == 0) return null
+        if (sizeDip.width == 0f || sizeDip.height == 0f) return null
 
+        val sizesDipMap = sizesDip.map { size -> hashMapOf("widthDip" to size.width, "heightDip" to size.height) }
         val isNightModeOn = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
         val params = hashMapOf(
             "widgetId" to widgetId,
-            "sizesDip" to sizesDip,
+            "sizesDip" to sizesDipMap,
             "devicePixelRatio" to getDevicePixelRatio(),
             "drawEntryImage" to drawEntryImage,
             "reuseEntry" to reuseEntry,
