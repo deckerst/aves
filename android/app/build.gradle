@@ -36,7 +36,7 @@ android {
     namespace 'deckers.thibault.aves'
     compileSdk 35
     // cf https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
-    ndkVersion '27.0.12077973'
+    ndkVersion '28.0.12916984'
 
     defaultConfig {
         applicationId packageName
