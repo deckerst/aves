@@ -33,17 +33,18 @@ class ItemPickPage extends StatefulWidget {
 class _ItemPickPageState extends State<ItemPickPage> {
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.initialization);
 
-  CollectionLens get collection => widget.collection;
-
   @override
   void dispose() {
-    collection.dispose();
     _appModeNotifier.dispose();
+    // provided collection should be a new instance specifically created
+    // for the `ItemPickPage` widget, so it can be safely disposed here
+    widget.collection.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final collection = widget.collection;
     final liveFilter = collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     _appModeNotifier.value = widget.canRemoveFilters ? AppMode.pickUnfilteredMediaInternal : AppMode.pickFilteredMediaInternal;
     return ListenableProvider<ValueNotifier<AppMode>>.value(

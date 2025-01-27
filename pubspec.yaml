@@ -90,6 +90,7 @@ dependencies:
   flutter_markdown:
   flutter_staggered_animations:
   get_it:
+  gpx:
   http:
   intl:
   latlong2:

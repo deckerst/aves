@@ -50,6 +50,7 @@ class MapPage extends StatelessWidget {
   final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
+  final Set<List<LatLng>>? tracks;
 
   const MapPage({
     super.key,
@@ -58,6 +59,7 @@ class MapPage extends StatelessWidget {
     this.initialZoom,
     this.initialEntry,
     this.overlayEntry,
+    this.tracks,
   });
 
   @override
@@ -83,6 +85,7 @@ class MapPage extends StatelessWidget {
             initialZoom: initialZoom,
             initialEntry: initialEntry,
             overlayEntry: overlayEntry,
+            tracks: tracks,
           ),
         ),
       ),
@@ -96,6 +99,7 @@ class _Content extends StatefulWidget {
   final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
+  final Set<List<LatLng>>? tracks;
 
   const _Content({
     required this.collection,
@@ -103,6 +107,7 @@ class _Content extends StatefulWidget {
     this.initialZoom,
     this.initialEntry,
     this.overlayEntry,
+    this.tracks,
   });
 
   @override
@@ -266,6 +271,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   Widget _buildMap() {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final canPop = Navigator.maybeOf(context)?.canPop() == true;
     Widget child = MapTheme(
       interactive: true,
@@ -285,6 +291,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         dotLocationNotifier: _dotLocationNotifier,
         overlayOpacityNotifier: _overlayOpacityNotifier,
         overlayEntry: widget.overlayEntry,
+        tracks: widget.tracks,
         onMapTap: (_) => _toggleOverlay(),
         onMarkerTap: (location, entry) async {
           final index = regionCollection?.sortedEntries.indexOf(entry);
@@ -294,7 +301,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           await Future.delayed(const Duration(milliseconds: 500));
           context.read<HighlightInfo>().set(entry);
         },
-        onMarkerLongPress: _onMarkerLongPress,
+        onMarkerLongPress: appMode.canEditEntry ? _onMarkerLongPress : null,
       ),
     );
     if (settings.useTvLayout) {
@@ -422,6 +429,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void _goToViewer(AvesEntry? initialEntry) {
     if (initialEntry == null) return;
 
+    final appModeNotifier = context.read<ValueNotifier<AppMode>>();
     Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
@@ -429,9 +437,14 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           final viewerCollection = regionCollection?.copyWith(
             listenToSource: false,
           );
-          return EntryViewerPage(
-            collection: viewerCollection,
-            initialEntry: initialEntry,
+          // propagate app mode from the map page, as it could be locally overridden
+          // and differ from the real app mode above the `Navigator`
+          return ListenableProvider<ValueNotifier<AppMode>>.value(
+            value: appModeNotifier,
+            child: EntryViewerPage(
+              collection: viewerCollection,
+              initialEntry: initialEntry,
+            ),
           );
         },
       ),
@@ -531,7 +544,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         case MapClusterAction.editLocation:
           final regionEntries = regionCollection?.sortedEntries ?? [];
           final markerIndex = regionEntries.indexOf(markerEntry);
-          final location = await delegate.editLocationByMap(context, clusterEntries, markerLocation, openingCollection);
+          final location = await delegate.editLocationByMap(context, clusterEntries, markerLocation, openingCollection.copyWith());
           if (location != null) {
             if (markerIndex != -1) {
               _selectedIndexNotifier.value = markerIndex;

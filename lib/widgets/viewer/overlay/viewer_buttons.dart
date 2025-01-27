@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
-import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -232,6 +231,8 @@ class ViewerButtonRowContent extends StatefulWidget {
 class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
   final ValueNotifier<String?> _popupExpandedNotifier = ValueNotifier(null);
 
+  EntryActionDelegate get actionDelegate => widget.actionDelegate;
+
   AvesEntry get mainEntry => widget.mainEntry;
 
   AvesEntry get pageEntry => widget.pageEntry;
@@ -248,10 +249,13 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
 
   @override
   Widget build(BuildContext context) {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
+    final showOrientationActions = EntryActions.orientationActions.any((v) => actionDelegate.isVisible(appMode: appMode, action: v));
     final topLevelActions = widget.topLevelActions;
     final exportActions = widget.exportActions;
     final videoActions = widget.videoActions;
-    final hasOverflowMenu = pageEntry.canRotate || pageEntry.canFlip || topLevelActions.isNotEmpty || exportActions.isNotEmpty || videoActions.isNotEmpty;
+
+    final hasOverflowMenu = showOrientationActions || topLevelActions.isNotEmpty || exportActions.isNotEmpty || videoActions.isNotEmpty;
     final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return Selector<VideoConductor, AvesVideoController?>(
       selector: (context, vc) => vc.getController(pageEntry),
@@ -275,7 +279,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                           final exportInternalActions = exportActions.whereNot(EntryActions.exportExternal.contains).toList();
                           final exportExternalActions = exportActions.where(EntryActions.exportExternal.contains).toList();
                           return [
-                            if (pageEntry.canRotate || pageEntry.canFlip) _buildRotateAndFlipMenuItems(context),
+                            if (showOrientationActions) _buildRotateAndFlipMenuItems(context),
                             ...topLevelActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                             if (exportActions.isNotEmpty)
                               PopupMenuExpansionPanel<EntryAction>(
@@ -311,7 +315,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
                           await Future.delayed(animations.popUpAnimationDelay * timeDilation);
-                          widget.actionDelegate.onActionSelected(context, action);
+                          actionDelegate.onActionSelected(context, action);
                         },
                         onCanceled: () {
                           _popupExpandedNotifier.value = null;
@@ -340,14 +344,14 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
           mainEntry: mainEntry,
           pageEntry: pageEntry,
           videoController: videoController,
-          actionDelegate: widget.actionDelegate,
+          actionDelegate: actionDelegate,
         ),
       ),
     );
   }
 
   PopupMenuItem<EntryAction> _buildPopupMenuItem(BuildContext context, EntryAction action, AvesVideoController? videoController) {
-    var enabled = widget.actionDelegate.canApply(action);
+    var enabled = actionDelegate.canApply(action);
     switch (action) {
       case EntryAction.videoCaptureFrame:
         enabled &= videoController?.canCaptureFrameNotifier.value ?? false;
@@ -406,7 +410,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
             clipBehavior: Clip.antiAlias,
             child: PopupMenuItem(
               value: action,
-              enabled: widget.actionDelegate.canApply(action),
+              enabled: actionDelegate.canApply(action),
               child: Tooltip(
                 message: action.getText(context),
                 child: Center(child: action.getIcon()),

@@ -22,6 +22,7 @@ class EntryGoogleMap<T> extends StatefulWidget {
   final ValueNotifier<ll.LatLng?>? dotLocationNotifier;
   final ValueNotifier<double>? overlayOpacityNotifier;
   final MapOverlay? overlayEntry;
+  final Set<List<ll.LatLng>>? tracks;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final MarkerTapCallback<T>? onMarkerTap;
@@ -43,6 +44,7 @@ class EntryGoogleMap<T> extends StatefulWidget {
     required this.dotLocationNotifier,
     this.overlayOpacityNotifier,
     this.overlayEntry,
+    this.tracks,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -164,6 +166,8 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
 
         final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
         final overlayEntry = widget.overlayEntry;
+        final tracks = widget.tracks;
+        final trackColor = Theme.of(context).colorScheme.primary;
         return NullableValueListenableBuilder<ll.LatLng?>(
           valueListenable: widget.dotLocationNotifier,
           builder: (context, dotLocation, child) {
@@ -207,6 +211,16 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
                             position: _toServiceLatLng(dotLocation),
                             zIndex: 1,
                           )
+                      },
+                      polylines: {
+                        if (tracks != null)
+                          for (final track in tracks)
+                            Polyline(
+                              polylineId: PolylineId(track.hashCode.toString()),
+                              points: track.map(_toServiceLatLng).toList(),
+                              width: MapThemeData.trackWidth,
+                              color: trackColor,
+                            ),
                       },
                       // TODO TLAD [geotiff] may use ground overlay instead when this is fixed: https://github.com/flutter/flutter/issues/26479
                       tileOverlays: {
@@ -331,6 +345,7 @@ class _GoogleMap extends StatefulWidget {
   final MinMaxZoomPreference minMaxZoomPreference;
   final bool interactive;
   final Set<Marker> markers;
+  final Set<Polyline> polylines;
   final Set<TileOverlay> tileOverlays;
   final CameraPositionCallback? onCameraMove;
   final VoidCallback? onCameraIdle;
@@ -344,6 +359,7 @@ class _GoogleMap extends StatefulWidget {
     required this.minMaxZoomPreference,
     required this.interactive,
     required this.markers,
+    required this.polylines,
     required this.tileOverlays,
     required this.onCameraMove,
     required this.onCameraIdle,
@@ -414,6 +430,7 @@ class _GoogleMapState extends State<_GoogleMap> {
       myLocationEnabled: false,
       myLocationButtonEnabled: false,
       markers: widget.markers,
+      polylines: widget.polylines,
       tileOverlays: widget.tileOverlays,
       onCameraMove: widget.onCameraMove,
       onCameraIdle: widget.onCameraIdle,

@@ -23,6 +23,7 @@ enum LocationEditAction {
   chooseOnMap,
   copyItem,
   setCustom,
+  importGpx,
   remove,
 }
 

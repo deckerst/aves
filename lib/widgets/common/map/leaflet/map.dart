@@ -30,6 +30,7 @@ class EntryLeafletMap<T> extends StatefulWidget {
   final Size markerSize, dotMarkerSize;
   final ValueNotifier<double>? overlayOpacityNotifier;
   final MapOverlay? overlayEntry;
+  final Set<List<LatLng>>? tracks;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final MarkerTapCallback<T>? onMarkerTap;
@@ -52,6 +53,7 @@ class EntryLeafletMap<T> extends StatefulWidget {
     required this.dotMarkerSize,
     this.overlayOpacityNotifier,
     this.overlayEntry,
+    this.tracks,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -175,6 +177,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
       children: [
         _buildMapLayer(),
         if (widget.overlayEntry != null) _buildOverlayImageLayer(),
+        if (widget.tracks != null) _buildTracksLayer(),
         MarkerLayer(
           markers: markers,
           rotate: true,
@@ -240,6 +243,22 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
           ],
         );
       },
+    );
+  }
+
+  Widget _buildTracksLayer() {
+    final tracks = widget.tracks;
+    if (tracks == null) return const SizedBox();
+
+    final trackColor = Theme.of(context).colorScheme.primary;
+    return PolylineLayer(
+      polylines: tracks
+          .map((v) => Polyline(
+                points: v,
+                strokeWidth: MapThemeData.trackWidth.toDouble(),
+                color: trackColor,
+              ))
+          .toList(),
     );
   }
 

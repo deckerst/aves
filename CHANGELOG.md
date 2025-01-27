@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- edit location via GPX
+
 ### Changed
 
 - upgraded Flutter to stable v3.27.3

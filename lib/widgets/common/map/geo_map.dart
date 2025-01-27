@@ -42,6 +42,7 @@ class GeoMap extends StatefulWidget {
   final ValueNotifier<LatLng?>? dotLocationNotifier;
   final ValueNotifier<double>? overlayOpacityNotifier;
   final MapOverlay? overlayEntry;
+  final Set<List<LatLng>>? tracks;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final void Function(
@@ -69,6 +70,7 @@ class GeoMap extends StatefulWidget {
     this.dotLocationNotifier,
     this.overlayOpacityNotifier,
     this.overlayEntry,
+    this.tracks,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -179,6 +181,7 @@ class _GeoMapState extends State<GeoMap> {
                 dotLocationNotifier: widget.dotLocationNotifier,
                 overlayOpacityNotifier: widget.overlayOpacityNotifier,
                 overlayEntry: widget.overlayEntry,
+                tracks: widget.tracks,
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
@@ -210,6 +213,7 @@ class _GeoMapState extends State<GeoMap> {
                 ),
                 overlayOpacityNotifier: widget.overlayOpacityNotifier,
                 overlayEntry: widget.overlayEntry,
+                tracks: widget.tracks,
                 onUserZoomChange: widget.onUserZoomChange,
                 onMapTap: widget.onMapTap,
                 onMarkerTap: _onMarkerTap,
