@@ -9,6 +9,7 @@ extension ExtraLocationEditActionView on LocationEditAction {
       LocationEditAction.chooseOnMap => l10n.editEntryLocationDialogChooseOnMap,
       LocationEditAction.copyItem => l10n.editEntryDialogCopyFromItem,
       LocationEditAction.setCustom => l10n.editEntryLocationDialogSetCustom,
+      LocationEditAction.importGpx => l10n.editEntryLocationDialogImportGpx,
       LocationEditAction.remove => l10n.actionRemove,
     };
   }

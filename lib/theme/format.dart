@@ -11,11 +11,18 @@ String formatDateTime(DateTime date, String locale, bool use24hour) => [
     ].join(AText.separator);
 
 String formatFriendlyDuration(Duration d) {
-  final seconds = (d.inSeconds.remainder(Duration.secondsPerMinute)).toString().padLeft(2, '0');
-  if (d.inHours == 0) return '${d.inMinutes}:$seconds';
+  final isNegative = d.isNegative;
+  final sign = isNegative ? '-' : '';
+  d = d.abs();
+  final hours = d.inHours;
+  d -= Duration(hours: hours);
+  final minutes = d.inMinutes;
+  d -= Duration(minutes: minutes);
+  final seconds = d.inSeconds;
 
-  final minutes = (d.inMinutes.remainder(Duration.minutesPerHour)).toString().padLeft(2, '0');
-  return '${d.inHours}:$minutes:$seconds';
+  if (hours == 0) return '$sign$minutes:${seconds.toString().padLeft(2, '0')}';
+
+  return '$sign$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
 }
 
 String formatPreciseDuration(Duration d) {

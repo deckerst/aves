@@ -7,6 +7,7 @@ enum AppMode {
   pickFilteredMediaInternal,
   pickUnfilteredMediaInternal,
   pickFilterInternal,
+  previewMap,
   screenSaver,
   setWallpaper,
   slideshow,

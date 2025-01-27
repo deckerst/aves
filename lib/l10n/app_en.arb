@@ -508,8 +508,10 @@
   "editEntryLocationDialogTitle": "Location",
   "editEntryLocationDialogSetCustom": "Set custom location",
   "editEntryLocationDialogChooseOnMap": "Choose on map",
+  "editEntryLocationDialogImportGpx": "Import GPX",
   "editEntryLocationDialogLatitude": "Latitude",
   "editEntryLocationDialogLongitude": "Longitude",
+  "editEntryLocationDialogTimeShift": "Time shift",
 
   "locationPickerUseThisLocationButton": "Use this location",
 

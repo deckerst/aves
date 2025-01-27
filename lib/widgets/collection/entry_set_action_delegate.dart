@@ -563,10 +563,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (entries == null || entries.isEmpty) return;
 
     final collection = context.read<CollectionLens>();
-    final location = await selectLocation(context, entries, collection);
-    if (location == null) return;
+    final locationByEntry = await selectLocation(context, entries, collection);
+    if (locationByEntry == null) return;
 
-    await _edit(context, entries, (entry) => entry.editLocation(location));
+    await _edit(context, locationByEntry.keys.toSet(), (entry) => entry.editLocation(locationByEntry[entry]));
   }
 
   Future<LatLng?> editLocationByMap(BuildContext context, Set<AvesEntry> entries, LatLng clusterLocation, CollectionLens mapCollection) async {

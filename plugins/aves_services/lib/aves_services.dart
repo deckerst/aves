@@ -24,6 +24,7 @@ abstract class MobileServices {
     required ValueNotifier<LatLng?>? dotLocationNotifier,
     required ValueNotifier<double>? overlayOpacityNotifier,
     required MapOverlay? overlayEntry,
+    required Set<List<LatLng>>? tracks,
     required UserZoomChangeCallback? onUserZoomChange,
     required MapTapCallback? onMapTap,
     required MarkerTapCallback<T>? onMarkerTap,

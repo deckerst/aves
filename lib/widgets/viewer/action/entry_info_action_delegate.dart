@@ -135,10 +135,12 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   }
 
   Future<void> _editLocation(BuildContext context, AvesEntry targetEntry, CollectionLens? collection) async {
-    final location = await selectLocation(context, {targetEntry}, collection);
-    if (location == null) return;
+    final locationByEntry = await selectLocation(context, {targetEntry}, collection);
+    if (locationByEntry == null) return;
 
-    await edit(context, targetEntry, () => targetEntry.editLocation(location));
+    if (locationByEntry.containsKey(targetEntry)) {
+      await edit(context, targetEntry, () => targetEntry.editLocation(locationByEntry[targetEntry]));
+    }
   }
 
   Future<void> _editTitleDescription(BuildContext context, AvesEntry targetEntry) async {

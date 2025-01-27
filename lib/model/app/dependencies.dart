@@ -334,6 +334,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/fluttercommunity/get_it',
     ),
     Dependency(
+      name: 'GPX',
+      license: apache2,
+      sourceUrl: 'https://github.com/kb0/dart-gpx',
+    ),
+    Dependency(
       name: 'HTTP',
       license: bsd3,
       sourceUrl: 'https://github.com/dart-lang/http',

@@ -74,14 +74,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.delete:
         case EntryAction.rename:
         case EntryAction.move:
-          return targetEntry.canEdit;
+          return canWrite && targetEntry.canEdit;
         case EntryAction.copy:
           return canWrite;
         case EntryAction.rotateCCW:
         case EntryAction.rotateCW:
-          return targetEntry.canRotate;
+          return canWrite && targetEntry.canRotate;
         case EntryAction.flip:
-          return targetEntry.canFlip;
+          return canWrite && targetEntry.canFlip;
         case EntryAction.convert:
           return canWrite && !targetEntry.isPureVideo;
         case EntryAction.print:
