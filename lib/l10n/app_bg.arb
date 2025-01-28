@@ -1602,5 +1602,9 @@
   "tagEditorDiscardDialogMessage": "Искате ли да отхвърлите промените?",
   "@tagEditorDiscardDialogMessage": {},
   "filePickerUseThisFolder": "Използвай тази папка",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "chipActionDecompose": "Раздели",
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "Градуси, десетични минути",
+  "@coordinateFormatDdm": {}
 }

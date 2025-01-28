@@ -1408,5 +1408,9 @@
   "chipActionDecompose": "나누기",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "도, 십진 분",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogTimeShift": "시간 이동",
+  "@editEntryLocationDialogTimeShift": {},
+  "editEntryLocationDialogImportGpx": "GPX 가져오기",
+  "@editEntryLocationDialogImportGpx": {}
 }

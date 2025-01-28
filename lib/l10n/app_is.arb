@@ -1566,5 +1566,9 @@
   "chipActionGoToExplorerPage": "Sýna í skráastjóra",
   "@chipActionGoToExplorerPage": {},
   "explorerPageTitle": "Skráastjóri",
-  "@explorerPageTitle": {}
+  "@explorerPageTitle": {},
+  "editEntryLocationDialogImportGpx": "Flytja inn GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Tímahliðrun",
+  "@editEntryLocationDialogTimeShift": {}
 }

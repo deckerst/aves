@@ -1562,5 +1562,9 @@
   "newDynamicAlbumDialogTitle": "Új Dinamikus Album",
   "@newDynamicAlbumDialogTitle": {},
   "appExportDynamicAlbums": "Dinamikus albumok",
-  "@appExportDynamicAlbums": {}
+  "@appExportDynamicAlbums": {},
+  "chipActionDecompose": "Felosztás",
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {}
 }
