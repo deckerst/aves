@@ -1410,5 +1410,9 @@
   "chipActionDecompose": "Splitsen",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "GPX importeren",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Verschuiving van de tijd",
+  "@editEntryLocationDialogTimeShift": {}
 }

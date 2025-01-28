@@ -1408,5 +1408,9 @@
   "chipActionDecompose": "Dividi",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogTimeShift": "Scostamento tempo",
+  "@editEntryLocationDialogTimeShift": {},
+  "editEntryLocationDialogImportGpx": "Importa GPX",
+  "@editEntryLocationDialogImportGpx": {}
 }

@@ -1566,5 +1566,9 @@
   "chipActionDecompose": "Розділити",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "Імпорт GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Зсув часу",
+  "@editEntryLocationDialogTimeShift": {}
 }
