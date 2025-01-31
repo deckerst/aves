@@ -253,7 +253,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     final mappedGeoTiff = MappedGeoTiff(
       info: info,
       entry: targetEntry,
-      devicePixelRatio: View.of(context).devicePixelRatio,
+      devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
     );
     if (!mappedGeoTiff.canOverlay) return;
 

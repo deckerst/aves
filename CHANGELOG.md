@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- improved subsampling and filter quality strategy
 - upgraded Flutter to stable v3.27.3
 
 ### Fixed

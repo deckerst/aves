@@ -137,7 +137,7 @@ class _GeoMapState extends State<GeoMap> {
 
   @override
   Widget build(BuildContext context) {
-    final devicePixelRatio = View.of(context).devicePixelRatio;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     void onMarkerLongPress(GeoEntry<AvesEntry> geoEntry, LatLng tapLocation) => _onMarkerLongPress(
           geoEntry: geoEntry,
           tapLocation: tapLocation,
