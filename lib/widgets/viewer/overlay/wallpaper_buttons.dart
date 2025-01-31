@@ -160,7 +160,8 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
           );
         }
 
-        final sampleSize = ExtraAvesEntryImages.sampleSizeForScale(scale);
+        final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+        final sampleSize = ExtraAvesEntryImages.sampleSizeForScale(magnifierScale: scale, devicePixelRatio: devicePixelRatio);
         provider = entry.getRegion(sampleSize: sampleSize, region: storageRegion);
         displayRegion = Rect.fromLTWH(
           displayRegion.left / sampleSize,

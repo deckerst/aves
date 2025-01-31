@@ -106,7 +106,7 @@ class _VectorImageViewState extends State<VectorImageView> {
   Widget build(BuildContext context) {
     if (_displaySize == Size.zero) return widget.errorBuilder(context, 'Not sized', null);
 
-    final devicePixelRatio = View.of(context).devicePixelRatio;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     return ValueListenableBuilder<ViewState>(
       valueListenable: viewStateNotifier,
       builder: (context, viewState, child) {

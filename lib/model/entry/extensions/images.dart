@@ -67,13 +67,13 @@ extension ExtraAvesEntryImages on AvesEntry {
     return sizedThumbnailKey != null ? ThumbnailProvider(sizedThumbnailKey) : getThumbnail();
   }
 
-  // magic number used to derive sample size from scale
-  static const scaleFactor = 2.0;
-
-  static int sampleSizeForScale(double scale) {
+  static int sampleSizeForScale({
+    required double magnifierScale,
+    required double devicePixelRatio,
+  }) {
     var sample = 0;
-    if (0 < scale && scale < 1) {
-      sample = highestPowerOf2((1 / scale) / scaleFactor);
+    if (0 < magnifierScale && magnifierScale < 1) {
+      sample = highestPowerOf2(1 / (magnifierScale * devicePixelRatio));
     }
     return max<int>(1, sample);
   }
