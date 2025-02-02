@@ -37,14 +37,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  Future<void> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
+  // returns whether it completed the action (with or without failures)
+  Future<bool> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
     final destinationAlbumFilter = await pickAlbum(context: context, moveType: MoveType.export, storedAlbumsOnly: true);
-    if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return;
+    if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
 
     final destinationAlbum = destinationAlbumFilter.album;
-    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
+    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return false;
 
-    if (!await checkFreeSpaceForMove(context, targetEntries, destinationAlbum, MoveType.export)) return;
+    if (!await checkFreeSpaceForMove(context, targetEntries, destinationAlbum, MoveType.export)) return false;
 
     final transientMultiPageInfo = <MultiPageInfo>{};
     final selection = <AvesEntry>{};
@@ -89,7 +90,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         ),
         routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
       );
-      if (value == null) return;
+      if (value == null) return false;
       nameConflictStrategy = value;
     }
 
@@ -157,9 +158,11 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       },
     );
     transientMultiPageInfo.forEach((v) => v.dispose());
+    return true;
   }
 
-  Future<void> doQuickMove(
+  // returns whether it completed the action (with or without failures)
+  Future<bool> doQuickMove(
     BuildContext context, {
     required MoveType moveType,
     required Map<String, Set<AvesEntry>> entriesByDestination,
@@ -176,23 +179,23 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     final entries = entriesByDestination.values.expand((v) => v).toSet();
     final todoCount = entries.length;
-    if (todoCount == 0) return;
+    if (todoCount == 0) return true;
 
     final toBin = moveType == MoveType.toBin;
     final copy = moveType == MoveType.copy;
 
     // permission for modification at destinations
     final destinationAlbums = entriesByDestination.keys.toSet();
-    if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return;
+    if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return false;
 
     // permission for modification at origins
     final originAlbums = entries.map((e) => e.directory).nonNulls.toSet();
-    if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return;
+    if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return false;
 
     final hasEnoughSpaceByDestination = await Future.wait(destinationAlbums.map((destinationAlbum) {
       return checkFreeSpaceForMove(context, entries, destinationAlbum, moveType);
     }));
-    if (hasEnoughSpaceByDestination.any((v) => !v)) return;
+    if (hasEnoughSpaceByDestination.any((v) => !v)) return false;
 
     final l10n = context.l10n;
     var nameConflictStrategy = NameConflictStrategy.rename;
@@ -217,12 +220,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           ),
           routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
         );
-        if (value == null) return;
+        if (value == null) return false;
         nameConflictStrategy = value;
       }
     }
 
-    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return;
+    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -321,9 +324,11 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         }
       },
     );
+    return true;
   }
 
-  Future<void> doMove(
+  // returns whether it completed the action (with or without failures)
+  Future<bool> doMove(
     BuildContext context, {
     required MoveType moveType,
     required Set<AvesEntry> entries,
@@ -338,7 +343,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         message: l10n.binEntriesConfirmationDialogMessage(entries.length),
         confirmationButtonLabel: l10n.deleteButtonLabel,
       )) {
-        return;
+        return false;
       }
     }
 
@@ -348,7 +353,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       case MoveType.move:
       case MoveType.export:
         final destinationAlbumFilter = await pickAlbum(context: context, moveType: moveType, storedAlbumsOnly: true);
-        if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return;
+        if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
 
         final destinationAlbum = destinationAlbumFilter.album;
         settings.recentDestinationAlbums = settings.recentDestinationAlbums
@@ -365,7 +370,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         });
     }
 
-    await doQuickMove(
+    return await doQuickMove(
       context,
       moveType: moveType,
       entriesByDestination: entriesByDestination,
@@ -373,7 +378,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     );
   }
 
-  Future<void> rename(
+  // returns whether it completed the action (with or without failures)
+  Future<bool> rename(
     BuildContext context, {
     required Map<AvesEntry, String> entriesToNewName,
     required bool persist,
@@ -383,9 +389,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     final todoCount = entries.length;
     assert(todoCount > 0);
 
-    if (!await checkStoragePermission(context, entries)) return;
+    if (!await checkStoragePermission(context, entries)) return false;
 
-    if (!await _checkUndatedItems(context, entries)) return;
+    if (!await _checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -420,6 +426,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         }
       },
     );
+    return true;
   }
 
   Future<bool> _checkUndatedItems(BuildContext context, Set<AvesEntry> entries) async {

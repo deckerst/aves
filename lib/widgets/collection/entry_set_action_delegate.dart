@@ -292,26 +292,29 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       final details = vaults.getVault(entry.directory);
       return details?.useBin ?? settings.enableBin;
     });
-    await Future.forEach(
-        byBinUsage.entries,
-        (kv) => doDelete(
-              context: context,
-              entries: kv.value.toSet(),
-              enableBin: kv.key,
-            ));
+    var completed = true;
+    await Future.forEach(byBinUsage.entries, (kv) async {
+      completed &= await doDelete(
+        context: context,
+        entries: kv.value.toSet(),
+        enableBin: kv.key,
+      );
+    });
 
-    _browse(context);
+    if (completed) {
+      _browse(context);
+    }
   }
 
-  Future<void> doDelete({
+  // returns whether it completed the action (with or without failures)
+  Future<bool> doDelete({
     required BuildContext context,
     required Set<AvesEntry> entries,
     required bool enableBin,
   }) async {
     final pureTrash = entries.every((entry) => entry.trashed);
     if (enableBin && !pureTrash) {
-      await doMove(context, moveType: MoveType.toBin, entries: entries);
-      return;
+      return await doMove(context, moveType: MoveType.toBin, entries: entries);
     }
 
     final l10n = context.l10n;
@@ -325,10 +328,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       message: l10n.deleteEntriesConfirmationDialogMessage(todoCount),
       confirmationButtonLabel: l10n.deleteButtonLabel,
     )) {
-      return;
+      return false;
     }
 
-    if (!await checkStoragePermissionForAlbums(context, storageDirs, entries: entries)) return;
+    if (!await checkStoragePermissionForAlbums(context, storageDirs, entries: entries)) return false;
 
     source.pauseMonitoring();
     final opId = mediaEditService.newOpId;
@@ -354,13 +357,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         await storageService.deleteEmptyRegularDirectories(storageDirs);
       },
     );
+    return true;
   }
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
-    await doMove(context, moveType: moveType, entries: entries);
+    final completed = await doMove(context, moveType: moveType, entries: entries);
 
-    _browse(context);
+    if (completed) {
+      _browse(context);
+    }
   }
 
   Future<void> _rename(BuildContext context) async {
@@ -381,9 +387,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       return MapEntry(entry, '$newName${entry.extension}');
     });
     final entriesToNewName = Map.fromEntries(await Future.wait(namingFutures)).whereNotNullValue();
-    await rename(context, entriesToNewName: entriesToNewName, persist: true);
+    final completed = await rename(context, entriesToNewName: entriesToNewName, persist: true);
 
-    _browse(context);
+    if (completed) {
+      _browse(context);
+    }
   }
 
   Future<void> _convert(BuildContext context) async {
@@ -398,13 +406,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     switch (options.action) {
       case EntryConvertAction.convert:
-        await doExport(context, entries, options);
+        final completed = await doExport(context, entries, options);
+        if (completed) {
+          _browse(context);
+        }
       case EntryConvertAction.convertMotionPhotoToStillImage:
         final todoItems = entries.where((entry) => entry.isMotionPhoto).toSet();
         await _edit(context, todoItems, (entry) => entry.removeTrailerVideo());
     }
-
-    _browse(context);
   }
 
   Future<void> _toggleFavourite(BuildContext context) async {
