@@ -162,13 +162,21 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   Future<void> doQuickMove(
     BuildContext context, {
     required MoveType moveType,
-    required Map<String, Iterable<AvesEntry>> entriesByDestination,
+    required Map<String, Set<AvesEntry>> entriesByDestination,
     bool hideShowAction = false,
     VoidCallback? onSuccess,
   }) async {
+    if (moveType == MoveType.move) {
+      // skip moving entries to their directory
+      entriesByDestination.forEach((destinationAlbum, entries) {
+        entries.removeWhere((entry) => entry.directory == destinationAlbum);
+      });
+      entriesByDestination.removeWhere((_, entries) => entries.isEmpty);
+    }
+
     final entries = entriesByDestination.values.expand((v) => v).toSet();
     final todoCount = entries.length;
-    assert(todoCount > 0);
+    if (todoCount == 0) return;
 
     final toBin = moveType == MoveType.toBin;
     final copy = moveType == MoveType.copy;
