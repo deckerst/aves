@@ -1408,5 +1408,9 @@
   "chipActionDecompose": "Separar",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "Importar GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Salto temporal",
+  "@editEntryLocationDialogTimeShift": {}
 }

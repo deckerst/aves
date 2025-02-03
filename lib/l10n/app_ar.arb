@@ -1566,5 +1566,9 @@
   "chipActionDecompose": "فصل",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "استيراد GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "التحول الزمني",
+  "@editEntryLocationDialogTimeShift": {}
 }

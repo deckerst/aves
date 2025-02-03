@@ -1412,5 +1412,7 @@
   "editEntryLocationDialogTimeShift": "시간 이동",
   "@editEntryLocationDialogTimeShift": {},
   "editEntryLocationDialogImportGpx": "GPX 가져오기",
-  "@editEntryLocationDialogImportGpx": {}
+  "@editEntryLocationDialogImportGpx": {},
+  "removeEntryMetadataDialogAll": "모두",
+  "@removeEntryMetadataDialogAll": {}
 }

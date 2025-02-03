@@ -1408,5 +1408,9 @@
   "chipActionDecompose": "Pisah",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "Impor GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Pergeseran waktu",
+  "@editEntryLocationDialogTimeShift": {}
 }
