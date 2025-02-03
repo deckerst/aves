@@ -424,5 +424,7 @@
   "storageVolumeDescriptionFallbackPrimary": "Sisäinen tallennustila",
   "@storageVolumeDescriptionFallbackPrimary": {},
   "storageVolumeDescriptionFallbackNonPrimary": "SD-kortti",
-  "@storageVolumeDescriptionFallbackNonPrimary": {}
+  "@storageVolumeDescriptionFallbackNonPrimary": {},
+  "aboutCreditsSectionTitle": "Kiitettävää",
+  "@aboutCreditsSectionTitle": {}
 }

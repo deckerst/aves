@@ -1412,5 +1412,7 @@
   "editEntryLocationDialogTimeShift": "Décalage temporel",
   "@editEntryLocationDialogTimeShift": {},
   "editEntryLocationDialogImportGpx": "Importer un fichier GPX",
-  "@editEntryLocationDialogImportGpx": {}
+  "@editEntryLocationDialogImportGpx": {},
+  "removeEntryMetadataDialogAll": "Tout",
+  "@removeEntryMetadataDialogAll": {}
 }
