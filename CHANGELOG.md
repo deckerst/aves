@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- edit location via GPX
+- Metadata: edit location via GPX
+- Metadata: toggle for all types in removal dialog
 
 ### Changed
 

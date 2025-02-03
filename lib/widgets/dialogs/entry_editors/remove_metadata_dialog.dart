@@ -29,7 +29,7 @@ class RemoveEntryMetadataDialog extends StatefulWidget {
 }
 
 class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
-  late final List<MetadataType> _mainOptions, _moreOptions;
+  late final List<MetadataType> _allOptions, _mainOptions, _moreOptions;
   final Set<MetadataType> _types = {};
   bool _showMore = false;
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
@@ -37,10 +37,11 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
   @override
   void initState() {
     super.initState();
-    final byMain = groupBy([
+    _allOptions = [
       ...MetadataTypes.common,
       if (widget.showJpegTypes) ...MetadataTypes.jpeg,
-    ], MetadataTypes.main.contains);
+    ];
+    final byMain = groupBy(_allOptions, MetadataTypes.main.contains);
     _mainOptions = (byMain[true] ?? [])..sort(_compareTypeText);
     _moreOptions = (byMain[false] ?? [])..sort(_compareTypeText);
     _validate();
@@ -59,6 +60,17 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
     return AvesDialog(
       title: l10n.removeEntryMetadataDialogTitle,
       scrollableContent: [
+        SwitchListTile(
+          value: _types.length == _allOptions.length,
+          onChanged: (selected) {
+            selected ? _types.addAll(_allOptions) : _types.clear();
+            setState(_validate);
+          },
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(l10n.removeEntryMetadataDialogAll),
+          ),
+        ),
         ..._mainOptions.map(_toTile),
         if (_moreOptions.isNotEmpty)
           Padding(
@@ -131,8 +143,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
       value: _types.contains(type),
       onChanged: (selected) {
         selected ? _types.add(type) : _types.remove(type);
-        _validate();
-        setState(() {});
+        setState(_validate);
       },
       title: Align(
         alignment: Alignment.centerLeft,
