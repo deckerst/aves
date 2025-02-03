@@ -10,9 +10,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- improved subsampling and filter quality strategy
-- ignore moving an item to its current directory
-- keep selection when action on several items is interrupted before processing
+- Viewer: improved subsampling and filter quality strategy
+- Collection: ignore moving an item to its current directory
+- Collection: keep selection when action on several items is interrupted before processing
+- Collection: preserve favourite status when converting items
 - upgraded Flutter to stable v3.27.3
 
 ### Fixed

@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
@@ -107,13 +109,28 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       ),
       itemCount: selectionCount,
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final exportedOps = successOps.where((e) => !e.skipped).toSet();
-        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).nonNulls.toSet();
+        final successOps = processed.where((op) => op.success).toSet();
+        final exportedOps = successOps.where((op) => !op.skipped && op.newFields['uri'] != null).toSet();
+        final newUris = exportedOps.map((op) => op.newFields['uri'] as String).toSet();
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
+        // check source favourite status
+        final favouriteSourceUris = selection.where((entry) => entry.isFavourite).map((entry) => entry.uri).toSet();
+        final favouriteNewUris = <String>{};
+        exportedOps.forEach((op) {
+          final sourceUri = op.uri;
+          if (favouriteSourceUris.contains(sourceUri)) {
+            final newUri = op.newFields['uri'] as String;
+            favouriteNewUris.add(newUri);
+          }
+        });
+
         source.resumeMonitoring();
-        unawaited(source.refreshUris(newUris));
+        unawaited(source.refreshUris(newUris).then((_) {
+          // transfer favourite status on exports
+          final newFavouriteEntries = source.allEntries.where((entry) => favouriteNewUris.contains(entry.uri)).toSet();
+          favourites.add(newFavouriteEntries);
+        }));
 
         // get navigator beforehand because
         // local context may be deactivated when action is triggered after navigation
@@ -241,11 +258,11 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       itemCount: todoCount,
       onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((v) => v.success).toSet();
+        final successOps = processed.where((op) => op.success).toSet();
 
         // move
-        final movedOps = successOps.where((v) => !v.skipped && !v.deleted).toSet();
-        final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).nonNulls.toSet();
+        final movedOps = successOps.where((op) => !op.skipped && !op.deleted).toSet();
+        final movedEntries = movedOps.map((op) => op.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).nonNulls.toSet();
         await source.updateAfterMove(
           todoEntries: entries,
           moveType: moveType,
@@ -254,8 +271,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         );
 
         // delete (when trying to move to bin obsolete entries)
-        final deletedOps = successOps.where((v) => v.deleted).toSet();
-        final deletedUris = deletedOps.map((event) => event.uri).toSet();
+        final deletedOps = successOps.where((op) => op.deleted).toSet();
+        final deletedUris = deletedOps.map((op) => op.uri).toSet();
         await source.removeEntries(deletedUris, includeTrash: true);
 
         source.resumeMonitoring();
@@ -405,8 +422,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       itemCount: todoCount,
       onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final movedOps = successOps.where((e) => !e.skipped).toSet();
+        final successOps = processed.where((op) => op.success).toSet();
+        final movedOps = successOps.where((op) => !op.skipped).toSet();
         await source.updateAfterRename(
           todoEntries: entries,
           movedOps: movedOps,
@@ -466,7 +483,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     Set<String> destinationAlbums,
     Set<MoveOpEvent> movedOps,
   ) async {
-    final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+    final newUris = movedOps.map((op) => op.newFields['uri'] as String?).toSet();
     bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
 
     final collection = context.read<CollectionLens?>();

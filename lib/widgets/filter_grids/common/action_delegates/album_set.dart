@@ -382,9 +382,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       itemCount: todoCount,
       onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((event) => event.success);
-        final deletedOps = successOps.where((e) => !e.skipped).toSet();
-        final deletedUris = deletedOps.map((event) => event.uri).toSet();
+        final successOps = processed.where((op) => op.success);
+        final deletedOps = successOps.where((op) => !op.skipped).toSet();
+        final deletedUris = deletedOps.map((op) => op.uri).toSet();
         await source.removeEntries(deletedUris, includeTrash: true);
         browse(context);
         source.resumeMonitoring();
@@ -547,8 +547,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       itemCount: todoCount,
       onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final movedOps = successOps.where((e) => !e.skipped).toSet();
+        final successOps = processed.where((op) => op.success).toSet();
+        final movedOps = successOps.where((op) => !op.skipped).toSet();
         await source.renameStoredAlbum(album, destinationAlbum, todoEntries, movedOps);
         browse(context);
         source.resumeMonitoring();
