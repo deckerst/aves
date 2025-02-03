@@ -518,6 +518,7 @@
   "editEntryRatingDialogTitle": "Rating",
 
   "removeEntryMetadataDialogTitle": "Metadata Removal",
+  "removeEntryMetadataDialogAll": "All",
   "removeEntryMetadataDialogMore": "More",
 
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?",
