@@ -124,6 +124,7 @@ class Contributors {
     Contributor('Grooty12', 'Rasmus@rosendahl-kaa.name'),
     Contributor('Victor M', 'victormorita@tuta.io'),
     Contributor('cat', 'catsnote@proton.me'),
+    Contributor('Bruno Fragoso', 'darth_signa@hotmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
