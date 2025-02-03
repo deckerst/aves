@@ -341,9 +341,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       itemCount: todoCount,
       onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final deletedOps = successOps.where((e) => !e.skipped).toSet();
-        final deletedUris = deletedOps.map((event) => event.uri).toSet();
+        final successOps = processed.where((op) => op.success).toSet();
+        final deletedOps = successOps.where((op) => !op.skipped).toSet();
+        final deletedUris = deletedOps.map((op) => op.uri).toSet();
         await source.removeEntries(deletedUris, includeTrash: true);
         source.resumeMonitoring();
 
@@ -460,11 +460,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       itemCount: todoCount,
       onCancel: () => cancelled = true,
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final editedOps = successOps.where((e) => !e.skipped).toSet();
+        final successOps = processed.where((op) => op.success).toSet();
+        final editedOps = successOps.where((op) => !op.skipped).toSet();
         source.resumeMonitoring();
 
-        unawaited(source.refreshUris(editedOps.map((v) => v.uri).toSet()).then((_) {
+        unawaited(source.refreshUris(editedOps.map((op) => op.uri).toSet()).then((_) {
           // invalidate filters derived from values before edition
           // this invalidation must happen after the source is refreshed,
           // otherwise filter chips may eagerly rebuild in between with the old state
