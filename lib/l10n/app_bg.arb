@@ -1606,5 +1606,9 @@
   "chipActionDecompose": "Раздели",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "Градуси, десетични минути",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "Импорт GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Изместване на времето",
+  "@editEntryLocationDialogTimeShift": {}
 }
