@@ -1610,5 +1610,7 @@
   "editEntryLocationDialogTimeShift": "Ajanihe",
   "@editEntryLocationDialogTimeShift": {},
   "editEntryLocationDialogImportGpx": "Impordi GPX-fail",
-  "@editEntryLocationDialogImportGpx": {}
+  "@editEntryLocationDialogImportGpx": {},
+  "removeEntryMetadataDialogAll": "Kõik",
+  "@removeEntryMetadataDialogAll": {}
 }
