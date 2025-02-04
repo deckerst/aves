@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.net.toUri
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
@@ -127,7 +128,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         if (uri == null) {
             result.error("getBitmapDecoderInfo-args", "missing arguments", null)
             return
@@ -156,7 +157,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
     private fun getContentResolverMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         if (mimeType == null || uri == null) {
             result.error("getContentResolverMetadata-args", "missing arguments", null)
             return
@@ -212,7 +213,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
     private fun getExifInterfaceMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getExifInterfaceMetadata-args", "missing arguments", null)
@@ -239,7 +240,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMediaMetadataRetrieverMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         if (uri == null) {
             result.error("getMediaMetadataRetrieverMetadata-args", "missing arguments", null)
             return
@@ -264,7 +265,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
     private fun getMetadataExtractorSummary(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getMetadataExtractorSummary-args", "missing arguments", null)
@@ -308,7 +309,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
     private fun getMp4ParserDump(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         if (mimeType == null || uri == null) {
             result.error("getMp4ParserDump-args", "missing arguments", null)
             return
@@ -338,7 +339,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
     private fun getPixyMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         if (mimeType == null || uri == null) {
             result.error("getPixyMetadata-args", "missing arguments", null)
             return
@@ -359,7 +360,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getTiffStructure(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         if (uri == null) {
             result.error("getTiffStructure-args", "missing arguments", null)
             return
