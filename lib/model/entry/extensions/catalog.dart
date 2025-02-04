@@ -31,8 +31,8 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       catalogMetadata = CatalogMetadata(id: id);
     } else {
       // pre-processing
-      if ((isVideo && (!isSized || durationMillis == 0)) || mimeType == MimeTypes.avif) {
-        // exotic video that is not sized during loading
+      if (isVideo || mimeType == MimeTypes.avif) {
+        // on initial loading, original source may report incorrect size, rotation or duration
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
         // check size as the video interpreter may fail on some AVIF stills
         final width = fields[EntryFields.width];
