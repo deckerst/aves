@@ -55,19 +55,19 @@ class SourceEntry {
     }
 
     constructor(map: FieldMap) {
-        origin = map["origin"] as Int
-        uri = (map["uri"] as String).toUri()
-        path = map["path"] as String?
-        sourceMimeType = map["sourceMimeType"] as String
-        width = map["width"] as Int?
-        height = map["height"] as Int?
-        sourceRotationDegrees = map["sourceRotationDegrees"] as Int?
-        sizeBytes = toLong(map["sizeBytes"])
-        title = map["title"] as String?
-        dateAddedSecs = toLong(map["dateAddedSecs"])
-        dateModifiedSecs = toLong(map["dateModifiedSecs"])
-        sourceDateTakenMillis = toLong(map["sourceDateTakenMillis"])
-        durationMillis = toLong(map["durationMillis"])
+        origin = map[EntryFields.ORIGIN] as Int
+        uri = (map[EntryFields.URI] as String).toUri()
+        path = map[EntryFields.PATH] as String?
+        sourceMimeType = map[EntryFields.SOURCE_MIME_TYPE] as String
+        width = map[EntryFields.WIDTH] as Int?
+        height = map[EntryFields.HEIGHT] as Int?
+        sourceRotationDegrees = map[EntryFields.SOURCE_ROTATION_DEGREES] as Int?
+        sizeBytes = toLong(map[EntryFields.SIZE_BYTES])
+        title = map[EntryFields.TITLE] as String?
+        dateAddedSecs = toLong(map[EntryFields.DATE_ADDED_SECS])
+        dateModifiedSecs = toLong(map[EntryFields.DATE_MODIFIED_SECS])
+        sourceDateTakenMillis = toLong(map[EntryFields.SOURCE_DATE_TAKEN_MILLIS])
+        durationMillis = toLong(map[EntryFields.DURATION_MILLIS])
     }
 
     fun initFromFile(path: String, title: String, sizeBytes: Long, dateModifiedSecs: Long) {
@@ -79,21 +79,21 @@ class SourceEntry {
 
     fun toMap(): FieldMap {
         return hashMapOf(
-            "origin" to origin,
-            "uri" to uri.toString(),
-            "path" to path,
-            "sourceMimeType" to sourceMimeType,
-            "width" to width,
-            "height" to height,
-            "sourceRotationDegrees" to (sourceRotationDegrees ?: 0),
-            "sizeBytes" to sizeBytes,
-            "title" to title,
-            "dateAddedSecs" to dateAddedSecs,
-            "dateModifiedSecs" to dateModifiedSecs,
-            "sourceDateTakenMillis" to sourceDateTakenMillis,
-            "durationMillis" to durationMillis,
+            EntryFields.ORIGIN to origin,
+            EntryFields.URI to uri.toString(),
+            EntryFields.PATH to path,
+            EntryFields.SOURCE_MIME_TYPE to sourceMimeType,
+            EntryFields.WIDTH to width,
+            EntryFields.HEIGHT to height,
+            EntryFields.SOURCE_ROTATION_DEGREES to (sourceRotationDegrees ?: 0),
+            EntryFields.SIZE_BYTES to sizeBytes,
+            EntryFields.TITLE to title,
+            EntryFields.DATE_ADDED_SECS to dateAddedSecs,
+            EntryFields.DATE_MODIFIED_SECS to dateModifiedSecs,
+            EntryFields.SOURCE_DATE_TAKEN_MILLIS to sourceDateTakenMillis,
+            EntryFields.DURATION_MILLIS to durationMillis,
             // only for map export
-            "contentId" to contentId,
+            EntryFields.CONTENT_ID to contentId,
         )
     }
 

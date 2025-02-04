@@ -18,6 +18,7 @@ import deckers.thibault.aves.metadata.xmp.GoogleDeviceContainer
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.xmp.XMPPropName
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -329,8 +330,8 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             FileProvider.getUriForFile(context, authority, targetFile)
         }
         val resultFields: FieldMap = hashMapOf(
-            "uri" to uri.toString(),
-            "mimeType" to mimeType,
+            EntryFields.URI to uri.toString(),
+            EntryFields.MIME_TYPE to mimeType,
         )
         if (isImage(mimeType) || isVideo(mimeType)) {
             val provider = getProvider(context, uri)
