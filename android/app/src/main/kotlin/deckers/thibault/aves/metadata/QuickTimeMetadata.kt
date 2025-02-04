@@ -3,7 +3,6 @@ package deckers.thibault.aves.metadata
 import deckers.thibault.aves.utils.toHex
 import java.math.BigInteger
 import java.nio.charset.Charset
-import java.util.*
 
 class QuickTimeMetadataBlock(val type: String, val value: String, val language: String)
 

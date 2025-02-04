@@ -63,6 +63,7 @@ import java.util.Date
 import java.util.TimeZone
 import kotlin.math.absoluteValue
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
+import androidx.core.net.toUri
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
@@ -360,7 +361,7 @@ abstract class ImageProvider {
             )
 
             val newFields = scanNewPath(activity, targetPath, exportMimeType)
-            val targetUri = Uri.parse(newFields["uri"] as String)
+            val targetUri = (newFields["uri"] as String).toUri()
             if (writeMetadata) {
                 copyMetadata(
                     context = activity,

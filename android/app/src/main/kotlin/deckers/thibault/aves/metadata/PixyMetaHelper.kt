@@ -26,7 +26,6 @@ import pixy.meta.string.XMLUtils
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.*
 
 object PixyMetaHelper {
     fun describe(input: InputStream): HashMap<String, String> {

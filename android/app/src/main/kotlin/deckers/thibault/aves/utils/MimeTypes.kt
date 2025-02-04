@@ -1,8 +1,8 @@
 package deckers.thibault.aves.utils
 
 import android.webkit.MimeTypeMap
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import deckers.thibault.aves.decoder.MultiPageImage
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object MimeTypes {
     const val ANY = "*/*"

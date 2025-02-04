@@ -1,10 +1,10 @@
 package deckers.thibault.aves.channel.streams
 
 import android.app.Activity
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
@@ -141,7 +141,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         // assume same provider for all entries
         val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(activity, it) }
+        val provider = (firstEntry["uri"] as String?)?.toUri()?.let { getProvider(activity, it) }
         if (provider == null) {
             error("convert-provider", "failed to find provider for entry=$firstEntry", null)
             return

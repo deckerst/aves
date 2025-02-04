@@ -1,7 +1,6 @@
 package deckers.thibault.aves.metadata
 
 import android.util.Log
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.drew.lang.Rational
 import com.drew.metadata.Directory
 import com.drew.metadata.exif.ExifDirectoryBase
@@ -19,6 +18,7 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.roundToLong
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object ExifInterfaceHelper {
     private val LOG_TAG = LogUtils.createTag<ExifInterfaceHelper>()

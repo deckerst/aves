@@ -1,6 +1,10 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.session.PlaybackState
 import android.net.Uri
