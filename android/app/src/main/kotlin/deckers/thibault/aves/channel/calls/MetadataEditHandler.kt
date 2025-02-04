@@ -1,7 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.ContextWrapper
-import android.net.Uri
+import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.Mp4TooLargeException
 import deckers.thibault.aves.model.ExifOrientationOp
@@ -54,7 +54,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
         if (uri == null || path == null || mimeType == null) {
@@ -82,7 +82,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
         if (uri == null || path == null || mimeType == null) {
@@ -109,7 +109,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
         if (uri == null || path == null || mimeType == null) {
@@ -134,7 +134,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
         if (uri == null || path == null || mimeType == null) {
@@ -160,7 +160,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
+        val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
         if (uri == null || path == null || mimeType == null) {

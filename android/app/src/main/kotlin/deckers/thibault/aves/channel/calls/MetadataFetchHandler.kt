@@ -107,6 +107,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
+import androidx.core.net.toUri
 
 class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -131,7 +132,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getAllMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getAllMetadata-args", "missing arguments", null)
@@ -516,7 +517,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // - XMP / MicrosoftPhoto:Rating
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val path = call.argument<String>("path")
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
@@ -869,7 +870,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getOverlayMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val fields = call.argument<List<String>>("fields")
         if (mimeType == null || uri == null || fields == null) {
@@ -1000,7 +1001,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getGeoTiffInfo(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getGeoTiffInfo-args", "missing arguments", null)
@@ -1041,7 +1042,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getMultiPageInfo(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val isMotionPhoto = call.argument<Boolean>("isMotionPhoto")
         if (mimeType == null || uri == null || sizeBytes == null || isMotionPhoto == null) {
@@ -1068,7 +1069,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getPanoramaInfo(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getPanoramaInfo-args", "missing arguments", null)
@@ -1120,7 +1121,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getIptc(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         if (mimeType == null || uri == null) {
             result.error("getIptc-args", "missing arguments", null)
             return
@@ -1146,7 +1147,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // return an empty list if there is no XMP
     private fun getXmp(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getXmp-args", "missing arguments", null)
@@ -1218,7 +1219,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getContentPropValue(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val prop = call.argument<String>("prop")
         if (mimeType == null || uri == null || prop == null) {
             result.error("getContentPropValue-args", "missing arguments", null)
@@ -1235,7 +1236,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getDate(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val field = call.argument<String>("field")
         if (mimeType == null || uri == null || field == null) {
@@ -1304,7 +1305,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     private fun getFields(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val fields = call.argument<List<String>>("fields")
         if (mimeType == null || uri == null || fields == null) {

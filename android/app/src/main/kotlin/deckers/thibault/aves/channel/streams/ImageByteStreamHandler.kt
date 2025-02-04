@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
@@ -80,7 +81,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
 
         val mimeType = arguments["mimeType"] as String?
-        val uri = (arguments["uri"] as String?)?.let { Uri.parse(it) }
+        val uri = (arguments["uri"] as String?)?.toUri()
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean

@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.net.toUri
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
@@ -71,7 +72,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private fun requestMediaFileAccess() {
-        val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) Uri.parse(it) else null }
+        val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) it.toUri() else null }
         val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { if (it is String) it else null }
         if (uris.isNullOrEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
             error("requestMediaFileAccess-args", "missing arguments", null)
@@ -190,7 +191,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
 
         val intent = Intent(Intent.ACTION_EDIT)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .setDataAndType(AppAdapterHandler.getShareableUri(activity, Uri.parse(uri)), mimeType)
+            .setDataAndType(AppAdapterHandler.getShareableUri(activity, uri.toUri()), mimeType)
 
         if (intent.resolveActivity(activity.packageManager) == null) {
             error("edit-resolve", "cannot resolve activity for this intent for uri=$uri mimeType=$mimeType", null)
