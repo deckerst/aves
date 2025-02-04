@@ -598,8 +598,8 @@ class MediaStoreImageProvider : ImageProvider() {
         }
         return if (toBin) {
             hashMapOf(
-                "trashed" to true,
-                "trashPath" to targetPath,
+                EntryFields.TRASHED to true,
+                EntryFields.TRASH_PATH to targetPath,
             )
         } else {
             scanNewPath(activity, targetPath, mimeType)
@@ -912,13 +912,13 @@ class MediaStoreImageProvider : ImageProvider() {
                     val cursor = context.contentResolver.query(uri, projection, null, null, null)
                     if (cursor != null && cursor.moveToFirst()) {
                         val newFields = hashMapOf<String, Any?>(
-                            "origin" to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
-                            "uri" to uri.toString(),
-                            "contentId" to uri.tryParseId(),
-                            "path" to path,
+                            EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
+                            EntryFields.URI to uri.toString(),
+                            EntryFields.CONTENT_ID to uri.tryParseId(),
+                            EntryFields.PATH to path,
                         )
-                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields["dateAddedSecs"] = cursor.getInt(it) }
-                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
+                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields[EntryFields.DATE_ADDED_SECS] = cursor.getInt(it) }
+                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields[EntryFields.DATE_MODIFIED_SECS] = cursor.getInt(it) }
                         cursor.close()
                         return newFields
                     }
