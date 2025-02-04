@@ -1,9 +1,10 @@
 package deckers.thibault.aves.model
 
 import android.net.Uri
+import androidx.core.net.toUri
 
 class AvesEntry(map: FieldMap) {
-    val uri: Uri = Uri.parse(map["uri"] as String) // content or file URI
+    val uri: Uri = (map["uri"] as String).toUri() // content or file URI
     val path = map["path"] as String? // best effort to get local path
     val pageId = map["pageId"] as Int? // null means the main entry
     val mimeType = map["mimeType"] as String

@@ -24,6 +24,7 @@ import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodChannel
+import androidx.core.net.toUri
 
 class ThumbnailFetcher internal constructor(
     private val context: Context,
@@ -39,7 +40,7 @@ class ThumbnailFetcher internal constructor(
     private val quality: Int,
     private val result: MethodChannel.Result,
 ) {
-    private val uri: Uri = Uri.parse(uri)
+    private val uri: Uri = uri.toUri()
     private val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
     private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
     private val svgFetch = mimeType == SVG

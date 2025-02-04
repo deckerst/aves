@@ -69,6 +69,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
+import androidx.core.net.toUri
 
 // `FlutterFragmentActivity` because of local auth plugin
 open class MainActivity : FlutterFragmentActivity() {
@@ -442,7 +443,7 @@ open class MainActivity : FlutterFragmentActivity() {
             return
         }
 
-        val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this@MainActivity, Uri.parse(uriString)) }
+        val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this@MainActivity, uriString.toUri()) }
         val intent = Intent().apply {
             val firstUri = toUri(pickedUris.first())
             if (pickedUris.size == 1) {

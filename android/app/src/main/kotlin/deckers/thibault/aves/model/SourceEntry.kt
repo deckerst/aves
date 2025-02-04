@@ -29,6 +29,7 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
+import androidx.core.net.toUri
 
 class SourceEntry {
     private val origin: Int
@@ -55,7 +56,7 @@ class SourceEntry {
 
     constructor(map: FieldMap) {
         origin = map["origin"] as Int
-        uri = Uri.parse(map["uri"] as String)
+        uri = (map["uri"] as String).toUri()
         path = map["path"] as String?
         sourceMimeType = map["sourceMimeType"] as String
         width = map["width"] as Int?

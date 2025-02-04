@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +15,7 @@ import android.os.Looper
 import android.util.Log
 import android.util.SizeF
 import android.widget.RemoteViews
+import androidx.core.net.toUri
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.DeviceHandler
@@ -260,7 +260,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
     }
 
     private fun buildUpdateIntent(context: Context, widgetId: Int): PendingIntent {
-        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, Uri.parse("widget://$widgetId"), context, HomeWidgetProvider::class.java)
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, "widget://$widgetId".toUri(), context, HomeWidgetProvider::class.java)
             .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(widgetId))
 
         return PendingIntent.getBroadcast(
@@ -277,7 +277,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
 
     private fun buildOpenAppIntent(context: Context, widgetId: Int): PendingIntent {
         // set a unique URI to prevent the intent (and its extras) from being shared by different widgets
-        val intent = Intent(MainActivity.INTENT_ACTION_WIDGET_OPEN, Uri.parse("widget://$widgetId"), context, MainActivity::class.java)
+        val intent = Intent(MainActivity.INTENT_ACTION_WIDGET_OPEN, "widget://$widgetId".toUri(), context, MainActivity::class.java)
             .putExtra(MainActivity.EXTRA_KEY_WIDGET_ID, widgetId)
 
         return PendingIntent.getActivity(

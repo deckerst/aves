@@ -6,12 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.location.Geocoder
-import android.net.Uri
 import android.os.Build
 import android.os.LocaleList
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.net.toUri
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
@@ -129,7 +129,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, Uri.parse("package:${context.packageName}"))
+        val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, "package:${context.packageName}".toUri())
         context.startActivity(intent)
         result.success(true)
     }

@@ -29,6 +29,8 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
 import java.util.regex.Pattern
+import androidx.core.net.toUri
+import androidx.core.text.isDigitsOnly
 
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
@@ -228,7 +230,7 @@ object StorageUtils {
                 // Device has emulated storage; external storage paths should have userId burned into them.
                 // /storage/emulated/[0,1,2,...]/
                 val path = getPrimaryVolumePath(context)
-                val rawUserId = path.split(File.separator).lastOrNull(String::isNotEmpty)?.takeIf { TextUtils.isDigitsOnly(it) } ?: ""
+                val rawUserId = path.split(File.separator).lastOrNull(String::isNotEmpty)?.takeIf { it.isDigitsOnly() } ?: ""
                 if (rawUserId.isEmpty()) {
                     paths.add(rawEmulatedStorageTarget)
                 } else {
@@ -637,7 +639,7 @@ object StorageUtils {
 
     // strip user info, if any
     // e.g. `content://0@media/...`
-    private fun stripMediaUriUserInfo(uri: Uri) = Uri.parse(uri.toString().replaceFirst("${uri.userInfo}@", ""))
+    private fun stripMediaUriUserInfo(uri: Uri) = uri.toString().replaceFirst("${uri.userInfo}@", "").toUri()
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         val effectiveUri = getOriginalUri(context, uri)

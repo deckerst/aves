@@ -19,6 +19,7 @@ import androidx.core.content.FileProvider
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
@@ -192,7 +193,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun copyToClipboard(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val label = call.argument<String>("label")
         if (uri == null) {
             result.error("copyToClipboard-args", "missing arguments", null)
@@ -219,7 +220,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
     private fun open(call: MethodCall, result: MethodChannel.Result) {
         val title = call.argument<String>("title")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val mimeType = call.argument<String>("mimeType")
         val forceChooser = call.argument<Boolean>("forceChooser")
         if (uri == null || forceChooser == null) {
@@ -236,7 +237,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun openMap(call: MethodCall, result: MethodChannel.Result) {
-        val geoUri = call.argument<String>("geoUri")?.let { Uri.parse(it) }
+        val geoUri = call.argument<String>("geoUri")?.toUri()
         if (geoUri == null) {
             result.error("openMap-args", "missing arguments", null)
             return
@@ -250,7 +251,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
     private fun setAs(call: MethodCall, result: MethodChannel.Result) {
         val title = call.argument<String>("title")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val mimeType = call.argument<String>("mimeType")
         if (uri == null) {
             result.error("setAs-args", "missing arguments", null)
@@ -273,7 +274,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val uriList = ArrayList(urisByMimeType.values.flatten().mapNotNull { getShareableUri(context, Uri.parse(it)) })
+        val uriList = ArrayList(urisByMimeType.values.flatten().mapNotNull { getShareableUri(context, it.toUri()) })
         val mimeTypes = urisByMimeType.keys.toTypedArray()
 
         // simplify share intent for a single item, as some apps can handle one item but not more
@@ -366,8 +367,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         // route dependent arguments
         val filters = call.argument<List<String>>("filters")
         val explorerPath = call.argument<String>("path")
-        val viewUri = call.argument<String>("viewUri")?.let { Uri.parse(it) }
-        val geoUri = call.argument<String>("geoUri")?.let { Uri.parse(it) }
+        val viewUri = call.argument<String>("viewUri")?.toUri()
+        val geoUri = call.argument<String>("geoUri")?.toUri()
 
         if (label == null || route == null) {
             result.error("pin-args", "missing arguments", null)
