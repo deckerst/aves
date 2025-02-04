@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
@@ -134,7 +135,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
               onPressed: () {
                 if (navigator != null) {
                   final source = _collection.source;
-                  final newUri = newFields['uri'] as String?;
+                  final newUri = newFields[EntryFields.uri] as String?;
                   navigator.pushAndRemoveUntil(
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),

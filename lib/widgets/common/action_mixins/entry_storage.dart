@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
@@ -110,8 +111,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       itemCount: selectionCount,
       onDone: (processed) async {
         final successOps = processed.where((op) => op.success).toSet();
-        final exportedOps = successOps.where((op) => !op.skipped && op.newFields['uri'] != null).toSet();
-        final newUris = exportedOps.map((op) => op.newFields['uri'] as String).toSet();
+        final exportedOps = successOps.where((op) => !op.skipped && op.newFields[EntryFields.uri] != null).toSet();
+        final newUris = exportedOps.map((op) => op.newFields[EntryFields.uri] as String).toSet();
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
         // check source favourite status
@@ -120,7 +121,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         exportedOps.forEach((op) {
           final sourceUri = op.uri;
           if (favouriteSourceUris.contains(sourceUri)) {
-            final newUri = op.newFields['uri'] as String;
+            final newUri = op.newFields[EntryFields.uri] as String;
             favouriteNewUris.add(newUri);
           }
         });
@@ -483,7 +484,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     Set<String> destinationAlbums,
     Set<MoveOpEvent> movedOps,
   ) async {
-    final newUris = movedOps.map((op) => op.newFields['uri'] as String?).toSet();
+    final newUris = movedOps.map((op) => op.newFields[EntryFields.uri] as String?).toSet();
     bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
 
     final collection = context.read<CollectionLens?>();

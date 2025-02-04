@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/media/video/channel_layouts.dart';
 import 'package:aves/model/media/video/codecs.dart';
 import 'package:aves/model/media/video/profiles/aac.dart';
@@ -46,6 +47,7 @@ class VideoMetadataFormatter {
     Codecs.webm: 'WebM',
   };
 
+  // fetch size and duration
   static Future<Map<String, int>> getLoadingMetadata(AvesEntry entry) async {
     final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
     final fields = <String, int>{};
@@ -58,25 +60,26 @@ class VideoMetadataFormatter {
         final width = sizedStream[Keys.videoWidth];
         final height = sizedStream[Keys.videoHeight];
         if (width is int && height is int) {
-          fields['width'] = width;
-          fields['height'] = height;
+          fields[EntryFields.width] = width;
+          fields[EntryFields.height] = height;
         }
       }
     }
 
     final durationMicros = mediaInfo[Keys.durationMicros];
     if (durationMicros is num) {
-      fields['durationMillis'] = (durationMicros / 1000).round();
+      fields[EntryFields.durationMillis] = (durationMicros / 1000).round();
     } else {
       final duration = _parseDuration(mediaInfo[Keys.duration]);
       if (duration != null && duration > Duration.zero) {
-        fields['durationMillis'] = duration.inMilliseconds;
+        fields[EntryFields.durationMillis] = duration.inMilliseconds;
       }
     }
     return fields;
   }
 
-  static Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry) async {
+  // fetch date and animated status
+  static Future<CatalogMetadata?> completeCatalogMetadata(AvesEntry entry) async {
     var catalogMetadata = entry.catalogMetadata ?? CatalogMetadata(id: entry.id);
 
     final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
