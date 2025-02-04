@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/entry/cache.dart';
 import 'package:aves/model/entry/dirs.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
@@ -127,63 +128,63 @@ class AvesEntry with AvesEntryBase {
   // from DB or platform source entry
   factory AvesEntry.fromMap(Map map) {
     return AvesEntry(
-      id: map['id'] as int?,
-      uri: map['uri'] as String,
-      path: map['path'] as String?,
+      id: map[EntryFields.id] as int?,
+      uri: map[EntryFields.uri] as String,
+      path: map[EntryFields.path] as String?,
       pageId: null,
-      contentId: map['contentId'] as int?,
-      sourceMimeType: map['sourceMimeType'] as String,
-      width: map['width'] as int? ?? 0,
-      height: map['height'] as int? ?? 0,
-      sourceRotationDegrees: map['sourceRotationDegrees'] as int? ?? 0,
-      sizeBytes: map['sizeBytes'] as int?,
-      sourceTitle: map['title'] as String?,
-      dateAddedSecs: map['dateAddedSecs'] as int?,
-      dateModifiedSecs: map['dateModifiedSecs'] as int?,
-      sourceDateTakenMillis: map['sourceDateTakenMillis'] as int?,
-      durationMillis: map['durationMillis'] as int?,
-      trashed: (map['trashed'] as int? ?? 0) != 0,
-      origin: map['origin'] as int,
+      contentId: map[EntryFields.contentId] as int?,
+      sourceMimeType: map[EntryFields.sourceMimeType] as String,
+      width: map[EntryFields.width] as int? ?? 0,
+      height: map[EntryFields.height] as int? ?? 0,
+      sourceRotationDegrees: map[EntryFields.sourceRotationDegrees] as int? ?? 0,
+      sizeBytes: map[EntryFields.sizeBytes] as int?,
+      sourceTitle: map[EntryFields.title] as String?,
+      dateAddedSecs: map[EntryFields.dateAddedSecs] as int?,
+      dateModifiedSecs: map[EntryFields.dateModifiedSecs] as int?,
+      sourceDateTakenMillis: map[EntryFields.sourceDateTakenMillis] as int?,
+      durationMillis: map[EntryFields.durationMillis] as int?,
+      trashed: (map[EntryFields.trashed] as int? ?? 0) != 0,
+      origin: map[EntryFields.origin] as int,
     );
   }
 
   // for DB only
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'uri': uri,
-      'path': path,
-      'contentId': contentId,
-      'sourceMimeType': sourceMimeType,
-      'width': width,
-      'height': height,
-      'sourceRotationDegrees': sourceRotationDegrees,
-      'sizeBytes': sizeBytes,
-      'title': sourceTitle,
-      'dateAddedSecs': dateAddedSecs,
-      'dateModifiedSecs': dateModifiedSecs,
-      'sourceDateTakenMillis': sourceDateTakenMillis,
-      'durationMillis': durationMillis,
-      'trashed': trashed ? 1 : 0,
-      'origin': origin,
+      EntryFields.id: id,
+      EntryFields.uri: uri,
+      EntryFields.path: path,
+      EntryFields.contentId: contentId,
+      EntryFields.sourceMimeType: sourceMimeType,
+      EntryFields.width: width,
+      EntryFields.height: height,
+      EntryFields.sourceRotationDegrees: sourceRotationDegrees,
+      EntryFields.sizeBytes: sizeBytes,
+      EntryFields.title: sourceTitle,
+      EntryFields.dateAddedSecs: dateAddedSecs,
+      EntryFields.dateModifiedSecs: dateModifiedSecs,
+      EntryFields.sourceDateTakenMillis: sourceDateTakenMillis,
+      EntryFields.durationMillis: durationMillis,
+      EntryFields.trashed: trashed ? 1 : 0,
+      EntryFields.origin: origin,
     };
   }
 
   Map<String, dynamic> toPlatformEntryMap() {
     return {
-      'uri': uri,
-      'path': path,
-      'pageId': pageId,
-      'mimeType': mimeType,
-      'width': width,
-      'height': height,
-      'rotationDegrees': rotationDegrees,
-      'isFlipped': isFlipped,
-      'dateModifiedSecs': dateModifiedSecs,
-      'sizeBytes': sizeBytes,
-      'trashed': trashed,
-      'trashPath': trashDetails?.path,
-      'origin': origin,
+      EntryFields.uri: uri,
+      EntryFields.path: path,
+      EntryFields.pageId: pageId,
+      EntryFields.mimeType: mimeType,
+      EntryFields.width: width,
+      EntryFields.height: height,
+      EntryFields.rotationDegrees: rotationDegrees,
+      EntryFields.isFlipped: isFlipped,
+      EntryFields.dateModifiedSecs: dateModifiedSecs,
+      EntryFields.sizeBytes: sizeBytes,
+      EntryFields.trashed: trashed,
+      EntryFields.trashPath: trashDetails?.path,
+      EntryFields.origin: origin,
     };
   }
 
@@ -402,34 +403,34 @@ class AvesEntry with AvesEntryBase {
     final oldRotationDegrees = this.rotationDegrees;
     final oldIsFlipped = this.isFlipped;
 
-    final uri = newFields['uri'];
+    final uri = newFields[EntryFields.uri];
     if (uri is String) this.uri = uri;
-    final path = newFields['path'];
+    final path = newFields[EntryFields.path];
     if (path is String) this.path = path;
-    final contentId = newFields['contentId'];
+    final contentId = newFields[EntryFields.contentId];
     if (contentId is int) this.contentId = contentId;
 
-    final sourceTitle = newFields['title'];
+    final sourceTitle = newFields[EntryFields.title];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
-    final sourceRotationDegrees = newFields['sourceRotationDegrees'];
+    final sourceRotationDegrees = newFields[EntryFields.sourceRotationDegrees];
     if (sourceRotationDegrees is int) this.sourceRotationDegrees = sourceRotationDegrees;
-    final sourceDateTakenMillis = newFields['sourceDateTakenMillis'];
+    final sourceDateTakenMillis = newFields[EntryFields.sourceDateTakenMillis];
     if (sourceDateTakenMillis is int) this.sourceDateTakenMillis = sourceDateTakenMillis;
 
-    final width = newFields['width'];
+    final width = newFields[EntryFields.width];
     if (width is int) this.width = width;
-    final height = newFields['height'];
+    final height = newFields[EntryFields.height];
     if (height is int) this.height = height;
-    final durationMillis = newFields['durationMillis'];
+    final durationMillis = newFields[EntryFields.durationMillis];
     if (durationMillis is int) this.durationMillis = durationMillis;
 
-    final sizeBytes = newFields['sizeBytes'];
+    final sizeBytes = newFields[EntryFields.sizeBytes];
     if (sizeBytes is int) this.sizeBytes = sizeBytes;
-    final dateModifiedSecs = newFields['dateModifiedSecs'];
+    final dateModifiedSecs = newFields[EntryFields.dateModifiedSecs];
     if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
-    final rotationDegrees = newFields['rotationDegrees'];
+    final rotationDegrees = newFields[EntryFields.rotationDegrees];
     if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
-    final isFlipped = newFields['isFlipped'];
+    final isFlipped = newFields[EntryFields.isFlipped];
     if (isFlipped is bool) this.isFlipped = isFlipped;
 
     if (persist) {

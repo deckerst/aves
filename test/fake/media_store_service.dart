@@ -1,4 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/origins.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -73,10 +74,10 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       skipped: false,
       uri: entry.uri,
       newFields: {
-        'uri': 'content://media/external/images/media/$newContentId',
-        'contentId': newContentId,
-        'path': entry.path!.replaceFirst(sourceAlbum, destinationAlbum),
-        'dateModifiedSecs': FakeMediaStoreService.dateSecs,
+        EntryFields.uri: 'content://media/external/images/media/$newContentId',
+        EntryFields.contentId: newContentId,
+        EntryFields.path: entry.path!.replaceFirst(sourceAlbum, destinationAlbum),
+        EntryFields.dateModifiedSecs: FakeMediaStoreService.dateSecs,
       },
       deleted: false,
     );
@@ -90,10 +91,10 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       skipped: false,
       uri: entry.uri,
       newFields: {
-        'uri': 'content://media/external/images/media/$newContentId',
-        'contentId': newContentId,
-        'path': entry.path!.replaceFirst(oldName, newName),
-        'dateModifiedSecs': FakeMediaStoreService.dateSecs,
+        EntryFields.uri: 'content://media/external/images/media/$newContentId',
+        EntryFields.contentId: newContentId,
+        EntryFields.path: entry.path!.replaceFirst(oldName, newName),
+        EntryFields.dateModifiedSecs: FakeMediaStoreService.dateSecs,
       },
       deleted: false,
     );

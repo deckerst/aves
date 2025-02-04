@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
@@ -242,29 +243,29 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     newFields.keys.forEach((key) {
       final newValue = newFields[key];
       switch (key) {
-        case 'contentId':
+        case EntryFields.contentId:
           entry.contentId = newValue as int?;
-        case 'dateModifiedSecs':
+        case EntryFields.dateModifiedSecs:
           // `dateModifiedSecs` changes when moving entries to another directory,
           // but it does not change when renaming the containing directory
           entry.dateModifiedSecs = newValue as int?;
-        case 'path':
+        case EntryFields.path:
           entry.path = newValue as String?;
-        case 'title':
+        case EntryFields.title:
           entry.sourceTitle = newValue as String?;
-        case 'trashed':
+        case EntryFields.trashed:
           final trashed = newValue as bool;
           entry.trashed = trashed;
           entry.trashDetails = trashed
               ? TrashDetails(
                   id: entry.id,
-                  path: newFields['trashPath'] as String,
+                  path: newFields[EntryFields.trashPath] as String,
                   dateMillis: DateTime.now().millisecondsSinceEpoch,
                 )
               : null;
-        case 'uri':
+        case EntryFields.uri:
           entry.uri = newValue as String;
-        case 'origin':
+        case EntryFields.origin:
           entry.origin = newValue as int;
       }
     });
@@ -341,7 +342,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (movedOps.isEmpty) return;
 
     final replacedUris = movedOps
-        .map((movedOp) => movedOp.newFields['path'] as String?)
+        .map((movedOp) => movedOp.newFields[EntryFields.path] as String?)
         .map((targetPath) {
           final existingEntry = _rawEntries.firstWhereOrNull((entry) => entry.path == targetPath && !entry.trashed);
           return existingEntry?.uri;
@@ -362,14 +363,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           fromAlbums.add(sourceEntry.directory);
           movedEntries.add(sourceEntry.copyWith(
             id: localMediaDb.nextId,
-            uri: newFields['uri'] as String?,
-            path: newFields['path'] as String?,
-            contentId: newFields['contentId'] as int?,
+            uri: newFields[EntryFields.uri] as String?,
+            path: newFields[EntryFields.path] as String?,
+            contentId: newFields[EntryFields.contentId] as int?,
             // title can change when moved files are automatically renamed to avoid conflict
-            title: newFields['title'] as String?,
-            dateAddedSecs: newFields['dateAddedSecs'] as int?,
-            dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
-            origin: newFields['origin'] as int?,
+            title: newFields[EntryFields.title] as String?,
+            dateAddedSecs: newFields[EntryFields.dateAddedSecs] as int?,
+            dateModifiedSecs: newFields[EntryFields.dateModifiedSecs] as int?,
+            origin: newFields[EntryFields.origin] as int?,
           ));
         } else {
           debugPrint('failed to find source entry with uri=$sourceUri');
@@ -386,7 +387,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
           final entry = todoEntries.firstWhereOrNull((entry) => entry.uri == sourceUri);
           if (entry != null) {
             if (moveType == MoveType.fromBin) {
-              newFields['trashed'] = false;
+              newFields[EntryFields.trashed] = false;
             } else {
               fromAlbums.add(entry.directory);
             }
