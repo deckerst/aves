@@ -47,7 +47,7 @@ class VideoMetadataFormatter {
     Codecs.webm: 'WebM',
   };
 
-  // fetch size and duration
+  // fetch size, rotation and duration
   static Future<Map<String, int>> getLoadingMetadata(AvesEntry entry) async {
     final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
     final fields = <String, int>{};
@@ -62,6 +62,11 @@ class VideoMetadataFormatter {
         if (width is int && height is int) {
           fields[EntryFields.width] = width;
           fields[EntryFields.height] = height;
+        }
+
+        final rotationDegrees = sizedStream[Keys.rotate];
+        if (rotationDegrees is int) {
+          fields[EntryFields.rotationDegrees] = rotationDegrees;
         }
       }
     }
