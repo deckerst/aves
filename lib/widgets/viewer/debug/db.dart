@@ -103,21 +103,7 @@ class _DbTabState extends State<DbTab> {
                     child: const Text('Duplicate entry'),
                   ),
                   InfoRowGroup(
-                    info: {
-                      'uri': data.uri,
-                      'path': data.path ?? '',
-                      'sourceMimeType': data.sourceMimeType,
-                      'width': '${data.width}',
-                      'height': '${data.height}',
-                      'sourceRotationDegrees': '${data.sourceRotationDegrees}',
-                      'sizeBytes': '${data.sizeBytes}',
-                      'sourceTitle': data.sourceTitle ?? '',
-                      'dateAddedSecs': '${data.dateAddedSecs}',
-                      'dateModifiedSecs': '${data.dateModifiedSecs}',
-                      'sourceDateTakenMillis': '${data.sourceDateTakenMillis}',
-                      'durationMillis': '${data.durationMillis}',
-                      'trashed': '${data.trashed}',
-                    },
+                    info: Map.fromEntries(data.toMap().entries.map((kv) => MapEntry(kv.key, kv.value?.toString() ?? ''))),
                   ),
                 ],
               ],
@@ -137,18 +123,7 @@ class _DbTabState extends State<DbTab> {
                 Text('DB metadata:${data == null ? ' no row' : ''}'),
                 if (data != null)
                   InfoRowGroup(
-                    info: {
-                      'mimeType': data.mimeType ?? '',
-                      'dateMillis': '${data.dateMillis}',
-                      'isAnimated': '${data.isAnimated}',
-                      'isFlipped': '${data.isFlipped}',
-                      'rotationDegrees': '${data.rotationDegrees}',
-                      'latitude': '${data.latitude}',
-                      'longitude': '${data.longitude}',
-                      'xmpSubjects': data.xmpSubjects ?? '',
-                      'xmpTitle': data.xmpTitle ?? '',
-                      'rating': '${data.rating}',
-                    },
+                    info: Map.fromEntries(data.toMap().entries.map((kv) => MapEntry(kv.key, kv.value?.toString() ?? ''))),
                   ),
               ],
             );
@@ -167,12 +142,7 @@ class _DbTabState extends State<DbTab> {
                 Text('DB address:${data == null ? ' no row' : ''}'),
                 if (data != null)
                   InfoRowGroup(
-                    info: {
-                      'countryCode': data.countryCode ?? '',
-                      'countryName': data.countryName ?? '',
-                      'adminArea': data.adminArea ?? '',
-                      'locality': data.locality ?? '',
-                    },
+                    info: Map.fromEntries(data.toMap().entries.map((kv) => MapEntry(kv.key, kv.value?.toString() ?? ''))),
                   ),
               ],
             );
