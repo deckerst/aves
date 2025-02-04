@@ -12,7 +12,6 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
@@ -44,6 +43,7 @@ import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import org.mp4parser.IsoFile
 import java.io.FileInputStream
 import java.io.IOException
+import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 class DebugHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.Locale
-import java.util.TimeZone
 
 class DeviceHandler(private val context: Context) : MethodCallHandler {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
