@@ -7,6 +7,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
@@ -43,9 +44,9 @@ open class UnknownContentProvider : ImageProvider() {
         }
 
         val fields: FieldMap = hashMapOf(
-            "origin" to SourceEntry.ORIGIN_UNKNOWN_CONTENT,
-            "uri" to uri.toString(),
-            "sourceMimeType" to mimeType,
+            EntryFields.ORIGIN to SourceEntry.ORIGIN_UNKNOWN_CONTENT,
+            EntryFields.URI to uri.toString(),
+            EntryFields.SOURCE_MIME_TYPE to mimeType,
         )
         try {
             // some providers do not provide the mandatory `OpenableColumns`
@@ -53,11 +54,11 @@ open class UnknownContentProvider : ImageProvider() {
             // e.g. `content://mms/part/[id]` on Android KitKat
             val cursor = context.contentResolver.query(uri, null, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
-                cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) fields["title"] = cursor.getString(it) }
-                cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields["sizeBytes"] = cursor.getLong(it) }
-                cursor.getColumnIndex(MediaStore.MediaColumns.DATA).let { if (it != -1) fields["path"] = cursor.getString(it) }
+                cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME).let { if (it != -1) fields[EntryFields.TITLE] = cursor.getString(it) }
+                cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields[EntryFields.SIZE_BYTES] = cursor.getLong(it) }
+                cursor.getColumnIndex(MediaStore.MediaColumns.DATA).let { if (it != -1) fields[EntryFields.PATH] = cursor.getString(it) }
                 // mime type fallback if it was not provided and not found via `metadata-extractor`
-                cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1 && mimeType == null) fields["sourceMimeType"] = cursor.getString(it) }
+                cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1 && mimeType == null) fields[EntryFields.SOURCE_MIME_TYPE] = cursor.getString(it) }
                 cursor.close()
             }
         } catch (e: Exception) {
@@ -65,7 +66,7 @@ open class UnknownContentProvider : ImageProvider() {
             return
         }
 
-        if (fields["sourceMimeType"] == null) {
+        if (fields[EntryFields.SOURCE_MIME_TYPE] == null) {
             callback.onFailure(Exception("Failed to find MIME type for uri=$uri"))
             return
         }

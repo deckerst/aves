@@ -64,6 +64,7 @@ import java.util.TimeZone
 import kotlin.math.absoluteValue
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 import androidx.core.net.toUri
+import deckers.thibault.aves.model.EntryFields
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
@@ -74,10 +75,10 @@ abstract class ImageProvider {
         return if (StorageUtils.isInVault(context, path)) {
             val uri = Uri.fromFile(File(path))
             hashMapOf(
-                "origin" to SourceEntry.ORIGIN_VAULT,
-                "uri" to uri.toString(),
-                "contentId" to null,
-                "path" to path,
+                EntryFields.ORIGIN to SourceEntry.ORIGIN_VAULT,
+                EntryFields.URI to uri.toString(),
+                EntryFields.CONTENT_ID to null,
+                EntryFields.PATH to path,
             )
         } else {
             MediaStoreImageProvider().scanNewPathByMediaStore(context, path, mimeType)
@@ -361,7 +362,7 @@ abstract class ImageProvider {
             )
 
             val newFields = scanNewPath(activity, targetPath, exportMimeType)
-            val targetUri = (newFields["uri"] as String).toUri()
+            val targetUri = (newFields[EntryFields.URI] as String).toUri()
             if (writeMetadata) {
                 copyMetadata(
                     context = activity,

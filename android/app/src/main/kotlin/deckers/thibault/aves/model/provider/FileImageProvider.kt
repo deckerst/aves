@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
@@ -88,9 +89,9 @@ internal class FileImageProvider : ImageProvider() {
         }
 
         return hashMapOf(
-            "uri" to Uri.fromFile(newFile).toString(),
-            "path" to newFile.path,
-            "dateModifiedSecs" to newFile.lastModified() / 1000,
+            EntryFields.URI to Uri.fromFile(newFile).toString(),
+            EntryFields.PATH to newFile.path,
+            EntryFields.DATE_MODIFIED_SECS to newFile.lastModified() / 1000,
         )
     }
 
@@ -98,8 +99,8 @@ internal class FileImageProvider : ImageProvider() {
         try {
             val file = File(path)
             if (file.exists()) {
-                newFields["dateModifiedSecs"] = file.lastModified() / 1000
-                newFields["sizeBytes"] = file.length()
+                newFields[EntryFields.DATE_MODIFIED_SECS] = file.lastModified() / 1000
+                newFields[EntryFields.SIZE_BYTES] = file.length()
             }
             callback.onSuccess(newFields)
         } catch (e: SecurityException) {
