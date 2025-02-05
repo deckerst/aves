@@ -646,19 +646,21 @@ abstract class ImageProvider {
         }
 
         val originalFileSize = File(path).length()
-        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
-        var videoBytes: ByteArray? = null
+        var trailerVideoBytes: ByteArray? = null
         val editableFile = StorageUtils.createTempFile(context).apply {
+            val videoSize = MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, originalFileSize)?.let { it + trailerDiff }
+            val isTrailerVideoValid = videoSize != null && MultiPage.getTrailerVideoInfo(context, uri, originalFileSize, videoSize) != null
             try {
-                if (videoSize != null) {
+                if (videoSize != null && isTrailerVideoValid) {
                     // handle motion photo and embedded video separately
                     val imageSize = (originalFileSize - videoSize).toInt()
-                    videoBytes = ByteArray(videoSize)
+                    val videoByteSize = videoSize.toInt()
+                    trailerVideoBytes = ByteArray(videoByteSize)
 
                     StorageUtils.openInputStream(context, uri)?.let { input ->
                         val imageBytes = ByteArray(imageSize)
                         input.read(imageBytes, 0, imageSize)
-                        input.read(videoBytes, 0, videoSize)
+                        input.read(trailerVideoBytes, 0, videoByteSize)
 
                         // copy only the image to a temporary file for editing
                         // video will be appended after metadata modification
@@ -693,15 +695,15 @@ abstract class ImageProvider {
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
             }
 
-            if (videoBytes != null) {
+            if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(videoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes!!)
             }
 
             // copy the edited temporary file back to the original
             editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, trailerVideoBytes?.size, editableFile, callback)) {
                 return false
             }
             editableFile.delete()
@@ -729,19 +731,21 @@ abstract class ImageProvider {
         }
 
         val originalFileSize = File(path).length()
-        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
-        var videoBytes: ByteArray? = null
+        var trailerVideoBytes: ByteArray? = null
         val editableFile = StorageUtils.createTempFile(context).apply {
+            val videoSize = MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, originalFileSize)?.let { it + trailerDiff }
+            val isTrailerVideoValid = videoSize != null && MultiPage.getTrailerVideoInfo(context, uri, originalFileSize, videoSize) != null
             try {
-                if (videoSize != null) {
+                if (videoSize != null && isTrailerVideoValid) {
                     // handle motion photo and embedded video separately
                     val imageSize = (originalFileSize - videoSize).toInt()
-                    videoBytes = ByteArray(videoSize)
+                    val videoByteSize = videoSize.toInt()
+                    trailerVideoBytes = ByteArray(videoByteSize)
 
                     StorageUtils.openInputStream(context, uri)?.let { input ->
                         val imageBytes = ByteArray(imageSize)
                         input.read(imageBytes, 0, imageSize)
-                        input.read(videoBytes, 0, videoSize)
+                        input.read(trailerVideoBytes, 0, videoByteSize)
 
                         // copy only the image to a temporary file for editing
                         // video will be appended after metadata modification
@@ -777,15 +781,15 @@ abstract class ImageProvider {
                 }
             }
 
-            if (videoBytes != null) {
+            if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(videoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes!!)
             }
 
             // copy the edited temporary file back to the original
             editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, trailerVideoBytes?.size, editableFile, callback)) {
                 return false
             }
             editableFile.delete()
@@ -895,7 +899,7 @@ abstract class ImageProvider {
         }
 
         val originalFileSize = File(path).length()
-        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
+        val videoSize = MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
         val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 editXmpWithPixy(
@@ -978,7 +982,7 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
-        trailerOffset: Int?,
+        trailerOffset: Number?,
         editedFile: File,
         callback: ImageOpCallback,
     ): Boolean {
@@ -993,7 +997,7 @@ abstract class ImageProvider {
             LOG_TAG, "Edited file length=$expectedLength does not match final document file length=$actualLength. " +
                     "We need to edit XMP to adjust trailer video offset by $diff bytes."
         )
-        val newTrailerOffset = trailerOffset + diff
+        val newTrailerOffset = trailerOffset.toLong() + diff
         return editXmp(context, path, uri, mimeType, callback, trailerDiff = diff, editCoreXmp = { xmp ->
             GoogleXMP.updateTrailingVideoOffset(xmp, trailerOffset, newTrailerOffset)
         })
@@ -1258,9 +1262,15 @@ abstract class ImageProvider {
         callback: ImageOpCallback,
     ) {
         val originalFileSize = File(path).length()
-        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.toInt()
+        val videoSize = MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, originalFileSize)
         if (videoSize == null) {
             callback.onFailure(Exception("failed to get trailer video size"))
+            return
+        }
+
+        val isTrailerVideoValid = MultiPage.getTrailerVideoInfo(context, uri, fileSizeBytes = originalFileSize, videoSizeBytes = videoSize) != null
+        if (!isTrailerVideoValid) {
+            callback.onFailure(Exception("failed to open trailer video with size=$videoSize"))
             return
         }
 
@@ -1303,7 +1313,8 @@ abstract class ImageProvider {
         }
 
         val originalFileSize = File(path).length()
-        val videoSize = MultiPage.getMotionPhotoOffset(context, uri, mimeType, originalFileSize)?.toInt()
+        val videoSize = MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, originalFileSize)
+        val isTrailerVideoValid = videoSize != null && MultiPage.getTrailerVideoInfo(context, uri, originalFileSize, videoSize) != null
         val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 outputStream().use { output ->
@@ -1323,7 +1334,7 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (!types.contains(TYPE_XMP) && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
+            if (!types.contains(TYPE_XMP) && isTrailerVideoValid && !checkTrailerOffset(context, path, uri, mimeType, videoSize, editableFile, callback)) {
                 return
             }
             editableFile.delete()
