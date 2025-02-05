@@ -15,6 +15,8 @@ import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
@@ -47,14 +49,6 @@ object MultiPage {
     private const val KEY_ROTATION_DEGREES = "rotationDegrees"
 
     fun getHeicTracks(context: Context, uri: Uri): ArrayList<FieldMap> {
-        fun MediaFormat.getSafeInt(key: String, save: (value: Int) -> Unit) {
-            if (this.containsKey(key)) save(this.getInteger(key))
-        }
-
-        fun MediaFormat.getSafeLong(key: String, save: (value: Long) -> Unit) {
-            if (this.containsKey(key)) save(this.getLong(key))
-        }
-
         val tracks = ArrayList<FieldMap>()
         val extractor = MediaExtractor()
         extractor.setDataSource(context, uri, null)
@@ -250,70 +244,41 @@ object MultiPage {
     }
 
     fun getMotionPhotoPages(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): ArrayList<FieldMap> {
-        fun MediaFormat.getSafeInt(key: String, save: (value: Int) -> Unit) {
-            if (this.containsKey(key)) save(this.getInteger(key))
-        }
-
-        fun MediaFormat.getSafeLong(key: String, save: (value: Long) -> Unit) {
-            if (this.containsKey(key)) save(this.getLong(key))
-        }
-
         val pages = ArrayList<FieldMap>()
-        val extractor = MediaExtractor()
-        var pfd: ParcelFileDescriptor? = null
-        try {
-            getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
-                val videoStartOffset = sizeBytes - videoSizeBytes
-                pfd = context.contentResolver.openFileDescriptor(uri, "r")
-                pfd?.fileDescriptor?.let { fd ->
-                    extractor.setDataSource(fd, videoStartOffset, videoSizeBytes)
-                    // set the original image as the first and default track
-                    var pageIndex = 0
-                    pages.add(
-                        hashMapOf(
-                            KEY_PAGE to pageIndex++,
-                            KEY_MIME_TYPE to mimeType,
-                            KEY_IS_DEFAULT to true,
-                        )
+        getMotionPhotoVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
+            getTrailerVideoInfo(context, uri, fileSizeBytes = sizeBytes, videoSizeBytes = videoSizeBytes)?.let { videoInfo ->
+                // set the original image as the first and default track
+                var pageIndex = 0
+                pages.add(
+                    hashMapOf(
+                        KEY_PAGE to pageIndex++,
+                        KEY_MIME_TYPE to mimeType,
+                        KEY_IS_DEFAULT to true,
                     )
-                    // add video tracks from the appended video
-                    if (extractor.trackCount > 0) {
-                        // only consider the first track to represent the appended video
-                        val trackIndex = 0
-                        try {
-                            val format = extractor.getTrackFormat(trackIndex)
-                            format.getString(MediaFormat.KEY_MIME)?.let { mime ->
-                                if (MimeTypes.isVideo(mime)) {
-                                    val page: FieldMap = hashMapOf(
-                                        KEY_PAGE to pageIndex++,
-                                        KEY_MIME_TYPE to MimeTypes.MP4,
-                                        KEY_IS_DEFAULT to false,
-                                    )
-                                    format.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
-                                    format.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        format.getSafeInt(MediaFormat.KEY_ROTATION) { page[KEY_ROTATION_DEGREES] = it }
-                                    }
-                                    format.getSafeLong(MediaFormat.KEY_DURATION) { page[KEY_DURATION] = it / 1000 }
-                                    pages.add(page)
-                                }
-                            }
-                        } catch (e: Exception) {
-                            Log.w(LOG_TAG, "failed to get motion photo track information for uri=$uri, track num=$trackIndex", e)
+                )
+                // add video tracks from the appended video
+                videoInfo.getString(MediaFormat.KEY_MIME)?.let { mime ->
+                    if (MimeTypes.isVideo(mime)) {
+                        val page: FieldMap = hashMapOf(
+                            KEY_PAGE to pageIndex++,
+                            KEY_MIME_TYPE to MimeTypes.MP4,
+                            KEY_IS_DEFAULT to false,
+                        )
+                        videoInfo.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
+                        videoInfo.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            videoInfo.getSafeInt(MediaFormat.KEY_ROTATION) { page[KEY_ROTATION_DEGREES] = it }
                         }
+                        videoInfo.getSafeLong(MediaFormat.KEY_DURATION) { page[KEY_DURATION] = it / 1000 }
+                        pages.add(page)
                     }
                 }
             }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to open motion photo for uri=$uri", e)
-        } finally {
-            extractor.release()
-            pfd?.close()
         }
         return pages
     }
 
-    fun getMotionPhotoOffset(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
+    fun getMotionPhotoVideoSize(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
         if (MimeTypes.isHeic(mimeType)) {
             // XMP in HEIC motion photos (as taken with a Samsung Camera v12.0.01.50) indicates an `Item:Length` of 68 bytes for the video.
             // This item does not contain the video itself, but only some kind of metadata (no doc, no spec),
@@ -358,6 +323,34 @@ object MultiPage {
         XMP.checkHeic(context, mimeType, uri, foundXmp, ::processXmp)
 
         return offsetFromEnd
+    }
+
+    fun getTrailerVideoInfo(context: Context, uri: Uri, fileSizeBytes: Long, videoSizeBytes: Long): MediaFormat? {
+        var format: MediaFormat? = null
+        val extractor = MediaExtractor()
+        var pfd: ParcelFileDescriptor? = null
+        try {
+            val videoStartOffset = fileSizeBytes - videoSizeBytes
+            pfd = context.contentResolver.openFileDescriptor(uri, "r")
+            pfd?.fileDescriptor?.let { fd ->
+                extractor.setDataSource(fd, videoStartOffset, videoSizeBytes)
+                if (extractor.trackCount > 0) {
+                    // only consider the first track to represent the appended video
+                    val trackIndex = 0
+                    try {
+                        format = extractor.getTrackFormat(trackIndex)
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to get motion photo track information for uri=$uri, track num=$trackIndex", e)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to open motion photo for uri=$uri", e)
+        } finally {
+            extractor.release()
+            pfd?.close()
+        }
+        return format
     }
 
     fun getTiffPages(context: Context, uri: Uri): ArrayList<FieldMap> {

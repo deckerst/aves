@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - editing TIFF metadata increasing file size
 - region decoding for some RAW files
 - incorrect video size or orientation as reported by Media Store
+- corrupting image when removing video from motion photo with incorrect metadata
 
 ## <a id="v1.12.2"></a>[v1.12.2] - 2025-01-13
 
