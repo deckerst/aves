@@ -183,7 +183,7 @@ object GoogleXMP {
         return offsetFromEnd
     }
 
-    fun updateTrailingVideoOffset(xmp: String, oldOffset: Int, newOffset: Int): String {
+    fun updateTrailingVideoOffset(xmp: String, oldOffset: Number, newOffset: Number): String {
         return xmp.replace(
             // GCamera motion photo
             "${GCAMERA_VIDEO_OFFSET_PROP_NAME}=\"$oldOffset\"",
@@ -194,7 +194,6 @@ object GoogleXMP {
             "${GCONTAINER_ITEM_LENGTH_PROP_NAME}=\"$newOffset\"",
         )
     }
-
 
     fun getDeviceContainer(meta: XMPMeta): GoogleDeviceContainer? {
         return if (meta.doesPropPathExist(listOf(GDEVICE_CONTAINER_PROP_NAME, GDEVICE_CONTAINER_DIRECTORY_PROP_NAME))) {

@@ -111,20 +111,25 @@ object MediaMetadataRetrieverHelper {
                 // format
                 MediaMetadataRetriever.METADATA_KEY_IMAGE_ROTATION,
                 MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION -> "$value°"
+
                 MediaMetadataRetriever.METADATA_KEY_IMAGE_HEIGHT, MediaMetadataRetriever.METADATA_KEY_IMAGE_WIDTH,
                 MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT, MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH -> "$value pixels"
+
                 MediaMetadataRetriever.METADATA_KEY_BITRATE -> {
                     val bitrate = value.toLongOrNull() ?: 0
                     if (bitrate > 0) formatBitrate(bitrate) else null
                 }
+
                 MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE -> {
                     val framerate = value.toDoubleOrNull() ?: 0.0
                     if (framerate > 0.0) "$framerate" else null
                 }
+
                 MediaMetadataRetriever.METADATA_KEY_DURATION -> {
                     val dateMillis = value.toLongOrNull() ?: 0
                     if (dateMillis > 0) durationFormat.format(Date(dateMillis)) else null
                 }
+
                 MediaMetadataRetriever.METADATA_KEY_COLOR_RANGE -> {
                     when (value.toIntOrNull()) {
                         MediaFormat.COLOR_RANGE_FULL -> "Full"
@@ -132,6 +137,7 @@ object MediaMetadataRetrieverHelper {
                         else -> value
                     }
                 }
+
                 MediaMetadataRetriever.METADATA_KEY_COLOR_STANDARD -> {
                     when (value.toIntOrNull()) {
                         MediaFormat.COLOR_STANDARD_BT709 -> "BT.709"
@@ -141,6 +147,7 @@ object MediaMetadataRetrieverHelper {
                         else -> value
                     }
                 }
+
                 MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER -> {
                     when (value.toIntOrNull()) {
                         MediaFormat.COLOR_TRANSFER_LINEAR -> "Linear"
@@ -154,6 +161,7 @@ object MediaMetadataRetrieverHelper {
                 MediaMetadataRetriever.METADATA_KEY_COMPILATION,
                 MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER,
                 MediaMetadataRetriever.METADATA_KEY_YEAR -> if (value != "0") value else null
+
                 MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER -> if (value != "0/0") value else null
                 MediaMetadataRetriever.METADATA_KEY_DATE -> {
                     val dateMillis = Metadata.parseVideoMetadataDate(value)
@@ -167,5 +175,13 @@ object MediaMetadataRetrieverHelper {
                 else -> value
             }?.let { save(it) }
         }
+    }
+
+    fun MediaFormat.getSafeInt(key: String, save: (value: Int) -> Unit) {
+        if (this.containsKey(key)) save(this.getInteger(key))
+    }
+
+    fun MediaFormat.getSafeLong(key: String, save: (value: Long) -> Unit) {
+        if (this.containsKey(key)) save(this.getLong(key))
     }
 }
