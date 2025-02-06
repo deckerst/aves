@@ -97,16 +97,21 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
           ],
         ),
         Positioned.fill(
-          child: ValueListenableBuilder<CollectionLens?>(
-            valueListenable: widget.regionCollectionNotifier,
-            builder: (context, regionCollection, child) {
-              return regionCollection != null && regionCollection.isEmpty
-                  ? EmptyContent(
-                      text: context.l10n.mapEmptyRegion,
-                      alignment: Alignment.center,
-                      fontSize: 18,
-                    )
-                  : const SizedBox();
+          child: ValueListenableBuilder<AvesEntry?>(
+            valueListenable: _infoEntryNotifier,
+            builder: (context, infoEntry, child) {
+              return ValueListenableBuilder<CollectionLens?>(
+                valueListenable: widget.regionCollectionNotifier,
+                builder: (context, regionCollection, child) {
+                  return infoEntry == null && regionCollection != null && regionCollection.isEmpty
+                      ? EmptyContent(
+                          text: context.l10n.mapEmptyRegion,
+                          alignment: Alignment.center,
+                          fontSize: 18,
+                        )
+                      : const SizedBox();
+                },
+              );
             },
           ),
         ),
