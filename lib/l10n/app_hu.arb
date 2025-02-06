@@ -1566,5 +1566,11 @@
   "chipActionDecompose": "Felosztás",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "GPX importálás",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Időeltolódás",
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Összes",
+  "@removeEntryMetadataDialogAll": {}
 }
