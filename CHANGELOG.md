@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.3"></a>[v1.12.3] - 2025-02-06
+
 ### Added
 
 - Metadata: edit location via GPX
