@@ -152,10 +152,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   @override
   void didChangeMetrics() {
-    // when top padding changes
-    _updateStatusBarHeight();
-    // when text scale factor changes
-    _updateAppBarHeight();
+    // when top padding or text scale factor change
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateStatusBarHeight());
   }
 
   @override
