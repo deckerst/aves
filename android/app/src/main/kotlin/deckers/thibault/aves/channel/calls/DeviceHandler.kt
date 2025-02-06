@@ -4,6 +4,7 @@ import android.app.LocaleConfig
 import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Geocoder
 import android.os.Build
@@ -61,8 +62,15 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
+                "supportPictureInPicture" to supportPictureInPicture(),
             )
         )
+    }
+
+    private fun supportPictureInPicture(): Boolean {
+        // minimum version for `PictureInPictureParams.Builder#setAutoEnterEnabled`
+        val supportPipOnLeave = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+        return supportPipOnLeave && context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
 
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
