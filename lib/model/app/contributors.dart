@@ -124,12 +124,14 @@ class Contributors {
     Contributor('Grooty12', 'Rasmus@rosendahl-kaa.name'),
     Contributor('Victor M', 'victormorita@tuta.io'),
     Contributor('cat', 'catsnote@proton.me'),
+    Contributor('Bruno Fragoso', 'darth_signa@hotmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
     // Contributor('Åzze', 'laitinen.jere222@gmail.com'), // Finnish
     // Contributor('Olli', 'ollinen@ollit.dev'), // Finnish
+    // Contributor('Ricky Tigg', 'ricky.tigg@gmail.com'), // Finnish
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
     // Contributor('AJ07', 'ajaykumarmeena676@gmail.com'), // Hindi

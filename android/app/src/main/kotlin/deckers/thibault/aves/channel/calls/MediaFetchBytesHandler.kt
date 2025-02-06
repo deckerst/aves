@@ -2,7 +2,7 @@ package deckers.thibault.aves.channel.calls
 
 import android.content.Context
 import android.graphics.Rect
-import android.net.Uri
+import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
@@ -68,7 +68,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
     }
 
     private suspend fun getRegion(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val mimeType = call.argument<String>("mimeType")
         val pageId = call.argument<Int>("pageId")
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()

@@ -1408,5 +1408,13 @@
   "chipActionRemove": "Verwijderen",
   "@chipActionRemove": {},
   "chipActionDecompose": "Splitsen",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "GPX importeren",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Verschuiving van de tijd",
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Alle",
+  "@removeEntryMetadataDialogAll": {}
 }

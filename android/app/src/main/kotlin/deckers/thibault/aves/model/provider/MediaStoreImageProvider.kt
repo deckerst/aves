@@ -20,6 +20,7 @@ import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.MainActivity.Companion.DELETE_SINGLE_PERMISSION_REQUEST
 import deckers.thibault.aves.model.AvesEntry
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.SourceEntry
@@ -40,7 +41,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.io.SyncFailedException
-import java.util.Date
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
@@ -77,7 +77,7 @@ class MediaStoreImageProvider : ImageProvider() {
             val parentCheckDirectory = removeTrailingSeparator(directory)
             handleNew = { entry ->
                 // skip entries in subfolders
-                val path = entry["path"] as String?
+                val path = entry[EntryFields.PATH] as String?
                 if (path != null && File(path).parent == parentCheckDirectory) {
                     handleNewEntry(entry)
                 }
@@ -256,20 +256,20 @@ class MediaStoreImageProvider : ImageProvider() {
                             Log.w(LOG_TAG, "failed to make entry from uri=$itemUri because of null MIME type")
                         } else {
                             var entryMap: FieldMap = hashMapOf(
-                                "origin" to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
-                                "uri" to itemUri.toString(),
-                                "path" to cursor.getString(pathColumn),
-                                "sourceMimeType" to mimeType,
-                                "width" to width,
-                                "height" to height,
-                                "sourceRotationDegrees" to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
-                                "sizeBytes" to cursor.getLong(sizeColumn),
-                                "dateAddedSecs" to cursor.getInt(dateAddedColumn),
-                                "dateModifiedSecs" to dateModifiedSecs,
-                                "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
-                                "durationMillis" to durationMillis,
+                                EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
+                                EntryFields.URI to itemUri.toString(),
+                                EntryFields.PATH to cursor.getString(pathColumn),
+                                EntryFields.SOURCE_MIME_TYPE to mimeType,
+                                EntryFields.WIDTH to width,
+                                EntryFields.HEIGHT to height,
+                                EntryFields.SOURCE_ROTATION_DEGREES to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
+                                EntryFields.SIZE_BYTES to cursor.getLong(sizeColumn),
+                                EntryFields.DATE_ADDED_SECS to cursor.getInt(dateAddedColumn),
+                                EntryFields.DATE_MODIFIED_SECS to dateModifiedSecs,
+                                EntryFields.SOURCE_DATE_TAKEN_MILLIS to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
+                                EntryFields.DURATION_MILLIS to durationMillis,
                                 // only for map export
-                                "contentId" to id,
+                                EntryFields.CONTENT_ID to id,
                             )
 
                             if (MimeTypes.isHeic(mimeType)) {
@@ -285,8 +285,8 @@ class MediaStoreImageProvider : ImageProvider() {
                                         if (outWidth > 0 && outHeight > 0) {
                                             width = outWidth
                                             height = outHeight
-                                            entryMap["width"] = width
-                                            entryMap["height"] = height
+                                            entryMap[EntryFields.WIDTH] = width
+                                            entryMap[EntryFields.HEIGHT] = height
                                         }
                                     }
                                 } catch (e: IOException) {
@@ -598,8 +598,8 @@ class MediaStoreImageProvider : ImageProvider() {
         }
         return if (toBin) {
             hashMapOf(
-                "trashed" to true,
-                "trashPath" to targetPath,
+                EntryFields.TRASHED to true,
+                EntryFields.TRASH_PATH to targetPath,
             )
         } else {
             scanNewPath(activity, targetPath, mimeType)
@@ -912,13 +912,13 @@ class MediaStoreImageProvider : ImageProvider() {
                     val cursor = context.contentResolver.query(uri, projection, null, null, null)
                     if (cursor != null && cursor.moveToFirst()) {
                         val newFields = hashMapOf<String, Any?>(
-                            "origin" to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
-                            "uri" to uri.toString(),
-                            "contentId" to uri.tryParseId(),
-                            "path" to path,
+                            EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
+                            EntryFields.URI to uri.toString(),
+                            EntryFields.CONTENT_ID to uri.tryParseId(),
+                            EntryFields.PATH to path,
                         )
-                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields["dateAddedSecs"] = cursor.getInt(it) }
-                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
+                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields[EntryFields.DATE_ADDED_SECS] = cursor.getInt(it) }
+                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields[EntryFields.DATE_MODIFIED_SECS] = cursor.getInt(it) }
                         cursor.close()
                         return newFields
                     }

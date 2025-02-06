@@ -1,8 +1,8 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.ContextWrapper
-import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.model.FieldMap
@@ -44,7 +44,7 @@ class MediaEditHandler(private val contextWrapper: ContextWrapper) : MethodCallH
     }
 
     private suspend fun captureFrame(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val desiredName = call.argument<String>("desiredName")
         val exifFields = call.argument<FieldMap>("exif") ?: HashMap()
         val bytes = call.argument<ByteArray>("bytes")

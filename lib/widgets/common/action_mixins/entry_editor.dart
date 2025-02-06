@@ -1,9 +1,9 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
-import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -17,9 +17,7 @@ import 'package:aves/widgets/dialogs/entry_editors/edit_rating_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/remove_metadata_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/tag_editor_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
 
 mixin EntryEditorMixin {
   Future<DateModifier?> selectDateModifier(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
@@ -35,15 +33,13 @@ mixin EntryEditorMixin {
     );
   }
 
-  Future<LatLng?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
+  Future<LocationEditActionResult?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
-    final entry = entries.firstWhereOrNull((entry) => entry.hasGps) ?? entries.first;
-
-    return showDialog<LatLng>(
+    return showDialog<LocationEditActionResult>(
       context: context,
       builder: (context) => EditEntryLocationDialog(
-        entry: entry,
+        entries: entries,
         collection: collection,
       ),
       routeSettings: const RouteSettings(name: EditEntryLocationDialog.routeName),

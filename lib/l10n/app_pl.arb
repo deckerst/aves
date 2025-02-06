@@ -1564,5 +1564,13 @@
   "appExportDynamicAlbums": "Dynamiczne albumy",
   "@appExportDynamicAlbums": {},
   "chipActionDecompose": "Podziel",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "Importuj GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Przesunięcie czasowe",
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Wszystko",
+  "@removeEntryMetadataDialogAll": {}
 }

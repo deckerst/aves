@@ -122,24 +122,15 @@ class _RasterImageViewState extends State<RasterImageView> {
         final viewportSized = viewportSize?.isEmpty == false;
         if (viewportSized && _useTiles && !_isTilingInitialized) _initTiling(viewportSize!);
 
+        final magnifierScale = viewState.scale!;
         return SizedBox.fromSize(
-          size: _displaySize * viewState.scale!,
+          size: _displaySize * magnifierScale,
           child: Stack(
             alignment: Alignment.center,
             children: [
               if (entry.canHaveAlpha && viewportSized) _buildBackground(),
               _buildLoading(),
-              if (_useTiles)
-                ..._getTiles()
-              else
-                Image(
-                  image: fullImageProvider,
-                  gaplessPlayback: true,
-                  errorBuilder: widget.errorBuilder,
-                  width: (_displaySize * viewState.scale!).width,
-                  fit: BoxFit.contain,
-                  filterQuality: FilterQuality.medium,
-                ),
+              if (_useTiles) ..._buildTiles() else _buildFullImage(),
             ],
           ),
         );
@@ -147,11 +138,30 @@ class _RasterImageViewState extends State<RasterImageView> {
     );
   }
 
+  Widget _buildFullImage() {
+    final magnifierScale = viewState.scale!;
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final quality = _qualityForScale(
+      magnifierScale: magnifierScale,
+      sampleSize: 1,
+      devicePixelRatio: devicePixelRatio,
+    );
+    return Image(
+      image: fullImageProvider,
+      gaplessPlayback: true,
+      errorBuilder: widget.errorBuilder,
+      width: (_displaySize * magnifierScale).width,
+      fit: BoxFit.contain,
+      filterQuality: quality,
+    );
+  }
+
   void _initTiling(Size viewportSize) {
-    _tileSide = viewportSize.shortestSide * ExtraAvesEntryImages.scaleFactor;
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    _tileSide = viewportSize.shortestSide * devicePixelRatio;
     // scale for initial state `contained`
     final containedScale = min(viewportSize.width / _displaySize.width, viewportSize.height / _displaySize.height);
-    _maxSampleSize = ExtraAvesEntryImages.sampleSizeForScale(containedScale);
+    _maxSampleSize = ExtraAvesEntryImages.sampleSizeForScale(magnifierScale: containedScale, devicePixelRatio: devicePixelRatio);
 
     final rotationDegrees = entry.rotationDegrees;
     final isFlipped = entry.isFlipped;
@@ -229,25 +239,31 @@ class _RasterImageViewState extends State<RasterImageView> {
     );
   }
 
-  List<Widget> _getTiles() {
+  List<Widget> _buildTiles() {
     if (!_isTilingInitialized) return [];
 
     final displayWidth = _displaySize.width.round();
     final displayHeight = _displaySize.height.round();
     final viewRect = _getViewRect(displayWidth, displayHeight);
-    final scale = viewState.scale!;
+    final magnifierScale = viewState.scale!;
+    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
 
     // for the largest sample size (matching the initial scale), the whole image is in view
     // so we subsample the whole image without tiling
     final fullImageRegionTile = _RegionTile(
       entry: entry,
-      tileRect: Rect.fromLTWH(0, 0, displayWidth * scale, displayHeight * scale),
+      tileRect: Rect.fromLTWH(0, 0, displayWidth * magnifierScale, displayHeight * magnifierScale),
       regionRect: fullImageRegion,
       sampleSize: _maxSampleSize,
+      quality: _qualityForScale(
+        magnifierScale: magnifierScale,
+        sampleSize: _maxSampleSize,
+        devicePixelRatio: devicePixelRatio,
+      ),
     );
     final tiles = [fullImageRegionTile];
 
-    var minSampleSize = min(ExtraAvesEntryImages.sampleSizeForScale(scale), _maxSampleSize);
+    final minSampleSize = min(ExtraAvesEntryImages.sampleSizeForScale(magnifierScale: magnifierScale, devicePixelRatio: devicePixelRatio), _maxSampleSize);
     int nextSampleSize(int sampleSize) => (sampleSize / 2).floor();
     for (var sampleSize = nextSampleSize(_maxSampleSize); sampleSize >= minSampleSize; sampleSize = nextSampleSize(sampleSize)) {
       final regionSide = (_tileSide * sampleSize).round();
@@ -259,7 +275,7 @@ class _RasterImageViewState extends State<RasterImageView> {
             regionSide: regionSide,
             displayWidth: displayWidth,
             displayHeight: displayHeight,
-            scale: scale,
+            scale: magnifierScale,
             viewRect: viewRect,
           );
           if (rects != null) {
@@ -269,6 +285,11 @@ class _RasterImageViewState extends State<RasterImageView> {
               tileRect: tileRect,
               regionRect: regionRect,
               sampleSize: sampleSize,
+              quality: _qualityForScale(
+                magnifierScale: magnifierScale,
+                sampleSize: sampleSize,
+                devicePixelRatio: devicePixelRatio,
+              ),
             ));
           }
         }
@@ -321,6 +342,21 @@ class _RasterImageViewState extends State<RasterImageView> {
     }
     return (tileRect, regionRect);
   }
+
+  // follow recommended thresholds from `FilterQuality` documentation
+  static FilterQuality _qualityForScale({
+    required double magnifierScale,
+    required int sampleSize,
+    required double devicePixelRatio,
+  }) {
+    final entryScale = magnifierScale * devicePixelRatio;
+    final renderingScale = entryScale * sampleSize;
+    if (renderingScale > 1) {
+      return renderingScale > 10 ? FilterQuality.high : FilterQuality.medium;
+    } else {
+      return renderingScale < .5 ? FilterQuality.medium : FilterQuality.high;
+    }
+  }
 }
 
 class _RegionTile extends StatefulWidget {
@@ -331,12 +367,14 @@ class _RegionTile extends StatefulWidget {
   final Rect tileRect;
   final Rectangle<int> regionRect;
   final int sampleSize;
+  final FilterQuality quality;
 
   const _RegionTile({
     required this.entry,
     required this.tileRect,
     required this.regionRect,
     required this.sampleSize,
+    required this.quality,
   });
 
   @override
@@ -405,6 +443,7 @@ class _RegionTileState extends State<_RegionTile> {
       width: tileRect.width,
       height: tileRect.height,
       fit: BoxFit.fill,
+      filterQuality: widget.quality,
     );
 
     // apply EXIF orientation
@@ -426,6 +465,28 @@ class _RegionTileState extends State<_RegionTile> {
       child = RotatedBox(
         quarterTurns: quarterTurns,
         child: child,
+      );
+    }
+
+    if (settings.debugShowViewerTiles) {
+      final regionRect = widget.regionRect;
+      child = Stack(
+        children: [
+          Positioned.fill(child: child),
+          Text(
+            '\ntile=(${tileRect.left.round()}, ${tileRect.top.round()}) ${tileRect.width.round()} x ${tileRect.height.round()}'
+            '\nregion=(${regionRect.left.round()}, ${regionRect.top.round()}) ${regionRect.width.round()} x ${regionRect.height.round()}'
+            '\nsampling=${widget.sampleSize} quality=${widget.quality.name}',
+            style: const TextStyle(backgroundColor: Colors.black87),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.red, width: 1),
+              ),
+            ),
+          ),
+        ],
       );
     }
 

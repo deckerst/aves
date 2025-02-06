@@ -1564,5 +1564,13 @@
   "newDynamicAlbumDialogTitle": "ألبوم ديناميكي جديد",
   "@newDynamicAlbumDialogTitle": {},
   "chipActionDecompose": "فصل",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "استيراد GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "التحول الزمني",
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "الكل",
+  "@removeEntryMetadataDialogAll": {}
 }

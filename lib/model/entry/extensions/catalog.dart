@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/media/geotiff.dart';
 import 'package:aves/model/metadata/catalog.dart';
@@ -22,20 +23,20 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       final size = await SvgMetadataService.getSize(this);
       if (size != null) {
         final fields = {
-          'width': size.width.ceil(),
-          'height': size.height.ceil(),
+          EntryFields.width: size.width.ceil(),
+          EntryFields.height: size.height.ceil(),
         };
         await applyNewFields(fields, persist: persist);
       }
       catalogMetadata = CatalogMetadata(id: id);
     } else {
       // pre-processing
-      if ((isVideo && (!isSized || durationMillis == 0)) || mimeType == MimeTypes.avif) {
-        // exotic video that is not sized during loading
+      if (isVideo || mimeType == MimeTypes.avif) {
+        // on initial loading, original source may report incorrect size, rotation or duration
         final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
         // check size as the video interpreter may fail on some AVIF stills
-        final width = fields['width'];
-        final height = fields['height'];
+        final width = fields[EntryFields.width];
+        final height = fields[EntryFields.height];
         final isValid = (width == null || width > 0) && (height == null || height > 0);
         if (isValid) {
           await applyNewFields(fields, persist: persist);
@@ -47,7 +48,7 @@ extension ExtraAvesEntryCatalog on AvesEntry {
 
       // post-processing
       if ((isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) || (mimeType == MimeTypes.avif && durationMillis != null)) {
-        catalogMetadata = await VideoMetadataFormatter.getCatalogMetadata(this);
+        catalogMetadata = await VideoMetadataFormatter.completeCatalogMetadata(this);
       }
       if (isGeotiff && !hasGps) {
         final info = await metadataFetchService.getGeoTiffInfo(this);

@@ -1406,5 +1406,11 @@
   "newDynamicAlbumDialogTitle": "Album Dinamis Baru",
   "@newDynamicAlbumDialogTitle": {},
   "chipActionDecompose": "Pisah",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "Impor GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Pergeseran waktu",
+  "@editEntryLocationDialogTimeShift": {}
 }

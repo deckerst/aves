@@ -1,7 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
-import android.net.Uri
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
@@ -28,7 +28,7 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
 
     private fun getEntry(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType") // MIME type is optional
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val allowUnsized = call.argument<Boolean>("allowUnsized") ?: false
         if (uri == null) {
             result.error("getEntry-args", "missing arguments", null)

@@ -3,8 +3,11 @@ import 'dart:io';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/favourites.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
@@ -37,14 +40,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  Future<void> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
+  // returns whether it completed the action (with or without failures)
+  Future<bool> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
     final destinationAlbumFilter = await pickAlbum(context: context, moveType: MoveType.export, storedAlbumsOnly: true);
-    if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return;
+    if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
 
     final destinationAlbum = destinationAlbumFilter.album;
-    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
+    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return false;
 
-    if (!await checkFreeSpaceForMove(context, targetEntries, destinationAlbum, MoveType.export)) return;
+    if (!await checkFreeSpaceForMove(context, targetEntries, destinationAlbum, MoveType.export)) return false;
 
     final transientMultiPageInfo = <MultiPageInfo>{};
     final selection = <AvesEntry>{};
@@ -89,7 +93,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         ),
         routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
       );
-      if (value == null) return;
+      if (value == null) return false;
       nameConflictStrategy = value;
     }
 
@@ -106,13 +110,28 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       ),
       itemCount: selectionCount,
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final exportedOps = successOps.where((e) => !e.skipped).toSet();
-        final newUris = exportedOps.map((v) => v.newFields['uri'] as String?).nonNulls.toSet();
+        final successOps = processed.where((op) => op.success).toSet();
+        final exportedOps = successOps.where((op) => !op.skipped && op.newFields[EntryFields.uri] != null).toSet();
+        final newUris = exportedOps.map((op) => op.newFields[EntryFields.uri] as String).toSet();
         final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
+        // check source favourite status
+        final favouriteSourceUris = selection.where((entry) => entry.isFavourite).map((entry) => entry.uri).toSet();
+        final favouriteNewUris = <String>{};
+        exportedOps.forEach((op) {
+          final sourceUri = op.uri;
+          if (favouriteSourceUris.contains(sourceUri)) {
+            final newUri = op.newFields[EntryFields.uri] as String;
+            favouriteNewUris.add(newUri);
+          }
+        });
+
         source.resumeMonitoring();
-        unawaited(source.refreshUris(newUris));
+        unawaited(source.refreshUris(newUris).then((_) {
+          // transfer favourite status on exports
+          final newFavouriteEntries = source.allEntries.where((entry) => favouriteNewUris.contains(entry.uri)).toSet();
+          favourites.add(newFavouriteEntries);
+        }));
 
         // get navigator beforehand because
         // local context may be deactivated when action is triggered after navigation
@@ -157,34 +176,44 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       },
     );
     transientMultiPageInfo.forEach((v) => v.dispose());
+    return true;
   }
 
-  Future<void> doQuickMove(
+  // returns whether it completed the action (with or without failures)
+  Future<bool> doQuickMove(
     BuildContext context, {
     required MoveType moveType,
-    required Map<String, Iterable<AvesEntry>> entriesByDestination,
+    required Map<String, Set<AvesEntry>> entriesByDestination,
     bool hideShowAction = false,
     VoidCallback? onSuccess,
   }) async {
+    if (moveType == MoveType.move) {
+      // skip moving entries to their directory
+      entriesByDestination.forEach((destinationAlbum, entries) {
+        entries.removeWhere((entry) => entry.directory == destinationAlbum);
+      });
+      entriesByDestination.removeWhere((_, entries) => entries.isEmpty);
+    }
+
     final entries = entriesByDestination.values.expand((v) => v).toSet();
     final todoCount = entries.length;
-    assert(todoCount > 0);
+    if (todoCount == 0) return true;
 
     final toBin = moveType == MoveType.toBin;
     final copy = moveType == MoveType.copy;
 
     // permission for modification at destinations
     final destinationAlbums = entriesByDestination.keys.toSet();
-    if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return;
+    if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return false;
 
     // permission for modification at origins
     final originAlbums = entries.map((e) => e.directory).nonNulls.toSet();
-    if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return;
+    if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return false;
 
     final hasEnoughSpaceByDestination = await Future.wait(destinationAlbums.map((destinationAlbum) {
       return checkFreeSpaceForMove(context, entries, destinationAlbum, moveType);
     }));
-    if (hasEnoughSpaceByDestination.any((v) => !v)) return;
+    if (hasEnoughSpaceByDestination.any((v) => !v)) return false;
 
     final l10n = context.l10n;
     var nameConflictStrategy = NameConflictStrategy.rename;
@@ -209,12 +238,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           ),
           routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
         );
-        if (value == null) return;
+        if (value == null) return false;
         nameConflictStrategy = value;
       }
     }
 
-    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return;
+    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -230,11 +259,11 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       itemCount: todoCount,
       onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((v) => v.success).toSet();
+        final successOps = processed.where((op) => op.success).toSet();
 
         // move
-        final movedOps = successOps.where((v) => !v.skipped && !v.deleted).toSet();
-        final movedEntries = movedOps.map((v) => v.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).nonNulls.toSet();
+        final movedOps = successOps.where((op) => !op.skipped && !op.deleted).toSet();
+        final movedEntries = movedOps.map((op) => op.uri).map((uri) => entries.firstWhereOrNull((entry) => entry.uri == uri)).nonNulls.toSet();
         await source.updateAfterMove(
           todoEntries: entries,
           moveType: moveType,
@@ -243,8 +272,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         );
 
         // delete (when trying to move to bin obsolete entries)
-        final deletedOps = successOps.where((v) => v.deleted).toSet();
-        final deletedUris = deletedOps.map((event) => event.uri).toSet();
+        final deletedOps = successOps.where((op) => op.deleted).toSet();
+        final deletedUris = deletedOps.map((op) => op.uri).toSet();
         await source.removeEntries(deletedUris, includeTrash: true);
 
         source.resumeMonitoring();
@@ -313,9 +342,11 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         }
       },
     );
+    return true;
   }
 
-  Future<void> doMove(
+  // returns whether it completed the action (with or without failures)
+  Future<bool> doMove(
     BuildContext context, {
     required MoveType moveType,
     required Set<AvesEntry> entries,
@@ -330,7 +361,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         message: l10n.binEntriesConfirmationDialogMessage(entries.length),
         confirmationButtonLabel: l10n.deleteButtonLabel,
       )) {
-        return;
+        return false;
       }
     }
 
@@ -340,7 +371,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       case MoveType.move:
       case MoveType.export:
         final destinationAlbumFilter = await pickAlbum(context: context, moveType: moveType, storedAlbumsOnly: true);
-        if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return;
+        if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
 
         final destinationAlbum = destinationAlbumFilter.album;
         settings.recentDestinationAlbums = settings.recentDestinationAlbums
@@ -357,7 +388,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         });
     }
 
-    await doQuickMove(
+    return await doQuickMove(
       context,
       moveType: moveType,
       entriesByDestination: entriesByDestination,
@@ -365,7 +396,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     );
   }
 
-  Future<void> rename(
+  // returns whether it completed the action (with or without failures)
+  Future<bool> rename(
     BuildContext context, {
     required Map<AvesEntry, String> entriesToNewName,
     required bool persist,
@@ -375,9 +407,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     final todoCount = entries.length;
     assert(todoCount > 0);
 
-    if (!await checkStoragePermission(context, entries)) return;
+    if (!await checkStoragePermission(context, entries)) return false;
 
-    if (!await _checkUndatedItems(context, entries)) return;
+    if (!await _checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -391,8 +423,8 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       itemCount: todoCount,
       onCancel: () => mediaEditService.cancelFileOp(opId),
       onDone: (processed) async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final movedOps = successOps.where((e) => !e.skipped).toSet();
+        final successOps = processed.where((op) => op.success).toSet();
+        final movedOps = successOps.where((op) => !op.skipped).toSet();
         await source.updateAfterRename(
           todoEntries: entries,
           movedOps: movedOps,
@@ -412,6 +444,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         }
       },
     );
+    return true;
   }
 
   Future<bool> _checkUndatedItems(BuildContext context, Set<AvesEntry> entries) async {
@@ -451,7 +484,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     Set<String> destinationAlbums,
     Set<MoveOpEvent> movedOps,
   ) async {
-    final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+    final newUris = movedOps.map((op) => op.newFields[EntryFields.uri] as String?).toSet();
     bool highlightTest(AvesEntry entry) => newUris.contains(entry.uri);
 
     final collection = context.read<CollectionLens?>();

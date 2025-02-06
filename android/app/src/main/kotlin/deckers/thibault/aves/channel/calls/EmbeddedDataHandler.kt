@@ -1,9 +1,9 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPUtils
@@ -18,6 +18,7 @@ import deckers.thibault.aves.metadata.xmp.GoogleDeviceContainer
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP.getSafeStructField
 import deckers.thibault.aves.metadata.xmp.XMPPropName
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -59,7 +60,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     private suspend fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getExifThumbnails-args", "missing arguments", null)
@@ -88,7 +89,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     private fun extractGoogleDeviceItem(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
         val dataUri = call.argument<String>("dataUri")
@@ -143,7 +144,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     private fun extractJpegMpfItem(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
         val id = call.argument<Int>("id")
@@ -177,7 +178,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     private fun extractMotionPhotoImage(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
         if (mimeType == null || uri == null || sizeBytes == null) {
@@ -185,7 +186,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
+        MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
             val imageSizeBytes = sizeBytes - videoSizeBytes
             StorageUtils.openInputStream(context, uri)?.let { input ->
                 copyEmbeddedBytes(result, mimeType, displayName, input, imageSizeBytes)
@@ -198,7 +199,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     private fun extractMotionPhotoVideo(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
         if (mimeType == null || uri == null || sizeBytes == null) {
@@ -206,7 +207,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
+        MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
             val videoStartOffset = sizeBytes - videoSizeBytes
             StorageUtils.openInputStream(context, uri)?.let { input ->
                 input.skip(videoStartOffset)
@@ -219,7 +220,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun extractVideoEmbeddedPicture(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val displayName = call.argument<String>("displayName")
         if (uri == null) {
             result.error("extractVideoEmbeddedPicture-args", "missing arguments", null)
@@ -251,7 +252,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     private fun extractXmpDataProp(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val displayName = call.argument<String>("displayName")
         val dataProp = call.argument<List<Any>>("propPath")
@@ -329,8 +330,8 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             FileProvider.getUriForFile(context, authority, targetFile)
         }
         val resultFields: FieldMap = hashMapOf(
-            "uri" to uri.toString(),
-            "mimeType" to mimeType,
+            EntryFields.URI to uri.toString(),
+            EntryFields.MIME_TYPE to mimeType,
         )
         if (isImage(mimeType) || isVideo(mimeType)) {
             val provider = getProvider(context, uri)

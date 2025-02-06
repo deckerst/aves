@@ -1563,6 +1563,14 @@
   "@collectionActionAddDynamicAlbum": {},
   "appExportDynamicAlbums": "Динамічні альбоми",
   "@appExportDynamicAlbums": {},
-  "chipActionDecompose": "Спліт",
-  "@chipActionDecompose": {}
+  "chipActionDecompose": "Розділити",
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "Імпорт GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Зсув часу",
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Все",
+  "@removeEntryMetadataDialogAll": {}
 }

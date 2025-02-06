@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
@@ -30,6 +29,8 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
 import java.util.regex.Pattern
+import androidx.core.net.toUri
+import androidx.core.text.isDigitsOnly
 
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
@@ -81,7 +82,8 @@ object StorageUtils {
             return null
         }
         val trashDir = File(externalFilesDir, "trash")
-        if (!trashDir.exists() && !trashDir.mkdirs()) {
+        trashDir.mkdirs()
+        if (!trashDir.exists()) {
             Log.e(LOG_TAG, "failed to create directories at path=$trashDir")
             return null
         }
@@ -228,7 +230,7 @@ object StorageUtils {
                 // Device has emulated storage; external storage paths should have userId burned into them.
                 // /storage/emulated/[0,1,2,...]/
                 val path = getPrimaryVolumePath(context)
-                val rawUserId = path.split(File.separator).lastOrNull(String::isNotEmpty)?.takeIf { TextUtils.isDigitsOnly(it) } ?: ""
+                val rawUserId = path.split(File.separator).lastOrNull(String::isNotEmpty)?.takeIf { it.isDigitsOnly() } ?: ""
                 if (rawUserId.isEmpty()) {
                     paths.add(rawEmulatedStorageTarget)
                 } else {
@@ -499,7 +501,8 @@ object StorageUtils {
                 parentFile
             } else {
                 val directory = File(cleanDirPath)
-                if (!directory.exists() && !directory.mkdirs()) {
+                directory.mkdirs()
+                if (!directory.exists()) {
                     Log.e(LOG_TAG, "failed to create directories at path=$cleanDirPath")
                     return null
                 }
@@ -636,7 +639,7 @@ object StorageUtils {
 
     // strip user info, if any
     // e.g. `content://0@media/...`
-    private fun stripMediaUriUserInfo(uri: Uri) = Uri.parse(uri.toString().replaceFirst("${uri.userInfo}@", ""))
+    private fun stripMediaUriUserInfo(uri: Uri) = uri.toString().replaceFirst("${uri.userInfo}@", "").toUri()
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         val effectiveUri = getOriginalUri(context, uri)
@@ -712,7 +715,8 @@ object StorageUtils {
 
     fun createTempFile(context: Context, extension: String? = null): File {
         val directory = getTempDirectory(context)
-        if (!directory.exists() && !directory.mkdirs()) {
+        directory.mkdirs()
+        if (!directory.exists()) {
             throw IOException("failed to create directories at path=$directory")
         }
         val tempFile = File.createTempFile("aves", extension, directory)

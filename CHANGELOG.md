@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.3"></a>[v1.12.3] - 2025-02-06
+
+### Added
+
+- Metadata: edit location via GPX
+- Metadata: toggle for all types in removal dialog
+
+### Changed
+
+- Viewer: improved subsampling and filter quality strategy
+- Collection: ignore moving an item to its current directory
+- Collection: keep selection when action on several items is interrupted before processing
+- Collection: preserve favourite status when converting items
+- upgraded Flutter to stable v3.27.4
+
+### Fixed
+
+- editing TIFF metadata increasing file size
+- region decoding for some RAW files
+- incorrect video size or orientation as reported by Media Store
+- corrupting image when removing video from motion photo with incorrect metadata
+
 ## <a id="v1.12.2"></a>[v1.12.2] - 2025-01-13
 
 ### Added

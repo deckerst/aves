@@ -36,7 +36,7 @@ android {
     namespace 'deckers.thibault.aves'
     compileSdk 35
     // cf https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
-    ndkVersion '27.0.12077973'
+    ndkVersion '28.0.12916984'
 
     defaultConfig {
         applicationId packageName
@@ -151,7 +151,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1'
 
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation 'androidx.core:core-ktx:1.15.0'
@@ -173,13 +173,13 @@ dependencies {
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:90c06eebf4'
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:3ed067f021'
     implementation 'com.github.deckerst.mp4parser:isoparser:d5caf7a3dd'
     implementation 'com.github.deckerst.mp4parser:muxer:d5caf7a3dd'
-    implementation 'com.github.deckerst:pixymeta-android:9ec7097f17'
+    implementation 'com.github.deckerst:pixymeta-android:71eee77dc4'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
 
     kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"

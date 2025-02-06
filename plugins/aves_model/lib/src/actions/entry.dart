@@ -91,20 +91,20 @@ class EntryActions {
 
   static const pageActions = {
     EntryAction.videoCaptureFrame,
-    EntryAction.videoSelectStreams,
+    EntryAction.videoToggleMute,
     EntryAction.videoSetSpeed,
     EntryAction.videoABRepeat,
-    EntryAction.videoToggleMute,
+    EntryAction.videoSelectStreams,
     EntryAction.videoSettings,
-    EntryAction.videoTogglePlay,
-    EntryAction.videoReplay10,
-    EntryAction.videoSkip10,
-    EntryAction.videoShowPreviousFrame,
-    EntryAction.videoShowNextFrame,
+    ...videoPlayback,
+    ...orientationActions,
+  };
+
+  static const orientationActions = [
     EntryAction.rotateCCW,
     EntryAction.rotateCW,
     EntryAction.flip,
-  };
+  ];
 
   static const trashed = [
     EntryAction.delete,

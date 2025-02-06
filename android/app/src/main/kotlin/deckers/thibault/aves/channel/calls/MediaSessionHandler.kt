@@ -1,12 +1,16 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.AudioManager
 import android.media.session.PlaybackState
-import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.core.net.toUri
 import androidx.media.session.MediaButtonReceiver
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
@@ -59,7 +63,7 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
     }
 
     private suspend fun updateSession(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val uri = call.argument<String>("uri")?.toUri()
         val title = call.argument<String>("title") ?: uri?.toString()
         val durationMillis = call.argument<Number>("durationMillis")?.toLong()
         val stateString = call.argument<String>("state")

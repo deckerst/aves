@@ -1406,5 +1406,13 @@
   "collectionActionAddDynamicAlbum": "Ajouter un album dynamique",
   "@collectionActionAddDynamicAlbum": {},
   "chipActionDecompose": "Scinder",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogTimeShift": "Décalage temporel",
+  "@editEntryLocationDialogTimeShift": {},
+  "editEntryLocationDialogImportGpx": "Importer un fichier GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "removeEntryMetadataDialogAll": "Tout",
+  "@removeEntryMetadataDialogAll": {}
 }

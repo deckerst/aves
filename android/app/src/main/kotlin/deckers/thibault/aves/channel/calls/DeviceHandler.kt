@@ -4,14 +4,15 @@ import android.app.LocaleConfig
 import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Geocoder
-import android.net.Uri
 import android.os.Build
 import android.os.LocaleList
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.net.toUri
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
@@ -24,7 +25,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.Locale
-import java.util.TimeZone
 
 class DeviceHandler(private val context: Context) : MethodCallHandler {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -62,8 +62,15 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
                 "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
+                "supportPictureInPicture" to supportPictureInPicture(),
             )
         )
+    }
+
+    private fun supportPictureInPicture(): Boolean {
+        // minimum version for `PictureInPictureParams.Builder#setAutoEnterEnabled`
+        val supportPipOnLeave = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+        return supportPipOnLeave && context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
 
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
@@ -130,7 +137,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, Uri.parse("package:${context.packageName}"))
+        val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, "package:${context.packageName}".toUri())
         context.startActivity(intent)
         result.success(true)
     }

@@ -99,6 +99,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     _isPageAnimatingNotifier.dispose();
     _dotLocationNotifier.dispose();
     _infoLocationNotifier.dispose();
+    // provided collection should be a new instance specifically created
+    // for the `LocationPickPage` widget, so it can be safely disposed here
+    widget.collection?.dispose();
     super.dispose();
   }
 

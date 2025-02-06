@@ -7,6 +7,7 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import androidx.core.net.toUri
 
 class WallpaperActivity : MainActivity() {
     private var originalIntent: String? = null
@@ -39,7 +40,7 @@ class WallpaperActivity : MainActivity() {
         if (originalIntent != null) {
             val pickedUris = call.argument<List<String>>("uris")
             if (!pickedUris.isNullOrEmpty()) {
-                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, Uri.parse(uriString)) }
+                val toUri = { uriString: String -> AppAdapterHandler.getShareableUri(this, uriString.toUri()) }
                 onNewIntent(Intent().apply {
                     action = originalIntent
                     data = toUri(pickedUris.first())
