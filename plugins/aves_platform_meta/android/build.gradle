@@ -3,7 +3,7 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     ext {
-        kotlin_version = '1.9.24'
+        kotlin_version = '2.1.10'
         agp_version = '8.8.0'
     }
 
