@@ -1414,5 +1414,7 @@
   "editEntryLocationDialogImportGpx": "GPX importeren",
   "@editEntryLocationDialogImportGpx": {},
   "editEntryLocationDialogTimeShift": "Verschuiving van de tijd",
-  "@editEntryLocationDialogTimeShift": {}
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Alle",
+  "@removeEntryMetadataDialogAll": {}
 }
