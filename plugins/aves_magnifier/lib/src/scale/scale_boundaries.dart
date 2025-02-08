@@ -111,7 +111,7 @@ class ScaleBoundaries extends Equatable {
     final viewportWidth = _transformedViewportSize.width;
 
     final positionX = basePosition.x;
-    final widthDiff = computedWidth - viewportWidth;
+    final widthDiff = max(0, computedWidth - viewportWidth);
 
     final minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
     final maxX = ((positionX + 1).abs() / 2) * widthDiff;
@@ -123,7 +123,7 @@ class ScaleBoundaries extends Equatable {
     final viewportHeight = _transformedViewportSize.height;
 
     final positionY = basePosition.y;
-    final heightDiff = computedHeight - viewportHeight;
+    final heightDiff = max(0, computedHeight - viewportHeight);
 
     final minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
     final maxY = ((positionY + 1).abs() / 2) * heightDiff;
