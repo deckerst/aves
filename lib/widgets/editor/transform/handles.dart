@@ -2,14 +2,14 @@ import 'package:aves/widgets/editor/transform/cropper.dart';
 import 'package:flutter/material.dart';
 
 class VertexHandle extends StatefulWidget {
-  final EdgeInsets padding;
+  final EdgeInsets margin;
   final ValueGetter<Offset> getPosition;
   final ValueSetter<Offset> setPosition;
   final VoidCallback onDragStart, onDragEnd;
 
   const VertexHandle({
     super.key,
-    required this.padding,
+    required this.margin,
     required this.getPosition,
     required this.setPosition,
     required this.onDragStart,
@@ -26,13 +26,13 @@ class _VertexHandleState extends State<VertexHandle> {
 
   static const double _handleDim = Cropper.handleDimension;
 
-  EdgeInsets get padding => widget.padding;
+  EdgeInsets get margin => widget.margin;
 
   @override
   Widget build(BuildContext context) {
     return Positioned.fromRect(
       rect: Rect.fromCenter(
-        center: widget.getPosition().translate(padding.left, padding.right),
+        center: widget.getPosition().translate(margin.left, margin.right),
         width: _handleDim,
         height: _handleDim,
       ),
@@ -58,14 +58,14 @@ class _VertexHandleState extends State<VertexHandle> {
 }
 
 class EdgeHandle extends StatefulWidget {
-  final EdgeInsets padding;
+  final EdgeInsets margin;
   final ValueGetter<Rect> getEdge;
   final ValueSetter<Rect> setEdge;
   final VoidCallback onDragStart, onDragEnd;
 
   const EdgeHandle({
     super.key,
-    required this.padding,
+    required this.margin,
     required this.getEdge,
     required this.setEdge,
     required this.onDragStart,
@@ -82,7 +82,7 @@ class _EdgeHandleState extends State<EdgeHandle> {
 
   static const double _handleDim = Cropper.handleDimension;
 
-  EdgeInsets get padding => widget.padding;
+  EdgeInsets get margin => widget.margin;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +94,7 @@ class _EdgeHandleState extends State<EdgeHandle> {
       // vertical edge
       edge = Rect.fromLTWH(edge.left - _handleDim / 2, edge.top + _handleDim / 2, _handleDim, edge.height - _handleDim);
     }
-    edge = edge.translate(padding.left, padding.right);
+    edge = edge.translate(margin.left, margin.right);
 
     return Positioned.fromRect(
       rect: edge,

@@ -97,8 +97,6 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
   late AnimationController _positionAnimationController;
   late Animation<Offset> _positionAnimation;
 
-  ScaleBoundaries? cachedScaleBoundaries;
-
   static const _flingPointerKind = PointerDeviceKind.unknown;
 
   @override
@@ -111,7 +109,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
     _registerWidget(widget);
     // force delegate scale computing on initialization
     // so that it does not happen lazily at the beginning of a scale animation
-    recalcScale();
+    initScale();
   }
 
   @override
@@ -144,13 +142,11 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 
   void _registerWidget(AvesMagnifier widget) {
     registerDelegate(widget);
-    cachedScaleBoundaries = widget.controller.scaleBoundaries;
     setScaleStateUpdateAnimation(animateOnScaleStateUpdate);
   }
 
   void _unregisterWidget(AvesMagnifier oldWidget) {
     unregisterDelegate(oldWidget);
-    cachedScaleBoundaries = null;
   }
 
   void handleScaleAnimation() {
@@ -176,7 +172,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
     _mayFlingLTRB = const (true, true, true, true);
     _updateMayFling();
 
-    _startScale = scale;
+    _startScale = controller.scale;
     _startFocalPoint = details.localFocalPoint;
     _lastViewportFocalPosition = _startFocalPoint;
     _dropped = false;
@@ -214,7 +210,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
       final factor = _quickScaleMoved ? (focalPointY > _quickScaleLastY! ? (1 + spanDiff) : (1 - spanDiff)) : 1;
       _quickScaleLastDistance = distance;
       _quickScaleLastY = focalPointY;
-      newScale = scale! * factor;
+      newScale = controller.scale! * factor;
     } else {
       newScale = _startScale! * details.scale;
     }
@@ -227,7 +223,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 
     final viewportCenter = boundaries.viewportCenter;
     final centerContentPosition = boundaries.viewportToContentPosition(controller, viewportCenter);
-    final scalePositionDelta = (scaleFocalPoint - viewportCenter) * (scale! / newScale - 1);
+    final scalePositionDelta = (scaleFocalPoint - viewportCenter) * (controller.scale! / newScale - 1);
     final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition!;
 
     final newPosition = boundaries.clampPosition(
@@ -434,7 +430,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 
   /// Check if scale is equal to initial after scale animation update
   void onAnimationStatusCompleted() {
-    if (controller.scaleState.state != ScaleState.initial && scale == scaleBoundaries?.initialScale) {
+    if (controller.scaleState.state != ScaleState.initial && controller.scale == scaleBoundaries?.initialScale) {
       controller.setScaleState(ScaleState.initial, ChangeSource.animation);
     }
   }
@@ -446,12 +442,6 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    // Check if we need a recalc on the scale
-    if (widget.controller.scaleBoundaries != cachedScaleBoundaries) {
-      markNeedsScaleRecalc = true;
-      cachedScaleBoundaries = widget.controller.scaleBoundaries;
-    }
-
     return StreamBuilder<MagnifierState>(
       stream: controller.stateStream,
       initialData: controller.previousState,
@@ -494,7 +484,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
                 controller.setScaleBoundaries(boundaries);
 
                 // `Matrix4.scale` uses dynamic typing and can throw `UnimplementedError` on wrong types
-                final double effectiveScale = (applyScale ? scale : null) ?? 1.0;
+                final double effectiveScale = (applyScale ? controller.scale : null) ?? 1.0;
                 return Transform(
                   transform: Matrix4.identity()
                     ..translate(position.dx, position.dy)

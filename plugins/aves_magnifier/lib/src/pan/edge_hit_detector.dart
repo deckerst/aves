@@ -1,6 +1,5 @@
 import 'package:aves_magnifier/src/controller/controller_delegate.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
@@ -11,14 +10,9 @@ mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
 
   EdgeHit getXEdgeHit() {
     final _boundaries = scaleBoundaries;
-    final _scale = scale;
+    final _scale = controller.scale;
     if (_boundaries == null || _scale == null) return const EdgeHit(false, false);
 
-    final contentWidth = _boundaries.contentSize.width * _scale;
-    final viewportWidth = _boundaries.viewportSize.width;
-    if (viewportWidth + precisionErrorTolerance >= contentWidth) {
-      return const EdgeHit(true, true);
-    }
     final x = -position.dx;
     final range = _boundaries.getXEdges(scale: _scale);
     return EdgeHit(x <= range.min, x >= range.max);
@@ -26,14 +20,9 @@ mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
 
   EdgeHit getYEdgeHit() {
     final _boundaries = scaleBoundaries;
-    final _scale = scale;
+    final _scale = controller.scale;
     if (_boundaries == null || _scale == null) return const EdgeHit(false, false);
 
-    final contentHeight = _boundaries.contentSize.height * _scale;
-    final viewportHeight = _boundaries.viewportSize.height;
-    if (viewportHeight + precisionErrorTolerance >= contentHeight) {
-      return const EdgeHit(true, true);
-    }
     final y = -position.dy;
     final range = _boundaries.getYEdges(scale: _scale);
     return EdgeHit(y <= range.min, y >= range.max);
