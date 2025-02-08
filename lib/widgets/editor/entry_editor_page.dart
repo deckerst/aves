@@ -30,7 +30,7 @@ class ImageEditorPage extends StatefulWidget {
 class _ImageEditorPageState extends State<ImageEditorPage> {
   final List<StreamSubscription> _subscriptions = [];
   final ValueNotifier<EditorAction?> _actionNotifier = ValueNotifier(null);
-  final ValueNotifier<EdgeInsets> _paddingNotifier = ValueNotifier(EdgeInsets.zero);
+  final ValueNotifier<EdgeInsets> _marginNotifier = ValueNotifier(EdgeInsets.zero);
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier<ViewState>(ViewState.zero);
   final AvesMagnifierController _magnifierController = AvesMagnifierController();
   late final TransformController _transformController;
@@ -49,7 +49,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
       ..forEach((sub) => sub.cancel())
       ..clear();
     _actionNotifier.dispose();
-    _paddingNotifier.dispose();
+    _marginNotifier.dispose();
     _viewStateNotifier.dispose();
     _magnifierController.dispose();
     _transformController.dispose();
@@ -59,8 +59,11 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Provider<TransformController>.value(
-        value: _transformController,
+      body: MultiProvider(
+        providers: [
+          Provider<AvesMagnifierController>.value(value: _magnifierController),
+          Provider<TransformController>.value(value: _transformController),
+        ],
         child: SafeArea(
           child: Column(
             children: [
@@ -72,7 +75,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
                         magnifierController: _magnifierController,
                         transformController: _transformController,
                         actionNotifier: _actionNotifier,
-                        paddingNotifier: _paddingNotifier,
+                        marginNotifier: _marginNotifier,
                         viewStateNotifier: _viewStateNotifier,
                         entry: widget.entry,
                       ),
@@ -91,7 +94,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
                             return Cropper(
                               magnifierController: _magnifierController,
                               transformController: _transformController,
-                              paddingNotifier: _paddingNotifier,
+                              marginNotifier: _marginNotifier,
                             );
                           case null:
                             return const SizedBox();
@@ -101,6 +104,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
                   ],
                 ),
               ),
+              const Divider(height: 0),
               EditorControlPanel(
                 entry: widget.entry,
                 actionNotifier: _actionNotifier,
@@ -113,13 +117,13 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
     );
   }
 
-  void _onActionChanged() => _updateImagePadding();
+  void _onActionChanged() => _updateImageMargin();
 
-  void _updateImagePadding() {
+  void _updateImageMargin() {
     if (_actionNotifier.value == EditorAction.transform) {
-      _paddingNotifier.value = Cropper.imagePadding;
+      _marginNotifier.value = Cropper.imageMargin;
     } else {
-      _paddingNotifier.value = EdgeInsets.zero;
+      _marginNotifier.value = EdgeInsets.zero;
     }
   }
 

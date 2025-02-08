@@ -32,7 +32,7 @@ class AvesMagnifierController {
     initial = initialState ?? const MagnifierState(position: Offset.zero, scale: null, source: source);
     previousState = initial;
     _currentState = initial;
-    _setState(initial);
+    reset();
 
     const _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: source);
     previousScaleState = _initialScaleState;
@@ -69,6 +69,8 @@ class AvesMagnifierController {
   bool get hasScaleSateChanged => previousScaleState != scaleState;
 
   bool get isZooming => scaleState.state == ScaleState.zoomedIn || scaleState.state == ScaleState.zoomedOut;
+
+  void reset() => _setState(initial);
 
   void update({
     Offset? position,

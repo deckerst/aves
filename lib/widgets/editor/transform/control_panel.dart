@@ -81,8 +81,10 @@ class _TransformControlPanelState extends State<TransformControlPanel> with Tick
         const SizedBox(height: padding),
         Row(
           children: [
-            const OverlayButton(
-              child: BackButton(),
+            OverlayButton(
+              child: BackButton(
+                onPressed: widget.onCancel,
+              ),
             ),
             Expanded(
               child: TabBar(

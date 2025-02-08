@@ -21,16 +21,16 @@ import 'package:provider/provider.dart';
 class Cropper extends StatefulWidget {
   final AvesMagnifierController magnifierController;
   final TransformController transformController;
-  final ValueNotifier<EdgeInsets> paddingNotifier;
+  final ValueNotifier<EdgeInsets> marginNotifier;
 
   static const double handleDimension = kMinInteractiveDimension;
-  static const EdgeInsets imagePadding = EdgeInsets.all(kMinInteractiveDimension);
+  static const EdgeInsets imageMargin = EdgeInsets.all(kMinInteractiveDimension);
 
   const Cropper({
     super.key,
     required this.magnifierController,
     required this.transformController,
-    required this.paddingNotifier,
+    required this.marginNotifier,
   });
 
   @override
@@ -39,7 +39,6 @@ class Cropper extends StatefulWidget {
 
 class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   final List<StreamSubscription> _subscriptions = [];
-  final ValueNotifier<Size> _viewportSizeNotifier = ValueNotifier(Size.zero);
   final ValueNotifier<Rect> _outlineNotifier = ValueNotifier(Rect.zero);
   final ValueNotifier<int> _gridDivisionNotifier = ValueNotifier(0);
   late AnimationController _gridAnimationController;
@@ -61,8 +60,6 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    final initialRegion = transformation.region;
-    _viewportSizeNotifier.addListener(() => _initOutline(initialRegion));
     _gridAnimationController = AnimationController(
       duration: context.read<DurationsData>().viewerOverlayAnimation,
       vsync: this,
@@ -72,7 +69,6 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
       curve: Curves.easeOutQuad,
     );
     _registerWidget(widget);
-    _initOutline(initialRegion);
   }
 
   @override
@@ -84,7 +80,6 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _viewportSizeNotifier.dispose();
     _outlineNotifier.dispose();
     _gridDivisionNotifier.dispose();
     _gridOpacity.dispose();
@@ -95,7 +90,7 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
 
   void _registerWidget(Cropper widget) {
     _subscriptions.add(widget.magnifierController.stateStream.listen(_onViewStateChanged));
-    _subscriptions.add(widget.magnifierController.scaleBoundariesStream.listen(_onViewBoundariesChanged));
+    _subscriptions.add(widget.magnifierController.scaleBoundariesStream.map((v) => v.viewportSize).listen(_onViewportSizeChanged));
     _subscriptions.add(widget.transformController.eventStream.listen(_onTransformEvent));
     _subscriptions.add(widget.transformController.transformationStream.map((v) => v.orientation).distinct().listen(_onOrientationChanged));
     _subscriptions.add(widget.transformController.transformationStream.map((v) => v.straightenDegrees).distinct().listen(_onStraightenDegreesChanged));
@@ -113,14 +108,14 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Positioned.fill(
       child: ValueListenableBuilder<EdgeInsets>(
-        valueListenable: widget.paddingNotifier,
-        builder: (context, padding, child) {
+        valueListenable: widget.marginNotifier,
+        builder: (context, margin, child) {
           return ValueListenableBuilder<Rect>(
             valueListenable: _outlineNotifier,
             builder: (context, outline, child) {
               if (outline.isEmpty) return const SizedBox();
 
-              final outlineVisualRect = outline.translate(padding.left, padding.top);
+              final outlineVisualRect = outline.translate(margin.left, margin.top);
               return Stack(
                 children: [
                   Positioned.fill(
@@ -155,35 +150,35 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   _buildVertexHandle(
-                    padding: padding,
+                    margin: margin,
                     getPosition: () => outline.topLeft,
                     setPosition: (v) => _handleOutline(
                       topLeft: Offset(min(outline.right - minDimension, v.dx), min(outline.bottom - minDimension, v.dy)),
                     ),
                   ),
                   _buildVertexHandle(
-                    padding: padding,
+                    margin: margin,
                     getPosition: () => outline.topRight,
                     setPosition: (v) => _handleOutline(
                       topRight: Offset(max(outline.left + minDimension, v.dx), min(outline.bottom - minDimension, v.dy)),
                     ),
                   ),
                   _buildVertexHandle(
-                    padding: padding,
+                    margin: margin,
                     getPosition: () => outline.bottomRight,
                     setPosition: (v) => _handleOutline(
                       bottomRight: Offset(max(outline.left + minDimension, v.dx), max(outline.top + minDimension, v.dy)),
                     ),
                   ),
                   _buildVertexHandle(
-                    padding: padding,
+                    margin: margin,
                     getPosition: () => outline.bottomLeft,
                     setPosition: (v) => _handleOutline(
                       bottomLeft: Offset(min(outline.right - minDimension, v.dx), max(outline.top + minDimension, v.dy)),
                     ),
                   ),
                   _buildEdgeHandle(
-                    padding: padding,
+                    margin: margin,
                     getEdge: () => Rect.fromPoints(outline.bottomLeft, outline.topLeft),
                     setEdge: (v) {
                       final left = min(outline.right - minDimension, v.left);
@@ -194,7 +189,7 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
                     },
                   ),
                   _buildEdgeHandle(
-                    padding: padding,
+                    margin: margin,
                     getEdge: () => Rect.fromPoints(outline.topLeft, outline.topRight),
                     setEdge: (v) {
                       final top = min(outline.bottom - minDimension, v.top);
@@ -205,7 +200,7 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
                     },
                   ),
                   _buildEdgeHandle(
-                    padding: padding,
+                    margin: margin,
                     getEdge: () => Rect.fromPoints(outline.bottomRight, outline.topRight),
                     setEdge: (v) {
                       final right = max(outline.left + minDimension, v.right);
@@ -216,7 +211,7 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
                     },
                   ),
                   _buildEdgeHandle(
-                    padding: padding,
+                    margin: margin,
                     getEdge: () => Rect.fromPoints(outline.bottomLeft, outline.bottomRight),
                     setEdge: (v) {
                       final bottom = max(outline.top + minDimension, v.bottom);
@@ -341,12 +336,12 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   }
 
   VertexHandle _buildVertexHandle({
-    required EdgeInsets padding,
+    required EdgeInsets margin,
     required ValueGetter<Offset> getPosition,
     required ValueSetter<Offset> setPosition,
   }) {
     return VertexHandle(
-      padding: padding,
+      margin: margin,
       getPosition: getPosition,
       setPosition: setPosition,
       onDragStart: _onDragStart,
@@ -355,12 +350,12 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   }
 
   EdgeHandle _buildEdgeHandle({
-    required EdgeInsets padding,
+    required EdgeInsets margin,
     required ValueGetter<Rect> getEdge,
     required ValueSetter<Rect> setEdge,
   }) {
     return EdgeHandle(
-      padding: padding,
+      margin: margin,
       getEdge: getEdge,
       setEdge: setEdge,
       onDragStart: _onDragStart,
@@ -392,11 +387,18 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
     _setOutline(_regionToContainedOutline(nextState, region));
   }
 
-  ViewState _viewStateForContainedRegion(ScaleBoundaries boundaries, CropRegion region) {
-    final regionSize = MatrixUtils.transformRect(transformation.matrix, region.outsideRect).size;
-    final nextScale = boundaries.clampScale(ScaleLevel.scaleForContained(boundaries.viewportSize, regionSize));
+  ViewState _viewStateForContainedRegion(ScaleBoundaries boundaries, CropRegion imageRegion) {
+    final matrix = transformation.matrix;
+    final displayRegion = imageRegion.corners.map(matrix.transformOffset).toSet();
+    final xMin = displayRegion.map((v) => v.dx).min;
+    final xMax = displayRegion.map((v) => v.dx).max;
+    final yMin = displayRegion.map((v) => v.dy).min;
+    final yMax = displayRegion.map((v) => v.dy).max;
+    final displayRegionSize = Size(xMax - xMin, yMax - yMin);
+
+    final nextScale = boundaries.clampScale(ScaleLevel.scaleForContained(boundaries.viewportSize, displayRegionSize));
     final nextPosition = boundaries.clampPosition(
-      position: boundaries.contentToStatePosition(nextScale, region.center),
+      position: boundaries.contentToStatePosition(nextScale, imageRegion.center),
       scale: nextScale,
     );
     return ViewState(
@@ -447,19 +449,30 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
 
   void _onViewStateChanged(MagnifierState state) {
     final currentOutline = _outlineNotifier.value;
-    switch (state.source) {
-      case ChangeSource.internal:
-      case ChangeSource.animation:
-        _setOutline(currentOutline);
-      case ChangeSource.gesture:
-        // TODO TLAD [crop] use other strat
-        _setOutline(_applyCropRatioToOutline(currentOutline, _RatioStrategy.contain));
-        _updateCropRegion();
-    }
+    // switch (state.source) {
+    //   case ChangeSource.internal:
+    //   case ChangeSource.animation:
+    //     _setOutline(currentOutline);
+    //   case ChangeSource.gesture:
+    // TODO TLAD [crop] use other strat
+    _setOutline(_applyCropRatioToOutline(currentOutline, _RatioStrategy.contain));
+    _updateCropRegion();
+    // }
   }
 
-  void _onViewBoundariesChanged(ScaleBoundaries scaleBoundaries) {
-    _viewportSizeNotifier.value = scaleBoundaries.viewportSize;
+  void _onViewportSizeChanged(Size viewportSize) {
+    _initOutline(transformation.region);
+
+    final boundaries = magnifierController.scaleBoundaries;
+    if (boundaries != null) {
+      final double xPadding = (viewportSize.width - minDimension) / 2;
+      final double yPadding = (viewportSize.height - minDimension) / 2;
+      magnifierController.setScaleBoundaries(
+        boundaries.copyWith(
+          padding: EdgeInsets.symmetric(horizontal: xPadding, vertical: yPadding),
+        ),
+      );
+    }
   }
 
   ViewState? _getViewState() {
