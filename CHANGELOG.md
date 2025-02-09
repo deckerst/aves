@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - support for Samsung HEIC motion photos embedding video in sefd box
+- Cataloguing: identify video location from Apple QuickTime metadata, and 3GPP `loci` atom
 
 ### Fixed
 
