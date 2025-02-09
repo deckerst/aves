@@ -316,7 +316,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         val sb = StringBuilder()
-        if (mimeType == MimeTypes.MP4) {
+        if (mimeType == MimeTypes.MP4 || MimeTypes.isHeic(mimeType)) {
             try {
                 // we can skip uninteresting boxes with a seekable data source
                 val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
