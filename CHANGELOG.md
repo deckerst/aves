@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - support for Samsung HEIC motion photos embedding video in sefd box
 
+### Fixed
+
+- opening motion photo embedded video when video track is not the first one
+
 ## <a id="v1.12.3"></a>[v1.12.3] - 2025-02-06
 
 ### Added
