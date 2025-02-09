@@ -6,6 +6,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.core.net.toUri
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
@@ -13,6 +14,7 @@ import com.adobe.internal.xmp.options.SerializeOptions
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.drew.lang.KeyValuePair
 import com.drew.lang.Rational
+import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Tag
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifDirectoryBase
@@ -107,7 +109,6 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
-import androidx.core.net.toUri
 
 class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -470,6 +471,22 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // Android's `MediaExtractor` and `MediaPlayer` cannot be used for details
             // about embedded images as they do not list them as separate tracks
             // and only identify at most one
+        } else if (isHeic(mimeType)) {
+            Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (_, bytes) ->
+                val dir = hashMapOf(
+                    "Size" to bytes.size.toString(),
+                )
+                val reader = SequentialByteArrayReader(bytes).apply {
+                    isMotorolaByteOrder = false
+                }
+                val start = reader.uInt16
+                val tag = reader.uInt16
+                if (start == 0 && tag == Mp4ParserHelper.SEFD_EMBEDDED_VIDEO_TAG) {
+                    val nameSize = reader.uInt32
+                    dir["Embedded Video Type"] = reader.getString(nameSize.toInt())
+                }
+                metadataMap[Mp4ParserHelper.SAMSUNG_MAKERNOTE_BOX_TYPE] = dir
+            }
         }
 
         if (metadataMap.isNotEmpty()) {
@@ -529,6 +546,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         getCatalogMetadataByMetadataExtractor(mimeType, uri, path, sizeBytes, metadataMap)
         if (isVideo(mimeType) || isHeic(mimeType)) {
             getMultimediaCatalogMetadataByMediaMetadataRetriever(mimeType, uri, metadataMap)
+        }
+
+        if (isHeic(mimeType)) {
+            val flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
+            if ((flags and MASK_IS_MOTION_PHOTO == 0) && MultiPage.isHeicSefdMotionPhoto(context, uri)) {
+                metadataMap[KEY_FLAGS] = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
+            }
         }
 
         // report success even when empty

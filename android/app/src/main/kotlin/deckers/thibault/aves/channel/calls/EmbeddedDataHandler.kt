@@ -186,7 +186,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
+        MultiPage.getTrailerVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
             val imageSizeBytes = sizeBytes - videoSizeBytes
             StorageUtils.openInputStream(context, uri)?.let { input ->
                 copyEmbeddedBytes(result, mimeType, displayName, input, imageSizeBytes)
@@ -207,11 +207,10 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        MultiPage.getMotionPhotoVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
-            val videoStartOffset = sizeBytes - videoSizeBytes
+        MultiPage.getMotionPhotoVideoSizing(context, uri, mimeType, sizeBytes)?.let { (videoOffset, videoSize) ->
             StorageUtils.openInputStream(context, uri)?.let { input ->
-                input.skip(videoStartOffset)
-                copyEmbeddedBytes(result, MimeTypes.MP4, displayName, input, videoSizeBytes)
+                input.skip(videoOffset)
+                copyEmbeddedBytes(result, MimeTypes.MP4, displayName, input, videoSize)
             }
             return
         }

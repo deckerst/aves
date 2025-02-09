@@ -45,6 +45,16 @@ object Mp4ParserHelper {
     // arbitrary size to detect boxes that may yield an OOM
     private const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
 
+    const val SAMSUNG_MAKERNOTE_BOX_TYPE = "sefd"
+    const val SEFD_EMBEDDED_VIDEO_TAG = 0x0a30
+    const val SEFD_MOTION_PHOTO_NAME = "MotionPhoto_Data"
+
+    private val largerTypeWhitelist = listOf(
+        // HEIC motion photo may contain Samsung maker notes in `sefd` box,
+        // including a video larger than the danger threshold
+        SAMSUNG_MAKERNOTE_BOX_TYPE,
+    )
+
     fun computeEdits(context: Context, uri: Uri, modifier: (isoFile: IsoFile) -> Unit): List<Pair<Long, ByteArray>> {
         // we can skip uninteresting boxes with a seekable data source
         val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
@@ -131,6 +141,34 @@ object Mp4ParserHelper {
             return box.userType.contentEquals(XMP.mp4Uuid)
         }
         return false
+    }
+
+    fun getSamsungSefd(context: Context, uri: Uri): Pair<Long, ByteArray>? {
+        try {
+            // we can skip uninteresting boxes with a seekable data source
+            val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
+            pfd.use {
+                FileInputStream(it.fileDescriptor).use { stream ->
+                    stream.channel.use { channel ->
+                        IsoFile(channel, metadataBoxParser()).use { isoFile ->
+                            var offset = 0L
+                            for (box in isoFile.boxes) {
+                                if (box is UnknownBox && box.type == SAMSUNG_MAKERNOTE_BOX_TYPE) {
+                                    if (!box.isParsed) {
+                                        box.parseDetails()
+                                    }
+                                    return Pair(offset + 8, box.data.toByteArray()) // skip 8 bytes for box header
+                                }
+                                offset += box.size
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to read sefd box", e)
+        }
+        return null
     }
 
     // extensions
@@ -272,7 +310,7 @@ object Mp4ParserHelper {
         )
         setBoxSkipper { type, size ->
             if (skippedTypes.contains(type)) return@setBoxSkipper true
-            if (size > BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+            if (size > BOX_SIZE_DANGER_THRESHOLD && !largerTypeWhitelist.contains(type)) throw Exception("box (type=$type size=$size) is too large")
             false
         }
     }

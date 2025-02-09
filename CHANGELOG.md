@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- support for Samsung HEIC motion photos embedding video in sefd box
+
 ## <a id="v1.12.3"></a>[v1.12.3] - 2025-02-06
 
 ### Added
