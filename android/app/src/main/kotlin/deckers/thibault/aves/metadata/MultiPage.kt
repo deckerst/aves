@@ -354,20 +354,23 @@ object MultiPage {
     }
 
     private fun getEmbedVideoInfo(context: Context, uri: Uri, videoOffset: Long, videoSize: Long): MediaFormat? {
-        var format: MediaFormat? = null
         val extractor = MediaExtractor()
         var pfd: ParcelFileDescriptor? = null
         try {
             pfd = context.contentResolver.openFileDescriptor(uri, "r")
             pfd?.fileDescriptor?.let { fd ->
                 extractor.setDataSource(fd, videoOffset, videoSize)
-                if (extractor.trackCount > 0) {
-                    // only consider the first track to represent the appended video
-                    val trackIndex = 0
+                // video track may be after an audio track
+                for (trackIndex in 0 until extractor.trackCount) {
                     try {
-                        format = extractor.getTrackFormat(trackIndex)
+                        val format = extractor.getTrackFormat(trackIndex)
+                        format.getString(MediaFormat.KEY_MIME)?.let {
+                            if (MimeTypes.isVideo(it)) {
+                                return format
+                            }
+                        }
                     } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to get motion photo track information for uri=$uri, track num=$trackIndex", e)
+                        Log.w(LOG_TAG, "failed to get track information for uri=$uri, track num=$trackIndex", e)
                     }
                 }
             }
@@ -377,7 +380,7 @@ object MultiPage {
             extractor.release()
             pfd?.close()
         }
-        return format
+        return null
     }
 
     fun getMotionPhotoVideoSizing(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Pair<Long, Long>? {
