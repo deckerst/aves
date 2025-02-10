@@ -71,7 +71,7 @@ class _EditorImageState extends State<EditorImage> {
     widget.actionNotifier.addListener(_onActionChanged);
     _subscriptions.add(widget.magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(widget.magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
-    _subscriptions.add(widget.transformController.eventStream.listen(_onTransformEvent));
+    _subscriptions.add(widget.transformController.activityStream.listen(_onTransformActivity));
   }
 
   void _unregisterWidget(EditorImage widget) {
@@ -193,7 +193,7 @@ class _EditorImageState extends State<EditorImage> {
 
   void _onActionChanged() => _updateScrim();
 
-  void _onTransformEvent(TransformEvent event) => _updateScrim();
+  void _onTransformActivity(TransformActivity activity) => _updateScrim();
 
   void _updateScrim() => _scrimOpacityNotifier.value = _getActionScrimOpacity(widget.actionNotifier.value, transformController.activity);
 

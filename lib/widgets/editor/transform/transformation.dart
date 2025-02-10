@@ -69,12 +69,3 @@ class Transformation extends Equatable {
 
   Matrix4 get _straightenMatrix => Matrix4.rotationZ(degToRadian((orientation.isFlipped ? -1 : 1) * straightenDegrees));
 }
-
-@immutable
-class TransformEvent {
-  final TransformActivity activity;
-
-  const TransformEvent({
-    required this.activity,
-  });
-}
