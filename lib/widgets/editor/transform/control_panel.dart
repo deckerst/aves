@@ -97,7 +97,7 @@ class _TransformControlPanelState extends State<TransformControlPanel> with Tick
             OverlayButton(
               child: StreamBuilder<Transformation>(
                 stream: transformController.transformationStream,
-                builder: (context, snapshot) {
+                builder: (context, _) {
                   return IconButton(
                     icon: const Icon(AIcons.apply),
                     onPressed: transformController.modified ? () => widget.onApply(transformController.transformation) : null,
@@ -122,17 +122,17 @@ class CropControlPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final aspectRatioNotifier = context.select<TransformController, ValueNotifier<CropAspectRatio>>((v) => v.aspectRatioNotifier);
+    final controller = context.watch<TransformController>();
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       itemBuilder: (context, index) {
         final ratio = CropAspectRatio.values[index];
-        void setAspectRatio() => aspectRatioNotifier.value = ratio;
+        void setAspectRatio() => controller.setAspectRatio(ratio);
         return CaptionedButton(
           iconButtonBuilder: (context, focusNode) {
             return ValueListenableBuilder<CropAspectRatio>(
-              valueListenable: aspectRatioNotifier,
+              valueListenable: controller.aspectRatioNotifier,
               builder: (context, selectedRatio, child) {
                 return IconButton(
                   color: ratio == selectedRatio ? Theme.of(context).colorScheme.primary : null,
@@ -166,17 +166,21 @@ class RotationControlPanel extends StatelessWidget {
         Expanded(
           child: StreamBuilder<Transformation>(
             stream: controller.transformationStream,
-            builder: (context, snapshot) {
-              final transformation = snapshot.data ?? Transformation.zero;
-              return Slider(
-                value: transformation.straightenDegrees,
-                min: TransformController.straightenDegreesMin,
-                max: TransformController.straightenDegreesMax,
-                divisions: 18,
-                onChangeStart: (v) => controller.activity = TransformActivity.straighten,
-                onChangeEnd: (v) => controller.activity = TransformActivity.none,
-                label: angleFormatter.format(transformation.straightenDegrees),
-                onChanged: (v) => controller.straightenDegrees = v,
+            builder: (context, _) {
+              final degrees = controller.transformation.straightenDegrees;
+              return SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  showValueIndicator: ShowValueIndicator.always,
+                ),
+                child: Slider(
+                  value: degrees,
+                  min: TransformController.straightenDegreesMin,
+                  max: TransformController.straightenDegreesMax,
+                  onChangeStart: (v) => controller.activity = TransformActivity.straighten,
+                  onChangeEnd: (v) => controller.activity = TransformActivity.none,
+                  label: angleFormatter.format(degrees),
+                  onChanged: (v) => controller.straightenDegrees = v,
+                ),
               );
             },
           ),

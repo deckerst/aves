@@ -117,13 +117,13 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
     );
   }
 
-  void _onActionChanged() => _updateImageMargin();
-
-  void _updateImageMargin() {
-    if (_actionNotifier.value == EditorAction.transform) {
-      _marginNotifier.value = Cropper.imageMargin;
-    } else {
-      _marginNotifier.value = EdgeInsets.zero;
+  void _onActionChanged() {
+    switch(_actionNotifier.value) {
+      case EditorAction.transform:
+        _transformController.reset();
+        _marginNotifier.value = Cropper.imageMargin;
+      default:
+        _marginNotifier.value = EdgeInsets.zero;
     }
   }
 

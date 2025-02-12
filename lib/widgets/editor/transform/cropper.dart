@@ -437,20 +437,12 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   }
 
   void _onViewStateChanged(MagnifierState state) {
-    final currentOutline = _outlineNotifier.value;
-
-    // TODO TLAD [crop] use other strat
-
-    // switch (state.source) {
-    //   case ChangeSource.internal:
-    //   case ChangeSource.animation:
-    //   case ChangeSource.gesture:
-    // }
-
     switch (transformController.activity) {
       case TransformActivity.none:
+        break;
       case TransformActivity.straighten:
       case TransformActivity.pan:
+        final currentOutline = _outlineNotifier.value;
         _setOutline(_applyCropRatioToOutline(currentOutline, _RatioStrategy.contain));
       case TransformActivity.resize:
         break;
@@ -488,8 +480,26 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
     if (targetOutline.isEmpty || viewState == null || viewportSize == null) return;
 
     // ensure outline is within content
-    final targetRegion = _regionFromOutline(viewState, targetOutline);
+    var targetRegion = _regionFromOutline(viewState, targetOutline);
     var newOutline = _containedOutlineFromRegion(viewState, targetRegion);
+    final outlineWidthDelta = targetOutline.width - newOutline.width;
+    final outlineHeightDelta = targetOutline.height - newOutline.height;
+    if (outlineWidthDelta > precisionErrorTolerance || outlineHeightDelta > precisionErrorTolerance) {
+      // keep outline area if possible, otherwise trim
+      final regionToOutlineMatrix = _getRegionToOutlineMatrix(viewState);
+      final rect = Offset.zero & viewState.contentSize!;
+      final edgeRegionCorners = targetRegion.corners.where((v) => v.dx == rect.left || v.dx == rect.right || v.dy == rect.top || v.dy == rect.bottom).toSet();
+      final edgeOutlineCorners = edgeRegionCorners.map(regionToOutlineMatrix.transformOffset).toSet();
+      if (edgeOutlineCorners.isNotEmpty) {
+        final direction = edgeOutlineCorners.map((v) => newOutline.center - v).reduce((prev, v) => prev + v);
+        final movedOutline = targetOutline.shift(Offset(
+          outlineWidthDelta * direction.dx.sign,
+          outlineHeightDelta * direction.dy.sign,
+        ));
+        targetRegion = _regionFromOutline(viewState, movedOutline);
+        newOutline = _containedOutlineFromRegion(viewState, targetRegion);
+      }
+    }
 
     // ensure outline is large enough to be handled
     newOutline = Rect.fromLTWH(
@@ -499,25 +509,13 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
       max(newOutline.height, minDimension),
     );
 
-    // ensure outline is within viewport
-    newOutline = Rect.fromLTRB(
-      max(newOutline.left, 0),
-      max(newOutline.top, 0),
-      min(newOutline.right, viewportSize.width),
-      min(newOutline.bottom, viewportSize.height),
-    );
-
-    final oldOutline = _outlineNotifier.value;
     _outlineNotifier.value = newOutline;
     switch (transformController.activity) {
-      case TransformActivity.none:
-        if (oldOutline.isEmpty) {
-          _updateCropRegion();
-        }
       case TransformActivity.pan:
       case TransformActivity.resize:
         _updateCropRegion();
         break;
+      case TransformActivity.none:
       case TransformActivity.straighten:
         break;
     }

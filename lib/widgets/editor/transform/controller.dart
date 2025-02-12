@@ -57,6 +57,7 @@ class TransformController {
       region: CropRegion.fromRect(Offset.zero & displaySize),
     );
     _transformationStreamController.add(_transformation);
+    setAspectRatio(CropAspectRatio.free);
   }
 
   void flipHorizontally() {
@@ -92,6 +93,8 @@ class TransformController {
     _activity = activity;
     _activityStreamController.add(_activity);
   }
+
+  void setAspectRatio(CropAspectRatio ratio) => aspectRatioNotifier.value = ratio;
 
   void _onAspectRatioChanged() {
     // TODO TLAD [crop] apply
