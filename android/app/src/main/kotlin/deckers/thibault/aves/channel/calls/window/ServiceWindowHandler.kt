@@ -29,6 +29,10 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(HashMap<String, Any>())
     }
 
+    override fun supportsWideGamut(call: MethodCall, result: MethodChannel.Result) {
+        result.success(false)
+    }
+
     override fun supportsHdr(call: MethodCall, result: MethodChannel.Result) {
         result.success(false)
     }

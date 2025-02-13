@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
+import androidx.core.graphics.createBitmap
 import com.caverock.androidsvg.PreserveAspectRatio
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
@@ -100,7 +101,7 @@ class SvgRegionFetcher internal constructor(
                 return
             }
 
-            var bitmap = Bitmap.createBitmap(
+            var bitmap = createBitmap(
                 targetBitmapWidth + bleedX * 2,
                 targetBitmapHeight + bleedY * 2,
                 Bitmap.Config.ARGB_8888

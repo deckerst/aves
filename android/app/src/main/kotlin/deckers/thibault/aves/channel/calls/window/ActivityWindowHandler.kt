@@ -77,8 +77,12 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         )
     }
 
+    override fun supportsWideGamut(call: MethodCall, result: MethodChannel.Result) {
+        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.resources.configuration.isScreenWideColorGamut)
+    }
+
     override fun supportsHdr(call: MethodCall, result: MethodChannel.Result) {
-        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getDisplayCompat()?.isHdr ?: false)
+        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.resources.configuration.isScreenHdr)
     }
 
     override fun setHdrColorMode(call: MethodCall, result: MethodChannel.Result) {

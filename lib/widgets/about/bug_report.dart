@@ -157,6 +157,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
     final mediaQuery = MediaQuery.of(context);
     final view = View.of(context);
     final supportsHdr = await windowService.supportsHdr();
+    final supportsWideGamut = await windowService.supportsWideGamut();
     final connections = await Connectivity().checkConnectivity();
     final storageVolumes = await storageService.getStorageVolumes();
     final storageGrants = await storageService.getGrantedDirectories();
@@ -169,7 +170,7 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Display: pixel ratio=${view.devicePixelRatio}, logical=${mediaQuery.size.width}x${mediaQuery.size.height}, physical=${view.physicalSize.width}x${view.physicalSize.height}',
-      'Support: dynamic colors=${device.isDynamicColorAvailable}, geocoder=${device.hasGeocoder}, HDR=$supportsHdr',
+      'Support: dynamic colors=${device.isDynamicColorAvailable}, geocoder=${device.hasGeocoder}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
       'Connectivity: ${connections.map((v) => v.name).join(', ')}',
       'System locales: ${WidgetsBinding.instance.platformDispatcher.locales.join(', ')}',
