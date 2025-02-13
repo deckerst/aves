@@ -254,7 +254,7 @@
   "@welcomeMessage": {},
   "welcomeOptional": "Опционално",
   "@welcomeOptional": {},
-  "itemCount": "{count, plural, =1{{count} обект} few{{count} обекта} other{{count} обекти}}",
+  "itemCount": "{count, plural, =1{{count} обект} few{{count} обекта} other{{count} обекта}}",
   "@itemCount": {
     "placeholders": {
       "count": {
@@ -484,9 +484,9 @@
   "@coordinateDmsSouth": {},
   "coordinateDmsWest": "Запад",
   "@coordinateDmsWest": {},
-  "displayRefreshRatePreferHighest": "Предпочете на висока честота на опресняване на дисплея",
+  "displayRefreshRatePreferHighest": "Висока честота",
   "@displayRefreshRatePreferHighest": {},
-  "displayRefreshRatePreferLowest": "Предпочете на ниска честота на опресняване на дисплея",
+  "displayRefreshRatePreferLowest": "Ниска честота",
   "@displayRefreshRatePreferLowest": {},
   "keepScreenOnNever": "Никога",
   "@keepScreenOnNever": {},
@@ -1063,7 +1063,7 @@
   "@settingsConfirmationTile": {},
   "settingsConfirmationDialogTitle": "Диалогови прозорци за потвърждение",
   "@settingsConfirmationDialogTitle": {},
-  "settingsConfirmationBeforeMoveToBinItems": "Попитай преди да преместиш в кошчето",
+  "settingsConfirmationBeforeMoveToBinItems": "Попитай преди преместване в кошчето",
   "@settingsConfirmationBeforeMoveToBinItems": {},
   "settingsConfirmationAfterMoveToBinItems": "Показване на съобщение след преместване на елементи в кошчето",
   "@settingsConfirmationAfterMoveToBinItems": {},
@@ -1229,7 +1229,7 @@
   "@drawerPlacePage": {},
   "settingsActionImport": "Импорт",
   "@settingsActionImport": {},
-  "settingsConfirmationBeforeMoveUndatedItems": "Попитайте, преди да преместите елементи без дата",
+  "settingsConfirmationBeforeMoveUndatedItems": "Попитай, преди преместване на елементи без дата",
   "@settingsConfirmationBeforeMoveUndatedItems": {},
   "settingsViewerUseCutout": "Използвай зоната на изрязване",
   "@settingsViewerUseCutout": {},
@@ -1315,7 +1315,7 @@
   "@settingsThemeColorHighlights": {},
   "settingsThemeEnableDynamicColor": "Динамични цветове",
   "@settingsThemeEnableDynamicColor": {},
-  "settingsDisplayRefreshRateModeTile": "Покажи честотата на обновлението на дисплея",
+  "settingsDisplayRefreshRateModeTile": "Честота на обновление на дисплея",
   "@settingsDisplayRefreshRateModeTile": {},
   "settingsWidgetPageTitle": "Фоторамка",
   "@settingsWidgetPageTitle": {},
@@ -1455,9 +1455,9 @@
   "@settingsDisplayUseTvInterface": {},
   "settingsLanguageSectionTitle": "Език и формати",
   "@settingsLanguageSectionTitle": {},
-  "settingsCoordinateFormatTile": "Формат на координатите",
+  "settingsCoordinateFormatTile": "Формат на координати",
   "@settingsCoordinateFormatTile": {},
-  "settingsCoordinateFormatDialogTitle": "Формат на координатите",
+  "settingsCoordinateFormatDialogTitle": "Формат на координати",
   "@settingsCoordinateFormatDialogTitle": {},
   "settingsUnitSystemTile": "Единици за измерване",
   "@settingsUnitSystemTile": {},
@@ -1610,5 +1610,7 @@
   "editEntryLocationDialogImportGpx": "Импорт GPX",
   "@editEntryLocationDialogImportGpx": {},
   "editEntryLocationDialogTimeShift": "Изместване на времето",
-  "@editEntryLocationDialogTimeShift": {}
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Всички",
+  "@removeEntryMetadataDialogAll": {}
 }

@@ -1543,7 +1543,7 @@
   "@dynamicAlbumAlreadyExists": {},
   "newDynamicAlbumDialogTitle": "Nové dynamické album",
   "@newDynamicAlbumDialogTitle": {},
-  "selectStorageVolumeDialogTitle": "Vybrat úložiště",
+  "selectStorageVolumeDialogTitle": "Vyberte úložiště",
   "@selectStorageVolumeDialogTitle": {},
   "explorerActionSelectStorageVolume": "Vyberte úložiště",
   "@explorerActionSelectStorageVolume": {},
@@ -1564,5 +1564,13 @@
   "appExportDynamicAlbums": "Dynamická alba",
   "@appExportDynamicAlbums": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
-  "@mapStyleOpenTopoMap": {}
+  "@mapStyleOpenTopoMap": {},
+  "editEntryLocationDialogImportGpx": "Importovat GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Časový posun",
+  "@editEntryLocationDialogTimeShift": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "removeEntryMetadataDialogAll": "Vše",
+  "@removeEntryMetadataDialogAll": {}
 }

@@ -1584,5 +1584,13 @@
   "appExportDynamicAlbums": "Dynamiska album",
   "@appExportDynamicAlbums": {},
   "dynamicAlbumAlreadyExists": "Dynamiskt album existerar redan",
-  "@dynamicAlbumAlreadyExists": {}
+  "@dynamicAlbumAlreadyExists": {},
+  "editEntryLocationDialogImportGpx": "Importera GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "chipActionDecompose": "Splitta",
+  "@chipActionDecompose": {},
+  "removeEntryMetadataDialogAll": "Allt",
+  "@removeEntryMetadataDialogAll": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {}
 }
