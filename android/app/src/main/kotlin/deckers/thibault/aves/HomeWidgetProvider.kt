@@ -15,6 +15,7 @@ import android.os.Looper
 import android.util.Log
 import android.util.SizeF
 import android.widget.RemoteViews
+import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
@@ -218,7 +219,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
             val heightPx = (sizeDip.height * devicePixelRatio).roundToInt()
 
             try {
-                val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888).also {
+                val bitmap = createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888).also {
                     bitmaps.add(it)
                     it.copyPixelsFromBuffer(ByteBuffer.wrap(bytes))
                 }

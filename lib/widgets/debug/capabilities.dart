@@ -27,6 +27,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
       windowService.isCutoutAware(),
       windowService.isRotationLocked(),
       windowService.supportsHdr(),
+      windowService.supportsWideGamut(),
     ]);
   }
 
@@ -72,6 +73,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
               bool isCutoutAware,
               bool isRotationLocked,
               bool supportsHdr,
+              bool supportsWideGamut,
             ] = data;
 
             return Padding(
@@ -85,6 +87,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
                       'isCutoutAware': '$isCutoutAware',
                       'isRotationLocked': '$isRotationLocked',
                       'supportsHdr': '$supportsHdr',
+                      'supportsWideGamut': '$supportsWideGamut',
                     },
                   ),
                 ],

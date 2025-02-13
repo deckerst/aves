@@ -18,6 +18,8 @@ abstract class WindowService {
 
   Future<EdgeInsets> getCutoutInsets();
 
+  Future<bool> supportsWideGamut();
+
   Future<bool> supportsHdr();
 
   Future<void> setHdrColorMode(bool on);
@@ -26,7 +28,7 @@ abstract class WindowService {
 class PlatformWindowService implements WindowService {
   static const _platform = MethodChannel('deckers.thibault/aves/window');
 
-  bool? _isCutoutAware, _supportsHdr;
+  bool? _isCutoutAware, _supportsHdr, _supportsWideGamut;
 
   @override
   Future<bool> isActivity() async {
@@ -124,6 +126,18 @@ class PlatformWindowService implements WindowService {
       await reportService.recordError(e, stack);
     }
     return EdgeInsets.zero;
+  }
+
+  @override
+  Future<bool> supportsWideGamut() async {
+    if (_supportsWideGamut != null) return SynchronousFuture(_supportsWideGamut!);
+    try {
+      final result = await _platform.invokeMethod('supportsWideGamut');
+      _supportsWideGamut = result as bool?;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return _supportsWideGamut ?? false;
   }
 
   @override
