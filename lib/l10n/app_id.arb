@@ -1412,5 +1412,7 @@
   "editEntryLocationDialogImportGpx": "Impor GPX",
   "@editEntryLocationDialogImportGpx": {},
   "editEntryLocationDialogTimeShift": "Pergeseran waktu",
-  "@editEntryLocationDialogTimeShift": {}
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Semua",
+  "@removeEntryMetadataDialogAll": {}
 }

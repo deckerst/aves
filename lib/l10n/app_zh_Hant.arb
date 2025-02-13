@@ -1524,5 +1524,11 @@
   "chipActionGoToExplorerPage": "在檔案總管裡顯示",
   "@chipActionGoToExplorerPage": {},
   "mapAttributionOsmData": "地圖資料由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 貢獻",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "chipActionDecompose": "分割",
+  "@chipActionDecompose": {},
+  "albumTierDynamic": "動態",
+  "@albumTierDynamic": {},
+  "chipActionRemove": "移除",
+  "@chipActionRemove": {}
 }
