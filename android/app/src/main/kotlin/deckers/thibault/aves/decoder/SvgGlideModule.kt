@@ -22,6 +22,7 @@ import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.StorageUtils
 import kotlin.math.ceil
+import androidx.core.graphics.createBitmap
 
 @GlideModule
 class SvgGlideModule : LibraryGlideModule() {
@@ -68,7 +69,7 @@ internal class SvgFetcher(val model: SvgImage, val width: Int, val height: Int) 
                         bitmapWidth = width
                         bitmapHeight = ceil(svgHeight * width / svgWidth).toInt()
                     }
-                    val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+                    val bitmap = createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
 
                     val canvas = Canvas(bitmap)
                     svg.renderToCanvas(canvas)
