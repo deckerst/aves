@@ -12,6 +12,7 @@
   "@timeSeconds": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -20,6 +21,7 @@
   "@itemCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -28,6 +30,7 @@
   "@columnCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -36,6 +39,7 @@
   "@timeMinutes": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -44,6 +48,7 @@
   "@timeDays": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -540,6 +545,7 @@
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -548,6 +554,7 @@
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -584,7 +591,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{𐑞𐑦𐑕 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑓 𐑲𐑑𐑩𐑥𐑟 𐑝 𐑞 𐑓𐑪𐑤𐑴𐑦𐑙 𐑑𐑲𐑐: {types}.} other{𐑞𐑦𐑕 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑓 𐑲𐑑𐑩𐑥𐑟 𐑝 𐑞 𐑓𐑪𐑤𐑴𐑦𐑙 𐑑𐑲𐑐𐑕: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -638,6 +647,7 @@
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -646,6 +656,7 @@
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -722,6 +733,7 @@
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -730,6 +742,7 @@
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -922,6 +935,7 @@
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -930,6 +944,7 @@
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -938,6 +953,7 @@
   "@collectionRenameFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -946,6 +962,7 @@
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -954,6 +971,7 @@
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -962,6 +980,7 @@
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -970,6 +989,7 @@
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -978,6 +998,7 @@
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1478,6 +1499,7 @@
   "@statsWithGps": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }

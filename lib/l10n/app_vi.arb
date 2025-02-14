@@ -214,7 +214,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Chuyển vào thùng rác?} other{Chuyển {count} mục vào thùng rác?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNavigationDrawerAddAlbum": "Thêm bộ sưu tập",
@@ -242,7 +244,9 @@
   "collectionExportFailureFeedback": "{count, plural, =1{Lỗi khi xuất tệp} other{Lỗi khi xuất {count} tệp}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "vaultDialogLockModeWhenScreenOff": "Khóa khi màn hình tắt",
@@ -348,7 +352,9 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{Lỗi khi di chuyển tệp} other{Lỗi khi di chuyển {count} tệp}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoLoopModeAlways": "Luôn luôn",
@@ -448,7 +454,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Xóa mục này? } other{Xóa{count} mục?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerShowInformation": "Hiển thị thông tin",
@@ -534,7 +542,9 @@
   "collectionRenameFailureFeedback": "{count, plural, =1{Lỗi khi đặt lại tên tệp} other{Lỗi khi đặt lại tên {count} tệp}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoResumptionModeAlways": "Luôn luôn",
@@ -544,7 +554,9 @@
   "collectionEditSuccessFeedback": "{count, plural, =1{Đã chỉnh sửa} other{Đã chỉnh sửa {count} mục}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "wallpaperTargetLock": "Màn hình khóa",
@@ -600,7 +612,9 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{Lỗi khi sao chép tệp} other{Lỗi khi sao chép {count} tệp}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsDisabled": "Vô hiệu hóa",
@@ -650,7 +664,9 @@
   "collectionMoveSuccessFeedback": "{count, plural, =1{Đã di chuyển} other{Đã di chuyển {count} mục}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextAlignmentLeft": "Trái",
@@ -750,7 +766,9 @@
   "collectionEditFailureFeedback": "{count, plural, =1{Lỗi khi chỉnh sửa tệp} other{Lỗi khi chỉnh sửa {count} tệp}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noMatchingAppDialogMessage": "Không có ứng dụng nào có thể xử lý việc này.",
@@ -802,7 +820,9 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Đã đặt lại tên} other{Đã thay tên {count} mục}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoStreamSelectionDialogTrack": "Bài hát",
@@ -883,7 +903,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Thao tác này không hỗ trợ cho kiểu tệp: {types}.} other{Thao tác này không hỗ trợ cho kiểu tệp: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -904,7 +926,9 @@
   "statsWithGps": "{count, plural, =1{1 mục với thông tin vị trí} other{{count}mục với thông tin vị trí}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoResumptionModeDialogTitle": "Quay lại playback",
@@ -940,7 +964,9 @@
   "columnCount": "{count, plural, other{{count} cột}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "viewerTransitionNone": "Không có",
@@ -996,7 +1022,9 @@
   "itemCount": "{count, plural, other{{count} mục}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "widgetTapUpdateWidget": "Cập nhật widget",
@@ -1178,7 +1206,9 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{Đã sao chép} other{Đã sao chép {count} mục}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNavigationDrawerBanner": "Nhấn và giữ để di chuyển và sắp xếp lại các mục menu.",
@@ -1436,7 +1466,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Xóa các Album này và các mục bên trong} other{Xóa các Album này với {count} mục bên trong?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextSize": "Kích thước văn bản",
@@ -1452,7 +1484,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Xóa bộ sưu tập này và các mục bên trong} other{Xóa bộ sưu tập này với {count} mục bên trong?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThemeColorHighlights": "Màu sắc nổi bật",
@@ -1466,7 +1500,9 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Lỗi khi xóa tệp} other{Lỗi khi xóa {count} tệp}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoButtonsTile": "Nút",

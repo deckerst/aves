@@ -1178,7 +1178,9 @@
   "columnCount": "{count, plural, =1{{count} Spalte} other{{count} Spalten}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoGestureVerticalDragBrightnessVolume": "Nach oben oder unten wischen, um die Helligkeit/Lautstärke einzustellen",

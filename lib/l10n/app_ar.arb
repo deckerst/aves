@@ -116,7 +116,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{هل تريد نقل هذا العنصر إلى سلة المحذوفات؟} other{حرك هذه {count}العناصر إلى سلة المحذوفات؟}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNavigationDrawerAddAlbum": "إضافة ألبوم",
@@ -146,7 +148,9 @@
   "collectionExportFailureFeedback": "{count, plural, =1{فشل تصدير صفحة واحدة} other{فشل التصدير {count} pages}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "vaultDialogLockModeWhenScreenOff": "القفل عند إيقاف تشغيل الشاشة",
@@ -250,7 +254,9 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{فشل في نقل عنصر واحد} other{فشل في النقل {count} items}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoLoopModeAlways": "دائماً",
@@ -346,7 +352,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{هل تريد حذف هذا العنصر؟} other{احذف هذه {count} أغراض؟}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerShowInformation": "مزيد من المعلومات",
@@ -434,7 +442,9 @@
   "collectionRenameFailureFeedback": "{count, plural, =1{فشلت إعادة تسمية عنصر واحد} other{فشلت إعادة التسمية {count} items}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoResumptionModeAlways": "دائماً",
@@ -444,7 +454,9 @@
   "collectionEditSuccessFeedback": "{count, plural, =1{تم تحريرعنصر واحد} other{تحرير {count} عناصر}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "wallpaperTargetLock": "شاشة القفل",
@@ -500,7 +512,9 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{فشل نسخ عنصر واحد} other{فشل النسخ {count} items}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsDisabled": "غير مفعل",
@@ -558,7 +572,9 @@
   "collectionMoveSuccessFeedback": "{count, plural, =1{تم نقل عنصر واحد} other{نقل {count} عناصر}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextAlignmentLeft": "يسار",
@@ -674,7 +690,9 @@
   "collectionEditFailureFeedback": "{count, plural, =1{فشل تحرير عنصر واحد} other{فشل التحرير {count} items}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoActionPause": "إيقاف مؤقت",
@@ -726,7 +744,9 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{تمت إعادة تسمية عنصر واحد} other{أعادة تسمية {count} عناصر}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoStreamSelectionDialogTrack": "مسار",
@@ -811,7 +831,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{هذه العملية غير مدعومة للعناصر من النوع التالي: {types}.} other{هذه العملية غير معتمدة لعناصر الأنواع التالية: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -832,7 +854,9 @@
   "statsWithGps": "{count, plural, =1{1 عنصر مع الموقع} other{{count} العناصر مع الموقع}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoResumptionModeDialogTitle": "إستئناف التشغيل",
@@ -878,7 +902,9 @@
   "columnCount": "{count, plural, =1{{count} عمود} other{{count} أعمدة}}{count}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "viewerTransitionNone": "لا شيء",
@@ -932,7 +958,9 @@
   "itemCount": "{count, plural, =1{{count} عنصر} other{{count} عناصر}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "widgetTapUpdateWidget": "تحديث الويدجت",
@@ -1152,7 +1180,9 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{تم نسخ عنصر واحد} other{نسخ {count} أغراض}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNavigationDrawerBanner": "إلمس مع الاستمرار لنقل عناصر القائمة وإعادة ترتيبها.",
@@ -1438,7 +1468,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{هل تريد حذف هذه الألبومات والعنصر الموجود فيها؟} other{احذف هذه الألبومات و {count} العناصر فيها؟}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextSize": "حجم الخط",
@@ -1456,7 +1488,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{هل تريد حذف هذا الألبوم والعنصر الموجود فيه؟} other{احذف هذا الألبوم و {count} العناصر فيه؟}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThemeColorHighlights": "تحديد الألوان",
@@ -1472,7 +1506,9 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{فشل حذف عنصر واحد} other{فشل الحذف {count} items}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryActionShareImageOnly": "مشاركة الصورة فقط",

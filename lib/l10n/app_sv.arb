@@ -99,13 +99,17 @@
   "itemCount": "{count, plural, other{{count} objekt}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "columnCount": "{count, plural, =1{{count} kolumn} other{{count} kolumner}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} sekund} other{{count} sekunder}}",
@@ -703,25 +707,33 @@
   "collectionDeleteFailureFeedback": "{count, plural, other{Misslyckades med att ta bort {count} objekt}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Misslyckades med att kopiera 1 objekt} other{Misslyckades med att kopiera {count} objekt}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Misslyckades med att flytta 1 objekt} other{Misslyckades med att flytta {count} objekt}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Misslyckades med att byta namn på 1 objekt} other{Misslyckades med att byta namn på {count} objekt}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "Inga favoriter",
@@ -875,7 +887,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Denna åtgärd stöds ej för filer av denna typ: {types}.} other{Denna åtgärd stöds ej för följande typer av filer: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -905,6 +919,7 @@
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -921,6 +936,7 @@
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -939,6 +955,7 @@
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -947,6 +964,7 @@
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -963,6 +981,7 @@
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -971,6 +990,7 @@
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1011,6 +1031,7 @@
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1019,6 +1040,7 @@
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1027,6 +1049,7 @@
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1059,6 +1082,7 @@
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1467,6 +1491,7 @@
   "@statsWithGps": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }

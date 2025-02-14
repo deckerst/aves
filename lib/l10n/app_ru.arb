@@ -573,7 +573,7 @@
   "@collectionCopyFailureFeedback": {},
   "collectionMoveFailureFeedback": "{count, plural, =1{Не удалось переместить 1 объект} few{Не удалось переместить {count} объекта} other{Не удалось переместить {count} объектов}}",
   "@collectionMoveFailureFeedback": {},
-  "collectionRenameFailureFeedback": "{count, plural, =1{Не удалось переименовать 1 объект} few{Не удалось переименовать (count) объекта} other{Не удалось переименовать (count) объектов}}",
+  "collectionRenameFailureFeedback": "{count, plural, =1{Не удалось переименовать 1 объект} few{Не удалось переименовать {count} объекта} other{Не удалось переименовать {count} объектов}}",
   "@collectionRenameFailureFeedback": {},
   "collectionEditFailureFeedback": "{count, plural, =1{Не удалось изменить 1 объект} few{Не удалось изменить {count} объекта} other{Не удалось изменить {count} объектов}}",
   "@collectionEditFailureFeedback": {},
@@ -1162,7 +1162,9 @@
   "columnCount": "{count, plural, =1{{count} столбец} few{{count} столбца} other{{count} столбцов}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryInfoActionRemoveLocation": "Удалить местоположение",

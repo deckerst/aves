@@ -1172,7 +1172,9 @@
   "columnCount": "{count, plural, =1{{count} columna} other{{count} columnas}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerShowDescription": "Mostrar la descripción",

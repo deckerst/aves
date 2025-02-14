@@ -10,7 +10,9 @@
   "itemCount": "{count, plural, other{{count} 項}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeDays": "{count, plural, other{{count} 天}}",
@@ -308,7 +310,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{刪除這個項目?} other{刪除這 {count} 項目?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoStartOverButtonLabel": "重新播放",
@@ -346,7 +350,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{刪除這些相簿及其內部的項目？} other{刪除這些相簿及其中的{count}個項目？}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogFormat": "格式：",
@@ -498,31 +504,41 @@
   "collectionRenameFailureFeedback": "{count, plural, other{改名 {count} 項目失敗}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, other{編輯 {count} 項目失敗}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, other{複製 {count} 項目}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, other{改名 {count} 項目}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, other{編輯 {count} 項目}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "沒有我的最愛",
@@ -1055,7 +1071,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{刪除此相簿及其中的項目？} other{刪除此相簿及其中的{count}個項目？}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogWidth": "寬度",
@@ -1135,31 +1153,41 @@
   "collectionDeleteFailureFeedback": "{count, plural, other{刪除 {count} 項目失敗}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, other{複製 {count} 項目失敗}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, other{匯出 {count} 頁}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, other{移動 {count} 項目}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, other{移動 {count} 項目失敗}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "albumPickPageTitleCopy": "複製到相簿",
@@ -1181,7 +1209,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, other{此操作不支援以下類型的項目: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -1192,7 +1222,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{移動這個項目到資源回收桶?} other{移動這 {count} 項目到資源回收桶?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoStreamSelectionDialogNoSelection": "沒有其他音軌.",
@@ -1248,7 +1280,9 @@
   "statsWithGps": "{count, plural, =1{1條座標資訊} other{{count}條座標資訊}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsTopAlbumsSectionTitle": "熱門相簿",
@@ -1404,7 +1438,9 @@
   "columnCount": "{count, plural, other{{count} 列}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoBackgroundModeDialogTitle": "後臺模式",

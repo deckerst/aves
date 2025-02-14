@@ -362,13 +362,17 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Mutați acest articol în coșul de reciclare?} other{Mutați aceste {count} articole în coșul de reciclare?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Ștergeți acest articol?} other{Ștergeți aceste {count} articole?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "Salvați datele articolului înainte de a continua?",
@@ -423,13 +427,17 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ștergi acest album și articolul din el?} other{Ștergi acest album și {count} articolele din el?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ștergi aceste albume și articolul din ele?} other{Ștergi aceste albume și {count} articolele din ele?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogFormat": "Format:",
@@ -621,19 +629,25 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{A eșuat ștergerea unui element} other{A eșuat ștergerea a {count} elemente}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Eșuat la copierea unui articol} other{Eșuat la copierea {count} articole}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Nu s-au mutat 1 articol} other{Nu s-au mutat {count} articole}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "appName": "Aves",
@@ -641,7 +655,9 @@
   "itemCount": "{count, plural, =1{{count} element} other{{count} elemente}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "restrictedAccessDialogMessage": "Această aplicație nu are permisiunea de a modifica fișiere din {directory} „{volume}”.\n\nUtilizați un manager de fișiere preinstalat sau o aplicație de galerie pentru a muta elementele într-un alt director.",
@@ -691,7 +707,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Această operațiune nu este acceptată pentru articole de următorul tip: {types}.} other{Această operațiune nu este acceptată pentru articole de următoarele tipuri: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -1044,7 +1062,9 @@
   "collectionMoveSuccessFeedback": "{count, plural, =1{S-a mutat 1 articol} other{S-au mutat {count} articole}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyVideos": "Fără videoclipuri",
@@ -1058,13 +1078,17 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Sa renumit 1 articol} other{S-au renumit {count} articole}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{S-a editat 1 articol} other{S-au editat {count} articole}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyImages": "Fără imagini",
@@ -1162,7 +1186,9 @@
   "statsWithGps": "{count, plural, =1{1 articol cu locație} other{{count} articole cu locație}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsScreenSaverPageTitle": "Economizor de ecran",
@@ -1190,25 +1216,33 @@
   "collectionRenameFailureFeedback": "{count, plural, =1{A eșuat redenumirea unui element} other{A eșuat redenumirea a {count} elemente}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{A eșuat editarea unui element} other{A eșuat editarea a {count} elemente}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{A eșuat exportarea unei pagini} other{A eșuat exportarea a {count} pagini}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{S-a copiat 1 articol} other{S-au copiat {count} articole}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "sortOrderLargestFirst": "Cele mai mari întâi",
@@ -1314,7 +1348,9 @@
   "columnCount": "{count, plural, =1{{count} coloană} other{{count} coloane}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryActionShareImageOnly": "Distribuie doar imaginea",

@@ -493,7 +493,9 @@
   "collectionMoveSuccessFeedback": "{count, plural, =1{Položka bola presunutá} other{Bolo presunutých {count} položiek}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "drawerCountryPage": "Krajiny",
@@ -535,19 +537,25 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Nepodarilo sa odstrániť položku} other{Nepodarilo sa odstrániť {count} položiek} few{Nepodarilo sa odstrániť {count} položky}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{Položka bola skopírovaná} other{Bolo skopírovaných {count} položiek}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Položka bola upravená} other{Bolo upravených {count} položiek}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "Žiadne obľúbené",
@@ -561,7 +569,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Odstrániť túto položku?} other{Odstrániť týchto {count} položiek?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogWriteMetadata": "Zapísať metadáta",
@@ -605,7 +615,9 @@
   "collectionEditFailureFeedback": "{count, plural, =1{Nepodarilo sa upraviť položku} few{Nepodarilo sa upraviť {count} položky} other{Nepodarilo sa upraviť {count} položiek}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyImages": "Žiadne obrázky",
@@ -631,13 +643,17 @@
   "itemCount": "{count, plural, =1{{count} položka} other{{count} položiek}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "columnCount": "{count, plural, =1{{count} stĺpec} other{{count} stĺpcov}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} sekunda} other{{count} sekúnd}}",
@@ -715,7 +731,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Odstrániť tento album a položku v ňom?} other{Odstrániť tento album a {count} položiek v ňom?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "removeEntryMetadataDialogTitle": "Odstránenie metadát",
@@ -743,13 +761,17 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{Nepodarilo sa presunúť položku} few{Nepodarilo sa presunúť {count} položky} other{Nepodarilo sa presunúť {count} položiek}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Nepodarilo sa premenovať položku} few{Nepodarilo sa premenovať {count} položky} other{Nepodarilo sa premenovať {count} položiek}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "lengthUnitPixel": "px",
@@ -781,7 +803,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Odstrániť tieto albumy a položku v nich?} other{Odstrániť tieto albumy a {count} položiek v nich?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "aboutTranslatorsSectionTitle": "Prekladatelia",
@@ -803,19 +827,25 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{Nepodarilo sa kopírovať položku} few{Nepodarilo sa kopírovať {count} položky} other{Nepodarilo sa kopírovať {count} položiek}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Nepodarilo sa exportovať stránku} other{Nepodarilo sa exportovať {count} stránok}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{Položka bola premenovaná} other{Bolo premenovaných {count} položiek}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionSelectSectionTooltip": "Označiť sekciu",
@@ -847,7 +877,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Presunúť túto položku do koša?} other{Presunúť týchto {count} položiek do koša?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "patternDialogEnter": "Nastavenie vzoru",
@@ -947,7 +979,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Táto operácia neni podporovaná pre {types} súbor.} other{Táto operácia neni podporovaná pre {types} súbory.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -1332,7 +1366,9 @@
   "statsWithGps": "{count, plural, =1{1 položka s polohou} other{{count} položiek s polohami}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoResumptionModeDialogTitle": "Pokračovanie prehrávania",

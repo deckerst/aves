@@ -4,7 +4,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Færa þetta atriði í ruslmöppuna?} other{Færa þessi {count} atriði í ruslmöppuna?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNavigationDrawerAddAlbum": "Bæta við albúmi",
@@ -40,7 +42,9 @@
   "collectionExportFailureFeedback": "{count, plural, =1{Mistókst að flytja út 1 atriði} other{Mistókst að flytja út {count} atriðum}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "vaultDialogLockModeWhenScreenOff": "Læsa þegar skjárinn slekkur á sér",
@@ -148,7 +152,9 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{Mistókst að flytja 1 atriði} other{Mistókst að flytja {count} atriðum}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoLoopModeAlways": "Alltaf",
@@ -256,7 +262,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Eyða þessu atriði?} other{Eyða þessum {count} atriðum?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerShowInformation": "Birta upplýsingar",
@@ -352,7 +360,9 @@
   "collectionRenameFailureFeedback": "{count, plural, =1{Mistókst að endurnefna 1 atriði} other{Mistókst að endurnefna {count} atriðum}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoResumptionModeAlways": "Alltaf",
@@ -362,7 +372,9 @@
   "collectionEditSuccessFeedback": "{count, plural, =1{Breytti 1 atriði} other{Breytti {count} atriðum}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "sourceStateLoading": "Innhleðsla",
@@ -420,7 +432,9 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{Mistókst að afrita 1 atriði} other{Mistókst að afrita {count} atriðum}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsDisabled": "Óvirkt",
@@ -480,7 +494,9 @@
   "collectionMoveSuccessFeedback": "{count, plural, =1{Færði 1 atriði} other{Færði {count} atriðum}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextAlignmentLeft": "Vinstri",
@@ -588,7 +604,9 @@
   "collectionEditFailureFeedback": "{count, plural, =1{Mistókst að breyta 1 atriði} other{Mistókst að breyta {count} atriðum}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoActionPause": "Í bið",
@@ -644,7 +662,9 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Endurnefndi 1 atriði} other{Endurnefndi {count} atriðum}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoStreamSelectionDialogTrack": "Ferill",
@@ -727,7 +747,9 @@
   "statsWithGps": "{count, plural, =1{1 atriði með staðsetningu} other{{count} atriði með staðsetningum}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoResumptionModeDialogTitle": "Halda afspilun áfram",
@@ -773,7 +795,9 @@
   "columnCount": "{count, plural, =1{{count} dálkur} other{{count} dálkar}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "viewerTransitionNone": "Ekkert",
@@ -831,7 +855,9 @@
   "itemCount": "{count, plural, =1{{count} atriði} other{{count} atriðum}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "widgetTapUpdateWidget": "Uppfæra viðmótshluta",
@@ -1043,7 +1069,9 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{Afritaði 1 atriði} other{Afritaði {count} atriðum}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNavigationDrawerBanner": "Ýttu og haltu niðri til að endurraða valmyndaratriðum.",
@@ -1337,7 +1365,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Eyða þessum albúmum og atriðinu í þeim?} other{Eyða þessum albúmum og {count} atriðum í þeim??}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextSize": "Stærð texta",
@@ -1355,7 +1385,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Eyða þessu albúmi og atriðinu í því?} other{Eyða þessu albúmi og {count} atriðum í því??}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThemeColorHighlights": "Hátónalitun",
@@ -1373,7 +1405,9 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Mistókst að eyða 1 atriði} other{Mistókst að eyða {count} atriðum}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryActionShareImageOnly": "Deila einungis mynd",
@@ -1471,7 +1505,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Þessi aðgerð er ekki studd fyrir atriði af tegundinni: {types}.} other{Þessi aðgerð er ekki studd fyrir atriði af eftirfarandi tegundum: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",

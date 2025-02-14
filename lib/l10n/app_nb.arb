@@ -760,7 +760,9 @@
   "itemCount": "{count, plural, =1{{count} element} other{{count} elementer}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} sekund} other{{count} sekunder}}",
@@ -985,7 +987,9 @@
   "statsWithGps": "{count, plural, =1{1 element med plassering} other{{count} elementer med plassering}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsMotionPhotoAutoPlay": "Auto-spill bevegelige bilder",
@@ -1021,7 +1025,9 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{Kopierte 1 element} other{Kopierte {count} elementer}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThumbnailShowLocationIcon": "Vis plasserings-ikon",
@@ -1049,13 +1055,17 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{Klarte ikke å kopiere 1 element} other{Klarte ikke å kopiere {count} elementer}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Klarte ikke å flytte 1 element} other{Klarte ikke å flytte {count} elementer}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThumbnailShowFavouriteIcon": "Vis favoritt-ikon",
@@ -1081,19 +1091,25 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Klarte ikke å fjerne 1 element} other{Klarte ikke å fjerne {count} elementer}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Flyttet 1 element} other{Flyttet {count} elementer}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Klarte ikke å eksportere 1 side} other{Klarte ikke å eksportere {count} sider}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionSelectSectionTooltip": "Velg utvalg",
@@ -1129,7 +1145,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Denne operasjonen støttes ikke for elementer av følgende type: {types}.} other{Denne operasjonen støttes ikke for elementer av følgende typer: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -1140,13 +1158,17 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytt dette elementet til papirkurven?} other{Flytt disse {count} elementene til papirkurven?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Slett dette elementet?} other{Slett disse {count} elementene?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoStreamSelectionDialogText": "Undertekster",
@@ -1156,13 +1178,17 @@
   "collectionRenameFailureFeedback": "{count, plural, =1{Klarte ikke å endre navn på 1 element} other{Klarte ikke å endre navn på {count} elementer}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Klarte ikke å redigere 1 element} other{Klarte ikke å redigere {count} elementer}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThumbnailShowMotionPhotoIcon": "Vis bevegelig bilde -ikon",
@@ -1228,13 +1254,17 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Endret navn på 1 element} other{Endret navn på {count} elementer}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Slett dette albumet og elementet i det?} other{Slett dette albumet og de {count} elementene i det?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsHiddenFiltersBanner": "Bilder og videoer som samsvarer med skjulte filtre vil ikke vises i samlingen din.",
@@ -1242,13 +1272,17 @@
   "collectionEditSuccessFeedback": "{count, plural, =1{Redigerte 1 element} other{Redigerte {count} elementer}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Slett disse albumene og elementet i demt?} other{Slett disse albumene og de {count} elementene i dem?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "filterAspectRatioLandscapeLabel": "Liggende",
@@ -1328,7 +1362,9 @@
   "columnCount": "{count, plural, =1{{count} kolonne} other{{count} kolonner}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "keepScreenOnVideoPlayback": "Under videoavspilling",

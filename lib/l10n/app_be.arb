@@ -10,7 +10,9 @@
   "itemCount": "{count, plural, =1{{count} элемент} other{{count} элементаў}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionPin": "Прышпіліць да вяршыні",
@@ -462,7 +464,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Гэта аперацыя не падтрымліваецца для элементаў наступнага тыпу: {types}.} other{Гэта аперацыя не падтрымліваецца для элементаў наступных тыпаў: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -700,7 +704,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Перамясціць гэты элемент у сметніцу?} few{Перамясціць гэтыя {count} элемента ў сметніцу?} other{Перамясціць гэтыя {count} элементаў у сметніцу?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsLanguageTile": "Мова",
@@ -718,7 +724,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Выдаліць гэты элемент?} few{Выдаліць гэтыя {count} элемента?} other{Выдаліць гэтыя {count} элементаў?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "editEntryDateDialogTitle": "Дата і час",
@@ -790,7 +798,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Выдаліць гэты альбом і элемент у ім?} few{Выдаліць гэты альбом і {count} элементы ў ім?} other{Выдаліць гэты альбом і {count} элементаў у ім?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThemeColorHighlights": "Каляровыя акцэнты",
@@ -1186,7 +1196,9 @@
   "collectionExportFailureFeedback": "{count, plural, =1{Не атрымалася экспартаваць 1 старонку} few{Не атрымалася экспартаваць {count} старонкі} other{Не атрымалася экспартаваць {count} старонак}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextAlignmentDialogTitle": "Выраўноўванне тэксту",
@@ -1200,7 +1212,9 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{Немагчыма перанесці 1 элемент} few{Немагчыма перанесці {count} элементы} other{Немагчыма перанесці {count} элементаў}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextColor": "Колер тэксту",
@@ -1250,13 +1264,17 @@
   "collectionRenameFailureFeedback": "{count, plural, =1{Не атрымалася перайменаваць 1 элемент} few{Не атрымалася перайменаваць {count} элементы} other{Не атрымалася перайменаваць {count} элементаў}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{1 элемент адрэдагаваны} few{{count} элементы адрэдагаваны} other{{count} элементаў адрэдагаваны}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThumbnailShowMotionPhotoIcon": "Паказаць значок фота з рухам",
@@ -1272,7 +1290,9 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{Не атрымалася скапіюваць 1 элемент} few{Не атрымалася скапіюваць {count} элементы} other{Не атрымалася скапіюваць {count} элементаў}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoGestureDoubleTapTogglePlay": "Двойчы націсніце, каб прайграць/прыпыніць",
@@ -1282,7 +1302,9 @@
   "collectionMoveSuccessFeedback": "{count, plural, =1{Перамяшчаны 1 элемент} few{Перамяшчаны {count} элементы} other{Перамяшчаны {count} элементаў}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextAlignmentLeft": "Злева",
@@ -1298,7 +1320,9 @@
   "collectionEditFailureFeedback": "{count, plural, =1{Немагчыма адрэдагаваць 1 элемент} few{Немагчыма адрэдагаваць {count} элементы} other{Немагчыма адрэдагаваць {count} элементаў}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsThumbnailOverlayPageTitle": "Навязванне",
@@ -1314,7 +1338,9 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Перайменаваны 1 элемент} few{Перайменаваны {count} элементы} other{Перайменаваны {count} элементаў}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerUseCutout": "Выкарыстоўваць вобласць выраза",
@@ -1336,7 +1362,9 @@
   "statsWithGps": "{count, plural, =1{1 элемент з месцазнаходжаннем} few{{count} элементы з месцазнаходжаннем} other{{count} элементаў з месцазнаходжаннем}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoResumptionModeDialogTitle": "Працягнуць прайграванне",
@@ -1394,7 +1422,9 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{1 элемент скапіяваны} few{{count} элементы скапіявана} other{{count} элементаў скапіявана}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsNavigationDrawerBanner": "Націсніце і ўтрымлівайце для перамяшчэння і змены парадку пунктаў меню.",
@@ -1454,7 +1484,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Выдаліць гэтыя альбомы і элемент у іх?} few{Выдаліць гэтыя альбомы і {count} элементы ў іх?} other{Выдаліць гэтыя альбомы і {count} элементаў у іх?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsSubtitleThemeTextSize": "Памер тэксту",
@@ -1464,7 +1496,9 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Не атрымалася выдаліць 1 элемент} few{Не атрымалася выдаліць {count} элементы} other{Не атрымалася выдаліць {count} элементаў}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsVideoButtonsTile": "Кнопкі",
@@ -1480,7 +1514,9 @@
   "columnCount": "{count, plural, =1{{count} слупок} few{{count} слупкі} other{{count} слупкоў}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} секунда} few{{count} секунды} other{{count} секунд}}",

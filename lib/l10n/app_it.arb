@@ -1156,7 +1156,9 @@
   "columnCount": "{count, plural, =1{{count} colonna} other{{count} colonne}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryInfoActionRemoveLocation": "Rimuovi posizione",

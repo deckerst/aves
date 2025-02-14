@@ -1170,7 +1170,9 @@
   "columnCount": "{count, plural, =1{{count} colonne} other{{count} colonnes}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsAccessibilityShowPinchGestureAlternatives": "Afficher des alternatives aux interactions multitactiles",

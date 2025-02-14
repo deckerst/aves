@@ -1200,7 +1200,9 @@
   "columnCount": "{count, plural, =1{{count} coluna} other{{count} colunas}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsDisablingBinWarningDialogMessage": "Os itens na lixeira serão excluídos para sempre.",

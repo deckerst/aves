@@ -140,7 +140,9 @@
   "columnCount": "{count, plural, =1{{count} sarake} other{{count} saraketta}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionGoToAlbumPage": "Näytä albumeissa",
@@ -152,7 +154,9 @@
   "itemCount": "{count, plural, =1{{count} kohde} other{{count} kohdetta}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionConfigureVault": "Määritä holvi",

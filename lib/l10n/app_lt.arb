@@ -286,7 +286,9 @@
   "itemCount": "{count, plural, =1{{count} elementas} few{{count} elementai} other{{count} elementų}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeMinutes": "{count, plural, =1{{count} minutė} few{{count} minutės} other{{count} minučių}}",
@@ -988,7 +990,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Ši operacija nepalaikoma šio tipo elementams: {types}.} other{Ši operacija nepalaikoma šių tipų elementams: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -1001,13 +1005,17 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Ištrinti šį elementą?} other{Ištrinti šiuos {count} elementus?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Perkelti šį elementą į šiukšlinę?} other{Perkelti šiuos {count} elementus į šiukšlinę?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoResumeDialogMessage": "Ar norite tęsti grojimą nuo {time}?",
@@ -1028,13 +1036,17 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Ištrinti šį albumą ir jo elementą?} other{Ištrinti šį albumą ir jo {count} elementus?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Ištrinti šiuos albumus ir jų elementą?} other{Ištrinti šiuos albumus ir jų {count} elementus?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "editEntryDateDialogShift": "Pastumti",
@@ -1060,61 +1072,81 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Nepavyko ištrinti 1 elemento} other{Nepavyko ištrinti {count} elementų}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Nepavyko nukopijuoti 1 elemento} other{Nepavyko nukopijuoti {count} elementų}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Nepavyko perkelti 1 elemento} other{Nepavyko perkelti {count} elementų}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Nepavyko redaguoti 1 elemento} other{Nepavyko redaguoti {count} elementų}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Nepavyko eksportuoti 1 puslapio} other{Nepavyko eksportuoti {count} puslapių}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Perkeltas 1 elementas} other{Perkelta {count} elementų}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{Nukopijuota 1 prekė} other{Nukopijuoti {count} elementai}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Nepavyko pervadinti 1 elemento} other{Nepavyko pervadinti {count} elementų}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{Pervadintas 1 elementas} other{Pervadinti {count} elementai}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Redaguotas 1 elementas} other{Redaguoti {count} elementai}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyImages": "Nėra paveiklėlių",
@@ -1232,7 +1264,9 @@
   "statsWithGps": "{count, plural, =1{1 elementas su vieta} other{{count} elementai su vieta}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "viewerInfoBackToViewerTooltip": "Atgal į peržiūrą",
@@ -1527,6 +1561,7 @@
   "@columnCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }

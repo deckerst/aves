@@ -3,6 +3,7 @@
   "@columnCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -11,6 +12,7 @@
   "@timeSeconds": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -29,6 +31,7 @@
   "@itemCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -37,6 +40,7 @@
   "@timeMinutes": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -45,6 +49,7 @@
   "@timeDays": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }

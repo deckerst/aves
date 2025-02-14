@@ -7,6 +7,7 @@
   "@itemCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -15,6 +16,7 @@
   "@columnCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -24,6 +26,7 @@
   "@timeSeconds": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -32,6 +35,7 @@
   "@timeMinutes": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -40,6 +44,7 @@
   "@timeDays": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -371,7 +376,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{This operation is not supported for items of the following type: {types}.} other{This operation is not supported for items of the following types: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -392,6 +399,7 @@
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -400,6 +408,7 @@
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -470,6 +479,7 @@
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -478,6 +488,7 @@
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -629,6 +640,7 @@
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -637,6 +649,7 @@
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -645,6 +658,7 @@
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -653,6 +667,7 @@
   "@collectionRenameFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -661,6 +676,7 @@
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -669,6 +685,7 @@
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -677,6 +694,7 @@
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -685,6 +703,7 @@
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -693,6 +712,7 @@
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -701,6 +721,7 @@
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1005,6 +1026,7 @@
   "@statsWithGps": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }

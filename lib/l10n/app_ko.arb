@@ -1172,7 +1172,9 @@
   "columnCount": "{count, plural, other{{count}열}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerShowDescription": "설명 표시",

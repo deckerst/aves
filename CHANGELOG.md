@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - support for Samsung HEIC motion photos embedding video in sefd box
 - Cataloguing: identify video location from Apple QuickTime metadata, and 3GPP `loci` atom
 
+### Changed
+
+- upgraded Flutter to stable v3.29.0
+
 ### Fixed
 
 - opening motion photo embedded video when video track is not the first one

@@ -232,13 +232,17 @@
   "itemCount": "{count, plural, =1{{count} element} few{{count} elementy} other{{count} elelmentów}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "columnCount": "{count, plural, =1{{count} rząd} few{{count} rzędy} other{{count} rzędów}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} sekunda} few{{count} sekundy} other{{count} sekund}}",
@@ -388,7 +392,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Ta operacja nie jest obsługiwana dla elementów następującego typu: {types}.} other{Ta operacja nie jest obsługiwana dla elementów następujących typów: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -476,13 +482,17 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Przenieść ten element do Kosza?} other{Przenieść te elementy {count} do Kosza?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Usunąć ten element?} other{Usunąć te elementy {count}?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "Zapisać daty elementów przed kontynuacją?",
@@ -538,7 +548,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Usunąć ten album i jego element?} few{Usunąć ten album i jego {count} elementy?} other{Usunąć ten album i jego {count} elementów?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "editEntryDateDialogShift": "Zmiana",
@@ -594,13 +606,17 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{Skopiowano 1 element} few{Skopiowano {count} elementy} other{Skopiowano {count} elementów}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Wyedytowano 1 element} few{Wyedytowano {count} elementy} other{Wyedytowano {count} elementów}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "Brak ulubionych",
@@ -682,7 +698,9 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Zmieniono nazwę 1 elementowi} other{Zmieniono nazwę {count} elementom}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyImages": "Brak obrazów",
@@ -740,7 +758,9 @@
   "collectionEditFailureFeedback": "{count, plural, =1{Nie udało się wyedytować 1 elementu} other{Nie udało się wyedytować {count} elementów}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "drawerCollectionAnimated": "Animacje",
@@ -804,7 +824,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Usunąć te albumy i ich element?} few{Usunąć te albumy i ich {count} elementy?} other{Usunąć te albumy i ich {count} elementów?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "renameAlbumDialogLabelAlreadyExistsHelper": "Katalog już istnieje",
@@ -860,25 +882,33 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Nie udało się usunąć 1 elementu} other{Nie udało się usunąć {count} elementów}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Nie udało się skopiować 1 elementu} other{Nie udało się skopiować {count} elementów}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Nie udało się przenieść 1 elementu} other{Nie udało się przenieść {count} elementów}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Nie udało się zmienić nazwy 1 elementowi} other{Nie udało się zmienić nazwy {count} elementom}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "albumScreenRecordings": "Nagrania ekranu",
@@ -886,13 +916,17 @@
   "collectionExportFailureFeedback": "{count, plural, =1{Nie udało się wyeksportować 1 strony} other{Nie udało się wyeksportować{count} stron}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Przeniesiono 1 element} few{Przeniesiono {count} elementy} other{Przeniesiono {count} elementów}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "drawerCollectionAll": "Wszystkie kolekcje",
@@ -1300,7 +1334,9 @@
   "statsWithGps": "{count, plural, =1{1 element z położeniem} few{{count} elementy z położeniem} other{{count} elementów z położeniem}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "viewerInfoLabelDescription": "Opis",
