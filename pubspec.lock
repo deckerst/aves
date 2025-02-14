@@ -503,17 +503,18 @@ packages:
   google_api_availability:
     dependency: transitive
     description:
-      name: google_api_availability
-      sha256: "1642876fa87515fd5e4074458f22d6ba4518919c5abce16baaa2878c3c555678"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
+      path: google_api_availability
+      ref: aves
+      resolved-ref: "8cfa6d58fca333fe0c8b7d91983f70154a6ca196"
+      url: "https://github.com/deckerst/flutter-google-api-availability.git"
+    source: git
+    version: "5.0.0"
   google_api_availability_android:
     dependency: transitive
     description:
       path: google_api_availability_android
       ref: aves
-      resolved-ref: bfa9ae35e45524b14594ed0ea28f7e46b7c73edd
+      resolved-ref: "8cfa6d58fca333fe0c8b7d91983f70154a6ca196"
       url: "https://github.com/deckerst/flutter-google-api-availability.git"
     source: git
     version: "1.0.1"
