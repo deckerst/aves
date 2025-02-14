@@ -1166,7 +1166,9 @@
   "columnCount": "{count, plural, other{{count} sütun}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsAccessibilityShowPinchGestureAlternatives": "Çoklu dokunma hareketi alternatiflerini göster",

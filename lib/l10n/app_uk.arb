@@ -304,7 +304,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Ця операція не підтримується для об'єктів такого формату: {types}.} other{Ця операція не підтримується для об'єктів таких форматів {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -526,43 +528,57 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Не вдалося видалити 1 елемент} few{Не вдалося видалити {count} елементи} other{Не вдалося видалити {count} елементів}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Не вдалося скопіювати 1 елемент} few{Не вдалося скопіювати {count} елементи} other{Не вдалося скопіювати {count} елементів}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Не вдалося перенести 1 елемент} few{Не вдалося перенести {count} елементи} other{Не вдалося перенести {count} елементів}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Не вдалося відредагувати 1 елемент} few{Не вдалося відредагувати {count} елементи} other{Не вдалося відредагувати {count} елементів}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{Скопійовано 1 елемент} few{Скопійовано {count} елементи} other{Скопійовано {count} елементів}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{Перейменовано 1 елемент} few{Перейменовано {count} елементи} other{Перейменовано {count} елементів}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Відредаговано 1 елемент} few{Відредаговано {count} елементи} other{Відредаговано {count} елементів}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "Немає обраних",
@@ -632,7 +648,9 @@
   "itemCount": "{count, plural, =1{{count} елемент} few{{count} елементи} other{{count} елементів}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} секунда} few{{count} секунди} other{{count} секунд}}",
@@ -764,7 +782,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Перемістити цей елемент у кошик?} few{Перемістити ці {count} елементи у кошик?} other{Перемістити ці {count} елементів у кошик?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoStartOverButtonLabel": "ВІДТВОРИТИ СПОЧАТКУ",
@@ -780,13 +800,17 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Видалити цей елемент?} few{Видалити ці {count} елементи?} other{Видалити ці {count} елементів?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Видалити цей альбом і елемент у ньому?} few{Видалити цей альбом і {count} елементи у ньому?} other{Видалити цей альбом і {count} елементів у ньому?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "nameConflictDialogSingleSourceMessage": "Деякі файли в теці призначення мають одну й ту саму назву.",
@@ -794,7 +818,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Видалити ці альбоми та елемент в них?} few{Видалити ці альбоми та {count} елементи в них?} other{Видалити ці альбоми та {count} елементів в них?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "editEntryLocationDialogLongitude": "Довгота",
@@ -824,7 +850,9 @@
   "collectionRenameFailureFeedback": "{count, plural, =1{Не вдалося перейменувати 1 елемент} few{Не вдалося перейменувати {count} елементи} other{Не вдалося перейменувати {count} елементів}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "albumScreenshots": "Скріншоти",
@@ -832,7 +860,9 @@
   "collectionExportFailureFeedback": "{count, plural, =1{Не вдалося експортувати 1 сторінку} few{Не вдалося експортувати {count} сторіноки} other{Не вдалося експортувати {count} сторінок}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "drawerCollectionPanoramas": "Панорами",
@@ -840,7 +870,9 @@
   "collectionMoveSuccessFeedback": "{count, plural, =1{Переміщено 1 елемент} few{Переміщено {count} елементи} other{Переміщено {count} елементів}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "drawerAboutButton": "Про нас",
@@ -1312,7 +1344,9 @@
   "statsWithGps": "{count, plural, =1{1 елемент з місцезнаходженням} few{{count} елементи з місцезнаходженням} other{{count} елементів з місцезнаходженням}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsDisplayRefreshRateModeDialogTitle": "Частота оновлення",
@@ -1330,7 +1364,9 @@
   "columnCount": "{count, plural, =1{{count} стовпець} few{{count} стовпці} other{{count} стовпців}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerShowDescription": "Показати опис",

@@ -1170,7 +1170,9 @@
   "columnCount": "{count, plural, other{{count} kolom}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsAccessibilityShowPinchGestureAlternatives": "Tampilkan alternatif gestur multisentuh",

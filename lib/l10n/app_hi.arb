@@ -6,7 +6,9 @@
   "columnCount": "{count, plural, other{{count} कॉलम}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} सेकंड} other{{count} सेकंडस}}",
@@ -38,7 +40,9 @@
   "itemCount": "{count, plural, =1{{count} चीज} other{{count} चीजे}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteButtonLabel": "मिटाए",
@@ -333,10 +337,11 @@
   "@nameConflictDialogSingleSourceMessage": {},
   "noMatchingAppDialogMessage": "इसमें कोई ऐप नहीं है जो इसे संभाल सकता है।।",
   "@noMatchingAppDialogMessage": {},
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{इस आइटम को रीसायकल बिन में ले जाएं?} अन्य{इन {count} आइटम को रीसायकल बिन में ले जाएं?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{इस आइटम को रीसायकल बिन में ले जाएं?} other{इन {count} आइटम को रीसायकल बिन में ले जाएं?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -345,6 +350,7 @@
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -391,10 +397,12 @@
   "@renameAlbumDialogLabel": {},
   "wallpaperTargetLock": "लॉक स्क्रीन",
   "@wallpaperTargetLock": {},
-  "unsupportedTypeDialogMessage": "{count, plural, =1{यह ऑपरेशन निम्न प्रकार के आइटम के लिए समर्थित नहीं है: {types}.} अन्य{यह ऑपरेशन निम्न प्रकार के आइटम के लिए समर्थित नहीं है: {types}.}}",
+  "unsupportedTypeDialogMessage": "{count, plural, =1{यह ऑपरेशन निम्न प्रकार के आइटम के लिए समर्थित नहीं है: {types}.} other{यह ऑपरेशन निम्न प्रकार के आइटम के लिए समर्थित नहीं है: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -717,6 +725,7 @@
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -725,6 +734,7 @@
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -789,6 +799,7 @@
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -807,6 +818,7 @@
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -821,6 +833,7 @@
   "@collectionRenameFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -863,6 +876,7 @@
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -871,6 +885,7 @@
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -879,6 +894,7 @@
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -897,6 +913,7 @@
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -905,6 +922,7 @@
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -925,6 +943,7 @@
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -945,6 +964,7 @@
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }

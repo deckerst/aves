@@ -17,6 +17,12 @@ dependencies:
     path: ../aves_utils
   device_info_plus:
   google_api_availability:
+  google_api_availability_android:
+    git:
+      # https://github.com/baseflow/flutter-google-api-availability.git main commit af48328 (Jul 17, 2023) is incompatible with Flutter v3.29
+      url: https://github.com/deckerst/flutter-google-api-availability.git
+      ref: aves
+      path: google_api_availability_android
   google_maps_flutter:
   google_maps_flutter_android:
   google_maps_flutter_platform_interface:

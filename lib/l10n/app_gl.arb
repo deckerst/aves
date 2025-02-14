@@ -180,7 +180,9 @@
   "itemCount": "{count, plural, =1{{count} elementos} other{{count} elementos}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} segundo} other{{count} segundos}}",

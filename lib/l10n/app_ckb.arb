@@ -7,7 +7,9 @@
   "columnCount": "{count, plural, other{ڕیز {count}}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, other{چرکە {count}}}",
@@ -134,7 +136,9 @@
   "itemCount": "{count, plural, other{دانە {count}}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "appName": "ئاڤیس",

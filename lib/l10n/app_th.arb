@@ -571,7 +571,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{ลบอัลบั้มเหล่านี้และรายการในอัลบั้มทั้งหมด?} other{ลบอัลบั้มเหล่านี้และ {count} รายการในอัลบั้ม?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryActionShareVideoOnly": "แชร์วิดีโอเท่านั้น",
@@ -610,19 +612,25 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{ย้ายรายการนี้ไปยังถังขยะ?} other{ย้าย {count} รายการนี้ไปยังถังขยะ?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{ลบรายการนี้?} other{ลบ {count} รายการนี้?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{ลบอัลบั้มนี้และรายการในอัลบั้มทั้งหมด?} other{ลบอัลบั้มนี้และ {count} รายการในอัลบั้ม?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryActionShareImageOnly": "แชร์รูปภาพเท่านั้น",
@@ -632,7 +640,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{การดำเนินการนี้ไม่รองรับรายการประเภทต่อไปนี้: {types}.} other{การดำเนินการนี้ไม่รองรับรายการประเภทต่อไปนี้: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",

@@ -10,13 +10,17 @@
   "itemCount": "{count, plural, =1{{count} element} other{{count} elements}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "columnCount": "{count, plural, =1{{count} columna} other{{count} columnes}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "cancelTooltip": "Canceŀlar",
@@ -289,7 +293,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Esborrar aquest element?} other{Esborrar aquests {count} elements?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "Desar les dates dels elements abans de continuar?",
@@ -346,7 +352,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Eliminar aquest àlbum i l’element que conté?} other{Eliminar aquests àlbums i els {count} elements que contenen?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogQuality": "Qualitat",
@@ -577,7 +585,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Aquesta operació no és compatible amb elements del següent format: {types}.} other{Aquesta operació no és compatible amb elements dels següents formats: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -594,7 +604,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Moure aquest element a la paperera de reciclatge?} other{Moure aquests {count} elements a la paperera de reciclatge?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "newAlbumDialogNameLabelAlreadyExistsHelper": "El directori ja existeix",
@@ -616,7 +628,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Eliminar aquest àlbum i l’element que conté?} other{Eliminar aquest àlbum i els {count} elements que conté?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "vaultBinUsageDialogMessage": "Algunes caixes fortes fan servir la paperera de reciclatge.",
@@ -834,37 +848,49 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Error en esborrar 1 element} other{Error en esborrar {count} elements}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Error en copiar 1 element} other{Error en copiar {count} elements}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Error en canviar el nom a 1 element} other{Error en canviar el nom a {count} elements}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Error en editar 1 element} other{Error en editar {count} elements}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{Un element copiat} other{{count} elements copiats}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Un element mogut} other{{count} elements moguts}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "Sense preferits",
@@ -1226,7 +1252,9 @@
   "statsWithGps": "{count, plural, =1{1 element amb localització} other{{count} elements amb localització}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsTopStatesSectionTitle": "Estats Principals",
@@ -1348,13 +1376,17 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Nom canviat a 1 element} other{Nom canviat a {count} elements}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Un element editat} other{{count} elements editats}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyVideos": "Sense vídeos",
@@ -1496,13 +1528,17 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{Error en moure 1 element} other{Error en moure {count} elements}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Error en exportar una pàgina} other{Error en exportar {count} pàgines}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionShowCollection": "Mostrar a Coŀlecció",
