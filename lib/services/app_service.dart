@@ -81,7 +81,7 @@ class PlatformAppService implements AppService {
         'sizeDip': size,
       });
       if (result != null) return result as Uint8List;
-    } on PlatformException catch (_, __) {
+    } on PlatformException catch (_) {
       // ignore, as some packages legitimately do not have icons
     }
     return Uint8List(0);
