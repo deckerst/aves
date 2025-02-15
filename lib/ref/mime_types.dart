@@ -86,6 +86,8 @@ class MimeTypes {
 
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, dngX, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
+  static const Set<String> developedRawImages = {jpeg, heic, heif};
+
   static bool canHaveAlpha(String mimeType) => MimeTypes.alphaImages.contains(mimeType);
 
   static bool isRaw(String mimeType) => MimeTypes.rawImages.contains(mimeType);
