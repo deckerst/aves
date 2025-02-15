@@ -172,7 +172,7 @@ dependencies {
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:3ed067f021'
-    implementation 'com.github.deckerst:androidsvg:3c9bd08bd8'
+    implementation 'com.github.deckerst:androidsvg:cc9d59a88f'
     implementation 'com.github.deckerst.mp4parser:isoparser:d5caf7a3dd'
     implementation 'com.github.deckerst.mp4parser:muxer:d5caf7a3dd'
     implementation 'com.github.deckerst:pixymeta-android:71eee77dc4'
