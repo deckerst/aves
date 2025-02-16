@@ -398,7 +398,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
 
     return AvesMagnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
-      key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
+      key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedMillis}'),
       controller: controller ?? _magnifierController,
       contentSize: displaySize ?? entry.displaySize,
       allowOriginalScaleBeyondRange: !isWallpaperMode,

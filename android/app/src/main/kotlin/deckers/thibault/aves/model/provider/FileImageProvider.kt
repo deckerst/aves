@@ -46,7 +46,7 @@ internal class FileImageProvider : ImageProvider() {
                         path = path,
                         title = file.name,
                         sizeBytes = file.length(),
-                        dateModifiedSecs = file.lastModified() / 1000,
+                        dateModifiedMillis = file.lastModified(),
                     )
                 }
             } catch (e: SecurityException) {
@@ -91,7 +91,7 @@ internal class FileImageProvider : ImageProvider() {
         return hashMapOf(
             EntryFields.URI to Uri.fromFile(newFile).toString(),
             EntryFields.PATH to newFile.path,
-            EntryFields.DATE_MODIFIED_SECS to newFile.lastModified() / 1000,
+            EntryFields.DATE_MODIFIED_MILLIS to newFile.lastModified(),
         )
     }
 
@@ -99,7 +99,7 @@ internal class FileImageProvider : ImageProvider() {
         try {
             val file = File(path)
             if (file.exists()) {
-                newFields[EntryFields.DATE_MODIFIED_SECS] = file.lastModified() / 1000
+                newFields[EntryFields.DATE_MODIFIED_MILLIS] = file.lastModified()
                 newFields[EntryFields.SIZE_BYTES] = file.length()
             }
             callback.onSuccess(newFields)

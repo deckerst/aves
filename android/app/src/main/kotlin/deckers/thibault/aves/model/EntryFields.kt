@@ -18,7 +18,7 @@ object EntryFields {
     const val IS_FLIPPED = "isFlipped" // boolean
 
     const val DATE_ADDED_SECS = "dateAddedSecs" // long
-    const val DATE_MODIFIED_SECS = "dateModifiedSecs" // long
+    const val DATE_MODIFIED_MILLIS = "dateModifiedMillis" // long
     const val SOURCE_DATE_TAKEN_MILLIS = "sourceDateTakenMillis" // long
     const val DURATION_MILLIS = "durationMillis" // long
 

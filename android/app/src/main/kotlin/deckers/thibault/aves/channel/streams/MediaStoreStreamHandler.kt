@@ -19,12 +19,13 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
-    private var knownEntries: Map<Long?, Int?>? = null
+    // knownEntries: map of contentId -> dateModifiedMillis
+    private var knownEntries: Map<Long?, Long?>? = null
     private var directory: String? = null
 
     init {
         if (arguments is Map<*, *>) {
-            knownEntries = (arguments["knownEntries"] as? Map<*, *>?)?.map { (it.key as Number?)?.toLong() to it.value as Int? }?.toMap()
+            knownEntries = (arguments["knownEntries"] as? Map<*, *>?)?.map { (it.key as Number?)?.toLong() to (it.value as Number?)?.toLong() }?.toMap()
             directory = arguments["directory"] as String?
         }
     }

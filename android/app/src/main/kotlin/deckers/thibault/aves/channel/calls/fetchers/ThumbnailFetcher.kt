@@ -30,7 +30,7 @@ class ThumbnailFetcher internal constructor(
     private val context: Context,
     uri: String,
     private val mimeType: String,
-    private val dateModifiedSecs: Long,
+    private val dateModifiedMillis: Long,
     private val rotationDegrees: Int,
     private val isFlipped: Boolean,
     width: Int?,
@@ -119,7 +119,7 @@ class ThumbnailFetcher internal constructor(
         // add signature to ignore cache for images which got modified but kept the same URI
         var options = RequestOptions()
             .format(if (quality == 100) DecodeFormat.PREFER_ARGB_8888 else DecodeFormat.PREFER_RGB_565)
-            .signature(ObjectKey("$dateModifiedSecs-$rotationDegrees-$isFlipped-$width-$pageId"))
+            .signature(ObjectKey("$dateModifiedMillis-$rotationDegrees-$isFlipped-$width-$pageId"))
             .override(width, height)
         if (isVideo(mimeType)) {
             options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE)

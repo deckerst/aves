@@ -17,7 +17,7 @@ class EntryFields {
   static const isFlipped = 'isFlipped'; // boolean
 
   static const dateAddedSecs = 'dateAddedSecs'; // long
-  static const dateModifiedSecs = 'dateModifiedSecs'; // long
+  static const dateModifiedMillis = 'dateModifiedMillis'; // long
   static const sourceDateTakenMillis = 'sourceDateTakenMillis'; // long
   static const durationMillis = 'durationMillis'; // long
 

@@ -109,7 +109,7 @@ class _EditorImageState extends State<EditorImage> {
                         final viewportSize = margin.deflateSize(constraints.biggest);
                         final minScale = ScaleLevel(factor: ScaleLevel.scaleForContained(viewportSize, canvasSize));
                         return AvesMagnifier(
-                          key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
+                          key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedMillis}'),
                           controller: widget.magnifierController,
                           viewportPadding: margin,
                           contentSize: mediaSize,
