@@ -80,9 +80,6 @@ dependencies:
       url: https://github.com/deckerst/expansion_tile_card.git
   flex_color_picker:
   floating:
-    git:
-      url: https://github.com/deckerst/floating.git
-      ref: flutter_3.29
   fluster:
   flutter_displaymode:
   flutter_highlight:
