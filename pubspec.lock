@@ -359,12 +359,11 @@ packages:
   floating:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "flutter_3.29"
-      resolved-ref: db9134df50f38b0913771262b95df54f4605d30e
-      url: "https://github.com/deckerst/floating.git"
-    source: git
-    version: "5.0.1"
+      name: floating
+      sha256: e51ce1dbcab3ea83da0ad1b07f2091b99c0e8680184c780a000567f41234d454
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   fluster:
     dependency: "direct main"
     description:
