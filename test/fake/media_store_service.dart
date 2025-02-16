@@ -40,12 +40,13 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
 
   static int get nextId => _lastId++;
 
-  static int get dateSecs => DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  static int get dateMillis => DateTime.now().millisecondsSinceEpoch;
 
   static AvesEntry newImage(String album, String filenameWithoutExtension, {int? id, int? contentId}) {
     id ??= nextId;
     contentId ??= id;
-    final date = dateSecs;
+    final _dateMillis = dateMillis;
+    final _dateSecs = _dateMillis ~/ 1000;
     return AvesEntry(
       origin: EntryOrigins.mediaStoreContent,
       id: id,
@@ -59,9 +60,9 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       sourceRotationDegrees: 0,
       sizeBytes: 42,
       sourceTitle: filenameWithoutExtension,
-      dateAddedSecs: date,
-      dateModifiedSecs: date,
-      sourceDateTakenMillis: date,
+      dateAddedSecs: _dateSecs,
+      dateModifiedMillis: _dateMillis,
+      sourceDateTakenMillis: _dateMillis,
       durationMillis: null,
       trashed: false,
     );
@@ -77,7 +78,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
         EntryFields.uri: 'content://media/external/images/media/$newContentId',
         EntryFields.contentId: newContentId,
         EntryFields.path: entry.path!.replaceFirst(sourceAlbum, destinationAlbum),
-        EntryFields.dateModifiedSecs: FakeMediaStoreService.dateSecs,
+        EntryFields.dateModifiedMillis: FakeMediaStoreService.dateMillis,
       },
       deleted: false,
     );
@@ -94,7 +95,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
         EntryFields.uri: 'content://media/external/images/media/$newContentId',
         EntryFields.contentId: newContentId,
         EntryFields.path: entry.path!.replaceFirst(oldName, newName),
-        EntryFields.dateModifiedSecs: FakeMediaStoreService.dateSecs,
+        EntryFields.dateModifiedMillis: FakeMediaStoreService.dateMillis,
       },
       deleted: false,
     );

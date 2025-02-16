@@ -98,7 +98,7 @@ class ViewerDebugPage extends StatelessWidget {
           info: {
             'catalogDateMillis': toDateValue(entry.catalogDateMillis),
             'dateAddedSecs': toDateValue(entry.dateAddedSecs, factor: 1000),
-            'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
+            'dateModifiedMillis': toDateValue(entry.dateModifiedMillis),
             'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
             'bestDate': '${entry.bestDate}',
           },

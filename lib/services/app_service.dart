@@ -225,7 +225,7 @@ class PlatformAppService implements AppService {
         pageId: coverEntry.pageId,
         rotationDegrees: coverEntry.rotationDegrees,
         isFlipped: coverEntry.isFlipped,
-        dateModifiedSecs: coverEntry.dateModifiedSecs,
+        dateModifiedMillis: coverEntry.dateModifiedMillis,
         extent: size,
       );
     }

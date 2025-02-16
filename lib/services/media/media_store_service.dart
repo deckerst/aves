@@ -14,7 +14,7 @@ abstract class MediaStoreService {
 
   Future<int?> getGeneration();
 
-  // knownEntries: map of contentId -> dateModifiedSecs
+  // knownEntries: map of contentId -> dateModifiedMillis
   Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory});
 
   // returns media URI

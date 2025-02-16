@@ -36,7 +36,7 @@ class AvesEntry with AvesEntryBase {
   int? contentId;
   final String sourceMimeType;
   int width, height, sourceRotationDegrees;
-  int? dateAddedSecs, _dateModifiedSecs, sourceDateTakenMillis, _durationMillis;
+  int? dateAddedSecs, _dateModifiedMillis, sourceDateTakenMillis, _durationMillis;
   bool trashed;
   int origin;
 
@@ -66,7 +66,7 @@ class AvesEntry with AvesEntryBase {
     required this.sizeBytes,
     required String? sourceTitle,
     required this.dateAddedSecs,
-    required int? dateModifiedSecs,
+    required int? dateModifiedMillis,
     required this.sourceDateTakenMillis,
     required int? durationMillis,
     required this.trashed,
@@ -82,7 +82,7 @@ class AvesEntry with AvesEntryBase {
     }
     this.path = path;
     this.sourceTitle = sourceTitle;
-    this.dateModifiedSecs = dateModifiedSecs;
+    this.dateModifiedMillis = dateModifiedMillis;
     this.durationMillis = durationMillis;
   }
 
@@ -93,7 +93,7 @@ class AvesEntry with AvesEntryBase {
     int? contentId,
     String? title,
     int? dateAddedSecs,
-    int? dateModifiedSecs,
+    int? dateModifiedMillis,
     int? origin,
     List<AvesEntry>? stackedEntries,
   }) {
@@ -111,7 +111,7 @@ class AvesEntry with AvesEntryBase {
       sizeBytes: sizeBytes,
       sourceTitle: title ?? sourceTitle,
       dateAddedSecs: dateAddedSecs ?? this.dateAddedSecs,
-      dateModifiedSecs: dateModifiedSecs ?? this.dateModifiedSecs,
+      dateModifiedMillis: dateModifiedMillis ?? this.dateModifiedMillis,
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
       trashed: trashed,
@@ -140,7 +140,7 @@ class AvesEntry with AvesEntryBase {
       sizeBytes: map[EntryFields.sizeBytes] as int?,
       sourceTitle: map[EntryFields.title] as String?,
       dateAddedSecs: map[EntryFields.dateAddedSecs] as int?,
-      dateModifiedSecs: map[EntryFields.dateModifiedSecs] as int?,
+      dateModifiedMillis: map[EntryFields.dateModifiedMillis] as int?,
       sourceDateTakenMillis: map[EntryFields.sourceDateTakenMillis] as int?,
       durationMillis: map[EntryFields.durationMillis] as int?,
       trashed: (map[EntryFields.trashed] as int? ?? 0) != 0,
@@ -162,7 +162,7 @@ class AvesEntry with AvesEntryBase {
       EntryFields.sizeBytes: sizeBytes,
       EntryFields.title: sourceTitle,
       EntryFields.dateAddedSecs: dateAddedSecs,
-      EntryFields.dateModifiedSecs: dateModifiedSecs,
+      EntryFields.dateModifiedMillis: dateModifiedMillis,
       EntryFields.sourceDateTakenMillis: sourceDateTakenMillis,
       EntryFields.durationMillis: durationMillis,
       EntryFields.trashed: trashed ? 1 : 0,
@@ -180,7 +180,7 @@ class AvesEntry with AvesEntryBase {
       EntryFields.height: height,
       EntryFields.rotationDegrees: rotationDegrees,
       EntryFields.isFlipped: isFlipped,
-      EntryFields.dateModifiedSecs: dateModifiedSecs,
+      EntryFields.dateModifiedMillis: dateModifiedMillis,
       EntryFields.sizeBytes: sizeBytes,
       EntryFields.trashed: trashed,
       EntryFields.trashPath: trashDetails?.path,
@@ -241,7 +241,7 @@ class AvesEntry with AvesEntryBase {
   DateTime? _bestDate;
 
   DateTime? get bestDate {
-    _bestDate ??= dateTimeFromMillis(_catalogDateMillis) ?? dateTimeFromMillis(sourceDateTakenMillis) ?? dateTimeFromMillis((dateModifiedSecs ?? 0) * 1000);
+    _bestDate ??= dateTimeFromMillis(_catalogDateMillis) ?? dateTimeFromMillis(sourceDateTakenMillis) ?? dateTimeFromMillis(dateModifiedMillis ?? 0);
     return _bestDate;
   }
 
@@ -292,10 +292,10 @@ class AvesEntry with AvesEntryBase {
     _bestTitle = null;
   }
 
-  int? get dateModifiedSecs => _dateModifiedSecs;
+  int? get dateModifiedMillis => _dateModifiedMillis;
 
-  set dateModifiedSecs(int? dateModifiedSecs) {
-    _dateModifiedSecs = dateModifiedSecs;
+  set dateModifiedMillis(int? dateModifiedMillis) {
+    _dateModifiedMillis = dateModifiedMillis;
     _bestDate = null;
   }
 
@@ -362,7 +362,7 @@ class AvesEntry with AvesEntryBase {
 
   set catalogMetadata(CatalogMetadata? newMetadata) {
     final oldMimeType = mimeType;
-    final oldDateModifiedSecs = dateModifiedSecs;
+    final oldDateModifiedMillis = dateModifiedMillis;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
 
@@ -372,7 +372,7 @@ class AvesEntry with AvesEntryBase {
     _tags = null;
     metadataChangeNotifier.notify();
 
-    _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    _onVisualFieldChanged(oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
   }
 
   void clearMetadata() {
@@ -399,7 +399,7 @@ class AvesEntry with AvesEntryBase {
 
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {
     final oldMimeType = mimeType;
-    final oldDateModifiedSecs = this.dateModifiedSecs;
+    final oldDateModifiedMillis = this.dateModifiedMillis;
     final oldRotationDegrees = this.rotationDegrees;
     final oldIsFlipped = this.isFlipped;
 
@@ -426,8 +426,8 @@ class AvesEntry with AvesEntryBase {
 
     final sizeBytes = newFields[EntryFields.sizeBytes];
     if (sizeBytes is int) this.sizeBytes = sizeBytes;
-    final dateModifiedSecs = newFields[EntryFields.dateModifiedSecs];
-    if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
+    final dateModifiedMillis = newFields[EntryFields.dateModifiedMillis];
+    if (dateModifiedMillis is int) this.dateModifiedMillis = dateModifiedMillis;
     final rotationDegrees = newFields[EntryFields.rotationDegrees];
     if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
     final isFlipped = newFields[EntryFields.isFlipped];
@@ -438,7 +438,7 @@ class AvesEntry with AvesEntryBase {
       if (catalogMetadata != null) await localMediaDb.saveCatalogMetadata({catalogMetadata!});
     }
 
-    await _onVisualFieldChanged(oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    await _onVisualFieldChanged(oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
     metadataChangeNotifier.notify();
   }
 
@@ -479,12 +479,12 @@ class AvesEntry with AvesEntryBase {
   // when the MIME type or the image itself changed (e.g. after rotation)
   Future<void> _onVisualFieldChanged(
     String oldMimeType,
-    int? oldDateModifiedSecs,
+    int? oldDateModifiedMillis,
     int oldRotationDegrees,
     bool oldIsFlipped,
   ) async {
-    if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
-      await EntryCache.evict(uri, oldMimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedMillis != dateModifiedMillis || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
+      await EntryCache.evict(uri, oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
       visualChangeNotifier.notify();
     }
   }
