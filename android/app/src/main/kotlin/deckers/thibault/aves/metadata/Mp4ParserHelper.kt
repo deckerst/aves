@@ -47,7 +47,6 @@ object Mp4ParserHelper {
     private const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
 
     const val SAMSUNG_MAKERNOTE_BOX_TYPE = "sefd"
-    const val SEFD_EMBEDDED_VIDEO_TAG = 0x0a30
     const val SEFD_MOTION_PHOTO_NAME = "MotionPhoto_Data"
 
     private val largerTypeWhitelist = listOf(

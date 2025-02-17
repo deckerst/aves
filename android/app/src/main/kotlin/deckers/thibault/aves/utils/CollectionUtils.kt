@@ -20,6 +20,7 @@ fun <E> MutableList<E>.compatRemoveIf(filter: (t: E) -> Boolean): Boolean {
 }
 
 // Boyer-Moore algorithm for pattern searching
+// Returns: an index of the first occurrence of the pattern or -1 if none is found.
 fun ByteArray.indexOfBytes(pattern: ByteArray, start: Int = 0): Int {
     val n: Int = this.size
     val m: Int = pattern.size
