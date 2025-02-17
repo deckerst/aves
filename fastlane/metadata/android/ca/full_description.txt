@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> pot gestionar tot tipus d'imatges i vídeos, inclosos els típics JPEG i MP4, però també coses més exòtiques com <b>multi-pàgina TIFFs, SVG, AVI antics i més</b>! Escaneja la col·lecció multimèdia per identificar <b>fotos en moviment</b>, <b>panoràmiques</b>(àlies esferes de fotos), <b>vídeos 360.</b>, així com fitxers <b>GeoTIFF</b>.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>Navegació i cerca</b> és una part important de <i>Aves</i>. L'objectiu és que els usuaris puguin fluir fàcilment d'àlbums a fotos, etiquetes a mapes, etc.
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> s'integra amb Android (incloent Android TV) amb funcions com <b>ginys</b>, <b>dreceres d'aplicació</b>, <b>estalvi de pantalla</b>i gestió de<b> la cerca global</b>. També funciona com a <b>visor i selector multimèdia</b>.

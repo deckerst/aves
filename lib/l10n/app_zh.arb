@@ -1410,5 +1410,9 @@
   "chipActionDecompose": "分割",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "导入 GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "removeEntryMetadataDialogAll": "全部",
+  "@removeEntryMetadataDialogAll": {}
 }
