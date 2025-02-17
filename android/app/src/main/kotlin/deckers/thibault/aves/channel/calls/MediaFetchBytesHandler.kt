@@ -8,6 +8,7 @@ import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.utils.MimeTypes
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -34,11 +35,11 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
     }
 
     private suspend fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")
-        val mimeType = call.argument<String>("mimeType")
-        val dateModifiedSecs = call.argument<Number>("dateModifiedSecs")?.toLong()
-        val rotationDegrees = call.argument<Int>("rotationDegrees")
-        val isFlipped = call.argument<Boolean>("isFlipped")
+        val uri = call.argument<String>(EntryFields.URI)
+        val mimeType = call.argument<String>(EntryFields.MIME_TYPE)
+        val dateModifiedMillis = call.argument<Number>(EntryFields.DATE_MODIFIED_MILLIS)?.toLong()
+        val rotationDegrees = call.argument<Int>(EntryFields.ROTATION_DEGREES)
+        val isFlipped = call.argument<Boolean>(EntryFields.IS_FLIPPED)
         val widthDip = call.argument<Number>("widthDip")?.toDouble()
         val heightDip = call.argument<Number>("heightDip")?.toDouble()
         val pageId = call.argument<Int>("pageId")
@@ -55,7 +56,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
             context = context,
             uri = uri,
             mimeType = mimeType,
-            dateModifiedSecs = dateModifiedSecs ?: (Date().time / 1000),
+            dateModifiedMillis = dateModifiedMillis ?: (Date().time),
             rotationDegrees = rotationDegrees,
             isFlipped = isFlipped,
             width = (widthDip * density).roundToInt(),

@@ -51,14 +51,14 @@ import kotlin.coroutines.suspendCoroutine
 class MediaStoreImageProvider : ImageProvider() {
     fun fetchAll(
         context: Context,
-        knownEntries: Map<Long?, Int?>,
+        knownEntries: Map<Long?, Long?>,
         directory: String?,
         handleNewEntry: NewEntryHandler,
     ) {
         Log.d(LOG_TAG, "fetching all media store items for ${knownEntries.size} known entries, directory=$directory")
-        val isModified = fun(contentId: Long, dateModifiedSecs: Int): Boolean {
+        val isModified = fun(contentId: Long, dateModifiedMillis: Long): Boolean {
             val knownDate = knownEntries[contentId]
-            return knownDate == null || knownDate < dateModifiedSecs
+            return knownDate == null || knownDate < dateModifiedMillis
         }
         val handleNew: NewEntryHandler
         var selection: String? = null
@@ -96,7 +96,7 @@ class MediaStoreImageProvider : ImageProvider() {
         var found = false
         val fetched = arrayListOf<FieldMap>()
         val id = uri.tryParseId()
-        val alwaysValid: NewEntryChecker = fun(_: Long, _: Int): Boolean = true
+        val alwaysValid: NewEntryChecker = fun(_: Long, _: Long): Boolean = true
         val onSuccess: NewEntryHandler = fun(entry: FieldMap) { fetched.add(entry) }
         if (id != null) {
             if (sourceMimeType == null || isImage(sourceMimeType)) {
@@ -227,8 +227,8 @@ class MediaStoreImageProvider : ImageProvider() {
                 val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH)
                 val heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT)
-                val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
-                val dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)
+                val dateAddedSecsColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
+                val dateModifiedSecsColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)
                 val dateTakenColumn = cursor.getColumnIndex(MediaColumns.DATE_TAKEN)
 
                 // image & video for API >=29, only for images for API <29
@@ -240,8 +240,8 @@ class MediaStoreImageProvider : ImageProvider() {
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColumn)
-                    val dateModifiedSecs = cursor.getInt(dateModifiedColumn)
-                    if (isValidEntry(id, dateModifiedSecs)) {
+                    val dateModifiedMillis = cursor.getInt(dateModifiedSecsColumn) * 1000L
+                    if (isValidEntry(id, dateModifiedMillis)) {
                         // for multiple items, `contentUri` is the root without ID,
                         // but for single items, `contentUri` already contains the ID
                         val itemUri = if (contentUriContainsId) contentUri else ContentUris.withAppendedId(contentUri, id)
@@ -255,17 +255,18 @@ class MediaStoreImageProvider : ImageProvider() {
                         if (mimeType == null) {
                             Log.w(LOG_TAG, "failed to make entry from uri=$itemUri because of null MIME type")
                         } else {
-                            var entryMap: FieldMap = hashMapOf(
+                            val path = cursor.getString(pathColumn)
+                            var entryFields: FieldMap = hashMapOf(
                                 EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
                                 EntryFields.URI to itemUri.toString(),
-                                EntryFields.PATH to cursor.getString(pathColumn),
+                                EntryFields.PATH to path,
                                 EntryFields.SOURCE_MIME_TYPE to mimeType,
                                 EntryFields.WIDTH to width,
                                 EntryFields.HEIGHT to height,
                                 EntryFields.SOURCE_ROTATION_DEGREES to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
                                 EntryFields.SIZE_BYTES to cursor.getLong(sizeColumn),
-                                EntryFields.DATE_ADDED_SECS to cursor.getInt(dateAddedColumn),
-                                EntryFields.DATE_MODIFIED_SECS to dateModifiedSecs,
+                                EntryFields.DATE_ADDED_SECS to cursor.getInt(dateAddedSecsColumn),
+                                EntryFields.DATE_MODIFIED_MILLIS to dateModifiedMillis,
                                 EntryFields.SOURCE_DATE_TAKEN_MILLIS to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
                                 EntryFields.DURATION_MILLIS to durationMillis,
                                 // only for map export
@@ -285,8 +286,8 @@ class MediaStoreImageProvider : ImageProvider() {
                                         if (outWidth > 0 && outHeight > 0) {
                                             width = outWidth
                                             height = outHeight
-                                            entryMap[EntryFields.WIDTH] = width
-                                            entryMap[EntryFields.HEIGHT] = height
+                                            entryFields[EntryFields.WIDTH] = width
+                                            entryFields[EntryFields.HEIGHT] = height
                                         }
                                     }
                                 } catch (e: IOException) {
@@ -302,11 +303,13 @@ class MediaStoreImageProvider : ImageProvider() {
                                 // missing some attributes such as width, height, orientation.
                                 // Also, the reported size of raw images is inconsistent across devices
                                 // and Android versions (sometimes the raw size, sometimes the decoded size).
-                                val entry = SourceEntry(entryMap).fillPreCatalogMetadata(context)
-                                entryMap = entry.toMap()
+                                val entry = SourceEntry(entryFields).fillPreCatalogMetadata(context)
+                                entryFields = entry.toMap()
                             }
 
-                            handleNewEntry(entryMap)
+                            getFileModifiedDateMillis(path)?.let { entryFields[EntryFields.DATE_MODIFIED_MILLIS] = it }
+
+                            handleNewEntry(entryFields)
                             found = true
                         }
                     }
@@ -823,16 +826,30 @@ class MediaStoreImageProvider : ImageProvider() {
             try {
                 val cursor = context.contentResolver.query(uri, projection, null, null, null)
                 if (cursor != null && cursor.moveToFirst()) {
-                    cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                    cursor.getColumnIndex(MediaStore.MediaColumns.SIZE).let { if (it != -1) newFields["sizeBytes"] = cursor.getLong(it) }
+                    cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields[EntryFields.DATE_MODIFIED_MILLIS] = cursor.getInt(it) * 1000 }
+                    cursor.getColumnIndex(MediaStore.MediaColumns.SIZE).let { if (it != -1) newFields[EntryFields.SIZE_BYTES] = cursor.getLong(it) }
                     cursor.close()
                 }
             } catch (e: Exception) {
                 callback.onFailure(e)
                 return@scanFile
             }
+            getFileModifiedDateMillis(path)?.let { newFields[EntryFields.DATE_MODIFIED_MILLIS] = it }
             callback.onSuccess(newFields)
         }
+    }
+
+    // try to fetch the modified date from the file,
+    // as it is more precise than the one from the Media Store
+    private fun getFileModifiedDateMillis(path: String?): Long? {
+        if (path != null) {
+            try {
+                return File(path).lastModified()
+            } catch (securityException: SecurityException) {
+                // ignore
+            }
+        }
+        return null
     }
 
     private fun scanObsoletePath(context: Context, uri: Uri, path: String, mimeType: String) {
@@ -918,8 +935,9 @@ class MediaStoreImageProvider : ImageProvider() {
                             EntryFields.PATH to path,
                         )
                         cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields[EntryFields.DATE_ADDED_SECS] = cursor.getInt(it) }
-                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields[EntryFields.DATE_MODIFIED_SECS] = cursor.getInt(it) }
+                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields[EntryFields.DATE_MODIFIED_MILLIS] = cursor.getInt(it) * 1000 }
                         cursor.close()
+                        getFileModifiedDateMillis(path)?.let { newFields[EntryFields.DATE_MODIFIED_MILLIS] = it }
                         return newFields
                     }
                 } catch (e: Exception) {
@@ -1030,4 +1048,4 @@ object MediaColumns {
 
 typealias NewEntryHandler = (entry: FieldMap) -> Unit
 
-private typealias NewEntryChecker = (contentId: Long, dateModifiedSecs: Int) -> Boolean
+private typealias NewEntryChecker = (contentId: Long, dateModifiedMillis: Long) -> Boolean

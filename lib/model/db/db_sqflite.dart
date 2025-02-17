@@ -57,7 +57,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
             ', sizeBytes INTEGER'
             ', title TEXT'
             ', dateAddedSecs INTEGER DEFAULT (strftime(\'%s\',\'now\'))'
-            ', dateModifiedSecs INTEGER'
+            ', dateModifiedMillis INTEGER'
             ', sourceDateTakenMillis INTEGER'
             ', durationMillis INTEGER'
             ', trashed INTEGER DEFAULT 0'
@@ -117,7 +117,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
             ')');
       },
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 13,
+      version: 14,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');

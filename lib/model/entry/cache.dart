@@ -19,11 +19,11 @@ class EntryCache {
   static Future<void> evict(
     String uri,
     String mimeType,
-    int? dateModifiedSecs,
+    int? dateModifiedMillis,
     int rotationDegrees,
     bool isFlipped,
   ) async {
-    debugPrint('Evict cached images for uri=$uri, mimeType=$mimeType, dateModifiedSecs=$dateModifiedSecs, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped');
+    debugPrint('Evict cached images for uri=$uri, mimeType=$mimeType, dateModifiedMillis=$dateModifiedMillis, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped');
 
     // TODO TLAD provide pageId parameter for multi page items, if someday image editing features are added for them
     int? pageId;
@@ -42,7 +42,7 @@ class EntryCache {
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
-      dateModifiedSecs: dateModifiedSecs ?? 0,
+      dateModifiedMillis: dateModifiedMillis ?? 0,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
     )).evict();
@@ -53,7 +53,7 @@ class EntryCache {
               uri: uri,
               mimeType: mimeType,
               pageId: pageId,
-              dateModifiedSecs: dateModifiedSecs ?? 0,
+              dateModifiedMillis: dateModifiedMillis ?? 0,
               rotationDegrees: rotationDegrees,
               isFlipped: isFlipped,
               extent: extent,

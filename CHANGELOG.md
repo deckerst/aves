@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- increased precision of file modified date to milliseconds
 - upgraded Flutter to stable v3.29.0
 
 ### Fixed

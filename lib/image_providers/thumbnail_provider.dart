@@ -42,7 +42,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
         pageId: pageId,
         rotationDegrees: key.rotationDegrees,
         isFlipped: key.isFlipped,
-        dateModifiedSecs: key.dateModifiedSecs,
+        dateModifiedMillis: key.dateModifiedMillis,
         extent: key.extent,
         taskKey: key,
       );
@@ -75,11 +75,11 @@ class ThumbnailProviderKey extends Equatable {
   final int? pageId;
   final int rotationDegrees;
   final bool isFlipped;
-  final int dateModifiedSecs;
+  final int dateModifiedMillis;
   final double extent;
 
   @override
-  List<Object?> get props => [uri, pageId, dateModifiedSecs, extent];
+  List<Object?> get props => [uri, pageId, dateModifiedMillis, extent];
 
   const ThumbnailProviderKey({
     required this.uri,
@@ -87,10 +87,10 @@ class ThumbnailProviderKey extends Equatable {
     required this.pageId,
     required this.rotationDegrees,
     required this.isFlipped,
-    required this.dateModifiedSecs,
+    required this.dateModifiedMillis,
     this.extent = 0,
   });
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedSecs=$dateModifiedSecs, extent=$extent}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedMillis=$dateModifiedMillis, extent=$extent}';
 }
