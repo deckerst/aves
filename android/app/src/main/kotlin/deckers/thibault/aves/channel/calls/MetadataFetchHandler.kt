@@ -14,7 +14,6 @@ import com.adobe.internal.xmp.options.SerializeOptions
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.drew.lang.KeyValuePair
 import com.drew.lang.Rational
-import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Tag
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifDirectoryBase
@@ -475,19 +474,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // and only identify at most one
         } else if (isHeic(mimeType)) {
             Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (_, bytes) ->
-                val dir = hashMapOf(
+                metadataMap[Mp4ParserHelper.SAMSUNG_MAKERNOTE_BOX_TYPE] = hashMapOf(
                     "Size" to bytes.size.toString(),
                 )
-                val reader = SequentialByteArrayReader(bytes).apply {
-                    isMotorolaByteOrder = false
-                }
-                val start = reader.uInt16
-                val tag = reader.uInt16
-                if (start == 0 && tag == Mp4ParserHelper.SEFD_EMBEDDED_VIDEO_TAG) {
-                    val nameSize = reader.uInt32
-                    dir["Embedded Video Type"] = reader.getString(nameSize.toInt())
-                }
-                metadataMap[Mp4ParserHelper.SAMSUNG_MAKERNOTE_BOX_TYPE] = dir
             }
         }
 

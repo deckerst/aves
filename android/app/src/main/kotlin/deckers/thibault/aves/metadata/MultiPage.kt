@@ -11,7 +11,6 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.adobe.internal.xmp.XMPMeta
 import com.drew.imaging.jpeg.JpegSegmentType
-import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.xmp.XmpDirectory
@@ -88,19 +87,23 @@ object MultiPage {
     }
 
     fun isHeicSefdMotionPhoto(context: Context, uri: Uri): Boolean {
-        Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (_, bytes) ->
-            val reader = SequentialByteArrayReader(bytes).apply {
-                isMotorolaByteOrder = false
-            }
-            val start = reader.uInt16
-            val tag = reader.uInt16
-            if (start == 0 && tag == Mp4ParserHelper.SEFD_EMBEDDED_VIDEO_TAG) {
-                val nameSize = reader.uInt32
-                val name = reader.getString(nameSize.toInt())
-                return name == Mp4ParserHelper.SEFD_MOTION_PHOTO_NAME
+        return getHeicSefdMotionPhotoVideoSizing(context, uri) != null
+    }
+
+    private fun getHeicSefdMotionPhotoVideoSizing(context: Context, uri: Uri): Pair<Long, Long>? {
+        Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (sefdOffset, sefdBytes) ->
+            // we could properly parse each tag until we find the "embedded video" tag (0x0a30)
+            // but it seems that decoding the SEFT trailer is necessary for this,
+            // so we simply search for the "MotionPhoto_Data" sequence instead
+            val name = Mp4ParserHelper.SEFD_MOTION_PHOTO_NAME
+            val index = sefdBytes.indexOfBytes(name.toByteArray(Charsets.UTF_8))
+            if (index != -1) {
+                val videoOffset = sefdOffset + index + name.length
+                val videoSize = sefdBytes.size - (videoOffset - sefdOffset)
+                return Pair(videoOffset, videoSize)
             }
         }
-        return false
+        return null
     }
 
     private fun getJpegMpfPrimaryRotation(context: Context, uri: Uri, sizeBytes: Long): Int {
@@ -392,22 +395,7 @@ object MultiPage {
 
         if (MimeTypes.isHeic(mimeType)) {
             // fallback to video within Samsung SEFD box
-            Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (sefdOffset, bytes) ->
-                val reader = SequentialByteArrayReader(bytes).apply {
-                    isMotorolaByteOrder = false
-                }
-                val start = reader.uInt16
-                val tag = reader.uInt16
-                if (start == 0 && tag == Mp4ParserHelper.SEFD_EMBEDDED_VIDEO_TAG) {
-                    val nameSize = reader.uInt32
-                    val name = reader.getString(nameSize.toInt())
-                    if (name == Mp4ParserHelper.SEFD_MOTION_PHOTO_NAME) {
-                        val videoOffset = sefdOffset + reader.position
-                        val videoSize = reader.available().toLong()
-                        return Pair(videoOffset, videoSize)
-                    }
-                }
-            }
+            return getHeicSefdMotionPhotoVideoSizing(context, uri)
         }
 
         return null
