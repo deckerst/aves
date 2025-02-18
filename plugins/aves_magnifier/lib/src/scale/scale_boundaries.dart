@@ -16,7 +16,7 @@ class ScaleBoundaries extends Equatable {
   final ScaleLevel _initialScale;
   final Size viewportSize;
   final Size contentSize;
-  final EdgeInsets padding;
+  final EdgeInsets Function(double scale)? padding;
   final Matrix4? externalTransform;
 
   static const Alignment basePosition = Alignment.center;
@@ -31,7 +31,7 @@ class ScaleBoundaries extends Equatable {
     required ScaleLevel initialScale,
     required this.viewportSize,
     required this.contentSize,
-    this.padding = EdgeInsets.zero,
+    this.padding,
     this.externalTransform,
   })  : _allowOriginalScaleBeyondRange = allowOriginalScaleBeyondRange,
         _minScale = minScale,
@@ -45,7 +45,7 @@ class ScaleBoundaries extends Equatable {
     initialScale: ScaleLevel(ref: ScaleReference.contained),
     viewportSize: Size.zero,
     contentSize: Size.zero,
-    padding: EdgeInsets.zero,
+    padding: null,
   );
 
   ScaleBoundaries copyWith({
@@ -55,7 +55,7 @@ class ScaleBoundaries extends Equatable {
     ScaleLevel? initialScale,
     Size? viewportSize,
     Size? contentSize,
-    EdgeInsets? padding,
+    EdgeInsets Function(double scale)? padding,
     Matrix4? externalTransform,
   }) {
     return ScaleBoundaries(
@@ -115,7 +115,8 @@ class ScaleBoundaries extends Equatable {
 
     final minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
     final maxX = ((positionX + 1).abs() / 2) * widthDiff;
-    return EdgeRange(minX - padding.left, maxX + padding.right);
+    final _padding = padding?.call(scale) ?? EdgeInsets.zero;
+    return EdgeRange(minX - _padding.left, maxX + _padding.right);
   }
 
   EdgeRange getYEdges({required double scale}) {
@@ -127,7 +128,8 @@ class ScaleBoundaries extends Equatable {
 
     final minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
     final maxY = ((positionY + 1).abs() / 2) * heightDiff;
-    return EdgeRange(minY - padding.top, maxY + padding.bottom);
+    final _padding = padding?.call(scale) ?? EdgeInsets.zero;
+    return EdgeRange(minY - _padding.top, maxY + _padding.bottom);
   }
 
   double clampScale(double scale) {

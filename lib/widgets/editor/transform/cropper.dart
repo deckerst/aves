@@ -90,7 +90,7 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
 
   void _registerWidget(Cropper widget) {
     _subscriptions.add(widget.magnifierController.stateStream.listen(_onViewStateChanged));
-    _subscriptions.add(widget.magnifierController.scaleBoundariesStream.map((v) => v.viewportSize).listen(_onViewportSizeChanged));
+    _subscriptions.add(widget.magnifierController.scaleBoundariesStream.map((v) => v.viewportSize).distinct().listen(_onViewportSizeChanged));
     _subscriptions.add(widget.transformController.activityStream.listen(_onTransformActivity));
     _subscriptions.add(widget.transformController.transformationStream.map((v) => v.orientation).distinct().listen(_onOrientationChanged));
     _subscriptions.add(widget.transformController.transformationStream.map((v) => v.straightenDegrees).distinct().listen(_onStraightenDegreesChanged));
@@ -454,11 +454,39 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
     if (boundaries != null) {
       magnifierController.setScaleBoundaries(
         boundaries.copyWith(
-          padding: const EdgeInsets.all(double.infinity),
+          padding: _getBoundariesPadding,
         ),
       );
     }
     _showRegion();
+  }
+
+  EdgeInsets _getBoundariesPadding(double scale) {
+    // TODO TLAD handle orientation
+    if (transformation.orientation != TransformOrientation.normal) {
+      return const EdgeInsets.all(double.infinity);
+    }
+    // TODO TLAD handle straightening
+    if (transformation.straightenDegrees != 0) {
+      return const EdgeInsets.all(double.infinity);
+    }
+
+    final viewState = _getViewState();
+    if (viewState != null) {
+      final viewportSize = viewState.viewportSize;
+      final contentSize = viewState.contentSize;
+      if (viewportSize != null && contentSize != null) {
+        final fullRegion = CropRegion.fromRect(Offset.zero & contentSize);
+        final fullOutline = _containingOutlineFromRegion(viewState, fullRegion);
+        final cropOutline = _outlineNotifier.value;
+
+        final paddingWidth = max(0.0, (min(fullOutline.width, viewportSize.width) - cropOutline.width) / 2);
+        final paddingHeight = max(0.0, (min(fullOutline.height, viewportSize.height) - cropOutline.height) / 2);
+        return EdgeInsets.symmetric(vertical: paddingHeight, horizontal: paddingWidth);
+      }
+    }
+
+    return EdgeInsets.zero;
   }
 
   ViewState? _getViewState() {
@@ -558,6 +586,16 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
       bottomLeft: transform(outline.bottomLeft),
     );
     return clampedRegion;
+  }
+
+  Rect _containingOutlineFromRegion(ViewState viewState, CropRegion region) {
+    final regionToOutlineMatrix = _getRegionToOutlineMatrix(viewState);
+    final points = region.corners.map(regionToOutlineMatrix.transformOffset).toList();
+    final dxSet = points.map((v) => v.dx).toSet();
+    final dySet = points.map((v) => v.dy).toSet();
+    final topLeft = Offset(dxSet.reduce(min), dySet.reduce(min));
+    final bottomRight = Offset(dxSet.reduce(max), dySet.reduce(max));
+    return Rect.fromPoints(topLeft, bottomRight);
   }
 
   Rect _containedOutlineFromRegion(ViewState viewState, CropRegion region) {
