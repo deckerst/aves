@@ -26,7 +26,7 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
   void registerDelegate(AvesMagnifier widget) {
     _subscriptions.add(widget.controller.stateStream.listen(_onMagnifierStateChanged));
     _subscriptions.add(widget.controller.scaleStateChangeStream.listen(_onScaleStateChanged));
-    _subscriptions.add(widget.controller.scaleBoundariesStream.listen(_onScaleBoundariesChanged));
+    // _subscriptions.add(widget.controller.scaleBoundariesStream.listen(_onScaleBoundariesChanged));
   }
 
   void unregisterDelegate(AvesMagnifier oldWidget) {
@@ -36,9 +36,10 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
       ..clear();
   }
 
-  void _onScaleBoundariesChanged(ScaleBoundaries boundaries) {
-    initScale();
-  }
+  // TODO TLAD should not reset scale when boundaries change because of transform
+  // void _onScaleBoundariesChanged(ScaleBoundaries boundaries) {
+  //   initScale();
+  // }
 
   void _onScaleStateChanged(ScaleStateChange scaleStateChange) {
     if (scaleStateChange.source == ChangeSource.internal) return;
