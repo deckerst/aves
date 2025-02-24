@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - opening motion photo embedded video when video track is not the first one
 - some SVG rendering issues
 - decoding of SVG containing references to namespaces in !ATTLIST
+- fallback decoding of images packed in RGBA_1010102 config
 
 ## <a id="v1.12.3"></a>[v1.12.3] - 2025-02-06
 

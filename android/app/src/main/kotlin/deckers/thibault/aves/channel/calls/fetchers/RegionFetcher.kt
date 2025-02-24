@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
@@ -111,7 +112,14 @@ class RegionFetcher internal constructor(
             }
             val bitmap = decoder.decodeRegion(effectiveRect, options)
             if (bitmap != null) {
-                result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = true))
+                val canHaveAlpha = MimeTypes.canHaveAlpha(mimeType)
+                val recycle = false
+                var bytes = bitmap.getBytes(canHaveAlpha, recycle = recycle)
+                if (bytes != null && bytes.isEmpty()) {
+                    bytes = BitmapUtils.tryPixelFormatConversion(bitmap)?.getBytes(canHaveAlpha, recycle = recycle)
+                }
+                bitmap.recycle()
+                result.success(bytes)
             } else {
                 result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
             }
