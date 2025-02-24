@@ -34,7 +34,7 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // size
 
-  bool get useTiles => (width > 4096 || height > 4096) && !isAnimated;
+  bool get useTiles => !isAnimated;
 
   bool get isSized => width > 0 && height > 0;
 

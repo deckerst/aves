@@ -90,12 +90,7 @@ object BmpWriter {
 
             var column = 0
             while (column < biWidth) {
-                /*
-                    alpha: (value shr 24 and 0xFF).toByte()
-                    red: (value shr 16 and 0xFF).toByte()
-                    green: (value shr 8 and 0xFF).toByte()
-                    blue: (value and 0xFF).toByte()
-                 */
+                // non-premultiplied ARGB values in the sRGB color space
                 value = pixels[column]
                 // blue: [0], green: [1], red: [2]
                 rgb[0] = (value and 0xFF).toByte()

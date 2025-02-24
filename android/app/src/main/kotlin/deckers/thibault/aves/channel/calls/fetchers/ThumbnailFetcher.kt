@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -14,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
@@ -24,7 +26,6 @@ import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodChannel
-import androidx.core.net.toUri
 
 class ThumbnailFetcher internal constructor(
     private val context: Context,
@@ -78,7 +79,13 @@ class ThumbnailFetcher internal constructor(
         }
 
         if (bitmap != null) {
-            result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false, quality = quality))
+            val canHaveAlpha = MimeTypes.canHaveAlpha(mimeType)
+            val recycle = false
+            var bytes = bitmap.getBytes(canHaveAlpha, quality, recycle)
+            if (bytes != null && bytes.isEmpty()) {
+                bytes = BitmapUtils.tryPixelFormatConversion(bitmap)?.getBytes(canHaveAlpha, quality, recycle)
+            }
+            result.success(bytes)
         } else {
             var errorDetails: String? = exception?.message
             if (errorDetails?.isNotEmpty() == true) {
