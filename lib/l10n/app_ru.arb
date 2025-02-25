@@ -1408,5 +1408,13 @@
   "collectionActionAddDynamicAlbum": "Добавить динамический альбом",
   "@collectionActionAddDynamicAlbum": {},
   "appExportDynamicAlbums": "Динамические альбомы",
-  "@appExportDynamicAlbums": {}
+  "@appExportDynamicAlbums": {},
+  "editEntryLocationDialogImportGpx": "Импорт GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Сдвиг времени",
+  "@editEntryLocationDialogTimeShift": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "removeEntryMetadataDialogAll": "Все",
+  "@removeEntryMetadataDialogAll": {}
 }
