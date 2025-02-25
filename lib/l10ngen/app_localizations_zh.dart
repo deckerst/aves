@@ -991,7 +991,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => '从地图上选择';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => '导入 GPX';
 
   @override
   String get editEntryLocationDialogLatitude => '纬度';
@@ -1012,7 +1012,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => '元数据移除工具';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => '全部';
 
   @override
   String get removeEntryMetadataDialogMore => '更多';

@@ -840,7 +840,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Album dinamico già esistente';
 
   @override
-  String get newVaultWarningDialogMessage => 'Gli elementi nelle cassaforti sono disponibili solo per questa app e non per altre.\n\nSe disinstalli l\'app o cancelli i relativi dati, perderai tutti questi elementi.';
+  String get newVaultWarningDialogMessage => 'Gli elementi nelle cassaforti sono disponibili solo per questa app e non per altre.\n\nSe disinstalli l’app o cancelli i relativi dati, perderai tutti questi elementi.';
 
   @override
   String get newVaultDialogTitle => 'Nuova Cassaforte';
@@ -1542,13 +1542,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get albumMimeTypeMixed => 'Misto';
 
   @override
-  String get albumPickPageTitleCopy => 'Copia nell\'album';
+  String get albumPickPageTitleCopy => 'Copia nell’album';
 
   @override
-  String get albumPickPageTitleExport => 'Esporta nell\'album';
+  String get albumPickPageTitleExport => 'Esporta nell’album';
 
   @override
-  String get albumPickPageTitleMove => 'Sposta nell\'album';
+  String get albumPickPageTitleMove => 'Sposta nell’album';
 
   @override
   String get albumPickPageTitlePick => 'Seleziona album';

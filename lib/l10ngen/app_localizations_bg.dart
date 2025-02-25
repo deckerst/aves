@@ -731,7 +731,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String restrictedAccessDialogMessage(String directory, String volume) {
-    return 'На това приложение не се дава достъп до $directory на „$volume“.\n\nМоля използвайте системно инсталиран файлов мениджър или Галерия за да преместите обекта в друга директория.';
+    return 'На това приложение не се дава достъп до $directory на „$volume“.\n\nМоля използвайте системно инсталиран файлов мениджър или Галерия за преместване на елементи в друга директория.';
   }
 
   @override

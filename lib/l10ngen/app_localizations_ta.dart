@@ -198,7 +198,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get chipActionGoToExplorerPage => 'உலாவில் காட்டு';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'பிளவு';
 
   @override
   String get chipActionFilterOut => 'வடிகட்டி நீக்கு';
@@ -513,7 +513,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get coordinateFormatDms => 'டிமிவி';
 
   @override
-  String get coordinateFormatDdm => 'DDM';
+  String get coordinateFormatDdm => 'டிடிஎம்';
 
   @override
   String get coordinateFormatDecimal => 'தசம டிகிரி';
@@ -1000,7 +1000,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'வரைபடத்தில் தேர்வு செய்';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'சிபிஎக்சு இறக்குமதி';
 
   @override
   String get editEntryLocationDialogLatitude => 'அகலாங்கு';
@@ -1009,7 +1009,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'நெட்டாங்கு';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'நேர மாற்றம்';
 
   @override
   String get locationPickerUseThisLocationButton => 'இந்த இருப்பிடத்தைப் பயன்படுத்து';
@@ -1021,7 +1021,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'மேனிலை தரவு அகற்றுதல்';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'அனைத்தும்';
 
   @override
   String get removeEntryMetadataDialogMore => 'மேலும்';

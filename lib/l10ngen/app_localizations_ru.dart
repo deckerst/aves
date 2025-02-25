@@ -1004,7 +1004,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'Выбрать на карте';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'Импорт GPX';
 
   @override
   String get editEntryLocationDialogLatitude => 'Широта';
@@ -1013,7 +1013,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Долгота';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Сдвиг времени';
 
   @override
   String get locationPickerUseThisLocationButton => 'Использовать это местоположение';
@@ -1025,7 +1025,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Удаление метаданных';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Все';
 
   @override
   String get removeEntryMetadataDialogMore => 'Дополнительно';

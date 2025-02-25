@@ -39,8 +39,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString columns',
-      one: '$countString column',
+      other: '$countString columnas',
+      one: '$countString columna',
     );
     return '$_temp0';
   }
@@ -89,7 +89,7 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String focalLength(String length) {
-    return '$length milímetro';
+    return '$length mm';
   }
 
   @override
@@ -105,16 +105,16 @@ class AppLocalizationsGl extends AppLocalizations {
   String get showButtonLabel => 'AMOSAR';
 
   @override
-  String get hideButtonLabel => 'OCULTAR';
+  String get hideButtonLabel => 'AGOCHAR';
 
   @override
   String get continueButtonLabel => 'PROSEGUIR';
 
   @override
-  String get saveCopyButtonLabel => 'SAVE COPY';
+  String get saveCopyButtonLabel => 'GARDAR COPIA';
 
   @override
-  String get applyTooltip => 'Apply';
+  String get applyTooltip => 'Aplicar';
 
   @override
   String get cancelTooltip => 'Cancelar';
@@ -138,7 +138,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get hideTooltip => 'Agochar';
 
   @override
-  String get actionRemove => 'Remover';
+  String get actionRemove => 'Retirar';
 
   @override
   String get resetTooltip => 'Restituír';
@@ -147,37 +147,37 @@ class AppLocalizationsGl extends AppLocalizations {
   String get saveTooltip => 'Gardar';
 
   @override
-  String get stopTooltip => 'Stop';
+  String get stopTooltip => 'Deter';
 
   @override
-  String get pickTooltip => 'Escolla';
+  String get pickTooltip => 'Escoller';
 
   @override
   String get doubleBackExitMessage => 'Prema \"atrás\" de novo para saír.';
 
   @override
-  String get doNotAskAgain => 'Non volvas preguntar';
+  String get doNotAskAgain => 'Non preguntar de novo';
 
   @override
   String get sourceStateLoading => 'Cargando';
 
   @override
-  String get sourceStateCataloguing => 'Catalogación';
+  String get sourceStateCataloguing => 'Catalogando';
 
   @override
-  String get sourceStateLocatingCountries => 'Localización dos países';
+  String get sourceStateLocatingCountries => 'Localizando países';
 
   @override
-  String get sourceStateLocatingPlaces => 'Localización dos lugares';
+  String get sourceStateLocatingPlaces => 'Localizando lugares';
 
   @override
   String get chipActionDelete => 'Eliminar';
 
   @override
-  String get chipActionRemove => 'Remove';
+  String get chipActionRemove => 'Retirar';
 
   @override
-  String get chipActionShowCollection => 'Mostrar na colección';
+  String get chipActionShowCollection => 'Amosar na colección';
 
   @override
   String get chipActionGoToAlbumPage => 'Amosar en álbums';
@@ -186,16 +186,16 @@ class AppLocalizationsGl extends AppLocalizations {
   String get chipActionGoToCountryPage => 'Amosar en países';
 
   @override
-  String get chipActionGoToPlacePage => 'Show in Places';
+  String get chipActionGoToPlacePage => 'Amosar en lugares';
 
   @override
-  String get chipActionGoToTagPage => 'Amosalas etiquetas';
+  String get chipActionGoToTagPage => 'Amosar en etiquetas';
 
   @override
-  String get chipActionGoToExplorerPage => 'Show in Explorer';
+  String get chipActionGoToExplorerPage => 'Amosar no explorador';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'Separar';
 
   @override
   String get chipActionFilterOut => 'Filtrar';
@@ -207,7 +207,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get chipActionHide => 'Agochar';
 
   @override
-  String get chipActionLock => 'Lock';
+  String get chipActionLock => 'Bloquear';
 
   @override
   String get chipActionPin => 'Fixar na parte superior';
@@ -216,22 +216,22 @@ class AppLocalizationsGl extends AppLocalizations {
   String get chipActionUnpin => 'Desbloquear dende arriba';
 
   @override
-  String get chipActionRename => 'Cambialo nome';
+  String get chipActionRename => 'Cambiar o nome';
 
   @override
-  String get chipActionSetCover => 'Fixala cubierta';
+  String get chipActionSetCover => 'Definir cuberta';
 
   @override
-  String get chipActionShowCountryStates => 'Show states';
+  String get chipActionShowCountryStates => 'Amosar estados';
 
   @override
   String get chipActionCreateAlbum => 'Crear álbum';
 
   @override
-  String get chipActionCreateVault => 'Create vault';
+  String get chipActionCreateVault => 'Crear cofre';
 
   @override
-  String get chipActionConfigureVault => 'Configure vault';
+  String get chipActionConfigureVault => 'Configurar cofre';
 
   @override
   String get entryActionCopyToClipboard => 'Copiar ao portapapeis';
@@ -249,19 +249,19 @@ class AppLocalizationsGl extends AppLocalizations {
   String get entryActionInfo => 'Información';
 
   @override
-  String get entryActionRename => 'Cambialo nome';
+  String get entryActionRename => 'Cambiar o nome';
 
   @override
   String get entryActionRestore => 'Restaurar';
 
   @override
-  String get entryActionRotateCCW => 'Xire no sentido antihorario';
+  String get entryActionRotateCCW => 'Xirar no sentido antihorario';
 
   @override
-  String get entryActionRotateCW => 'Xira no sentido das agullas do reloxo';
+  String get entryActionRotateCW => 'Xirar no sentido horario';
 
   @override
-  String get entryActionFlip => 'Xire horizontalmente';
+  String get entryActionFlip => 'Voltear horizontalmente';
 
   @override
   String get entryActionPrint => 'Imprimir';
@@ -270,16 +270,16 @@ class AppLocalizationsGl extends AppLocalizations {
   String get entryActionShare => 'Compartir';
 
   @override
-  String get entryActionShareImageOnly => 'Share image only';
+  String get entryActionShareImageOnly => 'Só compartir imaxe';
 
   @override
-  String get entryActionShareVideoOnly => 'Share video only';
+  String get entryActionShareVideoOnly => 'Só compartir vídeo';
 
   @override
   String get entryActionViewSource => 'Ver fonte';
 
   @override
-  String get entryActionShowGeoTiffOnMap => 'Mostrar como superposición de mapa';
+  String get entryActionShowGeoTiffOnMap => 'Amosar como superposición de mapa';
 
   @override
   String get entryActionConvertMotionPhotoToStillImage => 'Converter a imaxe fixa';
@@ -294,16 +294,16 @@ class AppLocalizationsGl extends AppLocalizations {
   String get entryActionOpen => 'Abrir con';
 
   @override
-  String get entryActionSetAs => 'Definido como';
+  String get entryActionSetAs => 'Definir como';
 
   @override
-  String get entryActionCast => 'Cast';
+  String get entryActionCast => 'Transmitir';
 
   @override
-  String get entryActionOpenMap => 'Mostrar na aplicación de mapas';
+  String get entryActionOpenMap => 'Amosar na aplicación de mapas';
 
   @override
-  String get entryActionRotateScreen => 'Xire a pantalla';
+  String get entryActionRotateScreen => 'Rotar pantalla';
 
   @override
   String get entryActionAddFavourite => 'Engadir a favoritos';
@@ -318,7 +318,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get videoActionMute => 'Silenciar';
 
   @override
-  String get videoActionUnmute => 'Activalo silencio';
+  String get videoActionUnmute => 'Activar son';
 
   @override
   String get videoActionPause => 'Pausa';
@@ -327,46 +327,46 @@ class AppLocalizationsGl extends AppLocalizations {
   String get videoActionPlay => 'Reproducir';
 
   @override
-  String get videoActionReplay10 => 'Busca atrás 10 segundos';
+  String get videoActionReplay10 => 'Cear 10 segundos';
 
   @override
-  String get videoActionSkip10 => 'Busca adiante 10 segundos';
+  String get videoActionSkip10 => 'Avanzar 10 segundos';
 
   @override
-  String get videoActionShowPreviousFrame => 'Show previous frame';
+  String get videoActionShowPreviousFrame => 'Amosar fotograma anterior';
 
   @override
-  String get videoActionShowNextFrame => 'Show next frame';
+  String get videoActionShowNextFrame => 'Amosar fotograma seguinte';
 
   @override
-  String get videoActionSelectStreams => 'Seleccionalas pistas';
+  String get videoActionSelectStreams => 'Seleccionar pistas';
 
   @override
   String get videoActionSetSpeed => 'Velocidade de reprodución';
 
   @override
-  String get videoActionABRepeat => 'A-B repeat';
+  String get videoActionABRepeat => 'Repetir A-B';
 
   @override
-  String get videoRepeatActionSetStart => 'Set start';
+  String get videoRepeatActionSetStart => 'Definir inicio';
 
   @override
-  String get videoRepeatActionSetEnd => 'Set end';
+  String get videoRepeatActionSetEnd => 'Definir final';
 
   @override
   String get viewerActionSettings => 'Configuración';
 
   @override
-  String get viewerActionLock => 'Lock viewer';
+  String get viewerActionLock => 'Bloquear visor';
 
   @override
-  String get viewerActionUnlock => 'Unlock viewer';
+  String get viewerActionUnlock => 'Desbloquear visor';
 
   @override
-  String get slideshowActionResume => 'Resumo';
+  String get slideshowActionResume => 'Retomar';
 
   @override
-  String get slideshowActionShowInCollection => 'Mostrar na colección';
+  String get slideshowActionShowInCollection => 'Amosar na colección';
 
   @override
   String get entryInfoActionEditDate => 'Editar data e hora';
@@ -387,37 +387,37 @@ class AppLocalizationsGl extends AppLocalizations {
   String get entryInfoActionRemoveMetadata => 'Eliminar metadatos';
 
   @override
-  String get entryInfoActionExportMetadata => 'Export metadata';
+  String get entryInfoActionExportMetadata => 'Exportar metadatos';
 
   @override
-  String get entryInfoActionRemoveLocation => 'Remove location';
+  String get entryInfoActionRemoveLocation => 'Retirar localización';
 
   @override
-  String get editorActionTransform => 'Transform';
+  String get editorActionTransform => 'Transformar';
 
   @override
-  String get editorTransformCrop => 'Crop';
+  String get editorTransformCrop => 'Recortar';
 
   @override
-  String get editorTransformRotate => 'Rotate';
+  String get editorTransformRotate => 'Xirar';
 
   @override
-  String get cropAspectRatioFree => 'Free';
+  String get cropAspectRatioFree => 'Libre';
 
   @override
-  String get cropAspectRatioOriginal => 'Original';
+  String get cropAspectRatioOriginal => 'Orixinal';
 
   @override
-  String get cropAspectRatioSquare => 'Square';
+  String get cropAspectRatioSquare => 'Cadrado';
 
   @override
-  String get filterAspectRatioLandscapeLabel => 'Landscape';
+  String get filterAspectRatioLandscapeLabel => 'Paisaxe';
 
   @override
-  String get filterAspectRatioPortraitLabel => 'Portrait';
+  String get filterAspectRatioPortraitLabel => 'Retrato';
 
   @override
-  String get filterBinLabel => 'Papeleira de reciclaxe';
+  String get filterBinLabel => 'Lixo';
 
   @override
   String get filterFavouriteLabel => 'Favorito';
@@ -426,10 +426,10 @@ class AppLocalizationsGl extends AppLocalizations {
   String get filterNoDateLabel => 'Sen data';
 
   @override
-  String get filterNoAddressLabel => 'No address';
+  String get filterNoAddressLabel => 'Sen enderezo';
 
   @override
-  String get filterLocatedLabel => 'Located';
+  String get filterLocatedLabel => 'Localizado';
 
   @override
   String get filterNoLocationLabel => 'Sen localizar';
@@ -438,7 +438,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get filterNoRatingLabel => 'Sen clasificar';
 
   @override
-  String get filterTaggedLabel => 'Tagged';
+  String get filterTaggedLabel => 'Etiquetado';
 
   @override
   String get filterNoTagLabel => 'Sen etiquetar';
@@ -450,7 +450,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get filterOnThisDayLabel => 'Neste día';
 
   @override
-  String get filterRecentlyAddedLabel => 'Engadida recentemente';
+  String get filterRecentlyAddedLabel => 'Engadido recentemente';
 
   @override
   String get filterRatingRejectedLabel => 'Rexeitado';
@@ -480,31 +480,31 @@ class AppLocalizationsGl extends AppLocalizations {
   String get filterMimeVideoLabel => 'Vídeo';
 
   @override
-  String get accessibilityAnimationsRemove => 'Prevent screen effects';
+  String get accessibilityAnimationsRemove => 'Evitar efectos de pantalla';
 
   @override
-  String get accessibilityAnimationsKeep => 'Keep screen effects';
+  String get accessibilityAnimationsKeep => 'Manter efectos de pantalla';
 
   @override
-  String get albumTierNew => 'New';
+  String get albumTierNew => 'Novo';
 
   @override
-  String get albumTierPinned => 'Pinned';
+  String get albumTierPinned => 'Fixado';
 
   @override
-  String get albumTierSpecial => 'Common';
+  String get albumTierSpecial => 'Común';
 
   @override
-  String get albumTierApps => 'Apps';
+  String get albumTierApps => 'Aplicacións';
 
   @override
-  String get albumTierVaults => 'Vaults';
+  String get albumTierVaults => 'Cofres';
 
   @override
-  String get albumTierDynamic => 'Dynamic';
+  String get albumTierDynamic => 'Dinámico';
 
   @override
-  String get albumTierRegular => 'Others';
+  String get albumTierRegular => 'Outros';
 
   @override
   String get coordinateFormatDms => 'DMS (Sistema de xestión documental)';
@@ -533,19 +533,19 @@ class AppLocalizationsGl extends AppLocalizations {
   String get coordinateDmsWest => 'Oeste';
 
   @override
-  String get displayRefreshRatePreferHighest => 'Highest rate';
+  String get displayRefreshRatePreferHighest => 'Taxa máis alta';
 
   @override
-  String get displayRefreshRatePreferLowest => 'Lowest rate';
+  String get displayRefreshRatePreferLowest => 'Taxa máis baixa';
 
   @override
   String get keepScreenOnNever => 'Nunca';
 
   @override
-  String get keepScreenOnVideoPlayback => 'During video playback';
+  String get keepScreenOnVideoPlayback => 'Durante a reproducción de vídeo';
 
   @override
-  String get keepScreenOnViewerOnly => 'Páxina da visualización só';
+  String get keepScreenOnViewerOnly => 'Só páxina do visualizador';
 
   @override
   String get keepScreenOnAlways => 'Sempre';
@@ -560,7 +560,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get mapStyleGoogleNormal => 'Google Maps';
 
   @override
-  String get mapStyleGoogleHybrid => 'Google Maps (híbrido)';
+  String get mapStyleGoogleHybrid => 'Google Maps (Híbrido)';
 
   @override
   String get mapStyleGoogleTerrain => 'Google Maps (Terreo)';
@@ -578,13 +578,13 @@ class AppLocalizationsGl extends AppLocalizations {
   String get mapStyleStamenWatercolor => 'Stamen Watercolor (con sombreamento e cores)';
 
   @override
-  String get maxBrightnessNever => 'Never';
+  String get maxBrightnessNever => 'Nunca';
 
   @override
-  String get maxBrightnessAlways => 'Always';
+  String get maxBrightnessAlways => 'Sempre';
 
   @override
-  String get nameConflictStrategyRename => 'Renomear';
+  String get nameConflictStrategyRename => 'Trocar nome';
 
   @override
   String get nameConflictStrategyReplace => 'Trocar';
@@ -593,28 +593,28 @@ class AppLocalizationsGl extends AppLocalizations {
   String get nameConflictStrategySkip => 'Saltar';
 
   @override
-  String get overlayHistogramNone => 'None';
+  String get overlayHistogramNone => 'Ningún';
 
   @override
   String get overlayHistogramRGB => 'RGB';
 
   @override
-  String get overlayHistogramLuminance => 'Luminance';
+  String get overlayHistogramLuminance => 'Luminancia';
 
   @override
-  String get subtitlePositionTop => 'Top';
+  String get subtitlePositionTop => 'Parte superior';
 
   @override
-  String get subtitlePositionBottom => 'Bottom';
+  String get subtitlePositionBottom => 'Fondo';
 
   @override
-  String get themeBrightnessLight => 'Light';
+  String get themeBrightnessLight => 'Claro';
 
   @override
-  String get themeBrightnessDark => 'Dark';
+  String get themeBrightnessDark => 'Escuro';
 
   @override
-  String get themeBrightnessBlack => 'Black';
+  String get themeBrightnessBlack => 'Negro';
 
   @override
   String get unitSystemMetric => 'Métrico';
@@ -623,19 +623,19 @@ class AppLocalizationsGl extends AppLocalizations {
   String get unitSystemImperial => 'Imperial';
 
   @override
-  String get vaultLockTypePattern => 'Pattern';
+  String get vaultLockTypePattern => 'Padrón';
 
   @override
   String get vaultLockTypePin => 'PIN';
 
   @override
-  String get vaultLockTypePassword => 'Password';
+  String get vaultLockTypePassword => 'Contrasinal';
 
   @override
-  String get settingsVideoEnablePip => 'Picture-in-picture';
+  String get settingsVideoEnablePip => 'Imaxe-en-imaxe';
 
   @override
-  String get videoControlsPlayOutside => 'Abrir con outro xogador';
+  String get videoControlsPlayOutside => 'Abrir con outro reproductor';
 
   @override
   String get videoLoopModeNever => 'Nunca';
@@ -647,119 +647,119 @@ class AppLocalizationsGl extends AppLocalizations {
   String get videoLoopModeAlways => 'Sempre';
 
   @override
-  String get videoPlaybackSkip => 'Skip';
+  String get videoPlaybackSkip => 'Saltar';
 
   @override
-  String get videoPlaybackMuted => 'Play muted';
+  String get videoPlaybackMuted => 'Reproducir sen son';
 
   @override
-  String get videoPlaybackWithSound => 'Play with sound';
+  String get videoPlaybackWithSound => 'Reproducir con son';
 
   @override
-  String get videoResumptionModeNever => 'Never';
+  String get videoResumptionModeNever => 'Nunca';
 
   @override
-  String get videoResumptionModeAlways => 'Always';
+  String get videoResumptionModeAlways => 'Sempre';
 
   @override
-  String get viewerTransitionSlide => 'Slide';
+  String get viewerTransitionSlide => 'Diapositiva';
 
   @override
-  String get viewerTransitionParallax => 'Parallax';
+  String get viewerTransitionParallax => 'Paralaxe';
 
   @override
-  String get viewerTransitionFade => 'Fade';
+  String get viewerTransitionFade => 'Esvaecer';
 
   @override
-  String get viewerTransitionZoomIn => 'Zoom in';
+  String get viewerTransitionZoomIn => 'Achegar';
 
   @override
-  String get viewerTransitionNone => 'None';
+  String get viewerTransitionNone => 'Ningún';
 
   @override
-  String get wallpaperTargetHome => 'Home screen';
+  String get wallpaperTargetHome => 'Pantalla de inicio';
 
   @override
-  String get wallpaperTargetLock => 'Lock screen';
+  String get wallpaperTargetLock => 'Pantalla de bloqueo';
 
   @override
-  String get wallpaperTargetHomeLock => 'Home and lock screens';
+  String get wallpaperTargetHomeLock => 'Pantallas de inicio e bloqueo';
 
   @override
-  String get widgetDisplayedItemRandom => 'Random';
+  String get widgetDisplayedItemRandom => 'Aleatorio';
 
   @override
-  String get widgetDisplayedItemMostRecent => 'Most recent';
+  String get widgetDisplayedItemMostRecent => 'Máis recente';
 
   @override
-  String get widgetOpenPageHome => 'Open home';
+  String get widgetOpenPageHome => 'Abrir inicio';
 
   @override
-  String get widgetOpenPageCollection => 'Open collection';
+  String get widgetOpenPageCollection => 'Abrir colección';
 
   @override
-  String get widgetOpenPageViewer => 'Open viewer';
+  String get widgetOpenPageViewer => 'Abrir visor';
 
   @override
-  String get widgetTapUpdateWidget => 'Update widget';
+  String get widgetTapUpdateWidget => 'Actualizar widget';
 
   @override
-  String get storageVolumeDescriptionFallbackPrimary => 'Internal storage';
+  String get storageVolumeDescriptionFallbackPrimary => 'Almacenaxe interna';
 
   @override
-  String get storageVolumeDescriptionFallbackNonPrimary => 'SD card';
+  String get storageVolumeDescriptionFallbackNonPrimary => 'Tarxeta SD';
 
   @override
-  String get rootDirectoryDescription => 'root directory';
+  String get rootDirectoryDescription => 'directorio raiz';
 
   @override
   String otherDirectoryDescription(String name) {
-    return '“$name” directory';
+    return 'directorio «$name»';
   }
 
   @override
   String storageAccessDialogMessage(String directory, String volume) {
-    return 'Please select the $directory of “$volume” in the next screen to give this app access to it.';
+    return 'Por favor, seleccione o $directory de «$volume» na seguinte pantalla para lle fornecer acceso a esta aplicación.';
   }
 
   @override
   String restrictedAccessDialogMessage(String directory, String volume) {
-    return 'This app is not allowed to modify files in the $directory of “$volume”.\n\nPlease use a pre-installed file manager or gallery app to move the items to another directory.';
+    return 'Esta apliación non ten permiso para modificar arquivos no $directory de «$volume».\n\nPor favor, empregue un xestor de arquivos ou galería preinstalados para mover os elementos a outro directorio.';
   }
 
   @override
   String notEnoughSpaceDialogMessage(String neededSize, String freeSize, String volume) {
-    return 'This operation needs $neededSize of free space on “$volume” to complete, but there is only $freeSize left.';
+    return 'Esta operación precisa $neededSize de espazo libre en «$volume» para se completar, pero só hai $freeSize dispoñible.';
   }
 
   @override
-  String get missingSystemFilePickerDialogMessage => 'The system file picker is missing or disabled. Please enable it and try again.';
+  String get missingSystemFilePickerDialogMessage => 'O selector de arquivos falta ou está desactivado. Por favor, actíveo e tente de novo.';
 
   @override
   String unsupportedTypeDialogMessage(int count, String types) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'This operation is not supported for items of the following types: $types.',
-      one: 'This operation is not supported for items of the following type: $types.',
+      other: 'Operación non soportada para elementos destes tipos: $types.',
+      one: 'Operación non soportada para elementos deste tipo: $types.',
     );
     return '$_temp0';
   }
 
   @override
-  String get nameConflictDialogSingleSourceMessage => 'Some files in the destination folder have the same name.';
+  String get nameConflictDialogSingleSourceMessage => 'Algúns arquivos do directorio de destiño teñen o mesmo nome.';
 
   @override
-  String get nameConflictDialogMultipleSourceMessage => 'Some files have the same name.';
+  String get nameConflictDialogMultipleSourceMessage => 'Algúns arquivos teñen o mesmo nome.';
 
   @override
-  String get addShortcutDialogLabel => 'Shortcut label';
+  String get addShortcutDialogLabel => 'Etiqueta do atallo';
 
   @override
-  String get addShortcutButtonLabel => 'ADD';
+  String get addShortcutButtonLabel => 'ENGADIR';
 
   @override
-  String get noMatchingAppDialogMessage => 'There are no apps that can handle this.';
+  String get noMatchingAppDialogMessage => 'Non hai aplicacións que poidan manexar isto.';
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
@@ -769,8 +769,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Move these $countString items to the recycle bin?',
-      one: 'Move this item to the recycle bin?',
+      other: 'Mover estes $countString elementos ao lixo?',
+      one: 'Mover este elemento ao lixo?',
     );
     return '$_temp0';
   }
@@ -783,130 +783,130 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Delete these $countString items?',
-      one: 'Delete this item?',
+      other: 'Borrar estes $countString elementos?',
+      one: 'Borrar este elemento?',
     );
     return '$_temp0';
   }
 
   @override
-  String get moveUndatedConfirmationDialogMessage => 'Save item dates before proceeding?';
+  String get moveUndatedConfirmationDialogMessage => 'Gardar as datas dos elementos antes de continuar?';
 
   @override
-  String get moveUndatedConfirmationDialogSetDate => 'Save dates';
+  String get moveUndatedConfirmationDialogSetDate => 'Gardar datas';
 
   @override
   String videoResumeDialogMessage(String time) {
-    return 'Do you want to resume playing at $time?';
+    return 'Desexa continuar a reproducción dende $time?';
   }
 
   @override
-  String get videoStartOverButtonLabel => 'START OVER';
+  String get videoStartOverButtonLabel => 'RECOMEZAR';
 
   @override
-  String get videoResumeButtonLabel => 'RESUME';
+  String get videoResumeButtonLabel => 'RETOMAR';
 
   @override
-  String get setCoverDialogLatest => 'Latest item';
+  String get setCoverDialogLatest => 'Último elemento';
 
   @override
   String get setCoverDialogAuto => 'Auto';
 
   @override
-  String get setCoverDialogCustom => 'Custom';
+  String get setCoverDialogCustom => 'Personalizado';
 
   @override
-  String get hideFilterConfirmationDialogMessage => 'Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?';
+  String get hideFilterConfirmationDialogMessage => 'Agocharánse da súa colección as fotos e vídeos que concorden. Pódense amosar de novo dende os axustes de «Privacidade».\n\nEstá certo de querer agochalos?';
 
   @override
-  String get newAlbumDialogTitle => 'New Album';
+  String get newAlbumDialogTitle => 'Novo álbum';
 
   @override
-  String get newAlbumDialogNameLabel => 'Album name';
+  String get newAlbumDialogNameLabel => 'Nome do álbum';
 
   @override
-  String get newAlbumDialogAlbumAlreadyExistsHelper => 'Album already exists';
+  String get newAlbumDialogAlbumAlreadyExistsHelper => 'Xa existe o álbum';
 
   @override
-  String get newAlbumDialogNameLabelAlreadyExistsHelper => 'Directory already exists';
+  String get newAlbumDialogNameLabelAlreadyExistsHelper => 'Xa existe o directorio';
 
   @override
-  String get newAlbumDialogStorageLabel => 'Storage:';
+  String get newAlbumDialogStorageLabel => 'Almacenaxe:';
 
   @override
-  String get newDynamicAlbumDialogTitle => 'New Dynamic Album';
+  String get newDynamicAlbumDialogTitle => 'Novo álbum dinámico';
 
   @override
-  String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+  String get dynamicAlbumAlreadyExists => 'Xa existe o álbum dinámico';
 
   @override
-  String get newVaultWarningDialogMessage => 'Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.';
+  String get newVaultWarningDialogMessage => 'Os elementos en cofres só están dispoñibles para esta aplicación.\n\nPerderanse se se desinstala ou se borran os seus datos.';
 
   @override
-  String get newVaultDialogTitle => 'New Vault';
+  String get newVaultDialogTitle => 'Novo cofre';
 
   @override
-  String get configureVaultDialogTitle => 'Configure Vault';
+  String get configureVaultDialogTitle => 'Configurar cofre';
 
   @override
-  String get vaultDialogLockModeWhenScreenOff => 'Lock when screen turns off';
+  String get vaultDialogLockModeWhenScreenOff => 'Bloquear ao se apagar a pantalla';
 
   @override
-  String get vaultDialogLockTypeLabel => 'Lock type';
+  String get vaultDialogLockTypeLabel => 'Tipo de bloqueo';
 
   @override
-  String get patternDialogEnter => 'Enter pattern';
+  String get patternDialogEnter => 'Inserir padrón';
 
   @override
-  String get patternDialogConfirm => 'Confirm pattern';
+  String get patternDialogConfirm => 'Confirmar padrón';
 
   @override
-  String get pinDialogEnter => 'Enter PIN';
+  String get pinDialogEnter => 'Inserir PIN';
 
   @override
-  String get pinDialogConfirm => 'Confirm PIN';
+  String get pinDialogConfirm => 'Confirmar PIN';
 
   @override
-  String get passwordDialogEnter => 'Enter password';
+  String get passwordDialogEnter => 'Inserir contrasinal';
 
   @override
-  String get passwordDialogConfirm => 'Confirm password';
+  String get passwordDialogConfirm => 'Confirmar contrasinal';
 
   @override
-  String get authenticateToConfigureVault => 'Authenticate to configure vault';
+  String get authenticateToConfigureVault => 'Autenticarse para configurar o cofre';
 
   @override
-  String get authenticateToUnlockVault => 'Authenticate to unlock vault';
+  String get authenticateToUnlockVault => 'Autenticarse para despechar cofre';
 
   @override
-  String get vaultBinUsageDialogMessage => 'Some vaults are using the recycle bin.';
+  String get vaultBinUsageDialogMessage => 'Algúns cofres están a utilizar o lixo.';
 
   @override
-  String get renameAlbumDialogLabel => 'New name';
+  String get renameAlbumDialogLabel => 'Nome novo';
 
   @override
-  String get renameAlbumDialogLabelAlreadyExistsHelper => 'Directory already exists';
+  String get renameAlbumDialogLabelAlreadyExistsHelper => 'Xa existe o directorio';
 
   @override
-  String get renameEntrySetPageTitle => 'Rename';
+  String get renameEntrySetPageTitle => 'Trocar nome';
 
   @override
-  String get renameEntrySetPagePatternFieldLabel => 'Naming pattern';
+  String get renameEntrySetPagePatternFieldLabel => 'Padrón de nomeamento';
 
   @override
-  String get renameEntrySetPageInsertTooltip => 'Insert field';
+  String get renameEntrySetPageInsertTooltip => 'Inserir campo';
 
   @override
-  String get renameEntrySetPagePreviewSectionTitle => 'Preview';
+  String get renameEntrySetPagePreviewSectionTitle => 'Vista previa';
 
   @override
-  String get renameProcessorCounter => 'Counter';
+  String get renameProcessorCounter => 'Contador';
 
   @override
   String get renameProcessorHash => 'Hash';
 
   @override
-  String get renameProcessorName => 'Name';
+  String get renameProcessorName => 'Nome';
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
@@ -916,8 +916,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Delete this album and the $countString items in it?',
-      one: 'Delete this album and the item in it?',
+      other: 'Eliminar este álbum e os seus $countString elementos?',
+      one: 'Eliminar este álbum e o seu elemento?',
     );
     return '$_temp0';
   }
@@ -930,347 +930,347 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Delete these albums and the $countString items in them?',
-      one: 'Delete these albums and the item in them?',
+      other: 'Eliminar estes álbums e os seus $countString elementos?',
+      one: 'Eliminar estes álbums e os seus elementos?',
     );
     return '$_temp0';
   }
 
   @override
-  String get exportEntryDialogFormat => 'Format:';
+  String get exportEntryDialogFormat => 'Formato:';
 
   @override
-  String get exportEntryDialogWidth => 'Width';
+  String get exportEntryDialogWidth => 'Largo';
 
   @override
-  String get exportEntryDialogHeight => 'Height';
+  String get exportEntryDialogHeight => 'Alto';
 
   @override
-  String get exportEntryDialogQuality => 'Quality';
+  String get exportEntryDialogQuality => 'Calidade';
 
   @override
-  String get exportEntryDialogWriteMetadata => 'Write metadata';
+  String get exportEntryDialogWriteMetadata => 'Escribir metadatos';
 
   @override
-  String get renameEntryDialogLabel => 'New name';
+  String get renameEntryDialogLabel => 'Nome novo';
 
   @override
-  String get editEntryDialogCopyFromItem => 'Copy from other item';
+  String get editEntryDialogCopyFromItem => 'Copiar dende outro elemento';
 
   @override
-  String get editEntryDialogTargetFieldsHeader => 'Fields to modify';
+  String get editEntryDialogTargetFieldsHeader => 'Campos a modificar';
 
   @override
-  String get editEntryDateDialogTitle => 'Date & Time';
+  String get editEntryDateDialogTitle => 'Data e hora';
 
   @override
-  String get editEntryDateDialogSetCustom => 'Set custom date';
+  String get editEntryDateDialogSetCustom => 'Definir data personalizada';
 
   @override
-  String get editEntryDateDialogCopyField => 'Copy from other date';
+  String get editEntryDateDialogCopyField => 'Copiar dende outra data';
 
   @override
-  String get editEntryDateDialogExtractFromTitle => 'Extract from title';
+  String get editEntryDateDialogExtractFromTitle => 'Extraer do título';
 
   @override
-  String get editEntryDateDialogShift => 'Shift';
+  String get editEntryDateDialogShift => 'Mover';
 
   @override
-  String get editEntryDateDialogSourceFileModifiedDate => 'File modified date';
+  String get editEntryDateDialogSourceFileModifiedDate => 'Data de modificación do arquivo';
 
   @override
-  String get durationDialogHours => 'Hours';
+  String get durationDialogHours => 'Horas';
 
   @override
-  String get durationDialogMinutes => 'Minutes';
+  String get durationDialogMinutes => 'Minutos';
 
   @override
-  String get durationDialogSeconds => 'Seconds';
+  String get durationDialogSeconds => 'Segundos';
 
   @override
-  String get editEntryLocationDialogTitle => 'Location';
+  String get editEntryLocationDialogTitle => 'Localización';
 
   @override
-  String get editEntryLocationDialogSetCustom => 'Set custom location';
+  String get editEntryLocationDialogSetCustom => 'Establecer localización personalizada';
 
   @override
-  String get editEntryLocationDialogChooseOnMap => 'Choose on map';
+  String get editEntryLocationDialogChooseOnMap => 'Escoller no mapa';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'Importar GPX';
 
   @override
   String get editEntryLocationDialogLatitude => 'Latitude';
 
   @override
-  String get editEntryLocationDialogLongitude => 'Longitude';
+  String get editEntryLocationDialogLongitude => 'Lonxitude';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Cambio de tempo';
 
   @override
-  String get locationPickerUseThisLocationButton => 'Use this location';
+  String get locationPickerUseThisLocationButton => 'Usar esta localización';
 
   @override
-  String get editEntryRatingDialogTitle => 'Rating';
+  String get editEntryRatingDialogTitle => 'Valoración';
 
   @override
-  String get removeEntryMetadataDialogTitle => 'Metadata Removal';
+  String get removeEntryMetadataDialogTitle => 'Supresión de metadatos';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Todo';
 
   @override
-  String get removeEntryMetadataDialogMore => 'More';
+  String get removeEntryMetadataDialogMore => 'Máis';
 
   @override
   String get removeEntryMetadataMotionPhotoXmpWarningDialogMessage => 'XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?';
 
   @override
-  String get videoSpeedDialogLabel => 'Playback speed';
+  String get videoSpeedDialogLabel => 'Velocidade de reproducción';
 
   @override
-  String get videoStreamSelectionDialogVideo => 'Video';
+  String get videoStreamSelectionDialogVideo => 'Vídeo';
 
   @override
   String get videoStreamSelectionDialogAudio => 'Audio';
 
   @override
-  String get videoStreamSelectionDialogText => 'Subtitles';
+  String get videoStreamSelectionDialogText => 'Subtítulos';
 
   @override
-  String get videoStreamSelectionDialogOff => 'Off';
+  String get videoStreamSelectionDialogOff => 'Desactivado';
 
   @override
-  String get videoStreamSelectionDialogTrack => 'Track';
+  String get videoStreamSelectionDialogTrack => 'Pista';
 
   @override
-  String get videoStreamSelectionDialogNoSelection => 'There are no other tracks.';
+  String get videoStreamSelectionDialogNoSelection => 'Non hai outras pistas.';
 
   @override
-  String get genericSuccessFeedback => 'Done!';
+  String get genericSuccessFeedback => 'Feito!';
 
   @override
-  String get genericFailureFeedback => 'Failed';
+  String get genericFailureFeedback => 'Fallou';
 
   @override
-  String get genericDangerWarningDialogMessage => 'Are you sure?';
+  String get genericDangerWarningDialogMessage => 'Está certo?';
 
   @override
-  String get tooManyItemsErrorDialogMessage => 'Try again with fewer items.';
+  String get tooManyItemsErrorDialogMessage => 'Tente de novo con menos elementos.';
 
   @override
-  String get menuActionConfigureView => 'View';
+  String get menuActionConfigureView => 'Vista';
 
   @override
-  String get menuActionSelect => 'Select';
+  String get menuActionSelect => 'Escolmar';
 
   @override
-  String get menuActionSelectAll => 'Select all';
+  String get menuActionSelectAll => 'Escolmar todo';
 
   @override
-  String get menuActionSelectNone => 'Select none';
+  String get menuActionSelectNone => 'Non escolmar ningún';
 
   @override
-  String get menuActionMap => 'Map';
+  String get menuActionMap => 'Mapa';
 
   @override
-  String get menuActionSlideshow => 'Slideshow';
+  String get menuActionSlideshow => 'Presentación';
 
   @override
-  String get menuActionStats => 'Stats';
+  String get menuActionStats => 'Estadísticas';
 
   @override
-  String get viewDialogSortSectionTitle => 'Sort';
+  String get viewDialogSortSectionTitle => 'Ordenar';
 
   @override
-  String get viewDialogGroupSectionTitle => 'Group';
+  String get viewDialogGroupSectionTitle => 'Agrupar';
 
   @override
-  String get viewDialogLayoutSectionTitle => 'Layout';
+  String get viewDialogLayoutSectionTitle => 'Disposición';
 
   @override
-  String get viewDialogReverseSortOrder => 'Reverse sort order';
+  String get viewDialogReverseSortOrder => 'Invertir ordenación';
 
   @override
-  String get tileLayoutMosaic => 'Mosaic';
+  String get tileLayoutMosaic => 'Mosaico';
 
   @override
-  String get tileLayoutGrid => 'Grid';
+  String get tileLayoutGrid => 'Cuadrícula';
 
   @override
-  String get tileLayoutList => 'List';
+  String get tileLayoutList => 'Lista';
 
   @override
-  String get castDialogTitle => 'Cast Devices';
+  String get castDialogTitle => 'Dispositivos de emisión';
 
   @override
-  String get coverDialogTabCover => 'Cover';
+  String get coverDialogTabCover => 'Cuberta';
 
   @override
-  String get coverDialogTabApp => 'App';
+  String get coverDialogTabApp => 'Aplicación';
 
   @override
-  String get coverDialogTabColor => 'Color';
+  String get coverDialogTabColor => 'Cor';
 
   @override
-  String get appPickDialogTitle => 'Pick App';
+  String get appPickDialogTitle => 'Escoller aplicación';
 
   @override
-  String get appPickDialogNone => 'None';
+  String get appPickDialogNone => 'Ningún';
 
   @override
-  String get aboutPageTitle => 'About';
+  String get aboutPageTitle => 'Verbo de';
 
   @override
-  String get aboutLinkLicense => 'License';
+  String get aboutLinkLicense => 'Licenza';
 
   @override
-  String get aboutLinkPolicy => 'Privacy Policy';
+  String get aboutLinkPolicy => 'Política de privacidade';
 
   @override
-  String get aboutBugSectionTitle => 'Bug Report';
+  String get aboutBugSectionTitle => 'Informe de erros';
 
   @override
-  String get aboutBugSaveLogInstruction => 'Save app logs to a file';
+  String get aboutBugSaveLogInstruction => 'Gardar rexistros da aplicación nun arquivo';
 
   @override
-  String get aboutBugCopyInfoInstruction => 'Copy system information';
+  String get aboutBugCopyInfoInstruction => 'Copiar a información do sistema';
 
   @override
-  String get aboutBugCopyInfoButton => 'Copy';
+  String get aboutBugCopyInfoButton => 'Copiar';
 
   @override
-  String get aboutBugReportInstruction => 'Report on GitHub with the logs and system information';
+  String get aboutBugReportInstruction => 'Informar en GitHub cos rexistros e información do sistema';
 
   @override
-  String get aboutBugReportButton => 'Report';
+  String get aboutBugReportButton => 'Informar';
 
   @override
-  String get aboutDataUsageSectionTitle => 'Data Usage';
+  String get aboutDataUsageSectionTitle => 'Uso de datos';
 
   @override
-  String get aboutDataUsageData => 'Data';
+  String get aboutDataUsageData => 'Datos';
 
   @override
-  String get aboutDataUsageCache => 'Cache';
+  String get aboutDataUsageCache => 'Caché';
 
   @override
-  String get aboutDataUsageDatabase => 'Database';
+  String get aboutDataUsageDatabase => 'Base de datos';
 
   @override
-  String get aboutDataUsageMisc => 'Misc';
+  String get aboutDataUsageMisc => 'Varios';
 
   @override
-  String get aboutDataUsageInternal => 'Internal';
+  String get aboutDataUsageInternal => 'Interno';
 
   @override
-  String get aboutDataUsageExternal => 'External';
+  String get aboutDataUsageExternal => 'Externo';
 
   @override
-  String get aboutDataUsageClearCache => 'Clear Cache';
+  String get aboutDataUsageClearCache => 'Limpar caché';
 
   @override
-  String get aboutCreditsSectionTitle => 'Credits';
+  String get aboutCreditsSectionTitle => 'Créditos';
 
   @override
-  String get aboutCreditsWorldAtlas1 => 'This app uses a TopoJSON file from';
+  String get aboutCreditsWorldAtlas1 => 'Esta apliación usa un arquivo TopoJSON de';
 
   @override
-  String get aboutCreditsWorldAtlas2 => 'under ISC License.';
+  String get aboutCreditsWorldAtlas2 => 'baixo licenza ISC.';
 
   @override
-  String get aboutTranslatorsSectionTitle => 'Translators';
+  String get aboutTranslatorsSectionTitle => 'Tradutores';
 
   @override
-  String get aboutLicensesSectionTitle => 'Open-Source Licenses';
+  String get aboutLicensesSectionTitle => 'Licenzas de código aberto';
 
   @override
-  String get aboutLicensesBanner => 'This app uses the following open-source packages and libraries.';
+  String get aboutLicensesBanner => 'Esta aplicación usa os paquetes e bibliotecas de código aberto que seguen.';
 
   @override
-  String get aboutLicensesAndroidLibrariesSectionTitle => 'Android Libraries';
+  String get aboutLicensesAndroidLibrariesSectionTitle => 'Bibliotecas de Android';
 
   @override
-  String get aboutLicensesFlutterPluginsSectionTitle => 'Flutter Plugins';
+  String get aboutLicensesFlutterPluginsSectionTitle => 'Plugins de Flutter';
 
   @override
-  String get aboutLicensesFlutterPackagesSectionTitle => 'Flutter Packages';
+  String get aboutLicensesFlutterPackagesSectionTitle => 'Paquetes de Flutter';
 
   @override
-  String get aboutLicensesDartPackagesSectionTitle => 'Dart Packages';
+  String get aboutLicensesDartPackagesSectionTitle => 'Paquetes de Dart';
 
   @override
-  String get aboutLicensesShowAllButtonLabel => 'Show All Licenses';
+  String get aboutLicensesShowAllButtonLabel => 'Amosar todas as licenzas';
 
   @override
-  String get policyPageTitle => 'Privacy Policy';
+  String get policyPageTitle => 'Política de privacidade';
 
   @override
-  String get collectionPageTitle => 'Collection';
+  String get collectionPageTitle => 'Colección';
 
   @override
-  String get collectionPickPageTitle => 'Pick';
+  String get collectionPickPageTitle => 'Escolmar';
 
   @override
-  String get collectionSelectPageTitle => 'Select items';
+  String get collectionSelectPageTitle => 'Escolmar elementos';
 
   @override
-  String get collectionActionShowTitleSearch => 'Show title filter';
+  String get collectionActionShowTitleSearch => 'Amosar filtro de título';
 
   @override
-  String get collectionActionHideTitleSearch => 'Hide title filter';
+  String get collectionActionHideTitleSearch => 'Agochar filtro de título';
 
   @override
-  String get collectionActionAddDynamicAlbum => 'Add dynamic album';
+  String get collectionActionAddDynamicAlbum => 'Engadir álbum dinámico';
 
   @override
-  String get collectionActionAddShortcut => 'Add shortcut';
+  String get collectionActionAddShortcut => 'Engadir atallo';
 
   @override
-  String get collectionActionSetHome => 'Set as home';
+  String get collectionActionSetHome => 'Fixar como inicio';
 
   @override
-  String get collectionActionEmptyBin => 'Empty bin';
+  String get collectionActionEmptyBin => 'Baleirar lixo';
 
   @override
-  String get collectionActionCopy => 'Copy to album';
+  String get collectionActionCopy => 'Copiar a álbum';
 
   @override
-  String get collectionActionMove => 'Move to album';
+  String get collectionActionMove => 'Mover a álbum';
 
   @override
-  String get collectionActionRescan => 'Rescan';
+  String get collectionActionRescan => 'Ler de novo';
 
   @override
-  String get collectionActionEdit => 'Edit';
+  String get collectionActionEdit => 'Editar';
 
   @override
-  String get collectionSearchTitlesHintText => 'Search titles';
+  String get collectionSearchTitlesHintText => 'Procurar títulos';
 
   @override
-  String get collectionGroupAlbum => 'By album';
+  String get collectionGroupAlbum => 'Por álbum';
 
   @override
-  String get collectionGroupMonth => 'By month';
+  String get collectionGroupMonth => 'Por mes';
 
   @override
-  String get collectionGroupDay => 'By day';
+  String get collectionGroupDay => 'Por día';
 
   @override
-  String get collectionGroupNone => 'Do not group';
+  String get collectionGroupNone => 'Non agrupar';
 
   @override
-  String get sectionUnknown => 'Unknown';
+  String get sectionUnknown => 'Descoñecido';
 
   @override
-  String get dateToday => 'Today';
+  String get dateToday => 'Hoxe';
 
   @override
-  String get dateYesterday => 'Yesterday';
+  String get dateYesterday => 'Onte';
 
   @override
-  String get dateThisMonth => 'This month';
+  String get dateThisMonth => 'Este mes';
 
   @override
   String collectionDeleteFailureFeedback(int count) {
@@ -1413,253 +1413,253 @@ class AppLocalizationsGl extends AppLocalizations {
   }
 
   @override
-  String get collectionEmptyFavourites => 'No favorites';
+  String get collectionEmptyFavourites => 'Sen favoritos';
 
   @override
-  String get collectionEmptyVideos => 'No videos';
+  String get collectionEmptyVideos => 'Sen vídeos';
 
   @override
-  String get collectionEmptyImages => 'No images';
+  String get collectionEmptyImages => 'Sen imaxes';
 
   @override
-  String get collectionEmptyGrantAccessButtonLabel => 'Grant access';
+  String get collectionEmptyGrantAccessButtonLabel => 'Dar acceso';
 
   @override
-  String get collectionSelectSectionTooltip => 'Select section';
+  String get collectionSelectSectionTooltip => 'Escolmar sección';
 
   @override
-  String get collectionDeselectSectionTooltip => 'Deselect section';
+  String get collectionDeselectSectionTooltip => 'Desescolmar sección';
 
   @override
-  String get drawerAboutButton => 'About';
+  String get drawerAboutButton => 'Verbo de';
 
   @override
-  String get drawerSettingsButton => 'Settings';
+  String get drawerSettingsButton => 'Axustes';
 
   @override
-  String get drawerCollectionAll => 'All collection';
+  String get drawerCollectionAll => 'Toda a colección';
 
   @override
-  String get drawerCollectionFavourites => 'Favorites';
+  String get drawerCollectionFavourites => 'Favoritos';
 
   @override
-  String get drawerCollectionImages => 'Images';
+  String get drawerCollectionImages => 'Imaxes';
 
   @override
-  String get drawerCollectionVideos => 'Videos';
+  String get drawerCollectionVideos => 'Vídeos';
 
   @override
-  String get drawerCollectionAnimated => 'Animated';
+  String get drawerCollectionAnimated => 'Animacións';
 
   @override
-  String get drawerCollectionMotionPhotos => 'Motion photos';
+  String get drawerCollectionMotionPhotos => 'Fotos en movemento';
 
   @override
   String get drawerCollectionPanoramas => 'Panoramas';
 
   @override
-  String get drawerCollectionRaws => 'Raw photos';
+  String get drawerCollectionRaws => 'Fotos Raw';
 
   @override
-  String get drawerCollectionSphericalVideos => '360° Videos';
+  String get drawerCollectionSphericalVideos => 'Vídeos 360°';
 
   @override
-  String get drawerAlbumPage => 'Albums';
+  String get drawerAlbumPage => 'Álbums';
 
   @override
-  String get drawerCountryPage => 'Countries';
+  String get drawerCountryPage => 'Países';
 
   @override
-  String get drawerPlacePage => 'Places';
+  String get drawerPlacePage => 'Lugares';
 
   @override
-  String get drawerTagPage => 'Tags';
+  String get drawerTagPage => 'Etiquetas';
 
   @override
-  String get sortByDate => 'By date';
+  String get sortByDate => 'Por data';
 
   @override
-  String get sortByName => 'By name';
+  String get sortByName => 'Por nome';
 
   @override
-  String get sortByItemCount => 'By item count';
+  String get sortByItemCount => 'Por número de elementos';
 
   @override
-  String get sortBySize => 'By size';
+  String get sortBySize => 'Por tamaño';
 
   @override
-  String get sortByAlbumFileName => 'By album & file name';
+  String get sortByAlbumFileName => 'Por nome de álbum e arquivo';
 
   @override
-  String get sortByRating => 'By rating';
+  String get sortByRating => 'Por valoración';
 
   @override
-  String get sortByDuration => 'By duration';
+  String get sortByDuration => 'Por duración';
 
   @override
-  String get sortOrderNewestFirst => 'Newest first';
+  String get sortOrderNewestFirst => 'Novos primeiro';
 
   @override
-  String get sortOrderOldestFirst => 'Oldest first';
+  String get sortOrderOldestFirst => 'Vellos primeiro';
 
   @override
-  String get sortOrderAtoZ => 'A to Z';
+  String get sortOrderAtoZ => 'A ao Z';
 
   @override
-  String get sortOrderZtoA => 'Z to A';
+  String get sortOrderZtoA => 'Z ao A';
 
   @override
-  String get sortOrderHighestFirst => 'Highest first';
+  String get sortOrderHighestFirst => 'Máis altos primeiro';
 
   @override
-  String get sortOrderLowestFirst => 'Lowest first';
+  String get sortOrderLowestFirst => 'Máis baixos primeiro';
 
   @override
-  String get sortOrderLargestFirst => 'Largest first';
+  String get sortOrderLargestFirst => 'Máis grandes primeiro';
 
   @override
-  String get sortOrderSmallestFirst => 'Smallest first';
+  String get sortOrderSmallestFirst => 'Máis pequenos primeiro';
 
   @override
-  String get sortOrderShortestFirst => 'Shortest first';
+  String get sortOrderShortestFirst => 'Máis curtos primeiro';
 
   @override
-  String get sortOrderLongestFirst => 'Longest first';
+  String get sortOrderLongestFirst => 'Máis longos primeiro';
 
   @override
-  String get albumGroupTier => 'By tier';
+  String get albumGroupTier => 'Por nivel';
 
   @override
-  String get albumGroupType => 'By type';
+  String get albumGroupType => 'Por tipo';
 
   @override
-  String get albumGroupVolume => 'By storage volume';
+  String get albumGroupVolume => 'Por volume de almacenaxe';
 
   @override
-  String get albumGroupNone => 'Do not group';
+  String get albumGroupNone => 'Non agrupar';
 
   @override
-  String get albumMimeTypeMixed => 'Mixed';
+  String get albumMimeTypeMixed => 'Mesturado';
 
   @override
-  String get albumPickPageTitleCopy => 'Copy to Album';
+  String get albumPickPageTitleCopy => 'Copiar a álbum';
 
   @override
-  String get albumPickPageTitleExport => 'Export to Album';
+  String get albumPickPageTitleExport => 'Exportar a álbum';
 
   @override
-  String get albumPickPageTitleMove => 'Move to Album';
+  String get albumPickPageTitleMove => 'Mover a álbum';
 
   @override
-  String get albumPickPageTitlePick => 'Pick Album';
+  String get albumPickPageTitlePick => 'Escolmar álbum';
 
   @override
-  String get albumCamera => 'Camera';
+  String get albumCamera => 'Cámara';
 
   @override
-  String get albumDownload => 'Download';
+  String get albumDownload => 'Descargar';
 
   @override
-  String get albumScreenshots => 'Screenshots';
+  String get albumScreenshots => 'Capturas de pantalla';
 
   @override
-  String get albumScreenRecordings => 'Screen recordings';
+  String get albumScreenRecordings => 'Gravacións de pantalla';
 
   @override
-  String get albumVideoCaptures => 'Video Captures';
+  String get albumVideoCaptures => 'Capturas de vídeo';
 
   @override
-  String get albumPageTitle => 'Albums';
+  String get albumPageTitle => 'Álbums';
 
   @override
-  String get albumEmpty => 'No albums';
+  String get albumEmpty => 'Sen álbums';
 
   @override
-  String get createAlbumButtonLabel => 'CREATE';
+  String get createAlbumButtonLabel => 'CREAR';
 
   @override
-  String get newFilterBanner => 'new';
+  String get newFilterBanner => 'novo';
 
   @override
-  String get countryPageTitle => 'Countries';
+  String get countryPageTitle => 'Países';
 
   @override
-  String get countryEmpty => 'No countries';
+  String get countryEmpty => 'Sen países';
 
   @override
-  String get statePageTitle => 'States';
+  String get statePageTitle => 'Estados';
 
   @override
-  String get stateEmpty => 'No states';
+  String get stateEmpty => 'Sen estados';
 
   @override
-  String get placePageTitle => 'Places';
+  String get placePageTitle => 'Lugares';
 
   @override
-  String get placeEmpty => 'No places';
+  String get placeEmpty => 'Sen lugares';
 
   @override
-  String get tagPageTitle => 'Tags';
+  String get tagPageTitle => 'Etiquetas';
 
   @override
-  String get tagEmpty => 'No tags';
+  String get tagEmpty => 'Sen etiquetas';
 
   @override
-  String get binPageTitle => 'Recycle Bin';
+  String get binPageTitle => 'Lixo';
 
   @override
-  String get explorerPageTitle => 'Explorer';
+  String get explorerPageTitle => 'Explorador';
 
   @override
-  String get explorerActionSelectStorageVolume => 'Select storage';
+  String get explorerActionSelectStorageVolume => 'Escolmar almacenaxe';
 
   @override
-  String get selectStorageVolumeDialogTitle => 'Select Storage';
+  String get selectStorageVolumeDialogTitle => 'Escolmar almacenaxe';
 
   @override
-  String get searchCollectionFieldHint => 'Search collection';
+  String get searchCollectionFieldHint => 'Procurar en colección';
 
   @override
-  String get searchRecentSectionTitle => 'Recent';
+  String get searchRecentSectionTitle => 'Recente';
 
   @override
-  String get searchDateSectionTitle => 'Date';
+  String get searchDateSectionTitle => 'Data';
 
   @override
-  String get searchAlbumsSectionTitle => 'Albums';
+  String get searchAlbumsSectionTitle => 'Álbums';
 
   @override
-  String get searchCountriesSectionTitle => 'Countries';
+  String get searchCountriesSectionTitle => 'Países';
 
   @override
-  String get searchStatesSectionTitle => 'States';
+  String get searchStatesSectionTitle => 'Estados';
 
   @override
-  String get searchPlacesSectionTitle => 'Places';
+  String get searchPlacesSectionTitle => 'Lugares';
 
   @override
-  String get searchTagsSectionTitle => 'Tags';
+  String get searchTagsSectionTitle => 'Etiquetas';
 
   @override
-  String get searchRatingSectionTitle => 'Ratings';
+  String get searchRatingSectionTitle => 'Valoracións';
 
   @override
-  String get searchMetadataSectionTitle => 'Metadata';
+  String get searchMetadataSectionTitle => 'Metadatos';
 
   @override
-  String get settingsPageTitle => 'Settings';
+  String get settingsPageTitle => 'Axustes';
 
   @override
-  String get settingsSystemDefault => 'System default';
+  String get settingsSystemDefault => 'Sistema';
 
   @override
-  String get settingsDefault => 'Default';
+  String get settingsDefault => 'Por defecto';
 
   @override
-  String get settingsDisabled => 'Disabled';
+  String get settingsDisabled => 'Desactivado';
 
   @override
-  String get settingsAskEverytime => 'Ask everytime';
+  String get settingsAskEverytime => 'Preguntar sempre';
 
   @override
   String get settingsModificationWarningDialogMessage => 'Other settings will be modified.';
