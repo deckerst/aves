@@ -17,16 +17,26 @@ import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+typedef TileRouteBuilder = Route Function(BuildContext context, String routeName, bool topLevel);
+
 class PageNavTile extends StatelessWidget {
+  final Widget? leading;
+  final Widget? title;
   final Widget? trailing;
   final bool topLevel;
   final String routeName;
+  final bool Function()? isSelected;
+  final TileRouteBuilder? routeBuilder;
 
   const PageNavTile({
     super.key,
+    this.leading,
+    this.title,
     this.trailing,
     this.topLevel = true,
     required this.routeName,
+    this.isSelected,
+    this.routeBuilder,
   });
 
   @override
@@ -37,8 +47,8 @@ class PageNavTile extends StatelessWidget {
       child: ListTile(
         // key is expected by test driver
         key: Key('$routeName-tile'),
-        leading: DrawerPageIcon(route: routeName),
-        title: DrawerPageTitle(route: routeName),
+        leading: leading ?? DrawerPageIcon(route: routeName),
+        title: title ?? DrawerPageTitle(route: routeName),
         trailing: trailing != null
             ? Builder(
                 builder: (context) => DefaultTextStyle.merge(
@@ -51,7 +61,7 @@ class PageNavTile extends StatelessWidget {
             : null,
         onTap: () {
           Navigator.maybeOf(context)?.pop();
-          final route = routeBuilder(context, routeName, topLevel);
+          final route = (routeBuilder ?? defaultRouteBuilder).call(context, routeName, topLevel);
           if (topLevel) {
             Navigator.maybeOf(context)?.pushAndRemoveUntil(
               route,
@@ -61,12 +71,12 @@ class PageNavTile extends StatelessWidget {
             Navigator.maybeOf(context)?.push(route);
           }
         },
-        selected: context.currentRouteName == routeName,
+        selected: context.currentRouteName == routeName && (isSelected?.call() ?? true),
       ),
     );
   }
 
-  static Route routeBuilder(BuildContext context, String routeName, bool topLevel) {
+  static Route defaultRouteBuilder(BuildContext context, String routeName, bool topLevel) {
     switch (routeName) {
       case SearchPage.routeName:
         final currentCollection = context.read<CollectionLens?>();

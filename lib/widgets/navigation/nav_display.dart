@@ -12,6 +12,7 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,8 @@ class NavigationDisplay {
   static String getPageTitle(BuildContext context, route) {
     final l10n = context.l10n;
     switch (route) {
+      case HomePage.routeName:
+        return l10n.settingsHomeTile;
       case AlbumListPage.routeName:
         return l10n.drawerAlbumPage;
       case CountryListPage.routeName:
@@ -58,6 +61,8 @@ class NavigationDisplay {
 
   static IconData? getPageIcon(String route) {
     switch (route) {
+      case HomePage.routeName:
+        return AIcons.home;
       case AlbumListPage.routeName:
         return AIcons.album;
       case CountryListPage.routeName:

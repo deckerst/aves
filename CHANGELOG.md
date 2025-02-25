@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - support for Samsung HEIC motion photos embedding video in sefd box
 - Cataloguing: identify video location from Apple QuickTime metadata, and 3GPP `loci` atom
 - Collection: stack RAW and HEIC with same file names
+- display home tile in side drawer when customized
 
 ### Changed
 

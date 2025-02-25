@@ -261,7 +261,7 @@ class _TvRailState extends State<TvRail> {
 
   void _goTo(String routeName) {
     Navigator.maybeOf(context)?.pushAndRemoveUntil(
-      PageNavTile.routeBuilder(context, routeName, true),
+      PageNavTile.defaultRouteBuilder(context, routeName, true),
       (route) => false,
     );
   }
