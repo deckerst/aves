@@ -1335,7 +1335,7 @@
   "@overlayHistogramRGB": {},
   "overlayHistogramLuminance": "Luminance",
   "@overlayHistogramLuminance": {},
-  "settingsViewerShowHistogram": "Afficher l'histogramme",
+  "settingsViewerShowHistogram": "Afficher l’histogramme",
   "@settingsViewerShowHistogram": {},
   "overlayHistogramNone": "Aucun",
   "@overlayHistogramNone": {},
