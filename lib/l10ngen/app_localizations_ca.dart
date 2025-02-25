@@ -144,7 +144,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get saveTooltip => 'Desa';
 
   @override
-  String get stopTooltip => 'Stop';
+  String get stopTooltip => 'Parar';
 
   @override
   String get pickTooltip => 'Escollir';
@@ -171,7 +171,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get chipActionDelete => 'Suprimeix';
 
   @override
-  String get chipActionRemove => 'Remove';
+  String get chipActionRemove => 'Eliminar';
 
   @override
   String get chipActionShowCollection => 'Mostrar a Coŀlecció';
@@ -189,10 +189,10 @@ class AppLocalizationsCa extends AppLocalizations {
   String get chipActionGoToTagPage => 'Mostra a les etiquetes';
 
   @override
-  String get chipActionGoToExplorerPage => 'Show in Explorer';
+  String get chipActionGoToExplorerPage => 'Mostrar a l’Explorador';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'Dividir';
 
   @override
   String get chipActionFilterOut => 'Filtrar';
@@ -330,10 +330,10 @@ class AppLocalizationsCa extends AppLocalizations {
   String get videoActionSkip10 => 'Avança 10 segons';
 
   @override
-  String get videoActionShowPreviousFrame => 'Show previous frame';
+  String get videoActionShowPreviousFrame => 'Mostrar el marc anterior';
 
   @override
-  String get videoActionShowNextFrame => 'Show next frame';
+  String get videoActionShowNextFrame => 'Mostrar el següent fotograma';
 
   @override
   String get videoActionSelectStreams => 'Seleccionar pista';
@@ -342,22 +342,22 @@ class AppLocalizationsCa extends AppLocalizations {
   String get videoActionSetSpeed => 'Velocitat de reproducció';
 
   @override
-  String get videoActionABRepeat => 'A-B repeat';
+  String get videoActionABRepeat => 'Repetir A-B';
 
   @override
-  String get videoRepeatActionSetStart => 'Set start';
+  String get videoRepeatActionSetStart => 'Establir l’inici';
 
   @override
-  String get videoRepeatActionSetEnd => 'Set end';
+  String get videoRepeatActionSetEnd => 'Establir el final';
 
   @override
   String get viewerActionSettings => 'Configuració';
 
   @override
-  String get viewerActionLock => 'Bloquejar visor';
+  String get viewerActionLock => 'Bloquejar visualitzador';
 
   @override
-  String get viewerActionUnlock => 'Desbloquejar visor';
+  String get viewerActionUnlock => 'Desbloquejar visualitzador';
 
   @override
   String get slideshowActionResume => 'Reprèn';
@@ -498,7 +498,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get albumTierVaults => 'Caixes fortes';
 
   @override
-  String get albumTierDynamic => 'Dynamic';
+  String get albumTierDynamic => 'Dinàmic';
 
   @override
   String get albumTierRegular => 'Altres';
@@ -542,7 +542,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get keepScreenOnVideoPlayback => 'Durant la reproducció de vídeo';
 
   @override
-  String get keepScreenOnViewerOnly => 'Només la pàgina del visor';
+  String get keepScreenOnViewerOnly => 'Només la pàgina del visualitzador';
 
   @override
   String get keepScreenOnAlways => 'Sempre';
@@ -695,7 +695,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get widgetOpenPageCollection => 'Obrir coŀlecció';
 
   @override
-  String get widgetOpenPageViewer => 'Obrir visor';
+  String get widgetOpenPageViewer => 'Obrir visualitzador';
 
   @override
   String get widgetTapUpdateWidget => 'Actualitzar giny';
@@ -816,7 +816,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get newAlbumDialogNameLabel => 'Nom de l’Àlbum';
 
   @override
-  String get newAlbumDialogAlbumAlreadyExistsHelper => 'Album already exists';
+  String get newAlbumDialogAlbumAlreadyExistsHelper => 'L’àlbum ja existeix';
 
   @override
   String get newAlbumDialogNameLabelAlreadyExistsHelper => 'El directori ja existeix';
@@ -825,10 +825,10 @@ class AppLocalizationsCa extends AppLocalizations {
   String get newAlbumDialogStorageLabel => 'Emmagatzematge:';
 
   @override
-  String get newDynamicAlbumDialogTitle => 'New Dynamic Album';
+  String get newDynamicAlbumDialogTitle => 'Nou àlbum dinàmic';
 
   @override
-  String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+  String get dynamicAlbumAlreadyExists => 'L’àlbum dinàmic ja existeix';
 
   @override
   String get newVaultWarningDialogMessage => 'Els elements en caixes fortes només son disponibles des d’aquesta aplicació.\n\nSi desinstaŀles aquesta aplicació o en borres les dades, perdràs aquests elements.';
@@ -982,7 +982,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'Escull al mapa';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'Importar GPX';
 
   @override
   String get editEntryLocationDialogLatitude => 'Latitud';
@@ -991,7 +991,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Longitud';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Desplaçament de l’hora';
 
   @override
   String get locationPickerUseThisLocationButton => 'Utilitza aquesta localització';
@@ -1003,7 +1003,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Esborra metadades';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Tot';
 
   @override
   String get removeEntryMetadataDialogMore => 'Més';
@@ -1207,7 +1207,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get collectionActionHideTitleSearch => 'Amaga filtres de títol';
 
   @override
-  String get collectionActionAddDynamicAlbum => 'Add dynamic album';
+  String get collectionActionAddDynamicAlbum => 'Afegir un àlbum dinàmic';
 
   @override
   String get collectionActionAddShortcut => 'Afegeix drecera';
@@ -1449,7 +1449,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get sortByRating => 'Per valoració';
 
   @override
-  String get sortByDuration => 'By duration';
+  String get sortByDuration => 'Per durada';
 
   @override
   String get sortOrderNewestFirst => 'Primer el més nou';
@@ -1476,10 +1476,10 @@ class AppLocalizationsCa extends AppLocalizations {
   String get sortOrderSmallestFirst => 'Primer el més petit';
 
   @override
-  String get sortOrderShortestFirst => 'Shortest first';
+  String get sortOrderShortestFirst => 'El més curt primer';
 
   @override
-  String get sortOrderLongestFirst => 'Longest first';
+  String get sortOrderLongestFirst => 'El més llarg primer';
 
   @override
   String get albumGroupTier => 'Per nivell';
@@ -1563,13 +1563,13 @@ class AppLocalizationsCa extends AppLocalizations {
   String get binPageTitle => 'Paperera de Reciclatge';
 
   @override
-  String get explorerPageTitle => 'Explorer';
+  String get explorerPageTitle => 'Explorador';
 
   @override
-  String get explorerActionSelectStorageVolume => 'Select storage';
+  String get explorerActionSelectStorageVolume => 'Seleccionar emmagatzematge';
 
   @override
-  String get selectStorageVolumeDialogTitle => 'Select Storage';
+  String get selectStorageVolumeDialogTitle => 'Seleccionar Emmagatzematge';
 
   @override
   String get searchCollectionFieldHint => 'Buscar a coŀlecció';
@@ -1641,7 +1641,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get appExportCovers => 'Cobertes';
 
   @override
-  String get appExportDynamicAlbums => 'Dynamic albums';
+  String get appExportDynamicAlbums => 'Àlbums dinàmics';
 
   @override
   String get appExportFavourites => 'Preferits';
@@ -1659,7 +1659,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get settingsHomeDialogTitle => 'Inici';
 
   @override
-  String get setHomeCustom => 'Custom';
+  String get setHomeCustom => 'Personalitzat';
 
   @override
   String get settingsShowBottomNavigationBar => 'Mostra barra de navegació inferior';
@@ -1773,7 +1773,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get settingsCollectionBurstPatternsNone => 'Cap';
 
   @override
-  String get settingsViewerSectionTitle => 'Visor';
+  String get settingsViewerSectionTitle => 'Visualitzador';
 
   @override
   String get settingsViewerGestureSideTapNext => 'Toqueu les vores de la pantalla per mostrar l’anterior/el següent element';
@@ -1797,7 +1797,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get settingsViewerQuickActionEditorPageTitle => 'Accions Ràpides';
 
   @override
-  String get settingsViewerQuickActionEditorBanner => 'Manté premut per moure botons i seleccionar quines accions es mostren al visor.';
+  String get settingsViewerQuickActionEditorBanner => 'Manté premut per moure botons i seleccionar quines accions es mostren al visualitzador.';
 
   @override
   String get settingsViewerQuickActionEditorDisplayedButtonsSectionTitle => 'Botons Mostrats';
@@ -2094,7 +2094,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get settingsUnitSystemDialogTitle => 'Unitats';
 
   @override
-  String get settingsForceWesternArabicNumeralsTile => 'Force Arabic numerals';
+  String get settingsForceWesternArabicNumeralsTile => 'Forçar els números aràbics';
 
   @override
   String get settingsScreenSaverPageTitle => 'Protector de Pantalla';
@@ -2159,7 +2159,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get viewerInfoPageTitle => 'Informació';
 
   @override
-  String get viewerInfoBackToViewerTooltip => 'Torna al visor';
+  String get viewerInfoBackToViewerTooltip => 'Torna al visualitzador';
 
   @override
   String get viewerInfoUnknown => 'desconegut';
@@ -2216,10 +2216,10 @@ class AppLocalizationsCa extends AppLocalizations {
   String get mapAttributionOsmData => 'Dades de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuïdors';
 
   @override
-  String get mapAttributionOsmLiberty => 'Tiles by [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)';
+  String get mapAttributionOsmLiberty => 'Tessel·les per [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hostatjat per [OSM Americana](https://tile.ourmap.us)';
 
   @override
-  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles by [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
+  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tesel·les per [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
 
   @override
   String get mapAttributionOsmHot => 'Rajoles de [HOT](https://www.hotosm.org/) • Allotjat a [OSM France](https://openstreetmap.fr/)';

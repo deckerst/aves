@@ -997,7 +997,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'Elegir en el mapa';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'Importar GPX';
 
   @override
   String get editEntryLocationDialogLatitude => 'Latitud';
@@ -1018,7 +1018,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Eliminación de metadatos';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Todo';
 
   @override
   String get removeEntryMetadataDialogMore => 'Más';

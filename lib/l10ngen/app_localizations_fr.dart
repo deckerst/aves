@@ -1866,7 +1866,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsViewerShowOverlayOnOpening => 'Afficher à l’ouverture';
 
   @override
-  String get settingsViewerShowHistogram => 'Afficher l\'histogramme';
+  String get settingsViewerShowHistogram => 'Afficher l’histogramme';
 
   @override
   String get settingsViewerShowMinimap => 'Afficher la mini-carte';
