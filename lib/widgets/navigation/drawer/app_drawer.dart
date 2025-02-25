@@ -21,10 +21,12 @@ import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
+import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/navigation/drawer/collection_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
@@ -39,9 +41,13 @@ class AppDrawer extends StatefulWidget {
   // collection loaded in the `CollectionPage`, if any
   final CollectionLens? currentCollection;
 
+  // current path loaded in the `ExplorerPage`, if any
+  final String? currentExplorerPath;
+
   const AppDrawer({
     super.key,
     this.currentCollection,
+    this.currentExplorerPath,
   });
 
   @override
@@ -121,6 +127,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final drawerItems = <Widget>[
       _buildHeader(context),
+      _buildHomeLink(),
       ..._buildTypeLinks(),
       _buildAlbumLinks(context),
       ..._buildPageLinks(context),
@@ -279,6 +286,46 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     );
   }
 
+  Widget _buildHomeLink() {
+    // route name used for display purposes, no actual routing
+    const displayRoute = HomePage.routeName;
+    const leading = DrawerPageIcon(route: displayRoute);
+    const title = DrawerPageTitle(route: displayRoute);
+
+    switch (settings.homePage) {
+      case HomePageSetting.collection:
+        final filters = settings.homeCustomCollection;
+        if (filters.isNotEmpty) {
+          return CollectionNavTile(
+            leading: leading,
+            title: title,
+            filters: filters,
+            isSelected: () => setEquals(currentCollection?.filters, filters),
+          );
+        }
+      case HomePageSetting.explorer:
+        final path = settings.homeCustomExplorerPath;
+        if (path != null) {
+          return PageNavTile(
+            leading: leading,
+            title: title,
+            routeName: ExplorerPage.routeName,
+            isSelected: () => widget.currentExplorerPath == path,
+            routeBuilder: (context, routeName, _) {
+              return MaterialPageRoute(
+                settings: RouteSettings(name: routeName),
+                builder: (_) => ExplorerPage(path: path),
+              );
+            },
+          );
+        }
+      case HomePageSetting.albums:
+      case HomePageSetting.tags:
+        break;
+    }
+    return const SizedBox();
+  }
+
   List<Widget> _buildTypeLinks() {
     final hiddenFilters = settings.hiddenFilters;
     final typeBookmarks = settings.drawerTypeBookmarks;
@@ -290,7 +337,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
               key: Key('drawer-type-${filter?.key}'),
               leading: DrawerFilterIcon(filter: filter),
               title: DrawerFilterTitle(filter: filter),
-              filter: filter,
+              filters: {filter},
               isSelected: () {
                 if (currentFilters == null || currentFilters.length > 1) return false;
                 return currentFilters.firstOrNull == filter;
@@ -380,7 +427,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
       leading: const DrawerFilterIcon(filter: filter),
       title: const DrawerFilterTitle(filter: filter),
       trailing: Text(formatFileSize(context.locale, trashSize, round: 0)),
-      filter: filter,
+      filters: {filter},
       isSelected: () => currentCollection?.filters.contains(filter) ?? false,
     );
   }
