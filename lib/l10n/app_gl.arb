@@ -1043,5 +1043,25 @@
     }
   },
   "hideFilterConfirmationDialogMessage": "Agocharánse da súa colección as fotos e vídeos que concorden. Pódense amosar de novo dende os axustes de «Privacidade».\n\nEstá certo de querer agochalos?",
-  "@hideFilterConfirmationDialogMessage": {}
+  "@hideFilterConfirmationDialogMessage": {},
+  "newVaultWarningDialogMessage": "Os elementos en cofres só están dispoñibles para esta aplicación.\n\nPerderanse se se desinstala ou se borran os seus datos.",
+  "@newVaultWarningDialogMessage": {},
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Eliminar estes álbums e os seus elementos?} other{Eliminar estes álbums e os seus {count} elementos?}}",
+  "@deleteMultiAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Eliminar este álbum e o seu elemento?} other{Eliminar este álbum e os seus {count} elementos?}}",
+  "@deleteSingleAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  }
 }
