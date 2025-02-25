@@ -1624,5 +1624,15 @@
   "filePickerNoItems": "உருப்படிகள் இல்லை",
   "@filePickerNoItems": {},
   "filePickerUseThisFolder": "இந்தக் கோப்புறையைப் பயன்படுத்து",
-  "@filePickerUseThisFolder": {}
+  "@filePickerUseThisFolder": {},
+  "editEntryLocationDialogImportGpx": "சிபிஎக்சு இறக்குமதி",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "நேர மாற்றம்",
+  "@editEntryLocationDialogTimeShift": {},
+  "chipActionDecompose": "பிளவு",
+  "@chipActionDecompose": {},
+  "coordinateFormatDdm": "டிடிஎம்",
+  "@coordinateFormatDdm": {},
+  "removeEntryMetadataDialogAll": "அனைத்தும்",
+  "@removeEntryMetadataDialogAll": {}
 }

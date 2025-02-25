@@ -5,7 +5,8 @@
     <string name="wallpaper">Fondo da pantalla</string>
     <string name="search_shortcut_short_label">Procura</string>
     <string name="videos_shortcut_short_label">Vídeos</string>
-    <string name="analysis_channel_name">Escaneo multimedia</string>
+    <string name="analysis_channel_name">Escanear medios</string>
     <string name="analysis_notification_default_title">Escaneando medios</string>
     <string name="analysis_notification_action_stop">Pare</string>
+    <string name="map_shortcut_short_label">Mapa</string>
 </resources>

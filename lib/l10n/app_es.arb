@@ -1408,5 +1408,9 @@
   "newDynamicAlbumDialogTitle": "Nuevo álbum dinámico",
   "@newDynamicAlbumDialogTitle": {},
   "chipActionDecompose": "Separar",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "editEntryLocationDialogImportGpx": "Importar GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "removeEntryMetadataDialogAll": "Todo",
+  "@removeEntryMetadataDialogAll": {}
 }
