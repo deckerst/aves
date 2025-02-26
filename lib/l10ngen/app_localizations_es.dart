@@ -1006,7 +1006,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Longitud';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Desplazamiento de tiempo';
 
   @override
   String get locationPickerUseThisLocationButton => 'Usar esta ubicación';
