@@ -26,7 +26,7 @@ class AppLocalizationsGl extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count elementos',
-      one: '$count elementos',
+      one: '$count elemento',
     );
     return '$_temp0';
   }
@@ -153,7 +153,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get pickTooltip => 'Escoller';
 
   @override
-  String get doubleBackExitMessage => 'Prema \"atrás\" de novo para saír.';
+  String get doubleBackExitMessage => 'Prema «atrás» de novo para saír.';
 
   @override
   String get doNotAskAgain => 'Non preguntar de novo';
@@ -462,16 +462,16 @@ class AppLocalizationsGl extends AppLocalizations {
   String get filterTypeMotionPhotoLabel => 'Foto en movemento';
 
   @override
-  String get filterTypePanoramaLabel => 'Panorámica';
+  String get filterTypePanoramaLabel => 'Panorama';
 
   @override
-  String get filterTypeRawLabel => 'Raw (Formato do ficheiro)';
+  String get filterTypeRawLabel => 'Raw';
 
   @override
   String get filterTypeSphericalVideoLabel => 'Vídeo 360°';
 
   @override
-  String get filterTypeGeotiffLabel => 'GeoTIFF (Formato de ficheiro)';
+  String get filterTypeGeotiffLabel => 'GeoTIFF';
 
   @override
   String get filterMimeImageLabel => 'Imaxe';
@@ -507,7 +507,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get albumTierRegular => 'Outros';
 
   @override
-  String get coordinateFormatDms => 'DMS (Sistema de xestión documental)';
+  String get coordinateFormatDms => 'DMS';
 
   @override
   String get coordinateFormatDdm => 'DDM';
@@ -521,16 +521,16 @@ class AppLocalizationsGl extends AppLocalizations {
   }
 
   @override
-  String get coordinateDmsNorth => 'Norte';
+  String get coordinateDmsNorth => 'N';
 
   @override
-  String get coordinateDmsSouth => 'Sur';
+  String get coordinateDmsSouth => 'S';
 
   @override
-  String get coordinateDmsEast => 'Leste';
+  String get coordinateDmsEast => 'L';
 
   @override
-  String get coordinateDmsWest => 'Oeste';
+  String get coordinateDmsWest => 'O';
 
   @override
   String get displayRefreshRatePreferHighest => 'Taxa máis alta';
@@ -572,10 +572,10 @@ class AppLocalizationsGl extends AppLocalizations {
   String get mapStyleOpenTopoMap => 'OpenTopoMap';
 
   @override
-  String get mapStyleOsmHot => 'Humanitarian OpenStreetMap Team';
+  String get mapStyleOsmHot => 'Humanitarian OSM';
 
   @override
-  String get mapStyleStamenWatercolor => 'Stamen Watercolor (con sombreamento e cores)';
+  String get mapStyleStamenWatercolor => 'Stamen Watercolor (acuarela)';
 
   @override
   String get maxBrightnessNever => 'Nunca';
@@ -840,7 +840,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Xa existe o álbum dinámico';
 
   @override
-  String get newVaultWarningDialogMessage => 'Os elementos en cofres só están dispoñibles para esta aplicación.\n\nPerderanse se se desinstala ou se borran os seus datos.';
+  String get newVaultWarningDialogMessage => 'Os elementos en cofres só están dispoñibles para esta aplicación.\n\nPerderanse ao desinstalala ou ao borrar os seus datos.';
 
   @override
   String get newVaultDialogTitle => 'Novo cofre';
@@ -1024,7 +1024,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get removeEntryMetadataDialogMore => 'Máis';
 
   @override
-  String get removeEntryMetadataMotionPhotoXmpWarningDialogMessage => 'XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?';
+  String get removeEntryMetadataMotionPhotoXmpWarningDialogMessage => 'Precísase XMP para reproducir a animación dunha foto en movemento.\n\nEstá certo de querer eliminalo?';
 
   @override
   String get videoSpeedDialogLabel => 'Velocidade de reproducción';
@@ -1280,8 +1280,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to delete $countString items',
-      one: 'Failed to delete 1 item',
+      other: 'Erro ao borrar $countString elementos',
+      one: 'Erro ao borrar un elemento',
     );
     return '$_temp0';
   }
@@ -1294,8 +1294,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to copy $countString items',
-      one: 'Failed to copy 1 item',
+      other: 'Erro ao copiar $countString elementos',
+      one: 'Erro ao copiar un elemento',
     );
     return '$_temp0';
   }
@@ -1308,8 +1308,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to move $countString items',
-      one: 'Failed to move 1 item',
+      other: 'Erro ao mover $countString elementos',
+      one: 'Erro ao mover un elemento',
     );
     return '$_temp0';
   }
@@ -1322,8 +1322,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to rename $countString items',
-      one: 'Failed to rename 1 item',
+      other: 'Erro ao trocar o nome de $countString elementos',
+      one: 'Erro ao trocar o nome dun elemento',
     );
     return '$_temp0';
   }
@@ -1336,8 +1336,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to edit $countString items',
-      one: 'Failed to edit 1 item',
+      other: 'Erro ao editar $countString elementos',
+      one: 'Erro ao editar un elemento',
     );
     return '$_temp0';
   }
@@ -1350,8 +1350,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to export $countString pages',
-      one: 'Failed to export 1 page',
+      other: 'Erro ao exportar $countString páxinas',
+      one: 'Erro ao exportar unha páxina',
     );
     return '$_temp0';
   }
@@ -1364,8 +1364,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Copied $countString items',
-      one: 'Copied 1 item',
+      other: 'Copiados $countString elementos',
+      one: 'Copiado un elemento',
     );
     return '$_temp0';
   }
@@ -1378,8 +1378,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Moved $countString items',
-      one: 'Moved 1 item',
+      other: 'Movidos $countString elementos',
+      one: 'Movido un elemento',
     );
     return '$_temp0';
   }
@@ -1392,8 +1392,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Renamed $countString items',
-      one: 'Renamed 1 item',
+      other: 'Trocado o nome de $countString elementos',
+      one: 'Trocado o nome dun elemento',
     );
     return '$_temp0';
   }
@@ -1406,8 +1406,8 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Edited $countString items',
-      one: 'Edited 1 item',
+      other: 'Editados $countString elementos',
+      one: 'Editado un elemento',
     );
     return '$_temp0';
   }
@@ -1662,505 +1662,505 @@ class AppLocalizationsGl extends AppLocalizations {
   String get settingsAskEverytime => 'Preguntar sempre';
 
   @override
-  String get settingsModificationWarningDialogMessage => 'Other settings will be modified.';
+  String get settingsModificationWarningDialogMessage => 'Modificaranse outros axustes.';
 
   @override
-  String get settingsSearchFieldLabel => 'Search settings';
+  String get settingsSearchFieldLabel => 'Procurar axustes';
 
   @override
-  String get settingsSearchEmpty => 'No matching setting';
+  String get settingsSearchEmpty => 'Sen coincidencia';
 
   @override
-  String get settingsActionExport => 'Export';
+  String get settingsActionExport => 'Exportar';
 
   @override
-  String get settingsActionExportDialogTitle => 'Export';
+  String get settingsActionExportDialogTitle => 'Exportar';
 
   @override
-  String get settingsActionImport => 'Import';
+  String get settingsActionImport => 'Importar';
 
   @override
-  String get settingsActionImportDialogTitle => 'Import';
+  String get settingsActionImportDialogTitle => 'Importar';
 
   @override
-  String get appExportCovers => 'Covers';
+  String get appExportCovers => 'Cubertas';
 
   @override
-  String get appExportDynamicAlbums => 'Dynamic albums';
+  String get appExportDynamicAlbums => 'Álbums dinámicos';
 
   @override
-  String get appExportFavourites => 'Favorites';
+  String get appExportFavourites => 'Favoritos';
 
   @override
-  String get appExportSettings => 'Settings';
+  String get appExportSettings => 'Axustes';
 
   @override
-  String get settingsNavigationSectionTitle => 'Navigation';
+  String get settingsNavigationSectionTitle => 'Navegación';
 
   @override
-  String get settingsHomeTile => 'Home';
+  String get settingsHomeTile => 'Inicio';
 
   @override
-  String get settingsHomeDialogTitle => 'Home';
+  String get settingsHomeDialogTitle => 'Inicio';
 
   @override
-  String get setHomeCustom => 'Custom';
+  String get setHomeCustom => 'Personalizado';
 
   @override
-  String get settingsShowBottomNavigationBar => 'Show bottom navigation bar';
+  String get settingsShowBottomNavigationBar => 'Amosar barra de navegación inferior';
 
   @override
-  String get settingsKeepScreenOnTile => 'Keep screen on';
+  String get settingsKeepScreenOnTile => 'Manter pantalla acesa';
 
   @override
-  String get settingsKeepScreenOnDialogTitle => 'Keep Screen On';
+  String get settingsKeepScreenOnDialogTitle => 'Manter pantalla acesa';
 
   @override
-  String get settingsDoubleBackExit => 'Tap “back” twice to exit';
+  String get settingsDoubleBackExit => 'Premer «atrás» dúas veces para saír';
 
   @override
-  String get settingsConfirmationTile => 'Confirmation dialogs';
+  String get settingsConfirmationTile => 'Diálogos de confirmación';
 
   @override
-  String get settingsConfirmationDialogTitle => 'Confirmation Dialogs';
+  String get settingsConfirmationDialogTitle => 'Diálogos de confirmación';
 
   @override
-  String get settingsConfirmationBeforeDeleteItems => 'Ask before deleting items forever';
+  String get settingsConfirmationBeforeDeleteItems => 'Preguntar antes de borrar elementos para sempre';
 
   @override
-  String get settingsConfirmationBeforeMoveToBinItems => 'Ask before moving items to the recycle bin';
+  String get settingsConfirmationBeforeMoveToBinItems => 'Preguntar antes de enviar elementos ao lixo';
 
   @override
-  String get settingsConfirmationBeforeMoveUndatedItems => 'Ask before moving undated items';
+  String get settingsConfirmationBeforeMoveUndatedItems => 'Preguntar antes de mover elementos sen data';
 
   @override
-  String get settingsConfirmationAfterMoveToBinItems => 'Show message after moving items to the recycle bin';
+  String get settingsConfirmationAfterMoveToBinItems => 'Amosar mensaxe tras mover elementos ao lixo';
 
   @override
-  String get settingsConfirmationVaultDataLoss => 'Show vault data loss warning';
+  String get settingsConfirmationVaultDataLoss => 'Amosar aviso de perda de datos en cofre';
 
   @override
-  String get settingsNavigationDrawerTile => 'Navigation menu';
+  String get settingsNavigationDrawerTile => 'Menú de navegación';
 
   @override
-  String get settingsNavigationDrawerEditorPageTitle => 'Navigation Menu';
+  String get settingsNavigationDrawerEditorPageTitle => 'Menú de navegación';
 
   @override
-  String get settingsNavigationDrawerBanner => 'Touch and hold to move and reorder menu items.';
+  String get settingsNavigationDrawerBanner => 'Premer e manter para mover e reordenar elementos do menú.';
 
   @override
-  String get settingsNavigationDrawerTabTypes => 'Types';
+  String get settingsNavigationDrawerTabTypes => 'Tipos';
 
   @override
-  String get settingsNavigationDrawerTabAlbums => 'Albums';
+  String get settingsNavigationDrawerTabAlbums => 'Álbums';
 
   @override
-  String get settingsNavigationDrawerTabPages => 'Pages';
+  String get settingsNavigationDrawerTabPages => 'Páxinas';
 
   @override
-  String get settingsNavigationDrawerAddAlbum => 'Add album';
+  String get settingsNavigationDrawerAddAlbum => 'Engadir álbum';
 
   @override
-  String get settingsThumbnailSectionTitle => 'Thumbnails';
+  String get settingsThumbnailSectionTitle => 'Miniaturas';
 
   @override
-  String get settingsThumbnailOverlayTile => 'Overlay';
+  String get settingsThumbnailOverlayTile => 'Superposición';
 
   @override
-  String get settingsThumbnailOverlayPageTitle => 'Overlay';
+  String get settingsThumbnailOverlayPageTitle => 'Superposición';
 
   @override
-  String get settingsThumbnailShowHdrIcon => 'Show HDR icon';
+  String get settingsThumbnailShowHdrIcon => 'Amosar icona de HDR';
 
   @override
-  String get settingsThumbnailShowFavouriteIcon => 'Show favorite icon';
+  String get settingsThumbnailShowFavouriteIcon => 'Amosar icona de favorito';
 
   @override
-  String get settingsThumbnailShowTagIcon => 'Show tag icon';
+  String get settingsThumbnailShowTagIcon => 'Amosar icona de etiqueta';
 
   @override
-  String get settingsThumbnailShowLocationIcon => 'Show location icon';
+  String get settingsThumbnailShowLocationIcon => 'Amosar icona de localización';
 
   @override
-  String get settingsThumbnailShowMotionPhotoIcon => 'Show motion photo icon';
+  String get settingsThumbnailShowMotionPhotoIcon => 'Amosar icona de foto en movemento';
 
   @override
-  String get settingsThumbnailShowRating => 'Show rating';
+  String get settingsThumbnailShowRating => 'Amosar valoración';
 
   @override
-  String get settingsThumbnailShowRawIcon => 'Show raw icon';
+  String get settingsThumbnailShowRawIcon => 'Amosar icona de RAW';
 
   @override
-  String get settingsThumbnailShowVideoDuration => 'Show video duration';
+  String get settingsThumbnailShowVideoDuration => 'Amosar duración de vídeo';
 
   @override
-  String get settingsCollectionQuickActionsTile => 'Quick actions';
+  String get settingsCollectionQuickActionsTile => 'Accións rápidas';
 
   @override
-  String get settingsCollectionQuickActionEditorPageTitle => 'Quick Actions';
+  String get settingsCollectionQuickActionEditorPageTitle => 'Accións rápidas';
 
   @override
-  String get settingsCollectionQuickActionTabBrowsing => 'Browsing';
+  String get settingsCollectionQuickActionTabBrowsing => 'Navegando';
 
   @override
-  String get settingsCollectionQuickActionTabSelecting => 'Selecting';
+  String get settingsCollectionQuickActionTabSelecting => 'Escolmando';
 
   @override
-  String get settingsCollectionBrowsingQuickActionEditorBanner => 'Touch and hold to move buttons and select which actions are displayed when browsing items.';
+  String get settingsCollectionBrowsingQuickActionEditorBanner => 'Prema e manteña para mover botóns e escoller que accións se amosarán ao navegar polo elementos.';
 
   @override
-  String get settingsCollectionSelectionQuickActionEditorBanner => 'Touch and hold to move buttons and select which actions are displayed when selecting items.';
+  String get settingsCollectionSelectionQuickActionEditorBanner => 'Prema e manteña para mover botóns e escoller que accións se amosarán ao navegar polos elementos.';
 
   @override
-  String get settingsCollectionBurstPatternsTile => 'Burst patterns';
+  String get settingsCollectionBurstPatternsTile => 'Patróns de refacho';
 
   @override
-  String get settingsCollectionBurstPatternsNone => 'None';
+  String get settingsCollectionBurstPatternsNone => 'Ningún';
 
   @override
-  String get settingsViewerSectionTitle => 'Viewer';
+  String get settingsViewerSectionTitle => 'Visor';
 
   @override
-  String get settingsViewerGestureSideTapNext => 'Tap on screen edges to show previous/next item';
+  String get settingsViewerGestureSideTapNext => 'Toque nos bordes da pantalla para amosar o elemento anterior/seguinte';
 
   @override
-  String get settingsViewerUseCutout => 'Use cutout area';
+  String get settingsViewerUseCutout => 'Usar a área recortada';
 
   @override
-  String get settingsViewerMaximumBrightness => 'Maximum brightness';
+  String get settingsViewerMaximumBrightness => 'Brillo máximo';
 
   @override
-  String get settingsMotionPhotoAutoPlay => 'Auto play motion photos';
+  String get settingsMotionPhotoAutoPlay => 'Reproducir automáticamente fotos en movemento';
 
   @override
-  String get settingsImageBackground => 'Image background';
+  String get settingsImageBackground => 'Fondo de imaxe';
 
   @override
-  String get settingsViewerQuickActionsTile => 'Quick actions';
+  String get settingsViewerQuickActionsTile => 'Accións rápidas';
 
   @override
-  String get settingsViewerQuickActionEditorPageTitle => 'Quick Actions';
+  String get settingsViewerQuickActionEditorPageTitle => 'Accións rápidas';
 
   @override
-  String get settingsViewerQuickActionEditorBanner => 'Touch and hold to move buttons and select which actions are displayed in the viewer.';
+  String get settingsViewerQuickActionEditorBanner => 'Prema e manteña para mover botóns e escoller que accións se amosarán no visor.';
 
   @override
-  String get settingsViewerQuickActionEditorDisplayedButtonsSectionTitle => 'Displayed Buttons';
+  String get settingsViewerQuickActionEditorDisplayedButtonsSectionTitle => 'Botóns amosados';
 
   @override
-  String get settingsViewerQuickActionEditorAvailableButtonsSectionTitle => 'Available Buttons';
+  String get settingsViewerQuickActionEditorAvailableButtonsSectionTitle => 'Botóns dispoñibles';
 
   @override
-  String get settingsViewerQuickActionEmpty => 'No buttons';
+  String get settingsViewerQuickActionEmpty => 'Sen botóns';
 
   @override
-  String get settingsViewerOverlayTile => 'Overlay';
+  String get settingsViewerOverlayTile => 'Superposición';
 
   @override
-  String get settingsViewerOverlayPageTitle => 'Overlay';
+  String get settingsViewerOverlayPageTitle => 'Superposición';
 
   @override
-  String get settingsViewerShowOverlayOnOpening => 'Show on opening';
+  String get settingsViewerShowOverlayOnOpening => 'Amosar ao abrir';
 
   @override
-  String get settingsViewerShowHistogram => 'Show histogram';
+  String get settingsViewerShowHistogram => 'Amosar histograma';
 
   @override
-  String get settingsViewerShowMinimap => 'Show minimap';
+  String get settingsViewerShowMinimap => 'Amosar minimapa';
 
   @override
-  String get settingsViewerShowInformation => 'Show information';
+  String get settingsViewerShowInformation => 'Amosar información';
 
   @override
-  String get settingsViewerShowInformationSubtitle => 'Show title, date, location, etc.';
+  String get settingsViewerShowInformationSubtitle => 'Amosar título, data, localización, etc.';
 
   @override
-  String get settingsViewerShowRatingTags => 'Show rating & tags';
+  String get settingsViewerShowRatingTags => 'Amosar valoración e etiquetas';
 
   @override
-  String get settingsViewerShowShootingDetails => 'Show shooting details';
+  String get settingsViewerShowShootingDetails => 'Amosar detalles da toma';
 
   @override
-  String get settingsViewerShowDescription => 'Show description';
+  String get settingsViewerShowDescription => 'Amosar descrición';
 
   @override
-  String get settingsViewerShowOverlayThumbnails => 'Show thumbnails';
+  String get settingsViewerShowOverlayThumbnails => 'Amosar miniaturas';
 
   @override
-  String get settingsViewerEnableOverlayBlurEffect => 'Blur effect';
+  String get settingsViewerEnableOverlayBlurEffect => 'Efecto de desenfoque';
 
   @override
-  String get settingsViewerSlideshowTile => 'Slideshow';
+  String get settingsViewerSlideshowTile => 'Presentación';
 
   @override
-  String get settingsViewerSlideshowPageTitle => 'Slideshow';
+  String get settingsViewerSlideshowPageTitle => 'Presentación';
 
   @override
-  String get settingsSlideshowRepeat => 'Repeat';
+  String get settingsSlideshowRepeat => 'Repetir';
 
   @override
-  String get settingsSlideshowShuffle => 'Shuffle';
+  String get settingsSlideshowShuffle => 'Barallar';
 
   @override
-  String get settingsSlideshowFillScreen => 'Fill screen';
+  String get settingsSlideshowFillScreen => 'Encher pantalla';
 
   @override
-  String get settingsSlideshowAnimatedZoomEffect => 'Animated zoom effect';
+  String get settingsSlideshowAnimatedZoomEffect => 'Efecto de zoom animado';
 
   @override
-  String get settingsSlideshowTransitionTile => 'Transition';
+  String get settingsSlideshowTransitionTile => 'Transición';
 
   @override
-  String get settingsSlideshowIntervalTile => 'Interval';
+  String get settingsSlideshowIntervalTile => 'Intervalo';
 
   @override
-  String get settingsSlideshowVideoPlaybackTile => 'Video playback';
+  String get settingsSlideshowVideoPlaybackTile => 'Reprodución de vídeo';
 
   @override
-  String get settingsSlideshowVideoPlaybackDialogTitle => 'Video Playback';
+  String get settingsSlideshowVideoPlaybackDialogTitle => 'Reprodución de vídeo';
 
   @override
-  String get settingsVideoPageTitle => 'Video Settings';
+  String get settingsVideoPageTitle => 'Axustes de vídeo';
 
   @override
-  String get settingsVideoSectionTitle => 'Video';
+  String get settingsVideoSectionTitle => 'Vídeo';
 
   @override
-  String get settingsVideoShowVideos => 'Show videos';
+  String get settingsVideoShowVideos => 'Amosar vídeos';
 
   @override
-  String get settingsVideoPlaybackTile => 'Playback';
+  String get settingsVideoPlaybackTile => 'Reprodución';
 
   @override
-  String get settingsVideoPlaybackPageTitle => 'Playback';
+  String get settingsVideoPlaybackPageTitle => 'Reprodución';
 
   @override
-  String get settingsVideoEnableHardwareAcceleration => 'Hardware acceleration';
+  String get settingsVideoEnableHardwareAcceleration => 'Aceleración por hardware';
 
   @override
-  String get settingsVideoAutoPlay => 'Auto play';
+  String get settingsVideoAutoPlay => 'Reprodución automática';
 
   @override
-  String get settingsVideoLoopModeTile => 'Loop mode';
+  String get settingsVideoLoopModeTile => 'Modo bucle';
 
   @override
-  String get settingsVideoLoopModeDialogTitle => 'Loop Mode';
+  String get settingsVideoLoopModeDialogTitle => 'Modo bucle';
 
   @override
-  String get settingsVideoResumptionModeTile => 'Resume playback';
+  String get settingsVideoResumptionModeTile => 'Retomar reprodución';
 
   @override
-  String get settingsVideoResumptionModeDialogTitle => 'Resume Playback';
+  String get settingsVideoResumptionModeDialogTitle => 'Retomar reprodución';
 
   @override
-  String get settingsVideoBackgroundMode => 'Background mode';
+  String get settingsVideoBackgroundMode => 'Modo do fondo';
 
   @override
-  String get settingsVideoBackgroundModeDialogTitle => 'Background Mode';
+  String get settingsVideoBackgroundModeDialogTitle => 'Modo do fondo';
 
   @override
-  String get settingsVideoControlsTile => 'Controls';
+  String get settingsVideoControlsTile => 'Controis';
 
   @override
-  String get settingsVideoControlsPageTitle => 'Controls';
+  String get settingsVideoControlsPageTitle => 'Controis';
 
   @override
-  String get settingsVideoButtonsTile => 'Buttons';
+  String get settingsVideoButtonsTile => 'Botóns';
 
   @override
-  String get settingsVideoGestureDoubleTapTogglePlay => 'Double tap to play/pause';
+  String get settingsVideoGestureDoubleTapTogglePlay => 'Dobre toque para reproducir/pausar';
 
   @override
-  String get settingsVideoGestureSideDoubleTapSeek => 'Double tap on screen edges to seek backward/forward';
+  String get settingsVideoGestureSideDoubleTapSeek => 'Dobre toque nos bordes da pantalla para buscar atrás/adiante';
 
   @override
-  String get settingsVideoGestureVerticalDragBrightnessVolume => 'Swipe up or down to adjust brightness/volume';
+  String get settingsVideoGestureVerticalDragBrightnessVolume => 'Esvare para riba ou para abaixo para axustar brillo/volume';
 
   @override
-  String get settingsSubtitleThemeTile => 'Subtitles';
+  String get settingsSubtitleThemeTile => 'Subtítulos';
 
   @override
-  String get settingsSubtitleThemePageTitle => 'Subtitles';
+  String get settingsSubtitleThemePageTitle => 'Subtítulos';
 
   @override
-  String get settingsSubtitleThemeSample => 'This is a sample.';
+  String get settingsSubtitleThemeSample => 'Este é un exemplo.';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentTile => 'Text alignment';
+  String get settingsSubtitleThemeTextAlignmentTile => 'Aliñamento do texto';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentDialogTitle => 'Text Alignment';
+  String get settingsSubtitleThemeTextAlignmentDialogTitle => 'Aliñamento do texto';
 
   @override
-  String get settingsSubtitleThemeTextPositionTile => 'Text position';
+  String get settingsSubtitleThemeTextPositionTile => 'Posición do texto';
 
   @override
-  String get settingsSubtitleThemeTextPositionDialogTitle => 'Text Position';
+  String get settingsSubtitleThemeTextPositionDialogTitle => 'Posición do texto';
 
   @override
-  String get settingsSubtitleThemeTextSize => 'Text size';
+  String get settingsSubtitleThemeTextSize => 'Tamaño do texto';
 
   @override
-  String get settingsSubtitleThemeShowOutline => 'Show outline and shadow';
+  String get settingsSubtitleThemeShowOutline => 'Amosar contorno e sombra';
 
   @override
-  String get settingsSubtitleThemeTextColor => 'Text color';
+  String get settingsSubtitleThemeTextColor => 'Cor do texto';
 
   @override
-  String get settingsSubtitleThemeTextOpacity => 'Text opacity';
+  String get settingsSubtitleThemeTextOpacity => 'Opacidade do texto';
 
   @override
-  String get settingsSubtitleThemeBackgroundColor => 'Background color';
+  String get settingsSubtitleThemeBackgroundColor => 'Cor de fondo';
 
   @override
-  String get settingsSubtitleThemeBackgroundOpacity => 'Background opacity';
+  String get settingsSubtitleThemeBackgroundOpacity => 'Opacidade do fondo';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentLeft => 'Left';
+  String get settingsSubtitleThemeTextAlignmentLeft => 'Esquerda';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentCenter => 'Center';
+  String get settingsSubtitleThemeTextAlignmentCenter => 'Centro';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentRight => 'Right';
+  String get settingsSubtitleThemeTextAlignmentRight => 'Dereita';
 
   @override
-  String get settingsPrivacySectionTitle => 'Privacy';
+  String get settingsPrivacySectionTitle => 'Privacidade';
 
   @override
-  String get settingsAllowInstalledAppAccess => 'Allow access to app inventory';
+  String get settingsAllowInstalledAppAccess => 'Permitir acceso á lista de aplicacións';
 
   @override
-  String get settingsAllowInstalledAppAccessSubtitle => 'Used to improve album display';
+  String get settingsAllowInstalledAppAccessSubtitle => 'Usado para mellorar a visualización dos álbums';
 
   @override
-  String get settingsAllowErrorReporting => 'Allow anonymous error reporting';
+  String get settingsAllowErrorReporting => 'Permitir informes de erros anónimos';
 
   @override
-  String get settingsSaveSearchHistory => 'Save search history';
+  String get settingsSaveSearchHistory => 'Gardar historial de procura';
 
   @override
-  String get settingsEnableBin => 'Use recycle bin';
+  String get settingsEnableBin => 'Usar lixo';
 
   @override
-  String get settingsEnableBinSubtitle => 'Keep deleted items for 30 days';
+  String get settingsEnableBinSubtitle => 'Mantén os elementos borrados por 30 días';
 
   @override
-  String get settingsDisablingBinWarningDialogMessage => 'Items in the recycle bin will be deleted forever.';
+  String get settingsDisablingBinWarningDialogMessage => 'Os elementos no lixo borraranse para sempre.';
 
   @override
-  String get settingsAllowMediaManagement => 'Allow media management';
+  String get settingsAllowMediaManagement => 'Permitir xestión de medios';
 
   @override
-  String get settingsHiddenItemsTile => 'Hidden items';
+  String get settingsHiddenItemsTile => 'Elementos ocultos';
 
   @override
-  String get settingsHiddenItemsPageTitle => 'Hidden Items';
+  String get settingsHiddenItemsPageTitle => 'Elementos ocultos';
 
   @override
-  String get settingsHiddenFiltersBanner => 'Photos and videos matching hidden filters will not appear in your collection.';
+  String get settingsHiddenFiltersBanner => 'As fotos e vídeos que cadren cos filtros ocultos non se amosarán na súa colección.';
 
   @override
-  String get settingsHiddenFiltersEmpty => 'No hidden filters';
+  String get settingsHiddenFiltersEmpty => 'Sen filtros ocultos';
 
   @override
-  String get settingsStorageAccessTile => 'Storage access';
+  String get settingsStorageAccessTile => 'Acceso á almacenaxe';
 
   @override
-  String get settingsStorageAccessPageTitle => 'Storage Access';
+  String get settingsStorageAccessPageTitle => 'Acceso á almacenaxe';
 
   @override
-  String get settingsStorageAccessBanner => 'Some directories require an explicit access grant to modify files in them. You can review here directories to which you previously gave access.';
+  String get settingsStorageAccessBanner => 'Algúns directorios precisan permiso explícito de acceso para modificar os arquivos que conteñen. Aquí pode revisar a que directorios lles tera dado acceso.';
 
   @override
-  String get settingsStorageAccessEmpty => 'No access grants';
+  String get settingsStorageAccessEmpty => 'Sen permisos de acceso';
 
   @override
-  String get settingsStorageAccessRevokeTooltip => 'Revoke';
+  String get settingsStorageAccessRevokeTooltip => 'Revogar';
 
   @override
-  String get settingsAccessibilitySectionTitle => 'Accessibility';
+  String get settingsAccessibilitySectionTitle => 'Accesibilidade';
 
   @override
-  String get settingsRemoveAnimationsTile => 'Remove animations';
+  String get settingsRemoveAnimationsTile => 'Eliminar animacións';
 
   @override
-  String get settingsRemoveAnimationsDialogTitle => 'Remove Animations';
+  String get settingsRemoveAnimationsDialogTitle => 'Eliminar animacións';
 
   @override
-  String get settingsTimeToTakeActionTile => 'Time to take action';
+  String get settingsTimeToTakeActionTile => 'Retardo para executar unha acción';
 
   @override
-  String get settingsAccessibilityShowPinchGestureAlternatives => 'Show multi-touch gesture alternatives';
+  String get settingsAccessibilityShowPinchGestureAlternatives => 'Amosar alternativas de xestos multitoque';
 
   @override
-  String get settingsDisplaySectionTitle => 'Display';
+  String get settingsDisplaySectionTitle => 'Pantalla';
 
   @override
-  String get settingsThemeBrightnessTile => 'Theme';
+  String get settingsThemeBrightnessTile => 'Tema';
 
   @override
-  String get settingsThemeBrightnessDialogTitle => 'Theme';
+  String get settingsThemeBrightnessDialogTitle => 'Tema';
 
   @override
-  String get settingsThemeColorHighlights => 'Color highlights';
+  String get settingsThemeColorHighlights => 'Realces de cor';
 
   @override
-  String get settingsThemeEnableDynamicColor => 'Dynamic color';
+  String get settingsThemeEnableDynamicColor => 'Cor dinámica';
 
   @override
-  String get settingsDisplayRefreshRateModeTile => 'Display refresh rate';
+  String get settingsDisplayRefreshRateModeTile => 'Taxa de refresco da pantalla';
 
   @override
-  String get settingsDisplayRefreshRateModeDialogTitle => 'Refresh Rate';
+  String get settingsDisplayRefreshRateModeDialogTitle => 'Taxa de refresco';
 
   @override
-  String get settingsDisplayUseTvInterface => 'Android TV interface';
+  String get settingsDisplayUseTvInterface => 'Interface Android TV';
 
   @override
-  String get settingsLanguageSectionTitle => 'Language & Formats';
+  String get settingsLanguageSectionTitle => 'Idioma e formatos';
 
   @override
-  String get settingsLanguageTile => 'Language';
+  String get settingsLanguageTile => 'Idioma';
 
   @override
-  String get settingsLanguagePageTitle => 'Language';
+  String get settingsLanguagePageTitle => 'Idioma';
 
   @override
-  String get settingsCoordinateFormatTile => 'Coordinate format';
+  String get settingsCoordinateFormatTile => 'Formato de coordenadas';
 
   @override
-  String get settingsCoordinateFormatDialogTitle => 'Coordinate Format';
+  String get settingsCoordinateFormatDialogTitle => 'Formato de coordenadas';
 
   @override
-  String get settingsUnitSystemTile => 'Units';
+  String get settingsUnitSystemTile => 'Unidades';
 
   @override
-  String get settingsUnitSystemDialogTitle => 'Units';
+  String get settingsUnitSystemDialogTitle => 'Unidades';
 
   @override
-  String get settingsForceWesternArabicNumeralsTile => 'Force Arabic numerals';
+  String get settingsForceWesternArabicNumeralsTile => 'Forzar números arábigos';
 
   @override
-  String get settingsScreenSaverPageTitle => 'Screen Saver';
+  String get settingsScreenSaverPageTitle => 'Protector de pantalla';
 
   @override
-  String get settingsWidgetPageTitle => 'Photo Frame';
+  String get settingsWidgetPageTitle => 'Marco de foto';
 
   @override
-  String get settingsWidgetShowOutline => 'Outline';
+  String get settingsWidgetShowOutline => 'Contorno';
 
   @override
-  String get settingsWidgetOpenPage => 'When tapping on the widget';
+  String get settingsWidgetOpenPage => 'Ao tocar no widget';
 
   @override
-  String get settingsWidgetDisplayedItem => 'Displayed item';
+  String get settingsWidgetDisplayedItem => 'Elemento amosado';
 
   @override
-  String get settingsCollectionTile => 'Collection';
+  String get settingsCollectionTile => 'Colección';
 
   @override
-  String get statsPageTitle => 'Stats';
+  String get statsPageTitle => 'Estadísticas';
 
   @override
   String statsWithGps(int count) {
@@ -2170,198 +2170,198 @@ class AppLocalizationsGl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString items with location',
-      one: '1 item with location',
+      other: '$countString elementos con localización',
+      one: '1 elemento con localización',
     );
     return '$_temp0';
   }
 
   @override
-  String get statsTopCountriesSectionTitle => 'Top Countries';
+  String get statsTopCountriesSectionTitle => 'Países principais';
 
   @override
-  String get statsTopStatesSectionTitle => 'Top States';
+  String get statsTopStatesSectionTitle => 'Estados principais';
 
   @override
-  String get statsTopPlacesSectionTitle => 'Top Places';
+  String get statsTopPlacesSectionTitle => 'Lugares principais';
 
   @override
-  String get statsTopTagsSectionTitle => 'Top Tags';
+  String get statsTopTagsSectionTitle => 'Etiquetas principais';
 
   @override
-  String get statsTopAlbumsSectionTitle => 'Top Albums';
+  String get statsTopAlbumsSectionTitle => 'Álbums principais';
 
   @override
-  String get viewerOpenPanoramaButtonLabel => 'OPEN PANORAMA';
+  String get viewerOpenPanoramaButtonLabel => 'ABRIR PANORAMA';
 
   @override
-  String get viewerSetWallpaperButtonLabel => 'SET WALLPAPER';
+  String get viewerSetWallpaperButtonLabel => 'DEFINIR FONDO';
 
   @override
-  String get viewerErrorUnknown => 'Oops!';
+  String get viewerErrorUnknown => 'Epa!';
 
   @override
-  String get viewerErrorDoesNotExist => 'The file no longer exists.';
+  String get viewerErrorDoesNotExist => 'Xa non existe o arquivo.';
 
   @override
-  String get viewerInfoPageTitle => 'Info';
+  String get viewerInfoPageTitle => 'Información';
 
   @override
-  String get viewerInfoBackToViewerTooltip => 'Back to viewer';
+  String get viewerInfoBackToViewerTooltip => 'Tornar ao visor';
 
   @override
-  String get viewerInfoUnknown => 'unknown';
+  String get viewerInfoUnknown => 'descoñecido';
 
   @override
-  String get viewerInfoLabelDescription => 'Description';
+  String get viewerInfoLabelDescription => 'Descrición';
 
   @override
-  String get viewerInfoLabelTitle => 'Title';
+  String get viewerInfoLabelTitle => 'Título';
 
   @override
-  String get viewerInfoLabelDate => 'Date';
+  String get viewerInfoLabelDate => 'Data';
 
   @override
-  String get viewerInfoLabelResolution => 'Resolution';
+  String get viewerInfoLabelResolution => 'Resolución';
 
   @override
-  String get viewerInfoLabelSize => 'Size';
+  String get viewerInfoLabelSize => 'Tamaño';
 
   @override
   String get viewerInfoLabelUri => 'URI';
 
   @override
-  String get viewerInfoLabelPath => 'Path';
+  String get viewerInfoLabelPath => 'Ruta';
 
   @override
-  String get viewerInfoLabelDuration => 'Duration';
+  String get viewerInfoLabelDuration => 'Duración';
 
   @override
-  String get viewerInfoLabelOwner => 'Owner';
+  String get viewerInfoLabelOwner => 'Propietario';
 
   @override
-  String get viewerInfoLabelCoordinates => 'Coordinates';
+  String get viewerInfoLabelCoordinates => 'Coordenadas';
 
   @override
-  String get viewerInfoLabelAddress => 'Address';
+  String get viewerInfoLabelAddress => 'Enderezo';
 
   @override
-  String get mapStyleDialogTitle => 'Map Style';
+  String get mapStyleDialogTitle => 'Estilo do mapa';
 
   @override
-  String get mapStyleTooltip => 'Select map style';
+  String get mapStyleTooltip => 'Seleccione estilo do mapa';
 
   @override
-  String get mapZoomInTooltip => 'Zoom in';
+  String get mapZoomInTooltip => 'Achegar';
 
   @override
-  String get mapZoomOutTooltip => 'Zoom out';
+  String get mapZoomOutTooltip => 'Afastar';
 
   @override
-  String get mapPointNorthUpTooltip => 'Point north up';
+  String get mapPointNorthUpTooltip => 'Apuntar o norte cara arriba';
 
   @override
-  String get mapAttributionOsmData => 'Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors';
+  String get mapAttributionOsmData => 'Datos de mapa © os colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright)';
 
   @override
-  String get mapAttributionOsmLiberty => 'Tiles by [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)';
+  String get mapAttributionOsmLiberty => 'Mosaicos de [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hospedado por [OSM Americana](https://tile.ourmap.us)';
 
   @override
-  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles by [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
+  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Mosaicos de [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
 
   @override
-  String get mapAttributionOsmHot => 'Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)';
+  String get mapAttributionOsmHot => 'Mosaicos de [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)';
 
   @override
-  String get mapAttributionStamen => 'Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
+  String get mapAttributionStamen => 'Mosaicos de [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
 
   @override
-  String get openMapPageTooltip => 'View on Map page';
+  String get openMapPageTooltip => 'Ver na páxina do mapa';
 
   @override
-  String get mapEmptyRegion => 'No images in this region';
+  String get mapEmptyRegion => 'Sen imaxes nesta rexión';
 
   @override
-  String get viewerInfoOpenEmbeddedFailureFeedback => 'Failed to extract embedded data';
+  String get viewerInfoOpenEmbeddedFailureFeedback => 'Fallo ao extraer datos incrustados';
 
   @override
-  String get viewerInfoOpenLinkText => 'Open';
+  String get viewerInfoOpenLinkText => 'Abrir';
 
   @override
-  String get viewerInfoViewXmlLinkText => 'View XML';
+  String get viewerInfoViewXmlLinkText => 'Ver XML';
 
   @override
-  String get viewerInfoSearchFieldLabel => 'Search metadata';
+  String get viewerInfoSearchFieldLabel => 'Procurar metadatos';
 
   @override
-  String get viewerInfoSearchEmpty => 'No matching keys';
+  String get viewerInfoSearchEmpty => 'Sen claves concordantes';
 
   @override
-  String get viewerInfoSearchSuggestionDate => 'Date & time';
+  String get viewerInfoSearchSuggestionDate => 'Data e hora';
 
   @override
-  String get viewerInfoSearchSuggestionDescription => 'Description';
+  String get viewerInfoSearchSuggestionDescription => 'Descrición';
 
   @override
-  String get viewerInfoSearchSuggestionDimensions => 'Dimensions';
+  String get viewerInfoSearchSuggestionDimensions => 'Dimensións';
 
   @override
-  String get viewerInfoSearchSuggestionResolution => 'Resolution';
+  String get viewerInfoSearchSuggestionResolution => 'Resolución';
 
   @override
-  String get viewerInfoSearchSuggestionRights => 'Rights';
+  String get viewerInfoSearchSuggestionRights => 'Dereitos';
 
   @override
-  String get wallpaperUseScrollEffect => 'Use scroll effect on home screen';
+  String get wallpaperUseScrollEffect => 'Usar efecto de desprazamento en pantalla de inicio';
 
   @override
-  String get tagEditorPageTitle => 'Edit Tags';
+  String get tagEditorPageTitle => 'Editar etiquetas';
 
   @override
-  String get tagEditorPageNewTagFieldLabel => 'New tag';
+  String get tagEditorPageNewTagFieldLabel => 'Nova etiqueta';
 
   @override
-  String get tagEditorPageAddTagTooltip => 'Add tag';
+  String get tagEditorPageAddTagTooltip => 'Engadir etiqueta';
 
   @override
-  String get tagEditorSectionRecent => 'Recent';
+  String get tagEditorSectionRecent => 'Recente';
 
   @override
-  String get tagEditorSectionPlaceholders => 'Placeholders';
+  String get tagEditorSectionPlaceholders => 'Marcadores de posición';
 
   @override
-  String get tagEditorDiscardDialogMessage => 'Do you want to discard changes?';
+  String get tagEditorDiscardDialogMessage => 'Quere descartar os cambios?';
 
   @override
-  String get tagPlaceholderCountry => 'Country';
+  String get tagPlaceholderCountry => 'País';
 
   @override
-  String get tagPlaceholderState => 'State';
+  String get tagPlaceholderState => 'Estado';
 
   @override
-  String get tagPlaceholderPlace => 'Place';
+  String get tagPlaceholderPlace => 'Lugar';
 
   @override
-  String get panoramaEnableSensorControl => 'Enable sensor control';
+  String get panoramaEnableSensorControl => 'Activar control do sensor';
 
   @override
-  String get panoramaDisableSensorControl => 'Disable sensor control';
+  String get panoramaDisableSensorControl => 'Desactivar control do sensor';
 
   @override
-  String get sourceViewerPageTitle => 'Source';
+  String get sourceViewerPageTitle => 'Fonte';
 
   @override
-  String get filePickerShowHiddenFiles => 'Show hidden files';
+  String get filePickerShowHiddenFiles => 'Amosar arquivos agochados';
 
   @override
-  String get filePickerDoNotShowHiddenFiles => 'Don’t show hidden files';
+  String get filePickerDoNotShowHiddenFiles => 'Non amosar arquivos agochados';
 
   @override
-  String get filePickerOpenFrom => 'Open from';
+  String get filePickerOpenFrom => 'Abrir dende';
 
   @override
-  String get filePickerNoItems => 'No items';
+  String get filePickerNoItems => 'Sen elementos';
 
   @override
-  String get filePickerUseThisFolder => 'Use this folder';
+  String get filePickerUseThisFolder => 'Usar este cartafol';
 }
