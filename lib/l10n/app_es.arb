@@ -1412,5 +1412,9 @@
   "editEntryLocationDialogImportGpx": "Importar GPX",
   "@editEntryLocationDialogImportGpx": {},
   "removeEntryMetadataDialogAll": "Todo",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "editEntryLocationDialogTimeShift": "Desplazamiento de tiempo",
+  "@editEntryLocationDialogTimeShift": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {}
 }
