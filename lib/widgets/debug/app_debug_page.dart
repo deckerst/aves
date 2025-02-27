@@ -110,6 +110,7 @@ class AppDebugPage extends StatelessWidget {
       case AppDebugAction.prepScreenshotCountries:
         settings.changeFilterVisibility({
           LocationFilter(LocationLevel.country, 'Belgium;BE'),
+          LocationFilter(LocationLevel.country, 'Croatia;HR'),
         }, false);
       case AppDebugAction.mediaStoreScanDir:
         // scan files copied from test assets
