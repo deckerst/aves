@@ -10,16 +10,16 @@ fi
 
 # expects:
 # - ImageMagick 6
-# - raw screenshots sized at 1080x2280 in `/screenshots/raw`
+# - raw screenshots sized at 1080x2520 (21∶9) in `/screenshots/raw`
 
-DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_s10e_ltr_nav_gestures.png
-DEVICE_FRAME=~/code/aves_extra/screenshots/device_frame_s10e.png
+DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_ltr_nav_gestures.png
+DEVICE_FRAME=~/code/aves_extra/screenshots/device_frame_1142x2650_for_1080x2520.png
 # FRAME_SIZE: dimensions of DEVICE_FRAME
-FRAME_SIZE=1142x2410
+FRAME_SIZE=1142x2650
 # FRAME_OFFSET: offset for content in DEVICE_FRAME
 FRAME_OFFSET=31x53
 # PLAY_SIZE: contain FRAME_SIZE in 9:16
-PLAY_SIZE=1356x2410
+PLAY_SIZE=1490x2650
 
 cd screenshots || exit
 
