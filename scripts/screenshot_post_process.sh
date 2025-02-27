@@ -12,7 +12,8 @@ fi
 # - ImageMagick 6
 # - raw screenshots sized at 1080x2520 (21∶9) in `/screenshots/raw`
 
-DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_ltr_nav_gestures.png
+DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_ltr.png
+DEVICE_OVERLAY_RTL=~/code/aves_extra/screenshots/device_overlay_rtl.png
 DEVICE_FRAME=~/code/aves_extra/screenshots/device_frame_1142x2650_for_1080x2520.png
 # FRAME_SIZE: dimensions of DEVICE_FRAME
 FRAME_SIZE=1142x2650
@@ -29,7 +30,9 @@ for source in raw/*/*; do
     target=${source/raw/overlay}
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
-    convert "$source" $DEVICE_OVERLAY_LTR -composite "$target"
+    locale="$(basename "$(dirname "$source")")"
+    [[ $locale = "ar" ]] && overlay="$DEVICE_OVERLAY_RTL" || overlay="$DEVICE_OVERLAY_LTR"
+    convert "$source" $overlay -composite "$target"
   fi
 done
 
