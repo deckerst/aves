@@ -1557,7 +1557,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get albumCamera => 'Cámara';
 
   @override
-  String get albumDownload => 'Descargar';
+  String get albumDownload => 'Descargas';
 
   @override
   String get albumScreenshots => 'Capturas de pantalla';

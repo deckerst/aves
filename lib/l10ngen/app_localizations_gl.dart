@@ -198,10 +198,10 @@ class AppLocalizationsGl extends AppLocalizations {
   String get chipActionDecompose => 'Separar';
 
   @override
-  String get chipActionFilterOut => 'Filtrar';
+  String get chipActionFilterOut => 'Excluír';
 
   @override
-  String get chipActionFilterIn => 'Filtrar';
+  String get chipActionFilterIn => 'Incluír';
 
   @override
   String get chipActionHide => 'Agochar';
@@ -545,7 +545,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get keepScreenOnVideoPlayback => 'Durante a reproducción de vídeo';
 
   @override
-  String get keepScreenOnViewerOnly => 'Só páxina do visualizador';
+  String get keepScreenOnViewerOnly => 'Só páxina do visor';
 
   @override
   String get keepScreenOnAlways => 'Sempre';
@@ -1078,7 +1078,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get menuActionSlideshow => 'Presentación';
 
   @override
-  String get menuActionStats => 'Estadísticas';
+  String get menuActionStats => 'Estatísticas';
 
   @override
   String get viewDialogSortSectionTitle => 'Ordenar';
@@ -1557,7 +1557,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get albumCamera => 'Cámara';
 
   @override
-  String get albumDownload => 'Descargar';
+  String get albumDownload => 'Descargas';
 
   @override
   String get albumScreenshots => 'Capturas de pantalla';
@@ -1821,7 +1821,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get settingsViewerSectionTitle => 'Visor';
 
   @override
-  String get settingsViewerGestureSideTapNext => 'Toque nos bordes da pantalla para amosar o elemento anterior/seguinte';
+  String get settingsViewerGestureSideTapNext => 'Tocar nos bordes da pantalla para amosar o elemento anterior/seguinte';
 
   @override
   String get settingsViewerUseCutout => 'Usar a área recortada';
@@ -1974,7 +1974,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get settingsVideoGestureSideDoubleTapSeek => 'Dobre toque nos bordes da pantalla para buscar atrás/adiante';
 
   @override
-  String get settingsVideoGestureVerticalDragBrightnessVolume => 'Esvare para riba ou para abaixo para axustar brillo/volume';
+  String get settingsVideoGestureVerticalDragBrightnessVolume => 'Esvarar para riba ou para abaixo para axustar brillo/volume';
 
   @override
   String get settingsSubtitleThemeTile => 'Subtítulos';
@@ -2160,7 +2160,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get settingsCollectionTile => 'Colección';
 
   @override
-  String get statsPageTitle => 'Estadísticas';
+  String get statsPageTitle => 'Estatísticas';
 
   @override
   String statsWithGps(int count) {
