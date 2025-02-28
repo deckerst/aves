@@ -31,7 +31,7 @@ for source in raw/*/*; do
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
     locale="$(basename "$(dirname "$source")")"
-    [[ $locale = "ar" ]] && overlay="$DEVICE_OVERLAY_RTL" || overlay="$DEVICE_OVERLAY_LTR"
+    [[ $locale = "ar" || $locale = "fa" ]] && overlay="$DEVICE_OVERLAY_RTL" || overlay="$DEVICE_OVERLAY_LTR"
     convert "$source" $overlay -composite "$target"
   fi
 done

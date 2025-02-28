@@ -1003,7 +1003,7 @@ class AppLocalizationsIs extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Fjarlæging lýsigagna';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Allt';
 
   @override
   String get removeEntryMetadataDialogMore => 'Meira';

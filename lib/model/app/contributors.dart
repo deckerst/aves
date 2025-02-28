@@ -128,7 +128,7 @@ class Contributors {
     Contributor('hugoalh', 'hugoalh@users.noreply.hosted.weblate.org'),
     Contributor('Josep M. Ferrer', 'txemaq@gmail.com'),
     Contributor('pitroig', 'ona@riseup.net'),
-    Contributor('rcasl', 'rcasl@outlook.com'),
+    Contributor('Rubén Castiñeiras Lorenzo', 'rcasl@outlook.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
