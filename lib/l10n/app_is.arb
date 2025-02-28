@@ -1606,5 +1606,7 @@
   "editEntryLocationDialogImportGpx": "Flytja inn GPX",
   "@editEntryLocationDialogImportGpx": {},
   "editEntryLocationDialogTimeShift": "Tímahliðrun",
-  "@editEntryLocationDialogTimeShift": {}
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Allt",
+  "@removeEntryMetadataDialogAll": {}
 }
