@@ -46,6 +46,7 @@ for source in overlay/*/*; do
   fi
 done
 mv izzy/en izzy/en-US
+mv izzy/en_Shaw izzy/en-XW-Shaw
 mv izzy/es izzy/es-MX
 mv izzy/nb izzy/nb-NO
 mv izzy/pt izzy/pt-BR

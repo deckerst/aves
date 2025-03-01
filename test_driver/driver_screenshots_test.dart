@@ -160,7 +160,7 @@ void info() {
 
     await driver.scrollY(verticalPageView, -600);
     await _selectMapStyle('googleNormal');
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
 
     await _takeScreenshot(driver, '3');
 
