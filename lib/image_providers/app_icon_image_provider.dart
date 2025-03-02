@@ -1,10 +1,10 @@
 import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
+import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class AppIconImage extends ImageProvider<AppIconImageKey> {
   const AppIconImage({
@@ -39,12 +39,14 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
 
   Future<ui.Codec> _loadAsync(AppIconImageKey key, ImageDecoderCallback decode) async {
     try {
-      final bytes = await appService.getAppIcon(key.packageName, key.size);
-      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes.isEmpty ? kTransparentImage : bytes);
-      return await decode(buffer);
+      final descriptor = await appService.getAppIcon(key.packageName, key.size);
+      if (descriptor == null) {
+        throw UnreportedStateError('$packageName app icon decoding failed');
+      }
+      return descriptor.instantiateCodec();
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with packageName=$packageName, error=$error');
-      throw StateError('$packageName app icon decoding failed');
+      throw UnreportedStateError('$packageName app icon decoding failed');
     }
   }
 }

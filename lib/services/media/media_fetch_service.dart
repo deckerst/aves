@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
@@ -194,7 +195,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           });
           if (result != null) {
             final bytes = result as Uint8List;
-            return _bytesToCodec(bytes);
+            return InteropDecoding.bytesToCodec(bytes);
           }
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType)) {
@@ -237,7 +238,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           });
           if (result != null) {
             final bytes = result as Uint8List;
-            return _bytesToCodec(bytes);
+            return InteropDecoding.bytesToCodec(bytes);
           }
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType)) {
@@ -270,24 +271,6 @@ class PlatformMediaFetchService implements MediaFetchService {
   Future<T>? resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
   // convenience methods
-
-  Future<ui.ImageDescriptor?> _bytesToCodec(Uint8List bytes) async {
-    const trailerLength = 4 * 2;
-    if (bytes.length < trailerLength) return null;
-
-    final trailerOffset = bytes.length - trailerLength;
-    final trailer = ByteData.sublistView(bytes, trailerOffset);
-    final bitmapWidth = trailer.getUint32(0);
-    final bitmapHeight = trailer.getUint32(4);
-
-    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-    return ui.ImageDescriptor.raw(
-      buffer,
-      width: bitmapWidth,
-      height: bitmapHeight,
-      pixelFormat: ui.PixelFormat.rgba8888,
-    );
-  }
 
   bool _isUnknownVisual(String mimeType) => !_knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType);
 
