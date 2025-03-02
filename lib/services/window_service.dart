@@ -22,7 +22,7 @@ abstract class WindowService {
 
   Future<bool> supportsHdr();
 
-  Future<void> setHdrColorMode(bool on);
+  Future<void> setColorMode({required bool wideColorGamut, required bool hdr});
 }
 
 class PlatformWindowService implements WindowService {
@@ -153,11 +153,12 @@ class PlatformWindowService implements WindowService {
   }
 
   @override
-  Future<void> setHdrColorMode(bool on) async {
+  Future<void> setColorMode({required bool wideColorGamut, required bool hdr}) async {
     // TODO TLAD [hdr] enable when ready
     // try {
-    //   await _platform.invokeMethod('setHdrColorMode', <String, dynamic>{
-    //     'on': on,
+    //   await _platform.invokeMethod('setColorMode', <String, dynamic>{
+    //     'wideColorGamut': wideColorGamut,
+    //     'hdr': hdr,
     //   });
     // } on PlatformException catch (e, stack) {
     //   await reportService.recordError(e, stack);

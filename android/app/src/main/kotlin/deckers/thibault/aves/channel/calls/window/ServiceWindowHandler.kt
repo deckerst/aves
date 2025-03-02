@@ -37,7 +37,7 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(false)
     }
 
-    override fun setHdrColorMode(call: MethodCall, result: MethodChannel.Result) {
+    override fun setColorMode(call: MethodCall, result: MethodChannel.Result) {
         result.success(null)
     }
 }
