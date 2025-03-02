@@ -36,7 +36,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await mediaFetchService.getThumbnail(
+      final descriptor = await mediaFetchService.getThumbnail(
         uri: uri,
         mimeType: mimeType,
         pageId: pageId,
@@ -46,15 +46,14 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
         extent: key.extent,
         taskKey: key,
       );
-      if (bytes.isEmpty) {
-        throw UnreportedStateError('$uri ($mimeType) loading failed');
+      if (descriptor == null) {
+        throw UnreportedStateError('$uri ($mimeType) thumbnail loading failed');
       }
-      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-      return await decode(buffer);
+      return descriptor.instantiateCodec();
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw UnreportedStateError('$mimeType decoding failed (page $pageId)');
+      throw UnreportedStateError('$mimeType thumbnail decoding failed (page $pageId)');
     }
   }
 

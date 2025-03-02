@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/geo/uri.dart';
 import 'package:aves/model/app_inventory.dart';
@@ -219,7 +220,7 @@ class PlatformAppService implements AppService {
     Uint8List? iconBytes;
     if (coverEntry != null) {
       final size = coverEntry.isVideo ? 0.0 : 256.0;
-      iconBytes = await mediaFetchService.getThumbnail(
+      final iconDescriptor = await mediaFetchService.getThumbnail(
         uri: coverEntry.uri,
         mimeType: coverEntry.mimeType,
         pageId: coverEntry.pageId,
@@ -228,6 +229,12 @@ class PlatformAppService implements AppService {
         dateModifiedMillis: coverEntry.dateModifiedMillis,
         extent: size,
       );
+      if (iconDescriptor != null) {
+        final codec = await iconDescriptor.instantiateCodec();
+        final frameInfo = await codec.getNextFrame();
+        final byteData = await frameInfo.image.toByteData(format: ImageByteFormat.png);
+        iconBytes = byteData?.buffer.asUint8List();
+      }
     }
     try {
       await _platform.invokeMethod('pinShortcut', <String, dynamic>{
