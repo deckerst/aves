@@ -15,9 +15,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
-import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
-import deckers.thibault.aves.utils.BitmapUtils.getEncodedBytes
+import deckers.thibault.aves.utils.BitmapUtils.getDecodedBytes
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.SVG
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -49,7 +48,7 @@ class ThumbnailFetcher internal constructor(
     private val multiPageFetch = pageId != null && MultiPageImage.isSupported(mimeType)
     private val customFetch = svgFetch || tiffFetch || multiPageFetch
 
-    suspend fun fetch() {
+    fun fetch() {
         var bitmap: Bitmap? = null
         var exception: Exception? = null
 
@@ -78,13 +77,8 @@ class ThumbnailFetcher internal constructor(
             }
         }
 
-        if (bitmap != null) {
-            val canHaveAlpha = MimeTypes.canHaveAlpha(mimeType)
-            val recycle = false
-            var bytes = bitmap.getEncodedBytes(canHaveAlpha, quality, recycle)
-            if (bytes != null && bytes.isEmpty()) {
-                bytes = BitmapUtils.tryPixelFormatConversion(bitmap)?.getEncodedBytes(canHaveAlpha, quality, recycle)
-            }
+        val bytes = bitmap?.getDecodedBytes(recycle = false)
+        if (bytes != null) {
             result.success(bytes)
         } else {
             var errorDetails: String? = exception?.message

@@ -11,6 +11,7 @@ import 'package:aves/services/media/byte_receiving_codec.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
+import 'dart:ui' as ui;
 
 abstract class MediaFetchService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false});
@@ -33,7 +34,7 @@ abstract class MediaFetchService {
   });
 
   // `rect`: region to decode, with coordinates in reference to `imageSize`
-  Future<Uint8List> getRegion(
+  Future<ui.ImageDescriptor?> getRegion(
     String uri,
     String mimeType,
     int rotationDegrees,
@@ -47,7 +48,7 @@ abstract class MediaFetchService {
     int? priority,
   });
 
-  Future<Uint8List> getThumbnail({
+  Future<ui.ImageDescriptor?> getThumbnail({
     required String uri,
     required String mimeType,
     required int rotationDegrees,
@@ -162,7 +163,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  Future<Uint8List> getRegion(
+  Future<ui.ImageDescriptor?> getRegion(
     String uri,
     String mimeType,
     int rotationDegrees,
@@ -191,13 +192,16 @@ class PlatformMediaFetchService implements MediaFetchService {
             'imageWidth': imageSize.width.toInt(),
             'imageHeight': imageSize.height.toInt(),
           });
-          if (result != null) return result as Uint8List;
+          if (result != null) {
+            final bytes = result as Uint8List;
+            return _bytesToCodec(bytes);
+          }
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType)) {
             await reportService.recordError(e, stack);
           }
         }
-        return Uint8List(0);
+        return null;
       },
       priority: priority ?? ServiceCallPriority.getRegion,
       key: taskKey,
@@ -205,7 +209,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  Future<Uint8List> getThumbnail({
+  Future<ui.ImageDescriptor?> getThumbnail({
     required String uri,
     required String mimeType,
     required int rotationDegrees,
@@ -231,13 +235,16 @@ class PlatformMediaFetchService implements MediaFetchService {
             'defaultSizeDip': _thumbnailDefaultSize,
             'quality': 100,
           });
-          if (result != null) return result as Uint8List;
+          if (result != null) {
+            final bytes = result as Uint8List;
+            return _bytesToCodec(bytes);
+          }
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType)) {
             await reportService.recordError(e, stack);
           }
         }
-        return Uint8List(0);
+        return null;
       },
       priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
@@ -263,6 +270,24 @@ class PlatformMediaFetchService implements MediaFetchService {
   Future<T>? resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
   // convenience methods
+
+  Future<ui.ImageDescriptor?> _bytesToCodec(Uint8List bytes) async {
+    const trailerLength = 4 * 2;
+    if (bytes.length < trailerLength) return null;
+
+    final trailerOffset = bytes.length - trailerLength;
+    final trailer = ByteData.sublistView(bytes, trailerOffset);
+    final bitmapWidth = trailer.getUint32(0);
+    final bitmapHeight = trailer.getUint32(4);
+
+    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+    return ui.ImageDescriptor.raw(
+      buffer,
+      width: bitmapWidth,
+      height: bitmapHeight,
+      pixelFormat: ui.PixelFormat.rgba8888,
+    );
+  }
 
   bool _isUnknownVisual(String mimeType) => !_knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType);
 

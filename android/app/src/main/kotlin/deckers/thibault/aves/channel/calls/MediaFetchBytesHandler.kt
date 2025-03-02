@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Rect
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
@@ -29,13 +28,13 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getThumbnail" -> ioScope.launch { safeSuspend(call, result, ::getThumbnail) }
+            "getThumbnail" -> ioScope.launch { safe(call, result, ::getThumbnail) }
             "getRegion" -> ioScope.launch { safe(call, result, ::getRegion) }
             else -> result.notImplemented()
         }
     }
 
-    private suspend fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
+    private fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>(EntryFields.URI)
         val mimeType = call.argument<String>(EntryFields.MIME_TYPE)
         val dateModifiedMillis = call.argument<Number>(EntryFields.DATE_MODIFIED_MILLIS)?.toLong()
