@@ -139,39 +139,6 @@ object BitmapUtils {
         return null
     }
 
-    // On some devices, RGBA_1010102 config can be displayed directly from the hardware buffer,
-    // but the native image decoder cannot convert RGBA_1010102 to another config like ARGB_8888,
-    // so we manually check the config and convert the pixels as a fallback mechanism.
-    fun tryPixelFormatConversion(bitmap: Bitmap): Bitmap? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && bitmap.config == Bitmap.Config.RGBA_1010102) {
-            val byteCount = bitmap.byteCount
-            if (MemoryUtils.canAllocate(byteCount)) {
-                val bytes = ByteBuffer.allocate(byteCount).apply {
-                    bitmap.copyPixelsToBuffer(this)
-                    rewind()
-                }.array()
-                val srcColorSpace = bitmap.colorSpace
-                if (srcColorSpace != null) {
-                    val dstColorSpace = ColorSpace.get(ColorSpace.Named.SRGB)
-                    val connector = ColorSpace.connect(srcColorSpace, dstColorSpace)
-                    rgba1010102toArgb8888(bytes, connector)
-
-                    val hasAlpha = false
-                    return createBitmap(
-                        bitmap.width,
-                        bitmap.height,
-                        Bitmap.Config.ARGB_8888,
-                        hasAlpha = hasAlpha,
-                        colorSpace = dstColorSpace,
-                    ).apply {
-                        copyPixelsFromBuffer(ByteBuffer.wrap(bytes))
-                    }
-                }
-            }
-        }
-        return null
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun argb8888toArgb8888(bytes: ByteArray, connector: ColorSpace.Connector, start: Int = 0, end: Int = bytes.size) {
         // unpacking from ARGB_8888 and packing to ARGB_8888

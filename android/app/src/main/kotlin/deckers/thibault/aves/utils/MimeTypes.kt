@@ -84,11 +84,11 @@ object MimeTypes {
         else -> false
     }
 
-    // as of Flutter v3.16.4, with additional custom handling for SVG
-    fun canDecodeWithFlutter(mimeType: String, pageId: Int?, rotationDegrees: Int?, isFlipped: Boolean?) = when (mimeType) {
+    // as of Flutter v3.16.4, with additional custom handling for SVG in Dart,
+    // while handling still PNG and JPEG on Android for color space and config conversion
+    fun canDecodeWithFlutter(mimeType: String, isAnimated: Boolean) = when (mimeType) {
         GIF, WEBP, BMP, WBMP, ICO, SVG -> true
-        JPEG -> (pageId ?: 0) == 0
-        PNG -> (rotationDegrees ?: 0) == 0 && !(isFlipped ?: false)
+        JPEG, PNG -> isAnimated
         else -> false
     }
 

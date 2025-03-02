@@ -13,6 +13,7 @@ class MimeTypes {
   static const svg = 'image/svg+xml';
   static const tiff = 'image/tiff';
   static const webp = 'image/webp';
+  static const wbmp = 'image/vnd.wap.wbmp';
 
   static const art = 'image/x-jg';
   static const cdr = 'image/x-coreldraw';
