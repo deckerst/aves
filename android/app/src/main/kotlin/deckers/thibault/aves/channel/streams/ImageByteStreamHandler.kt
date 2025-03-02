@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.BitmapUtils.getEncodedBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -140,9 +140,9 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             if (bitmap != null) {
                 val recycle = false
                 val canHaveAlpha = MimeTypes.canHaveAlpha(mimeType)
-                var bytes = bitmap.getBytes(canHaveAlpha, recycle = recycle)
+                var bytes = bitmap.getEncodedBytes(canHaveAlpha, recycle = recycle)
                 if (bytes != null && bytes.isEmpty()) {
-                    bytes = BitmapUtils.tryPixelFormatConversion(bitmap)?.getBytes(canHaveAlpha, recycle = recycle)
+                    bytes = BitmapUtils.tryPixelFormatConversion(bitmap)?.getEncodedBytes(canHaveAlpha, recycle = recycle)
                 }
                 if (MemoryUtils.canAllocate(sizeBytes)) {
                     success(bytes)
@@ -168,7 +168,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         try {
             val bitmap = withContext(Dispatchers.IO) { target.get() }
             if (bitmap != null) {
-                val bytes = bitmap.getBytes(canHaveAlpha = false, recycle = false)
+                val bytes = bitmap.getEncodedBytes(canHaveAlpha = false, recycle = false)
                 if (MemoryUtils.canAllocate(sizeBytes)) {
                     success(bytes)
                 } else {

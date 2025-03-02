@@ -20,7 +20,7 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.BitmapUtils.getEncodedBytes
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils.openMetadataRetriever
 import kotlinx.coroutines.CoroutineScope
@@ -112,7 +112,8 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
 
                         // the returned frame is already rotated according to the video metadata
                         val frame = if (dstWidth > 0 && dstHeight > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                            val targetBitmapSizeBytes: Long = FORMAT_BYTE_SIZE.toLong() * dstWidth * dstHeight
+                            val pixelCount = dstWidth * dstHeight
+                            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
                             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                                 throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the scaled frame at $dstWidth x $dstHeight")
                             }
@@ -122,7 +123,8 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                                 retriever.getScaledFrameAtTime(timeMicros, option, dstWidth, dstHeight)
                             }
                         } else {
-                            val targetBitmapSizeBytes: Long = (FORMAT_BYTE_SIZE.toLong() * videoWidth * videoHeight).toLong()
+                            val pixelCount = videoWidth * videoHeight
+                            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
                             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                                 throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the full frame at $videoWidth x $videoHeight")
                             }
@@ -132,7 +134,7 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                                 retriever.getFrameAtTime(timeMicros, option)
                             }
                         }
-                        bytes = frame?.getBytes(canHaveAlpha = false, recycle = false)
+                        bytes = frame?.getEncodedBytes(canHaveAlpha = false, recycle = false)
                     }
 
                     if (bytes != null) {
@@ -151,8 +153,14 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun getBitmapParams() = MediaMetadataRetriever.BitmapParams().apply {
-        preferredConfig = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private fun getBitmapParams(): MediaMetadataRetriever.BitmapParams {
+        val params = MediaMetadataRetriever.BitmapParams()
+        params.preferredConfig = this.getPreferredConfig()
+        return params
+    }
+
+    private fun getPreferredConfig(): Bitmap.Config {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // improved precision with the same memory cost as `ARGB_8888` (4 bytes per pixel)
             // for wide-gamut and HDR content which does not require alpha blending
             Bitmap.Config.RGBA_1010102
@@ -170,9 +178,4 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
     override fun getDataClass(): Class<InputStream> = InputStream::class.java
 
     override fun getDataSource(): DataSource = DataSource.LOCAL
-
-    companion object {
-        // same for either `ARGB_8888` or `RGBA_1010102`
-        private const val FORMAT_BYTE_SIZE = BitmapUtils.ARGB_8888_BYTE_SIZE
-    }
 }

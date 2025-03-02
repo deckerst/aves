@@ -48,8 +48,21 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       if (bytes.isEmpty) {
         throw StateError('$uri ($mimeType) region loading failed');
       }
+
+      final trailerOffset = bytes.length - 4 * 2;
+      final trailer = ByteData.sublistView(bytes, trailerOffset);
+      final bitmapWidth = trailer.getUint32(0);
+      final bitmapHeight = trailer.getUint32(4);
+
       final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-      return await decode(buffer);
+      final descriptor = ui.ImageDescriptor.raw(
+        buffer,
+        width: bitmapWidth,
+        height: bitmapHeight,
+        pixelFormat: ui.PixelFormat.rgba8888,
+      );
+
+      return descriptor.instantiateCodec();
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');

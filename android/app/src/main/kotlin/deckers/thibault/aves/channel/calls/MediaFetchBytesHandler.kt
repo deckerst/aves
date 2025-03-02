@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import android.graphics.Rect
 import androidx.core.net.toUri
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
@@ -29,7 +30,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getThumbnail" -> ioScope.launch { safeSuspend(call, result, ::getThumbnail) }
-            "getRegion" -> ioScope.launch { safeSuspend(call, result, ::getRegion) }
+            "getRegion" -> ioScope.launch { safe(call, result, ::getRegion) }
             else -> result.notImplemented()
         }
     }
@@ -68,7 +69,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
         ).fetch()
     }
 
-    private suspend fun getRegion(call: MethodCall, result: MethodChannel.Result) {
+    private fun getRegion(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.toUri()
         val mimeType = call.argument<String>("mimeType")
         val pageId = call.argument<Int>("pageId")
@@ -97,6 +98,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
                 imageHeight = imageHeight,
                 result = result,
             )
+
             MimeTypes.TIFF -> TiffRegionFetcher(context).fetch(
                 uri = uri,
                 page = pageId ?: 0,
@@ -104,6 +106,7 @@ class MediaFetchBytesHandler(private val context: Context) : MethodCallHandler {
                 regionRect = regionRect,
                 result = result,
             )
+
             else -> regionFetcher.fetch(
                 uri = uri,
                 mimeType = mimeType,
