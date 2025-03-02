@@ -22,8 +22,9 @@ class EntryCache {
     int? dateModifiedMillis,
     int rotationDegrees,
     bool isFlipped,
+    bool isAnimated,
   ) async {
-    debugPrint('Evict cached images for uri=$uri, mimeType=$mimeType, dateModifiedMillis=$dateModifiedMillis, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped');
+    debugPrint('Evict cached images for uri=$uri, mimeType=$mimeType, dateModifiedMillis=$dateModifiedMillis, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, isAnimated=$isAnimated');
 
     // TODO TLAD provide pageId parameter for multi page items, if someday image editing features are added for them
     int? pageId;
@@ -35,6 +36,7 @@ class EntryCache {
       pageId: pageId,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
+      isAnimated: isAnimated,
     ).evict();
 
     // evict low quality thumbnail (without specified extents)

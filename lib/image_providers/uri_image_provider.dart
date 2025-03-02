@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/media_fetch_service.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -11,11 +13,11 @@ import 'package:flutter/widgets.dart';
 class UriImage extends ImageProvider<UriImage> with EquatableMixin {
   final String uri, mimeType;
   final int? pageId, rotationDegrees, sizeBytes;
-  final bool isFlipped;
+  final bool isFlipped, isAnimated;
   final double scale;
 
   @override
-  List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, scale];
+  List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, isAnimated, scale];
 
   const UriImage({
     required this.uri,
@@ -23,6 +25,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     required this.pageId,
     required this.rotationDegrees,
     required this.isFlipped,
+    required this.isAnimated,
     this.sizeBytes,
     this.scale = 1.0,
   });
@@ -46,29 +49,60 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     );
   }
 
+  // as of Flutter v3.16.4, with additional custom handling for SVG in Dart,
+  // while handling still PNG and JPEG on Android for color space and config conversion
+  bool _canDecodeWithFlutter(String mimeType, bool isAnimated) {
+    switch(mimeType) {
+      case MimeTypes.gif:
+      case MimeTypes.webp:
+      case MimeTypes.bmp:
+      case MimeTypes.wbmp:
+      case MimeTypes.ico:
+      case MimeTypes.svg:
+        return true;
+      case MimeTypes.jpeg:
+      case MimeTypes.png:
+        return isAnimated;
+      default:
+        return false;
+    }
+  }
+
   Future<ui.Codec> _loadAsync(UriImage key, ImageDecoderCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
     assert(key == this);
 
+    final request = ImageRequest(
+      uri,
+      mimeType,
+      rotationDegrees: rotationDegrees,
+      isFlipped: isFlipped,
+      isAnimated: isAnimated,
+      pageId: pageId,
+      sizeBytes: sizeBytes,
+      onBytesReceived: (cumulative, total) {
+        chunkEvents.add(ImageChunkEvent(
+          cumulativeBytesLoaded: cumulative,
+          expectedTotalBytes: total,
+        ));
+      },
+    );
     try {
-      final bytes = await mediaFetchService.getImage(
-        uri,
-        mimeType,
-        rotationDegrees: rotationDegrees,
-        isFlipped: isFlipped,
-        pageId: pageId,
-        sizeBytes: sizeBytes,
-        onBytesReceived: (cumulative, total) {
-          chunkEvents.add(ImageChunkEvent(
-            cumulativeBytesLoaded: cumulative,
-            expectedTotalBytes: total,
-          ));
-        },
-      );
-      if (bytes.isEmpty) {
-        throw UnreportedStateError('$uri ($mimeType) loading failed');
+      if (_canDecodeWithFlutter(mimeType, isAnimated)) {
+        // get original media bytes from platform, and rely on a codec instantiated by `ImageProvider`
+        final bytes = await mediaFetchService.getEncodedImage(request);
+        if (bytes.isEmpty) {
+          throw UnreportedStateError('$uri ($mimeType) image loading failed');
+        }
+        final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+        return await decode(buffer);
+      } else {
+        // get decoded media bytes from platform, and rely on a codec instantiated from raw bytes
+        final descriptor = await mediaFetchService.getDecodedImage(request);
+        if (descriptor == null) {
+          throw UnreportedStateError('$uri ($mimeType) image loading failed');
+        }
+        return descriptor.instantiateCodec();
       }
-      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-      return await decode(buffer);
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');

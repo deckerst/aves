@@ -55,6 +55,7 @@ extension ExtraAvesEntryImages on AvesEntry {
         pageId: pageId,
         rotationDegrees: rotationDegrees,
         isFlipped: isFlipped,
+        isAnimated: isAnimated,
         sizeBytes: sizeBytes,
       );
 

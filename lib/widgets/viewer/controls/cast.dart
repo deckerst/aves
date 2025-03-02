@@ -6,6 +6,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/ref/upnp.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/media_fetch_service.dart';
 import 'package:aves/widgets/dialogs/cast_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:dlna_dart/dlna.dart';
@@ -108,14 +109,16 @@ mixin CastMixin {
 
   Future<Response> _sendEntry(AvesEntry entry) async {
     // TODO TLAD [cast] providing downscaled versions is suitable when properly serving with `MediaServer`, as the renderer can pick what is best
-    final bytes = await mediaFetchService.getImage(
+    final request = ImageRequest(
       entry.uri,
       entry.mimeType,
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
+      isAnimated: entry.isAnimated,
       pageId: entry.pageId,
       sizeBytes: entry.sizeBytes,
     );
+    final bytes = await mediaFetchService.getEncodedImage(request);
 
     debugPrint('cast: send ${bytes.length} bytes for entry=$entry');
     return Response.ok(

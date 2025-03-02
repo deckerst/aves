@@ -17,6 +17,7 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
+import androidx.core.graphics.scale
 
 @GlideModule
 class TiffGlideModule : LibraryGlideModule() {
@@ -96,7 +97,7 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
                     dstWidth = width
                     dstHeight = (width / aspectRatio).toInt()
                 }
-                callback.onDataReady(Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, true))
+                callback.onDataReady(bitmap.scale(dstWidth, dstHeight))
             } else {
                 callback.onDataReady(bitmap)
             }
