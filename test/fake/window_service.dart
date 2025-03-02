@@ -26,5 +26,5 @@ class FakeWindowService extends Fake implements WindowService {
   Future<bool> supportsHdr() => SynchronousFuture(false);
 
   @override
-  Future<void> setHdrColorMode(bool on) => SynchronousFuture(null);
+  Future<void> setColorMode({required bool wideColorGamut, required bool hdr}) => SynchronousFuture(null);
 }
