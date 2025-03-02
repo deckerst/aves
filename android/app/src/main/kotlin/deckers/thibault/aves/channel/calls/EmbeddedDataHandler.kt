@@ -10,7 +10,6 @@ import com.adobe.internal.xmp.XMPUtils
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.metadataextractor.Helper
@@ -23,7 +22,7 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getEncodedBytes
+import deckers.thibault.aves.utils.BitmapUtils.getDecodedBytes
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -47,7 +46,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
+            "getExifThumbnails" -> ioScope.launch { safe(call, result, ::getExifThumbnails) }
             "extractGoogleDeviceItem" -> ioScope.launch { safe(call, result, ::extractGoogleDeviceItem) }
             "extractJpegMpfItem" -> ioScope.launch { safe(call, result, ::extractJpegMpfItem) }
             "extractMotionPhotoImage" -> ioScope.launch { safe(call, result, ::extractMotionPhotoImage) }
@@ -58,7 +57,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private suspend fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
+    private fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
@@ -75,7 +74,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     exif.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
-                            it.getEncodedBytes(canHaveAlpha = false, recycle = false)?.let { bytes -> thumbnails.add(bytes) }
+                            it.getDecodedBytes(recycle = false)?.let { bytes -> thumbnails.add(bytes) }
                         }
                     }
                 }
