@@ -4,16 +4,17 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
+import android.graphics.ColorSpace
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.BitmapUtils.getDecodedBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
@@ -33,7 +34,10 @@ class RegionFetcher internal constructor(
 
     private val exportUris = HashMap<Pair<Uri, Int?>, Uri>()
 
-    suspend fun fetch(
+    // return decoded bytes in ARGB_8888, with trailer bytes:
+    // - width (int32)
+    // - height (int32)
+    fun fetch(
         uri: Uri,
         mimeType: String,
         pageId: Int?,
@@ -99,26 +103,37 @@ class RegionFetcher internal constructor(
                 }
             }
 
-            // use `Long` as rect size could be unexpectedly large and go beyond `Int` max
-            val targetBitmapSizeBytes: Long = ARGB_8888_BYTE_SIZE.toLong() * effectiveRect.width() * effectiveRect.height() / effectiveSampleSize
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = effectiveSampleSize
+                // Specifying preferred config and color space avoids the need for conversion afterwards,
+                // but may prevent decoding (e.g. from RGBA_1010102 to ARGB_8888 on some devices).
+                inPreferredConfig = PREFERRED_CONFIG
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    inPreferredColorSpace = ColorSpace.get(ColorSpace.Named.SRGB)
+                }
+            }
+
+            val pixelCount = effectiveRect.width() * effectiveRect.height() / effectiveSampleSize
+            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), options.inPreferredConfig)
             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                 // decoding a region that large would yield an OOM when creating the bitmap
                 result.error("fetch-large-region", "Region too large for uri=$uri regionRect=$regionRect", null)
                 return
             }
 
-            val options = BitmapFactory.Options().apply {
-                inSampleSize = effectiveSampleSize
-            }
-            val bitmap = decoder.decodeRegion(effectiveRect, options)
-            if (bitmap != null) {
-                val canHaveAlpha = MimeTypes.canHaveAlpha(mimeType)
-                val recycle = false
-                var bytes = bitmap.getBytes(canHaveAlpha, recycle = recycle)
-                if (bytes != null && bytes.isEmpty()) {
-                    bytes = BitmapUtils.tryPixelFormatConversion(bitmap)?.getBytes(canHaveAlpha, recycle = recycle)
+            var bitmap = decoder.decodeRegion(effectiveRect, options)
+            if (bitmap == null) {
+                // retry without specifying config or color space,
+                // falling back to custom byte conversion afterwards
+                options.inPreferredConfig = null
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && options.inPreferredColorSpace != null) {
+                    options.inPreferredColorSpace = null
                 }
-                bitmap.recycle()
+                bitmap = decoder.decodeRegion(effectiveRect, options)
+            }
+
+            val bytes = bitmap?.getDecodedBytes(recycle = true)
+            if (bytes != null) {
                 result.success(bytes)
             } else {
                 result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
@@ -173,5 +188,6 @@ class RegionFetcher internal constructor(
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<RegionFetcher>()
+        private val PREFERRED_CONFIG = Bitmap.Config.ARGB_8888
     }
 }

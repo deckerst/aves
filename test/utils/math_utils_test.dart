@@ -22,6 +22,7 @@ void main() {
     expect(smallestPowerOf2(1.5), 2);
     expect(smallestPowerOf2(0.5, allowNegativePower: true), 0.5);
     expect(smallestPowerOf2(0.1, allowNegativePower: true), 0.125);
+    expect(smallestPowerOf2(0, allowNegativePower: true), 1);
   });
 
   test('rounding to a given precision after the decimal', () {
