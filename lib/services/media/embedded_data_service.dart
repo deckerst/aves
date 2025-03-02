@@ -1,10 +1,13 @@
+import 'dart:ui' as ui;
+
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/text.dart';
 import 'package:flutter/services.dart';
 
 abstract class EmbeddedDataService {
-  Future<List<Uint8List>> getExifThumbnails(AvesEntry entry);
+  Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry);
 
   Future<Map> extractGoogleDeviceItem(AvesEntry entry, String dataUri);
 
@@ -23,14 +26,20 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   static const _platform = MethodChannel('deckers.thibault/aves/embedded');
 
   @override
-  Future<List<Uint8List>> getExifThumbnails(AvesEntry entry) async {
+  Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry) async {
     try {
       final result = await _platform.invokeMethod('getExifThumbnails', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
       });
-      if (result != null) return (result as List).cast<Uint8List>();
+      if (result != null) {
+        final descriptors = <ui.ImageDescriptor?>[];
+        await Future.forEach((result as List).cast<Uint8List>(), (bytes) async {
+          descriptors.add(await InteropDecoding.bytesToCodec(bytes));
+        });
+        return descriptors;
+      }
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
