@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:aves/geo/uri.dart';
@@ -6,6 +7,7 @@ import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +17,7 @@ import 'package:streams_channel/streams_channel.dart';
 abstract class AppService {
   Future<Set<Package>> getPackages();
 
-  Future<Uint8List> getAppIcon(String packageName, double size);
+  Future<ui.ImageDescriptor?> getAppIcon(String packageName, double size);
 
   Future<bool> copyToClipboard(String uri, String? label);
 
@@ -75,17 +77,20 @@ class PlatformAppService implements AppService {
   }
 
   @override
-  Future<Uint8List> getAppIcon(String packageName, double size) async {
+  Future<ui.ImageDescriptor?> getAppIcon(String packageName, double size) async {
     try {
       final result = await _platform.invokeMethod('getAppIcon', <String, dynamic>{
         'packageName': packageName,
         'sizeDip': size,
       });
-      if (result != null) return result as Uint8List;
+      if (result != null) {
+        final bytes = result as Uint8List;
+        return InteropDecoding.bytesToCodec(bytes);
+      }
     } on PlatformException catch (_) {
       // ignore, as some packages legitimately do not have icons
     }
-    return Uint8List(0);
+    return null;
   }
 
   @override
