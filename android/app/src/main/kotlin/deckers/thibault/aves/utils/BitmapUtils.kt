@@ -19,9 +19,6 @@ object BitmapUtils {
     private val LOG_TAG = LogUtils.createTag<BitmapUtils>()
     private const val INITIAL_BUFFER_SIZE = 2 shl 17 // 256kB
 
-    // arbitrary size to detect buffer that may yield an OOM
-    private const val BUFFER_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
-
     private val freeBaos = ArrayList<ByteArrayOutputStream>()
     private val mutex = Mutex()
 
@@ -61,7 +58,15 @@ object BitmapUtils {
         return pixelCount * getBytePerPixel(config)
     }
 
-    fun Bitmap.getRawBytes(recycle: Boolean): ByteArray? {
+    fun getRawBytes(bitmap: Bitmap?, recycle: Boolean): ByteArray? {
+        bitmap ?: return null
+
+        val byteCount = bitmap.byteCount
+        val width = bitmap.width
+        val height = bitmap.height
+        val config = bitmap.config
+        val colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) bitmap.colorSpace else null
+
         if (!MemoryUtils.canAllocate(byteCount)) {
             throw Exception("bitmap buffer is $byteCount bytes, which cannot be allocated to a new byte array")
         }
@@ -69,8 +74,11 @@ object BitmapUtils {
         try {
             // `ByteBuffer` initial order is always `BIG_ENDIAN`
             var bytes = ByteBuffer.allocate(byteCount + RAW_BYTES_TRAILER_LENGTH).apply {
-                copyPixelsToBuffer(this)
+                bitmap.copyPixelsToBuffer(this)
             }.array()
+
+            // do not access bitmap after recycling
+            if (recycle) bitmap.recycle()
 
             // convert pixel format and color space, if necessary
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -91,9 +99,6 @@ object BitmapUtils {
                 }
             }
 
-            // should not be called before accessing color space or other properties
-            if (recycle) this.recycle()
-
             // append bitmap size for use by the caller to interpret the raw bytes
             val trailerOffset = bytes.size - RAW_BYTES_TRAILER_LENGTH
             bytes = ByteBuffer.wrap(bytes).apply {
@@ -109,7 +114,9 @@ object BitmapUtils {
         return null
     }
 
-    suspend fun Bitmap.getEncodedBytes(canHaveAlpha: Boolean = false, quality: Int = 100, recycle: Boolean): ByteArray? {
+    suspend fun getEncodedBytes(bitmap: Bitmap?, canHaveAlpha: Boolean = false, quality: Int = 100, recycle: Boolean): ByteArray? {
+        bitmap ?: return null
+
         val stream: ByteArrayOutputStream
         mutex.withLock {
             // this method is called a lot, so we try and reuse output streams
@@ -123,15 +130,15 @@ object BitmapUtils {
         try {
             // `Bitmap.CompressFormat.PNG` is slower than `JPEG`, but it allows transparency
             // the BMP format allows an alpha channel, but Android decoding seems to ignore it
-            if (canHaveAlpha && hasAlpha()) {
-                this.compress(Bitmap.CompressFormat.PNG, quality, stream)
+            if (canHaveAlpha && bitmap.hasAlpha()) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, quality, stream)
             } else {
-                this.compress(Bitmap.CompressFormat.JPEG, quality, stream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
             }
-            if (recycle) this.recycle()
+            if (recycle) bitmap.recycle()
 
             val bufferSize = stream.size()
-            if (bufferSize > BUFFER_SIZE_DANGER_THRESHOLD && !MemoryUtils.canAllocate(bufferSize)) {
+            if (!MemoryUtils.canAllocate(bufferSize)) {
                 throw Exception("bitmap compressed to $bufferSize bytes, which cannot be allocated to a new byte array")
             }
 

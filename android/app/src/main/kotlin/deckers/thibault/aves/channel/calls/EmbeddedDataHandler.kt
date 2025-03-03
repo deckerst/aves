@@ -22,7 +22,6 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getRawBytes
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -74,7 +73,9 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     exif.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
-                            it.getRawBytes(recycle = false)?.let { bytes -> thumbnails.add(bytes) }
+                            // do not recycle bitmaps fetched from `ExifInterface` as their lifecycle is unknown
+                            val recycle = false
+                            BitmapUtils.getRawBytes(it, recycle = recycle)?.let { bytes -> thumbnails.add(bytes) }
                         }
                     }
                 }

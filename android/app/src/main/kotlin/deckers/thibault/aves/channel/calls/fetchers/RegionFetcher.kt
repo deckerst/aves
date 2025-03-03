@@ -14,7 +14,6 @@ import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getRawBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
@@ -132,7 +131,7 @@ class RegionFetcher internal constructor(
                 bitmap = decoder.decodeRegion(effectiveRect, options)
             }
 
-            val bytes = bitmap?.getRawBytes(recycle = true)
+            val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
             if (bytes != null) {
                 result.success(bytes)
             } else {

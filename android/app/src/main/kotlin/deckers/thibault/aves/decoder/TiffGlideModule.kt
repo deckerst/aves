@@ -83,7 +83,7 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             inSampleSize = sampleSize
         }
         try {
-            val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            val bitmap: Bitmap? = TiffBitmapFactory.decodeFileDescriptor(fd, options)
             if (bitmap == null) {
                 callback.onLoadFailed(Exception("Decoding full TIFF yielded null bitmap"))
             } else if (customSize) {
