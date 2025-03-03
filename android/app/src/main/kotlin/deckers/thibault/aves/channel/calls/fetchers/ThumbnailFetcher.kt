@@ -16,7 +16,7 @@ import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
-import deckers.thibault.aves.utils.BitmapUtils.getDecodedBytes
+import deckers.thibault.aves.utils.BitmapUtils.getRawBytes
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.SVG
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -77,7 +77,7 @@ class ThumbnailFetcher internal constructor(
             }
         }
 
-        val bytes = bitmap?.getDecodedBytes(recycle = false)
+        val bytes = bitmap?.getRawBytes(recycle = false)
         if (bytes != null) {
             result.success(bytes)
         } else {

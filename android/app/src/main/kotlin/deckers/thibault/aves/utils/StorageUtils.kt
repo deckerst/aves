@@ -15,6 +15,8 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.net.toUri
+import androidx.core.text.isDigitsOnly
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.utils.FileUtils.transferFrom
@@ -29,8 +31,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
 import java.util.regex.Pattern
-import androidx.core.net.toUri
-import androidx.core.text.isDigitsOnly
 
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()

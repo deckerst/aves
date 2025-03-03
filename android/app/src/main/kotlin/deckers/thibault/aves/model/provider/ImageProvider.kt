@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.util.Log
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.commonsware.cwac.document.DocumentFileCompat
@@ -32,6 +33,7 @@ import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.model.AvesEntry
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictResolution
@@ -63,8 +65,6 @@ import java.util.Date
 import java.util.TimeZone
 import kotlin.math.absoluteValue
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
-import androidx.core.net.toUri
-import deckers.thibault.aves.model.EntryFields
 
 abstract class ImageProvider {
     open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {

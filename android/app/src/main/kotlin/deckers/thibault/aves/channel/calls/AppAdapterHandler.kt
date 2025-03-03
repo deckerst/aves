@@ -38,7 +38,7 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getDecodedBytes
+import deckers.thibault.aves.utils.BitmapUtils.getRawBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getApplicationInfoCompat
@@ -175,7 +175,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
                 try {
                     val bitmap = withContext(Dispatchers.IO) { target.get() }
-                    bytes = bitmap?.getDecodedBytes(recycle = false)
+                    bytes = bitmap?.getRawBytes(recycle = false)
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
                 }

@@ -9,8 +9,8 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
-import deckers.thibault.aves.utils.BitmapUtils.getDecodedBytes
 import deckers.thibault.aves.utils.BitmapUtils.getEncodedBytes
+import deckers.thibault.aves.utils.BitmapUtils.getRawBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -155,7 +155,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             if (bitmap != null) {
                 val recycle = false
                 val bytes = if (decoded) {
-                    bitmap.getDecodedBytes(recycle)
+                    bitmap.getRawBytes(recycle)
                 } else {
                     bitmap.getEncodedBytes(canHaveAlpha = MimeTypes.canHaveAlpha(mimeType), recycle = recycle)
                 }
@@ -186,7 +186,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             if (bitmap != null) {
                 val recycle = false
                 val bytes = if (decoded) {
-                    bitmap.getDecodedBytes(recycle)
+                    bitmap.getRawBytes(recycle)
                 } else {
                     bitmap.getEncodedBytes(canHaveAlpha = false, recycle = false)
                 }

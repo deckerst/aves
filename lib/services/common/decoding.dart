@@ -7,9 +7,10 @@ import 'package:flutter/services.dart';
 class InteropDecoding {
   static Future<ui.ImageDescriptor?> bytesToCodec(Uint8List bytes) async {
     const trailerLength = 4 * 2;
-    if (bytes.length < trailerLength) return null;
+    final byteCount = bytes.length;
+    if (byteCount < trailerLength) return null;
 
-    final trailerOffset = bytes.length - trailerLength;
+    final trailerOffset = byteCount - trailerLength;
     final trailer = ByteData.sublistView(bytes, trailerOffset);
     final bitmapWidth = trailer.getUint32(0);
     final bitmapHeight = trailer.getUint32(4);

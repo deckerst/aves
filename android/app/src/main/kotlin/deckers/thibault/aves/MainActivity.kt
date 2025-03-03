@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.net.toUri
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
@@ -69,7 +70,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
-import androidx.core.net.toUri
 
 // `FlutterFragmentActivity` because of local auth plugin
 open class MainActivity : FlutterFragmentActivity() {
