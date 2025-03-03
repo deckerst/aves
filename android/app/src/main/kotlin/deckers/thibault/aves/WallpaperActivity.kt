@@ -2,12 +2,12 @@ package deckers.thibault.aves
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import androidx.core.net.toUri
 
 class WallpaperActivity : MainActivity() {
     private var originalIntent: String? = null

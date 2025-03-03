@@ -4,9 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
 import android.os.Build
+import android.util.Half
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import deckers.thibault.aves.metadata.Metadata.getExifCode
@@ -29,6 +29,8 @@ object BitmapUtils {
     private const val MAX_2_BITS_FLOAT = 0x3.toFloat()
     private const val MAX_8_BITS_FLOAT = 0xff.toFloat()
     private const val MAX_10_BITS_FLOAT = 0x3ff.toFloat()
+
+    private const val RAW_BYTES_TRAILER_LENGTH = INT_BYTE_SIZE * 2
 
     // bytes per pixel with different bitmap config
     private const val BPP_ALPHA_8 = 1
@@ -59,19 +61,15 @@ object BitmapUtils {
         return pixelCount * getBytePerPixel(config)
     }
 
-    fun Bitmap.getDecodedBytes(recycle: Boolean): ByteArray? {
+    fun Bitmap.getRawBytes(recycle: Boolean): ByteArray? {
         if (!MemoryUtils.canAllocate(byteCount)) {
             throw Exception("bitmap buffer is $byteCount bytes, which cannot be allocated to a new byte array")
         }
 
         try {
-            val bytes = ByteBuffer.allocate(byteCount + INT_BYTE_SIZE * 2).apply {
+            // `ByteBuffer` initial order is always `BIG_ENDIAN`
+            var bytes = ByteBuffer.allocate(byteCount + RAW_BYTES_TRAILER_LENGTH).apply {
                 copyPixelsToBuffer(this)
-                // append bitmap size for use by the caller
-                putInt(width)
-                putInt(height)
-
-                rewind()
             }.array()
 
             // convert pixel format and color space, if necessary
@@ -81,16 +79,28 @@ object BitmapUtils {
                     val connector = ColorSpace.connect(srcColorSpace, dstColorSpace)
                     if (config == Bitmap.Config.ARGB_8888) {
                         if (srcColorSpace != dstColorSpace) {
-                            argb8888toArgb8888(bytes, connector, end = byteCount)
+                            argb8888ToArgb8888(bytes, connector, end = byteCount)
                         }
+                    } else if (config == Bitmap.Config.RGBA_F16) {
+                        rgbaf16ToArgb8888(bytes, connector, end = byteCount)
+                        val newConfigByteCount = byteCount / (BPP_RGBA_F16 / BPP_ARGB_8888)
+                        bytes = bytes.sliceArray(0..<newConfigByteCount + RAW_BYTES_TRAILER_LENGTH)
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && config == Bitmap.Config.RGBA_1010102) {
-                        rgba1010102toArgb8888(bytes, connector, end = byteCount)
+                        rgba1010102ToArgb8888(bytes, connector, end = byteCount)
                     }
                 }
             }
 
             // should not be called before accessing color space or other properties
             if (recycle) this.recycle()
+
+            // append bitmap size for use by the caller to interpret the raw bytes
+            val trailerOffset = bytes.size - RAW_BYTES_TRAILER_LENGTH
+            bytes = ByteBuffer.wrap(bytes).apply {
+                position(trailerOffset)
+                putInt(width)
+                putInt(height)
+            }.array()
 
             return bytes
         } catch (e: Exception) {
@@ -111,8 +121,6 @@ object BitmapUtils {
             }
         }
         try {
-            // the Bitmap raw bytes are not decodable by Flutter
-            // we need to format them (compress, or add a BMP header) before sending them
             // `Bitmap.CompressFormat.PNG` is slower than `JPEG`, but it allows transparency
             // the BMP format allows an alpha channel, but Android decoding seems to ignore it
             if (canHaveAlpha && hasAlpha()) {
@@ -139,8 +147,10 @@ object BitmapUtils {
         return null
     }
 
+    // convert bytes, without reallocation:
+    // - from original color space to sRGB.
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun argb8888toArgb8888(bytes: ByteArray, connector: ColorSpace.Connector, start: Int = 0, end: Int = bytes.size) {
+    private fun argb8888ToArgb8888(bytes: ByteArray, connector: ColorSpace.Connector, start: Int = 0, end: Int = bytes.size) {
         // unpacking from ARGB_8888 and packing to ARGB_8888
         // stored as [3,2,1,0] -> [AAAAAAAA BBBBBBBB GGGGGGGG RRRRRRRR]
         for (i in start..<end step BPP_ARGB_8888) {
@@ -163,10 +173,50 @@ object BitmapUtils {
     }
 
     // convert bytes, without reallocation:
+    // - from config RGBA_F16 to ARGB_8888,
+    // - from original color space to sRGB.
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun rgbaf16ToArgb8888(bytes: ByteArray, connector: ColorSpace.Connector, start: Int = 0, end: Int = bytes.size) {
+        val indexDivider = BPP_RGBA_F16 / BPP_ARGB_8888
+        for (i in start..<end step BPP_RGBA_F16) {
+            // unpacking from RGBA_F16
+            // stored as [7,6,5,4,3,2,1,0] -> [AAAAAAAA AAAAAAAA BBBBBBBB BBBBBBBB GGGGGGGG GGGGGGGG RRRRRRRR RRRRRRRR]
+            val i7 = bytes[i + 7].toInt()
+            val i6 = bytes[i + 6].toInt()
+            val i5 = bytes[i + 5].toInt()
+            val i4 = bytes[i + 4].toInt()
+            val i3 = bytes[i + 3].toInt()
+            val i2 = bytes[i + 2].toInt()
+            val i1 = bytes[i + 1].toInt()
+            val i0 = bytes[i].toInt()
+
+            val hA = Half((((i7 and 0xff) shl 8) or (i6 and 0xff)).toShort())
+            val hB = Half((((i5 and 0xff) shl 8) or (i4 and 0xff)).toShort())
+            val hG = Half((((i3 and 0xff) shl 8) or (i2 and 0xff)).toShort())
+            val hR = Half((((i1 and 0xff) shl 8) or (i0 and 0xff)).toShort())
+
+            // components as floats in sRGB
+            val srgbFloats = connector.transform(hR.toFloat(), hG.toFloat(), hB.toFloat())
+            val srgbR = (srgbFloats[0] * 255.0f + 0.5f).toInt()
+            val srgbG = (srgbFloats[1] * 255.0f + 0.5f).toInt()
+            val srgbB = (srgbFloats[2] * 255.0f + 0.5f).toInt()
+            val alpha = (hA.toFloat() * 255.0f + 0.5f).toInt()
+
+            // packing to ARGB_8888
+            // stored as [3,2,1,0] -> [AAAAAAAA BBBBBBBB GGGGGGGG RRRRRRRR]
+            val dstI = i / indexDivider
+            bytes[dstI + 3] = alpha.toByte()
+            bytes[dstI + 2] = srgbB.toByte()
+            bytes[dstI + 1] = srgbG.toByte()
+            bytes[dstI] = srgbR.toByte()
+        }
+    }
+
+    // convert bytes, without reallocation:
     // - from config RGBA_1010102 to ARGB_8888,
     // - from original color space to sRGB.
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun rgba1010102toArgb8888(bytes: ByteArray, connector: ColorSpace.Connector, start: Int = 0, end: Int = bytes.size) {
+    private fun rgba1010102ToArgb8888(bytes: ByteArray, connector: ColorSpace.Connector, start: Int = 0, end: Int = bytes.size) {
         val alphaFactor = 255.0f / MAX_2_BITS_FLOAT
 
         for (i in start..<end step BPP_RGBA_1010102) {

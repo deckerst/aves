@@ -14,7 +14,7 @@ import com.caverock.androidsvg.SVGParseException
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getDecodedBytes
+import deckers.thibault.aves.utils.BitmapUtils.getRawBytes
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
@@ -109,7 +109,7 @@ class SvgRegionFetcher internal constructor(
             svg.renderToCanvas(canvas, renderOptions)
 
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)
-            val bytes = bitmap.getDecodedBytes(recycle = true)
+            val bytes = bitmap.getRawBytes(recycle = true)
             result.success(bytes)
         } catch (e: Exception) {
             result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)

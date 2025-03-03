@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import androidx.core.net.toUri
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.jpeg.JpegDirectory
@@ -29,7 +30,6 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
-import androidx.core.net.toUri
 
 class SourceEntry {
     private val origin: Int
