@@ -110,15 +110,15 @@ class PlatformMediaFetchService implements MediaFetchService {
 
   @override
   Future<Uint8List> getEncodedImage(ImageRequest request) {
-    return getBytes(request, decoded: false);
+    return _getBytes(request, decoded: false);
   }
 
   @override
   Future<ui.ImageDescriptor?> getDecodedImage(ImageRequest request) async {
-    return getBytes(request, decoded: true).then(InteropDecoding.bytesToCodec);
+    return _getBytes(request, decoded: true).then(InteropDecoding.bytesToCodec);
   }
 
-  Future<Uint8List> getBytes(ImageRequest request, {required bool decoded}) async {
+  Future<Uint8List> _getBytes(ImageRequest request, {required bool decoded}) async {
     final _onBytesReceived = request.onBytesReceived;
     try {
       final opCompleter = Completer<Uint8List>();
@@ -157,6 +157,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
+      debugPrint('$runtimeType _getBytes failed with error=$e');
       if (_isUnknownVisual(request.mimeType)) {
         await reportService.recordError(e, stack);
       }

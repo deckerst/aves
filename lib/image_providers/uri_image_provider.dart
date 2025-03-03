@@ -49,22 +49,17 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
     );
   }
 
-  // as of Flutter v3.16.4, with additional custom handling for SVG in Dart,
-  // while handling still PNG and JPEG on Android for color space and config conversion
+  // prefer Flutter for animation, as well as niche formats and SVG
+  // prefer Android for the rest, to rely on device codecs and handle config conversion
   bool _canDecodeWithFlutter(String mimeType, bool isAnimated) {
     switch(mimeType) {
-      case MimeTypes.gif:
-      case MimeTypes.webp:
       case MimeTypes.bmp:
       case MimeTypes.wbmp:
       case MimeTypes.ico:
       case MimeTypes.svg:
         return true;
-      case MimeTypes.jpeg:
-      case MimeTypes.png:
-        return isAnimated;
       default:
-        return false;
+        return isAnimated;
     }
   }
 

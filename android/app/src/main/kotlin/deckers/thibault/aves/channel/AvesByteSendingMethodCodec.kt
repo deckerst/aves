@@ -21,27 +21,28 @@ class AvesByteSendingMethodCodec private constructor() : MethodCodec {
         return STANDARD.encodeMethodCall(methodCall)
     }
 
+    override fun encodeErrorEnvelope(errorCode: String, errorMessage: String?, errorDetails: Any?): ByteBuffer {
+        return STANDARD.encodeErrorEnvelope(errorCode, errorMessage, errorDetails)
+    }
+
+    override fun encodeErrorEnvelopeWithStacktrace(errorCode: String, errorMessage: String?, errorDetails: Any?, errorStacktrace: String?): ByteBuffer {
+        return STANDARD.encodeErrorEnvelopeWithStacktrace(errorCode, errorMessage, errorDetails, errorStacktrace)
+    }
+
+    // `StandardMethodCodec` writes the result to a `ByteArrayOutputStream`, then writes the stream to a `ByteBuffer`.
+    // Here we only handle `ByteArray` results, but we avoid the intermediate stream.
     override fun encodeSuccessEnvelope(result: Any?): ByteBuffer {
         if (result is ByteArray) {
-            val size = result.size
-            return ByteBuffer.allocateDirect(4 + size).apply {
+            return ByteBuffer.allocateDirect(1 + result.size).apply {
+                // following `StandardMethodCodec`:
+                // First byte is zero in success case, and non-zero otherwise.
                 put(0)
                 put(result)
             }
         }
 
         Log.e(LOG_TAG, "encodeSuccessEnvelope failed with result=$result")
-        return ByteBuffer.allocateDirect(0)
-    }
-
-    override fun encodeErrorEnvelope(errorCode: String, errorMessage: String?, errorDetails: Any?): ByteBuffer {
-        Log.e(LOG_TAG, "encodeErrorEnvelope failed with errorCode=$errorCode, errorMessage=$errorMessage, errorDetails=$errorDetails")
-        return ByteBuffer.allocateDirect(0)
-    }
-
-    override fun encodeErrorEnvelopeWithStacktrace(errorCode: String, errorMessage: String?, errorDetails: Any?, errorStacktrace: String?): ByteBuffer {
-        Log.e(LOG_TAG, "encodeErrorEnvelopeWithStacktrace failed with errorCode=$errorCode, errorMessage=$errorMessage, errorDetails=$errorDetails, errorStacktrace=$errorStacktrace")
-        return ByteBuffer.allocateDirect(0)
+        return encodeErrorEnvelope("invalid-result-type", "Called success with a result which is not a `ByteArray`, type=${result?.javaClass}", null)
     }
 
     companion object {
