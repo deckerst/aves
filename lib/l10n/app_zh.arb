@@ -1414,5 +1414,7 @@
   "editEntryLocationDialogImportGpx": "导入 GPX",
   "@editEntryLocationDialogImportGpx": {},
   "removeEntryMetadataDialogAll": "全部",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "editEntryLocationDialogTimeShift": "时间时移",
+  "@editEntryLocationDialogTimeShift": {}
 }
