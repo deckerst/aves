@@ -20,7 +20,7 @@ class VideoControlButtonsPage extends StatelessWidget {
     return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !settings.useTvLayout,
-        title: Text(context.l10n.settingsVideoControlsPageTitle),
+        title: Text(context.l10n.settingsVideoButtonsTile),
       ),
       body: SafeArea(
         child: Selector<Settings, List<EntryAction>>(
