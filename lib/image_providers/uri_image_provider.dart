@@ -51,15 +51,15 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
 
   // prefer Flutter for animation, as well as niche formats and SVG
   // prefer Android for the rest, to rely on device codecs and handle config conversion
-  bool _canDecodeWithFlutter(String mimeType, bool isAnimated) {
-    switch(mimeType) {
+  bool _preferPlatformDecoding(String mimeType, bool isAnimated) {
+    switch (mimeType) {
       case MimeTypes.bmp:
       case MimeTypes.wbmp:
       case MimeTypes.ico:
       case MimeTypes.svg:
-        return true;
+        return false;
       default:
-        return isAnimated;
+        return !isAnimated;
     }
   }
 
@@ -82,22 +82,23 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
       },
     );
     try {
-      if (_canDecodeWithFlutter(mimeType, isAnimated)) {
-        // get original media bytes from platform, and rely on a codec instantiated by `ImageProvider`
-        final bytes = await mediaFetchService.getEncodedImage(request);
-        if (bytes.isEmpty) {
-          throw UnreportedStateError('$uri ($mimeType) image loading failed');
-        }
-        final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-        return await decode(buffer);
-      } else {
+      if (_preferPlatformDecoding(mimeType, isAnimated)) {
         // get decoded media bytes from platform, and rely on a codec instantiated from raw bytes
         final descriptor = await mediaFetchService.getDecodedImage(request);
-        if (descriptor == null) {
-          throw UnreportedStateError('$uri ($mimeType) image loading failed');
+        if (descriptor != null) {
+          return descriptor.instantiateCodec();
         }
-        return descriptor.instantiateCodec();
+        debugPrint('failed to load decoded image for mimeType=$mimeType uri=$uri, falling back to loading encoded image');
       }
+
+      // fallback
+      // get original media bytes from platform, and rely on a codec instantiated by `ImageProvider`
+      final bytes = await mediaFetchService.getEncodedImage(request);
+      if (bytes.isEmpty) {
+        throw UnreportedStateError('$uri ($mimeType) image loading failed');
+      }
+      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+      return await decode(buffer);
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');

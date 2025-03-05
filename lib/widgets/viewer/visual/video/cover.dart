@@ -58,7 +58,7 @@ class _VideoCoverState extends State<VideoCover> {
   Size get videoDisplaySize => widget.videoDisplaySize;
 
   // use the high res photo as cover for the video part of a motion photo
-  ImageProvider get videoCoverUriImage => mainEntry.isMotionPhoto ? mainEntry.uriImage : entry.uriImage;
+  ImageProvider get videoCoverUriImage => (mainEntry.isMotionPhoto ? mainEntry : entry).uriImage;
 
   @override
   void initState() {
