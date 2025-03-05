@@ -997,7 +997,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'Auf Karte wählen';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'GPX importieren';
 
   @override
   String get editEntryLocationDialogLatitude => 'Breitengrad';

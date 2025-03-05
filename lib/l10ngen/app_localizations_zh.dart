@@ -1000,7 +1000,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get editEntryLocationDialogLongitude => '经度';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => '时间时移';
 
   @override
   String get locationPickerUseThisLocationButton => '使用此位置';
