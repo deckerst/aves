@@ -84,6 +84,8 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
         }
         try {
             val bitmap: Bitmap? = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            // calling `TiffBitmapFactory.closeFd(fd)` after decoding yields a segmentation fault
+
             if (bitmap == null) {
                 callback.onLoadFailed(Exception("Decoding full TIFF yielded null bitmap"))
             } else if (customSize) {
