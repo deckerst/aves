@@ -142,9 +142,9 @@ class Dependencies {
 
   static const List<Dependency> _googleMobileServices = [
     Dependency(
-      name: 'Google API Availability (Aves fork)',
+      name: 'Google API Availability',
       license: mit,
-      sourceUrl: 'https://github.com/deckerst/flutter-google-api-availability',
+      sourceUrl: 'https://github.com/Baseflow/flutter-google-api-availability',
     ),
     Dependency(
       name: 'Google Maps for Flutter',
