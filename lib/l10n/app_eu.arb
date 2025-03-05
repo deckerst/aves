@@ -4,7 +4,9 @@
   "columnCount": "{count, plural, =1{zutabe {count}} other{{count} zutabe}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{segundu {count}} other{{count} segundu}}",
@@ -53,7 +55,9 @@
   "itemCount": "{count, plural, =1{elementu {count}} other{{count} elementu}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "welcomeTermsToggle": "Termino eta baldintzekin ados nago",
@@ -412,7 +416,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Elementu hau zakarrontzira bidali nahi al duzu?} other{{count} elementu hauek zakarrontzira bidali nahi al dituzu?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addShortcutDialogLabel": "Laster-bidearen etiketa",
@@ -420,7 +426,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Eragiketa hau ez da bateragarria aukeratutako hurrengo elementu-motarentzako: {types}.} other{Eragiketa hau ez da bateragarria aukeratutako hurrengo elementu-motentzako: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -454,7 +462,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Elementu hau ezaba nahi al duzu?} other{{count} elementu hauek ezaba nahi al dituzu?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoResumeButtonLabel": "JARRAITU",
@@ -486,7 +496,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Album hauek eta hauetan dagoen elementua ezaba nahi al dituzu?} other{Album hauek eta hauetan dauden {count} elementuak ezaba nahi al dituzu?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogFormat": "Formatua:",
@@ -538,7 +550,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Album hau eta bertako elementua ezaba nahi al dituzu?} other{Album hau eta bertako {count} elementuak ezaba nahi al dituzu?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "editEntryLocationDialogTitle": "Kokapena",
@@ -704,19 +718,25 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{Akatsa elementu 1 kopiatzean} other{Akatsa {count} elementu kopiatzean}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Akatsa elementu 1 mugitzean} other{Akatsa {count} elementu mugitzean}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Akatsa elementu 1 berrizendatzean} other{Akatsa {count} elementu berrizendatzean}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "Gogokorik ez",
@@ -724,25 +744,33 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{Elementu 1 kopiatuta} other{{count} elementu kopiatuta}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Elementu 1 mugituta} other{{count} elementu mugituta}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{Elementu 1 berrizendatuta} other{{count} elementu berrizendatuta}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Elementu 1 editatuta} other{{count} elementu editatuta}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyImages": "Irudirik ez",
@@ -764,19 +792,25 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Akatsa elementu 1 ezabatzean} other{Akatsa {count} elementu ezabatzean}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Akatsa elementu 1 editatzean} other{Akatsa {count} elementu editatzean}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Akatsa orri 1 esportatzean} other{Akatsa {count} orri esportatzean}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "sortByRating": "Balorazioaren arabera",
@@ -1178,7 +1212,9 @@
   "statsWithGps": "{count, plural, =1{Elementu 1 kokapenarekin} other{{count} elementu kokapenarekin}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsTopCountriesSectionTitle": "Herrialde nagusiak",

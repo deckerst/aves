@@ -6,11 +6,10 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/trash.dart';
@@ -230,7 +229,7 @@ class CollectionLens with ChangeNotifier {
   void _stackDevelopedRaws() {
     final allRawEntries = _filteredSortedEntries.where((entry) => entry.isRaw).toSet();
     if (allRawEntries.isNotEmpty) {
-      final allDevelopedEntries = _filteredSortedEntries.where(MimeFilter(MimeTypes.jpeg).test).toSet();
+      final allDevelopedEntries = _filteredSortedEntries.where((entry) => MimeTypes.developedRawImages.contains(entry.mimeType)).toSet();
       final rawEntriesByDir = groupBy<AvesEntry, String?>(allRawEntries, (entry) => entry.directory);
       rawEntriesByDir.forEach((dir, dirRawEntries) {
         if (dir != null) {

@@ -18,15 +18,17 @@ abstract class WindowService {
 
   Future<EdgeInsets> getCutoutInsets();
 
+  Future<bool> supportsWideGamut();
+
   Future<bool> supportsHdr();
 
-  Future<void> setHdrColorMode(bool on);
+  Future<void> setColorMode({required bool wideColorGamut, required bool hdr});
 }
 
 class PlatformWindowService implements WindowService {
   static const _platform = MethodChannel('deckers.thibault/aves/window');
 
-  bool? _isCutoutAware, _supportsHdr;
+  bool? _isCutoutAware, _supportsHdr, _supportsWideGamut;
 
   @override
   Future<bool> isActivity() async {
@@ -127,6 +129,18 @@ class PlatformWindowService implements WindowService {
   }
 
   @override
+  Future<bool> supportsWideGamut() async {
+    if (_supportsWideGamut != null) return SynchronousFuture(_supportsWideGamut!);
+    try {
+      final result = await _platform.invokeMethod('supportsWideGamut');
+      _supportsWideGamut = result as bool?;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return _supportsWideGamut ?? false;
+  }
+
+  @override
   Future<bool> supportsHdr() async {
     if (_supportsHdr != null) return SynchronousFuture(_supportsHdr!);
     try {
@@ -139,11 +153,12 @@ class PlatformWindowService implements WindowService {
   }
 
   @override
-  Future<void> setHdrColorMode(bool on) async {
+  Future<void> setColorMode({required bool wideColorGamut, required bool hdr}) async {
     // TODO TLAD [hdr] enable when ready
     // try {
-    //   await _platform.invokeMethod('setHdrColorMode', <String, dynamic>{
-    //     'on': on,
+    //   await _platform.invokeMethod('setColorMode', <String, dynamic>{
+    //     'wideColorGamut': wideColorGamut,
+    //     'hdr': hdr,
     //   });
     // } on PlatformException catch (e, stack) {
     //   await reportService.recordError(e, stack);

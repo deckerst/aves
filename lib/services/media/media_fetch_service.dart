@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
@@ -11,6 +12,7 @@ import 'package:aves/services/media/byte_receiving_codec.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
+import 'dart:ui' as ui;
 
 abstract class MediaFetchService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false});
@@ -22,18 +24,12 @@ abstract class MediaFetchService {
     BytesReceivedCallback? onBytesReceived,
   });
 
-  Future<Uint8List> getImage(
-    String uri,
-    String mimeType, {
-    required int? rotationDegrees,
-    required bool isFlipped,
-    required int? pageId,
-    required int? sizeBytes,
-    BytesReceivedCallback? onBytesReceived,
-  });
+  Future<Uint8List> getEncodedImage(ImageRequest request);
+
+  Future<ui.ImageDescriptor?> getDecodedImage(ImageRequest request);
 
   // `rect`: region to decode, with coordinates in reference to `imageSize`
-  Future<Uint8List> getRegion(
+  Future<ui.ImageDescriptor?> getRegion(
     String uri,
     String mimeType,
     int rotationDegrees,
@@ -47,13 +43,13 @@ abstract class MediaFetchService {
     int? priority,
   });
 
-  Future<Uint8List> getThumbnail({
+  Future<ui.ImageDescriptor?> getThumbnail({
     required String uri,
     required String mimeType,
     required int rotationDegrees,
     required int? pageId,
     required bool isFlipped,
-    required int? dateModifiedSecs,
+    required int? dateModifiedMillis,
     required double extent,
     Object? taskKey,
     int? priority,
@@ -99,45 +95,52 @@ class PlatformMediaFetchService implements MediaFetchService {
     required int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
   }) =>
-      getImage(
-        uri,
-        mimeType,
-        rotationDegrees: 0,
-        isFlipped: false,
-        pageId: null,
-        sizeBytes: sizeBytes,
-        onBytesReceived: onBytesReceived,
+      getEncodedImage(
+        ImageRequest(
+          uri,
+          mimeType,
+          rotationDegrees: 0,
+          isFlipped: false,
+          isAnimated: false,
+          pageId: null,
+          sizeBytes: sizeBytes,
+          onBytesReceived: onBytesReceived,
+        ),
       );
 
   @override
-  Future<Uint8List> getImage(
-    String uri,
-    String mimeType, {
-    required int? rotationDegrees,
-    required bool isFlipped,
-    required int? pageId,
-    required int? sizeBytes,
-    BytesReceivedCallback? onBytesReceived,
-  }) async {
+  Future<Uint8List> getEncodedImage(ImageRequest request) {
+    return _getBytes(request, decoded: false);
+  }
+
+  @override
+  Future<ui.ImageDescriptor?> getDecodedImage(ImageRequest request) async {
+    return _getBytes(request, decoded: true).then(InteropDecoding.bytesToCodec);
+  }
+
+  Future<Uint8List> _getBytes(ImageRequest request, {required bool decoded}) async {
+    final _onBytesReceived = request.onBytesReceived;
     try {
       final opCompleter = Completer<Uint8List>();
       final sink = OutputBuffer();
       var bytesReceived = 0;
       _byteStream.receiveBroadcastStream(<String, dynamic>{
-        'uri': uri,
-        'mimeType': mimeType,
-        'sizeBytes': sizeBytes,
-        'rotationDegrees': rotationDegrees ?? 0,
-        'isFlipped': isFlipped,
-        'pageId': pageId,
+        'uri': request.uri,
+        'mimeType': request.mimeType,
+        'sizeBytes': request.sizeBytes,
+        'rotationDegrees': request.rotationDegrees ?? 0,
+        'isFlipped': request.isFlipped,
+        'isAnimated': request.isAnimated,
+        'pageId': request.pageId,
+        'decoded': decoded,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
           sink.add(chunk);
-          if (onBytesReceived != null) {
+          if (_onBytesReceived != null) {
             bytesReceived += chunk.length;
             try {
-              onBytesReceived(bytesReceived, sizeBytes);
+              _onBytesReceived(bytesReceived, request.sizeBytes);
             } catch (error, stack) {
               opCompleter.completeError(error, stack);
               return;
@@ -154,7 +157,8 @@ class PlatformMediaFetchService implements MediaFetchService {
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
-      if (_isUnknownVisual(mimeType)) {
+      debugPrint('$runtimeType _getBytes failed with error=$e');
+      if (_isUnknownVisual(request.mimeType)) {
         await reportService.recordError(e, stack);
       }
     }
@@ -162,7 +166,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  Future<Uint8List> getRegion(
+  Future<ui.ImageDescriptor?> getRegion(
     String uri,
     String mimeType,
     int rotationDegrees,
@@ -191,13 +195,16 @@ class PlatformMediaFetchService implements MediaFetchService {
             'imageWidth': imageSize.width.toInt(),
             'imageHeight': imageSize.height.toInt(),
           });
-          if (result != null) return result as Uint8List;
+          if (result != null) {
+            final bytes = result as Uint8List;
+            return InteropDecoding.bytesToCodec(bytes);
+          }
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType)) {
             await reportService.recordError(e, stack);
           }
         }
-        return Uint8List(0);
+        return null;
       },
       priority: priority ?? ServiceCallPriority.getRegion,
       key: taskKey,
@@ -205,13 +212,13 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  Future<Uint8List> getThumbnail({
+  Future<ui.ImageDescriptor?> getThumbnail({
     required String uri,
     required String mimeType,
     required int rotationDegrees,
     required int? pageId,
     required bool isFlipped,
-    required int? dateModifiedSecs,
+    required int? dateModifiedMillis,
     required double extent,
     Object? taskKey,
     int? priority,
@@ -222,7 +229,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           final result = await _platformBytes.invokeMethod('getThumbnail', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
-            'dateModifiedSecs': dateModifiedSecs,
+            'dateModifiedMillis': dateModifiedMillis,
             'rotationDegrees': rotationDegrees,
             'isFlipped': isFlipped,
             'widthDip': extent,
@@ -231,13 +238,16 @@ class PlatformMediaFetchService implements MediaFetchService {
             'defaultSizeDip': _thumbnailDefaultSize,
             'quality': 100,
           });
-          if (result != null) return result as Uint8List;
+          if (result != null) {
+            final bytes = result as Uint8List;
+            return InteropDecoding.bytesToCodec(bytes);
+          }
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType)) {
             await reportService.recordError(e, stack);
           }
         }
-        return Uint8List(0);
+        return null;
       },
       priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
@@ -304,4 +314,27 @@ class PlatformMediaFetchService implements MediaFetchService {
     MimeTypes.anyVideo,
     ..._knownVideos,
   };
+}
+
+@immutable
+class ImageRequest {
+  final String uri;
+  final String mimeType;
+  final int? rotationDegrees;
+  final bool isFlipped;
+  final bool isAnimated;
+  final int? pageId;
+  final int? sizeBytes;
+  final BytesReceivedCallback? onBytesReceived;
+
+  const ImageRequest(
+      this.uri,
+      this.mimeType, {
+        required this.rotationDegrees,
+        required this.isFlipped,
+        required this.isAnimated,
+        required this.pageId,
+        required this.sizeBytes,
+        this.onBytesReceived,
+      });
 }

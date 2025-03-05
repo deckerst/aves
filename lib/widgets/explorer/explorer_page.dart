@@ -84,12 +84,12 @@ class _ExplorerPageState extends State<ExplorerPage> {
       valueListenable: _directory,
       builder: (context, directory, child) {
         final atRoot = directory?.relativeDir.isEmpty ?? true;
+        final path = _pathOf(directory);
         return AvesPopScope(
           handlers: [
             APopHandler(
               canPop: (context) => atRoot,
               onPopBlocked: (context) {
-                final path = _pathOf(directory);
                 if (path != null) {
                   _goTo(pContext.dirname(path));
                 }
@@ -99,7 +99,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
             doubleBackPopHandler,
           ],
           child: AvesScaffold(
-            drawer: const AppDrawer(),
+            drawer: AppDrawer(currentExplorerPath: path),
             body: GestureAreaProtectorStack(
               child: Column(
                 children: [

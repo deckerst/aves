@@ -8,7 +8,9 @@
   "columnCount": "{count, plural, other{{count} ကော်လံ}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "appName": "Aves",
@@ -20,7 +22,9 @@
   "itemCount": "{count, plural, other{{count} ခု}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, other{{count} စက္ကန့်}}",
@@ -345,7 +349,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{ဒီတစ်ခုကို ပြန်သုံးအမှိုက်ပုံးထဲ ထည့်မှာလား?} =2{ဒီနှစ်ခုကို ပြန်သုံးအမှိုက်ပုံးထဲ ထည့်မှာလား?} other{ဒီ {count} ခုကို ပြန်သုံးအမှိုက်ထဲထည့်မှာလား?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "ရှေ့မဆက်ခင် ဓာတ်ပုံ/ဗီဒီယိုပါ ရက်စွဲတွေကို သိမ်းမှာလား?",
@@ -523,7 +529,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{ယခုလုပ်ဆောင်ချက်ကို ဤအမျိုးအစားဖိုင်များအတွက် အထောက်အပံ့မပေးထားပါ - {types}} other{ယခုလုပ်ဆောင်ချက်ကို ဤအမျိုးအစားများပါဖိုင်များအတွက် အထောက်အပံ့မပေးထားပါ - {types}}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -534,7 +542,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{ဒီတစ်ခုကိုဖျက်မှာလား?} =2{ဒီနှစ်ခုကိုဖျက်မှာလား?} other{ဒီ {count} ခုကို ဖျက်မှာလား?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "overlayHistogramNone": "မထား",
@@ -956,7 +966,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{ဒီအယ်လ်ဘမ်တွေနဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုကိုဖျက်မှာလား?} =2{ဒီအယ်လ်ဘမ်တွေနဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုနှစ်ခုကိုဖျက်မှာလား?} other{ဒီအယ်လ်ဘမ်တွေနဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယို {count} ခုကို ဖျက်မှာလား?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogWriteMetadata": "မက်တာဒေတာများပါ ကော်ပီကူးရန်",
@@ -966,7 +978,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{ယခုအယ်လ်ဘမ်နဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုကိုဖျက်မှာလား?} =2{ယခုအယ်လ်ဘမ်နဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုနှစ်ခုကိုဖျက်မှာလား?} other{ယခုအယ်လ်ဘမ်နဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယို {count} ခုကို ဖျက်မှာလား?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "လှုပ်ရှားမှုပါသောပုံအတွင်းက ဗီဒီယိုကိုဖွင့်ရန် XMP ကို လိုအပ်ပါသည်။\n\nဖျက်ချင်တာသေချာပါသလား?",
@@ -1006,25 +1020,33 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို ရွှေ့လို့မရခဲ့ပါ} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို ရွှေ့လို့မရခဲ့ပါ} other{ပုံ/ဗီဒီယို {count} ခုကို ရွှေ့လို့မရခဲ့ပါ}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionDeleteFailureFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို ဖျက်လို့မရခဲ့ပါ} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို ဖျက်လို့မရခဲ့ပါ} other{ပုံ/ဗီဒီယို {count} ခုကို ဖျက်လို့မရခဲ့ပါ}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို အမည်ပြောင်းလို့ မရခဲ့ပါ} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို အမည်ပြောင်းလို့ မရခဲ့ပါ} other{ပုံ/ဗီဒီယို {count} ခုကို အမည်ပြောင်းလို့ မရခဲ့ပါ}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို ပြင်ဆင်လို့မရခဲ့ပါ} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို ပြင်ဆင်လို့မရခဲ့ပါ} other{ပုံ/ဗီဒီယို {count} ခုကို ပြင်ဆင်လို့မရခဲ့ပါ}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "dateToday": "ယနေ့",
@@ -1032,13 +1054,17 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို ကော်ပီကူးလို့မရခဲ့ပါ} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို ကော်ပီကူးလို့မရခဲ့ပါ} other{ပုံ/ဗီဒီယို {count} ခုကို ကော်ပီကူးလို့မရခဲ့ပါ}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{စာမျက်နှာတစ်မျက်နှာကို ပို့လို့မရခဲ့ပါ} =2{စာမျက်နှာနှစ်မျက်နှာကို ပို့လို့မရခဲ့ပါ} other{စာမျက်နှာ {count} မျက်နှာကို ပို့လို့မရခဲ့ပါ}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "dateThisMonth": "ယခုလ",
@@ -1046,25 +1072,33 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို ကော်ပီကူးလိုက်သည်} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို ကော်ပီကူးလိုက်သည်} other{ပုံ/ဗီဒီယို {count} ခုကို ကော်ပီကူးလိုက်သည်}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို အမည်ပြောင်းလိုက်သည်} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို အမည်ပြောင်းလိုက်သည်} other{ပုံ/ဗီဒီယို {count} ခုကို အမည်ပြောင်းလိုက်သည်}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို ရွှေ့လိုက်သည်} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို ရွှေ့လိုက်သည်} other{ပုံ/ဗီဒီယို {count} ခုကို ရွှေ့လိုက်သည်}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{ပုံ/ဗီဒီယိုတစ်ခုကို ပြင်ဆင်လိုက်သည်} =2{ပုံ/ဗီဒီယိုနှစ်ခုကို ပြင်ဆင်လိုက်သည်} other{ပုံ/ဗီဒီယို {count} ခုကို ပြင်ဆင်လိုက်သည်}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyImages": "ပုံတစ်ပုံမှမရှိပါ",

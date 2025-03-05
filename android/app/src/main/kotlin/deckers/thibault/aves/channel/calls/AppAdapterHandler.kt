@@ -38,7 +38,6 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getApplicationInfoCompat
@@ -154,7 +153,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
         val density = context.resources.displayMetrics.density
         val size = (sizeDip * density).roundToInt()
-        var data: ByteArray? = null
+        var bytes: ByteArray? = null
         try {
             val iconResourceId = context.packageManager.getApplicationInfoCompat(packageName, 0).icon
             if (iconResourceId != Resources.ID_NULL) {
@@ -175,7 +174,9 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
                 try {
                     val bitmap = withContext(Dispatchers.IO) { target.get() }
-                    data = bitmap?.getBytes(canHaveAlpha = true, recycle = false)
+                    // do not recycle bitmaps fetched from `ContentResolver` as their lifecycle is unknown
+                    val recycle = false
+                    bytes = BitmapUtils.getRawBytes(bitmap, recycle = recycle)
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
                 }
@@ -185,8 +186,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             Log.w(LOG_TAG, "failed to get app info for packageName=$packageName", e)
             return
         }
-        if (data != null) {
-            result.success(data)
+        if (bytes != null) {
+            result.success(bytes)
         } else {
             result.error("getAppIcon-null", "failed to get icon for packageName=$packageName", null)
         }

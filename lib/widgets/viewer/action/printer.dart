@@ -41,23 +41,21 @@ class EntryPrinter with FeedbackMixin {
     final displaySize = entry.displaySize;
     final pageTheme = pdf.PageTheme(
       pageFormat: pageFormat,
-      orientation: displaySize.height > displaySize.width ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
+      orientation: displaySize.aspectRatio < 1 ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
       margin: pdf.EdgeInsets.zero,
       theme: null,
       clip: false,
       textDirection: null,
     );
-    final mustRotate = pageTheme.mustRotate;
-    final childSize = mustRotate ? Size(displaySize.height, displaySize.width) : displaySize;
     return pdf.Page(
       pageTheme: pageTheme,
       build: (context) => pdf.FullPage(
         ignoreMargins: true,
         child: pdf.Center(
           child: pdf.Transform.scale(
-            scale: min(pageFormat.availableWidth / childSize.width, pageFormat.availableHeight / childSize.height),
+            scale: min(pageFormat.availableWidth / displaySize.width, pageFormat.availableHeight / displaySize.height),
             child: pdf.Transform.rotateBox(
-              angle: pageTheme.mustRotate ? -0.5 * pi : 0,
+              angle: 0,
               unconstrained: true,
               child: imageWidget,
             ),

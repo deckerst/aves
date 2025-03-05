@@ -6,6 +6,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.core.net.toUri
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
@@ -22,6 +23,7 @@ import com.drew.metadata.exif.GpsDirectory
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
+import com.drew.metadata.mov.metadata.QuickTimeMetadataDirectory
 import com.drew.metadata.mp4.media.Mp4UuidBoxDirectory
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
@@ -100,6 +102,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import org.mp4parser.boxes.threegpp.ts26244.LocationInformationBox
+import org.mp4parser.tools.Path
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 import java.text.ParseException
@@ -107,7 +111,6 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
-import androidx.core.net.toUri
 
 class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -449,9 +452,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         if (isVideo(mimeType)) {
             // `metadata-extractor` do not extract custom tags in user data box
-            val userDataDir = Mp4ParserHelper.getUserData(context, mimeType, uri)
-            if (userDataDir.isNotEmpty()) {
-                metadataMap[Metadata.DIR_MP4_USER_DATA] = userDataDir
+            Mp4ParserHelper.getUserDataBox(context, mimeType, uri)?.let { box ->
+                metadataMap[Metadata.DIR_MP4_USER_DATA] = Mp4ParserHelper.extractBoxFields(box)
             }
 
             // this is used as fallback when the video metadata cannot be found on the Dart side
@@ -470,6 +472,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // Android's `MediaExtractor` and `MediaPlayer` cannot be used for details
             // about embedded images as they do not list them as separate tracks
             // and only identify at most one
+        } else if (isHeic(mimeType)) {
+            Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (_, bytes) ->
+                metadataMap[Mp4ParserHelper.SAMSUNG_MAKERNOTE_BOX_TYPE] = hashMapOf(
+                    "Size" to bytes.size.toString(),
+                )
+            }
         }
 
         if (metadataMap.isNotEmpty()) {
@@ -527,8 +535,29 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         val metadataMap = HashMap<String, Any>()
         getCatalogMetadataByMetadataExtractor(mimeType, uri, path, sizeBytes, metadataMap)
+
         if (isVideo(mimeType) || isHeic(mimeType)) {
             getMultimediaCatalogMetadataByMediaMetadataRetriever(mimeType, uri, metadataMap)
+
+            // fallback to MP4 `loci` box for location
+            if (!metadataMap.contains(KEY_LATITUDE) || !metadataMap.contains(KEY_LONGITUDE)) {
+                Mp4ParserHelper.getUserDataBox(context, mimeType, uri)?.let { userDataBox ->
+                    Path.getPath<LocationInformationBox>(userDataBox, LocationInformationBox.TYPE)?.let { locationBox ->
+                        if (!locationBox.isParsed) {
+                            locationBox.parseDetails()
+                        }
+                        metadataMap[KEY_LATITUDE] = locationBox.latitude
+                        metadataMap[KEY_LONGITUDE] = locationBox.longitude
+                    }
+                }
+            }
+        }
+
+        if (isHeic(mimeType)) {
+            val flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
+            if ((flags and MASK_IS_MOTION_PHOTO == 0) && MultiPage.isHeicSefdMotionPhoto(context, uri)) {
+                metadataMap[KEY_FLAGS] = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
+            }
         }
 
         // report success even when empty
@@ -686,6 +715,22 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
 
+                    if (!metadataMap.containsKey(KEY_LATITUDE) || !metadataMap.containsKey(KEY_LONGITUDE)) {
+                        for (dir in metadata.getDirectoriesOfType(QuickTimeMetadataDirectory::class.java)) {
+                            dir.getSafeString(QuickTimeMetadataDirectory.TAG_LOCATION_ISO6709) { locationString ->
+                                val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
+                                if (matcher.find() && matcher.groupCount() >= 2) {
+                                    val latitude = matcher.group(1)?.toDoubleOrNull()
+                                    val longitude = matcher.group(2)?.toDoubleOrNull()
+                                    if (latitude != null && longitude != null) {
+                                        metadataMap[KEY_LATITUDE] = latitude
+                                        metadataMap[KEY_LONGITUDE] = longitude
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     when (mimeType) {
                         MimeTypes.PNG -> {
                             // date fallback to PNG time chunk
@@ -830,7 +875,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { metadataMap[KEY_DATE_MILLIS] = it }
             }
 
-            if (!metadataMap.containsKey(KEY_LATITUDE)) {
+            if (!metadataMap.containsKey(KEY_LATITUDE) || !metadataMap.containsKey(KEY_LONGITUDE)) {
                 val locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION)
                 if (locationString != null) {
                     val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)

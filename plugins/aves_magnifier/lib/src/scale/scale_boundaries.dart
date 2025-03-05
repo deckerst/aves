@@ -16,12 +16,13 @@ class ScaleBoundaries extends Equatable {
   final ScaleLevel _initialScale;
   final Size viewportSize;
   final Size contentSize;
+  final EdgeInsets Function(double scale)? padding;
   final Matrix4? externalTransform;
 
   static const Alignment basePosition = Alignment.center;
 
   @override
-  List<Object?> get props => [_allowOriginalScaleBeyondRange, _minScale, _maxScale, _initialScale, viewportSize, contentSize, externalTransform];
+  List<Object?> get props => [_allowOriginalScaleBeyondRange, _minScale, _maxScale, _initialScale, viewportSize, contentSize, padding, externalTransform];
 
   const ScaleBoundaries({
     required bool allowOriginalScaleBeyondRange,
@@ -30,6 +31,7 @@ class ScaleBoundaries extends Equatable {
     required ScaleLevel initialScale,
     required this.viewportSize,
     required this.contentSize,
+    this.padding,
     this.externalTransform,
   })  : _allowOriginalScaleBeyondRange = allowOriginalScaleBeyondRange,
         _minScale = minScale,
@@ -43,6 +45,7 @@ class ScaleBoundaries extends Equatable {
     initialScale: ScaleLevel(ref: ScaleReference.contained),
     viewportSize: Size.zero,
     contentSize: Size.zero,
+    padding: null,
   );
 
   ScaleBoundaries copyWith({
@@ -52,6 +55,7 @@ class ScaleBoundaries extends Equatable {
     ScaleLevel? initialScale,
     Size? viewportSize,
     Size? contentSize,
+    EdgeInsets Function(double scale)? padding,
     Matrix4? externalTransform,
   }) {
     return ScaleBoundaries(
@@ -61,6 +65,7 @@ class ScaleBoundaries extends Equatable {
       initialScale: initialScale ?? _initialScale,
       viewportSize: viewportSize ?? this.viewportSize,
       contentSize: contentSize ?? this.contentSize,
+      padding: padding ?? this.padding,
       externalTransform: externalTransform ?? this.externalTransform,
     );
   }
@@ -106,11 +111,12 @@ class ScaleBoundaries extends Equatable {
     final viewportWidth = _transformedViewportSize.width;
 
     final positionX = basePosition.x;
-    final widthDiff = computedWidth - viewportWidth;
+    final widthDiff = max(0, computedWidth - viewportWidth);
 
     final minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
     final maxX = ((positionX + 1).abs() / 2) * widthDiff;
-    return EdgeRange(minX, maxX);
+    final _padding = padding?.call(scale) ?? EdgeInsets.zero;
+    return EdgeRange(minX - _padding.left, maxX + _padding.right);
   }
 
   EdgeRange getYEdges({required double scale}) {
@@ -118,11 +124,12 @@ class ScaleBoundaries extends Equatable {
     final viewportHeight = _transformedViewportSize.height;
 
     final positionY = basePosition.y;
-    final heightDiff = computedHeight - viewportHeight;
+    final heightDiff = max(0, computedHeight - viewportHeight);
 
     final minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
     final maxY = ((positionY + 1).abs() / 2) * heightDiff;
-    return EdgeRange(minY, maxY);
+    final _padding = padding?.call(scale) ?? EdgeInsets.zero;
+    return EdgeRange(minY - _padding.top, maxY + _padding.bottom);
   }
 
   double clampScale(double scale) {
@@ -142,24 +149,11 @@ class ScaleBoundaries extends Equatable {
   }
 
   Offset clampPosition({required Offset position, required double scale}) {
-    final computedWidth = contentSize.width * scale;
-    final computedHeight = contentSize.height * scale;
-
-    final viewportWidth = _transformedViewportSize.width;
-    final viewportHeight = _transformedViewportSize.height;
-
-    var finalX = 0.0;
-    if (viewportWidth < computedWidth) {
-      final range = getXEdges(scale: scale);
-      finalX = position.dx.clamp(range.min, range.max);
-    }
-
-    var finalY = 0.0;
-    if (viewportHeight < computedHeight) {
-      final range = getYEdges(scale: scale);
-      finalY = position.dy.clamp(range.min, range.max);
-    }
-
-    return Offset(finalX, finalY);
+    final rangeX = getXEdges(scale: scale);
+    final rangeY = getYEdges(scale: scale);
+    return Offset(
+      position.dx.clamp(rangeX.min, rangeX.max),
+      position.dy.clamp(rangeY.min, rangeY.max),
+    );
   }
 }

@@ -3,6 +3,7 @@ package deckers.thibault.aves.decoder
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.core.graphics.scale
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.Registry
@@ -82,7 +83,9 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             inSampleSize = sampleSize
         }
         try {
-            val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            val bitmap: Bitmap? = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            // calling `TiffBitmapFactory.closeFd(fd)` after decoding yields a segmentation fault
+
             if (bitmap == null) {
                 callback.onLoadFailed(Exception("Decoding full TIFF yielded null bitmap"))
             } else if (customSize) {
@@ -96,7 +99,7 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
                     dstWidth = width
                     dstHeight = (width / aspectRatio).toInt()
                 }
-                callback.onDataReady(Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, true))
+                callback.onDataReady(bitmap.scale(dstWidth, dstHeight))
             } else {
                 callback.onDataReady(bitmap)
             }

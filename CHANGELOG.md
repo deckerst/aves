@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.4"></a>[v1.12.4] - 2025-03-05
+
+### Added
+
+- support for Samsung HEIC motion photos embedding video in sefd box
+- Cataloguing: identify video location from Apple QuickTime metadata, and 3GPP `loci` atom
+- Collection: stack RAW and HEIC with same file names
+- display home tile in side drawer when customized
+- Galician translation (thanks Rubén Castiñeiras Lorenzo)
+
+### Changed
+
+- increased precision of file modified date to milliseconds
+- upgraded Flutter to stable v3.29.0
+
+### Fixed
+
+- opening motion photo embedded video when video track is not the first one
+- some SVG rendering issues
+- decoding of SVG containing references to namespaces in !ATTLIST
+- fallback decoding of images packed in RGBA_1010102 config
+
 ## <a id="v1.12.3"></a>[v1.12.3] - 2025-02-06
 
 ### Added

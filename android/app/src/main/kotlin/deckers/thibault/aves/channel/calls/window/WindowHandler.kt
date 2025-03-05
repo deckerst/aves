@@ -18,8 +18,9 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "requestOrientation" -> Coresult.safe(call, result, ::requestOrientation)
             "isCutoutAware" -> Coresult.safe(call, result, ::isCutoutAware)
             "getCutoutInsets" -> Coresult.safe(call, result, ::getCutoutInsets)
+            "supportsWideGamut" -> Coresult.safe(call, result, ::supportsWideGamut)
             "supportsHdr" -> Coresult.safe(call, result, ::supportsHdr)
-            "setHdrColorMode" -> Coresult.safe(call, result, ::setHdrColorMode)
+            "setColorMode" -> Coresult.safe(call, result, ::setColorMode)
             else -> result.notImplemented()
         }
     }
@@ -46,9 +47,11 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
 
     abstract fun getCutoutInsets(call: MethodCall, result: MethodChannel.Result)
 
+    abstract fun supportsWideGamut(call: MethodCall, result: MethodChannel.Result)
+
     abstract fun supportsHdr(call: MethodCall, result: MethodChannel.Result)
 
-    abstract fun setHdrColorMode(call: MethodCall, result: MethodChannel.Result)
+    abstract fun setColorMode(call: MethodCall, result: MethodChannel.Result)
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<WindowHandler>()

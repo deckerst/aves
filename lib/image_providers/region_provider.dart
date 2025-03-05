@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
+import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -33,7 +34,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await mediaFetchService.getRegion(
+      final descriptor = await mediaFetchService.getRegion(
         uri,
         mimeType,
         key.rotationDegrees,
@@ -45,15 +46,14 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
         sizeBytes: key.sizeBytes,
         taskKey: key,
       );
-      if (bytes.isEmpty) {
-        throw StateError('$uri ($mimeType) region loading failed');
+      if (descriptor == null) {
+        throw UnreportedStateError('$uri ($mimeType) region loading failed');
       }
-      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-      return await decode(buffer);
+      return descriptor.instantiateCodec();
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw StateError('$mimeType region decoding failed (page $pageId)');
+      throw UnreportedStateError('$mimeType region decoding failed (page $pageId)');
     }
   }
 

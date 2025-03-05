@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:ui' as ui;
+import 'dart:ui';
 
 import 'package:aves/geo/uri.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +17,7 @@ import 'package:streams_channel/streams_channel.dart';
 abstract class AppService {
   Future<Set<Package>> getPackages();
 
-  Future<Uint8List> getAppIcon(String packageName, double size);
+  Future<ui.ImageDescriptor?> getAppIcon(String packageName, double size);
 
   Future<bool> copyToClipboard(String uri, String? label);
 
@@ -74,17 +77,20 @@ class PlatformAppService implements AppService {
   }
 
   @override
-  Future<Uint8List> getAppIcon(String packageName, double size) async {
+  Future<ui.ImageDescriptor?> getAppIcon(String packageName, double size) async {
     try {
       final result = await _platform.invokeMethod('getAppIcon', <String, dynamic>{
         'packageName': packageName,
         'sizeDip': size,
       });
-      if (result != null) return result as Uint8List;
-    } on PlatformException catch (_, __) {
+      if (result != null) {
+        final bytes = result as Uint8List;
+        return InteropDecoding.bytesToCodec(bytes);
+      }
+    } on PlatformException catch (_) {
       // ignore, as some packages legitimately do not have icons
     }
-    return Uint8List(0);
+    return null;
   }
 
   @override
@@ -219,15 +225,21 @@ class PlatformAppService implements AppService {
     Uint8List? iconBytes;
     if (coverEntry != null) {
       final size = coverEntry.isVideo ? 0.0 : 256.0;
-      iconBytes = await mediaFetchService.getThumbnail(
+      final iconDescriptor = await mediaFetchService.getThumbnail(
         uri: coverEntry.uri,
         mimeType: coverEntry.mimeType,
         pageId: coverEntry.pageId,
         rotationDegrees: coverEntry.rotationDegrees,
         isFlipped: coverEntry.isFlipped,
-        dateModifiedSecs: coverEntry.dateModifiedSecs,
+        dateModifiedMillis: coverEntry.dateModifiedMillis,
         extent: size,
       );
+      if (iconDescriptor != null) {
+        final codec = await iconDescriptor.instantiateCodec();
+        final frameInfo = await codec.getNextFrame();
+        final byteData = await frameInfo.image.toByteData(format: ImageByteFormat.png);
+        iconBytes = byteData?.buffer.asUint8List();
+      }
     }
     try {
       await _platform.invokeMethod('pinShortcut', <String, dynamic>{

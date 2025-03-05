@@ -13,6 +13,7 @@ class MimeTypes {
   static const svg = 'image/svg+xml';
   static const tiff = 'image/tiff';
   static const webp = 'image/webp';
+  static const wbmp = 'image/vnd.wap.wbmp';
 
   static const art = 'image/x-jg';
   static const cdr = 'image/x-coreldraw';
@@ -85,6 +86,8 @@ class MimeTypes {
   static const Set<String> alphaImages = {avif, bmp, bmpX, gif, heic, heif, ico, png, svg, tiff, webp};
 
   static const Set<String> rawImages = {arw, cr2, crw, dcr, dng, dngX, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
+
+  static const Set<String> developedRawImages = {jpeg, heic, heif};
 
   static bool canHaveAlpha(String mimeType) => MimeTypes.alphaImages.contains(mimeType);
 

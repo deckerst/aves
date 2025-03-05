@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
+import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.Registry
@@ -68,7 +69,7 @@ internal class SvgFetcher(val model: SvgImage, val width: Int, val height: Int) 
                         bitmapWidth = width
                         bitmapHeight = ceil(svgHeight * width / svgWidth).toInt()
                     }
-                    val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+                    val bitmap = createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
 
                     val canvas = Canvas(bitmap)
                     svg.renderToCanvas(canvas)

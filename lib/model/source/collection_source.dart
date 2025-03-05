@@ -245,10 +245,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       switch (key) {
         case EntryFields.contentId:
           entry.contentId = newValue as int?;
-        case EntryFields.dateModifiedSecs:
-          // `dateModifiedSecs` changes when moving entries to another directory,
+        case EntryFields.dateModifiedMillis:
+          // `dateModifiedMillis` changes when moving entries to another directory,
           // but it does not change when renaming the containing directory
-          entry.dateModifiedSecs = newValue as int?;
+          entry.dateModifiedMillis = newValue as int?;
         case EntryFields.path:
           entry.path = newValue as String?;
         case EntryFields.title:
@@ -369,7 +369,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
             // title can change when moved files are automatically renamed to avoid conflict
             title: newFields[EntryFields.title] as String?,
             dateAddedSecs: newFields[EntryFields.dateAddedSecs] as int?,
-            dateModifiedSecs: newFields[EntryFields.dateModifiedSecs] as int?,
+            dateModifiedMillis: newFields[EntryFields.dateModifiedMillis] as int?,
             origin: newFields[EntryFields.origin] as int?,
           ));
         } else {

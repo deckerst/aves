@@ -53,13 +53,17 @@
   "itemCount": "{count, plural, =1{{count} položka} few{{count} položky} other{{count} položek}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "columnCount": "{count, plural, =1{{count} sloupec} few{{count} sloupce} other{{count} sloupců}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "hideButtonLabel": "SKRÝT",
@@ -408,7 +412,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Tato operace není dostupná pro položky tohoto typu: {types}.} other{Tato operace není dostupná pro položky těchto typů: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -427,7 +433,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Smazat tuto položku?} few{Smazat tyto {count} položky?} other{Smazat těchto {count} položek?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "Uložit data položek, než budete pokračovat?",
@@ -476,13 +484,17 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat toto album a v něm obsaženou položku?} few{Smazat toto album a v něm obsažené {count} položky?} other{Smazat toto album a v něm obsažených {count} položek?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Smazat tato alba a v nich obsaženou položku?} few{Smazat tato alba a v nich obsažené {count} položky?} other{Smazat tato alba a v nich obsažených {count} položek?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogFormat": "Formát:",
@@ -938,7 +950,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Přesunout tuto položku do koše?} few{Přesunout tyto {count} položky do koše?} other{Přesunout těchto {count} položek do koše?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "setCoverDialogCustom": "Vlastní",
@@ -996,19 +1010,25 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{Chyba při přesouvání 1 položky} other{Chyba při přesouvání {count} položek}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Chyba přejmenování 1 položky} other{Chyba přejmenování {count} položek}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Chyba při exportu 1 stránky} other{Chyba při exportu {count} stránek}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "drawerCollectionRaws": "Fotografie Raw",
@@ -1060,7 +1080,9 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{Chyba při kopírování 1 položky} other{Chyba při kopírování {count} položek}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionActionAddShortcut": "Vytvořit zástupce",
@@ -1090,7 +1112,9 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Chyba při mazání 1 položky} other{Chyba při mazání {count} položek}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "sortOrderLowestFirst": "Od nejnižšího",
@@ -1098,31 +1122,41 @@
   "collectionEditFailureFeedback": "{count, plural, =1{Chyba při úpravě 1 položky} other{Chyba při úpravě {count} položek}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{Zkopírována 1 položka} few{Zkopírovány {count} položky} other{Zkopírováno {count} položek}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Přesunuta 1 položka} few{Přesunuty {count} položky} other{Přesunuto {count} položek}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{Přejmenována 1 položka} few{Přejmenovány {count} položky} other{Přejmenováno {count} položek}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Upravena 1 položka} few{Upraveny {count} položky} other{Upraveno {count} položek}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyVideos": "Žádná videa",
@@ -1312,7 +1346,9 @@
   "statsWithGps": "{count, plural, =1{1 položka s polohou} few{{count} položky s polohou} other{{count} položek s polohou}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "viewerInfoLabelDate": "Datum",
@@ -1543,7 +1579,7 @@
   "@dynamicAlbumAlreadyExists": {},
   "newDynamicAlbumDialogTitle": "Nové dynamické album",
   "@newDynamicAlbumDialogTitle": {},
-  "selectStorageVolumeDialogTitle": "Vybrat úložiště",
+  "selectStorageVolumeDialogTitle": "Vyberte úložiště",
   "@selectStorageVolumeDialogTitle": {},
   "explorerActionSelectStorageVolume": "Vyberte úložiště",
   "@explorerActionSelectStorageVolume": {},
@@ -1564,5 +1600,13 @@
   "appExportDynamicAlbums": "Dynamická alba",
   "@appExportDynamicAlbums": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
-  "@mapStyleOpenTopoMap": {}
+  "@mapStyleOpenTopoMap": {},
+  "editEntryLocationDialogImportGpx": "Importovat GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Časový posun",
+  "@editEntryLocationDialogTimeShift": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "removeEntryMetadataDialogAll": "Vše",
+  "@removeEntryMetadataDialogAll": {}
 }

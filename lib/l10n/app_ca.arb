@@ -10,13 +10,17 @@
   "itemCount": "{count, plural, =1{{count} element} other{{count} elements}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "columnCount": "{count, plural, =1{{count} columna} other{{count} columnes}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "cancelTooltip": "Canceŀlar",
@@ -117,7 +121,7 @@
   "@videoActionSetSpeed": {},
   "viewerActionSettings": "Configuració",
   "@viewerActionSettings": {},
-  "viewerActionUnlock": "Desbloquejar visor",
+  "viewerActionUnlock": "Desbloquejar visualitzador",
   "@viewerActionUnlock": {},
   "entryInfoActionRemoveLocation": "Esborrar localització",
   "@entryInfoActionRemoveLocation": {},
@@ -200,7 +204,7 @@
   "@keepScreenOnNever": {},
   "keepScreenOnVideoPlayback": "Durant la reproducció de vídeo",
   "@keepScreenOnVideoPlayback": {},
-  "keepScreenOnViewerOnly": "Només la pàgina del visor",
+  "keepScreenOnViewerOnly": "Només la pàgina del visualitzador",
   "@keepScreenOnViewerOnly": {},
   "keepScreenOnAlways": "Sempre",
   "@keepScreenOnAlways": {},
@@ -289,7 +293,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Esborrar aquest element?} other{Esborrar aquests {count} elements?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "Desar les dates dels elements abans de continuar?",
@@ -346,7 +352,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Eliminar aquest àlbum i l’element que conté?} other{Eliminar aquests àlbums i els {count} elements que contenen?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportEntryDialogQuality": "Qualitat",
@@ -554,7 +562,7 @@
   "@videoActionPause": {},
   "entryActionSetAs": "Definir com",
   "@entryActionSetAs": {},
-  "viewerActionLock": "Bloquejar visor",
+  "viewerActionLock": "Bloquejar visualitzador",
   "@viewerActionLock": {},
   "slideshowActionResume": "Reprèn",
   "@slideshowActionResume": {},
@@ -577,7 +585,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Aquesta operació no és compatible amb elements del següent format: {types}.} other{Aquesta operació no és compatible amb elements dels següents formats: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -594,7 +604,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Moure aquest element a la paperera de reciclatge?} other{Moure aquests {count} elements a la paperera de reciclatge?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "newAlbumDialogNameLabelAlreadyExistsHelper": "El directori ja existeix",
@@ -616,7 +628,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Eliminar aquest àlbum i l’element que conté?} other{Eliminar aquest àlbum i els {count} elements que conté?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "vaultBinUsageDialogMessage": "Algunes caixes fortes fan servir la paperera de reciclatge.",
@@ -739,7 +753,7 @@
   "@wallpaperTargetHomeLock": {},
   "widgetOpenPageHome": "Obrir casa",
   "@widgetOpenPageHome": {},
-  "widgetOpenPageViewer": "Obrir visor",
+  "widgetOpenPageViewer": "Obrir visualitzador",
   "@widgetOpenPageViewer": {},
   "widgetTapUpdateWidget": "Actualitzar giny",
   "@widgetTapUpdateWidget": {},
@@ -834,37 +848,49 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Error en esborrar 1 element} other{Error en esborrar {count} elements}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Error en copiar 1 element} other{Error en copiar {count} elements}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Error en canviar el nom a 1 element} other{Error en canviar el nom a {count} elements}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Error en editar 1 element} other{Error en editar {count} elements}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{Un element copiat} other{{count} elements copiats}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{Un element mogut} other{{count} elements moguts}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyFavourites": "Sense preferits",
@@ -1045,7 +1071,7 @@
   "@settingsViewerQuickActionsTile": {},
   "settingsViewerQuickActionEditorPageTitle": "Accions Ràpides",
   "@settingsViewerQuickActionEditorPageTitle": {},
-  "settingsViewerQuickActionEditorBanner": "Manté premut per moure botons i seleccionar quines accions es mostren al visor.",
+  "settingsViewerQuickActionEditorBanner": "Manté premut per moure botons i seleccionar quines accions es mostren al visualitzador.",
   "@settingsViewerQuickActionEditorBanner": {},
   "settingsViewerQuickActionEditorDisplayedButtonsSectionTitle": "Botons Mostrats",
   "@settingsViewerQuickActionEditorDisplayedButtonsSectionTitle": {},
@@ -1226,7 +1252,9 @@
   "statsWithGps": "{count, plural, =1{1 element amb localització} other{{count} elements amb localització}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsTopStatesSectionTitle": "Estats Principals",
@@ -1247,7 +1275,7 @@
   "@viewerErrorDoesNotExist": {},
   "viewerInfoPageTitle": "Informació",
   "@viewerInfoPageTitle": {},
-  "viewerInfoBackToViewerTooltip": "Torna al visor",
+  "viewerInfoBackToViewerTooltip": "Torna al visualitzador",
   "@viewerInfoBackToViewerTooltip": {},
   "viewerInfoLabelDescription": "Descripció",
   "@viewerInfoLabelDescription": {},
@@ -1348,13 +1376,17 @@
   "collectionRenameSuccessFeedback": "{count, plural, =1{Nom canviat a 1 element} other{Nom canviat a {count} elements}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{Un element editat} other{{count} elements editats}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEmptyVideos": "Sense vídeos",
@@ -1467,7 +1499,7 @@
   "@settingsNavigationDrawerAddAlbum": {},
   "settingsThumbnailSectionTitle": "Miniatures",
   "@settingsThumbnailSectionTitle": {},
-  "settingsViewerSectionTitle": "Visor",
+  "settingsViewerSectionTitle": "Visualitzador",
   "@settingsViewerSectionTitle": {},
   "settingsViewerQuickActionEditorAvailableButtonsSectionTitle": "Botons Disponibles",
   "@settingsViewerQuickActionEditorAvailableButtonsSectionTitle": {},
@@ -1496,17 +1528,85 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{Error en moure 1 element} other{Error en moure {count} elements}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionExportFailureFeedback": "{count, plural, =1{Error en exportar una pàgina} other{Error en exportar {count} pàgines}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionShowCollection": "Mostrar a Coŀlecció",
   "@chipActionShowCollection": {},
   "mapAttributionOsmData": "Dades de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contribuïdors",
-  "@mapAttributionOsmData": {}
+  "@mapAttributionOsmData": {},
+  "renameProcessorHash": "Hash",
+  "@renameProcessorHash": {},
+  "editEntryLocationDialogImportGpx": "Importar GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Desplaçament de l’hora",
+  "@editEntryLocationDialogTimeShift": {},
+  "collectionActionAddDynamicAlbum": "Afegir un àlbum dinàmic",
+  "@collectionActionAddDynamicAlbum": {},
+  "videoActionShowPreviousFrame": "Mostrar el marc anterior",
+  "@videoActionShowPreviousFrame": {},
+  "videoActionShowNextFrame": "Mostrar el següent fotograma",
+  "@videoActionShowNextFrame": {},
+  "chipActionDecompose": "Dividir",
+  "@chipActionDecompose": {},
+  "videoActionABRepeat": "Repetir A-B",
+  "@videoActionABRepeat": {},
+  "videoRepeatActionSetStart": "Establir l’inici",
+  "@videoRepeatActionSetStart": {},
+  "newDynamicAlbumDialogTitle": "Nou àlbum dinàmic",
+  "@newDynamicAlbumDialogTitle": {},
+  "newAlbumDialogAlbumAlreadyExistsHelper": "L’àlbum ja existeix",
+  "@newAlbumDialogAlbumAlreadyExistsHelper": {},
+  "selectStorageVolumeDialogTitle": "Seleccionar Emmagatzematge",
+  "@selectStorageVolumeDialogTitle": {},
+  "appExportDynamicAlbums": "Àlbums dinàmics",
+  "@appExportDynamicAlbums": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "mapStyleOpenTopoMap": "OpenTopoMap",
+  "@mapStyleOpenTopoMap": {},
+  "sortOrderLongestFirst": "El més llarg primer",
+  "@sortOrderLongestFirst": {},
+  "chipActionRemove": "Eliminar",
+  "@chipActionRemove": {},
+  "videoRepeatActionSetEnd": "Establir el final",
+  "@videoRepeatActionSetEnd": {},
+  "albumTierDynamic": "Dinàmic",
+  "@albumTierDynamic": {},
+  "removeEntryMetadataDialogAll": "Tot",
+  "@removeEntryMetadataDialogAll": {},
+  "explorerPageTitle": "Explorador",
+  "@explorerPageTitle": {},
+  "explorerActionSelectStorageVolume": "Seleccionar emmagatzematge",
+  "@explorerActionSelectStorageVolume": {},
+  "setHomeCustom": "Personalitzat",
+  "@setHomeCustom": {},
+  "mapAttributionOsmLiberty": "Tessel·les per [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hostatjat per [OSM Americana](https://tile.ourmap.us)",
+  "@mapAttributionOsmLiberty": {},
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tesel·les per [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
+  "@mapAttributionOpenTopoMap": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "settingsForceWesternArabicNumeralsTile": "Forçar els números aràbics",
+  "@settingsForceWesternArabicNumeralsTile": {},
+  "sortByDuration": "Per durada",
+  "@sortByDuration": {},
+  "stopTooltip": "Parar",
+  "@stopTooltip": {},
+  "chipActionGoToExplorerPage": "Mostrar a l’Explorador",
+  "@chipActionGoToExplorerPage": {},
+  "dynamicAlbumAlreadyExists": "L’àlbum dinàmic ja existeix",
+  "@dynamicAlbumAlreadyExists": {},
+  "sortOrderShortestFirst": "El més curt primer",
+  "@sortOrderShortestFirst": {}
 }

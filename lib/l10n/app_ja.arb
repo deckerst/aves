@@ -1216,7 +1216,9 @@
   "columnCount": "{count, plural, other{{count} 列}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionShowCountryStates": "地域を表示",

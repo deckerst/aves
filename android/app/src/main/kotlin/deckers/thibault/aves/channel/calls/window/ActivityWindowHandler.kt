@@ -77,19 +77,30 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         )
     }
 
-    override fun supportsHdr(call: MethodCall, result: MethodChannel.Result) {
-        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getDisplayCompat()?.isHdr ?: false)
+    override fun supportsWideGamut(call: MethodCall, result: MethodChannel.Result) {
+        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.resources.configuration.isScreenWideColorGamut)
     }
 
-    override fun setHdrColorMode(call: MethodCall, result: MethodChannel.Result) {
-        val on = call.argument<Boolean>("on")
-        if (on == null) {
-            result.error("setHdrColorMode-args", "missing arguments", null)
+    override fun supportsHdr(call: MethodCall, result: MethodChannel.Result) {
+        result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.resources.configuration.isScreenHdr)
+    }
+
+    override fun setColorMode(call: MethodCall, result: MethodChannel.Result) {
+        val wideColorGamut = call.argument<Boolean>("wideColorGamut")
+        val hdr = call.argument<Boolean>("hdr")
+        if (wideColorGamut == null || hdr == null) {
+            result.error("setColorMode-args", "missing arguments", null)
             return
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            activity.window.colorMode = if (on) ActivityInfo.COLOR_MODE_HDR else ActivityInfo.COLOR_MODE_DEFAULT
+            activity.window.colorMode = if (hdr) {
+                ActivityInfo.COLOR_MODE_HDR
+            } else if (wideColorGamut) {
+                ActivityInfo.COLOR_MODE_WIDE_COLOR_GAMUT
+            } else {
+                ActivityInfo.COLOR_MODE_DEFAULT
+            }
         }
         result.success(null)
     }

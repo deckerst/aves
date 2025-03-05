@@ -11,14 +11,13 @@ class Dependencies {
 
   static const List<Dependency> androidDependencies = [
     Dependency(
-      name: 'AndroidSVG',
+      name: 'AndroidSVG (Aves fork)',
       license: apache2,
-      sourceUrl: 'https://github.com/BigBadaboom/androidsvg',
+      sourceUrl: 'https://github.com/deckerst/androidsvg',
     ),
     Dependency(
       name: 'AndroidX (Core Kotlin, Exifinterface, Lifecycle Process, Multidex)',
       license: apache2,
-      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/LICENSE.txt',
       sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/core/core-ktx',
     ),
     Dependency(
@@ -49,7 +48,6 @@ class Dependencies {
     Dependency(
       name: 'Tiff Bitmap Factory (Aves fork)',
       license: mit,
-      licenseUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory/blob/master/license.txt',
       sourceUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory',
     ),
   ];
@@ -58,19 +56,16 @@ class Dependencies {
     Dependency(
       name: 'Connectivity Plus',
       license: bsd3,
-      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/connectivity_plus/connectivity_plus/LICENSE',
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/connectivity_plus',
     ),
     Dependency(
       name: 'Device Info Plus',
       license: bsd3,
-      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/device_info_plus/device_info_plus/LICENSE',
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus',
     ),
     Dependency(
       name: 'Dynamic Color',
       license: apache2,
-      licenseUrl: 'https://github.com/material-foundation/flutter-packages/blob/main/packages/dynamic_color/LICENSE',
       sourceUrl: 'https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color',
     ),
     Dependency(
@@ -86,7 +81,6 @@ class Dependencies {
     Dependency(
       name: 'Local Auth',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/local_auth/local_auth/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/local_auth/local_auth',
     ),
     Dependency(
@@ -97,13 +91,11 @@ class Dependencies {
     Dependency(
       name: 'Network Info Plus',
       license: bsd3,
-      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/network_info_plus/network_info_plus/LICENSE',
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/network_info_plus',
     ),
     Dependency(
       name: 'Package Info Plus',
       license: bsd3,
-      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/package_info_plus/package_info_plus/LICENSE',
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/package_info_plus',
     ),
     Dependency(
@@ -124,7 +116,6 @@ class Dependencies {
     Dependency(
       name: 'Shared Preferences',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/shared_preferences/shared_preferences/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences',
     ),
     Dependency(
@@ -140,7 +131,6 @@ class Dependencies {
     Dependency(
       name: 'URL Launcher',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/url_launcher/url_launcher/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher',
     ),
     Dependency(
@@ -159,7 +149,6 @@ class Dependencies {
     Dependency(
       name: 'Google Maps for Flutter',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/google_maps_flutter/google_maps_flutter/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/google_maps_flutter/google_maps_flutter',
     ),
   ];
@@ -225,7 +214,6 @@ class Dependencies {
     Dependency(
       name: 'Flutter Markdown',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/flutter_markdown/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/flutter_markdown',
     ),
     Dependency(
@@ -246,7 +234,6 @@ class Dependencies {
     Dependency(
       name: 'Palette Generator',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/palette_generator/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/palette_generator',
     ),
     Dependency(
@@ -325,7 +312,6 @@ class Dependencies {
     Dependency(
       name: 'Flutter Lints',
       license: bsd3,
-      licenseUrl: 'https://github.com/flutter/packages/blob/main/packages/flutter_lints/LICENSE',
       sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/flutter_lints',
     ),
     Dependency(
@@ -384,11 +370,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/dart-lang/stack_trace',
     ),
     Dependency(
-      name: 'Transparent Image',
-      license: mit,
-      sourceUrl: 'https://github.com/brianegan/transparent_image',
-    ),
-    Dependency(
       name: 'Vector Math',
       license: '$zlib, $bsd3',
       sourceUrl: 'https://github.com/google/vector_math.dart',
@@ -405,12 +386,10 @@ class Dependency {
   final String name;
   final String license;
   final String sourceUrl;
-  final String licenseUrl;
 
   const Dependency({
     required this.name,
     required this.license,
-    String? licenseUrl,
     required this.sourceUrl,
-  }) : licenseUrl = licenseUrl ?? '$sourceUrl/blob/master/LICENSE';
+  });
 }

@@ -35,8 +35,6 @@ kotlin {
 android {
     namespace 'deckers.thibault.aves'
     compileSdk 35
-    // cf https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
-    ndkVersion '28.0.12916984'
 
     defaultConfig {
         applicationId packageName
@@ -161,7 +159,6 @@ dependencies {
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
     implementation 'androidx.work:work-runtime-ktx:2.10.0'
 
-    implementation 'com.caverock:androidsvg-aar:1.4'
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -171,9 +168,11 @@ dependencies {
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
+    // - https://jitpack.io/p/deckerst/androidsvg
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
     implementation 'com.github.deckerst:Android-TiffBitmapFactory:3ed067f021'
+    implementation 'com.github.deckerst:androidsvg:cc9d59a88f'
     implementation 'com.github.deckerst.mp4parser:isoparser:d5caf7a3dd'
     implementation 'com.github.deckerst.mp4parser:muxer:d5caf7a3dd'
     implementation 'com.github.deckerst:pixymeta-android:71eee77dc4'

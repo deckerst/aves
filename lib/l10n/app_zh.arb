@@ -1156,7 +1156,9 @@
   "columnCount": "{count, plural, other{{count} 列}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryActionShareImageOnly": "仅分享图片",
@@ -1408,5 +1410,11 @@
   "chipActionDecompose": "分割",
   "@chipActionDecompose": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogImportGpx": "导入 GPX",
+  "@editEntryLocationDialogImportGpx": {},
+  "removeEntryMetadataDialogAll": "全部",
+  "@removeEntryMetadataDialogAll": {},
+  "editEntryLocationDialogTimeShift": "时间时移",
+  "@editEntryLocationDialogTimeShift": {}
 }

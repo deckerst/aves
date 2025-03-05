@@ -21,14 +21,12 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
 
   Function(double? prevScale, double? nextScale, Offset nextPosition)? _animateScale;
 
-  /// Mark if scale need recalculation, useful for scale boundaries changes.
-  bool markNeedsScaleRecalc = true;
-
   final List<StreamSubscription> _subscriptions = [];
 
   void registerDelegate(AvesMagnifier widget) {
     _subscriptions.add(widget.controller.stateStream.listen(_onMagnifierStateChanged));
     _subscriptions.add(widget.controller.scaleStateChangeStream.listen(_onScaleStateChanged));
+    // _subscriptions.add(widget.controller.scaleBoundariesStream.listen(_onScaleBoundariesChanged));
   }
 
   void unregisterDelegate(AvesMagnifier oldWidget) {
@@ -38,12 +36,17 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
       ..clear();
   }
 
+  // TODO TLAD should not reset scale when boundaries change because of transform
+  // void _onScaleBoundariesChanged(ScaleBoundaries boundaries) {
+  //   initScale();
+  // }
+
   void _onScaleStateChanged(ScaleStateChange scaleStateChange) {
     if (scaleStateChange.source == ChangeSource.internal) return;
     if (!controller.hasScaleSateChanged) return;
 
     if (_animateScale == null || controller.isZooming) {
-      controller.update(scale: scale, source: scaleStateChange.source);
+      controller.update(scale: controller.scale, source: scaleStateChange.source);
       return;
     }
 
@@ -68,34 +71,24 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
 
   void _onMagnifierStateChanged(MagnifierState state) {
     final boundaries = scaleBoundaries;
-    if (boundaries == null) return;
+    final currentScale = controller.scale;
+    if (boundaries == null || currentScale == null) return;
 
-    controller.update(position: boundaries.clampPosition(position: position, scale: scale!), source: state.source);
-    if (controller.scale == controller.previousState.scale) return;
+    controller.update(position: boundaries.clampPosition(position: position, scale: currentScale), source: state.source);
+    final newScale = controller.scale;
+    if (newScale == null || newScale == currentScale) return;
 
     if (state.source == ChangeSource.internal || state.source == ChangeSource.animation) return;
-    final newScaleState = (scale! > boundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
+    final newScaleState = (newScale > boundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
     controller.setScaleState(newScaleState, state.source);
   }
 
   Offset get position => controller.position;
 
-  double? recalcScale() {
+  void initScale() {
     final scaleState = controller.scaleState.state;
     final newScale = controller.getScaleForScaleState(scaleState);
-    markNeedsScaleRecalc = false;
     setScale(newScale, ChangeSource.internal);
-    return newScale;
-  }
-
-  double? get scale {
-    final scaleState = controller.scaleState.state;
-    final needsRecalc = markNeedsScaleRecalc && !(scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut);
-    final scaleExistsOnController = controller.scale != null;
-    if (needsRecalc || !scaleExistsOnController) {
-      return recalcScale();
-    }
-    return controller.scale;
   }
 
   void setScale(double? scale, ChangeSource source) => controller.update(scale: scale, source: source);
@@ -105,7 +98,7 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
     if (boundaries == null) return;
 
     var newScaleState = ScaleState.initial;
-    if (scale != boundaries.initialScale) {
+    if (controller.scale != boundaries.initialScale) {
       newScaleState = (newScale > boundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
     }
     controller.setScaleState(newScaleState, source);

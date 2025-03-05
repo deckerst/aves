@@ -6,14 +6,14 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
+import androidx.core.graphics.createBitmap
 import com.caverock.androidsvg.PreserveAspectRatio
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
-import deckers.thibault.aves.utils.BitmapUtils.ARGB_8888_BYTE_SIZE
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
@@ -24,7 +24,7 @@ class SvgRegionFetcher internal constructor(
 ) {
     private var lastSvgRef: LastSvgRef? = null
 
-    suspend fun fetch(
+    fun fetch(
         uri: Uri,
         sizeBytes: Long?,
         scale: Int,
@@ -91,25 +91,25 @@ class SvgRegionFetcher internal constructor(
 
             val targetBitmapWidth = regionRect.width()
             val targetBitmapHeight = regionRect.height()
+            val canvasWidth = targetBitmapWidth + bleedX * 2
+            val canvasHeight = targetBitmapHeight + bleedY * 2
 
-            // use `Long` as rect size could be unexpectedly large and go beyond `Int` max
-            val targetBitmapSizeBytes: Long = ARGB_8888_BYTE_SIZE.toLong() * targetBitmapWidth * targetBitmapHeight
+            val config = PREFERRED_CONFIG
+            val pixelCount = canvasWidth * canvasHeight
+            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), config)
             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                 // decoding a region that large would yield an OOM when creating the bitmap
                 result.error("fetch-read-large-region", "SVG region too large for uri=$uri regionRect=$regionRect", null)
                 return
             }
 
-            var bitmap = Bitmap.createBitmap(
-                targetBitmapWidth + bleedX * 2,
-                targetBitmapHeight + bleedY * 2,
-                Bitmap.Config.ARGB_8888
-            )
+            var bitmap = createBitmap(canvasWidth, canvasHeight, config)
             val canvas = Canvas(bitmap)
             svg.renderToCanvas(canvas, renderOptions)
 
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)
-            result.success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+            val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
+            result.success(bytes)
         } catch (e: Exception) {
             result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
         }
@@ -119,4 +119,8 @@ class SvgRegionFetcher internal constructor(
         val uri: Uri,
         val svg: SVG,
     )
+
+    companion object {
+        private val PREFERRED_CONFIG = Bitmap.Config.ARGB_8888
+    }
 }

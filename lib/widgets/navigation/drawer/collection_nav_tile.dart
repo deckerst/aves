@@ -12,7 +12,7 @@ class CollectionNavTile extends StatelessWidget {
   final Widget? leading;
   final Widget title;
   final Widget? trailing;
-  final CollectionFilter? filter;
+  final Set<CollectionFilter?>? filters;
   final bool Function() isSelected;
 
   const CollectionNavTile({
@@ -20,7 +20,7 @@ class CollectionNavTile extends StatelessWidget {
     required this.leading,
     required this.title,
     this.trailing,
-    required this.filter,
+    required this.filters,
     required this.isSelected,
   });
 
@@ -59,7 +59,7 @@ class CollectionNavTile extends StatelessWidget {
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
           source: context.read<CollectionSource>(),
-          filters: {filter},
+          filters: filters,
         ),
       ),
       (route) => false,
@@ -88,7 +88,7 @@ class AlbumNavTile extends StatelessWidget {
               size: 16,
             )
           : null,
-      filter: filter,
+      filters: {filter},
       isSelected: isSelected,
     );
   }

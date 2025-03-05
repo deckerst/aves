@@ -2,6 +2,7 @@ package deckers.thibault.aves.decoder
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -20,7 +21,6 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils.openMetadataRetriever
 import kotlinx.coroutines.CoroutineScope
@@ -28,45 +28,54 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
-import java.io.InputStream
+import java.io.IOException
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 @GlideModule
 class VideoThumbnailGlideModule : LibraryGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        registry.append(VideoThumbnail::class.java, InputStream::class.java, VideoThumbnailLoader.Factory())
+        registry.append(VideoThumbnail::class.java, Bitmap::class.java, VideoThumbnailLoader.Factory())
     }
 }
 
 class VideoThumbnail(val context: Context, val uri: Uri)
 
-internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, InputStream> {
-    override fun buildLoadData(model: VideoThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream> {
+internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, Bitmap> {
+    override fun buildLoadData(model: VideoThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
         return ModelLoader.LoadData(ObjectKey(model.uri), VideoThumbnailFetcher(model, width, height))
     }
 
     override fun handles(model: VideoThumbnail): Boolean = true
 
-    internal class Factory : ModelLoaderFactory<VideoThumbnail, InputStream> {
-        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<VideoThumbnail, InputStream> = VideoThumbnailLoader()
+    internal class Factory : ModelLoaderFactory<VideoThumbnail, Bitmap> {
+        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<VideoThumbnail, Bitmap> = VideoThumbnailLoader()
 
         override fun teardown() {}
     }
 }
 
-internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val width: Int, val height: Int) : DataFetcher<InputStream> {
+internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val width: Int, val height: Int) : DataFetcher<Bitmap> {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    override fun loadData(priority: Priority, callback: DataCallback<in InputStream>) {
+    override fun loadData(priority: Priority, callback: DataCallback<in Bitmap>) {
         ioScope.launch {
             val retriever = openMetadataRetriever(model.context, model.uri)
             if (retriever == null) {
                 callback.onLoadFailed(Exception("failed to initialize MediaMetadataRetriever for uri=${model.uri}"))
             } else {
                 try {
-                    var bytes = retriever.embeddedPicture
-                    if (bytes == null) {
+                    var bitmap: Bitmap? = null
+
+                    retriever.embeddedPicture?.let { bytes ->
+                        try {
+                            bitmap = BitmapFactory.decodeStream(ByteArrayInputStream(bytes))
+                        } catch (e: IOException) {
+                            // ignore
+                        }
+                    }
+
+                    if (bitmap == null) {
                         // there is no consistent strategy across devices to match
                         // the thumbnails returned by the content resolver / Media Store
                         // so we derive one in an arbitrary way
@@ -111,8 +120,9 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                         }
 
                         // the returned frame is already rotated according to the video metadata
-                        val frame = if (dstWidth > 0 && dstHeight > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                            val targetBitmapSizeBytes: Long = FORMAT_BYTE_SIZE.toLong() * dstWidth * dstHeight
+                        bitmap = if (dstWidth > 0 && dstHeight > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                            val pixelCount = dstWidth * dstHeight
+                            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
                             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                                 throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the scaled frame at $dstWidth x $dstHeight")
                             }
@@ -122,7 +132,8 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                                 retriever.getScaledFrameAtTime(timeMicros, option, dstWidth, dstHeight)
                             }
                         } else {
-                            val targetBitmapSizeBytes: Long = (FORMAT_BYTE_SIZE.toLong() * videoWidth * videoHeight).toLong()
+                            val pixelCount = videoWidth * videoHeight
+                            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
                             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                                 throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the full frame at $videoWidth x $videoHeight")
                             }
@@ -132,13 +143,12 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                                 retriever.getFrameAtTime(timeMicros, option)
                             }
                         }
-                        bytes = frame?.getBytes(canHaveAlpha = false, recycle = false)
                     }
 
-                    if (bytes != null) {
-                        callback.onDataReady(ByteArrayInputStream(bytes))
+                    if (bitmap == null) {
+                        callback.onLoadFailed(Exception("failed to get embedded picture or any frame for uri=${model.uri}"))
                     } else {
-                        callback.onLoadFailed(Exception("failed to get embedded picture or any frame"))
+                        callback.onDataReady(bitmap)
                     }
                 } catch (e: Exception) {
                     callback.onLoadFailed(e)
@@ -151,8 +161,14 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun getBitmapParams() = MediaMetadataRetriever.BitmapParams().apply {
-        preferredConfig = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private fun getBitmapParams(): MediaMetadataRetriever.BitmapParams {
+        val params = MediaMetadataRetriever.BitmapParams()
+        params.preferredConfig = this.getPreferredConfig()
+        return params
+    }
+
+    private fun getPreferredConfig(): Bitmap.Config {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // improved precision with the same memory cost as `ARGB_8888` (4 bytes per pixel)
             // for wide-gamut and HDR content which does not require alpha blending
             Bitmap.Config.RGBA_1010102
@@ -167,12 +183,7 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
     // cannot cancel
     override fun cancel() {}
 
-    override fun getDataClass(): Class<InputStream> = InputStream::class.java
+    override fun getDataClass(): Class<Bitmap> = Bitmap::class.java
 
     override fun getDataSource(): DataSource = DataSource.LOCAL
-
-    companion object {
-        // same for either `ARGB_8888` or `RGBA_1010102`
-        private const val FORMAT_BYTE_SIZE = BitmapUtils.ARGB_8888_BYTE_SIZE
-    }
 }

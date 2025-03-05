@@ -7,14 +7,14 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.12.3+143
+version: 1.12.4+144
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.27.4
-  sdk: ^3.6.0
+  flutter: 3.29.0
+  sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
 workspace:
   - plugins/aves_magnifier
   - plugins/aves_map
@@ -87,7 +87,7 @@ dependencies:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git
   flutter_map:
-  flutter_markdown:
+  flutter_markdown: # discontinued on 2025/04/30
   flutter_staggered_animations:
   get_it:
   gpx:
@@ -100,7 +100,7 @@ dependencies:
   network_info_plus:
   overlay_support:
   package_info_plus:
-  palette_generator:
+  palette_generator: # discontinued on 2025/04/30
   panorama:
     git:
       url: https://github.com/deckerst/aves_panorama.git
@@ -123,7 +123,6 @@ dependencies:
   streams_channel:
     git:
       url: https://github.com/deckerst/aves_streams_channel.git
-  transparent_image:
   url_launcher:
   vector_map_tiles: ^8.0.0 # vector_map_tiles v9.0.0-beta.6 has a buggy cross-platform definition for `cacheFolder`
   vector_math:

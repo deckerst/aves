@@ -17,7 +17,7 @@ class EditorImage extends StatefulWidget {
   final AvesMagnifierController magnifierController;
   final TransformController transformController;
   final ValueNotifier<EditorAction?> actionNotifier;
-  final ValueNotifier<EdgeInsets> paddingNotifier;
+  final ValueNotifier<EdgeInsets> marginNotifier;
   final ValueNotifier<ViewState> viewStateNotifier;
   final AvesEntry entry;
 
@@ -26,7 +26,7 @@ class EditorImage extends StatefulWidget {
     required this.magnifierController,
     required this.transformController,
     required this.actionNotifier,
-    required this.paddingNotifier,
+    required this.marginNotifier,
     required this.viewStateNotifier,
     required this.entry,
   });
@@ -71,7 +71,7 @@ class _EditorImageState extends State<EditorImage> {
     widget.actionNotifier.addListener(_onActionChanged);
     _subscriptions.add(widget.magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(widget.magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
-    _subscriptions.add(widget.transformController.eventStream.listen(_onTransformEvent));
+    _subscriptions.add(widget.transformController.activityStream.listen(_onTransformActivity));
   }
 
   void _unregisterWidget(EditorImage widget) {
@@ -96,8 +96,8 @@ class _EditorImageState extends State<EditorImage> {
           final canvasSize = MatrixUtils.transformRect(imageToUserMatrix, Offset.zero & mediaSize).size;
 
           return ValueListenableBuilder<EdgeInsets>(
-            valueListenable: widget.paddingNotifier,
-            builder: (context, padding, child) {
+            valueListenable: widget.marginNotifier,
+            builder: (context, margin, child) {
               return Transform(
                 alignment: Alignment.center,
                 transform: imageToUserMatrix,
@@ -106,12 +106,12 @@ class _EditorImageState extends State<EditorImage> {
                   builder: (context, action, child) {
                     return LayoutBuilder(
                       builder: (context, constraints) {
-                        final viewportSize = padding.deflateSize(constraints.biggest);
+                        final viewportSize = margin.deflateSize(constraints.biggest);
                         final minScale = ScaleLevel(factor: ScaleLevel.scaleForContained(viewportSize, canvasSize));
                         return AvesMagnifier(
-                          key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
+                          key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedMillis}'),
                           controller: widget.magnifierController,
-                          viewportPadding: padding,
+                          viewportPadding: margin,
                           contentSize: mediaSize,
                           allowOriginalScaleBeyondRange: false,
                           allowGestureScaleBeyondRange: false,
@@ -193,7 +193,7 @@ class _EditorImageState extends State<EditorImage> {
 
   void _onActionChanged() => _updateScrim();
 
-  void _onTransformEvent(TransformEvent event) => _updateScrim();
+  void _onTransformActivity(TransformActivity activity) => _updateScrim();
 
   void _updateScrim() => _scrimOpacityNotifier.value = _getActionScrimOpacity(widget.actionNotifier.value, transformController.activity);
 

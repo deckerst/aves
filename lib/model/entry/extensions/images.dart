@@ -25,7 +25,7 @@ extension ExtraAvesEntryImages on AvesEntry {
       pageId: pageId,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
-      dateModifiedSecs: dateModifiedSecs ?? -1,
+      dateModifiedMillis: dateModifiedMillis ?? -1,
       extent: requestExtent,
     );
   }
@@ -55,6 +55,7 @@ extension ExtraAvesEntryImages on AvesEntry {
         pageId: pageId,
         rotationDegrees: rotationDegrees,
         isFlipped: isFlipped,
+        isAnimated: isAnimated,
         sizeBytes: sizeBytes,
       );
 

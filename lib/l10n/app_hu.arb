@@ -532,7 +532,9 @@
   "itemCount": "{count, plural, other{{count} elem}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "showButtonLabel": "MUTAT",
@@ -816,7 +818,9 @@
   "columnCount": "{count, plural, other{{count} oszlop}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, other{{count} másodperc}}",
@@ -958,7 +962,9 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Törlöd ezt az elemet?} other{Törlöd ezt a {count} elemet?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "moveUndatedConfirmationDialogMessage": "Mented az elemek dátumait a végrehajtás előtt?",
@@ -972,7 +978,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{Áthelyezed a kukába?} other{Áthelyezed a {count} elemet a kukába?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "videoResumeDialogMessage": "Folytatod a lejátszást innen: {time}?",
@@ -995,13 +1003,17 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Törlöd ezt az albumot és az egy elemet benne ?} other{Törlöd ezt az albumot és a benne levő {count} elemet?}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Törlöd ezt az albumot és az egy elemet benne ?} other{Törlöd ezt az albumot és a benne levő {count} elemet?}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "editEntryDateDialogCopyField": "Másolás másik dátumról",
@@ -1055,55 +1067,73 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{Elem törlése sikertelen} other{{count} elem törlése sikertelen}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopyFailureFeedback": "{count, plural, =1{Elem másolása sikertelen} other{{count} elem másolása sikertelen}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveFailureFeedback": "{count, plural, =1{Elem áthelyezése sikertelen} other{{count} elem áthelyezése sikertelen}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{Elem átnevezése sikertelen} other{{count} elem átnevezése sikertelen}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditFailureFeedback": "{count, plural, =1{Elem szerkesztése sikertelen} other{{count} elem szerkesztése sikertelen}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{1 elem áthelyezve} other{{count} elem áthelyezve}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{1 elem átnevezve} other{{count} elem átnevezve}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{1 elem szerkesztve} other{{count} elem szerkesztve}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionCopySuccessFeedback": "{count, plural, =1{1 elem másolva} other{{count} elem másolva}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "sortOrderHighestFirst": "Legmagasabb legelöl",
@@ -1293,7 +1323,9 @@
   "statsWithGps": "{count, plural, other{{count} elem helyadatokkal}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsStorageAccessEmpty": "Nincsenek jogok megadva",
@@ -1357,7 +1389,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Ez a művelet nem támogatott a következő típusú elemnél: {types}.} other{Ez a művelet nem támogatott a következő típusú elemeknél: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -1374,7 +1408,9 @@
   "collectionExportFailureFeedback": "{count, plural, =1{Nem sikerült exportálni 1 oldalt} other{Nem sikerült exportálni {count} oldalt}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionDeselectSectionTooltip": "Szakasz kijelölésének megszüntetése",

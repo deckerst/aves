@@ -78,7 +78,9 @@
   "itemCount": "{count, plural, =1{{count} فایل} other{{count} فایل}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionGoToAlbumPage": "نمایش در البوم‌ها",
@@ -184,7 +186,9 @@
   "collectionExportFailureFeedback": "{count, plural, =1{استخراج صفحه ناموفق} other{استخراج {count} صفحه ناموفق}}",
   "@collectionExportFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsActionExport": "خروجی گرفتن",
@@ -332,7 +336,9 @@
   "columnCount": "{count, plural, other{{count} ستون}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "mapStyleOsmHot": "اوپن‌استریت‌مپ بشردوستانه",
@@ -829,7 +835,9 @@
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{این آلبوم ها و مورد موجود در آنها پاک شود؟} other{این آلبوم ها و {count} مورد موجود در آنها پاک شود؟}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP برای پخش ویدیو در داخل یک عکس متحرک مورد نیاز است.\n\nار پاک‌سازی آن اطمینان دارید?",
@@ -839,13 +847,17 @@
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{این مورد پاک شود؟} other{این {count} مورد پاک شوند؟}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "unsupportedTypeDialogMessage": "{count, plural, =1{این عملکرد برای موارد از این نوع ممکن نیست: {types}.} other{این عملکرد برای موارد از این نوع پشتیبانی نمیشود: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -892,7 +904,9 @@
   "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{این آلبوم و مورد موجود در آن پاک شود؟} other{این آلبوم و {count} مورد موجود در آن پاک شود؟}}",
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "genericFailureFeedback": "ناموفق",
@@ -1222,7 +1236,9 @@
   "binEntriesConfirmationDialogMessage": "{count, plural, =1{این مورد به سطل زباله منتقل شود؟} other{این {count}مورد به سطل زباله منتقل شوند؟}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "hideFilterConfirmationDialogMessage": "تطبیق عکس ها و فیلم ها از مجموعه شما پنهان خواهد ماند. می توانید دوباره آنها را از تنظیمات «حریم خصوصی» نشان دهید.\n\nاز پنهان سازی آنها اطمینان دارید?",
@@ -1426,13 +1442,17 @@
   "collectionCopySuccessFeedback": "{count, plural, =1{۱ مورد رونوشت شد} other{{count} مورد رونوشت شد}}",
   "@collectionCopySuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statsWithGps": "{count, plural, =1{1 مورد دارای مکان} other{{count} مورد دارای مکان}}",
   "@statsWithGps": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "editEntryDateDialogShift": "جابه‌جایی",
@@ -1440,7 +1460,9 @@
   "collectionDeleteFailureFeedback": "{count, plural, =1{پاک‌کردن ۱ مورد ناموفق بود} other{پاک‌کردن {count} مورد ناموفق بود}}",
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsDisablingBinWarningDialogMessage": "موارد موجود در سطل زباله برای همیشه نابود خواهند شد.",
@@ -1452,13 +1474,17 @@
   "collectionMoveFailureFeedback": "{count, plural, =1{هدایت ۱ مورد ناموفق بود} other{هدایت {count} مورد ناموفق بود}}",
   "@collectionMoveFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameFailureFeedback": "{count, plural, =1{تغییرنام ۱ مورد ناموفق بود} other{تغییرنام {count} مورد ناموفق بود}}",
   "@collectionRenameFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "aboutCreditsWorldAtlas1": "این برنامه یک پرونده TopoJSON استفاده میکند از",
@@ -1466,25 +1492,33 @@
   "collectionCopyFailureFeedback": "{count, plural, =1{رونوشت ۱ مورد ناموفق بود} other{رونوشت {count} مورد ناموفق بود}}",
   "@collectionCopyFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionMoveSuccessFeedback": "{count, plural, =1{۱ مورد هدایت شد} other{{count} مورد هدایت شد}}",
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionRenameSuccessFeedback": "{count, plural, =1{۱ مورد تغییرنام یافت} other{{count} مورد تغییرنام یافت}}",
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "collectionEditSuccessFeedback": "{count, plural, =1{۱ مورد ویرایش شد} other{{count} مورد ویرایش شد}}",
   "@collectionEditSuccessFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsViewerUseCutout": "ناحیه برش را بکار بگیر",
@@ -1514,7 +1548,9 @@
   "collectionEditFailureFeedback": "{count, plural, =1{ویرایش ۱ مورد ناموفق بود} other{ویرایش {count} مورد ناموفق بود}}",
   "@collectionEditFailureFeedback": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "chipActionShowCollection": "نمایش در مجموعه",

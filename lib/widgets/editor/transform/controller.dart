@@ -24,9 +24,9 @@ class TransformController {
 
   Stream<Transformation> get transformationStream => _transformationStreamController.stream;
 
-  final StreamController<TransformEvent> _eventStreamController = StreamController.broadcast();
+  final StreamController<TransformActivity> _activityStreamController = StreamController.broadcast();
 
-  Stream<TransformEvent> get eventStream => _eventStreamController.stream;
+  Stream<TransformActivity> get activityStream => _activityStreamController.stream;
 
   static const double straightenDegreesMin = -45;
   static const double straightenDegreesMax = 45;
@@ -57,6 +57,7 @@ class TransformController {
       region: CropRegion.fromRect(Offset.zero & displaySize),
     );
     _transformationStreamController.add(_transformation);
+    setAspectRatio(CropAspectRatio.free);
   }
 
   void flipHorizontally() {
@@ -90,8 +91,10 @@ class TransformController {
 
   set activity(TransformActivity activity) {
     _activity = activity;
-    _eventStreamController.add(TransformEvent(activity: _activity));
+    _activityStreamController.add(_activity);
   }
+
+  void setAspectRatio(CropAspectRatio ratio) => aspectRatioNotifier.value = ratio;
 
   void _onAspectRatioChanged() {
     // TODO TLAD [crop] apply

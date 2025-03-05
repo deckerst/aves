@@ -8,6 +8,8 @@ fun ByteBuffer.toByteArray(): ByteArray {
     return bytes
 }
 
+fun Int.toHex(): String = "0x${byteArrayOf(shr(8).toByte(), toByte()).toHex()}"
+
 fun ByteArray.toHex(): String = joinToString(separator = "") { it.toHex() }
 
 fun Byte.toHex(): String = "%02x".format(this)

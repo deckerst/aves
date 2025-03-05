@@ -665,11 +665,11 @@
   "@albumGroupNone": {},
   "albumMimeTypeMixed": "Misto",
   "@albumMimeTypeMixed": {},
-  "albumPickPageTitleCopy": "Copia nell'album",
+  "albumPickPageTitleCopy": "Copia nell’album",
   "@albumPickPageTitleCopy": {},
-  "albumPickPageTitleExport": "Esporta nell'album",
+  "albumPickPageTitleExport": "Esporta nell’album",
   "@albumPickPageTitleExport": {},
-  "albumPickPageTitleMove": "Sposta nell'album",
+  "albumPickPageTitleMove": "Sposta nell’album",
   "@albumPickPageTitleMove": {},
   "albumPickPageTitlePick": "Seleziona album",
   "@albumPickPageTitlePick": {},
@@ -1156,7 +1156,9 @@
   "columnCount": "{count, plural, =1{{count} colonna} other{{count} colonne}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "entryInfoActionRemoveLocation": "Rimuovi posizione",
@@ -1203,7 +1205,7 @@
   "@vaultLockTypePin": {},
   "vaultLockTypePassword": "Password",
   "@vaultLockTypePassword": {},
-  "newVaultWarningDialogMessage": "Gli elementi nelle cassaforti sono disponibili solo per questa app e non per altre.\n\nSe disinstalli l'app o cancelli i relativi dati, perderai tutti questi elementi.",
+  "newVaultWarningDialogMessage": "Gli elementi nelle cassaforti sono disponibili solo per questa app e non per altre.\n\nSe disinstalli l’app o cancelli i relativi dati, perderai tutti questi elementi.",
   "@newVaultWarningDialogMessage": {},
   "newVaultDialogTitle": "Nuova Cassaforte",
   "@newVaultDialogTitle": {},

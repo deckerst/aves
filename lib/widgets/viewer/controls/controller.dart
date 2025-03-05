@@ -70,7 +70,7 @@ class ViewerController with CastMixin {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
     entryNotifier.removeListener(_onEntryChanged);
-    windowService.setHdrColorMode(false);
+    windowService.setColorMode(wideColorGamut: false, hdr: false);
     _autopilotNotifier.dispose();
     _clearAutopilotAnimations();
     _stopPlayTimer();
@@ -79,8 +79,10 @@ class ViewerController with CastMixin {
 
   Future<void> _onEntryChanged() async {
     if (await windowService.supportsHdr()) {
-      final enabled = entryNotifier.value?.isHdr ?? false;
-      await windowService.setHdrColorMode(enabled);
+      await windowService.setColorMode(
+        wideColorGamut: false,
+        hdr: entryNotifier.value?.isHdr ?? false,
+      );
     }
   }
 

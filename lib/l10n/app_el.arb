@@ -1150,7 +1150,9 @@
   "columnCount": "{count, plural, =1{{count} στήλη} other{{count} στήλες}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "keepScreenOnVideoPlayback": "Κατά την αναπαραγωγή βίντεο",

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import androidx.core.net.toUri
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.jpeg.JpegDirectory
@@ -29,7 +30,6 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
-import androidx.core.net.toUri
 
 class SourceEntry {
     private val origin: Int
@@ -42,7 +42,7 @@ class SourceEntry {
     private var sourceRotationDegrees: Int? = null
     private var sizeBytes: Long? = null
     private var dateAddedSecs: Long? = null
-    private var dateModifiedSecs: Long? = null
+    private var dateModifiedMillis: Long? = null
     private var sourceDateTakenMillis: Long? = null
     private var durationMillis: Long? = null
 
@@ -65,16 +65,16 @@ class SourceEntry {
         sizeBytes = toLong(map[EntryFields.SIZE_BYTES])
         title = map[EntryFields.TITLE] as String?
         dateAddedSecs = toLong(map[EntryFields.DATE_ADDED_SECS])
-        dateModifiedSecs = toLong(map[EntryFields.DATE_MODIFIED_SECS])
+        dateModifiedMillis = toLong(map[EntryFields.DATE_MODIFIED_MILLIS])
         sourceDateTakenMillis = toLong(map[EntryFields.SOURCE_DATE_TAKEN_MILLIS])
         durationMillis = toLong(map[EntryFields.DURATION_MILLIS])
     }
 
-    fun initFromFile(path: String, title: String, sizeBytes: Long, dateModifiedSecs: Long) {
+    fun initFromFile(path: String, title: String, sizeBytes: Long, dateModifiedMillis: Long) {
         this.path = path
         this.title = title
         this.sizeBytes = sizeBytes
-        this.dateModifiedSecs = dateModifiedSecs
+        this.dateModifiedMillis = dateModifiedMillis
     }
 
     fun toMap(): FieldMap {
@@ -89,7 +89,7 @@ class SourceEntry {
             EntryFields.SIZE_BYTES to sizeBytes,
             EntryFields.TITLE to title,
             EntryFields.DATE_ADDED_SECS to dateAddedSecs,
-            EntryFields.DATE_MODIFIED_SECS to dateModifiedSecs,
+            EntryFields.DATE_MODIFIED_MILLIS to dateModifiedMillis,
             EntryFields.SOURCE_DATE_TAKEN_MILLIS to sourceDateTakenMillis,
             EntryFields.DURATION_MILLIS to durationMillis,
             // only for map export

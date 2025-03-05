@@ -8,8 +8,8 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.decoder.AvesAppGlideModule
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler {
@@ -80,11 +81,13 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
+        val decoded = arguments["decoded"] as Boolean
         val mimeType = arguments["mimeType"] as String?
         val uri = (arguments["uri"] as String?)?.toUri()
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
+        val isAnimated = arguments["isAnimated"] as Boolean
         val pageId = arguments["pageId"] as Int?
 
         if (mimeType == null || uri == null) {
@@ -93,19 +96,31 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
-        if (isVideo(mimeType)) {
-            streamVideoByGlide(uri, mimeType, sizeBytes)
-        } else if (!canDecodeWithFlutter(mimeType, pageId, rotationDegrees, isFlipped)) {
-            // decode exotic format on platform side, then encode it in portable format for Flutter
-            streamImageByGlide(uri, pageId, mimeType, sizeBytes, rotationDegrees, isFlipped)
-        } else {
+        if (canDecodeWithFlutter(mimeType, isAnimated) && !decoded) {
             // to be decoded by Flutter
-            streamImageAsIs(uri, mimeType, sizeBytes)
+            streamOriginalEncodedBytes(uri, mimeType, sizeBytes)
+        } else if (isVideo(mimeType)) {
+            streamVideoByGlide(
+                uri = uri,
+                mimeType = mimeType,
+                sizeBytes = sizeBytes,
+                decoded = decoded,
+            )
+        } else {
+            streamImageByGlide(
+                uri = uri,
+                pageId = pageId,
+                mimeType = mimeType,
+                sizeBytes = sizeBytes,
+                rotationDegrees = rotationDegrees,
+                isFlipped = isFlipped,
+                decoded = decoded,
+            )
         }
         endOfStream()
     }
 
-    private fun streamImageAsIs(uri: Uri, mimeType: String, sizeBytes: Long?) {
+    private fun streamOriginalEncodedBytes(uri: Uri, mimeType: String, sizeBytes: Long?) {
         if (!MemoryUtils.canAllocate(sizeBytes)) {
             error("streamImage-image-read-large", "original image too large at $sizeBytes bytes, for mimeType=$mimeType uri=$uri", null)
             return
@@ -125,6 +140,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         sizeBytes: Long?,
         rotationDegrees: Int,
         isFlipped: Boolean,
+        decoded: Boolean,
     ) {
         val target = Glide.with(context)
             .asBitmap()
@@ -137,9 +153,16 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }
             if (bitmap != null) {
-                val bytes = bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false)
+                // do not recycle bitmaps fetched from Glide as their lifecycle is unknown
+                val recycle = false
+                val bytes = if (decoded) {
+                    BitmapUtils.getRawBytes(bitmap, recycle = recycle)
+                } else {
+                    BitmapUtils.getEncodedBytes(bitmap, canHaveAlpha = MimeTypes.canHaveAlpha(mimeType), recycle = recycle)
+                }
+
                 if (MemoryUtils.canAllocate(sizeBytes)) {
-                    success(bytes)
+                    streamBytes(ByteArrayInputStream(bytes))
                 } else {
                     error("streamImage-image-decode-large", "decoded image too large at $sizeBytes bytes, for mimeType=$mimeType uri=$uri", null)
                 }
@@ -153,7 +176,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    private suspend fun streamVideoByGlide(uri: Uri, mimeType: String, sizeBytes: Long?) {
+    private suspend fun streamVideoByGlide(uri: Uri, mimeType: String, sizeBytes: Long?, decoded: Boolean) {
         val target = Glide.with(context)
             .asBitmap()
             .apply(AvesAppGlideModule.uncachedFullImageOptions)
@@ -162,9 +185,16 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         try {
             val bitmap = withContext(Dispatchers.IO) { target.get() }
             if (bitmap != null) {
-                val bytes = bitmap.getBytes(canHaveAlpha = false, recycle = false)
+                // do not recycle bitmaps fetched from Glide as their lifecycle is unknown
+                val recycle = false
+                val bytes = if (decoded) {
+                    BitmapUtils.getRawBytes(bitmap, recycle = recycle)
+                } else {
+                    BitmapUtils.getEncodedBytes(bitmap, canHaveAlpha = false, recycle = recycle)
+                }
+
                 if (MemoryUtils.canAllocate(sizeBytes)) {
-                    success(bytes)
+                    streamBytes(ByteArrayInputStream(bytes))
                 } else {
                     error("streamImage-video-large", "decoded image too large at $sizeBytes bytes, for mimeType=$mimeType uri=$uri", null)
                 }

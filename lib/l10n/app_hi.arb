@@ -6,7 +6,9 @@
   "columnCount": "{count, plural, other{{count} कॉलम}}",
   "@columnCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeSeconds": "{count, plural, =1{{count} सेकंड} other{{count} सेकंडस}}",
@@ -38,7 +40,9 @@
   "itemCount": "{count, plural, =1{{count} चीज} other{{count} चीजे}}",
   "@itemCount": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteButtonLabel": "मिटाए",
@@ -333,18 +337,20 @@
   "@nameConflictDialogSingleSourceMessage": {},
   "noMatchingAppDialogMessage": "इसमें कोई ऐप नहीं है जो इसे संभाल सकता है।।",
   "@noMatchingAppDialogMessage": {},
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Move this item to the recycle bin?} other{Move these {count} items to the recycle bin?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{इस आइटम को रीसायकल बिन में ले जाएं?} other{इन {count} आइटम को रीसायकल बिन में ले जाएं?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
   },
-  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Delete this item?} other{Delete these {count} items?}}",
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{इस आइटम को हटाए?} other{इन {count} आइटमो को हटाएं?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -391,10 +397,12 @@
   "@renameAlbumDialogLabel": {},
   "wallpaperTargetLock": "लॉक स्क्रीन",
   "@wallpaperTargetLock": {},
-  "unsupportedTypeDialogMessage": "{count, plural, =1{This operation is not supported for items of the following type: {types}.} other{This operation is not supported for items of the following types: {types}.}}",
+  "unsupportedTypeDialogMessage": "{count, plural, =1{यह ऑपरेशन निम्न प्रकार के आइटम के लिए समर्थित नहीं है: {types}.} other{यह ऑपरेशन निम्न प्रकार के आइटम के लिए समर्थित नहीं है: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -717,6 +725,7 @@
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -725,6 +734,7 @@
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -789,6 +799,7 @@
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -807,6 +818,7 @@
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -821,6 +833,7 @@
   "@collectionRenameFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -863,6 +876,7 @@
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -871,6 +885,7 @@
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -879,6 +894,7 @@
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -897,6 +913,7 @@
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -905,6 +922,7 @@
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -925,6 +943,7 @@
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -945,6 +964,7 @@
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -990,5 +1010,215 @@
   "drawerPlacePage": "स्थान",
   "@drawerPlacePage": {},
   "drawerTagPage": "टैग्स",
-  "@drawerTagPage": {}
+  "@drawerTagPage": {},
+  "albumMimeTypeMixed": "मिक्सड",
+  "@albumMimeTypeMixed": {},
+  "countryEmpty": "कोई देश नहीं",
+  "@countryEmpty": {},
+  "settingsNavigationDrawerAddAlbum": "एल्बम जोड़े",
+  "@settingsNavigationDrawerAddAlbum": {},
+  "albumGroupTier": "टियर से",
+  "@albumGroupTier": {},
+  "searchStatesSectionTitle": "राज्य/देश",
+  "@searchStatesSectionTitle": {},
+  "mapStyleOpenTopoMap": "ओपनटॉपोमैप",
+  "@mapStyleOpenTopoMap": {},
+  "sortOrderShortestFirst": "छोटा पहले",
+  "@sortOrderShortestFirst": {},
+  "settingsNavigationDrawerEditorPageTitle": "नेविगेशन मेनू",
+  "@settingsNavigationDrawerEditorPageTitle": {},
+  "editEntryLocationDialogImportGpx": "GPX इंपोर्ट करे",
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "टाइम शिफ्ट",
+  "@editEntryLocationDialogTimeShift": {},
+  "searchRatingSectionTitle": "रेटिंग",
+  "@searchRatingSectionTitle": {},
+  "searchDateSectionTitle": "दिनांक",
+  "@searchDateSectionTitle": {},
+  "searchPlacesSectionTitle": "स्थान",
+  "@searchPlacesSectionTitle": {},
+  "settingsDefault": "डिफॉल्ट",
+  "@settingsDefault": {},
+  "appExportDynamicAlbums": "डायनेमिक एल्बम",
+  "@appExportDynamicAlbums": {},
+  "albumScreenRecordings": "स्क्रीन रिकॉर्डिंग",
+  "@albumScreenRecordings": {},
+  "sortOrderHighestFirst": "उच्चतम पहले",
+  "@sortOrderHighestFirst": {},
+  "albumGroupType": "टाइप द्वारा",
+  "@albumGroupType": {},
+  "albumGroupVolume": "स्टोरेज मात्रा के अनुसार",
+  "@albumGroupVolume": {},
+  "placePageTitle": "स्थान",
+  "@placePageTitle": {},
+  "searchAlbumsSectionTitle": "एल्बम",
+  "@searchAlbumsSectionTitle": {},
+  "tagPageTitle": "टैग्स",
+  "@tagPageTitle": {},
+  "tagEmpty": "कोई टैग नहीं",
+  "@tagEmpty": {},
+  "searchMetadataSectionTitle": "मेटाडाटा",
+  "@searchMetadataSectionTitle": {},
+  "settingsConfirmationBeforeDeleteItems": "आइटम को हमेशा के लिए डीलीट करने से पहले पूछे",
+  "@settingsConfirmationBeforeDeleteItems": {},
+  "settingsConfirmationAfterMoveToBinItems": "आइटम को रिसाइकिल बिन में ले जाने के बाद संदेश दिखाए",
+  "@settingsConfirmationAfterMoveToBinItems": {},
+  "settingsNavigationDrawerBanner": "मेनू आइटम को ले जाने व रिआर्डर करने के लिए टच और होल्ड करें",
+  "@settingsNavigationDrawerBanner": {},
+  "settingsNavigationDrawerTabTypes": "टाइप्स",
+  "@settingsNavigationDrawerTabTypes": {},
+  "dynamicAlbumAlreadyExists": "डायनेमिक एल्बम पहले से ही मौजूद है",
+  "@dynamicAlbumAlreadyExists": {},
+  "newDynamicAlbumDialogTitle": "नया डायनेमिक एल्बम",
+  "@newDynamicAlbumDialogTitle": {},
+  "albumPageTitle": "एल्बम",
+  "@albumPageTitle": {},
+  "chipActionDecompose": "स्प्लिट करे",
+  "@chipActionDecompose": {},
+  "albumTierDynamic": "डायनेमिक",
+  "@albumTierDynamic": {},
+  "albumPickPageTitleMove": "एल्बम में स्थानांतरित करे",
+  "@albumPickPageTitleMove": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "sortByItemCount": "आइटम गणना के द्वारा",
+  "@sortByItemCount": {},
+  "sortBySize": "साइज से",
+  "@sortBySize": {},
+  "sortByRating": "रेटिंग से",
+  "@sortByRating": {},
+  "sortByDuration": "समय के अनुसार",
+  "@sortByDuration": {},
+  "albumGroupNone": "ग्रुप न बनाए",
+  "@albumGroupNone": {},
+  "albumPickPageTitleCopy": "एल्बम में कॉपी करे",
+  "@albumPickPageTitleCopy": {},
+  "albumPickPageTitleExport": "एल्बम में एक्सपोर्ट करे",
+  "@albumPickPageTitleExport": {},
+  "statePageTitle": "राज्य/देश",
+  "@statePageTitle": {},
+  "stateEmpty": "कौन राज्य नहीं",
+  "@stateEmpty": {},
+  "placeEmpty": "कोई स्थान नहीं",
+  "@placeEmpty": {},
+  "binPageTitle": "रिसाइकल बिन",
+  "@binPageTitle": {},
+  "searchCountriesSectionTitle": "देशों",
+  "@searchCountriesSectionTitle": {},
+  "settingsPageTitle": "सेटिंग्स",
+  "@settingsPageTitle": {},
+  "setHomeCustom": "कस्टम",
+  "@setHomeCustom": {},
+  "settingsHomeTile": "होम",
+  "@settingsHomeTile": {},
+  "settingsShowBottomNavigationBar": "नेविगेशन बार दिखाए",
+  "@settingsShowBottomNavigationBar": {},
+  "settingsConfirmationVaultDataLoss": "वोल्ट (संदूक) के डाटा लॉस की चेतावनी दिखाए",
+  "@settingsConfirmationVaultDataLoss": {},
+  "settingsNavigationDrawerTabAlbums": "एल्बम",
+  "@settingsNavigationDrawerTabAlbums": {},
+  "settingsKeepScreenOnDialogTitle": "स्क्रीन को चालू रखें",
+  "@settingsKeepScreenOnDialogTitle": {},
+  "settingsConfirmationDialogTitle": "पुष्टीकरण डायलॉग",
+  "@settingsConfirmationDialogTitle": {},
+  "chipActionRemove": "हटाएं",
+  "@chipActionRemove": {},
+  "albumPickPageTitlePick": "एल्बम चुने",
+  "@albumPickPageTitlePick": {},
+  "explorerPageTitle": "एक्सप्लोरर",
+  "@explorerPageTitle": {},
+  "settingsKeepScreenOnTile": "स्क्रीन को चालू रखें",
+  "@settingsKeepScreenOnTile": {},
+  "settingsConfirmationBeforeMoveToBinItems": "आइटम को रिसाइकल बिन में ले जाने से पहले पूछे",
+  "@settingsConfirmationBeforeMoveToBinItems": {},
+  "removeEntryMetadataDialogAll": "सभी",
+  "@removeEntryMetadataDialogAll": {},
+  "collectionActionAddDynamicAlbum": "डायनेमिक एल्बम जोड़े",
+  "@collectionActionAddDynamicAlbum": {},
+  "sortByAlbumFileName": "एल्बम और फाइल नाम से",
+  "@sortByAlbumFileName": {},
+  "sortOrderNewestFirst": "नए पहले",
+  "@sortOrderNewestFirst": {},
+  "sortOrderZtoA": "Z से A",
+  "@sortOrderZtoA": {},
+  "sortOrderLongestFirst": "सबसे लंबा पहले",
+  "@sortOrderLongestFirst": {},
+  "albumVideoCaptures": "वीडियो कैप्चर",
+  "@albumVideoCaptures": {},
+  "albumEmpty": "कोई एल्बम नहीं l",
+  "@albumEmpty": {},
+  "createAlbumButtonLabel": "बनाए",
+  "@createAlbumButtonLabel": {},
+  "newFilterBanner": "नया",
+  "@newFilterBanner": {},
+  "countryPageTitle": "देशों",
+  "@countryPageTitle": {},
+  "explorerActionSelectStorageVolume": "स्टोरेज चुने",
+  "@explorerActionSelectStorageVolume": {},
+  "searchCollectionFieldHint": "कलेक्शन खोजें",
+  "@searchCollectionFieldHint": {},
+  "selectStorageVolumeDialogTitle": "स्टोरेज",
+  "@selectStorageVolumeDialogTitle": {},
+  "searchRecentSectionTitle": "हाल ही का",
+  "@searchRecentSectionTitle": {},
+  "searchTagsSectionTitle": "टैग",
+  "@searchTagsSectionTitle": {},
+  "settingsSearchFieldLabel": "सेटिंग्स खोजें",
+  "@settingsSearchFieldLabel": {},
+  "settingsAskEverytime": "हर बार पूछे",
+  "@settingsAskEverytime": {},
+  "settingsModificationWarningDialogMessage": "अन्य सेटिंग्स परिवर्तित की जाएगी",
+  "@settingsModificationWarningDialogMessage": {},
+  "settingsSearchEmpty": "कोई सेटिंग्स नहीं मिली",
+  "@settingsSearchEmpty": {},
+  "settingsActionExport": "एक्सपोर्ट",
+  "@settingsActionExport": {},
+  "settingsActionExportDialogTitle": "एक्सपोर्ट",
+  "@settingsActionExportDialogTitle": {},
+  "settingsActionImport": "इंपोर्ट",
+  "@settingsActionImport": {},
+  "settingsActionImportDialogTitle": "इंपोर्ट",
+  "@settingsActionImportDialogTitle": {},
+  "appExportSettings": "सेटिंग्स",
+  "@appExportSettings": {},
+  "appExportCovers": "कवर",
+  "@appExportCovers": {},
+  "appExportFavourites": "पसंदीदा",
+  "@appExportFavourites": {},
+  "settingsNavigationSectionTitle": "नेविगेशन",
+  "@settingsNavigationSectionTitle": {},
+  "settingsHomeDialogTitle": "होम",
+  "@settingsHomeDialogTitle": {},
+  "settingsConfirmationBeforeMoveUndatedItems": "अदिनांकित आइटम को ले जाने से पहले पूछे",
+  "@settingsConfirmationBeforeMoveUndatedItems": {},
+  "settingsNavigationDrawerTile": "नेविगेशन मेनू",
+  "@settingsNavigationDrawerTile": {},
+  "settingsNavigationDrawerTabPages": "पेज़",
+  "@settingsNavigationDrawerTabPages": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "sortOrderOldestFirst": "पूराने पहले",
+  "@sortOrderOldestFirst": {},
+  "sortOrderAtoZ": "A से Z",
+  "@sortOrderAtoZ": {},
+  "sortOrderLowestFirst": "निम्नतम पहले",
+  "@sortOrderLowestFirst": {},
+  "sortOrderLargestFirst": "सबसे बड़ा पहले",
+  "@sortOrderLargestFirst": {},
+  "sortOrderSmallestFirst": "सबसे छोटा पहले",
+  "@sortOrderSmallestFirst": {},
+  "albumCamera": "कैमरा",
+  "@albumCamera": {},
+  "albumDownload": "डाउनलोड",
+  "@albumDownload": {},
+  "albumScreenshots": "स्क्रीनशॉट",
+  "@albumScreenshots": {},
+  "settingsDisabled": "डिसेबल किया गया",
+  "@settingsDisabled": {},
+  "settingsSystemDefault": "सिस्टम डिफॉल्ट",
+  "@settingsSystemDefault": {},
+  "settingsConfirmationTile": "पुष्टीकरण डायलॉग",
+  "@settingsConfirmationTile": {},
+  "settingsDoubleBackExit": "बाहर जाने के लिए \"पीछे\" दो बार दबाए",
+  "@settingsDoubleBackExit": {}
 }

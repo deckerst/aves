@@ -37,6 +37,8 @@ import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 object MultiPage {
     private val LOG_TAG = LogUtils.createTag<MultiPage>()
 
+    // TODO TLAD more generic support, (e.g. 0x00000014 + `ftyp` + `qt  `)
+    // atom length (variable, e.g. `0x00000018`) + atom type (`ftyp`) + type (variable, e.g. `mp42`, `qt`)
     private val heicMotionPhotoVideoStartIndicator = byteArrayOf(0x00, 0x00, 0x00, 0x18) + "ftypmp42".toByteArray()
 
     // page info
@@ -82,6 +84,26 @@ object MultiPage {
         }
         extractor.release()
         return tracks
+    }
+
+    fun isHeicSefdMotionPhoto(context: Context, uri: Uri): Boolean {
+        return getHeicSefdMotionPhotoVideoSizing(context, uri) != null
+    }
+
+    private fun getHeicSefdMotionPhotoVideoSizing(context: Context, uri: Uri): Pair<Long, Long>? {
+        Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (sefdOffset, sefdBytes) ->
+            // we could properly parse each tag until we find the "embedded video" tag (0x0a30)
+            // but it seems that decoding the SEFT trailer is necessary for this,
+            // so we simply search for the "MotionPhoto_Data" sequence instead
+            val name = Mp4ParserHelper.SEFD_MOTION_PHOTO_NAME
+            val index = sefdBytes.indexOfBytes(name.toByteArray(Charsets.UTF_8))
+            if (index != -1) {
+                val videoOffset = sefdOffset + index + name.length
+                val videoSize = sefdBytes.size - (videoOffset - sefdOffset)
+                return Pair(videoOffset, videoSize)
+            }
+        }
+        return null
     }
 
     private fun getJpegMpfPrimaryRotation(context: Context, uri: Uri, sizeBytes: Long): Int {
@@ -245,40 +267,38 @@ object MultiPage {
 
     fun getMotionPhotoPages(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): ArrayList<FieldMap> {
         val pages = ArrayList<FieldMap>()
-        getMotionPhotoVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
-            getTrailerVideoInfo(context, uri, fileSizeBytes = sizeBytes, videoSizeBytes = videoSizeBytes)?.let { videoInfo ->
-                // set the original image as the first and default track
-                var pageIndex = 0
-                pages.add(
-                    hashMapOf(
-                        KEY_PAGE to pageIndex++,
-                        KEY_MIME_TYPE to mimeType,
-                        KEY_IS_DEFAULT to true,
-                    )
+        getMotionPhotoVideoInfo(context, uri, mimeType, sizeBytes)?.let { videoInfo ->
+            // set the original image as the first and default track
+            var pageIndex = 0
+            pages.add(
+                hashMapOf(
+                    KEY_PAGE to pageIndex++,
+                    KEY_MIME_TYPE to mimeType,
+                    KEY_IS_DEFAULT to true,
                 )
-                // add video tracks from the appended video
-                videoInfo.getString(MediaFormat.KEY_MIME)?.let { mime ->
-                    if (MimeTypes.isVideo(mime)) {
-                        val page: FieldMap = hashMapOf(
-                            KEY_PAGE to pageIndex++,
-                            KEY_MIME_TYPE to MimeTypes.MP4,
-                            KEY_IS_DEFAULT to false,
-                        )
-                        videoInfo.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
-                        videoInfo.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            videoInfo.getSafeInt(MediaFormat.KEY_ROTATION) { page[KEY_ROTATION_DEGREES] = it }
-                        }
-                        videoInfo.getSafeLong(MediaFormat.KEY_DURATION) { page[KEY_DURATION] = it / 1000 }
-                        pages.add(page)
+            )
+            // add video tracks from the appended video
+            videoInfo.getString(MediaFormat.KEY_MIME)?.let { mime ->
+                if (MimeTypes.isVideo(mime)) {
+                    val page: FieldMap = hashMapOf(
+                        KEY_PAGE to pageIndex++,
+                        KEY_MIME_TYPE to MimeTypes.MP4,
+                        KEY_IS_DEFAULT to false,
+                    )
+                    videoInfo.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
+                    videoInfo.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        videoInfo.getSafeInt(MediaFormat.KEY_ROTATION) { page[KEY_ROTATION_DEGREES] = it }
                     }
+                    videoInfo.getSafeLong(MediaFormat.KEY_DURATION) { page[KEY_DURATION] = it / 1000 }
+                    pages.add(page)
                 }
             }
         }
         return pages
     }
 
-    fun getMotionPhotoVideoSize(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
+    fun getTrailerVideoSize(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
         if (MimeTypes.isHeic(mimeType)) {
             // XMP in HEIC motion photos (as taken with a Samsung Camera v12.0.01.50) indicates an `Item:Length` of 68 bytes for the video.
             // This item does not contain the video itself, but only some kind of metadata (no doc, no spec),
@@ -325,22 +345,35 @@ object MultiPage {
         return offsetFromEnd
     }
 
-    fun getTrailerVideoInfo(context: Context, uri: Uri, fileSizeBytes: Long, videoSizeBytes: Long): MediaFormat? {
-        var format: MediaFormat? = null
+    private fun getMotionPhotoVideoInfo(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): MediaFormat? {
+        getMotionPhotoVideoSizing(context, uri, mimeType, sizeBytes)?.let { (videoOffset, videoSize) ->
+            return getEmbedVideoInfo(context, uri, videoOffset, videoSize)
+        }
+        return null
+    }
+
+    fun getTrailerVideoInfo(context: Context, uri: Uri, fileSize: Long, videoSize: Long): MediaFormat? {
+        return getEmbedVideoInfo(context, uri, videoOffset = fileSize - videoSize, videoSize = videoSize)
+    }
+
+    private fun getEmbedVideoInfo(context: Context, uri: Uri, videoOffset: Long, videoSize: Long): MediaFormat? {
         val extractor = MediaExtractor()
         var pfd: ParcelFileDescriptor? = null
         try {
-            val videoStartOffset = fileSizeBytes - videoSizeBytes
             pfd = context.contentResolver.openFileDescriptor(uri, "r")
             pfd?.fileDescriptor?.let { fd ->
-                extractor.setDataSource(fd, videoStartOffset, videoSizeBytes)
-                if (extractor.trackCount > 0) {
-                    // only consider the first track to represent the appended video
-                    val trackIndex = 0
+                extractor.setDataSource(fd, videoOffset, videoSize)
+                // video track may be after an audio track
+                for (trackIndex in 0 until extractor.trackCount) {
                     try {
-                        format = extractor.getTrackFormat(trackIndex)
+                        val format = extractor.getTrackFormat(trackIndex)
+                        format.getString(MediaFormat.KEY_MIME)?.let {
+                            if (MimeTypes.isVideo(it)) {
+                                return format
+                            }
+                        }
                     } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to get motion photo track information for uri=$uri, track num=$trackIndex", e)
+                        Log.w(LOG_TAG, "failed to get track information for uri=$uri, track num=$trackIndex", e)
                     }
                 }
             }
@@ -350,7 +383,22 @@ object MultiPage {
             extractor.release()
             pfd?.close()
         }
-        return format
+        return null
+    }
+
+    fun getMotionPhotoVideoSizing(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Pair<Long, Long>? {
+        // default to trailer videos
+        getTrailerVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSize ->
+            val videoOffset = sizeBytes - videoSize
+            return Pair(videoOffset, videoSize)
+        }
+
+        if (MimeTypes.isHeic(mimeType)) {
+            // fallback to video within Samsung SEFD box
+            return getHeicSefdMotionPhotoVideoSizing(context, uri)
+        }
+
+        return null
     }
 
     fun getTiffPages(context: Context, uri: Uri): ArrayList<FieldMap> {

@@ -120,7 +120,7 @@ class MultiPageInfo {
       sizeBytes: mainEntry.sizeBytes,
       sourceTitle: mainEntry.sourceTitle,
       dateAddedSecs: mainEntry.dateAddedSecs,
-      dateModifiedSecs: mainEntry.dateModifiedSecs,
+      dateModifiedMillis: mainEntry.dateModifiedMillis,
       sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
       durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
       trashed: trashed,

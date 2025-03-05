@@ -10,16 +10,17 @@ fi
 
 # expects:
 # - ImageMagick 6
-# - raw screenshots sized at 1080x2280 in `/screenshots/raw`
+# - raw screenshots sized at 1080x2520 (21∶9) in `/screenshots/raw`
 
-DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_s10e_ltr_nav_gestures.png
-DEVICE_FRAME=~/code/aves_extra/screenshots/device_frame_s10e.png
+DEVICE_OVERLAY_LTR=~/code/aves_extra/screenshots/device_overlay_ltr.png
+DEVICE_OVERLAY_RTL=~/code/aves_extra/screenshots/device_overlay_rtl.png
+DEVICE_FRAME=~/code/aves_extra/screenshots/device_frame_1142x2650_for_1080x2520.png
 # FRAME_SIZE: dimensions of DEVICE_FRAME
-FRAME_SIZE=1142x2410
+FRAME_SIZE=1142x2650
 # FRAME_OFFSET: offset for content in DEVICE_FRAME
 FRAME_OFFSET=31x53
 # PLAY_SIZE: contain FRAME_SIZE in 9:16
-PLAY_SIZE=1356x2410
+PLAY_SIZE=1490x2650
 
 cd screenshots || exit
 
@@ -29,7 +30,9 @@ for source in raw/*/*; do
     target=${source/raw/overlay}
     echo "$source -> $target"
     mkdir -p "$(dirname "$target")"
-    convert "$source" $DEVICE_OVERLAY_LTR -composite "$target"
+    locale="$(basename "$(dirname "$source")")"
+    [[ $locale = "ar" || $locale = "fa" ]] && overlay="$DEVICE_OVERLAY_RTL" || overlay="$DEVICE_OVERLAY_LTR"
+    convert "$source" $overlay -composite "$target"
   fi
 done
 
@@ -43,6 +46,7 @@ for source in overlay/*/*; do
   fi
 done
 mv izzy/en izzy/en-US
+mv izzy/en_Shaw izzy/en-XW-Shaw
 mv izzy/es izzy/es-MX
 mv izzy/nb izzy/nb-NO
 mv izzy/pt izzy/pt-BR

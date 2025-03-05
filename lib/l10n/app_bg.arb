@@ -19,7 +19,7 @@
   "@viewerTransitionNone": {},
   "widgetOpenPageCollection": "Отвори колекция",
   "@widgetOpenPageCollection": {},
-  "restrictedAccessDialogMessage": "На това приложение не се дава достъп до {directory} на „{volume}“.\n\nМоля използвайте системно инсталиран файлов мениджър или Галерия за да преместите обекта в друга директория.",
+  "restrictedAccessDialogMessage": "На това приложение не се дава достъп до {directory} на „{volume}“.\n\nМоля използвайте системно инсталиран файлов мениджър или Галерия за преместване на елементи в друга директория.",
   "@restrictedAccessDialogMessage": {
     "placeholders": {
       "directory": {
@@ -38,7 +38,9 @@
   "unsupportedTypeDialogMessage": "{count, plural, =1{Тази операция не се поддържа за елементи от следния тип: {types}.} other{Тази операция не се поддържа за елементи от следните типове: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
-      "count": {},
+      "count": {
+        "type": "int"
+      },
       "types": {
         "type": "String",
         "example": "GIF, TIFF, MP4",
@@ -54,6 +56,7 @@
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -76,6 +79,7 @@
   "@deleteSingleAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -84,6 +88,7 @@
   "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -136,6 +141,7 @@
   "@collectionDeleteFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -146,6 +152,7 @@
   "@collectionCopyFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -154,6 +161,7 @@
   "@collectionMoveFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -162,6 +170,7 @@
   "@collectionEditSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -170,6 +179,7 @@
   "@collectionEditFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -178,6 +188,7 @@
   "@collectionExportFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -188,6 +199,7 @@
   "@collectionMoveSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -254,10 +266,11 @@
   "@welcomeMessage": {},
   "welcomeOptional": "Опционално",
   "@welcomeOptional": {},
-  "itemCount": "{count, plural, =1{{count} обект} few{{count} обекта} other{{count} обекти}}",
+  "itemCount": "{count, plural, =1{{count} обект} few{{count} обекта} other{{count} обекта}}",
   "@itemCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -484,9 +497,9 @@
   "@coordinateDmsSouth": {},
   "coordinateDmsWest": "Запад",
   "@coordinateDmsWest": {},
-  "displayRefreshRatePreferHighest": "Предпочете на висока честота на опресняване на дисплея",
+  "displayRefreshRatePreferHighest": "Висока честота",
   "@displayRefreshRatePreferHighest": {},
-  "displayRefreshRatePreferLowest": "Предпочете на ниска честота на опресняване на дисплея",
+  "displayRefreshRatePreferLowest": "Ниска честота",
   "@displayRefreshRatePreferLowest": {},
   "keepScreenOnNever": "Никога",
   "@keepScreenOnNever": {},
@@ -630,6 +643,7 @@
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -871,6 +885,7 @@
   "@collectionRenameFailureFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -879,6 +894,7 @@
   "@collectionCopySuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -887,6 +903,7 @@
   "@collectionRenameSuccessFeedback": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1063,7 +1080,7 @@
   "@settingsConfirmationTile": {},
   "settingsConfirmationDialogTitle": "Диалогови прозорци за потвърждение",
   "@settingsConfirmationDialogTitle": {},
-  "settingsConfirmationBeforeMoveToBinItems": "Попитай преди да преместиш в кошчето",
+  "settingsConfirmationBeforeMoveToBinItems": "Попитай преди преместване в кошчето",
   "@settingsConfirmationBeforeMoveToBinItems": {},
   "settingsConfirmationAfterMoveToBinItems": "Показване на съобщение след преместване на елементи в кошчето",
   "@settingsConfirmationAfterMoveToBinItems": {},
@@ -1133,6 +1150,7 @@
   "@columnCount": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1141,6 +1159,7 @@
   "@timeSeconds": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1149,6 +1168,7 @@
   "@timeMinutes": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1161,6 +1181,7 @@
   "@timeDays": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1229,7 +1250,7 @@
   "@drawerPlacePage": {},
   "settingsActionImport": "Импорт",
   "@settingsActionImport": {},
-  "settingsConfirmationBeforeMoveUndatedItems": "Попитайте, преди да преместите елементи без дата",
+  "settingsConfirmationBeforeMoveUndatedItems": "Попитай, преди преместване на елементи без дата",
   "@settingsConfirmationBeforeMoveUndatedItems": {},
   "settingsViewerUseCutout": "Използвай зоната на изрязване",
   "@settingsViewerUseCutout": {},
@@ -1315,7 +1336,7 @@
   "@settingsThemeColorHighlights": {},
   "settingsThemeEnableDynamicColor": "Динамични цветове",
   "@settingsThemeEnableDynamicColor": {},
-  "settingsDisplayRefreshRateModeTile": "Покажи честотата на обновлението на дисплея",
+  "settingsDisplayRefreshRateModeTile": "Честота на обновление на дисплея",
   "@settingsDisplayRefreshRateModeTile": {},
   "settingsWidgetPageTitle": "Фоторамка",
   "@settingsWidgetPageTitle": {},
@@ -1455,9 +1476,9 @@
   "@settingsDisplayUseTvInterface": {},
   "settingsLanguageSectionTitle": "Език и формати",
   "@settingsLanguageSectionTitle": {},
-  "settingsCoordinateFormatTile": "Формат на координатите",
+  "settingsCoordinateFormatTile": "Формат на координати",
   "@settingsCoordinateFormatTile": {},
-  "settingsCoordinateFormatDialogTitle": "Формат на координатите",
+  "settingsCoordinateFormatDialogTitle": "Формат на координати",
   "@settingsCoordinateFormatDialogTitle": {},
   "settingsUnitSystemTile": "Единици за измерване",
   "@settingsUnitSystemTile": {},
@@ -1475,6 +1496,7 @@
   "@statsWithGps": {
     "placeholders": {
       "count": {
+        "type": "int",
         "format": "decimalPattern"
       }
     }
@@ -1610,5 +1632,7 @@
   "editEntryLocationDialogImportGpx": "Импорт GPX",
   "@editEntryLocationDialogImportGpx": {},
   "editEntryLocationDialogTimeShift": "Изместване на времето",
-  "@editEntryLocationDialogTimeShift": {}
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Всички",
+  "@removeEntryMetadataDialogAll": {}
 }

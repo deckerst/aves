@@ -36,25 +36,24 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await mediaFetchService.getThumbnail(
+      final descriptor = await mediaFetchService.getThumbnail(
         uri: uri,
         mimeType: mimeType,
         pageId: pageId,
         rotationDegrees: key.rotationDegrees,
         isFlipped: key.isFlipped,
-        dateModifiedSecs: key.dateModifiedSecs,
+        dateModifiedMillis: key.dateModifiedMillis,
         extent: key.extent,
         taskKey: key,
       );
-      if (bytes.isEmpty) {
-        throw UnreportedStateError('$uri ($mimeType) loading failed');
+      if (descriptor == null) {
+        throw UnreportedStateError('$uri ($mimeType) thumbnail loading failed');
       }
-      final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-      return await decode(buffer);
+      return descriptor.instantiateCodec();
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw UnreportedStateError('$mimeType decoding failed (page $pageId)');
+      throw UnreportedStateError('$mimeType thumbnail decoding failed (page $pageId)');
     }
   }
 
@@ -75,11 +74,11 @@ class ThumbnailProviderKey extends Equatable {
   final int? pageId;
   final int rotationDegrees;
   final bool isFlipped;
-  final int dateModifiedSecs;
+  final int dateModifiedMillis;
   final double extent;
 
   @override
-  List<Object?> get props => [uri, pageId, dateModifiedSecs, extent];
+  List<Object?> get props => [uri, pageId, dateModifiedMillis, extent];
 
   const ThumbnailProviderKey({
     required this.uri,
@@ -87,10 +86,10 @@ class ThumbnailProviderKey extends Equatable {
     required this.pageId,
     required this.rotationDegrees,
     required this.isFlipped,
-    required this.dateModifiedSecs,
+    required this.dateModifiedMillis,
     this.extent = 0,
   });
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedSecs=$dateModifiedSecs, extent=$extent}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedMillis=$dateModifiedMillis, extent=$extent}';
 }

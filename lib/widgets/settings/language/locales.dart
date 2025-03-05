@@ -18,6 +18,7 @@ class SupportedLocales {
     'eu': 'Euskara',
     'fa': 'فارسی',
     'fr': 'Français',
+    'gl': 'Galego',
     'hu': 'Magyar',
     'id': 'Bahasa Indonesia',
     'is': 'Íslenska',
