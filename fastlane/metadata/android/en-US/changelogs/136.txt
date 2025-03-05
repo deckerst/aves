@@ -1,5 +1,0 @@
-In v1.11.17:
-- peruse your videos frame by frame
-- create map shortcuts to filtered collections
-- enjoy the app in Shavian
-Full changelog available on GitHub

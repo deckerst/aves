@@ -1,4 +1,0 @@
-In v1.11.16:
-- enjoy new map layers
-- share "geo" addresses to Aves and see your collection in that area
-Full changelog available on GitHub

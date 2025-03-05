@@ -1,4 +1,0 @@
-In v1.11.20:
-- save your filtered collection as dynamic albums
-- enjoy the app in Tamil and Bulgarian
-Full changelog available on GitHub
