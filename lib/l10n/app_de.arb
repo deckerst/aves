@@ -1408,5 +1408,7 @@
   "albumTierDynamic": "Dynamisch",
   "@albumTierDynamic": {},
   "chipActionDecompose": "Aufschlüsseln",
-  "@chipActionDecompose": {}
+  "@chipActionDecompose": {},
+  "editEntryLocationDialogImportGpx": "GPX importieren",
+  "@editEntryLocationDialogImportGpx": {}
 }
