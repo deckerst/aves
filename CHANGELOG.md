@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.12.4"></a>[v1.12.4] - 2025-03-05
-
 ### Added
 
 - support for Samsung HEIC motion photos embedding video in sefd box
@@ -17,7 +15,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - increased precision of file modified date to milliseconds
-- upgraded Flutter to stable v3.29.0
+- upgraded Flutter to stable v3.29.1
 
 ### Fixed
 
@@ -25,6 +23,8 @@ All notable changes to this project will be documented in this file.
 - some SVG rendering issues
 - decoding of SVG containing references to namespaces in !ATTLIST
 - fallback decoding of images packed in RGBA_1010102 config
+
+## <a id="v1.12.4"></a>[v1.12.4] - 2025-03-05 [YANKED]
 
 ## <a id="v1.12.3"></a>[v1.12.3] - 2025-02-06
 
