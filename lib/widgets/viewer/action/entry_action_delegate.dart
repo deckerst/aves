@@ -61,7 +61,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case EntryAction.restore:
           return true;
         case EntryAction.debug:
-          return kDebugMode;
+          return !kReleaseMode;
         default:
           return false;
       }
@@ -138,7 +138,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             action: action,
           );
         case EntryAction.debug:
-          return kDebugMode;
+          return !kReleaseMode;
       }
     }
   }
