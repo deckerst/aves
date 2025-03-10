@@ -144,8 +144,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   Future<void> _getMetadata() async {
-    if (!mounted) return;
     final titledDirectories = await entry.getMetadataDirectories(context);
+    if (!mounted) return;
     metadataNotifier.value = Map.fromEntries(titledDirectories);
     _expandedDirectoryNotifier.value = null;
   }
