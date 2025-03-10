@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.6"></a>[v1.12.6] - 2025-03-11
+
+### Fixed
+
+- data loss when editing metadata of items with incorrect mime types
+- metadata inconsistency in the DB due to v1.12.4 upgrade
+
 ## <a id="v1.12.5"></a>[v1.12.5] - 2025-03-07
 
 ### Added
