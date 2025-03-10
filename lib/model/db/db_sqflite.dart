@@ -117,7 +117,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
             ')');
       },
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 14,
+      version: 15,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');

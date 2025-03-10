@@ -50,6 +50,8 @@ class LocalMediaDbUpgrader {
           await _upgradeFrom12(db);
         case 13:
           await _upgradeFrom13(db);
+        case 14:
+          await _upgradeFrom14(db);
       }
       oldVersion++;
     }
@@ -478,5 +480,24 @@ class LocalMediaDbUpgrader {
       await db.execute('DROP TABLE $entryTable;');
       await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
     });
+  }
+
+  static Future<void> _upgradeFrom14(Database db) async {
+    debugPrint('upgrading DB from v14');
+
+    // no schema changes, but v1.12.4 may have corrupted the DB, so we sanitize it
+
+    // clear rebuildable tables
+    await db.delete(dateTakenTable, where: '1');
+    await db.delete(metadataTable, where: '1');
+    await db.delete(addressTable, where: '1');
+    await db.delete(trashTable, where: '1');
+    await db.delete(videoPlaybackTable, where: '1');
+
+    // remove rows referencing future entry IDs
+    final maxIdRows = await db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
+    final lastId = (maxIdRows.firstOrNull?['maxId'] as int?) ?? 0;
+    await db.delete(favouriteTable, where: 'id > ?', whereArgs: [lastId]);
+    await db.delete(coverTable, where: 'entryId > ?', whereArgs: [lastId]);
   }
 }
