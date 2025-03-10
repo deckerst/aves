@@ -680,18 +680,19 @@ abstract class ImageProvider {
         try {
             edit(ExifInterface(editableFile))
 
+            if (editableFile.length() == 0L) {
+                callback.onFailure(Exception("editing Exif yielded an empty file"))
+                return false
+            }
+
             val editedMimeType = detectMimeType(context, Uri.fromFile(editableFile), mimeType)
             if (editedMimeType != mimeType) {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for uri=$uri path=$path")
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                // 1) as of androidx.exifinterface:exifinterface:1.3.6, editing some specific WEBP
-                // makes them undecodable by some decoders (including Android's and Chrome's)
-                // even though `BitmapFactory` successfully decodes their bounds,
+                // editing may corrupt the file for various reasons,
                 // so we check whether decoding it throws an exception
-                // 2) some users have reported corruption when editing JPEG as well,
-                // but conditions are unknown (specific image, custom ROM, low storage, race condition, etc.)
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
             }
 
@@ -779,6 +780,11 @@ abstract class ImageProvider {
                         }
                     }
                 }
+            }
+
+            if (editableFile.length() == 0L) {
+                callback.onFailure(Exception("editing IPTC yielded an empty file"))
+                return false
             }
 
             if (trailerVideoBytes != null) {
@@ -915,6 +921,11 @@ abstract class ImageProvider {
                 callback.onFailure(e)
                 return false
             }
+        }
+
+        if (editableFile.length() == 0L) {
+            callback.onFailure(Exception("editing XMP yielded an empty file"))
+            return false
         }
 
         try {
@@ -1328,6 +1339,11 @@ abstract class ImageProvider {
                 callback.onFailure(e)
                 return
             }
+        }
+
+        if (editableFile.length() == 0L) {
+            callback.onFailure(Exception("removing metadata yielded an empty file"))
+            return
         }
 
         try {

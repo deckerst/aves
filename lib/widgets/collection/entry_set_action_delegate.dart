@@ -97,7 +97,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.stats:
         return isMain;
       case EntrySetAction.rescan:
-        return isMain && isSelecting && !isTrash && !useTvLayout;
+        return isMain && isSelecting && !useTvLayout;
       // selecting
       case EntrySetAction.share:
       case EntrySetAction.toggleFavourite:

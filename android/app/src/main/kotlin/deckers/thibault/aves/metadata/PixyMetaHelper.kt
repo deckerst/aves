@@ -92,6 +92,7 @@ object PixyMetaHelper {
 
     fun getXmp(input: InputStream): XMP? = Metadata.readMetadata(input)[MetadataType.XMP] as XMP?
 
+    // PixyMeta may fail with just a log, and write nothing to the output
     fun setXmp(
         input: InputStream,
         output: OutputStream,
