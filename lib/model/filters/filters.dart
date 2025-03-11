@@ -108,8 +108,9 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return _fromMap(jsonMap);
       }
       debugPrint('failed to parse filter from json=$jsonString');
-    } catch (error, stack) {
-      debugPrint('failed to parse filter from json=$jsonString error=$error\n$stack');
+    } catch (error) {
+      // no need for stack
+      debugPrint('failed to parse filter from json=$jsonString error=$error');
     }
     return null;
   }

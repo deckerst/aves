@@ -567,10 +567,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_web
-      sha256: a9fd5356d46f54744ced1ebedbbf212f3d2cb71e95d79b1d08690c1ec33dc584
+      sha256: bbeb93807a34bfeebdb7ace506bd2bc400a3915dc96736254fea721eb264caa0
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.10+1"
+    version: "0.5.11"
   gpx:
     dependency: "direct main"
     description:
@@ -898,10 +898,10 @@ packages:
     dependency: transitive
     description:
       name: package_config
-      sha256: "92d4488434b520a62570293fbd33bb556c7d49230791c1b4bbd973baf6d2dc67"
+      sha256: f096c55ebb7deb7e384101542bfba8c52696c1b56fca2eb62827989ef2353bbc
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.2.0"
   package_info_plus:
     dependency: "direct main"
     description:
@@ -1219,18 +1219,18 @@ packages:
     dependency: "direct main"
     description:
       name: screen_brightness
-      sha256: "99b898dae860ebe55fc872d8e300c6eafff3ee4ccb09301b90adb3f241f29874"
+      sha256: eca7bd9d2c3c688bcad14855361cab7097839400b6b4a56f62b7ae511c709958
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   screen_brightness_android:
     dependency: transitive
     description:
       name: screen_brightness_android
-      sha256: ff9141bed547db02233e7dd88f990ab01973a0c8a8c04ddb855c7b072f33409a
+      sha256: "6ba1b5812f66c64e9e4892be2d36ecd34210f4e0da8bdec6a2ea34f1aa42683e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   screen_brightness_ios:
     dependency: transitive
     description:
@@ -1745,10 +1745,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: b89e6e24d1454e149ab20fbb225af58660f0c0bf4475544650700d8e2da54aef
+      sha256: dc6ecaa00a7c708e5b4d10ee7bec8c270e9276dfcab1783f57e9962d7884305f
       url: "https://pub.dev"
     source: hosted
-    version: "5.11.0"
+    version: "5.12.0"
   win32_registry:
     dependency: transitive
     description:
