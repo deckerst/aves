@@ -791,8 +791,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit
-      ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
-      resolved-ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
+      ref: d2145a50f68394096845915a28874341fbf5b3fe
+      resolved-ref: d2145a50f68394096845915a28874341fbf5b3fe
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.1.11"
@@ -808,8 +808,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: media_kit_video
-      ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
-      resolved-ref: "4d8c634c28d439384aab40b9d2edff83077f37c9"
+      ref: d2145a50f68394096845915a28874341fbf5b3fe
+      resolved-ref: d2145a50f68394096845915a28874341fbf5b3fe
       url: "https://github.com/media-kit/media-kit.git"
     source: git
     version: "1.2.5"
@@ -1673,10 +1673,10 @@ packages:
     dependency: "direct main"
     description:
       name: volume_controller
-      sha256: c71d4c62631305df63b72da79089e078af2659649301807fa746088f365cb48e
+      sha256: "30863a51338db47fe16f92902b1a6c4ee5e15c9287b46573d7c2eb6be1f197d2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.8"
+    version: "3.3.1"
   wakelock_plus:
     dependency: transitive
     description:
