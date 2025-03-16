@@ -75,6 +75,7 @@ class MimeTypes {
 
   static const json = 'application/json';
   static const plainText = 'text/plain';
+  static const sqlite3 = 'application/vnd.sqlite3';
 
   // JB2, JPC, JPX?
   static const octetStream = 'application/octet-stream';

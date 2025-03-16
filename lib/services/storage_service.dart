@@ -53,6 +53,9 @@ abstract class StorageService {
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
 
   Future<Uint8List> openFile([String? mimeType]);
+
+  // return whether operation succeeded (`null` if user cancelled)
+  Future<bool?> copyFile(String name, String mimeType, String sourceUri);
 }
 
 class PlatformStorageService implements StorageService {
@@ -368,5 +371,30 @@ class PlatformStorageService implements StorageService {
       await reportService.recordError(e, stack);
     }
     return Uint8List(0);
+  }
+
+  @override
+  Future<bool?> copyFile(String name, String mimeType, String sourceUri) async {
+    try {
+      final opCompleter = Completer<bool?>();
+      _stream.receiveBroadcastStream(<String, dynamic>{
+        'op': 'copyFile',
+        'name': name,
+        'mimeType': mimeType,
+        'sourceUri': sourceUri,
+      }).listen(
+        (data) => opCompleter.complete(data as bool?),
+        onError: opCompleter.completeError,
+        onDone: () {
+          if (!opCompleter.isCompleted) opCompleter.complete(false);
+        },
+        cancelOnError: true,
+      );
+      // `await` here, so that `completeError` will be caught below
+      return await opCompleter.future;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 }

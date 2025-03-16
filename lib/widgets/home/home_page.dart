@@ -7,9 +7,9 @@ import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -31,6 +31,7 @@ import 'package:aves/widgets/editor/entry_editor_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/home/home_error.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
@@ -68,6 +69,7 @@ class _HomePageState extends State<HomePage> {
   String? _initialExplorerPath;
   (LatLng, double?)? _initialLocationZoom;
   List<String>? _secureUris;
+  (Object, StackTrace)? _setupError;
 
   static const allowedShortcutRoutes = [
     AlbumListPage.routeName,
@@ -85,183 +87,195 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) => const AvesScaffold();
+  Widget build(BuildContext context) => AvesScaffold(
+        body: _setupError != null
+            ? HomeError(
+                error: _setupError!.$1,
+                stack: _setupError!.$2,
+              )
+            : null,
+      );
 
   Future<void> _setup() async {
-    final stopwatch = Stopwatch()..start();
-    if (await windowService.isActivity()) {
-      // do not check whether permission was granted, because some app stores
-      // hide in some countries apps that force quit on permission denial
-      await Permissions.mediaAccess.request();
-    }
+    try {
+      final stopwatch = Stopwatch()..start();
+      if (await windowService.isActivity()) {
+        // do not check whether permission was granted, because some app stores
+        // hide in some countries apps that force quit on permission denial
+        await Permissions.mediaAccess.request();
+      }
 
-    var appMode = AppMode.main;
-    var error = false;
-    final intentData = widget.intentData ?? await IntentService.getIntentData();
-    final intentAction = intentData[IntentDataKeys.action] as String?;
-    _initialFilters = null;
-    _initialExplorerPath = null;
-    _secureUris = null;
+      var appMode = AppMode.main;
+      var error = false;
+      final intentData = widget.intentData ?? await IntentService.getIntentData();
+      final intentAction = intentData[IntentDataKeys.action] as String?;
+      _initialFilters = null;
+      _initialExplorerPath = null;
+      _secureUris = null;
 
-    await availability.onNewIntent();
-    await androidFileUtils.init();
-    if (!{
-          IntentActions.edit,
-          IntentActions.screenSaver,
-          IntentActions.setWallpaper,
-        }.contains(intentAction) &&
-        settings.isInstalledAppAccessAllowed) {
-      unawaited(appInventory.initAppNames());
-    }
+      await availability.onNewIntent();
+      await androidFileUtils.init();
+      if (!{
+            IntentActions.edit,
+            IntentActions.screenSaver,
+            IntentActions.setWallpaper,
+          }.contains(intentAction) &&
+          settings.isInstalledAppAccessAllowed) {
+        unawaited(appInventory.initAppNames());
+      }
 
-    if (intentData.values.nonNulls.isNotEmpty) {
-      await reportService.log('Intent data=$intentData');
-      var intentUri = intentData[IntentDataKeys.uri] as String?;
-      final intentMimeType = intentData[IntentDataKeys.mimeType] as String?;
+      if (intentData.values.nonNulls.isNotEmpty) {
+        await reportService.log('Intent data=$intentData');
+        var intentUri = intentData[IntentDataKeys.uri] as String?;
+        final intentMimeType = intentData[IntentDataKeys.mimeType] as String?;
 
-      switch (intentAction) {
-        case IntentActions.view:
-          appMode = AppMode.view;
-          _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
-        case IntentActions.viewGeo:
-          error = true;
-          if (intentUri != null) {
-            final locationZoom = parseGeoUri(intentUri);
-            if (locationZoom != null) {
-              _initialRouteName = MapPage.routeName;
-              _initialLocationZoom = locationZoom;
-              error = false;
-            }
-          }
-          break;
-        case IntentActions.edit:
-          appMode = AppMode.edit;
-        case IntentActions.setWallpaper:
-          appMode = AppMode.setWallpaper;
-        case IntentActions.pickItems:
-          // TODO TLAD apply pick mimetype(s)
-          // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
-          final multiple = (intentData[IntentDataKeys.allowMultiple] as bool?) ?? false;
-          debugPrint('pick mimeType=$intentMimeType multiple=$multiple');
-          appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
-        case IntentActions.pickCollectionFilters:
-          appMode = AppMode.pickCollectionFiltersExternal;
-        case IntentActions.screenSaver:
-          appMode = AppMode.screenSaver;
-          _initialRouteName = ScreenSaverPage.routeName;
-        case IntentActions.screenSaverSettings:
-          _initialRouteName = ScreenSaverSettingsPage.routeName;
-        case IntentActions.search:
-          _initialRouteName = SearchPage.routeName;
-          _initialSearchQuery = intentData[IntentDataKeys.query] as String?;
-        case IntentActions.widgetSettings:
-          _initialRouteName = HomeWidgetSettingsPage.routeName;
-          _widgetId = (intentData[IntentDataKeys.widgetId] as int?) ?? 0;
-        case IntentActions.widgetOpen:
-          final widgetId = intentData[IntentDataKeys.widgetId] as int?;
-          if (widgetId == null) {
+        switch (intentAction) {
+          case IntentActions.view:
+            appMode = AppMode.view;
+            _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
+          case IntentActions.viewGeo:
             error = true;
-          } else {
-            // widget settings may be modified in a different process after channel setup
-            await settings.reload();
-            final page = settings.getWidgetOpenPage(widgetId);
-            switch (page) {
-              case WidgetOpenPage.collection:
-                _initialFilters = settings.getWidgetCollectionFilters(widgetId);
-              case WidgetOpenPage.viewer:
-                appMode = AppMode.view;
-                intentUri = settings.getWidgetUri(widgetId);
-              case WidgetOpenPage.home:
-              case WidgetOpenPage.updateWidget:
-                break;
+            if (intentUri != null) {
+              final locationZoom = parseGeoUri(intentUri);
+              if (locationZoom != null) {
+                _initialRouteName = MapPage.routeName;
+                _initialLocationZoom = locationZoom;
+                error = false;
+              }
             }
-            unawaited(WidgetService.update(widgetId));
-          }
-        default:
-          // do not use 'route' as extra key, as the Flutter framework acts on it
-          final extraRoute = intentData[IntentDataKeys.page] as String?;
-          if (allowedShortcutRoutes.contains(extraRoute)) {
-            _initialRouteName = extraRoute;
-          }
+            break;
+          case IntentActions.edit:
+            appMode = AppMode.edit;
+          case IntentActions.setWallpaper:
+            appMode = AppMode.setWallpaper;
+          case IntentActions.pickItems:
+            // TODO TLAD apply pick mimetype(s)
+            // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
+            final multiple = (intentData[IntentDataKeys.allowMultiple] as bool?) ?? false;
+            debugPrint('pick mimeType=$intentMimeType multiple=$multiple');
+            appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
+          case IntentActions.pickCollectionFilters:
+            appMode = AppMode.pickCollectionFiltersExternal;
+          case IntentActions.screenSaver:
+            appMode = AppMode.screenSaver;
+            _initialRouteName = ScreenSaverPage.routeName;
+          case IntentActions.screenSaverSettings:
+            _initialRouteName = ScreenSaverSettingsPage.routeName;
+          case IntentActions.search:
+            _initialRouteName = SearchPage.routeName;
+            _initialSearchQuery = intentData[IntentDataKeys.query] as String?;
+          case IntentActions.widgetSettings:
+            _initialRouteName = HomeWidgetSettingsPage.routeName;
+            _widgetId = (intentData[IntentDataKeys.widgetId] as int?) ?? 0;
+          case IntentActions.widgetOpen:
+            final widgetId = intentData[IntentDataKeys.widgetId] as int?;
+            if (widgetId == null) {
+              error = true;
+            } else {
+              // widget settings may be modified in a different process after channel setup
+              await settings.reload();
+              final page = settings.getWidgetOpenPage(widgetId);
+              switch (page) {
+                case WidgetOpenPage.collection:
+                  _initialFilters = settings.getWidgetCollectionFilters(widgetId);
+                case WidgetOpenPage.viewer:
+                  appMode = AppMode.view;
+                  intentUri = settings.getWidgetUri(widgetId);
+                case WidgetOpenPage.home:
+                case WidgetOpenPage.updateWidget:
+                  break;
+              }
+              unawaited(WidgetService.update(widgetId));
+            }
+          default:
+            // do not use 'route' as extra key, as the Flutter framework acts on it
+            final extraRoute = intentData[IntentDataKeys.page] as String?;
+            if (allowedShortcutRoutes.contains(extraRoute)) {
+              _initialRouteName = extraRoute;
+            }
+        }
+        if (_initialFilters == null) {
+          final extraFilters = (intentData[IntentDataKeys.filters] as List?)?.cast<String>();
+          _initialFilters = extraFilters?.map(CollectionFilter.fromJson).nonNulls.toSet();
+        }
+        _initialExplorerPath = intentData[IntentDataKeys.explorerPath] as String?;
+
+        switch (appMode) {
+          case AppMode.view:
+          case AppMode.edit:
+          case AppMode.setWallpaper:
+            if (intentUri != null) {
+              _viewerEntry = await _initViewerEntry(
+                uri: intentUri,
+                mimeType: intentMimeType,
+              );
+            }
+            error = _viewerEntry == null;
+          default:
+            break;
+        }
       }
-      if (_initialFilters == null) {
-        final extraFilters = (intentData[IntentDataKeys.filters] as List?)?.cast<String>();
-        _initialFilters = extraFilters?.map(CollectionFilter.fromJson).nonNulls.toSet();
+
+      if (error) {
+        debugPrint('Failed to init app mode=$appMode for intent data=$intentData. Fallback to main mode.');
+        appMode = AppMode.main;
       }
-      _initialExplorerPath = intentData[IntentDataKeys.explorerPath] as String?;
+
+      context.read<ValueNotifier<AppMode>>().value = appMode;
+      unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
 
       switch (appMode) {
+        case AppMode.main:
+        case AppMode.pickCollectionFiltersExternal:
+        case AppMode.pickSingleMediaExternal:
+        case AppMode.pickMultipleMediaExternal:
+          unawaited(GlobalSearch.registerCallback());
+          unawaited(AnalysisService.registerCallback());
+          final source = context.read<CollectionSource>();
+          if (source.loadedScope != CollectionSource.fullScope) {
+            await reportService.log('Initialize source to start app with mode=$appMode, loaded scope=${source.loadedScope}');
+            final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
+            source.canAnalyze = true;
+            await source.init(scope: CollectionSource.fullScope, loadTopEntriesFirst: loadTopEntriesFirst);
+          }
+        case AppMode.screenSaver:
+          await reportService.log('Initialize source to start screen saver');
+          final source = context.read<CollectionSource>();
+          source.canAnalyze = false;
+          await source.init(scope: settings.screenSaverCollectionFilters);
         case AppMode.view:
+          if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
+            final directory = _viewerEntry?.directory;
+            if (directory != null) {
+              unawaited(AnalysisService.registerCallback());
+              await reportService.log('Initialize source to view item in directory $directory');
+              final source = context.read<CollectionSource>();
+              // analysis is necessary to display neighbour items when the initial item is a new one
+              source.canAnalyze = true;
+              await source.init(scope: {StoredAlbumFilter(directory, null)});
+            }
+          } else {
+            await _initViewerEssentials();
+          }
         case AppMode.edit:
         case AppMode.setWallpaper:
-          if (intentUri != null) {
-            _viewerEntry = await _initViewerEntry(
-              uri: intentUri,
-              mimeType: intentMimeType,
-            );
-          }
-          error = _viewerEntry == null;
+          await _initViewerEssentials();
         default:
           break;
       }
+
+      debugPrint('Home setup complete in ${stopwatch.elapsed.inMilliseconds}ms');
+
+      // `pushReplacement` is not enough in some edge cases
+      // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
+      unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
+        await _getRedirectRoute(appMode),
+        (route) => false,
+      ));
+    } catch (error, stack) {
+      debugPrint('failed to setup app with error=$error\n$stack');
+      _setupError = (error, stack);
     }
-
-    if (error) {
-      debugPrint('Failed to init app mode=$appMode for intent data=$intentData. Fallback to main mode.');
-      appMode = AppMode.main;
-    }
-
-    context.read<ValueNotifier<AppMode>>().value = appMode;
-    unawaited(reportService.setCustomKey('app_mode', appMode.toString()));
-
-    switch (appMode) {
-      case AppMode.main:
-      case AppMode.pickCollectionFiltersExternal:
-      case AppMode.pickSingleMediaExternal:
-      case AppMode.pickMultipleMediaExternal:
-        unawaited(GlobalSearch.registerCallback());
-        unawaited(AnalysisService.registerCallback());
-        final source = context.read<CollectionSource>();
-        if (source.loadedScope != CollectionSource.fullScope) {
-          await reportService.log('Initialize source to start app with mode=$appMode, loaded scope=${source.loadedScope}');
-          final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
-          source.canAnalyze = true;
-          await source.init(scope: CollectionSource.fullScope, loadTopEntriesFirst: loadTopEntriesFirst);
-        }
-      case AppMode.screenSaver:
-        await reportService.log('Initialize source to start screen saver');
-        final source = context.read<CollectionSource>();
-        source.canAnalyze = false;
-        await source.init(scope: settings.screenSaverCollectionFilters);
-      case AppMode.view:
-        if (_isViewerSourceable(_viewerEntry) && _secureUris == null) {
-          final directory = _viewerEntry?.directory;
-          if (directory != null) {
-            unawaited(AnalysisService.registerCallback());
-            await reportService.log('Initialize source to view item in directory $directory');
-            final source = context.read<CollectionSource>();
-            // analysis is necessary to display neighbour items when the initial item is a new one
-            source.canAnalyze = true;
-            await source.init(scope: {StoredAlbumFilter(directory, null)});
-          }
-        } else {
-          await _initViewerEssentials();
-        }
-      case AppMode.edit:
-      case AppMode.setWallpaper:
-        await _initViewerEssentials();
-      default:
-        break;
-    }
-
-    debugPrint('Home setup complete in ${stopwatch.elapsed.inMilliseconds}ms');
-
-    // `pushReplacement` is not enough in some edge cases
-    // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
-    unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
-      await _getRedirectRoute(appMode),
-      (route) => false,
-    ));
   }
 
   Future<void> _initViewerEssentials() async {

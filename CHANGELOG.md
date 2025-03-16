@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- handle launch error to report and export DB
+
 ### Changed
 
+- DB post-upgrade sanitization
 - upgraded Flutter to stable v3.29.2
 
 ## <a id="v1.12.6"></a>[v1.12.6] - 2025-03-11

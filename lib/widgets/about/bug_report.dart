@@ -36,21 +36,11 @@ class BugReport extends StatefulWidget {
   State<BugReport> createState() => _BugReportState();
 }
 
-class _BugReportState extends State<BugReport> with FeedbackMixin {
-  late Future<String> _infoLoader;
+class _BugReportState extends State<BugReport> {
   bool _showInstructions = false;
-
-  static const bugReportUrl = '${AppReference.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
-
-  @override
-  void initState() {
-    super.initState();
-    _infoLoader = _getInfo(context);
-  }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final animationDuration = context.select<DurationsData, Duration>((v) => v.expansionTileAnimation);
     return ExpansionPanelList(
       expansionCallback: (index, isExpanded) {
@@ -66,58 +56,82 @@ class _BugReportState extends State<BugReport> with FeedbackMixin {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: AlignmentDirectional.centerStart,
-              child: Text(l10n.aboutBugSectionTitle, style: AStyles.knownTitleText),
+              child: Text(context.l10n.aboutBugSectionTitle, style: AStyles.knownTitleText),
             ),
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildStep(1, l10n.aboutBugSaveLogInstruction, l10n.saveTooltip, _saveLogs),
-                _buildStep(2, l10n.aboutBugCopyInfoInstruction, l10n.aboutBugCopyInfoButton, _copySystemInfo),
-                FutureBuilder<String>(
-                  future: _infoLoader,
-                  builder: (context, snapshot) {
-                    final info = snapshot.data;
-                    if (info == null) return const SizedBox();
-
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Themes.secondLayerColor(context),
-                        border: Border.all(
-                          color: Theme.of(context).dividerColor,
-                          width: AvesBorder.curvedBorderWidth(context),
-                        ),
-                        borderRadius: const BorderRadius.all(Radius.circular(16)),
-                      ),
-                      constraints: const BoxConstraints(maxHeight: 100),
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      clipBehavior: Clip.antiAlias,
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(8),
-                        // to show a scroll bar, we would need to provide a scroll controller
-                        // to both the `Scrollable` and the `Scrollbar`, but
-                        // as of Flutter v3.0.0, `SelectableText` does not allow passing the `scrollController`
-                        child: SelectableText(
-                          info,
-                          textDirection: ui.TextDirection.ltr,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                _buildStep(3, l10n.aboutBugReportInstruction, l10n.aboutBugReportButton, _goToGithub),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
+          body: const BugReportContent(),
           isExpanded: _showInstructions,
           canTapOnHeader: true,
           backgroundColor: Colors.transparent,
         ),
       ],
+    );
+  }
+}
+
+class BugReportContent extends StatefulWidget {
+  const BugReportContent({super.key});
+
+  @override
+  State<BugReportContent> createState() => _BugReportContentState();
+}
+
+class _BugReportContentState extends State<BugReportContent> with FeedbackMixin {
+  late Future<String> _infoLoader;
+  static const bugReportUrl = '${AppReference.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
+
+  @override
+  void initState() {
+    super.initState();
+    _infoLoader = _getInfo(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildStep(1, l10n.aboutBugSaveLogInstruction, l10n.saveTooltip, _saveLogs),
+          _buildStep(2, l10n.aboutBugCopyInfoInstruction, l10n.aboutBugCopyInfoButton, _copySystemInfo),
+          FutureBuilder<String>(
+            future: _infoLoader,
+            builder: (context, snapshot) {
+              final info = snapshot.data;
+              if (info == null) return const SizedBox();
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: Themes.secondLayerColor(context),
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: AvesBorder.curvedBorderWidth(context),
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                ),
+                constraints: const BoxConstraints(maxHeight: 100),
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                clipBehavior: Clip.antiAlias,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(8),
+                  // to show a scroll bar, we would need to provide a scroll controller
+                  // to both the `Scrollable` and the `Scrollbar`, but
+                  // as of Flutter v3.0.0, `SelectableText` does not allow passing the `scrollController`
+                  child: SelectableText(
+                    info,
+                    textDirection: ui.TextDirection.ltr,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              );
+            },
+          ),
+          _buildStep(3, l10n.aboutBugReportInstruction, l10n.aboutBugReportButton, _goToGithub),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 

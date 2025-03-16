@@ -49,6 +49,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             "requestMediaFileAccess" -> ioScope.launch { requestMediaFileAccess() }
             "createFile" -> ioScope.launch { createFile() }
             "openFile" -> ioScope.launch { openFile() }
+            "copyFile" -> ioScope.launch { copyFile() }
             "edit" -> edit()
             "pickCollectionFilters" -> pickCollectionFilters()
             else -> endOfStream()
@@ -179,6 +180,49 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             setTypeAndNormalize(mimeType ?: MimeTypes.ANY)
         }
         safeStartActivityForStorageAccessResult(intent, MainActivity.OPEN_FILE_REQUEST, ::onGranted, ::onDenied)
+    }
+
+    private suspend fun copyFile() {
+        val name = args["name"] as String?
+        val mimeType = args["mimeType"] as String?
+        val sourceUri = (args["sourceUri"] as String?)?.toUri()
+        if (name == null || mimeType == null || sourceUri == null) {
+            error("copyFile-args", "missing arguments", null)
+            return
+        }
+
+        fun onGranted(uri: Uri) {
+            ioScope.launch {
+                try {
+                    StorageUtils.openInputStream(activity, sourceUri)?.use { input ->
+                        // truncate is necessary when overwriting a longer file
+                        activity.contentResolver.openOutputStream(uri, "wt")?.use { output ->
+                            val buffer = ByteArray(BUFFER_SIZE)
+                            var len: Int
+                            while (input.read(buffer).also { len = it } != -1) {
+                                output.write(buffer, 0, len)
+                            }
+                        }
+                    }
+                    success(true)
+                } catch (e: Exception) {
+                    error("copyFile-write", "failed to copy file from sourceUri=$sourceUri to uri=$uri", e.message)
+                }
+                endOfStream()
+            }
+        }
+
+        fun onDenied() {
+            success(null)
+            endOfStream()
+        }
+
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = mimeType
+            putExtra(Intent.EXTRA_TITLE, name)
+        }
+        safeStartActivityForStorageAccessResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
     private fun edit() {
