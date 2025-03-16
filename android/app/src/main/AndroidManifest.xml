@@ -331,7 +331,7 @@
             android:value="2" />
         <!--
         Screenshot driver scenario is not supported by Impeller: "Compressed screenshots not supported for Impeller".
-        As of Flutter v3.29.0, switching pages with alpha transition yields artifacts when Impeller is enabled.
+        As of Flutter v3.29.2, switching pages with alpha transition yields artifacts when Impeller is enabled.
         -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
