@@ -26,7 +26,7 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
-import 'package:aves/widgets/home_page.dart';
+import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/drawer/collection_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
