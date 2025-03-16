@@ -14,7 +14,7 @@ extension ExtraSwipeAction on SwipeAction {
       case SwipeAction.brightness:
         return AvesApp.screenBrightness?.application ?? Future.value(1);
       case SwipeAction.volume:
-        return VolumeController().getVolume();
+        return VolumeController.instance.getVolume();
     }
   }
 
@@ -23,7 +23,8 @@ extension ExtraSwipeAction on SwipeAction {
       case SwipeAction.brightness:
         await AvesApp.screenBrightness?.setApplicationScreenBrightness(value);
       case SwipeAction.volume:
-        VolumeController().setVolume(value, showSystemUI: false);
+        VolumeController.instance.showSystemUI = false;
+        await VolumeController.instance.setVolume(value);
     }
   }
 }

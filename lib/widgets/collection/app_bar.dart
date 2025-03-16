@@ -626,7 +626,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
 
   void _updateStatusBarHeight() {
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
     _statusBarHeight = MediaQuery.paddingOf(context).top;

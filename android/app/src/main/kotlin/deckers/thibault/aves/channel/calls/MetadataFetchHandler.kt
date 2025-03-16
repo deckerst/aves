@@ -541,14 +541,18 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
             // fallback to MP4 `loci` box for location
             if (!metadataMap.contains(KEY_LATITUDE) || !metadataMap.contains(KEY_LONGITUDE)) {
-                Mp4ParserHelper.getUserDataBox(context, mimeType, uri)?.let { userDataBox ->
-                    Path.getPath<LocationInformationBox>(userDataBox, LocationInformationBox.TYPE)?.let { locationBox ->
-                        if (!locationBox.isParsed) {
-                            locationBox.parseDetails()
+                try {
+                    Mp4ParserHelper.getUserDataBox(context, mimeType, uri)?.let { userDataBox ->
+                        Path.getPath<LocationInformationBox>(userDataBox, LocationInformationBox.TYPE)?.let { locationBox ->
+                            if (!locationBox.isParsed) {
+                                locationBox.parseDetails()
+                            }
+                            metadataMap[KEY_LATITUDE] = locationBox.latitude
+                            metadataMap[KEY_LONGITUDE] = locationBox.longitude
                         }
-                        metadataMap[KEY_LATITUDE] = locationBox.latitude
-                        metadataMap[KEY_LONGITUDE] = locationBox.longitude
                     }
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to get Location Information box by MP4 parser for mimeType=$mimeType uri=$uri", e)
                 }
             }
         }

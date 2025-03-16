@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/db/db.dart';
+import 'package:aves/model/db/db_sqflite_schema.dart';
 import 'package:aves/model/db/db_sqflite_upgrade.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -20,18 +21,19 @@ import 'package:sqflite/sqflite.dart';
 class SqfliteLocalMediaDb implements LocalMediaDb {
   late Database _db;
 
+  @override
   Future<String> get path async => pContext.join(await getDatabasesPath(), 'metadata.db');
 
-  static const entryTable = 'entry';
-  static const dateTakenTable = 'dateTaken';
-  static const metadataTable = 'metadata';
-  static const addressTable = 'address';
-  static const favouriteTable = 'favourites';
-  static const coverTable = 'covers';
-  static const dynamicAlbumTable = 'dynamicAlbums';
-  static const vaultTable = 'vaults';
-  static const trashTable = 'trash';
-  static const videoPlaybackTable = 'videoPlayback';
+  static const entryTable = SqfliteLocalMediaDbSchema.entryTable;
+  static const dateTakenTable = SqfliteLocalMediaDbSchema.dateTakenTable;
+  static const metadataTable = SqfliteLocalMediaDbSchema.metadataTable;
+  static const addressTable = SqfliteLocalMediaDbSchema.addressTable;
+  static const favouriteTable = SqfliteLocalMediaDbSchema.favouriteTable;
+  static const coverTable = SqfliteLocalMediaDbSchema.coverTable;
+  static const dynamicAlbumTable = SqfliteLocalMediaDbSchema.dynamicAlbumTable;
+  static const vaultTable = SqfliteLocalMediaDbSchema.vaultTable;
+  static const trashTable = SqfliteLocalMediaDbSchema.trashTable;
+  static const videoPlaybackTable = SqfliteLocalMediaDbSchema.videoPlaybackTable;
 
   static const _entryInsertSliceMaxCount = 10000; // number of entries
   static const _queryCursorBufferSize = 1000; // number of rows
@@ -44,78 +46,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<void> init() async {
     _db = await openDatabase(
       await path,
-      onCreate: (db, version) async {
-        await db.execute('CREATE TABLE $entryTable('
-            'id INTEGER PRIMARY KEY'
-            ', contentId INTEGER'
-            ', uri TEXT'
-            ', path TEXT'
-            ', sourceMimeType TEXT'
-            ', width INTEGER'
-            ', height INTEGER'
-            ', sourceRotationDegrees INTEGER'
-            ', sizeBytes INTEGER'
-            ', title TEXT'
-            ', dateAddedSecs INTEGER DEFAULT (strftime(\'%s\',\'now\'))'
-            ', dateModifiedMillis INTEGER'
-            ', sourceDateTakenMillis INTEGER'
-            ', durationMillis INTEGER'
-            ', trashed INTEGER DEFAULT 0'
-            ', origin INTEGER DEFAULT 0'
-            ')');
-        await db.execute('CREATE TABLE $dateTakenTable('
-            'id INTEGER PRIMARY KEY'
-            ', dateMillis INTEGER'
-            ')');
-        await db.execute('CREATE TABLE $metadataTable('
-            'id INTEGER PRIMARY KEY'
-            ', mimeType TEXT'
-            ', dateMillis INTEGER'
-            ', flags INTEGER'
-            ', rotationDegrees INTEGER'
-            ', xmpSubjects TEXT'
-            ', xmpTitle TEXT'
-            ', latitude REAL'
-            ', longitude REAL'
-            ', rating INTEGER'
-            ')');
-        await db.execute('CREATE TABLE $addressTable('
-            'id INTEGER PRIMARY KEY'
-            ', addressLine TEXT'
-            ', countryCode TEXT'
-            ', countryName TEXT'
-            ', adminArea TEXT'
-            ', locality TEXT'
-            ')');
-        await db.execute('CREATE TABLE $favouriteTable('
-            'id INTEGER PRIMARY KEY'
-            ')');
-        await db.execute('CREATE TABLE $coverTable('
-            'filter TEXT PRIMARY KEY'
-            ', entryId INTEGER'
-            ', packageName TEXT'
-            ', color TEXT'
-            ')');
-        await db.execute('CREATE TABLE $dynamicAlbumTable('
-            'name TEXT PRIMARY KEY'
-            ', filter TEXT'
-            ')');
-        await db.execute('CREATE TABLE $vaultTable('
-            'name TEXT PRIMARY KEY'
-            ', autoLock INTEGER'
-            ', useBin INTEGER'
-            ', lockType TEXT'
-            ')');
-        await db.execute('CREATE TABLE $trashTable('
-            'id INTEGER PRIMARY KEY'
-            ', path TEXT'
-            ', dateMillis INTEGER'
-            ')');
-        await db.execute('CREATE TABLE $videoPlaybackTable('
-            'id INTEGER PRIMARY KEY'
-            ', resumeTimeMillis INTEGER'
-            ')');
-      },
+      onCreate: (db, version) => SqfliteLocalMediaDbSchema.createLatestVersion(db),
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
       version: 15,
     );

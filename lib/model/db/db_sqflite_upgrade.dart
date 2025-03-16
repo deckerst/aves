@@ -1,22 +1,23 @@
 import 'dart:ui';
 
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/db/db_sqflite.dart';
+import 'package:aves/model/db/db_extension.dart';
+import 'package:aves/model/db/db_sqflite_schema.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalMediaDbUpgrader {
-  static const entryTable = SqfliteLocalMediaDb.entryTable;
-  static const dateTakenTable = SqfliteLocalMediaDb.dateTakenTable;
-  static const metadataTable = SqfliteLocalMediaDb.metadataTable;
-  static const addressTable = SqfliteLocalMediaDb.addressTable;
-  static const favouriteTable = SqfliteLocalMediaDb.favouriteTable;
-  static const coverTable = SqfliteLocalMediaDb.coverTable;
-  static const dynamicAlbumTable = SqfliteLocalMediaDb.dynamicAlbumTable;
-  static const vaultTable = SqfliteLocalMediaDb.vaultTable;
-  static const trashTable = SqfliteLocalMediaDb.trashTable;
-  static const videoPlaybackTable = SqfliteLocalMediaDb.videoPlaybackTable;
+  static const entryTable = SqfliteLocalMediaDbSchema.entryTable;
+  static const dateTakenTable = SqfliteLocalMediaDbSchema.dateTakenTable;
+  static const metadataTable = SqfliteLocalMediaDbSchema.metadataTable;
+  static const addressTable = SqfliteLocalMediaDbSchema.addressTable;
+  static const favouriteTable = SqfliteLocalMediaDbSchema.favouriteTable;
+  static const coverTable = SqfliteLocalMediaDbSchema.coverTable;
+  static const dynamicAlbumTable = SqfliteLocalMediaDbSchema.dynamicAlbumTable;
+  static const vaultTable = SqfliteLocalMediaDbSchema.vaultTable;
+  static const trashTable = SqfliteLocalMediaDbSchema.trashTable;
+  static const videoPlaybackTable = SqfliteLocalMediaDbSchema.videoPlaybackTable;
 
   // warning: "ALTER TABLE ... RENAME COLUMN ..." is not supported
   // on SQLite <3.25.0, bundled on older Android devices
@@ -55,55 +56,68 @@ class LocalMediaDbUpgrader {
       }
       oldVersion++;
     }
+    await _sanitize(db);
+  }
+
+  static Future<void> _sanitize(Database db) async {
+    // ensure all tables exist
+    await Future.forEach(SqfliteLocalMediaDbSchema.allTables, (table) async {
+      if (!db.tableExists(table)) {
+        await SqfliteLocalMediaDbSchema.createTable(db, table);
+      }
+    });
+
+    // remove rows referencing future entry IDs
+    final maxIdRows = await db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
+    final lastId = (maxIdRows.firstOrNull?['maxId'] as int?) ?? 0;
+    await db.delete(favouriteTable, where: 'id > ?', whereArgs: [lastId]);
+    await db.delete(coverTable, where: 'entryId > ?', whereArgs: [lastId]);
   }
 
   static Future<void> _upgradeFrom1(Database db) async {
     debugPrint('upgrading DB from v1');
+
     // rename column 'orientationDegrees' to 'sourceRotationDegrees'
-    await db.transaction((txn) async {
-      const newEntryTable = '${entryTable}TEMP';
-      await db.execute('CREATE TABLE $newEntryTable('
-          'contentId INTEGER PRIMARY KEY'
-          ', uri TEXT'
-          ', path TEXT'
-          ', sourceMimeType TEXT'
-          ', width INTEGER'
-          ', height INTEGER'
-          ', sourceRotationDegrees INTEGER'
-          ', sizeBytes INTEGER'
-          ', title TEXT'
-          ', dateModifiedSecs INTEGER'
-          ', sourceDateTakenMillis INTEGER'
-          ', durationMillis INTEGER'
-          ')');
-      await db.rawInsert('INSERT INTO $newEntryTable(contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis)'
-          ' SELECT contentId,uri,path,sourceMimeType,width,height,orientationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis'
-          ' FROM $entryTable;');
-      await db.execute('DROP TABLE $entryTable;');
-      await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
-    });
+    const newEntryTable = '${entryTable}TEMP';
+    await db.execute('CREATE TABLE $newEntryTable ('
+        'contentId INTEGER PRIMARY KEY'
+        ', uri TEXT'
+        ', path TEXT'
+        ', sourceMimeType TEXT'
+        ', width INTEGER'
+        ', height INTEGER'
+        ', sourceRotationDegrees INTEGER'
+        ', sizeBytes INTEGER'
+        ', title TEXT'
+        ', dateModifiedSecs INTEGER'
+        ', sourceDateTakenMillis INTEGER'
+        ', durationMillis INTEGER'
+        ')');
+    await db.rawInsert('INSERT INTO $newEntryTable (contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis)'
+        ' SELECT contentId,uri,path,sourceMimeType,width,height,orientationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis'
+        ' FROM $entryTable;');
+    await db.execute('DROP TABLE $entryTable;');
+    await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
 
     // rename column 'videoRotation' to 'rotationDegrees'
-    await db.transaction((txn) async {
-      const newMetadataTable = '${metadataTable}TEMP';
-      await db.execute('CREATE TABLE $newMetadataTable('
-          'contentId INTEGER PRIMARY KEY'
-          ', mimeType TEXT'
-          ', dateMillis INTEGER'
-          ', isAnimated INTEGER'
-          ', rotationDegrees INTEGER'
-          ', xmpSubjects TEXT'
-          ', xmpTitleDescription TEXT'
-          ', latitude REAL'
-          ', longitude REAL'
-          ')');
-      await db.rawInsert('INSERT INTO $newMetadataTable(contentId,mimeType,dateMillis,isAnimated,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude)'
-          ' SELECT contentId,mimeType,dateMillis,isAnimated,videoRotation,xmpSubjects,xmpTitleDescription,latitude,longitude'
-          ' FROM $metadataTable;');
-      await db.rawInsert('UPDATE $newMetadataTable SET rotationDegrees = NULL WHERE rotationDegrees = 0;');
-      await db.execute('DROP TABLE $metadataTable;');
-      await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
-    });
+    const newMetadataTable = '${metadataTable}TEMP';
+    await db.execute('CREATE TABLE $newMetadataTable ('
+        'contentId INTEGER PRIMARY KEY'
+        ', mimeType TEXT'
+        ', dateMillis INTEGER'
+        ', isAnimated INTEGER'
+        ', rotationDegrees INTEGER'
+        ', xmpSubjects TEXT'
+        ', xmpTitleDescription TEXT'
+        ', latitude REAL'
+        ', longitude REAL'
+        ')');
+    await db.rawInsert('INSERT INTO $newMetadataTable (contentId,mimeType,dateMillis,isAnimated,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude)'
+        ' SELECT contentId,mimeType,dateMillis,isAnimated,videoRotation,xmpSubjects,xmpTitleDescription,latitude,longitude'
+        ' FROM $metadataTable;');
+    await db.rawInsert('UPDATE $newMetadataTable SET rotationDegrees = NULL WHERE rotationDegrees = 0;');
+    await db.execute('DROP TABLE $metadataTable;');
+    await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
 
     // new column 'isFlipped'
     await db.execute('ALTER TABLE $metadataTable ADD COLUMN isFlipped INTEGER;');
@@ -111,31 +125,30 @@ class LocalMediaDbUpgrader {
 
   static Future<void> _upgradeFrom2(Database db) async {
     debugPrint('upgrading DB from v2');
+
     // merge columns 'isAnimated' and 'isFlipped' into 'flags'
-    await db.transaction((txn) async {
-      const newMetadataTable = '${metadataTable}TEMP';
-      await db.execute('CREATE TABLE $newMetadataTable('
-          'contentId INTEGER PRIMARY KEY'
-          ', mimeType TEXT'
-          ', dateMillis INTEGER'
-          ', flags INTEGER'
-          ', rotationDegrees INTEGER'
-          ', xmpSubjects TEXT'
-          ', xmpTitleDescription TEXT'
-          ', latitude REAL'
-          ', longitude REAL'
-          ')');
-      await db.rawInsert('INSERT INTO $newMetadataTable(contentId,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude)'
-          ' SELECT contentId,mimeType,dateMillis,ifnull(isAnimated,0)+ifnull(isFlipped,0)*2,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude'
-          ' FROM $metadataTable;');
-      await db.execute('DROP TABLE $metadataTable;');
-      await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
-    });
+    const newMetadataTable = '${metadataTable}TEMP';
+    await db.execute('CREATE TABLE $newMetadataTable ('
+        'contentId INTEGER PRIMARY KEY'
+        ', mimeType TEXT'
+        ', dateMillis INTEGER'
+        ', flags INTEGER'
+        ', rotationDegrees INTEGER'
+        ', xmpSubjects TEXT'
+        ', xmpTitleDescription TEXT'
+        ', latitude REAL'
+        ', longitude REAL'
+        ')');
+    await db.rawInsert('INSERT INTO $newMetadataTable (contentId,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude)'
+        ' SELECT contentId,mimeType,dateMillis,ifnull(isAnimated,0)+ifnull(isFlipped,0)*2,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude'
+        ' FROM $metadataTable;');
+    await db.execute('DROP TABLE $metadataTable;');
+    await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
   }
 
   static Future<void> _upgradeFrom3(Database db) async {
     debugPrint('upgrading DB from v3');
-    await db.execute('CREATE TABLE $coverTable('
+    await db.execute('CREATE TABLE $coverTable ('
         'filter TEXT PRIMARY KEY'
         ', contentId INTEGER'
         ')');
@@ -143,7 +156,7 @@ class LocalMediaDbUpgrader {
 
   static Future<void> _upgradeFrom4(Database db) async {
     debugPrint('upgrading DB from v4');
-    await db.execute('CREATE TABLE $videoPlaybackTable('
+    await db.execute('CREATE TABLE $videoPlaybackTable ('
         'contentId INTEGER PRIMARY KEY'
         ', resumeTimeMillis INTEGER'
         ')');
@@ -160,7 +173,7 @@ class LocalMediaDbUpgrader {
     // new column `trashed`
     await db.transaction((txn) async {
       const newEntryTable = '${entryTable}TEMP';
-      await db.execute('CREATE TABLE $newEntryTable('
+      await db.execute('CREATE TABLE $newEntryTable ('
           'id INTEGER PRIMARY KEY'
           ', contentId INTEGER'
           ', uri TEXT'
@@ -176,7 +189,7 @@ class LocalMediaDbUpgrader {
           ', durationMillis INTEGER'
           ', trashed INTEGER DEFAULT 0'
           ')');
-      await db.rawInsert('INSERT INTO $newEntryTable(id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis)'
+      await db.rawInsert('INSERT INTO $newEntryTable (id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis)'
           ' SELECT contentId,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis'
           ' FROM $entryTable;');
       await db.execute('DROP TABLE $entryTable;');
@@ -186,11 +199,11 @@ class LocalMediaDbUpgrader {
     // rename column `contentId` to `id`
     await db.transaction((txn) async {
       const newDateTakenTable = '${dateTakenTable}TEMP';
-      await db.execute('CREATE TABLE $newDateTakenTable('
+      await db.execute('CREATE TABLE $newDateTakenTable ('
           'id INTEGER PRIMARY KEY'
           ', dateMillis INTEGER'
           ')');
-      await db.rawInsert('INSERT INTO $newDateTakenTable(id,dateMillis)'
+      await db.rawInsert('INSERT INTO $newDateTakenTable (id,dateMillis)'
           ' SELECT contentId,dateMillis'
           ' FROM $dateTakenTable;');
       await db.execute('DROP TABLE $dateTakenTable;');
@@ -200,7 +213,7 @@ class LocalMediaDbUpgrader {
     // rename column `contentId` to `id`
     await db.transaction((txn) async {
       const newMetadataTable = '${metadataTable}TEMP';
-      await db.execute('CREATE TABLE $newMetadataTable('
+      await db.execute('CREATE TABLE $newMetadataTable ('
           'id INTEGER PRIMARY KEY'
           ', mimeType TEXT'
           ', dateMillis INTEGER'
@@ -212,7 +225,7 @@ class LocalMediaDbUpgrader {
           ', longitude REAL'
           ', rating INTEGER'
           ')');
-      await db.rawInsert('INSERT INTO $newMetadataTable(id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude,rating)'
+      await db.rawInsert('INSERT INTO $newMetadataTable (id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude,rating)'
           ' SELECT contentId,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude,rating'
           ' FROM $metadataTable;');
       await db.execute('DROP TABLE $metadataTable;');
@@ -222,7 +235,7 @@ class LocalMediaDbUpgrader {
     // rename column `contentId` to `id`
     await db.transaction((txn) async {
       const newAddressTable = '${addressTable}TEMP';
-      await db.execute('CREATE TABLE $newAddressTable('
+      await db.execute('CREATE TABLE $newAddressTable ('
           'id INTEGER PRIMARY KEY'
           ', addressLine TEXT'
           ', countryCode TEXT'
@@ -230,7 +243,7 @@ class LocalMediaDbUpgrader {
           ', adminArea TEXT'
           ', locality TEXT'
           ')');
-      await db.rawInsert('INSERT INTO $newAddressTable(id,addressLine,countryCode,countryName,adminArea,locality)'
+      await db.rawInsert('INSERT INTO $newAddressTable (id,addressLine,countryCode,countryName,adminArea,locality)'
           ' SELECT contentId,addressLine,countryCode,countryName,adminArea,locality'
           ' FROM $addressTable;');
       await db.execute('DROP TABLE $addressTable;');
@@ -240,11 +253,11 @@ class LocalMediaDbUpgrader {
     // rename column `contentId` to `id`
     await db.transaction((txn) async {
       const newVideoPlaybackTable = '${videoPlaybackTable}TEMP';
-      await db.execute('CREATE TABLE $newVideoPlaybackTable('
+      await db.execute('CREATE TABLE $newVideoPlaybackTable ('
           'id INTEGER PRIMARY KEY'
           ', resumeTimeMillis INTEGER'
           ')');
-      await db.rawInsert('INSERT INTO $newVideoPlaybackTable(id,resumeTimeMillis)'
+      await db.rawInsert('INSERT INTO $newVideoPlaybackTable (id,resumeTimeMillis)'
           ' SELECT contentId,resumeTimeMillis'
           ' FROM $videoPlaybackTable;');
       await db.execute('DROP TABLE $videoPlaybackTable;');
@@ -255,10 +268,10 @@ class LocalMediaDbUpgrader {
     // remove column `path`
     await db.transaction((txn) async {
       const newFavouriteTable = '${favouriteTable}TEMP';
-      await db.execute('CREATE TABLE $newFavouriteTable('
+      await db.execute('CREATE TABLE $newFavouriteTable ('
           'id INTEGER PRIMARY KEY'
           ')');
-      await db.rawInsert('INSERT INTO $newFavouriteTable(id)'
+      await db.rawInsert('INSERT INTO $newFavouriteTable (id)'
           ' SELECT contentId'
           ' FROM $favouriteTable;');
       await db.execute('DROP TABLE $favouriteTable;');
@@ -268,11 +281,11 @@ class LocalMediaDbUpgrader {
     // rename column `contentId` to `entryId`
     await db.transaction((txn) async {
       const newCoverTable = '${coverTable}TEMP';
-      await db.execute('CREATE TABLE $newCoverTable('
+      await db.execute('CREATE TABLE $newCoverTable ('
           'filter TEXT PRIMARY KEY'
           ', entryId INTEGER'
           ')');
-      await db.rawInsert('INSERT INTO $newCoverTable(filter,entryId)'
+      await db.rawInsert('INSERT INTO $newCoverTable (filter,entryId)'
           ' SELECT filter,contentId'
           ' FROM $coverTable;');
       await db.execute('DROP TABLE $coverTable;');
@@ -280,7 +293,7 @@ class LocalMediaDbUpgrader {
     });
 
     // new table
-    await db.execute('CREATE TABLE $trashTable('
+    await db.execute('CREATE TABLE $trashTable ('
         'id INTEGER PRIMARY KEY'
         ', path TEXT'
         ', dateMillis INTEGER'
@@ -299,7 +312,7 @@ class LocalMediaDbUpgrader {
     // new column `dateAddedSecs`
     await db.transaction((txn) async {
       const newEntryTable = '${entryTable}TEMP';
-      await db.execute('CREATE TABLE $newEntryTable('
+      await db.execute('CREATE TABLE $newEntryTable ('
           'id INTEGER PRIMARY KEY'
           ', contentId INTEGER'
           ', uri TEXT'
@@ -316,7 +329,7 @@ class LocalMediaDbUpgrader {
           ', durationMillis INTEGER'
           ', trashed INTEGER DEFAULT 0'
           ')');
-      await db.rawInsert('INSERT INTO $newEntryTable(id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis,trashed)'
+      await db.rawInsert('INSERT INTO $newEntryTable (id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis,trashed)'
           ' SELECT id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis,trashed'
           ' FROM $entryTable;');
       await db.execute('DROP TABLE $entryTable;');
@@ -326,7 +339,7 @@ class LocalMediaDbUpgrader {
     // rename column `xmpTitleDescription` to `xmpTitle`
     await db.transaction((txn) async {
       const newMetadataTable = '${metadataTable}TEMP';
-      await db.execute('CREATE TABLE $newMetadataTable('
+      await db.execute('CREATE TABLE $newMetadataTable ('
           'id INTEGER PRIMARY KEY'
           ', mimeType TEXT'
           ', dateMillis INTEGER'
@@ -338,7 +351,7 @@ class LocalMediaDbUpgrader {
           ', longitude REAL'
           ', rating INTEGER'
           ')');
-      await db.rawInsert('INSERT INTO $newMetadataTable(id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitle,latitude,longitude,rating)'
+      await db.rawInsert('INSERT INTO $newMetadataTable (id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitle,latitude,longitude,rating)'
           ' SELECT id,mimeType,dateMillis,flags,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude,rating'
           ' FROM $metadataTable;');
       await db.execute('DROP TABLE $metadataTable;');
@@ -383,7 +396,7 @@ class LocalMediaDbUpgrader {
 
     await db.execute('ALTER TABLE $entryTable ADD COLUMN origin INTEGER DEFAULT 0;');
 
-    await db.execute('CREATE TABLE $vaultTable('
+    await db.execute('CREATE TABLE $vaultTable ('
         'name TEXT PRIMARY KEY'
         ', autoLock INTEGER'
         ', useBin INTEGER'
@@ -394,7 +407,7 @@ class LocalMediaDbUpgrader {
   static Future<void> _upgradeFrom11(Database db) async {
     debugPrint('upgrading DB from v11');
 
-    await db.execute('CREATE TABLE $dynamicAlbumTable('
+    await db.execute('CREATE TABLE $dynamicAlbumTable ('
         'name TEXT PRIMARY KEY'
         ', filter TEXT'
         ')');
@@ -423,40 +436,38 @@ class LocalMediaDbUpgrader {
     }
 
     // convert `color` column type from value number to JSON string
-    await db.transaction((txn) async {
-      const newCoverTable = '${coverTable}TEMP';
-      await db.execute('CREATE TABLE $newCoverTable('
-          'filter TEXT PRIMARY KEY'
-          ', entryId INTEGER'
-          ', packageName TEXT'
-          ', color TEXT'
-          ')');
+    const newCoverTable = '${coverTable}TEMP';
+    await db.execute('CREATE TABLE $newCoverTable ('
+        'filter TEXT PRIMARY KEY'
+        ', entryId INTEGER'
+        ', packageName TEXT'
+        ', color TEXT'
+        ')');
 
-      // insert covers with `string` color value
-      if (rows.isNotEmpty) {
-        final batch = db.batch();
-        rows.forEach((row) {
-          batch.insert(
-            newCoverTable,
-            row.toMap(),
-            conflictAlgorithm: ConflictAlgorithm.replace,
-          );
-        });
-        await batch.commit(noResult: true);
-      }
+    // insert covers with `string` color value
+    if (rows.isNotEmpty) {
+      final batch = db.batch();
+      rows.forEach((row) {
+        batch.insert(
+          newCoverTable,
+          row.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      });
+      await batch.commit(noResult: true);
+    }
 
-      await db.execute('DROP TABLE $coverTable;');
-      await db.execute('ALTER TABLE $newCoverTable RENAME TO $coverTable;');
-    });
+    await db.execute('DROP TABLE $coverTable;');
+    await db.execute('ALTER TABLE $newCoverTable RENAME TO $coverTable;');
   }
 
   static Future<void> _upgradeFrom13(Database db) async {
     debugPrint('upgrading DB from v13');
 
-    // rename column 'dateModifiedSecs' to 'dateModifiedMillis'
-    await db.transaction((txn) async {
+    if (db.tableExists(entryTable)) {
+      // rename column 'dateModifiedSecs' to 'dateModifiedMillis'
       const newEntryTable = '${entryTable}TEMP';
-      await db.execute('CREATE TABLE $newEntryTable('
+      await db.execute('CREATE TABLE $newEntryTable ('
           'id INTEGER PRIMARY KEY'
           ', contentId INTEGER'
           ', uri TEXT'
@@ -474,30 +485,24 @@ class LocalMediaDbUpgrader {
           ', trashed INTEGER DEFAULT 0'
           ', origin INTEGER DEFAULT 0'
           ')');
-      await db.rawInsert('INSERT INTO $newEntryTable(id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateAddedSecs,dateModifiedMillis,sourceDateTakenMillis,durationMillis,trashed,origin)'
+      await db.rawInsert('INSERT INTO $newEntryTable (id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateAddedSecs,dateModifiedMillis,sourceDateTakenMillis,durationMillis,trashed,origin)'
           ' SELECT id,contentId,uri,path,sourceMimeType,width,height,sourceRotationDegrees,sizeBytes,title,dateAddedSecs,dateModifiedSecs*1000,sourceDateTakenMillis,durationMillis,trashed,origin'
           ' FROM $entryTable;');
       await db.execute('DROP TABLE $entryTable;');
       await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
-    });
+    }
   }
 
   static Future<void> _upgradeFrom14(Database db) async {
     debugPrint('upgrading DB from v14');
 
-    // no schema changes, but v1.12.4 may have corrupted the DB, so we sanitize it
-
-    // clear rebuildable tables
-    await db.delete(dateTakenTable, where: '1');
-    await db.delete(metadataTable, where: '1');
-    await db.delete(addressTable, where: '1');
-    await db.delete(trashTable, where: '1');
-    await db.delete(videoPlaybackTable, where: '1');
-
-    // remove rows referencing future entry IDs
-    final maxIdRows = await db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
-    final lastId = (maxIdRows.firstOrNull?['maxId'] as int?) ?? 0;
-    await db.delete(favouriteTable, where: 'id > ?', whereArgs: [lastId]);
-    await db.delete(coverTable, where: 'entryId > ?', whereArgs: [lastId]);
+    // no schema changes, but v1.12.4 may have corrupted the DB,
+    // so we clear rebuildable tables
+    final tables = [dateTakenTable, metadataTable, addressTable, trashTable, videoPlaybackTable];
+    await Future.forEach(tables, (table) async {
+      if (db.tableExists(table)) {
+        await db.delete(table, where: '1');
+      }
+    });
   }
 }
