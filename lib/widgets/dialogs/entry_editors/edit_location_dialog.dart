@@ -67,7 +67,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   final TextEditingController _latitudeController = TextEditingController(), _longitudeController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  NumberFormat get coordinateFormatter => NumberFormat('0.000000', context.locale);
+  late NumberFormat coordinateFormatter;
   static const _minTimeToGpxPoint = Duration(hours: 1);
 
   @override
@@ -75,22 +75,10 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     super.initState();
     final entries = widget.entries;
     mainEntry = entries.firstWhereOrNull((entry) => entry.hasGps) ?? entries.first;
-    _initMapCoordinates();
-    _initCopyItem();
-    _initCustom();
-    AvesApp.intentEventBus.on<LocationReceivedEvent>().listen((event) => _setCustomLocation(event.location));
-  }
-
-  void _initMapCoordinates() {
     _mapCoordinates = mainEntry.latLng;
-  }
-
-  void _initCopyItem() {
     _copyItemSource = mainEntry;
-  }
-
-  void _initCustom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      coordinateFormatter = NumberFormat('0.000000', context.locale);
       final latLng = mainEntry.latLng;
       if (latLng != null) {
         _latitudeController.text = coordinateFormatter.format(latLng.latitude);
@@ -101,6 +89,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
       }
       setState(_validate);
     });
+    _subscriptions.add(AvesApp.intentEventBus.on<LocationReceivedEvent>().listen((event) => _setCustomLocation(event.location)));
   }
 
   @override
