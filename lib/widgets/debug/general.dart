@@ -1,14 +1,12 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/analysis_service.dart';
+import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:aves/widgets/debug/overlay.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:leak_tracker/leak_tracker.dart';
 import 'package:provider/provider.dart';
 
 class DebugGeneralSection extends StatefulWidget {
@@ -31,6 +29,7 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
     final withGps = catalogued.where((entry) => entry.hasGps);
     final withAddress = withGps.where((entry) => entry.hasAddress);
     final withFineAddress = withGps.where((entry) => entry.hasFineAddress);
+
     return AvesExpansionTile(
       title: 'General',
       children: [
@@ -55,7 +54,7 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
             _taskQueueOverlayEntry = null;
             if (v) {
               _taskQueueOverlayEntry = OverlayEntry(
-                builder: (context) => const DebugTaskQueueOverlay(),
+                builder: (context) => const _TaskQueueOverlay(),
               );
               Overlay.of(context).insert(_taskQueueOverlayEntry!);
             }
@@ -67,46 +66,6 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
           selector: (context, s) => s.debugShowViewerTiles,
           onChanged: (v) => settings.debugShowViewerTiles = v,
           title: 'Show viewer tiles',
-        ),
-        ElevatedButton(
-          onPressed: () => LeakTracking.collectLeaks().then((leaks) {
-            const config = LeakDiagnosticConfig(
-              collectRetainingPathForNotGCed: true,
-              collectStackTraceOnStart: true,
-              collectStackTraceOnDisposal: true,
-            );
-            LeakTracking.phase = const PhaseSettings(
-              leakDiagnosticConfig: config,
-            );
-            debugPrint('Setup leak tracking phase with config=$config');
-          }),
-          child: const Text('Setup leak tracking phase'),
-        ),
-        ElevatedButton(
-          onPressed: () => LeakTracking.collectLeaks().then((leaks) {
-            leaks.byType.forEach((type, reports) {
-              // ignore `notGCed` and `gcedLate` for now
-              if (type != LeakType.notDisposed) return;
-
-              debugPrint('* leak type=$type');
-              groupBy(reports, (report) => report.type).forEach((reportType, typedReports) {
-                debugPrint('  * report type=$reportType');
-                groupBy(typedReports, (report) => report.trackedClass).forEach((trackedClass, classedReports) {
-                  debugPrint('    trackedClass=$trackedClass reports=${classedReports.length}');
-                  classedReports.forEach((report) {
-                    final phase = report.phase;
-                    final retainingPath = report.retainingPath;
-                    final detailedPath = report.detailedPath;
-                    final context = report.context;
-                    if (phase != null || retainingPath != null || detailedPath != null || context != null) {
-                      debugPrint('      phase=$phase retainingPath=$retainingPath detailedPath=$detailedPath context=$context');
-                    }
-                  });
-                });
-              });
-            });
-          }),
-          child: const Text('Collect leaks'),
         ),
         ElevatedButton(
           onPressed: () => AnalysisService.startService(force: false),
@@ -132,4 +91,46 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class _TaskQueueOverlay extends StatelessWidget {
+  const _TaskQueueOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: DefaultTextStyle(
+        style: const TextStyle(),
+        child: Align(
+          alignment: AlignmentDirectional.bottomStart,
+          child: SafeArea(
+            child: Container(
+              color: Colors.indigo.shade900.withAlpha(0xCC),
+              padding: const EdgeInsets.all(8),
+              child: StreamBuilder<QueueState>(
+                  stream: servicePolicy.queueStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) return const SizedBox();
+                    final queuedEntries = <MapEntry<dynamic, int>>[];
+                    if (snapshot.hasData) {
+                      final state = snapshot.data!;
+                      queuedEntries.add(MapEntry('run', state.runningCount));
+                      queuedEntries.add(MapEntry('paused', state.pausedCount));
+                      queuedEntries.addAll(state.queueByPriority.entries.map((kv) => MapEntry(kv.key.toString(), kv.value)));
+                    }
+                    queuedEntries.sort((a, b) => a.key.compareTo(b.key));
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(queuedEntries.map((kv) => '${kv.key}: ${kv.value}').join(', ')),
+                      ],
+                    );
+                  }),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
