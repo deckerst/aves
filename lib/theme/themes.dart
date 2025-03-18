@@ -58,7 +58,6 @@ class Themes {
       cardColor: _schemeCardLayer(colors),
       colorScheme: colors,
       dividerColor: colors.outlineVariant,
-      indicatorColor: colors.primary,
       scaffoldBackgroundColor: _schemeFirstLayer(colors),
       // TYPOGRAPHY & ICONOGRAPHY
       typography: _typography,
@@ -75,6 +74,7 @@ class Themes {
       ),
       radioTheme: _radioTheme(colors),
       sliderTheme: _sliderTheme(colors),
+      tabBarTheme: TabBarThemeData(indicatorColor: colors.primary),
       tooltipTheme: _tooltipTheme,
     );
   }
@@ -183,7 +183,7 @@ class Themes {
         titleTextStyle: _titleTextStyle.copyWith(color: _lightTitleColor),
         systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : null,
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: _schemeSecondLayer(colors),
         titleTextStyle: _titleTextStyle.copyWith(color: _lightTitleColor),
       ),
@@ -236,7 +236,7 @@ class Themes {
         titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
         systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : null,
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: _schemeSecondLayer(colors),
         titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
       ),
