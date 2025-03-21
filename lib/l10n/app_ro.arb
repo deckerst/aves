@@ -1598,5 +1598,15 @@
   "newAlbumDialogAlbumAlreadyExistsHelper": "Albumul există deja",
   "@newAlbumDialogAlbumAlreadyExistsHelper": {},
   "mapAttributionOsmLiberty": "Plăci de la [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Găzduit de [OSM Americana](https://tile.ourmap.us)",
-  "@mapAttributionOsmLiberty": {}
+  "@mapAttributionOsmLiberty": {},
+  "mapStyleOpenTopoMap": "OpenTopoMap",
+  "@mapStyleOpenTopoMap": {},
+  "editEntryLocationDialogTimeShift": "Schimb de timp",
+  "@editEntryLocationDialogTimeShift": {},
+  "coordinateFormatDdm": "DDM",
+  "@coordinateFormatDdm": {},
+  "mapStyleOsmLiberty": "OSM Liberty",
+  "@mapStyleOsmLiberty": {},
+  "removeEntryMetadataDialogAll": "Toate",
+  "@removeEntryMetadataDialogAll": {}
 }
