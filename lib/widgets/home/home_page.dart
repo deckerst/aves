@@ -274,7 +274,7 @@ class _HomePageState extends State<HomePage> {
       ));
     } catch (error, stack) {
       debugPrint('failed to setup app with error=$error\n$stack');
-      _setupError = (error, stack);
+      setState(() => _setupError = (error, stack));
     }
   }
 
