@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:aves/ref/locales.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -95,21 +99,60 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
         child: SafeArea(
           child: Container(
             color: Colors.indigo.shade900.withAlpha(0xCC),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              IconButton(
-                onPressed: () => setState(() => _alignment = _alignment == AlignmentDirectional.bottomStart ? AlignmentDirectional.topStart : AlignmentDirectional.bottomStart),
-                icon: Icon(_alignment == AlignmentDirectional.bottomStart ? Icons.vertical_align_top_outlined : Icons.vertical_align_bottom_outlined),
-              ),
-              ...LeakType.values.map((type) {
-                return TextButton(
-                  onPressed: () => LeakTracking.collectLeaks().then((leaks) {
-                    final reports = leaks.byType[type] ?? [];
-                    _printLeaks(type, reports);
-                  }),
-                  child: Text(type.name),
-                );
-              })
-            ]),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () => setState(() => _alignment = _alignment == AlignmentDirectional.bottomStart ? AlignmentDirectional.topStart : AlignmentDirectional.bottomStart),
+                      icon: Icon(_alignment == AlignmentDirectional.bottomStart ? Icons.vertical_align_top_outlined : Icons.vertical_align_bottom_outlined),
+                    ),
+                    ...LeakType.values.map((type) {
+                      return OutlinedButton(
+                        style: ButtonStyle(
+                          padding: WidgetStateProperty.all(const EdgeInsets.all(6)),
+                          minimumSize: WidgetStateProperty.all(Size.zero),
+                        ),
+                        onPressed: () => LeakTracking.collectLeaks().then((leaks) {
+                          final reports = leaks.byType[type] ?? [];
+                          _printLeaks(type, reports);
+                        }),
+                        child: Text(type.name),
+                      );
+                    }),
+                  ],
+                ),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    StreamBuilder(
+                      stream: Stream.periodic(const Duration(seconds: 1)),
+                      builder: (context, snapshot) {
+                        final currentRss = formatFileSize(asciiLocale, ProcessInfo.currentRss);
+                        final maxRss = formatFileSize(asciiLocale, ProcessInfo.maxRss);
+                        return Text('RSS: $currentRss / $maxRss');
+                      },
+                    ),
+                  ],
+                ),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    StreamBuilder(
+                      stream: Stream.periodic(const Duration(seconds: 1)),
+                      builder: (context, snapshot) {
+                        final currentImageCache = formatFileSize(asciiLocale, imageCache.currentSizeBytes);
+                        final maxImageCache = formatFileSize(asciiLocale, imageCache.maximumSizeBytes);
+                        return Text('imageCache: $currentImageCache / $maxImageCache');
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
