@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- swiping images for some combinations of screen size, device pixel ratio, and image size
+
 ## <a id="v1.12.7"></a>[v1.12.7] - 2025-03-16
 
 ### Added

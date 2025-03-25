@@ -1,5 +1,6 @@
 import 'package:aves_magnifier/src/controller/controller_delegate.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
@@ -15,7 +16,7 @@ mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
 
     final x = -position.dx;
     final range = _boundaries.getXEdges(scale: _scale);
-    return EdgeHit(x <= range.min, x >= range.max);
+    return EdgeHit(x <= range.min + precisionErrorTolerance, x >= range.max - precisionErrorTolerance);
   }
 
   EdgeHit getYEdgeHit() {
@@ -25,7 +26,7 @@ mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
 
     final y = -position.dy;
     final range = _boundaries.getYEdges(scale: _scale);
-    return EdgeHit(y <= range.min, y >= range.max);
+    return EdgeHit(y <= range.min + precisionErrorTolerance, y >= range.max - precisionErrorTolerance);
   }
 
   bool shouldMoveX(Offset move, bool canFling) {
