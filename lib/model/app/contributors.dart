@@ -129,6 +129,7 @@ class Contributors {
     Contributor('Josep M. Ferrer', 'txemaq@gmail.com'),
     Contributor('pitroig', 'ona@riseup.net'),
     Contributor('Rubén Castiñeiras Lorenzo', 'rcasl@outlook.com'),
+    Contributor('hanyang cheng', 'cinxiafortis@tutanota.de'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese

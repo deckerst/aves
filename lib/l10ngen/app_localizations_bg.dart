@@ -1771,10 +1771,10 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settingsThumbnailSectionTitle => 'Миниатюри';
 
   @override
-  String get settingsThumbnailOverlayTile => 'Наслагване';
+  String get settingsThumbnailOverlayTile => 'Повече информация';
 
   @override
-  String get settingsThumbnailOverlayPageTitle => 'Наслагване';
+  String get settingsThumbnailOverlayPageTitle => 'Повече информация';
 
   @override
   String get settingsThumbnailShowHdrIcon => 'Показване на HDR икона';
@@ -1861,10 +1861,10 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settingsViewerQuickActionEmpty => 'Без бутони';
 
   @override
-  String get settingsViewerOverlayTile => 'Наслагване';
+  String get settingsViewerOverlayTile => 'Повече информация';
 
   @override
-  String get settingsViewerOverlayPageTitle => 'Наслагване';
+  String get settingsViewerOverlayPageTitle => 'Повече информация';
 
   @override
   String get settingsViewerShowOverlayOnOpening => 'Показване при отваряне';
