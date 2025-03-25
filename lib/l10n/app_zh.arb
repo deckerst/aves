@@ -1409,7 +1409,7 @@
   "@dynamicAlbumAlreadyExists": {},
   "chipActionDecompose": "分割",
   "@chipActionDecompose": {},
-  "coordinateFormatDdm": "DDM",
+  "coordinateFormatDdm": "度分秒十进制坐标",
   "@coordinateFormatDdm": {},
   "editEntryLocationDialogImportGpx": "导入 GPX",
   "@editEntryLocationDialogImportGpx": {},
