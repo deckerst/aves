@@ -505,7 +505,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get coordinateFormatDms => 'DMS';
 
   @override
-  String get coordinateFormatDdm => 'DDM';
+  String get coordinateFormatDdm => '度分秒十进制坐标';
 
   @override
   String get coordinateFormatDecimal => '十进制度';
@@ -2670,6 +2670,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get videoActionSkip10 => '前進 10 秒';
 
   @override
+  String get videoActionShowPreviousFrame => '顯示前一幀';
+
+  @override
+  String get videoActionShowNextFrame => '顯示下一幀';
+
+  @override
   String get videoActionSelectStreams => '選擇音軌';
 
   @override
@@ -2841,6 +2847,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get coordinateFormatDms => 'DMS';
 
   @override
+  String get coordinateFormatDdm => '度分十進制';
+
+  @override
   String get coordinateFormatDecimal => '十進制度數';
 
   @override
@@ -2892,6 +2901,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get mapStyleGoogleTerrain => 'Google 地圖 (地形)';
+
+  @override
+  String get mapStyleOsmLiberty => 'OSM Liberty';
+
+  @override
+  String get mapStyleOpenTopoMap => 'OpenTopoMap';
 
   @override
   String get mapStyleOsmHot => 'Humanitarian OSM';
@@ -3140,10 +3155,19 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get newAlbumDialogNameLabel => '相簿名稱';
 
   @override
+  String get newAlbumDialogAlbumAlreadyExistsHelper => '相簿已經存在';
+
+  @override
   String get newAlbumDialogNameLabelAlreadyExistsHelper => '目錄已存在';
 
   @override
   String get newAlbumDialogStorageLabel => '儲存空間:';
+
+  @override
+  String get newDynamicAlbumDialogTitle => '新動態相簿';
+
+  @override
+  String get dynamicAlbumAlreadyExists => '動態相簿已經存在';
 
   @override
   String get newVaultWarningDialogMessage => '保險庫中的項目僅供此應用使用，其他應用不可用。\n\n如果您卸載此應用程序或清除此應用程序數據，您將丟失所有這些項目。';
@@ -3297,10 +3321,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get editEntryLocationDialogChooseOnMap => '從地圖上選擇';
 
   @override
+  String get editEntryLocationDialogImportGpx => '匯入 GPX';
+
+  @override
   String get editEntryLocationDialogLatitude => '緯度';
 
   @override
   String get editEntryLocationDialogLongitude => '經度';
+
+  @override
+  String get editEntryLocationDialogTimeShift => '時光平移';
 
   @override
   String get locationPickerUseThisLocationButton => '使用此座標';
@@ -3310,6 +3340,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get removeEntryMetadataDialogTitle => '移除元資料';
+
+  @override
+  String get removeEntryMetadataDialogAll => '全部';
 
   @override
   String get removeEntryMetadataDialogMore => '更多';
@@ -3511,6 +3544,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get collectionActionHideTitleSearch => '隱藏標題過濾器';
+
+  @override
+  String get collectionActionAddDynamicAlbum => '新增動態相簿';
 
   @override
   String get collectionActionAddShortcut => '新增捷徑';
@@ -3742,6 +3778,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get sortByRating => '依評分';
 
   @override
+  String get sortByDuration => '按時長';
+
+  @override
   String get sortOrderNewestFirst => '由新至舊';
 
   @override
@@ -3764,6 +3803,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sortOrderSmallestFirst => '由小到大';
+
+  @override
+  String get sortOrderShortestFirst => '先短後長';
+
+  @override
+  String get sortOrderLongestFirst => '先長後短';
 
   @override
   String get albumGroupTier => '依層級';
@@ -3850,6 +3895,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get explorerPageTitle => '檔案總管';
 
   @override
+  String get explorerActionSelectStorageVolume => '選擇儲存位置';
+
+  @override
+  String get selectStorageVolumeDialogTitle => '選擇儲存位置';
+
+  @override
   String get searchCollectionFieldHint => '搜尋收藏品';
 
   @override
@@ -3919,6 +3970,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get appExportCovers => '封面';
 
   @override
+  String get appExportDynamicAlbums => '動態相簿';
+
+  @override
   String get appExportFavourites => '我的最愛';
 
   @override
@@ -3932,6 +3986,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsHomeDialogTitle => '主畫面';
+
+  @override
+  String get setHomeCustom => '自定義';
 
   @override
   String get settingsShowBottomNavigationBar => '顯示底部操作條';
@@ -4486,6 +4543,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get mapAttributionOsmData => '地圖資料由 © [OpenStreetMap](https://www.openstreetmap.org/copyright) 貢獻';
+
+  @override
+  String get mapAttributionOsmLiberty => '地圖由 [OpenMapTiles](https://www.openmaptiles.org/) 所提供，以 [CC BY](http://creativecommons.org/licenses/by/4.0) 授權 • 托管於 [OSM Americana](https://tile.ourmap.us)';
+
+  @override
+  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 地圖由 [OpenTopoMap](https://opentopomap.org/)，以 [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/) 授權';
 
   @override
   String get mapAttributionOsmHot => '繪製於 [HOT](https://www.hotosm.org/) • 主辦方 [OSM France](https://openstreetmap.fr/)';

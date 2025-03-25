@@ -991,7 +991,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Longitudine';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Schimb de timp';
 
   @override
   String get locationPickerUseThisLocationButton => 'Utilizați această locație';
@@ -1003,7 +1003,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Eliminarea metadatelor';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Toate';
 
   @override
   String get removeEntryMetadataDialogMore => 'Mai mult';
