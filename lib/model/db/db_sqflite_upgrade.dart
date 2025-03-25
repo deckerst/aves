@@ -62,7 +62,7 @@ class LocalMediaDbUpgrader {
   static Future<void> _sanitize(Database db) async {
     // ensure all tables exist
     await Future.forEach(SqfliteLocalMediaDbSchema.allTables, (table) async {
-      if (!db.tableExists(table)) {
+      if (!(await db.tableExists(table))) {
         await SqfliteLocalMediaDbSchema.createTable(db, table);
       }
     });
@@ -464,7 +464,7 @@ class LocalMediaDbUpgrader {
   static Future<void> _upgradeFrom13(Database db) async {
     debugPrint('upgrading DB from v13');
 
-    if (db.tableExists(entryTable)) {
+    if (await db.tableExists(entryTable)) {
       // rename column 'dateModifiedSecs' to 'dateModifiedMillis'
       const newEntryTable = '${entryTable}TEMP';
       await db.execute('CREATE TABLE $newEntryTable ('
@@ -500,7 +500,7 @@ class LocalMediaDbUpgrader {
     // so we clear rebuildable tables
     final tables = [dateTakenTable, metadataTable, addressTable, trashTable, videoPlaybackTable];
     await Future.forEach(tables, (table) async {
-      if (db.tableExists(table)) {
+      if (await db.tableExists(table)) {
         await db.delete(table, where: '1');
       }
     });

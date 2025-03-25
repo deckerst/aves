@@ -1,15 +1,13 @@
 import 'package:sqflite/sqflite.dart';
 
 extension ExtraDatabase on Database {
-  // check table existence
-  // proper way is to select from `sqlite_master` but this meta table may be missing on some devices
-  // so we rely on failure check instead
-  bool tableExists(String table) {
-    try {
-      query(table, limit: 1);
-      return true;
-    } catch (error) {
-      return false;
-    }
+  // check table existence via `sqlite_master`
+  // `sqlite_schema` is the alias used in SQLite documentation,
+  // but it was introduced in SQLite v3.33.0 and it is unavailable on Android API < 34,
+  // and the historical alias `sqlite_master` is still supported.
+  // cf https://www.sqlite.org/faq.html#q7
+  Future<bool> tableExists(String table) async {
+    final results = await query('sqlite_master', where: 'type = ? AND name = ?', whereArgs: ['table', table]);
+    return results.isNotEmpty;
   }
 }
