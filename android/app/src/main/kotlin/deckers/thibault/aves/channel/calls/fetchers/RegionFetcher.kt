@@ -29,10 +29,6 @@ import kotlin.math.roundToInt
 class RegionFetcher internal constructor(
     private val context: Context,
 ) {
-    private var lastDecoderRef: LastDecoderRef? = null
-
-    private val exportUris = HashMap<Pair<Uri, Int?>, Uri>()
-
     // return decoded bytes in ARGB_8888, with trailer bytes:
     // - width (int32)
     // - height (int32)
@@ -63,24 +59,12 @@ class RegionFetcher internal constructor(
             return
         }
 
-        var currentDecoderRef = lastDecoderRef
-        if (currentDecoderRef != null && currentDecoderRef.requestKey != requestKey) {
-            currentDecoderRef = null
-        }
-
         try {
-            if (currentDecoderRef == null) {
-                val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
-                    BitmapRegionDecoderCompat.newInstance(input)
-                }
-                if (newDecoder == null) {
-                    result.error("fetch-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
-                    return
-                }
-                currentDecoderRef = LastDecoderRef(requestKey, newDecoder)
+            val decoder = getOrCreateDecoder(uri, requestKey)
+            if (decoder == null) {
+                result.error("fetch-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
+                return
             }
-            val decoder = currentDecoderRef.decoder
-            lastDecoderRef = currentDecoderRef
 
             // with raw images, the known image size may not match the decoded image size
             // so we scale the requested region accordingly
@@ -159,6 +143,26 @@ class RegionFetcher internal constructor(
         }
     }
 
+    private fun getOrCreateDecoder(uri: Uri, requestKey: Pair<Uri, Int?>): BitmapRegionDecoder? {
+        var decoderRef = decoderPool.firstOrNull { it.requestKey == requestKey }
+        if (decoderRef == null) {
+            val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
+                BitmapRegionDecoderCompat.newInstance(input)
+            }
+            if (newDecoder == null) {
+                return null
+            }
+            decoderRef = DecoderRef(requestKey, newDecoder)
+        } else {
+            decoderPool.remove(decoderRef)
+        }
+        decoderPool.add(0, decoderRef)
+        while (decoderPool.size > DECODER_POOL_SIZE) {
+            decoderPool.removeAt(decoderPool.size - 1)
+        }
+        return decoderRef.decoder
+    }
+
     private fun createTemporaryJpegExport(uri: Uri, mimeType: String, pageId: Int?): Uri {
         Log.d(LOG_TAG, "create JPEG export for uri=$uri mimeType=$mimeType pageId=$pageId")
         val target = Glide.with(context)
@@ -180,7 +184,7 @@ class RegionFetcher internal constructor(
         }
     }
 
-    private data class LastDecoderRef(
+    private data class DecoderRef(
         val requestKey: Pair<Uri, Int?>,
         val decoder: BitmapRegionDecoder,
     )
@@ -188,5 +192,8 @@ class RegionFetcher internal constructor(
     companion object {
         private val LOG_TAG = LogUtils.createTag<RegionFetcher>()
         private val PREFERRED_CONFIG = Bitmap.Config.ARGB_8888
+        private const val DECODER_POOL_SIZE = 3
+        private val decoderPool = ArrayList<DecoderRef>()
+        private val exportUris = HashMap<Pair<Uri, Int?>, Uri>()
     }
 }
