@@ -12,6 +12,20 @@ class DebugCacheSection extends StatefulWidget {
 }
 
 class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKeepAliveClientMixin {
+  final TextEditingController _imageCacheSizeTextController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _imageCacheSizeTextController.text = '${imageCache.maximumSizeBytes}';
+  }
+
+  @override
+  void dispose() {
+    _imageCacheSizeTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -41,6 +55,31 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _imageCacheSizeTextController,
+                      decoration: const InputDecoration(labelText: 'imageCache size bytes'),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      final size = int.tryParse(_imageCacheSizeTextController.text);
+                      if (size != null) {
+                        imageCache.maximumSizeBytes = size;
+                      } else {
+                        _imageCacheSizeTextController.text = '${imageCache.maximumSizeBytes}';
+                      }
+                      setState(() {});
+                    },
+                    child: const Text('Apply'),
+                  ),
+                ],
+              ),
+              const Divider(),
               Row(
                 children: [
                   const Expanded(
