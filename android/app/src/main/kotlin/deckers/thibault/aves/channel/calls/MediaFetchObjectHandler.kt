@@ -1,6 +1,8 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
@@ -21,7 +23,8 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getEntry" -> ioScope.launch { safe(call, result, ::getEntry) }
-            "clearSizedThumbnailDiskCache" -> ioScope.launch { safe(call, result, ::clearSizedThumbnailDiskCache) }
+            "clearImageDiskCache" -> ioScope.launch { safe(call, result, ::clearImageDiskCache) }
+            "clearImageMemoryCache" -> ioScope.launch { safe(call, result, ::clearImageMemoryCache) }
             else -> result.notImplemented()
         }
     }
@@ -47,8 +50,15 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
         })
     }
 
-    private fun clearSizedThumbnailDiskCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    private fun clearImageDiskCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         Glide.get(context).clearDiskCache()
+        result.success(null)
+    }
+
+    private fun clearImageMemoryCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        Handler(Looper.getMainLooper()).post {
+            Glide.get(context).clearMemory()
+        }
         result.success(null)
     }
 
