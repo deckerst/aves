@@ -55,7 +55,9 @@ abstract class MediaFetchService {
     int? priority,
   });
 
-  Future<void> clearSizedThumbnailDiskCache();
+  Future<void> clearImageDiskCache();
+
+  Future<void> clearImageMemoryCache();
 
   bool cancelRegion(Object taskKey);
 
@@ -255,9 +257,18 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  Future<void> clearSizedThumbnailDiskCache() async {
+  Future<void> clearImageDiskCache() async {
     try {
-      return _platformObject.invokeMethod('clearSizedThumbnailDiskCache');
+      return _platformObject.invokeMethod('clearImageDiskCache');
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+  }
+
+  @override
+  Future<void> clearImageMemoryCache() async {
+    try {
+      return _platformObject.invokeMethod('clearImageMemoryCache');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

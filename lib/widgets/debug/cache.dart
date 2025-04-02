@@ -87,7 +87,19 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: mediaFetchService.clearSizedThumbnailDiskCache,
+                    onPressed: mediaFetchService.clearImageDiskCache,
+                    child: const Text('Clear'),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text('Glide memory cache: ?'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: mediaFetchService.clearImageMemoryCache,
                     child: const Text('Clear'),
                   ),
                 ],
