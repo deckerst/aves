@@ -22,8 +22,6 @@ import kotlin.math.ceil
 class SvgRegionFetcher internal constructor(
     private val context: Context,
 ) {
-    private var lastSvgRef: LastSvgRef? = null
-
     fun fetch(
         uri: Uri,
         sizeBytes: Long?,
@@ -39,32 +37,12 @@ class SvgRegionFetcher internal constructor(
             return
         }
 
-        var currentSvgRef = lastSvgRef
-        if (currentSvgRef != null && currentSvgRef.uri != uri) {
-            currentSvgRef = null
-        }
-
         try {
-            if (currentSvgRef == null) {
-                val newSvg = StorageUtils.openInputStream(context, uri)?.use { input ->
-                    try {
-                        SVG.getFromInputStream(SVGParserBufferedInputStream(input))
-                    } catch (ex: SVGParseException) {
-                        result.error("fetch-parse", "failed to parse SVG for uri=$uri regionRect=$regionRect", null)
-                        return
-                    }
-                }
-
-                if (newSvg == null) {
-                    result.error("fetch-read-null", "failed to open file for uri=$uri regionRect=$regionRect", null)
-                    return
-                }
-
-                newSvg.normalizeSize()
-                currentSvgRef = LastSvgRef(uri, newSvg)
+            val svg = getOrCreateDecoder(uri)
+            if (svg == null) {
+                result.error("fetch-read-null", "failed to open file for uri=$uri regionRect=$regionRect", null)
+                return
             }
-            val svg = currentSvgRef.svg
-            lastSvgRef = currentSvgRef
 
             // we scale the requested region accordingly to the viewbox size
             val viewBox = svg.documentViewBox
@@ -110,17 +88,42 @@ class SvgRegionFetcher internal constructor(
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)
             val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
             result.success(bytes)
+        } catch (e: SVGParseException) {
+            result.error("fetch-parse", "failed to parse SVG for uri=$uri regionRect=$regionRect", null)
         } catch (e: Exception) {
             result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
         }
     }
 
-    private data class LastSvgRef(
+    private fun getOrCreateDecoder(uri: Uri): SVG? {
+        var decoderRef = decoderPool.firstOrNull { it.uri == uri }
+        if (decoderRef == null) {
+            val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
+                SVG.getFromInputStream(SVGParserBufferedInputStream(input))
+            }
+            if (newDecoder == null) {
+                return null
+            }
+            newDecoder.normalizeSize()
+            decoderRef = DecoderRef(uri, newDecoder)
+        } else {
+            decoderPool.remove(decoderRef)
+        }
+        decoderPool.add(0, decoderRef)
+        while (decoderPool.size > DECODER_POOL_SIZE) {
+            decoderPool.removeAt(decoderPool.size - 1)
+        }
+        return decoderRef.decoder
+    }
+
+    private data class DecoderRef(
         val uri: Uri,
-        val svg: SVG,
+        val decoder: SVG,
     )
 
     companion object {
         private val PREFERRED_CONFIG = Bitmap.Config.ARGB_8888
+        private const val DECODER_POOL_SIZE = 3
+        private val decoderPool = ArrayList<DecoderRef>()
     }
 }
