@@ -9,6 +9,7 @@ import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/byte_receiving_codec.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
@@ -328,7 +329,7 @@ class PlatformMediaFetchService implements MediaFetchService {
 }
 
 @immutable
-class ImageRequest {
+class ImageRequest extends Equatable {
   final String uri;
   final String mimeType;
   final int? rotationDegrees;
@@ -338,14 +339,17 @@ class ImageRequest {
   final int? sizeBytes;
   final BytesReceivedCallback? onBytesReceived;
 
+  @override
+  List<Object?> get props => [uri, mimeType, rotationDegrees, isFlipped, isAnimated, pageId, sizeBytes, onBytesReceived];
+
   const ImageRequest(
-      this.uri,
-      this.mimeType, {
-        required this.rotationDegrees,
-        required this.isFlipped,
-        required this.isAnimated,
-        required this.pageId,
-        required this.sizeBytes,
-        this.onBytesReceived,
-      });
+    this.uri,
+    this.mimeType, {
+    required this.rotationDegrees,
+    required this.isFlipped,
+    required this.isAnimated,
+    required this.pageId,
+    required this.sizeBytes,
+    this.onBytesReceived,
+  });
 }

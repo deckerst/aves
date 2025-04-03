@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:aves/image_providers/full_image_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
-import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:flutter/foundation.dart';
 
 class EntryCache {
@@ -30,7 +30,7 @@ class EntryCache {
     int? pageId;
 
     // evict fullscreen image
-    await UriImage(
+    await FullImage(
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
