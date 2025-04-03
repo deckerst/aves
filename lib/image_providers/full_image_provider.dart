@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class UriImage extends ImageProvider<UriImage> with EquatableMixin {
+class FullImage extends ImageProvider<FullImage> with EquatableMixin {
   final String uri, mimeType;
   final int? pageId, rotationDegrees, sizeBytes;
   final bool isFlipped, isAnimated;
@@ -19,7 +19,7 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
   @override
   List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, isAnimated, scale];
 
-  const UriImage({
+  const FullImage({
     required this.uri,
     required this.mimeType,
     required this.pageId,
@@ -31,12 +31,12 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
   });
 
   @override
-  Future<UriImage> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture<UriImage>(this);
+  Future<FullImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<FullImage>(this);
   }
 
   @override
-  ImageStreamCompleter loadImage(UriImage key, ImageDecoderCallback decode) {
+  ImageStreamCompleter loadImage(FullImage key, ImageDecoderCallback decode) {
     final chunkEvents = StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
@@ -59,11 +59,11 @@ class UriImage extends ImageProvider<UriImage> with EquatableMixin {
       case MimeTypes.svg:
         return false;
       default:
-        return !isAnimated;
+        return !isAnimated && !MimeTypes.isVideo(mimeType);
     }
   }
 
-  Future<ui.Codec> _loadAsync(UriImage key, ImageDecoderCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
+  Future<ui.Codec> _loadAsync(FullImage key, ImageDecoderCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
     assert(key == this);
 
     final request = ImageRequest(

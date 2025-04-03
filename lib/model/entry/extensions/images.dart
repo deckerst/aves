@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:aves/image_providers/full_image_provider.dart';
 import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
-import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/entry/cache.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/utils/math_utils.dart';
@@ -49,7 +49,7 @@ extension ExtraAvesEntryImages on AvesEntry {
     ));
   }
 
-  UriImage get uriImage => UriImage(
+  FullImage get fullImage => FullImage(
         uri: uri,
         mimeType: mimeType,
         pageId: pageId,
