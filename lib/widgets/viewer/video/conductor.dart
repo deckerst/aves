@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -15,7 +16,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 class VideoConductor {
   final CollectionLens? _collection;
   final List<AvesVideoController> _controllers = [];
-  final List<StreamSubscription> _subscriptions = [];
+  final Map<AvesVideoController, StreamSubscription> _subscriptions = {};
   final PlaybackStateHandler _playbackStateHandler = DatabasePlaybackStateHandler();
 
   final ValueNotifier<AvesVideoController?> playingVideoControllerNotifier = ValueNotifier(null);
@@ -36,9 +37,6 @@ class VideoConductor {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
-    _subscriptions
-      ..forEach((sub) => sub.cancel())
-      ..clear();
     await _disposeAll();
     playingVideoControllerNotifier.dispose();
     _controllers.clear();
@@ -47,22 +45,24 @@ class VideoConductor {
     }
   }
 
-  AvesVideoController getOrCreateController(AvesEntry entry, {int? maxControllerCount}) {
+  Future<AvesVideoController> getOrCreateController(AvesEntry entry, {int? maxControllerCount}) async {
     var controller = getController(entry);
     if (controller != null) {
       _controllers.remove(controller);
     } else {
+      maxControllerCount = max(_defaultMaxControllerCount, maxControllerCount ?? 0);
+      while (_controllers.length >= maxControllerCount) {
+        await _disposeController(_controllers.removeLast());
+      }
+      await deviceService.requestGarbageCollection();
       controller = videoControllerFactory.buildController(
         entry,
         playbackStateHandler: _playbackStateHandler,
         settings: settings,
       );
-      _subscriptions.add(controller.statusStream.listen((event) => _onControllerStatusChanged(entry, controller!, event)));
+      _subscriptions[controller] = controller.statusStream.listen((event) => _onControllerStatusChanged(entry, controller!, event));
     }
     _controllers.insert(0, controller);
-    while (_controllers.length > (maxControllerCount ?? _defaultMaxControllerCount)) {
-      _controllers.removeLast().dispose();
-    }
     return controller;
   }
 
@@ -99,9 +99,14 @@ class VideoConductor {
 
   Future<void> _applyToAll(FutureOr Function(AvesVideoController controller) action) => Future.forEach<AvesVideoController>(_controllers, action);
 
-  Future<void> _disposeAll() => _applyToAll((controller) => controller.dispose());
+  Future<void> _disposeAll() => _applyToAll(_disposeController);
 
   Future<void> pauseAll() => _applyToAll((controller) => controller.pause());
 
   Future<void> muteAll(bool muted) => _applyToAll((controller) => controller.mute(muted));
+
+  Future<void> _disposeController(AvesVideoController controller) async {
+    await _subscriptions.remove(controller)?.cancel();
+    await controller.dispose();
+  }
 }

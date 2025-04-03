@@ -130,7 +130,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   }
 
   Future<void> _initVideoController(AvesEntry entry) async {
-    final controller = context.read<VideoConductor>().getOrCreateController(entry);
+    final controller = await context.read<VideoConductor>().getOrCreateController(entry);
     setState(() {});
 
     if (videoAutoPlayEnabled || entry.isAnimated) {
@@ -157,7 +157,9 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     if (videoPageEntries.isNotEmpty) {
       // init video controllers for all pages that could need it
       final videoConductor = context.read<VideoConductor>();
-      videoPageEntries.forEach((entry) => videoConductor.getOrCreateController(entry, maxControllerCount: videoPageEntries.length));
+      await Future.forEach(videoPageEntries, (entry) async {
+        await videoConductor.getOrCreateController(entry, maxControllerCount: videoPageEntries.length);
+      });
 
       // auto play/pause when changing page
       Future<void> _onPageChanged() async {
