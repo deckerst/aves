@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -36,11 +36,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count colonne',
-      one: '$count colonna',
+      other: '$countString colonne',
+      one: '$countString colonna',
     );
     return '$_temp0';
   }

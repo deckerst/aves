@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,24 +22,30 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count عناصر',
-      one: '$count عنصر',
+      other: '$countString عناصر',
+      one: '$countString عنصر',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count أعمدة',
-      one: '$count عمود',
+      other: '$countString أعمدة',
+      one: '$countString عمود',
     );
-    return '$_temp0$count';
+    return '$_temp0$countString';
   }
 
   @override
@@ -760,10 +766,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'حرك هذه $countالعناصر إلى سلة المحذوفات؟',
+      other: 'حرك هذه $countStringالعناصر إلى سلة المحذوفات؟',
       one: 'هل تريد نقل هذا العنصر إلى سلة المحذوفات؟',
     );
     return '$_temp0';
@@ -771,10 +780,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'احذف هذه $count أغراض؟',
+      other: 'احذف هذه $countString أغراض؟',
       one: 'هل تريد حذف هذا العنصر؟',
     );
     return '$_temp0';
@@ -901,10 +913,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'احذف هذا الألبوم و $count العناصر فيه؟',
+      other: 'احذف هذا الألبوم و $countString العناصر فيه؟',
       one: 'هل تريد حذف هذا الألبوم والعنصر الموجود فيه؟',
     );
     return '$_temp0';
@@ -912,10 +927,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'احذف هذه الألبومات و $count العناصر فيها؟',
+      other: 'احذف هذه الألبومات و $countString العناصر فيها؟',
       one: 'هل تريد حذف هذه الألبومات والعنصر الموجود فيها؟',
     );
     return '$_temp0';
@@ -1259,10 +1277,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'فشل الحذف $count items',
+      other: 'فشل الحذف $countString items',
       one: 'فشل حذف عنصر واحد',
     );
     return '$_temp0';
@@ -1270,10 +1291,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'فشل النسخ $count items',
+      other: 'فشل النسخ $countString items',
       one: 'فشل نسخ عنصر واحد',
     );
     return '$_temp0';
@@ -1281,10 +1305,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'فشل في النقل $count items',
+      other: 'فشل في النقل $countString items',
       one: 'فشل في نقل عنصر واحد',
     );
     return '$_temp0';
@@ -1292,10 +1319,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'فشلت إعادة التسمية $count items',
+      other: 'فشلت إعادة التسمية $countString items',
       one: 'فشلت إعادة تسمية عنصر واحد',
     );
     return '$_temp0';
@@ -1303,10 +1333,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'فشل التحرير $count items',
+      other: 'فشل التحرير $countString items',
       one: 'فشل تحرير عنصر واحد',
     );
     return '$_temp0';
@@ -1314,10 +1347,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'فشل التصدير $count pages',
+      other: 'فشل التصدير $countString pages',
       one: 'فشل تصدير صفحة واحدة',
     );
     return '$_temp0';
@@ -1325,10 +1361,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'نسخ $count أغراض',
+      other: 'نسخ $countString أغراض',
       one: 'تم نسخ عنصر واحد',
     );
     return '$_temp0';
@@ -1336,10 +1375,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'نقل $count عناصر',
+      other: 'نقل $countString عناصر',
       one: 'تم نقل عنصر واحد',
     );
     return '$_temp0';
@@ -1347,10 +1389,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'أعادة تسمية $count عناصر',
+      other: 'أعادة تسمية $countString عناصر',
       one: 'تمت إعادة تسمية عنصر واحد',
     );
     return '$_temp0';
@@ -1358,10 +1403,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'تحرير $count عناصر',
+      other: 'تحرير $countString عناصر',
       one: 'تم تحريرعنصر واحد',
     );
     return '$_temp0';
@@ -2119,10 +2167,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String statsWithGps(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count العناصر مع الموقع',
+      other: '$countString العناصر مع الموقع',
       one: '1 عنصر مع الموقع',
     );
     return '$_temp0';

@@ -261,29 +261,28 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                   return ValueListenableBuilder<bool>(
                     valueListenable: _viewLocked,
                     builder: (context, locked, child) {
-                      return BackdropGroup(
-                        child: Stack(
-                          children: [
-                            child!,
-                            if (!pipEnabled) ...[
-                              if (locked) ...[
-                                const Positioned.fill(
-                                  child: AbsorbPointer(),
+                      // TODO TLAD [flutter v3.29] wrap in `BackdropGroup`
+                      return Stack(
+                        children: [
+                          child!,
+                          if (!pipEnabled) ...[
+                            if (locked) ...[
+                              const Positioned.fill(
+                                child: AbsorbPointer(),
+                              ),
+                              Positioned.fill(
+                                child: GestureDetector(
+                                  onTap: () => _overlayVisible.value = !_overlayVisible.value,
                                 ),
-                                Positioned.fill(
-                                  child: GestureDetector(
-                                    onTap: () => _overlayVisible.value = !_overlayVisible.value,
-                                  ),
-                                ),
-                                _buildViewerLockedBottomOverlay(),
-                              ] else
-                                ..._buildOverlays(availableSize).map(_decorateOverlay),
-                              const TopGestureAreaProtector(),
-                              const SideGestureAreaProtector(),
-                              const BottomGestureAreaProtector(),
-                            ],
+                              ),
+                              _buildViewerLockedBottomOverlay(),
+                            ] else
+                              ..._buildOverlays(availableSize).map(_decorateOverlay),
+                            const TopGestureAreaProtector(),
+                            const SideGestureAreaProtector(),
+                            const BottomGestureAreaProtector(),
                           ],
-                        ),
+                        ],
                       );
                     },
                     child: viewer,

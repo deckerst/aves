@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,22 +22,28 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count atriðum',
-      one: '$count atriði',
+      other: '$countString atriðum',
+      one: '$countString atriði',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count dálkar',
-      one: '$count dálkur',
+      other: '$countString dálkar',
+      one: '$countString dálkur',
     );
     return '$_temp0';
   }
@@ -760,10 +766,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Færa þessi $count atriði í ruslmöppuna?',
+      other: 'Færa þessi $countString atriði í ruslmöppuna?',
       one: 'Færa þetta atriði í ruslmöppuna?',
     );
     return '$_temp0';
@@ -771,10 +780,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Eyða þessum $count atriðum?',
+      other: 'Eyða þessum $countString atriðum?',
       one: 'Eyða þessu atriði?',
     );
     return '$_temp0';
@@ -901,10 +913,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Eyða þessu albúmi og $count atriðum í því??',
+      other: 'Eyða þessu albúmi og $countString atriðum í því??',
       one: 'Eyða þessu albúmi og atriðinu í því?',
     );
     return '$_temp0';
@@ -912,10 +927,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Eyða þessum albúmum og $count atriðum í þeim??',
+      other: 'Eyða þessum albúmum og $countString atriðum í þeim??',
       one: 'Eyða þessum albúmum og atriðinu í þeim?',
     );
     return '$_temp0';
@@ -1259,10 +1277,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mistókst að eyða $count atriðum',
+      other: 'Mistókst að eyða $countString atriðum',
       one: 'Mistókst að eyða 1 atriði',
     );
     return '$_temp0';
@@ -1270,10 +1291,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mistókst að afrita $count atriðum',
+      other: 'Mistókst að afrita $countString atriðum',
       one: 'Mistókst að afrita 1 atriði',
     );
     return '$_temp0';
@@ -1281,10 +1305,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mistókst að flytja $count atriðum',
+      other: 'Mistókst að flytja $countString atriðum',
       one: 'Mistókst að flytja 1 atriði',
     );
     return '$_temp0';
@@ -1292,10 +1319,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mistókst að endurnefna $count atriðum',
+      other: 'Mistókst að endurnefna $countString atriðum',
       one: 'Mistókst að endurnefna 1 atriði',
     );
     return '$_temp0';
@@ -1303,10 +1333,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mistókst að breyta $count atriðum',
+      other: 'Mistókst að breyta $countString atriðum',
       one: 'Mistókst að breyta 1 atriði',
     );
     return '$_temp0';
@@ -1314,10 +1347,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Mistókst að flytja út $count atriðum',
+      other: 'Mistókst að flytja út $countString atriðum',
       one: 'Mistókst að flytja út 1 atriði',
     );
     return '$_temp0';
@@ -1325,10 +1361,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Afritaði $count atriðum',
+      other: 'Afritaði $countString atriðum',
       one: 'Afritaði 1 atriði',
     );
     return '$_temp0';
@@ -1336,10 +1375,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Færði $count atriðum',
+      other: 'Færði $countString atriðum',
       one: 'Færði 1 atriði',
     );
     return '$_temp0';
@@ -1347,10 +1389,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Endurnefndi $count atriðum',
+      other: 'Endurnefndi $countString atriðum',
       one: 'Endurnefndi 1 atriði',
     );
     return '$_temp0';
@@ -1358,10 +1403,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Breytti $count atriðum',
+      other: 'Breytti $countString atriðum',
       one: 'Breytti 1 atriði',
     );
     return '$_temp0';
@@ -2119,10 +2167,13 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String statsWithGps(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count atriði með staðsetningum',
+      other: '$countString atriði með staðsetningum',
       one: '1 atriði með staðsetningu',
     );
     return '$_temp0';

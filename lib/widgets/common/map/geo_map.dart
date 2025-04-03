@@ -249,14 +249,13 @@ class _GeoMapState extends State<GeoMap> {
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BackdropGroup(
-              child: mapHeight != null
-                  ? SizedBox(
-                      height: mapHeight,
-                      child: child,
-                    )
-                  : Expanded(child: child),
-            ),
+            // TODO TLAD [flutter v3.29] wrap in `BackdropGroup`
+            mapHeight != null
+                ? SizedBox(
+                    height: mapHeight,
+                    child: child,
+                  )
+                : Expanded(child: child),
             SafeArea(
               top: false,
               bottom: false,

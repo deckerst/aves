@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,20 +22,26 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem',
+      other: '$countString elem',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count oszlop',
+      other: '$countString oszlop',
     );
     return '$_temp0';
   }
@@ -755,10 +761,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Áthelyezed a $count elemet a kukába?',
+      other: 'Áthelyezed a $countString elemet a kukába?',
       one: 'Áthelyezed a kukába?',
     );
     return '$_temp0';
@@ -766,10 +775,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Törlöd ezt a $count elemet?',
+      other: 'Törlöd ezt a $countString elemet?',
       one: 'Törlöd ezt az elemet?',
     );
     return '$_temp0';
@@ -896,10 +908,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Törlöd ezt az albumot és a benne levő $count elemet?',
+      other: 'Törlöd ezt az albumot és a benne levő $countString elemet?',
       one: 'Törlöd ezt az albumot és az egy elemet benne ?',
     );
     return '$_temp0';
@@ -907,10 +922,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Törlöd ezt az albumot és a benne levő $count elemet?',
+      other: 'Törlöd ezt az albumot és a benne levő $countString elemet?',
       one: 'Törlöd ezt az albumot és az egy elemet benne ?',
     );
     return '$_temp0';
@@ -1254,10 +1272,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem törlése sikertelen',
+      other: '$countString elem törlése sikertelen',
       one: 'Elem törlése sikertelen',
     );
     return '$_temp0';
@@ -1265,10 +1286,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem másolása sikertelen',
+      other: '$countString elem másolása sikertelen',
       one: 'Elem másolása sikertelen',
     );
     return '$_temp0';
@@ -1276,10 +1300,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem áthelyezése sikertelen',
+      other: '$countString elem áthelyezése sikertelen',
       one: 'Elem áthelyezése sikertelen',
     );
     return '$_temp0';
@@ -1287,10 +1314,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem átnevezése sikertelen',
+      other: '$countString elem átnevezése sikertelen',
       one: 'Elem átnevezése sikertelen',
     );
     return '$_temp0';
@@ -1298,10 +1328,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem szerkesztése sikertelen',
+      other: '$countString elem szerkesztése sikertelen',
       one: 'Elem szerkesztése sikertelen',
     );
     return '$_temp0';
@@ -1309,10 +1342,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nem sikerült exportálni $count oldalt',
+      other: 'Nem sikerült exportálni $countString oldalt',
       one: 'Nem sikerült exportálni 1 oldalt',
     );
     return '$_temp0';
@@ -1320,10 +1356,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem másolva',
+      other: '$countString elem másolva',
       one: '1 elem másolva',
     );
     return '$_temp0';
@@ -1331,10 +1370,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem áthelyezve',
+      other: '$countString elem áthelyezve',
       one: '1 elem áthelyezve',
     );
     return '$_temp0';
@@ -1342,10 +1384,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem átnevezve',
+      other: '$countString elem átnevezve',
       one: '1 elem átnevezve',
     );
     return '$_temp0';
@@ -1353,10 +1398,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem szerkesztve',
+      other: '$countString elem szerkesztve',
       one: '1 elem szerkesztve',
     );
     return '$_temp0';
@@ -2114,10 +2162,13 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String statsWithGps(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elem helyadatokkal',
+      other: '$countString elem helyadatokkal',
     );
     return '$_temp0';
   }

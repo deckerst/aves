@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,21 +22,27 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count objekt',
+      other: '$countString objekt',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count kolumner',
-      one: '$count kolumn',
+      other: '$countString kolumner',
+      one: '$countString kolumn',
     );
     return '$_temp0';
   }
@@ -1270,20 +1276,26 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Misslyckades med att ta bort $count objekt',
+      other: 'Misslyckades med att ta bort $countString objekt',
     );
     return '$_temp0';
   }
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Misslyckades med att kopiera $count objekt',
+      other: 'Misslyckades med att kopiera $countString objekt',
       one: 'Misslyckades med att kopiera 1 objekt',
     );
     return '$_temp0';
@@ -1291,10 +1303,13 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Misslyckades med att flytta $count objekt',
+      other: 'Misslyckades med att flytta $countString objekt',
       one: 'Misslyckades med att flytta 1 objekt',
     );
     return '$_temp0';
@@ -1302,10 +1317,13 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Misslyckades med att byta namn på $count objekt',
+      other: 'Misslyckades med att byta namn på $countString objekt',
       one: 'Misslyckades med att byta namn på 1 objekt',
     );
     return '$_temp0';

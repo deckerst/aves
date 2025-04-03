@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,22 +22,28 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count položiek',
-      one: '$count položka',
+      other: '$countString položiek',
+      one: '$countString položka',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count stĺpcov',
-      one: '$count stĺpec',
+      other: '$countString stĺpcov',
+      one: '$countString stĺpec',
     );
     return '$_temp0';
   }
@@ -760,10 +766,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Presunúť týchto $count položiek do koša?',
+      other: 'Presunúť týchto $countString položiek do koša?',
       one: 'Presunúť túto položku do koša?',
     );
     return '$_temp0';
@@ -771,10 +780,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Odstrániť týchto $count položiek?',
+      other: 'Odstrániť týchto $countString položiek?',
       one: 'Odstrániť túto položku?',
     );
     return '$_temp0';
@@ -901,10 +913,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Odstrániť tento album a $count položiek v ňom?',
+      other: 'Odstrániť tento album a $countString položiek v ňom?',
       one: 'Odstrániť tento album a položku v ňom?',
     );
     return '$_temp0';
@@ -912,10 +927,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Odstrániť tieto albumy a $count položiek v nich?',
+      other: 'Odstrániť tieto albumy a $countString položiek v nich?',
       one: 'Odstrániť tieto albumy a položku v nich?',
     );
     return '$_temp0';
@@ -1259,11 +1277,14 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      few: 'Nepodarilo sa odstrániť $count položky',
-      other: 'Nepodarilo sa odstrániť $count položiek',
+      few: 'Nepodarilo sa odstrániť $countString položky',
+      other: 'Nepodarilo sa odstrániť $countString položiek',
       one: 'Nepodarilo sa odstrániť položku',
     );
     return '$_temp0';
@@ -1271,11 +1292,14 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepodarilo sa kopírovať $count položiek',
-      few: 'Nepodarilo sa kopírovať $count položky',
+      other: 'Nepodarilo sa kopírovať $countString položiek',
+      few: 'Nepodarilo sa kopírovať $countString položky',
       one: 'Nepodarilo sa kopírovať položku',
     );
     return '$_temp0';
@@ -1283,11 +1307,14 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepodarilo sa presunúť $count položiek',
-      few: 'Nepodarilo sa presunúť $count položky',
+      other: 'Nepodarilo sa presunúť $countString položiek',
+      few: 'Nepodarilo sa presunúť $countString položky',
       one: 'Nepodarilo sa presunúť položku',
     );
     return '$_temp0';
@@ -1295,11 +1322,14 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepodarilo sa premenovať $count položiek',
-      few: 'Nepodarilo sa premenovať $count položky',
+      other: 'Nepodarilo sa premenovať $countString položiek',
+      few: 'Nepodarilo sa premenovať $countString položky',
       one: 'Nepodarilo sa premenovať položku',
     );
     return '$_temp0';
@@ -1307,11 +1337,14 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepodarilo sa upraviť $count položiek',
-      few: 'Nepodarilo sa upraviť $count položky',
+      other: 'Nepodarilo sa upraviť $countString položiek',
+      few: 'Nepodarilo sa upraviť $countString položky',
       one: 'Nepodarilo sa upraviť položku',
     );
     return '$_temp0';
@@ -1319,10 +1352,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepodarilo sa exportovať $count stránok',
+      other: 'Nepodarilo sa exportovať $countString stránok',
       one: 'Nepodarilo sa exportovať stránku',
     );
     return '$_temp0';
@@ -1330,10 +1366,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bolo skopírovaných $count položiek',
+      other: 'Bolo skopírovaných $countString položiek',
       one: 'Položka bola skopírovaná',
     );
     return '$_temp0';
@@ -1341,10 +1380,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bolo presunutých $count položiek',
+      other: 'Bolo presunutých $countString položiek',
       one: 'Položka bola presunutá',
     );
     return '$_temp0';
@@ -1352,10 +1394,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bolo premenovaných $count položiek',
+      other: 'Bolo premenovaných $countString položiek',
       one: 'Položka bola premenovaná',
     );
     return '$_temp0';
@@ -1363,10 +1408,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Bolo upravených $count položiek',
+      other: 'Bolo upravených $countString položiek',
       one: 'Položka bola upravená',
     );
     return '$_temp0';
@@ -2124,10 +2172,13 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String statsWithGps(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count položiek s polohami',
+      other: '$countString položiek s polohami',
       one: '1 položka s polohou',
     );
     return '$_temp0';
