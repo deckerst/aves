@@ -1410,5 +1410,9 @@
   "chipActionDecompose": "Aufschlüsseln",
   "@chipActionDecompose": {},
   "editEntryLocationDialogImportGpx": "GPX importieren",
-  "@editEntryLocationDialogImportGpx": {}
+  "@editEntryLocationDialogImportGpx": {},
+  "editEntryLocationDialogTimeShift": "Zeitverschiebung",
+  "@editEntryLocationDialogTimeShift": {},
+  "removeEntryMetadataDialogAll": "Alle",
+  "@removeEntryMetadataDialogAll": {}
 }

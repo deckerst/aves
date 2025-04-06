@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Aves</string>
+    <string name="app_name">ಎವೀಸ್</string>
     <string name="app_widget_label">ಫೋಟೋ ಫ್ರೇಮ್</string>
     <string name="wallpaper">ವಾಲ್ಪೇಪರ್</string>
     <string name="videos_shortcut_short_label">ವೀಡಿಯೊಗಳು</string>
@@ -8,4 +8,5 @@
     <string name="analysis_notification_default_title">ಮೀಡಿಯಾ ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ</string>
     <string name="analysis_notification_action_stop">ನಿಲ್ಲಿಸಿ</string>
     <string name="search_shortcut_short_label">ಹುಡುಕಿ</string>
+    <string name="map_shortcut_short_label">ನಕ್ಷೆ</string>
 </resources>

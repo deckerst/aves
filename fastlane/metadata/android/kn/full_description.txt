@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>ಏವೀಸ್</i> ನಿಮ್ಮ JPEG ಗಳು ಮತ್ತು MP4 ಗಳನ್ನು ಒಳಗೊಂಡಂತೆ ಎಲ್ಲಾ ರೀತಿಯ ಚಿತ್ರಗಳು ಮತ್ತು ವೀಡಿಯೊಗಳನ್ನು ನಿಭಾಯಿಸಬಲ್ಲದು, ಅಲ್ಲದೆ ವಿಶಿಷ್ಟವಾದ <b>ಬಹು-ಪುಟ TIFFಗಳು, SVGಗಳು, ಹಳೆಯ AVIಗಳು ಮತ್ತು ಹಲವು ಪ್ರಕಾರಗಳನ್ನು ಕೂಡ ಬೆಂಬಲಿಸುತ್ತದೆ</b> ಇದು <b>ಚಲನೆಯ ಫೋಟೋಗಳು</b>, <b>ಪನೋರಮಾಗಳು</b> (ಫೋಟೋ ಗೋಳಗಳು) <b>360° ವೀಡಿಯೊಗಳು</b>, ಹಾಗೆಯೇ <b>GeoTIFF</b> ಕಡತಗಳನ್ನು ಗುರುತಿಸಲು ನಿಮ್ಮ ಮಾಧ್ಯಮ ಸಂಗ್ರಹವನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡುತ್ತದೆ.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>ನ್ಯಾವಿಗೇಷನ್ ಮತ್ತು ಹುಡುಕಾಟ</b> <i>ಏವೀಸ್</i>ನ ಒಂದು ಪ್ರಮುಖ ಭಾಗವಾಗಿದೆ. ಬಳಕೆದಾರರು ಆಲ್ಬಮ್‌ಗಳಿಂದ ಫೋಟೋಗಳಿಂದ ಟ್ಯಾಗ್‌ಗಳಿಗೆ ನಕ್ಷೆಗಳಿಗೆ ಸುಲಭವಾಗಿ ಹರಿಯುವುದು ಗುರಿಯಾಗಿದೆ.
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>ಎವೀಸ್</i> ಆಂಡ್ರಾಯ್ಡ್ (ಟಿವಿ ಸೇರಿದಂತೆ) ನೊಂದಿಗೆ ಸಂಯೋಜಿಸುತ್ತದೆ, ಉದಾಹರಣೆಗೆ <b>ವಿಜೆಟ್‌ಗಳು</b>, <b>ಆ್ಯಪ್ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು</b>, <b>ಸ್ಕ್ರೀನ್ ಸೇವರ್</b> ಮತ್ತು <b>ಜಾಗತಿಕ ಹುಡುಕಾಟ</b> ನಿರ್ವಹಣೆ. ಇದು <b>ಮೀಡಿಯಾ ವೀಕ್ಷಕ ಮತ್ತು ಪಿಕ್ಕರ್</b> ಆಗಿಯೂ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ.

@@ -1605,7 +1605,7 @@
   "@mapStyleOsmLiberty": {},
   "mapStyleOpenTopoMap": "OpenTopoMap",
   "@mapStyleOpenTopoMap": {},
-  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 地圖由 [OpenTopoMap](https://opentopomap.org/)，以 [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/) 授權",
+  "mapAttributionOpenTopoMap": "[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 地圖由 [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)",
   "@mapAttributionOpenTopoMap": {},
   "sortByDuration": "按時長",
   "@sortByDuration": {}
