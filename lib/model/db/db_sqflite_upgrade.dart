@@ -496,13 +496,8 @@ class LocalMediaDbUpgrader {
   static Future<void> _upgradeFrom14(Database db) async {
     debugPrint('upgrading DB from v14');
 
-    // no schema changes, but v1.12.4 may have corrupted the DB,
-    // so we clear rebuildable tables
-    final tables = [dateTakenTable, metadataTable, addressTable, trashTable, videoPlaybackTable];
-    await Future.forEach(tables, (table) async {
-      if (await db.tableExists(table)) {
-        await db.delete(table, where: '1');
-      }
-    });
+    // transitional upgrade previously used to sanitize rebuildable tables
+    // (dateTakenTable, metadataTable, addressTable, trashTable, videoPlaybackTable)
+    // for users with a potentially corrupted DB following upgrade to v1.12.4
   }
 }
