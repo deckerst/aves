@@ -159,9 +159,6 @@ flutter:
 ################################################################################
 # Test driver
 
-# capture shaders (profile mode, real device only):
-# % ./flutterw drive --flavor play -t test_driver/driver_shaders.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
-
 # generate screenshots (profile mode, specific collection):
 # % ./flutterw drive --flavor play -t test_driver/driver_screenshots.dart --profile
 
