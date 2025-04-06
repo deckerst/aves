@@ -58,6 +58,8 @@ Future<void> configureAndLaunch() async {
     ..coordinateFormat = CoordinateFormat.dms
     ..unitSystem = UnitSystem.metric
     // map
-    ..mapStyle = EntryMapStyle.googleNormal;
+    ..mapStyle = EntryMapStyle.googleNormal
+    // debug
+    ..debugShowViewerTiles = false;
   app.main();
 }

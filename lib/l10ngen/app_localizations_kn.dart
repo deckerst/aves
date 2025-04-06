@@ -9,10 +9,10 @@ class AppLocalizationsKn extends AppLocalizations {
   AppLocalizationsKn([String locale = 'kn']) : super(locale);
 
   @override
-  String get appName => 'Aves';
+  String get appName => 'ಎವೀಸ್';
 
   @override
-  String get welcomeMessage => 'Aves ಗೆ ಸ್ವಾಗತ';
+  String get welcomeMessage => 'ಎವೀಸ್ ಗೆ ಸ್ವಾಗತ';
 
   @override
   String get welcomeOptional => 'ಐಚ್ಛಿಕ';
@@ -28,8 +28,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString items',
-      one: '$countString item',
+      other: '$countString ವಸ್ತುಗಳು',
+      one: '$countString ವಸ್ತು',
     );
     return '$_temp0';
   }
@@ -42,8 +42,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString columns',
-      one: '$countString column',
+      other: '$countString ಕಂಬಸಾಲುಗಳು',
+      one: '$countString ಕಂಬಸಾಲು',
     );
     return '$_temp0';
   }
@@ -56,8 +56,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString seconds',
-      one: '$countString second',
+      other: '$countString ಕ್ಷಣಗಳು',
+      one: '$countString ಕ್ಷಣ',
     );
     return '$_temp0';
   }
@@ -70,8 +70,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString minutes',
-      one: '$countString minute',
+      other: '$countString ನಿಮಿಷಗಳು',
+      one: '$countString ನಿಮಿಷ',
     );
     return '$_temp0';
   }
@@ -84,15 +84,15 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString days',
-      one: '$countString day',
+      other: '$countString ದಿನಗಳು',
+      one: '$countString ದಿನ',
     );
     return '$_temp0';
   }
 
   @override
   String focalLength(String length) {
-    return '$length mm';
+    return '$length ಮಿಮಿ';
   }
 
   @override
@@ -108,7 +108,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get showButtonLabel => 'ತೋರಿಸು';
 
   @override
-  String get hideButtonLabel => 'ಮುಚ್ಚಿಡು';
+  String get hideButtonLabel => 'ಅಡಗಿಸು';
 
   @override
   String get continueButtonLabel => 'ಮುಂದುವರಿಸು';
@@ -123,10 +123,10 @@ class AppLocalizationsKn extends AppLocalizations {
   String get cancelTooltip => 'ರದ್ದುಗೊಳಿಸಿ';
 
   @override
-  String get changeTooltip => 'ಬದಲಾಯಿಸು';
+  String get changeTooltip => 'ಬದಲಿಸು';
 
   @override
-  String get clearTooltip => 'ಸ್ಪಷ್ಟ ಮಾಡು';
+  String get clearTooltip => 'ಖಾಲಿ ಮಾಡು';
 
   @override
   String get previousTooltip => 'ಹಿಂದಿನ';
@@ -150,13 +150,13 @@ class AppLocalizationsKn extends AppLocalizations {
   String get saveTooltip => 'ಉಳಿಸಿ';
 
   @override
-  String get stopTooltip => 'Stop';
+  String get stopTooltip => 'ನಿಲ್ಲಿಸು';
 
   @override
   String get pickTooltip => 'ಆಯ್ಕೆ';
 
   @override
-  String get doubleBackExitMessage => 'ನಿರ್ಗಮಿಸಲು ಮತ್ತೆ \"ಹಿಂದೆ\" ಟ್ಯಾಪ್ ಮಾಡಿ.';
+  String get doubleBackExitMessage => 'ನಿರ್ಗಮಿಸಲು ಮತ್ತೊಮ್ಮೆ “ಹಿಂದೆ” ಒತ್ತಿ.';
 
   @override
   String get doNotAskAgain => 'ಇನ್ನೊಮ್ಮೆ ಕೇಳಬೇಡಿ';
@@ -177,337 +177,337 @@ class AppLocalizationsKn extends AppLocalizations {
   String get chipActionDelete => 'ಅಳಿಸಿ';
 
   @override
-  String get chipActionRemove => 'Remove';
+  String get chipActionRemove => 'ತೆಗೆದುಹಾಕು';
 
   @override
-  String get chipActionShowCollection => 'Show in Collection';
+  String get chipActionShowCollection => 'ಸಂಗ್ರಹದಲ್ಲಿ ತೋರಿಸು';
 
   @override
   String get chipActionGoToAlbumPage => 'ಆಲ್ಬಮ್‌ಗಳಲ್ಲಿ ತೋರಿಸು';
 
   @override
-  String get chipActionGoToCountryPage => 'Show in Countries';
+  String get chipActionGoToCountryPage => 'ದೇಶಗಳಲ್ಲಿ ತೋರಿಸು';
 
   @override
-  String get chipActionGoToPlacePage => 'Show in Places';
+  String get chipActionGoToPlacePage => 'ಸ್ಥಳಗಳಲ್ಲಿ ತೋರಿಸು';
 
   @override
-  String get chipActionGoToTagPage => 'Show in Tags';
+  String get chipActionGoToTagPage => 'Tagಗಳಲ್ಲಿ ತೋರಿಸು';
 
   @override
-  String get chipActionGoToExplorerPage => 'Show in Explorer';
+  String get chipActionGoToExplorerPage => 'ಪರಿಶೋಧಕದಲ್ಲಿ ತೋರಿಸು';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'ವಿಭಜಿಸು';
 
   @override
-  String get chipActionFilterOut => 'Filter out';
+  String get chipActionFilterOut => 'ಪ್ರತ್ಯೇಕಿಸು';
 
   @override
-  String get chipActionFilterIn => 'Filter in';
+  String get chipActionFilterIn => 'ಶೋಧಿಸು';
 
   @override
-  String get chipActionHide => 'Hide';
+  String get chipActionHide => 'ಅಡಗಿಸು';
 
   @override
-  String get chipActionLock => 'Lock';
+  String get chipActionLock => 'ಬಂಧಿಸು';
 
   @override
-  String get chipActionPin => 'Pin to top';
+  String get chipActionPin => 'ಮೇಲೆ ಸಿಕ್ಕಿಸು';
 
   @override
-  String get chipActionUnpin => 'Unpin from top';
+  String get chipActionUnpin => 'ಪಿನ್ ತೆಗೆಯಿರಿ';
 
   @override
-  String get chipActionRename => 'Rename';
+  String get chipActionRename => 'ಮರುನಾಮಕರಣ';
 
   @override
-  String get chipActionSetCover => 'Set cover';
+  String get chipActionSetCover => 'ರಕ್ಷಾಕವಚ ಹೊಂದಿಸು';
 
   @override
-  String get chipActionShowCountryStates => 'Show states';
+  String get chipActionShowCountryStates => 'ಅಂಕಿಅಂಶಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get chipActionCreateAlbum => 'Create album';
+  String get chipActionCreateAlbum => 'ಆಲ್ಬಮ್ ರಚಿಸಿ';
 
   @override
-  String get chipActionCreateVault => 'Create vault';
+  String get chipActionCreateVault => 'ನೆಲಮಾಳಿಗೆ ರಚಿಸಿ';
 
   @override
-  String get chipActionConfigureVault => 'Configure vault';
+  String get chipActionConfigureVault => 'ನೆಲಮಾಳಿಗೆ ಸಂರಚಿಸಿ';
 
   @override
-  String get entryActionCopyToClipboard => 'Copy to clipboard';
+  String get entryActionCopyToClipboard => 'ಕ್ಲಿಪ್‌ಬೋರ್ಡ್ ಗೆ ನಕಲಿಸಿ';
 
   @override
-  String get entryActionDelete => 'Delete';
+  String get entryActionDelete => 'ಅಳಿಸಿ';
 
   @override
-  String get entryActionConvert => 'Convert';
+  String get entryActionConvert => 'ಪರಿವರ್ತಿಸಿ';
 
   @override
-  String get entryActionExport => 'Export';
+  String get entryActionExport => 'ರಫ್ತು';
 
   @override
-  String get entryActionInfo => 'Info';
+  String get entryActionInfo => 'ಮಾಹಿತಿ';
 
   @override
-  String get entryActionRename => 'Rename';
+  String get entryActionRename => 'ಮರುನಾಮಕರಣ';
 
   @override
-  String get entryActionRestore => 'Restore';
+  String get entryActionRestore => 'ಮರುಸ್ಥಾಪಿಸಿ';
 
   @override
-  String get entryActionRotateCCW => 'Rotate counterclockwise';
+  String get entryActionRotateCCW => 'ಅಪ್ರದಕ್ಷಿಣಾಕಾರವಾಗಿ ತಿರುಗಿಸಿ';
 
   @override
-  String get entryActionRotateCW => 'Rotate clockwise';
+  String get entryActionRotateCW => 'ಪ್ರದಕ್ಷಿಣಾಕಾರವಾಗಿ ತಿರುಗಿಸಿ';
 
   @override
-  String get entryActionFlip => 'Flip horizontally';
+  String get entryActionFlip => 'ಅಡ್ಡ ಮಗುಚು';
 
   @override
-  String get entryActionPrint => 'Print';
+  String get entryActionPrint => 'ಮುದ್ರಿಸು';
 
   @override
-  String get entryActionShare => 'Share';
+  String get entryActionShare => 'ಹಂಚಿಕೊಳ್ಳಿ';
 
   @override
-  String get entryActionShareImageOnly => 'Share image only';
+  String get entryActionShareImageOnly => 'ಚಿತ್ರವನ್ನು ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಿ';
 
   @override
-  String get entryActionShareVideoOnly => 'Share video only';
+  String get entryActionShareVideoOnly => 'ವಿಡಿಯೋವನ್ನು ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಿ';
 
   @override
-  String get entryActionViewSource => 'View source';
+  String get entryActionViewSource => 'ಮೂಲವನ್ನು ನೋಡಿ';
 
   @override
-  String get entryActionShowGeoTiffOnMap => 'Show as map overlay';
+  String get entryActionShowGeoTiffOnMap => 'ನಕ್ಷೆಯ ಮೇಲ್ಪದರದಲ್ಲಿ ತೋರಿಸಿ';
 
   @override
-  String get entryActionConvertMotionPhotoToStillImage => 'Convert to still image';
+  String get entryActionConvertMotionPhotoToStillImage => 'ಸ್ಥಿರ ಚಿತ್ರವಾಗಿ ಮಾರ್ಪಡಿಸಿ';
 
   @override
-  String get entryActionViewMotionPhotoVideo => 'Open video';
+  String get entryActionViewMotionPhotoVideo => 'ವಿಡಿಯೋ ತೆರೆಯಿರಿ';
 
   @override
-  String get entryActionEdit => 'Edit';
+  String get entryActionEdit => 'ಸಂಪಾದಿಸಿ';
 
   @override
-  String get entryActionOpen => 'Open with';
+  String get entryActionOpen => '..ಇಂದ ತೆರೆಯಿರಿ';
 
   @override
-  String get entryActionSetAs => 'Set as';
+  String get entryActionSetAs => 'ಇದಾಗಿ ಸೆಟ್ ಮಾಡಿ';
 
   @override
-  String get entryActionCast => 'Cast';
+  String get entryActionCast => 'ಕ್ಯಾಸ್ಟ್';
 
   @override
-  String get entryActionOpenMap => 'Show in map app';
+  String get entryActionOpenMap => 'ನಕ್ಷೆಯ ಆಪ್ ನಲ್ಲಿ ತೋರಿಸಿ';
 
   @override
-  String get entryActionRotateScreen => 'Rotate screen';
+  String get entryActionRotateScreen => 'ಪರದೆಯನ್ನು ತಿರುಗಿಸಿ';
 
   @override
-  String get entryActionAddFavourite => 'Add to favorites';
+  String get entryActionAddFavourite => 'ನೆಚ್ಚಿನದಕ್ಕೆ ಸೇರಿಸಿ';
 
   @override
-  String get entryActionRemoveFavourite => 'Remove from favorites';
+  String get entryActionRemoveFavourite => 'ನೆಚ್ಚಿನವುಗಳಿಂದ ತೆಗೆಯಿರಿ';
 
   @override
-  String get videoActionCaptureFrame => 'Capture frame';
+  String get videoActionCaptureFrame => 'ಫ್ರೇಮ್ ಸೆರೆಹಿಡಿಯಿರಿ';
 
   @override
-  String get videoActionMute => 'Mute';
+  String get videoActionMute => 'ಸದ್ದಡಗಿಸಿ';
 
   @override
-  String get videoActionUnmute => 'Unmute';
+  String get videoActionUnmute => 'ಸದ್ದಾಗಿಸಿ';
 
   @override
-  String get videoActionPause => 'Pause';
+  String get videoActionPause => 'ತಾಳು';
 
   @override
-  String get videoActionPlay => 'Play';
+  String get videoActionPlay => 'ಪ್ಲೇ ಮಾಡಿ';
 
   @override
-  String get videoActionReplay10 => 'Seek backward 10 seconds';
+  String get videoActionReplay10 => '೧೦ ಕ್ಷಣ ಹಿಂದೆ ಓಡಿಸಿ';
 
   @override
-  String get videoActionSkip10 => 'Seek forward 10 seconds';
+  String get videoActionSkip10 => '೧೦ ಕ್ಷಣ ಮುಂದೆ ಓಡಿಸಿ';
 
   @override
-  String get videoActionShowPreviousFrame => 'Show previous frame';
+  String get videoActionShowPreviousFrame => 'ಹಿಂದಿನ ಫ್ರೇಮ್ ತೋರಿಸಿ';
 
   @override
-  String get videoActionShowNextFrame => 'Show next frame';
+  String get videoActionShowNextFrame => 'ಮುಂದಿನ ಫ್ರೇಮ್ ತೋರಿಸಿ';
 
   @override
-  String get videoActionSelectStreams => 'Select tracks';
+  String get videoActionSelectStreams => 'ಟ್ರ್ಯಾಕ್ ಆರಿಸಿ';
 
   @override
-  String get videoActionSetSpeed => 'Playback speed';
+  String get videoActionSetSpeed => 'ಚಲನೆಯ ವೇಗ';
 
   @override
-  String get videoActionABRepeat => 'A-B repeat';
+  String get videoActionABRepeat => 'A-B ಪುನರಾವರ್ತನೆ';
 
   @override
-  String get videoRepeatActionSetStart => 'Set start';
+  String get videoRepeatActionSetStart => 'ಪ್ರಾರಂಭವನ್ನು ಹೊಂದಿಸಿ';
 
   @override
-  String get videoRepeatActionSetEnd => 'Set end';
+  String get videoRepeatActionSetEnd => 'ಅಂತ್ಯವನ್ನು ಹೊಂದಿಸಿ';
 
   @override
-  String get viewerActionSettings => 'Settings';
+  String get viewerActionSettings => 'ಸಂಯೋಜನೆಗಳು';
 
   @override
-  String get viewerActionLock => 'Lock viewer';
+  String get viewerActionLock => 'ನೋಟವನ್ನು ಬಂಧಿಸಿ';
 
   @override
-  String get viewerActionUnlock => 'Unlock viewer';
+  String get viewerActionUnlock => 'ನೋಟವನ್ನು ಬಿಡುಗಡೆಗೊಳಿಸಿ';
 
   @override
-  String get slideshowActionResume => 'Resume';
+  String get slideshowActionResume => 'ಪುನರಾರಂಭಿಸಿ';
 
   @override
-  String get slideshowActionShowInCollection => 'Show in Collection';
+  String get slideshowActionShowInCollection => 'ಸಂಗ್ರಹದಲ್ಲಿ ತೋರಿಸಿ';
 
   @override
-  String get entryInfoActionEditDate => 'Edit date & time';
+  String get entryInfoActionEditDate => 'ದಿನಾಂಕ ಮತ್ತು ಸಮಯವನ್ನು ತಿದ್ದಿ';
 
   @override
-  String get entryInfoActionEditLocation => 'Edit location';
+  String get entryInfoActionEditLocation => 'ಸ್ಥಳವನ್ನು ತಿದ್ದಿ';
 
   @override
-  String get entryInfoActionEditTitleDescription => 'Edit title & description';
+  String get entryInfoActionEditTitleDescription => 'ಶೀರ್ಷಿಕೆ ಮತ್ತು ವಿವರಣೆಯನ್ನು ತಿದ್ದಿ';
 
   @override
-  String get entryInfoActionEditRating => 'Edit rating';
+  String get entryInfoActionEditRating => 'ಮೌಲ್ಯವನ್ನು ತಿದ್ದಿ';
 
   @override
-  String get entryInfoActionEditTags => 'Edit tags';
+  String get entryInfoActionEditTags => 'Tagಗಳನ್ನು ತಿದ್ದಿ';
 
   @override
-  String get entryInfoActionRemoveMetadata => 'Remove metadata';
+  String get entryInfoActionRemoveMetadata => 'metadata ತೆಗೆಯಿರಿ';
 
   @override
-  String get entryInfoActionExportMetadata => 'Export metadata';
+  String get entryInfoActionExportMetadata => 'metadata ರಪ್ತು ಮಾಡಿ';
 
   @override
-  String get entryInfoActionRemoveLocation => 'Remove location';
+  String get entryInfoActionRemoveLocation => 'ಸ್ಥಳದ ವಿವರಗಳನ್ನು ತೆಗೆಯಿರಿ';
 
   @override
-  String get editorActionTransform => 'Transform';
+  String get editorActionTransform => 'ರೂಪಾಂತರ';
 
   @override
-  String get editorTransformCrop => 'Crop';
+  String get editorTransformCrop => 'ಕತ್ತರಿಸು';
 
   @override
-  String get editorTransformRotate => 'Rotate';
+  String get editorTransformRotate => 'ತಿರುಗಿಸು';
 
   @override
-  String get cropAspectRatioFree => 'Free';
+  String get cropAspectRatioFree => 'ಉಚಿತ';
 
   @override
-  String get cropAspectRatioOriginal => 'Original';
+  String get cropAspectRatioOriginal => 'ಮೂಲ';
 
   @override
-  String get cropAspectRatioSquare => 'Square';
+  String get cropAspectRatioSquare => 'ಚೌಕ';
 
   @override
-  String get filterAspectRatioLandscapeLabel => 'Landscape';
+  String get filterAspectRatioLandscapeLabel => 'ಭೂದೃಶ್ಯ';
 
   @override
-  String get filterAspectRatioPortraitLabel => 'Portrait';
+  String get filterAspectRatioPortraitLabel => 'ಭಾವಚಿತ್ರ';
 
   @override
-  String get filterBinLabel => 'Recycle bin';
+  String get filterBinLabel => 'ಮರುಬಳಕೆ ತೊಟ್ಟಿ';
 
   @override
-  String get filterFavouriteLabel => 'Favorite';
+  String get filterFavouriteLabel => 'ಅಚ್ಚುಮೆಚ್ಚು';
 
   @override
-  String get filterNoDateLabel => 'Undated';
+  String get filterNoDateLabel => 'ದಿನಾಂಕವಿಲ್ಲ';
 
   @override
-  String get filterNoAddressLabel => 'No address';
+  String get filterNoAddressLabel => 'ವಿಳಾಸವಿಲ್ಲ';
 
   @override
-  String get filterLocatedLabel => 'Located';
+  String get filterLocatedLabel => 'ನೆಲೆಗೊಳಿಸಿದ್ದು';
 
   @override
-  String get filterNoLocationLabel => 'Unlocated';
+  String get filterNoLocationLabel => 'ನೆಲೆ ಇಲ್ಲದ್ದು';
 
   @override
-  String get filterNoRatingLabel => 'Unrated';
+  String get filterNoRatingLabel => 'ಮೌಲ್ಯ ರಹಿತ';
 
   @override
-  String get filterTaggedLabel => 'Tagged';
+  String get filterTaggedLabel => 'ಮೌಲ್ಯ ಸಹಿತ';
 
   @override
-  String get filterNoTagLabel => 'Untagged';
+  String get filterNoTagLabel => 'ಮೌಲ್ಯವಿಲ್ಲದ್ದು';
 
   @override
-  String get filterNoTitleLabel => 'Untitled';
+  String get filterNoTitleLabel => 'ಶೀರ್ಷಿಕೆ ರಹಿತ';
 
   @override
-  String get filterOnThisDayLabel => 'On this day';
+  String get filterOnThisDayLabel => 'ಈ ದಿನದಂದು';
 
   @override
-  String get filterRecentlyAddedLabel => 'Recently added';
+  String get filterRecentlyAddedLabel => 'ಇತ್ತೀಚಿಗೆ ಸೇರಿಸಿದ್ದು';
 
   @override
-  String get filterRatingRejectedLabel => 'Rejected';
+  String get filterRatingRejectedLabel => 'ತಿರಸ್ಕರಿಸಿದ್ದು';
 
   @override
-  String get filterTypeAnimatedLabel => 'Animated';
+  String get filterTypeAnimatedLabel => 'ಆನಿಮೇಟೆಡ್';
 
   @override
-  String get filterTypeMotionPhotoLabel => 'Motion Photo';
+  String get filterTypeMotionPhotoLabel => 'ಚಲಿಸುವ ಚಿತ್ರ';
 
   @override
-  String get filterTypePanoramaLabel => 'Panorama';
+  String get filterTypePanoramaLabel => 'ಪನೋರಮಾ';
 
   @override
   String get filterTypeRawLabel => 'Raw';
 
   @override
-  String get filterTypeSphericalVideoLabel => '360° Video';
+  String get filterTypeSphericalVideoLabel => '360° ವಿಡಿಯೋ';
 
   @override
   String get filterTypeGeotiffLabel => 'GeoTIFF';
 
   @override
-  String get filterMimeImageLabel => 'Image';
+  String get filterMimeImageLabel => 'ಚಿತ್ರ';
 
   @override
-  String get filterMimeVideoLabel => 'Video';
+  String get filterMimeVideoLabel => 'ವಿಡಿಯೋ';
 
   @override
-  String get accessibilityAnimationsRemove => 'Prevent screen effects';
+  String get accessibilityAnimationsRemove => 'ಪರದೆಯ ಪರಿಣಾಮಗಳನ್ನು ತಡೆಯಿರಿ';
 
   @override
-  String get accessibilityAnimationsKeep => 'Keep screen effects';
+  String get accessibilityAnimationsKeep => 'ಪರದೆಯ ಪರಿಣಾಮಗಳನ್ನು ಇರಿಸಿ';
 
   @override
-  String get albumTierNew => 'New';
+  String get albumTierNew => 'ಹೊಸ';
 
   @override
-  String get albumTierPinned => 'Pinned';
+  String get albumTierPinned => 'ಚುಚ್ಚಿರುವುದು';
 
   @override
-  String get albumTierSpecial => 'Common';
+  String get albumTierSpecial => 'ಸಾಮಾನ್ಯ';
 
   @override
-  String get albumTierApps => 'Apps';
+  String get albumTierApps => 'ಅಪ್ಲಿಕೇಶನ್‌ಗಳು';
 
   @override
-  String get albumTierVaults => 'Vaults';
+  String get albumTierVaults => 'ನೆಲಮಾಳಿಗೆಗಳು';
 
   @override
-  String get albumTierDynamic => 'Dynamic';
+  String get albumTierDynamic => 'ಕ್ರಿಯಾಶೀಲ';
 
   @override
-  String get albumTierRegular => 'Others';
+  String get albumTierRegular => 'ಇತರೆ';
 
   @override
   String get coordinateFormatDms => 'DMS';
@@ -516,7 +516,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get coordinateFormatDdm => 'DDM';
 
   @override
-  String get coordinateFormatDecimal => 'Decimal degrees';
+  String get coordinateFormatDecimal => 'ದಶಮಾಂಶ ಡಿಗ್ರಿಗಳು';
 
   @override
   String coordinateDms(String coordinate, String direction) {
@@ -524,34 +524,34 @@ class AppLocalizationsKn extends AppLocalizations {
   }
 
   @override
-  String get coordinateDmsNorth => 'N';
+  String get coordinateDmsNorth => 'ಉ';
 
   @override
-  String get coordinateDmsSouth => 'S';
+  String get coordinateDmsSouth => 'ದ';
 
   @override
-  String get coordinateDmsEast => 'E';
+  String get coordinateDmsEast => 'ಪೂ';
 
   @override
-  String get coordinateDmsWest => 'W';
+  String get coordinateDmsWest => 'ಪ';
 
   @override
-  String get displayRefreshRatePreferHighest => 'Highest rate';
+  String get displayRefreshRatePreferHighest => 'ಗರಿಷ್ಠ ದರ';
 
   @override
-  String get displayRefreshRatePreferLowest => 'Lowest rate';
+  String get displayRefreshRatePreferLowest => 'ಕನಿಷ್ಠ ದರ';
 
   @override
-  String get keepScreenOnNever => 'Never';
+  String get keepScreenOnNever => 'ಎಂದಿಗೂ ಇಲ್ಲ';
 
   @override
-  String get keepScreenOnVideoPlayback => 'During video playback';
+  String get keepScreenOnVideoPlayback => 'ವಿಡಿಯೋ ಚಲನೆಯಲ್ಲಿರುವಾಗ';
 
   @override
-  String get keepScreenOnViewerOnly => 'Viewer page only';
+  String get keepScreenOnViewerOnly => 'ವೀಕ್ಷಣಾ ಪುಟದಲ್ಲಿ ಮಾತ್ರ';
 
   @override
-  String get keepScreenOnAlways => 'Always';
+  String get keepScreenOnAlways => 'ಯಾವಾಗಲೂ';
 
   @override
   String get lengthUnitPixel => 'px';
@@ -560,209 +560,209 @@ class AppLocalizationsKn extends AppLocalizations {
   String get lengthUnitPercent => '%';
 
   @override
-  String get mapStyleGoogleNormal => 'Google Maps';
+  String get mapStyleGoogleNormal => 'ಗೂಗಲ್ ನಕಾಶೆಗಳು';
 
   @override
-  String get mapStyleGoogleHybrid => 'Google Maps (Hybrid)';
+  String get mapStyleGoogleHybrid => 'ಗೂಗಲ್ ನಕಾಶೆಗಳು (ಹೈಬ್ರಿಡ್)';
 
   @override
-  String get mapStyleGoogleTerrain => 'Google Maps (Terrain)';
+  String get mapStyleGoogleTerrain => 'ಗೂಗಲ್ ನಕಾಶೆಗಳು (ಭೂ ಪ್ರದೇಶ)';
 
   @override
-  String get mapStyleOsmLiberty => 'OSM Liberty';
+  String get mapStyleOsmLiberty => 'OSM ಸ್ವಾತಂತ್ರ್ಯ';
 
   @override
-  String get mapStyleOpenTopoMap => 'OpenTopoMap';
+  String get mapStyleOpenTopoMap => 'ಓಪನ್ ಟೊಪೊ ಮ್ಯಾಪ್';
 
   @override
-  String get mapStyleOsmHot => 'Humanitarian OSM';
+  String get mapStyleOsmHot => 'ಮಾನವೀಯ OSM';
 
   @override
-  String get mapStyleStamenWatercolor => 'Stamen Watercolor';
+  String get mapStyleStamenWatercolor => 'Stamen ಜಲವರ್ಣ';
 
   @override
-  String get maxBrightnessNever => 'Never';
+  String get maxBrightnessNever => 'ಎಂದಿಗೂ ಇಲ್ಲ';
 
   @override
-  String get maxBrightnessAlways => 'Always';
+  String get maxBrightnessAlways => 'ಯಾವಾಗಲೂ';
 
   @override
-  String get nameConflictStrategyRename => 'Rename';
+  String get nameConflictStrategyRename => 'ಮರುನಾಮಕರಣ';
 
   @override
-  String get nameConflictStrategyReplace => 'Replace';
+  String get nameConflictStrategyReplace => 'ಬದಲಾಯಿಸು';
 
   @override
-  String get nameConflictStrategySkip => 'Skip';
+  String get nameConflictStrategySkip => 'ಬಿಟ್ಟುಬಿಡು';
 
   @override
-  String get overlayHistogramNone => 'None';
+  String get overlayHistogramNone => 'ಏನಿಲ್ಲ';
 
   @override
   String get overlayHistogramRGB => 'RGB';
 
   @override
-  String get overlayHistogramLuminance => 'Luminance';
+  String get overlayHistogramLuminance => 'ಪ್ರಕಾಶ';
 
   @override
-  String get subtitlePositionTop => 'Top';
+  String get subtitlePositionTop => 'ಮೇಲ್ತುದಿ';
 
   @override
-  String get subtitlePositionBottom => 'Bottom';
+  String get subtitlePositionBottom => 'ಬುಡ';
 
   @override
-  String get themeBrightnessLight => 'Light';
+  String get themeBrightnessLight => 'ತಿಳಿ ಬಣ್ಣ';
 
   @override
-  String get themeBrightnessDark => 'Dark';
+  String get themeBrightnessDark => 'ಗಾಢ ಬಣ್ಣ';
 
   @override
-  String get themeBrightnessBlack => 'Black';
+  String get themeBrightnessBlack => 'ಕಡುಕಪ್ಪು';
 
   @override
-  String get unitSystemMetric => 'Metric';
+  String get unitSystemMetric => 'ಮೆಟ್ರಿಕ್';
 
   @override
-  String get unitSystemImperial => 'Imperial';
+  String get unitSystemImperial => 'ಇಂಪೀರಿಯಲ್';
 
   @override
-  String get vaultLockTypePattern => 'Pattern';
+  String get vaultLockTypePattern => 'ಪ್ಯಾಟರ್ನ್';
 
   @override
-  String get vaultLockTypePin => 'PIN';
+  String get vaultLockTypePin => 'ಪಿನ್';
 
   @override
-  String get vaultLockTypePassword => 'Password';
+  String get vaultLockTypePassword => 'ಕೀಲಿಪದ';
 
   @override
-  String get settingsVideoEnablePip => 'Picture-in-picture';
+  String get settingsVideoEnablePip => 'ಚಿತ್ರದೊಳಗಿನ ಚಿತ್ರಣ';
 
   @override
-  String get videoControlsPlayOutside => 'Open with other player';
+  String get videoControlsPlayOutside => 'ಇನ್ನೊಂದು ಪ್ಲೇಯರ್ ನಲ್ಲಿ ತೆರೆಯಿರಿ';
 
   @override
-  String get videoLoopModeNever => 'Never';
+  String get videoLoopModeNever => 'ಇಂದಿಗೂ ಇಲ್ಲ';
 
   @override
-  String get videoLoopModeShortOnly => 'Short videos only';
+  String get videoLoopModeShortOnly => 'ಚಿಕ್ಕ ವಿಡಿಯೋಗಳನ್ನು ಮಾತ್ರ';
 
   @override
-  String get videoLoopModeAlways => 'Always';
+  String get videoLoopModeAlways => 'ಯಾವಾಗಲೂ';
 
   @override
-  String get videoPlaybackSkip => 'Skip';
+  String get videoPlaybackSkip => 'ಬಿಟ್ಟುಬಿಡು';
 
   @override
-  String get videoPlaybackMuted => 'Play muted';
+  String get videoPlaybackMuted => 'ಶಬ್ದರಹಿತವಾಗಿ ಪ್ಲೇ ಮಾಡಿ';
 
   @override
-  String get videoPlaybackWithSound => 'Play with sound';
+  String get videoPlaybackWithSound => 'ಶಬ್ದಸಹಿತವಾಗಿ ಪ್ಲೇ ಮಾಡಿ';
 
   @override
-  String get videoResumptionModeNever => 'Never';
+  String get videoResumptionModeNever => 'ಎಂದಿಗೂ ಇಲ್ಲ';
 
   @override
-  String get videoResumptionModeAlways => 'Always';
+  String get videoResumptionModeAlways => 'ಯಾವಾಗಲೂ';
 
   @override
-  String get viewerTransitionSlide => 'Slide';
+  String get viewerTransitionSlide => 'ಜಾರಿಸು';
 
   @override
-  String get viewerTransitionParallax => 'Parallax';
+  String get viewerTransitionParallax => 'ಪ್ಯಾರಾಲಾಕ್ಸ್';
 
   @override
-  String get viewerTransitionFade => 'Fade';
+  String get viewerTransitionFade => 'ಮರೆಯಾಗಿಸು';
 
   @override
-  String get viewerTransitionZoomIn => 'Zoom in';
+  String get viewerTransitionZoomIn => 'ಹಿಗ್ಗಿಸು';
 
   @override
-  String get viewerTransitionNone => 'None';
+  String get viewerTransitionNone => 'ಏನಿಲ್ಲ';
 
   @override
-  String get wallpaperTargetHome => 'Home screen';
+  String get wallpaperTargetHome => 'ಮುಖ ಪರದೆ';
 
   @override
-  String get wallpaperTargetLock => 'Lock screen';
+  String get wallpaperTargetLock => 'ಲಾಕ್ ಪರದೆ';
 
   @override
-  String get wallpaperTargetHomeLock => 'Home and lock screens';
+  String get wallpaperTargetHomeLock => 'ಮುಖ ಮತ್ತು ಲಾಕ್ ಪರದೆ';
 
   @override
-  String get widgetDisplayedItemRandom => 'Random';
+  String get widgetDisplayedItemRandom => 'ಇಷ್ಟಬಂದಂತೆ';
 
   @override
-  String get widgetDisplayedItemMostRecent => 'Most recent';
+  String get widgetDisplayedItemMostRecent => 'ಅತ್ಯಂತ ಇತ್ತೀಚಿನ';
 
   @override
-  String get widgetOpenPageHome => 'Open home';
+  String get widgetOpenPageHome => 'ಮುಖ್ಯಪರದೆ ತೆರೆಯಿರಿ';
 
   @override
-  String get widgetOpenPageCollection => 'Open collection';
+  String get widgetOpenPageCollection => 'ಸಂಗ್ರಹವನ್ನು ತೆರೆಯಿರಿ';
 
   @override
-  String get widgetOpenPageViewer => 'Open viewer';
+  String get widgetOpenPageViewer => 'ವೀಕ್ಷಕವನ್ನು ತೆರೆಯಿರಿ';
 
   @override
-  String get widgetTapUpdateWidget => 'Update widget';
+  String get widgetTapUpdateWidget => 'ವಿಜೆಟ್ ನವೀಕರಿಸಿ';
 
   @override
-  String get storageVolumeDescriptionFallbackPrimary => 'Internal storage';
+  String get storageVolumeDescriptionFallbackPrimary => 'ಆಂತರಿಕ ಸಂಗ್ರಹಣೆ';
 
   @override
-  String get storageVolumeDescriptionFallbackNonPrimary => 'SD card';
+  String get storageVolumeDescriptionFallbackNonPrimary => 'ಎಸ್ ಡಿ ಕಾರ್ಡ್';
 
   @override
-  String get rootDirectoryDescription => 'root directory';
+  String get rootDirectoryDescription => 'ಮೂಲ ಕೋಶ';
 
   @override
   String otherDirectoryDescription(String name) {
-    return '“$name” directory';
+    return '“$name” ಕೋಶ';
   }
 
   @override
   String storageAccessDialogMessage(String directory, String volume) {
-    return 'Please select the $directory of “$volume” in the next screen to give this app access to it.';
+    return 'ಈ ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಪ್ರವೇಶವನ್ನು ನೀಡಲು ಮುಂದಿನ ಪರದೆಯಲ್ಲಿ “$volume” ದ $directory ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.';
   }
 
   @override
   String restrictedAccessDialogMessage(String directory, String volume) {
-    return 'This app is not allowed to modify files in the $directory of “$volume”.\n\nPlease use a pre-installed file manager or gallery app to move the items to another directory.';
+    return '$directory ನ “$volume”ನಲ್ಲಿರುವ ಕಡತಗಳನ್ನು ಮಾರ್ಪಡಿಸಲು ಈ ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿಸಲಾಗಿಲ್ಲ.\n\nದಯವಿಟ್ಟು ವಸ್ತುಗಳನ್ನು ಮತ್ತೊಂದು ಕೋಶಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸಲು ಮೊದಲೇ ಸ್ಥಾಪಿಸಲಾದ ಕಡತ ನಿರ್ವಾಹಕ ಅಥವಾ ಗ್ಯಾಲರಿ ಅಪ್ಲಿಕೇಶನ್ ಬಳಸಿ.';
   }
 
   @override
   String notEnoughSpaceDialogMessage(String neededSize, String freeSize, String volume) {
-    return 'This operation needs $neededSize of free space on “$volume” to complete, but there is only $freeSize left.';
+    return 'ಈ ಕಾರ್ಯಾಚರಣೆಗೆ ಪೂರ್ಣಗೊಳ್ಳಲು “$volume” ನಲ್ಲಿ $neededSize ಉಚಿತ ಸ್ಥಳಾವಕಾಶದ ಅಗತ್ಯವಿದೆ, ಆದರೆ ಕೇವಲ $freeSize ಮಾತ್ರ ಲಭ್ಯವಿದೆ.';
   }
 
   @override
-  String get missingSystemFilePickerDialogMessage => 'The system file picker is missing or disabled. Please enable it and try again.';
+  String get missingSystemFilePickerDialogMessage => 'ವ್ಯವಸ್ಥೆಯ ಕಡತ ಆರಿಸುವಿಕೆ ಕಾಣೆಯಾಗಿದೆ ಅಥವಾ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಅದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ ಮತ್ತು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.';
 
   @override
   String unsupportedTypeDialogMessage(int count, String types) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'This operation is not supported for items of the following types: $types.',
-      one: 'This operation is not supported for items of the following type: $types.',
+      other: 'ಈ ಕಾರ್ಯಾಚರಣೆಯು ಈ ವಿಧದ ವಸ್ತುಗಳಿಗೆ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ: $types.',
+      one: 'ಈ ಕಾರ್ಯಾಚರಣೆಯು ಈ ವಿಧದ ವಸ್ತುವಿಗೆ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ: $types.',
     );
     return '$_temp0';
   }
 
   @override
-  String get nameConflictDialogSingleSourceMessage => 'Some files in the destination folder have the same name.';
+  String get nameConflictDialogSingleSourceMessage => 'ಗಮ್ಯಸ್ಥಾನ ಕೋಶದಲ್ಲಿರುವ ಕೆಲವು ಕಡತಗಳು ಒಂದೇ ಹೆಸರನ್ನು ಹೊಂದಿವೆ.';
 
   @override
-  String get nameConflictDialogMultipleSourceMessage => 'Some files have the same name.';
+  String get nameConflictDialogMultipleSourceMessage => 'ಕೆಲವು ಕಡತಗಳು ಒಂದೇ ಹೆಸರನ್ನು ಹೊಂದಿವೆ.';
 
   @override
-  String get addShortcutDialogLabel => 'Shortcut label';
+  String get addShortcutDialogLabel => 'ಶಾರ್ಟ್ಕಟ್ ಹೆಸರು';
 
   @override
-  String get addShortcutButtonLabel => 'ADD';
+  String get addShortcutButtonLabel => 'ಸೇರಿಸು';
 
   @override
-  String get noMatchingAppDialogMessage => 'There are no apps that can handle this.';
+  String get noMatchingAppDialogMessage => 'ಇದನ್ನು ನಿಭಾಯಿಸಬಲ್ಲ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಲ್ಲ.';
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
@@ -772,8 +772,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Move these $countString items to the recycle bin?',
-      one: 'Move this item to the recycle bin?',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಮರುಬಳಕೆ ತೊಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸುವುದೇ?',
+      one: 'ಇದನ್ನು ಮರುಬಳಕೆ ತೊಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸುವುದೇ?',
     );
     return '$_temp0';
   }
@@ -786,130 +786,130 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Delete these $countString items?',
-      one: 'Delete this item?',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಅಳಿಸುವುದೇ?',
+      one: 'ಇದನ್ನು ಅಳಿಸುವುದೇ?',
     );
     return '$_temp0';
   }
 
   @override
-  String get moveUndatedConfirmationDialogMessage => 'Save item dates before proceeding?';
+  String get moveUndatedConfirmationDialogMessage => 'ಮುಂದುವರಿಯುವ ಮೊದಲು ವಸ್ತುವಿನ ದಿನಾಂಕಗಳನ್ನು ಉಳಿಸುವುದೇ?';
 
   @override
-  String get moveUndatedConfirmationDialogSetDate => 'Save dates';
+  String get moveUndatedConfirmationDialogSetDate => 'ದಿನಾಂಕಗಳನ್ನು ಉಳಿಸಿ';
 
   @override
   String videoResumeDialogMessage(String time) {
-    return 'Do you want to resume playing at $time?';
+    return '$timeಕ್ಕೆ ಪುನರಾರಂಭಿಸಲು ನೀವು ಬಯಸುವಿರಾ?';
   }
 
   @override
-  String get videoStartOverButtonLabel => 'START OVER';
+  String get videoStartOverButtonLabel => 'ಬುಡದಿಂದ ಪ್ರಾರಂಭಿಸಿ';
 
   @override
-  String get videoResumeButtonLabel => 'RESUME';
+  String get videoResumeButtonLabel => 'ಮುಂದುವರೆಸಿ';
 
   @override
-  String get setCoverDialogLatest => 'Latest item';
+  String get setCoverDialogLatest => 'ಹೊಚ್ಚಹೊಸ ವಸ್ತುಗಳು';
 
   @override
-  String get setCoverDialogAuto => 'Auto';
+  String get setCoverDialogAuto => 'ಸ್ವಯಂಚಾಲಿತ';
 
   @override
-  String get setCoverDialogCustom => 'Custom';
+  String get setCoverDialogCustom => 'ಇಚ್ಛಾನುಸಾರ';
 
   @override
-  String get hideFilterConfirmationDialogMessage => 'Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?';
+  String get hideFilterConfirmationDialogMessage => 'ಹೊಂದಿಕೆಯ ಚಿತ್ರಗಳನ್ನು ಮತ್ತು ವೀಡಿಯೊಗಳನ್ನು ನಿಮ್ಮ ಸಂಗ್ರಹದಿಂದ ಮರೆಮಾಡಲಾಗುತ್ತದೆ. “ಗೌಪ್ಯತೆ” ಸಂಯೋಜನೆಗಳಿಂದ ನೀವು ಅವುಗಳನ್ನು ಮತ್ತೆ ತೋರಿಸಬಹುದು.\n\nನೀವು ಅವುಗಳನ್ನು ಮರೆಮಾಡಲು ಬಯಸುತ್ತೀರಾ?';
 
   @override
-  String get newAlbumDialogTitle => 'New Album';
+  String get newAlbumDialogTitle => 'ಹೊಸ ಆಲ್ಬಮ್';
 
   @override
-  String get newAlbumDialogNameLabel => 'Album name';
+  String get newAlbumDialogNameLabel => 'ಆಲ್ಬಮ್ ಹೆಸರು';
 
   @override
-  String get newAlbumDialogAlbumAlreadyExistsHelper => 'Album already exists';
+  String get newAlbumDialogAlbumAlreadyExistsHelper => 'ಆಲ್ಬಮ್ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ';
 
   @override
-  String get newAlbumDialogNameLabelAlreadyExistsHelper => 'Directory already exists';
+  String get newAlbumDialogNameLabelAlreadyExistsHelper => 'ಕೋಶವು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ';
 
   @override
-  String get newAlbumDialogStorageLabel => 'Storage:';
+  String get newAlbumDialogStorageLabel => 'ಸಂಗ್ರಹಣೆ:';
 
   @override
-  String get newDynamicAlbumDialogTitle => 'New Dynamic Album';
+  String get newDynamicAlbumDialogTitle => 'ಹೊಸ ಡೈನಾಮಿಕ್ ಆಲ್ಬಮ್';
 
   @override
-  String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+  String get dynamicAlbumAlreadyExists => 'ಡೈನಾಮಿಕ್ ಆಲ್ಬಮ್ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ';
 
   @override
-  String get newVaultWarningDialogMessage => 'Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.';
+  String get newVaultWarningDialogMessage => 'ನೆಲಮಾಳಿಗೆಯಲ್ಲಿನ ವಸ್ತುಗಳು ಈ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ಮಾತ್ರ ಲಭ್ಯವಿದೆ ಮತ್ತು ಇತರ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಲ್ಲಿ ಇರುವುದಿಲ್ಲ.\n\nನೀವು ಈ ಅಪ್ಲಿಕೇಶನ್ ನನ್ನು ಅಸ್ಥಾಪಿಸಿದರೆ ಅಥವಾ ಈ ಅಪ್ಲಿಕೇಶನ್ ದತ್ತಾಂಶಗಳನ್ನು ತೆರವುಗೊಳಿಸಿದರೆ, ನೀವು ಈ ಎಲ್ಲ ವಸ್ತುಗಳನ್ನು ಕಳೆದುಕೊಳ್ಳುತ್ತೀರಿ.';
 
   @override
-  String get newVaultDialogTitle => 'New Vault';
+  String get newVaultDialogTitle => 'ಹೊಸ ನೆಲಮಾಳಿಗೆ';
 
   @override
-  String get configureVaultDialogTitle => 'Configure Vault';
+  String get configureVaultDialogTitle => 'ನೆಲಮಾಳಿಗೆಯನ್ನು ಸಂರಚಿಸಿ';
 
   @override
-  String get vaultDialogLockModeWhenScreenOff => 'Lock when screen turns off';
+  String get vaultDialogLockModeWhenScreenOff => 'ಪರದೆ ಬಂದಾದಾಗ ಲಾಕ್ ಮಾಡಿ';
 
   @override
-  String get vaultDialogLockTypeLabel => 'Lock type';
+  String get vaultDialogLockTypeLabel => 'ಲಾಕ್ ವಿಧ';
 
   @override
-  String get patternDialogEnter => 'Enter pattern';
+  String get patternDialogEnter => 'ಪ್ಯಾಟರ್ನ್ ನಮೂದಿಸಿ';
 
   @override
-  String get patternDialogConfirm => 'Confirm pattern';
+  String get patternDialogConfirm => 'ಪ್ಯಾಟರ್ನ್ ಖಚಿತಪಡಿಸಿ';
 
   @override
-  String get pinDialogEnter => 'Enter PIN';
+  String get pinDialogEnter => 'PIN ನಮೂದಿಸಿ';
 
   @override
-  String get pinDialogConfirm => 'Confirm PIN';
+  String get pinDialogConfirm => 'PIN ಖಚಿತಪಡಿಸಿ';
 
   @override
-  String get passwordDialogEnter => 'Enter password';
+  String get passwordDialogEnter => 'ಕೀಲಿಪದ ನಮೂದಿಸಿ';
 
   @override
-  String get passwordDialogConfirm => 'Confirm password';
+  String get passwordDialogConfirm => 'ಕೀಲಿಪದ ಖಚಿತಪಡಿಸಿ';
 
   @override
-  String get authenticateToConfigureVault => 'Authenticate to configure vault';
+  String get authenticateToConfigureVault => 'ನೆಲಮಾಳಿಗೆಯನ್ನು ಸಂರಚಿಸಲು ಧೃಡೀಕರಿಸಿ';
 
   @override
-  String get authenticateToUnlockVault => 'Authenticate to unlock vault';
+  String get authenticateToUnlockVault => 'ನೆಲಮಾಳಿಗೆಯ ಲಾಕ್ ತೆಗೆಯಲು ಧೃಡೀಕರಿಸಿ';
 
   @override
-  String get vaultBinUsageDialogMessage => 'Some vaults are using the recycle bin.';
+  String get vaultBinUsageDialogMessage => 'ಕೆಲವು ನೆಲಮಾಳಿಗೆಗಳು ಮರುಬಳಕೆ ತೊಟ್ಟಿಯನ್ನು ಬಳಸುತ್ತಿವೆ.';
 
   @override
-  String get renameAlbumDialogLabel => 'New name';
+  String get renameAlbumDialogLabel => 'ಹೊಸ ಹೆಸರು';
 
   @override
-  String get renameAlbumDialogLabelAlreadyExistsHelper => 'Directory already exists';
+  String get renameAlbumDialogLabelAlreadyExistsHelper => 'ಕೋಶವು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ';
 
   @override
-  String get renameEntrySetPageTitle => 'Rename';
+  String get renameEntrySetPageTitle => 'ಮರುಹೆಸರಿಸಿ';
 
   @override
-  String get renameEntrySetPagePatternFieldLabel => 'Naming pattern';
+  String get renameEntrySetPagePatternFieldLabel => 'ಹೆಸರಿಸುವ ಮಾದರಿ';
 
   @override
-  String get renameEntrySetPageInsertTooltip => 'Insert field';
+  String get renameEntrySetPageInsertTooltip => 'ಕ್ಷೇತ್ರವನ್ನು ಸೇರಿಸಿ';
 
   @override
-  String get renameEntrySetPagePreviewSectionTitle => 'Preview';
+  String get renameEntrySetPagePreviewSectionTitle => 'ಮುನ್ನೋಟ';
 
   @override
-  String get renameProcessorCounter => 'Counter';
+  String get renameProcessorCounter => 'ಗಣಕ';
 
   @override
-  String get renameProcessorHash => 'Hash';
+  String get renameProcessorHash => 'ಹ್ಯಾಷ್';
 
   @override
-  String get renameProcessorName => 'Name';
+  String get renameProcessorName => 'ಹೆಸರು';
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
@@ -919,8 +919,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Delete this album and the $countString items in it?',
-      one: 'Delete this album and the item in it?',
+      other: 'ಈ ಆಲ್ಬಮ್ ಮತ್ತು ಅದರಲ್ಲಿರುವ $countString ವಸ್ತುಗಳನ್ನು ಅಳಿಸುವುದೇ?',
+      one: 'ಈ ಆಲ್ಬಮ್ ಮತ್ತು ಅದರಲ್ಲಿರುವ ವಸ್ತುವನ್ನು ಅಳಿಸುವುದೇ?',
     );
     return '$_temp0';
   }
@@ -933,347 +933,347 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Delete these albums and the $countString items in them?',
-      one: 'Delete these albums and the item in them?',
+      other: 'ಈ ಆಲ್ಬಮ್ ಗಳನ್ನು ಮತ್ತು ಅದರಲ್ಲಿರುವ $countString ವಸ್ತುಗಳನ್ನು ಅಳಿಸುವುದೇ?',
+      one: 'ಈ ಆಲ್ಬಮ್ ಗಳನ್ನು ಮತ್ತು ಅದರಲ್ಲಿರುವ ವಸ್ತುವನ್ನು ಅಳಿಸುವುದೇ?',
     );
     return '$_temp0';
   }
 
   @override
-  String get exportEntryDialogFormat => 'Format:';
+  String get exportEntryDialogFormat => 'ಸ್ವರೂಪ:';
 
   @override
-  String get exportEntryDialogWidth => 'Width';
+  String get exportEntryDialogWidth => 'ಅಗಲ';
 
   @override
-  String get exportEntryDialogHeight => 'Height';
+  String get exportEntryDialogHeight => 'ಎತ್ತರ';
 
   @override
-  String get exportEntryDialogQuality => 'Quality';
+  String get exportEntryDialogQuality => 'ಗುಣಮಟ್ಟ';
 
   @override
-  String get exportEntryDialogWriteMetadata => 'Write metadata';
+  String get exportEntryDialogWriteMetadata => 'ಮೆಟಾಡೇಟಾ ಬರೆಯಿರಿ';
 
   @override
-  String get renameEntryDialogLabel => 'New name';
+  String get renameEntryDialogLabel => 'ಹೊಸ ಹೆಸರು';
 
   @override
-  String get editEntryDialogCopyFromItem => 'Copy from other item';
+  String get editEntryDialogCopyFromItem => 'ಇತರ ವಸ್ತುವಿನಿಂದ ನಕಲಿಸಿ';
 
   @override
-  String get editEntryDialogTargetFieldsHeader => 'Fields to modify';
+  String get editEntryDialogTargetFieldsHeader => 'ಮಾರ್ಪಡಿಸುವ ಕ್ಷೇತ್ರಗಳು';
 
   @override
-  String get editEntryDateDialogTitle => 'Date & Time';
+  String get editEntryDateDialogTitle => 'ದಿನಾಂಕ ಮತ್ತು ಸಮಯ';
 
   @override
-  String get editEntryDateDialogSetCustom => 'Set custom date';
+  String get editEntryDateDialogSetCustom => 'ನಿಗದಿತ ದಿನಾಂಕವನ್ನು ಹೊಂದಿಸಿ';
 
   @override
-  String get editEntryDateDialogCopyField => 'Copy from other date';
+  String get editEntryDateDialogCopyField => 'ಬೇರೆಯ ದಿನಾಂಕದಿಂದ ನಕಲಿಸಿ';
 
   @override
-  String get editEntryDateDialogExtractFromTitle => 'Extract from title';
+  String get editEntryDateDialogExtractFromTitle => 'ಶೀರ್ಷಿಕೆಯಿಂದ ಆಯ್ದು ತೆಗೆಯಿರಿ';
 
   @override
-  String get editEntryDateDialogShift => 'Shift';
+  String get editEntryDateDialogShift => 'ಸ್ಥಳಾಂತರಿಸು';
 
   @override
-  String get editEntryDateDialogSourceFileModifiedDate => 'File modified date';
+  String get editEntryDateDialogSourceFileModifiedDate => 'ಕಡತ ಮಾರ್ಪಡಿಸಿದ ದಿನಾಂಕ';
 
   @override
-  String get durationDialogHours => 'Hours';
+  String get durationDialogHours => 'ಘಂಟೆಗಳು';
 
   @override
-  String get durationDialogMinutes => 'Minutes';
+  String get durationDialogMinutes => 'ನಿಮಿಷಗಳು';
 
   @override
-  String get durationDialogSeconds => 'Seconds';
+  String get durationDialogSeconds => 'ಕ್ಷಣಗಳು';
 
   @override
-  String get editEntryLocationDialogTitle => 'Location';
+  String get editEntryLocationDialogTitle => 'ಸ್ಥಳ';
 
   @override
-  String get editEntryLocationDialogSetCustom => 'Set custom location';
+  String get editEntryLocationDialogSetCustom => 'ನಿಗದಿತ ಸ್ಥಳವನ್ನು ಹೊಂದಿಸಿ';
 
   @override
-  String get editEntryLocationDialogChooseOnMap => 'Choose on map';
+  String get editEntryLocationDialogChooseOnMap => 'ನಕ್ಷೆಯಲ್ಲಿ ಆರಿಸಿ';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'ಜಿಪಿಎಕ್ಸ್ ಆಮದು ಮಾಡಿ';
 
   @override
-  String get editEntryLocationDialogLatitude => 'Latitude';
+  String get editEntryLocationDialogLatitude => 'ಅಕ್ಷಾಂಶ';
 
   @override
-  String get editEntryLocationDialogLongitude => 'Longitude';
+  String get editEntryLocationDialogLongitude => 'ರೇಖಾಂಶ';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'ಸಮಯ ಸ್ಥಳಾಂತರ';
 
   @override
-  String get locationPickerUseThisLocationButton => 'Use this location';
+  String get locationPickerUseThisLocationButton => 'ಈ ಸ್ಥಳವನ್ನು ಬಳಸಿ';
 
   @override
-  String get editEntryRatingDialogTitle => 'Rating';
+  String get editEntryRatingDialogTitle => 'ರೇಟಿಂಗ್';
 
   @override
-  String get removeEntryMetadataDialogTitle => 'Metadata Removal';
+  String get removeEntryMetadataDialogTitle => 'ಮೆಟಾಡೇಟಾ ತೆಗೆಯುವಿಕೆ';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'ಎಲ್ಲವೂ';
 
   @override
-  String get removeEntryMetadataDialogMore => 'More';
+  String get removeEntryMetadataDialogMore => 'ಇನ್ನಷ್ಟು';
 
   @override
-  String get removeEntryMetadataMotionPhotoXmpWarningDialogMessage => 'XMP is required to play the video inside a motion photo.\n\nAre you sure you want to remove it?';
+  String get removeEntryMetadataMotionPhotoXmpWarningDialogMessage => 'ಚಲನೆಯ ಚಿತ್ರದ ಒಳಗೆ ವೀಡಿಯೊವನ್ನು ಚಾಲನೆ ಮಾಡಲು XMP ಅಗತ್ಯವಿದೆ.\n\nನೀವು ಅದನ್ನು ತೆಗೆದುಹಾಕಲು ಬಯಸುತ್ತೀರಾ?';
 
   @override
-  String get videoSpeedDialogLabel => 'Playback speed';
+  String get videoSpeedDialogLabel => 'ಚಾಲನೆಯ ವೇಗ';
 
   @override
-  String get videoStreamSelectionDialogVideo => 'Video';
+  String get videoStreamSelectionDialogVideo => 'ವಿಡಿಯೋ';
 
   @override
-  String get videoStreamSelectionDialogAudio => 'Audio';
+  String get videoStreamSelectionDialogAudio => 'ಆಡಿಯೋ';
 
   @override
-  String get videoStreamSelectionDialogText => 'Subtitles';
+  String get videoStreamSelectionDialogText => 'ಅಡಿಬರಹ';
 
   @override
-  String get videoStreamSelectionDialogOff => 'Off';
+  String get videoStreamSelectionDialogOff => 'ನಂದಿಸು';
 
   @override
-  String get videoStreamSelectionDialogTrack => 'Track';
+  String get videoStreamSelectionDialogTrack => 'ಜಾಡು';
 
   @override
-  String get videoStreamSelectionDialogNoSelection => 'There are no other tracks.';
+  String get videoStreamSelectionDialogNoSelection => 'ಬೇರೆ ಯಾವುದೇ ಹಾಡುಗಳಿಲ್ಲ.';
 
   @override
-  String get genericSuccessFeedback => 'Done!';
+  String get genericSuccessFeedback => 'ಮುಗಿದಿದೆ!';
 
   @override
-  String get genericFailureFeedback => 'Failed';
+  String get genericFailureFeedback => 'ವಿಫಲವಾಗಿದೆ';
 
   @override
-  String get genericDangerWarningDialogMessage => 'Are you sure?';
+  String get genericDangerWarningDialogMessage => 'ನೀವು ಖಚಿತಪಡಿಸುವಿರೇ?';
 
   @override
-  String get tooManyItemsErrorDialogMessage => 'Try again with fewer items.';
+  String get tooManyItemsErrorDialogMessage => 'ಕಡಿಮೆ ವಸ್ತುಗಳೊಂದಿಗೆ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
 
   @override
-  String get menuActionConfigureView => 'View';
+  String get menuActionConfigureView => 'ನೋಟ';
 
   @override
-  String get menuActionSelect => 'Select';
+  String get menuActionSelect => 'ಆರಿಸು';
 
   @override
-  String get menuActionSelectAll => 'Select all';
+  String get menuActionSelectAll => 'ಎಲ್ಲವನ್ನು ಆರಿಸು';
 
   @override
-  String get menuActionSelectNone => 'Select none';
+  String get menuActionSelectNone => 'ಏನನ್ನು ಆರಿಸಬೇಡಿ';
 
   @override
-  String get menuActionMap => 'Map';
+  String get menuActionMap => 'ನಕ್ಷೆ';
 
   @override
-  String get menuActionSlideshow => 'Slideshow';
+  String get menuActionSlideshow => 'ಸ್ಲೈಡ್ ಶೋ';
 
   @override
-  String get menuActionStats => 'Stats';
+  String get menuActionStats => 'ಅಂಕಿಅಂಶಗಳು';
 
   @override
-  String get viewDialogSortSectionTitle => 'Sort';
+  String get viewDialogSortSectionTitle => 'ವಿಂಗಡಿಸಿ';
 
   @override
-  String get viewDialogGroupSectionTitle => 'Group';
+  String get viewDialogGroupSectionTitle => 'ಗುಂಪು';
 
   @override
-  String get viewDialogLayoutSectionTitle => 'Layout';
+  String get viewDialogLayoutSectionTitle => 'ವಿನ್ಯಾಸ';
 
   @override
-  String get viewDialogReverseSortOrder => 'Reverse sort order';
+  String get viewDialogReverseSortOrder => 'ಹಿಮ್ಮುಖ ವಿಂಗಡಣೆ ಕ್ರಮ';
 
   @override
-  String get tileLayoutMosaic => 'Mosaic';
+  String get tileLayoutMosaic => 'ಮೊಸಾಯಿಕ್';
 
   @override
-  String get tileLayoutGrid => 'Grid';
+  String get tileLayoutGrid => 'ಜಾಲ';
 
   @override
-  String get tileLayoutList => 'List';
+  String get tileLayoutList => 'ಪಟ್ಟಿ';
 
   @override
-  String get castDialogTitle => 'Cast Devices';
+  String get castDialogTitle => 'ಬಿತ್ತರಿಸುವ ಸಾಧನಗಳು';
 
   @override
-  String get coverDialogTabCover => 'Cover';
+  String get coverDialogTabCover => 'ರಕ್ಷಾಕವಚ';
 
   @override
-  String get coverDialogTabApp => 'App';
+  String get coverDialogTabApp => 'ಅಪ್ಲಿಕೇಶನ್';
 
   @override
-  String get coverDialogTabColor => 'Color';
+  String get coverDialogTabColor => 'ವರ್ಣ';
 
   @override
-  String get appPickDialogTitle => 'Pick App';
+  String get appPickDialogTitle => 'ಅಪ್ಲಿಕೇಶನ್ ಆರಿಸಿ';
 
   @override
-  String get appPickDialogNone => 'None';
+  String get appPickDialogNone => 'ಏನಿಲ್ಲ';
 
   @override
-  String get aboutPageTitle => 'About';
+  String get aboutPageTitle => 'ಕುರಿತು';
 
   @override
-  String get aboutLinkLicense => 'License';
+  String get aboutLinkLicense => 'ಪರವಾನಗಿ';
 
   @override
-  String get aboutLinkPolicy => 'Privacy Policy';
+  String get aboutLinkPolicy => 'ಗೌಪ್ಯತೆ ನೀತಿ';
 
   @override
-  String get aboutBugSectionTitle => 'Bug Report';
+  String get aboutBugSectionTitle => 'ದೋಷದ ವರದಿ';
 
   @override
-  String get aboutBugSaveLogInstruction => 'Save app logs to a file';
+  String get aboutBugSaveLogInstruction => 'ಅಪ್ಲಿಕೇಶನ್ ದಾಖಲೆಗಳನ್ನು ಕಡತಕ್ಕೆ ಉಳಿಸಿ';
 
   @override
-  String get aboutBugCopyInfoInstruction => 'Copy system information';
+  String get aboutBugCopyInfoInstruction => 'ಸಾಧನದ ಮಾಹಿತಿಯನ್ನು ನಕಲಿಸಿ';
 
   @override
-  String get aboutBugCopyInfoButton => 'Copy';
+  String get aboutBugCopyInfoButton => 'ನಕಲಿಸಿ';
 
   @override
-  String get aboutBugReportInstruction => 'Report on GitHub with the logs and system information';
+  String get aboutBugReportInstruction => 'ದಾಖಲೆಗಳು ಮತ್ತು ಸಾಧನದ ಮಾಹಿತಿಯ ಜೊತೆಗೆ Githubನಲ್ಲಿ ವರದಿ ಮಾಡಿ';
 
   @override
-  String get aboutBugReportButton => 'Report';
+  String get aboutBugReportButton => 'ವರದಿ';
 
   @override
-  String get aboutDataUsageSectionTitle => 'Data Usage';
+  String get aboutDataUsageSectionTitle => 'ದತ್ತಾಂಶ ಬಳಕೆ';
 
   @override
-  String get aboutDataUsageData => 'Data';
+  String get aboutDataUsageData => 'ದತ್ತಾಂಶ';
 
   @override
-  String get aboutDataUsageCache => 'Cache';
+  String get aboutDataUsageCache => 'ತಾತ್ಕಾಲಿಕ ಸಂಗ್ರಹ';
 
   @override
-  String get aboutDataUsageDatabase => 'Database';
+  String get aboutDataUsageDatabase => 'ದತ್ತಾಂಶ ಸಂಚಯ';
 
   @override
-  String get aboutDataUsageMisc => 'Misc';
+  String get aboutDataUsageMisc => 'ನಾನಾ ರೀತಿಯ';
 
   @override
-  String get aboutDataUsageInternal => 'Internal';
+  String get aboutDataUsageInternal => 'ಆಂತರಿಕ';
 
   @override
-  String get aboutDataUsageExternal => 'External';
+  String get aboutDataUsageExternal => 'ಬಾಹ್ಯ';
 
   @override
-  String get aboutDataUsageClearCache => 'Clear Cache';
+  String get aboutDataUsageClearCache => 'ಕ್ಯಾಶೆ ಸಂಗ್ರಹ ಅಳಿಸಿ';
 
   @override
-  String get aboutCreditsSectionTitle => 'Credits';
+  String get aboutCreditsSectionTitle => 'ಮನ್ನಣೆಗಳು';
 
   @override
-  String get aboutCreditsWorldAtlas1 => 'This app uses a TopoJSON file from';
+  String get aboutCreditsWorldAtlas1 => 'ಈ ಅಪ್ಲಿಕೇಶನ್ TopoJSON ಕಡತವನ್ನು ಇವರಿಂದ ಬಳಸುತ್ತದೆ';
 
   @override
-  String get aboutCreditsWorldAtlas2 => 'under ISC License.';
+  String get aboutCreditsWorldAtlas2 => 'ISC ಪರವಾನಗಿ ಅಡಿಯಲ್ಲಿ.';
 
   @override
-  String get aboutTranslatorsSectionTitle => 'Translators';
+  String get aboutTranslatorsSectionTitle => 'ಅನುವಾದಕರು';
 
   @override
-  String get aboutLicensesSectionTitle => 'Open-Source Licenses';
+  String get aboutLicensesSectionTitle => 'ಮುಕ್ತ-ಮೂಲ ಪರವಾನಗಿಗಳು';
 
   @override
-  String get aboutLicensesBanner => 'This app uses the following open-source packages and libraries.';
+  String get aboutLicensesBanner => 'ಈ ಅಪ್ಲಿಕೇಶನ್ ಈ ಕೆಳಗಿನ ಮುಕ್ತ-ಮೂಲ ಪೊಟ್ಟಣಗಳು ಮತ್ತು ಭಂಡಾರಗಳನ್ನು ಬಳಸುತ್ತದೆ.';
 
   @override
-  String get aboutLicensesAndroidLibrariesSectionTitle => 'Android Libraries';
+  String get aboutLicensesAndroidLibrariesSectionTitle => 'ಆಂಡ್ರಾಯ್ಡ್ ಭಂಡಾರಗಳು';
 
   @override
-  String get aboutLicensesFlutterPluginsSectionTitle => 'Flutter Plugins';
+  String get aboutLicensesFlutterPluginsSectionTitle => 'ಫ್ಲಟರ್ ಪ್ಲಗಿನ್‌ಗಳು';
 
   @override
-  String get aboutLicensesFlutterPackagesSectionTitle => 'Flutter Packages';
+  String get aboutLicensesFlutterPackagesSectionTitle => 'ಫ್ಲಟರ್ ಪ್ಯಾಕೇಜುಗಳು';
 
   @override
-  String get aboutLicensesDartPackagesSectionTitle => 'Dart Packages';
+  String get aboutLicensesDartPackagesSectionTitle => 'ಡಾರ್ಟ್ ಪ್ಯಾಕೇಜುಗಳು';
 
   @override
-  String get aboutLicensesShowAllButtonLabel => 'Show All Licenses';
+  String get aboutLicensesShowAllButtonLabel => 'ಎಲ್ಲಾ ಪರವಾನಗಿಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get policyPageTitle => 'Privacy Policy';
+  String get policyPageTitle => 'ಗೌಪ್ಯತೆ ನೀತಿ';
 
   @override
-  String get collectionPageTitle => 'Collection';
+  String get collectionPageTitle => 'ಸಂಗ್ರಹ';
 
   @override
-  String get collectionPickPageTitle => 'Pick';
+  String get collectionPickPageTitle => 'ಆರಿಸಿ';
 
   @override
-  String get collectionSelectPageTitle => 'Select items';
+  String get collectionSelectPageTitle => 'ವಸ್ತುಗಳನ್ನು ಆರಿಸಿ';
 
   @override
-  String get collectionActionShowTitleSearch => 'Show title filter';
+  String get collectionActionShowTitleSearch => 'ಶೀರ್ಷಿಕೆ ಸೋಸುಕ ತೋರಿಸಿ';
 
   @override
-  String get collectionActionHideTitleSearch => 'Hide title filter';
+  String get collectionActionHideTitleSearch => 'ಶೀರ್ಷಿಕೆ ಸೋಸುಕ ಅಡಗಿಸಿ';
 
   @override
-  String get collectionActionAddDynamicAlbum => 'Add dynamic album';
+  String get collectionActionAddDynamicAlbum => 'ಡೈನಾಮಿಕ್ ಆಲ್ಬಮ್ ಸೇರಿಸಿ';
 
   @override
-  String get collectionActionAddShortcut => 'Add shortcut';
+  String get collectionActionAddShortcut => 'ಶಾರ್ಟ್‌ಕಟ್ ಸೇರಿಸಿ';
 
   @override
-  String get collectionActionSetHome => 'Set as home';
+  String get collectionActionSetHome => 'ಮುಖಪುಟವಾಗಿ ಹೊಂದಿಸಿ';
 
   @override
-  String get collectionActionEmptyBin => 'Empty bin';
+  String get collectionActionEmptyBin => 'ತೊಟ್ಟಿಯನ್ನು ಖಾಲಿಮಾಡಿ';
 
   @override
-  String get collectionActionCopy => 'Copy to album';
+  String get collectionActionCopy => 'ಆಲ್ಬಮ್‌ಗೆ ನಕಲಿಸಿ';
 
   @override
-  String get collectionActionMove => 'Move to album';
+  String get collectionActionMove => 'ಆಲ್ಬಮ್‌ಗೆ ಸರಿಸಿ';
 
   @override
-  String get collectionActionRescan => 'Rescan';
+  String get collectionActionRescan => 'ಪುನಃ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ';
 
   @override
-  String get collectionActionEdit => 'Edit';
+  String get collectionActionEdit => 'ಸಂಪಾದಿಸು';
 
   @override
-  String get collectionSearchTitlesHintText => 'Search titles';
+  String get collectionSearchTitlesHintText => 'ಶೀರ್ಷಿಕೆಗಳನ್ನು ಹುಡುಕಿ';
 
   @override
-  String get collectionGroupAlbum => 'By album';
+  String get collectionGroupAlbum => 'ಆಲ್ಬಮ್ ನಂತೆ';
 
   @override
-  String get collectionGroupMonth => 'By month';
+  String get collectionGroupMonth => 'ತಿಂಗಳಿನಂತೆ';
 
   @override
-  String get collectionGroupDay => 'By day';
+  String get collectionGroupDay => 'ದಿನದಂತೆ';
 
   @override
-  String get collectionGroupNone => 'Do not group';
+  String get collectionGroupNone => 'ಗುಂಪು ಮಾಡಬೇಡಿ';
 
   @override
-  String get sectionUnknown => 'Unknown';
+  String get sectionUnknown => 'ಅಜ್ಞಾತ';
 
   @override
-  String get dateToday => 'Today';
+  String get dateToday => 'ಇಂದು';
 
   @override
-  String get dateYesterday => 'Yesterday';
+  String get dateYesterday => 'ನಿನ್ನೆ';
 
   @override
-  String get dateThisMonth => 'This month';
+  String get dateThisMonth => 'ಈ ತಿಂಗಳು';
 
   @override
   String collectionDeleteFailureFeedback(int count) {
@@ -1283,8 +1283,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to delete $countString items',
-      one: 'Failed to delete 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1297,8 +1297,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to copy $countString items',
-      one: 'Failed to copy 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ನಕಲಿಸಲು ವಿಫಲವಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ನಕಲಿಸಲು ವಿಫಲವಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1311,8 +1311,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to move $countString items',
-      one: 'Failed to move 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸಲು ವಿಫಲವಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ಸ್ಥಳಾಂತರಿಸಲು ವಿಫಲವಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1325,8 +1325,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to rename $countString items',
-      one: 'Failed to rename 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಮರುಹೆಸರಿಸಲು ವಿಫಲವಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ಮರುಹೆಸರಿಸಲು ವಿಫಲವಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1339,8 +1339,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to edit $countString items',
-      one: 'Failed to edit 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಸಂಪಾದಿಸಲು ವಿಫಲವಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ಸಂಪಾದಿಸಲು ವಿಫಲವಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1353,8 +1353,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Failed to export $countString pages',
-      one: 'Failed to export 1 page',
+      other: '$countString ಪುಟಗಳನ್ನು ರಫ್ತು ಮಾಡಲು ವಿಫಲವಾಗಿದೆ',
+      one: '1 ಪುಟವನ್ನು ರಫ್ತು ಮಾಡಲು ವಿಫಲವಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1367,8 +1367,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Copied $countString items',
-      one: 'Copied 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ನಕಲಿಸಲಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ನಕಲಿಸಲಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1381,8 +1381,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Moved $countString items',
-      one: 'Moved 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸಲಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ಸ್ಥಳಾಂತರಿಸಲಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1395,8 +1395,8 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Renamed $countString items',
-      one: 'Renamed 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಮರುಹೆಸರಿಸಲಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ಮರುಹೆಸರಿಸಲಾಗಿದೆ',
     );
     return '$_temp0';
   }
@@ -1409,761 +1409,761 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Edited $countString items',
-      one: 'Edited 1 item',
+      other: '$countString ವಸ್ತುಗಳನ್ನು ಸಂಪಾದಿಸಲಾಗಿದೆ',
+      one: '1 ವಸ್ತುವನ್ನು ಸಂಪಾದಿಸಲಾಗಿದೆ',
     );
     return '$_temp0';
   }
 
   @override
-  String get collectionEmptyFavourites => 'No favorites';
+  String get collectionEmptyFavourites => 'ಮೆಚ್ಚಿನವುಗಳಿಲ್ಲ';
 
   @override
-  String get collectionEmptyVideos => 'No videos';
+  String get collectionEmptyVideos => 'ವೀಡಿಯೊಗಳಿಲ್ಲ';
 
   @override
-  String get collectionEmptyImages => 'No images';
+  String get collectionEmptyImages => 'ಚಿತ್ರಗಳಿಲ್ಲ';
 
   @override
-  String get collectionEmptyGrantAccessButtonLabel => 'Grant access';
+  String get collectionEmptyGrantAccessButtonLabel => 'ಪ್ರವೇಶವನ್ನು ನೀಡಿ';
 
   @override
-  String get collectionSelectSectionTooltip => 'Select section';
+  String get collectionSelectSectionTooltip => 'ವಿಭಾಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ';
 
   @override
-  String get collectionDeselectSectionTooltip => 'Deselect section';
+  String get collectionDeselectSectionTooltip => 'ವಿಭಾಗ ಆಯ್ಕೆ ರದ್ದುಮಾಡಿ';
 
   @override
-  String get drawerAboutButton => 'About';
+  String get drawerAboutButton => 'ಕುರಿತು';
 
   @override
-  String get drawerSettingsButton => 'Settings';
+  String get drawerSettingsButton => 'ಸಂಯೋಜನೆಗಳು';
 
   @override
-  String get drawerCollectionAll => 'All collection';
+  String get drawerCollectionAll => 'ಎಲ್ಲಾ ಸಂಗ್ರಹ';
 
   @override
-  String get drawerCollectionFavourites => 'Favorites';
+  String get drawerCollectionFavourites => 'ಮೆಚ್ಚಿನವುಗಳು';
 
   @override
-  String get drawerCollectionImages => 'Images';
+  String get drawerCollectionImages => 'ಚಿತ್ರಗಳು';
 
   @override
-  String get drawerCollectionVideos => 'Videos';
+  String get drawerCollectionVideos => 'ವೀಡಿಯೊಗಳು';
 
   @override
-  String get drawerCollectionAnimated => 'Animated';
+  String get drawerCollectionAnimated => 'ಅನಿಮೇಟೆಡ್';
 
   @override
-  String get drawerCollectionMotionPhotos => 'Motion photos';
+  String get drawerCollectionMotionPhotos => 'ಚಲಿಸುವ ಚಿತ್ರಗಳು';
 
   @override
-  String get drawerCollectionPanoramas => 'Panoramas';
+  String get drawerCollectionPanoramas => 'ಪನೋರಮಾಗಳು';
 
   @override
-  String get drawerCollectionRaws => 'Raw photos';
+  String get drawerCollectionRaws => 'Raw ಚಿತ್ರಗಳು';
 
   @override
-  String get drawerCollectionSphericalVideos => '360° Videos';
+  String get drawerCollectionSphericalVideos => '360° ವಿಡಿಯೋಗಳು';
 
   @override
-  String get drawerAlbumPage => 'Albums';
+  String get drawerAlbumPage => 'ಆಲ್ಬಮ್ ಗಳು';
 
   @override
-  String get drawerCountryPage => 'Countries';
+  String get drawerCountryPage => 'ದೇಶಗಳು';
 
   @override
-  String get drawerPlacePage => 'Places';
+  String get drawerPlacePage => 'ಸ್ಥಳಗಳು';
 
   @override
-  String get drawerTagPage => 'Tags';
+  String get drawerTagPage => 'ಟ್ಯಾಗುಗಳು';
 
   @override
-  String get sortByDate => 'By date';
+  String get sortByDate => 'ದಿನಾಂಕದಂತೆ';
 
   @override
-  String get sortByName => 'By name';
+  String get sortByName => 'ಹೆಸರಿನಂತೆ';
 
   @override
-  String get sortByItemCount => 'By item count';
+  String get sortByItemCount => 'ವಸ್ತುಗಳ ಎಣಿಕೆಯಂತೆ';
 
   @override
-  String get sortBySize => 'By size';
+  String get sortBySize => 'ಗಾತ್ರದಂತೆ';
 
   @override
-  String get sortByAlbumFileName => 'By album & file name';
+  String get sortByAlbumFileName => 'ಆಲ್ಬಮ್ ಮತ್ತು ಕಡತದ ಹೆಸರಿನಂತೆ';
 
   @override
-  String get sortByRating => 'By rating';
+  String get sortByRating => 'ದರದಂತೆ';
 
   @override
-  String get sortByDuration => 'By duration';
+  String get sortByDuration => 'ಅವಧಿಯಂತೆ';
 
   @override
-  String get sortOrderNewestFirst => 'Newest first';
+  String get sortOrderNewestFirst => 'ಹೊಸದು ಮೊದಲು';
 
   @override
-  String get sortOrderOldestFirst => 'Oldest first';
+  String get sortOrderOldestFirst => 'ಹಳೆಯದು ಮೊದಲು';
 
   @override
-  String get sortOrderAtoZ => 'A to Z';
+  String get sortOrderAtoZ => 'ವರ್ಣಮಾಲೆಯಂತೆ (A to Z)';
 
   @override
-  String get sortOrderZtoA => 'Z to A';
+  String get sortOrderZtoA => 'ವರ್ಣಮಾಲೆಯ ವಿರುದ್ಧವಾಗಿ (Z to A)';
 
   @override
-  String get sortOrderHighestFirst => 'Highest first';
+  String get sortOrderHighestFirst => 'ಹೆಚ್ಚಿನದು ಮೊದಲು';
 
   @override
-  String get sortOrderLowestFirst => 'Lowest first';
+  String get sortOrderLowestFirst => 'ಕಡಿಮೆಯದು ಮೊದಲು';
 
   @override
-  String get sortOrderLargestFirst => 'Largest first';
+  String get sortOrderLargestFirst => 'ದೊಡ್ಡದು ಮೊದಲು';
 
   @override
-  String get sortOrderSmallestFirst => 'Smallest first';
+  String get sortOrderSmallestFirst => 'ಚಿಕ್ಕದು ಮೊದಲು';
 
   @override
-  String get sortOrderShortestFirst => 'Shortest first';
+  String get sortOrderShortestFirst => 'ಗಿಡ್ಡದ್ದು ಮೊದಲು';
 
   @override
-  String get sortOrderLongestFirst => 'Longest first';
+  String get sortOrderLongestFirst => 'ಉದ್ದದ್ದು ಮೊದಲು';
 
   @override
-  String get albumGroupTier => 'By tier';
+  String get albumGroupTier => 'ಶ್ರೇಣಿಯಂತೆ';
 
   @override
-  String get albumGroupType => 'By type';
+  String get albumGroupType => 'ಪ್ರಕಾರದಂತೆ';
 
   @override
-  String get albumGroupVolume => 'By storage volume';
+  String get albumGroupVolume => 'ಸಂಗ್ರಹಣೆಯ ಗಾತ್ರದಂತೆ';
 
   @override
-  String get albumGroupNone => 'Do not group';
+  String get albumGroupNone => 'ಗುಂಪು ಮಾಡಬೇಡಿ';
 
   @override
-  String get albumMimeTypeMixed => 'Mixed';
+  String get albumMimeTypeMixed => 'ಮಿಶ್ರಿತ';
 
   @override
-  String get albumPickPageTitleCopy => 'Copy to Album';
+  String get albumPickPageTitleCopy => 'ಆಲ್ಬಮ್‌ಗೆ ನಕಲಿಸಿ';
 
   @override
-  String get albumPickPageTitleExport => 'Export to Album';
+  String get albumPickPageTitleExport => 'ಆಲ್ಬಮ್‌ಗೆ ರಫ್ತು ಮಾಡಿ';
 
   @override
-  String get albumPickPageTitleMove => 'Move to Album';
+  String get albumPickPageTitleMove => 'ಆಲ್ಬಮ್‌ಗೆ ಸ್ಥಳಾಂತರಿಸಿ';
 
   @override
-  String get albumPickPageTitlePick => 'Pick Album';
+  String get albumPickPageTitlePick => 'ಆಲ್ಬಮ್ ಆಯ್ಕೆಮಾಡಿ';
 
   @override
-  String get albumCamera => 'Camera';
+  String get albumCamera => 'ಕ್ಯಾಮೆರಾ';
 
   @override
-  String get albumDownload => 'Download';
+  String get albumDownload => 'ಇಳಿಸು';
 
   @override
-  String get albumScreenshots => 'Screenshots';
+  String get albumScreenshots => 'ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳು';
 
   @override
-  String get albumScreenRecordings => 'Screen recordings';
+  String get albumScreenRecordings => 'ಪರದೆ ಮುದ್ರಿಕೆಗಳು';
 
   @override
-  String get albumVideoCaptures => 'Video Captures';
+  String get albumVideoCaptures => 'ವಿಡಿಯೋ ಕೈಸೆರೆಗಳು';
 
   @override
-  String get albumPageTitle => 'Albums';
+  String get albumPageTitle => 'ಆಲ್ಬಮ್ ಗಳು';
 
   @override
-  String get albumEmpty => 'No albums';
+  String get albumEmpty => 'ಆಲ್ಬಮ್‌ಗಳಿಲ್ಲ';
 
   @override
-  String get createAlbumButtonLabel => 'CREATE';
+  String get createAlbumButtonLabel => 'ರಚಿಸು';
 
   @override
-  String get newFilterBanner => 'new';
+  String get newFilterBanner => 'ಹೊಸ';
 
   @override
-  String get countryPageTitle => 'Countries';
+  String get countryPageTitle => 'ದೇಶಗಳು';
 
   @override
-  String get countryEmpty => 'No countries';
+  String get countryEmpty => 'ದೇಶಗಳಿಲ್ಲ';
 
   @override
-  String get statePageTitle => 'States';
+  String get statePageTitle => 'ರಾಜ್ಯಗಳು';
 
   @override
-  String get stateEmpty => 'No states';
+  String get stateEmpty => 'ರಾಜ್ಯಗಳಿಲ್ಲ';
 
   @override
-  String get placePageTitle => 'Places';
+  String get placePageTitle => 'ಸ್ಥಳಗಳು';
 
   @override
-  String get placeEmpty => 'No places';
+  String get placeEmpty => 'ಸ್ಥಳಗಳಿಲ್ಲ';
 
   @override
-  String get tagPageTitle => 'Tags';
+  String get tagPageTitle => 'ಟ್ಯಾಗುಗಳು';
 
   @override
-  String get tagEmpty => 'No tags';
+  String get tagEmpty => 'ಟ್ಯಾಗುಗಳಿಲ್ಲ';
 
   @override
-  String get binPageTitle => 'Recycle Bin';
+  String get binPageTitle => 'ಮರುಬಳಕೆ ತೊಟ್ಟಿ';
 
   @override
-  String get explorerPageTitle => 'Explorer';
+  String get explorerPageTitle => 'ಪರಿಶೋಧಕ';
 
   @override
-  String get explorerActionSelectStorageVolume => 'Select storage';
+  String get explorerActionSelectStorageVolume => 'ಸಂಗ್ರಹಣೆ ಆಯ್ಕೆ ಮಾಡಿ';
 
   @override
-  String get selectStorageVolumeDialogTitle => 'Select Storage';
+  String get selectStorageVolumeDialogTitle => 'ಸಂಗ್ರಹಣೆ ಆಯ್ಕೆ ಮಾಡಿ';
 
   @override
-  String get searchCollectionFieldHint => 'Search collection';
+  String get searchCollectionFieldHint => 'ಸಂಗ್ರಹದಲ್ಲಿ ಹುಡುಕಿ';
 
   @override
-  String get searchRecentSectionTitle => 'Recent';
+  String get searchRecentSectionTitle => 'ಇತ್ತೀಚಿನವು';
 
   @override
-  String get searchDateSectionTitle => 'Date';
+  String get searchDateSectionTitle => 'ದಿನಾಂಕ';
 
   @override
-  String get searchAlbumsSectionTitle => 'Albums';
+  String get searchAlbumsSectionTitle => 'ಆಲ್ಬಮ್ ಗಳು';
 
   @override
-  String get searchCountriesSectionTitle => 'Countries';
+  String get searchCountriesSectionTitle => 'ದೇಶಗಳು';
 
   @override
-  String get searchStatesSectionTitle => 'States';
+  String get searchStatesSectionTitle => 'ರಾಜ್ಯಗಳು';
 
   @override
-  String get searchPlacesSectionTitle => 'Places';
+  String get searchPlacesSectionTitle => 'ಸ್ಥಳಗಳು';
 
   @override
-  String get searchTagsSectionTitle => 'Tags';
+  String get searchTagsSectionTitle => 'ಟ್ಯಾಗುಗಳು';
 
   @override
-  String get searchRatingSectionTitle => 'Ratings';
+  String get searchRatingSectionTitle => 'ದರಗಳು';
 
   @override
-  String get searchMetadataSectionTitle => 'Metadata';
+  String get searchMetadataSectionTitle => 'ಮೆಟಾಡೇಟಾ';
 
   @override
-  String get settingsPageTitle => 'Settings';
+  String get settingsPageTitle => 'ಸಂಯೋಜನೆಗಳು';
 
   @override
-  String get settingsSystemDefault => 'System default';
+  String get settingsSystemDefault => 'ಸಿಸ್ಟಮ್ ಡೀಫಾಲ್ಟ್';
 
   @override
-  String get settingsDefault => 'Default';
+  String get settingsDefault => 'ಡೀಫಾಲ್ಟ್';
 
   @override
-  String get settingsDisabled => 'Disabled';
+  String get settingsDisabled => 'ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ';
 
   @override
-  String get settingsAskEverytime => 'Ask everytime';
+  String get settingsAskEverytime => 'ಪ್ರತಿಬಾರಿಯೂ ಕೇಳಿ';
 
   @override
-  String get settingsModificationWarningDialogMessage => 'Other settings will be modified.';
+  String get settingsModificationWarningDialogMessage => 'ಇತರ ಸಂಯೋಜನೆಗಳನ್ನು ಮಾರ್ಪಡಿಸಲಾಗುತ್ತದೆ.';
 
   @override
-  String get settingsSearchFieldLabel => 'Search settings';
+  String get settingsSearchFieldLabel => 'ಸಂಯೋಜನೆಗಳಲ್ಲಿ ಹುಡುಕಿ';
 
   @override
-  String get settingsSearchEmpty => 'No matching setting';
+  String get settingsSearchEmpty => 'ಹೊಂದುವ ಸಂಯೋಜನೆಗಳಿಲ್ಲ';
 
   @override
-  String get settingsActionExport => 'Export';
+  String get settingsActionExport => 'ರಫ್ತು';
 
   @override
-  String get settingsActionExportDialogTitle => 'Export';
+  String get settingsActionExportDialogTitle => 'ರಫ್ತು';
 
   @override
-  String get settingsActionImport => 'Import';
+  String get settingsActionImport => 'ಆಮದು';
 
   @override
-  String get settingsActionImportDialogTitle => 'Import';
+  String get settingsActionImportDialogTitle => 'ಆಮದು';
 
   @override
-  String get appExportCovers => 'Covers';
+  String get appExportCovers => 'ರಕ್ಷಾಕವಚಗಳು';
 
   @override
-  String get appExportDynamicAlbums => 'Dynamic albums';
+  String get appExportDynamicAlbums => 'ಡೈನಾಮಿಕ್ ಆಲ್ಬಮ್ ಗಳು';
 
   @override
-  String get appExportFavourites => 'Favorites';
+  String get appExportFavourites => 'ಮೆಚ್ಚಿನವುಗಳು';
 
   @override
-  String get appExportSettings => 'Settings';
+  String get appExportSettings => 'ಸಂಯೋಜನೆಗಳು';
 
   @override
-  String get settingsNavigationSectionTitle => 'Navigation';
+  String get settingsNavigationSectionTitle => 'ಸಂಚಾರ';
 
   @override
-  String get settingsHomeTile => 'Home';
+  String get settingsHomeTile => 'ಮುಖಪುಟ';
 
   @override
-  String get settingsHomeDialogTitle => 'Home';
+  String get settingsHomeDialogTitle => 'ಮುಖಪುಟ';
 
   @override
-  String get setHomeCustom => 'Custom';
+  String get setHomeCustom => 'ಇಚ್ಛಾನುಸಾರ';
 
   @override
-  String get settingsShowBottomNavigationBar => 'Show bottom navigation bar';
+  String get settingsShowBottomNavigationBar => 'ಕೆಳಗಿನ ಸಂಚಾರಪಟ್ಟೆಯನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsKeepScreenOnTile => 'Keep screen on';
+  String get settingsKeepScreenOnTile => 'ಪರದೆಯನ್ನು ಚಾಲೂ ಇಡಿ';
 
   @override
-  String get settingsKeepScreenOnDialogTitle => 'Keep Screen On';
+  String get settingsKeepScreenOnDialogTitle => 'ಪರದೆಯನ್ನು ಚಾಲೂ ಇಡಿ';
 
   @override
-  String get settingsDoubleBackExit => 'Tap “back” twice to exit';
+  String get settingsDoubleBackExit => 'ನಿರ್ಗಮಿಸಲು “ಹಿಂದೆ” ಎರಡು ಬಾರಿ ತಟ್ಟಿ';
 
   @override
-  String get settingsConfirmationTile => 'Confirmation dialogs';
+  String get settingsConfirmationTile => 'ದೃಢೀಕರಣ ಸಂವಾದಗಳು';
 
   @override
-  String get settingsConfirmationDialogTitle => 'Confirmation Dialogs';
+  String get settingsConfirmationDialogTitle => 'ದೃಢೀಕರಣ ಸಂವಾದಗಳು';
 
   @override
-  String get settingsConfirmationBeforeDeleteItems => 'Ask before deleting items forever';
+  String get settingsConfirmationBeforeDeleteItems => 'ವಸ್ತುಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುವ ಮೊದಲು ವಿಚಾರಿಸಿ';
 
   @override
-  String get settingsConfirmationBeforeMoveToBinItems => 'Ask before moving items to the recycle bin';
+  String get settingsConfirmationBeforeMoveToBinItems => 'ವಸ್ತುಗಳನ್ನು ಮರುಬಳಕೆ ತೊಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೊದಲು ವಿಚಾರಿಸಿ';
 
   @override
-  String get settingsConfirmationBeforeMoveUndatedItems => 'Ask before moving undated items';
+  String get settingsConfirmationBeforeMoveUndatedItems => 'ದಿನಾಂಕವಿಲ್ಲದ ವಸ್ತುಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸುವ ಮೊದಲು ವಿಚಾರಿಸಿ';
 
   @override
-  String get settingsConfirmationAfterMoveToBinItems => 'Show message after moving items to the recycle bin';
+  String get settingsConfirmationAfterMoveToBinItems => 'ವಸ್ತುಗಳನ್ನು ಮರುಬಳಕೆ ತೊಟ್ಟಿಗೆ ಸ್ಥಳಾಂತರಿಸಿದ ನಂತರ ಸಂದೇಶವನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsConfirmationVaultDataLoss => 'Show vault data loss warning';
+  String get settingsConfirmationVaultDataLoss => 'ನೆಲಮಾಳಿಗೆಯ ದತ್ತಾಂಶ ನಷ್ಟವಾಗುವುದನ್ನು ಎಚ್ಚರಿಸಿ';
 
   @override
-  String get settingsNavigationDrawerTile => 'Navigation menu';
+  String get settingsNavigationDrawerTile => 'ನ್ಯಾವಿಗೇಷನ್ ಮೆನು';
 
   @override
-  String get settingsNavigationDrawerEditorPageTitle => 'Navigation Menu';
+  String get settingsNavigationDrawerEditorPageTitle => 'ನ್ಯಾವಿಗೇಷನ್ ಮೆನು';
 
   @override
-  String get settingsNavigationDrawerBanner => 'Touch and hold to move and reorder menu items.';
+  String get settingsNavigationDrawerBanner => 'ಮೆನು ವಸ್ತುಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸಲು ಮತ್ತು ಮರುಕ್ರಮಗೊಳಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ.';
 
   @override
-  String get settingsNavigationDrawerTabTypes => 'Types';
+  String get settingsNavigationDrawerTabTypes => 'ಪ್ರಕಾರಗಳು';
 
   @override
-  String get settingsNavigationDrawerTabAlbums => 'Albums';
+  String get settingsNavigationDrawerTabAlbums => 'ಆಲ್ಬಮ್ ಗಳು';
 
   @override
-  String get settingsNavigationDrawerTabPages => 'Pages';
+  String get settingsNavigationDrawerTabPages => 'ಪುಟಗಳು';
 
   @override
-  String get settingsNavigationDrawerAddAlbum => 'Add album';
+  String get settingsNavigationDrawerAddAlbum => 'ಆಲ್ಬಮ್ ಸೇರಿಸಿ';
 
   @override
-  String get settingsThumbnailSectionTitle => 'Thumbnails';
+  String get settingsThumbnailSectionTitle => 'ಥಂಬ್‌ನೇಲ್‌ಗಳು';
 
   @override
-  String get settingsThumbnailOverlayTile => 'Overlay';
+  String get settingsThumbnailOverlayTile => 'ಮೇಲ್ಪದರ';
 
   @override
-  String get settingsThumbnailOverlayPageTitle => 'Overlay';
+  String get settingsThumbnailOverlayPageTitle => 'ಮೇಲ್ಪದರ';
 
   @override
-  String get settingsThumbnailShowHdrIcon => 'Show HDR icon';
+  String get settingsThumbnailShowHdrIcon => 'HDR ಸಂಕೇತ ತೋರಿಸಿ';
 
   @override
-  String get settingsThumbnailShowFavouriteIcon => 'Show favorite icon';
+  String get settingsThumbnailShowFavouriteIcon => 'ಮೆಚ್ಚಿನ ಸಂಕೇತ ತೋರಿಸಿ';
 
   @override
-  String get settingsThumbnailShowTagIcon => 'Show tag icon';
+  String get settingsThumbnailShowTagIcon => 'ಟ್ಯಾಗು ಸಂಕೇತ ತೋರಿಸಿ';
 
   @override
-  String get settingsThumbnailShowLocationIcon => 'Show location icon';
+  String get settingsThumbnailShowLocationIcon => 'ಸ್ಥಳದ ಚಿನ್ಹೆಯನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsThumbnailShowMotionPhotoIcon => 'Show motion photo icon';
+  String get settingsThumbnailShowMotionPhotoIcon => 'ಚಲನಾ ಚಿತ್ರದ ಚಿನ್ಹೆಯನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsThumbnailShowRating => 'Show rating';
+  String get settingsThumbnailShowRating => 'ದರವನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsThumbnailShowRawIcon => 'Show raw icon';
+  String get settingsThumbnailShowRawIcon => 'Raw ಚಿನ್ಹೆಯನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsThumbnailShowVideoDuration => 'Show video duration';
+  String get settingsThumbnailShowVideoDuration => 'ವಿಡಿಯೋ ಕಾಲಾವಧಿಯನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsCollectionQuickActionsTile => 'Quick actions';
+  String get settingsCollectionQuickActionsTile => 'ತ್ವರಿತ ಕ್ರಮಗಳು';
 
   @override
-  String get settingsCollectionQuickActionEditorPageTitle => 'Quick Actions';
+  String get settingsCollectionQuickActionEditorPageTitle => 'ತ್ವರಿತ ಕ್ರಮಗಳು';
 
   @override
-  String get settingsCollectionQuickActionTabBrowsing => 'Browsing';
+  String get settingsCollectionQuickActionTabBrowsing => 'ತಡಕಾಟ';
 
   @override
-  String get settingsCollectionQuickActionTabSelecting => 'Selecting';
+  String get settingsCollectionQuickActionTabSelecting => 'ಆರಿಸು';
 
   @override
-  String get settingsCollectionBrowsingQuickActionEditorBanner => 'Touch and hold to move buttons and select which actions are displayed when browsing items.';
+  String get settingsCollectionBrowsingQuickActionEditorBanner => 'ಗುಂಡಿಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ ಮತ್ತು ವಸ್ತುಗಳನ್ನು ತಡಕಾಡುವಾಗ ಯಾವ ಕ್ರಿಯೆಗಳನ್ನು ಪ್ರದರ್ಶಿಸಬೇಕು ಎಂಬುದನ್ನು ಆರಿಸಿ.';
 
   @override
-  String get settingsCollectionSelectionQuickActionEditorBanner => 'Touch and hold to move buttons and select which actions are displayed when selecting items.';
+  String get settingsCollectionSelectionQuickActionEditorBanner => 'ಗುಂಡಿಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ ಮತ್ತು ವಸ್ತುಗಳನ್ನು ತಡಕಾಡುವಾಗ ಯಾವ ಕ್ರಿಯೆಗಳನ್ನು ಪ್ರದರ್ಶಿಸಬೇಕು ಎಂಬುದನ್ನು ಆರಿಸಿಕೊಳ್ಳಿ.';
 
   @override
-  String get settingsCollectionBurstPatternsTile => 'Burst patterns';
+  String get settingsCollectionBurstPatternsTile => 'ಬರ್ಸ್ಟ್ ಪ್ರಕಾರಗಳು';
 
   @override
-  String get settingsCollectionBurstPatternsNone => 'None';
+  String get settingsCollectionBurstPatternsNone => 'ಏನಿಲ್ಲ';
 
   @override
-  String get settingsViewerSectionTitle => 'Viewer';
+  String get settingsViewerSectionTitle => 'ವೀಕ್ಷಕ';
 
   @override
-  String get settingsViewerGestureSideTapNext => 'Tap on screen edges to show previous/next item';
+  String get settingsViewerGestureSideTapNext => 'ಹಿಂದಿನ/ಮುಂದಿನ ವಸ್ತುವನ್ನು ತೋರಿಸಲು ಪರದೆಯ ಅಂಚಿನ ಮೇಲೆ ತಟ್ಟಿ';
 
   @override
-  String get settingsViewerUseCutout => 'Use cutout area';
+  String get settingsViewerUseCutout => 'ಕಟೌಟ್ ಪ್ರದೇಶವನ್ನು ಬಳಸಿರಿ';
 
   @override
-  String get settingsViewerMaximumBrightness => 'Maximum brightness';
+  String get settingsViewerMaximumBrightness => 'ಗರಿಷ್ಟ ಪ್ರಕಾಶಮಯ';
 
   @override
-  String get settingsMotionPhotoAutoPlay => 'Auto play motion photos';
+  String get settingsMotionPhotoAutoPlay => 'ಚಾಲನಾ ಚಿತ್ರಗಳ ಸ್ವಯಂಚಾಲನೆ';
 
   @override
-  String get settingsImageBackground => 'Image background';
+  String get settingsImageBackground => 'ಚಿತ್ರದ ಹಿನ್ನೆಲೆ';
 
   @override
-  String get settingsViewerQuickActionsTile => 'Quick actions';
+  String get settingsViewerQuickActionsTile => 'ತ್ವರಿತ ಕ್ರಮಗಳು';
 
   @override
-  String get settingsViewerQuickActionEditorPageTitle => 'Quick Actions';
+  String get settingsViewerQuickActionEditorPageTitle => 'ತ್ವರಿತ ಕ್ರಮಗಳು';
 
   @override
-  String get settingsViewerQuickActionEditorBanner => 'Touch and hold to move buttons and select which actions are displayed in the viewer.';
+  String get settingsViewerQuickActionEditorBanner => 'ಗುಂಡಿಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ ಮತ್ತು ವೀಕ್ಷಕದಲ್ಲಿ ಯಾವ ಕ್ರಿಯೆಗಳನ್ನು ಪ್ರದರ್ಶಿಸಬೇಕು ಎಂಬುದನ್ನು ಆರಿಸಿ.';
 
   @override
-  String get settingsViewerQuickActionEditorDisplayedButtonsSectionTitle => 'Displayed Buttons';
+  String get settingsViewerQuickActionEditorDisplayedButtonsSectionTitle => 'ಪ್ರದರ್ಶಿತ ಗುಂಡಿಗಳು';
 
   @override
-  String get settingsViewerQuickActionEditorAvailableButtonsSectionTitle => 'Available Buttons';
+  String get settingsViewerQuickActionEditorAvailableButtonsSectionTitle => 'ಲಭ್ಯವಿರುವ ಗುಂಡಿಗಳು';
 
   @override
-  String get settingsViewerQuickActionEmpty => 'No buttons';
+  String get settingsViewerQuickActionEmpty => 'ಗುಂಡಿಗಳಿಲ್ಲ';
 
   @override
-  String get settingsViewerOverlayTile => 'Overlay';
+  String get settingsViewerOverlayTile => 'ಮೇಲ್ಪದರ';
 
   @override
-  String get settingsViewerOverlayPageTitle => 'Overlay';
+  String get settingsViewerOverlayPageTitle => 'ಮೇಲ್ಪದರ';
 
   @override
-  String get settingsViewerShowOverlayOnOpening => 'Show on opening';
+  String get settingsViewerShowOverlayOnOpening => 'ಪ್ರಾರಂಭದಲ್ಲಿ ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerShowHistogram => 'Show histogram';
+  String get settingsViewerShowHistogram => 'ಹಿಸ್ಟೋಗ್ರಾಮ್ ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerShowMinimap => 'Show minimap';
+  String get settingsViewerShowMinimap => 'ಚಿಕ್ಕನಕ್ಷೆಯನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerShowInformation => 'Show information';
+  String get settingsViewerShowInformation => 'ಮಾಹಿತಿಯನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerShowInformationSubtitle => 'Show title, date, location, etc.';
+  String get settingsViewerShowInformationSubtitle => 'ಶೀರ್ಷಿಕೆ, ದಿನಾಂಕ, ಸ್ಥಳ ಇತ್ಯಾದಿಗಳನ್ನು ತೋರಿಸಿ.';
 
   @override
-  String get settingsViewerShowRatingTags => 'Show rating & tags';
+  String get settingsViewerShowRatingTags => 'ದರಗಳು ಮತ್ತು ಟ್ಯಾಗುಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerShowShootingDetails => 'Show shooting details';
+  String get settingsViewerShowShootingDetails => 'ಸೆರೆಹಿಡಿದ ವಿವರಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerShowDescription => 'Show description';
+  String get settingsViewerShowDescription => 'ವಿವರಣೆಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerShowOverlayThumbnails => 'Show thumbnails';
+  String get settingsViewerShowOverlayThumbnails => 'ಅಡಕವನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsViewerEnableOverlayBlurEffect => 'Blur effect';
+  String get settingsViewerEnableOverlayBlurEffect => 'ಮಸುಕು ಪರಿಣಾಮ';
 
   @override
-  String get settingsViewerSlideshowTile => 'Slideshow';
+  String get settingsViewerSlideshowTile => 'ಜಾರುಫಲಕ';
 
   @override
-  String get settingsViewerSlideshowPageTitle => 'Slideshow';
+  String get settingsViewerSlideshowPageTitle => 'ಜಾರುಫಲಕ';
 
   @override
-  String get settingsSlideshowRepeat => 'Repeat';
+  String get settingsSlideshowRepeat => 'ಪುನರಾವರ್ತನೆ';
 
   @override
-  String get settingsSlideshowShuffle => 'Shuffle';
+  String get settingsSlideshowShuffle => 'ಕಲಸು';
 
   @override
-  String get settingsSlideshowFillScreen => 'Fill screen';
+  String get settingsSlideshowFillScreen => 'ಪೂರ್ಣ ಪರದೆ';
 
   @override
-  String get settingsSlideshowAnimatedZoomEffect => 'Animated zoom effect';
+  String get settingsSlideshowAnimatedZoomEffect => 'ಅನಿಮೇಟೆಡ್ ಹಿಗ್ಗಿಸಿದ ಪರಿಣಾಮ';
 
   @override
-  String get settingsSlideshowTransitionTile => 'Transition';
+  String get settingsSlideshowTransitionTile => 'ಪರಿವರ್ತನೆ';
 
   @override
-  String get settingsSlideshowIntervalTile => 'Interval';
+  String get settingsSlideshowIntervalTile => 'ಮಧ್ಯಂತರ';
 
   @override
-  String get settingsSlideshowVideoPlaybackTile => 'Video playback';
+  String get settingsSlideshowVideoPlaybackTile => 'ವಿಡಿಯೋ ಪ್ಲೇಬ್ಯಾಕ್';
 
   @override
-  String get settingsSlideshowVideoPlaybackDialogTitle => 'Video Playback';
+  String get settingsSlideshowVideoPlaybackDialogTitle => 'ವಿಡಿಯೋ ಪ್ಲೇಬ್ಯಾಕ್';
 
   @override
-  String get settingsVideoPageTitle => 'Video Settings';
+  String get settingsVideoPageTitle => 'ವಿಡಿಯೋ ಸಂಯೋಜನೆಗಳು';
 
   @override
-  String get settingsVideoSectionTitle => 'Video';
+  String get settingsVideoSectionTitle => 'ವಿಡಿಯೋ';
 
   @override
-  String get settingsVideoShowVideos => 'Show videos';
+  String get settingsVideoShowVideos => 'ವಿಡಿಯೋಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsVideoPlaybackTile => 'Playback';
+  String get settingsVideoPlaybackTile => 'ಪ್ಲೇಬ್ಯಾಕ್';
 
   @override
-  String get settingsVideoPlaybackPageTitle => 'Playback';
+  String get settingsVideoPlaybackPageTitle => 'ಪ್ಲೇಬ್ಯಾಕ್';
 
   @override
-  String get settingsVideoEnableHardwareAcceleration => 'Hardware acceleration';
+  String get settingsVideoEnableHardwareAcceleration => 'ಯಂತ್ರಾಂಶ ವೇಗವರ್ಧನೆ';
 
   @override
-  String get settingsVideoAutoPlay => 'Auto play';
+  String get settingsVideoAutoPlay => 'ಸ್ವಯಂ ಚಾಲನೆ';
 
   @override
-  String get settingsVideoLoopModeTile => 'Loop mode';
+  String get settingsVideoLoopModeTile => 'ಆವರ್ತನ ಕ್ರಮ';
 
   @override
-  String get settingsVideoLoopModeDialogTitle => 'Loop Mode';
+  String get settingsVideoLoopModeDialogTitle => 'ಆವರ್ತನ ಕ್ರಮ';
 
   @override
-  String get settingsVideoResumptionModeTile => 'Resume playback';
+  String get settingsVideoResumptionModeTile => 'ಮುಂದುವರೆಸು';
 
   @override
-  String get settingsVideoResumptionModeDialogTitle => 'Resume Playback';
+  String get settingsVideoResumptionModeDialogTitle => 'ಮುಂದುವರೆಸು';
 
   @override
-  String get settingsVideoBackgroundMode => 'Background mode';
+  String get settingsVideoBackgroundMode => 'ಹಿನ್ನೆಲೆ ಕ್ರಮ';
 
   @override
-  String get settingsVideoBackgroundModeDialogTitle => 'Background Mode';
+  String get settingsVideoBackgroundModeDialogTitle => 'ಹಿನ್ನೆಲೆ ಕ್ರಮ';
 
   @override
-  String get settingsVideoControlsTile => 'Controls';
+  String get settingsVideoControlsTile => 'ನಿಯಂತ್ರಣಗಳು';
 
   @override
-  String get settingsVideoControlsPageTitle => 'Controls';
+  String get settingsVideoControlsPageTitle => 'ನಿಯಂತ್ರಣಗಳು';
 
   @override
-  String get settingsVideoButtonsTile => 'Buttons';
+  String get settingsVideoButtonsTile => 'ಒತ್ತುಗುಂಡಿಗಳು';
 
   @override
-  String get settingsVideoGestureDoubleTapTogglePlay => 'Double tap to play/pause';
+  String get settingsVideoGestureDoubleTapTogglePlay => 'ಚಾಲನೆ/ವಿರಾಮ ಮಾಡಲು ದ್ವಿಗುಣ ತಟ್ಟಿ';
 
   @override
-  String get settingsVideoGestureSideDoubleTapSeek => 'Double tap on screen edges to seek backward/forward';
+  String get settingsVideoGestureSideDoubleTapSeek => 'ಮುಂದೆ/ಹಿಂದೆ ಚಲಿಸಲು ಪರದೆಯ ಅಂಚಿನಲ್ಲಿ ಮಾಡಲು ದ್ವಿಗುಣ ತಟ್ಟಿ';
 
   @override
-  String get settingsVideoGestureVerticalDragBrightnessVolume => 'Swipe up or down to adjust brightness/volume';
+  String get settingsVideoGestureVerticalDragBrightnessVolume => 'ಪ್ರಕಾಶ/ಶಬ್ದಪ್ರಮಾಣ ಹೊಂದಿಸಲು ಮೇಲಕ್ಕೆ ಅಥವಾ ಕೆಳಕ್ಕೆ ಜಾರಿಸಿ';
 
   @override
-  String get settingsSubtitleThemeTile => 'Subtitles';
+  String get settingsSubtitleThemeTile => 'ಅಡಿಬರಹ';
 
   @override
-  String get settingsSubtitleThemePageTitle => 'Subtitles';
+  String get settingsSubtitleThemePageTitle => 'ಅಡಿಬರಹ';
 
   @override
-  String get settingsSubtitleThemeSample => 'This is a sample.';
+  String get settingsSubtitleThemeSample => 'ಇದು ಒಂದು ನಮೂನೆ.';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentTile => 'Text alignment';
+  String get settingsSubtitleThemeTextAlignmentTile => 'ಪಠ್ಯ ಜೋಡಣೆ';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentDialogTitle => 'Text Alignment';
+  String get settingsSubtitleThemeTextAlignmentDialogTitle => 'ಪಠ್ಯ ಜೋಡಣೆ';
 
   @override
-  String get settingsSubtitleThemeTextPositionTile => 'Text position';
+  String get settingsSubtitleThemeTextPositionTile => 'ಪಠ್ಯ ಸ್ಥಾನ';
 
   @override
-  String get settingsSubtitleThemeTextPositionDialogTitle => 'Text Position';
+  String get settingsSubtitleThemeTextPositionDialogTitle => 'ಪಠ್ಯ ಸ್ಥಾನ';
 
   @override
-  String get settingsSubtitleThemeTextSize => 'Text size';
+  String get settingsSubtitleThemeTextSize => 'ಪಠ್ಯದ ಗಾತ್ರ';
 
   @override
-  String get settingsSubtitleThemeShowOutline => 'Show outline and shadow';
+  String get settingsSubtitleThemeShowOutline => 'ಬಾಹ್ಯರೇಖೆ ಮತ್ತು ನೆರಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsSubtitleThemeTextColor => 'Text color';
+  String get settingsSubtitleThemeTextColor => 'ಪಠ್ಯದ ಬಣ್ಣ';
 
   @override
-  String get settingsSubtitleThemeTextOpacity => 'Text opacity';
+  String get settingsSubtitleThemeTextOpacity => 'ಪಠ್ಯದ ಪಾರದರ್ಶಕತೆ';
 
   @override
-  String get settingsSubtitleThemeBackgroundColor => 'Background color';
+  String get settingsSubtitleThemeBackgroundColor => 'ಹಿನ್ನೆಲೆ ಬಣ್ಣ';
 
   @override
-  String get settingsSubtitleThemeBackgroundOpacity => 'Background opacity';
+  String get settingsSubtitleThemeBackgroundOpacity => 'ಹಿನ್ನೆಲೆ ಪಾರದರ್ಶಕತೆ';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentLeft => 'Left';
+  String get settingsSubtitleThemeTextAlignmentLeft => 'ಎಡ';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentCenter => 'Center';
+  String get settingsSubtitleThemeTextAlignmentCenter => 'ಮಧ್ಯ';
 
   @override
-  String get settingsSubtitleThemeTextAlignmentRight => 'Right';
+  String get settingsSubtitleThemeTextAlignmentRight => 'ಬಲ';
 
   @override
-  String get settingsPrivacySectionTitle => 'Privacy';
+  String get settingsPrivacySectionTitle => 'ಗೌಪ್ಯತೆ';
 
   @override
-  String get settingsAllowInstalledAppAccess => 'Allow access to app inventory';
+  String get settingsAllowInstalledAppAccess => 'ಅಪ್ಲಿಕೇಶನ್ ಯಾದಿಗೆ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಿ';
 
   @override
-  String get settingsAllowInstalledAppAccessSubtitle => 'Used to improve album display';
+  String get settingsAllowInstalledAppAccessSubtitle => 'ಆಲ್ಬಮ್ ಪ್ರದರ್ಶನವನ್ನು ಸುಧಾರಿಸಲು ಬಳಸಲಾಗುತ್ತದೆ';
 
   @override
-  String get settingsAllowErrorReporting => 'Allow anonymous error reporting';
+  String get settingsAllowErrorReporting => 'ಅನಾಮಧೇಯ ದೋಷ ವರದಿಯನ್ನು ಅನುಮತಿಸಿ';
 
   @override
-  String get settingsSaveSearchHistory => 'Save search history';
+  String get settingsSaveSearchHistory => 'ಹುಡುಕಾಟದ ಇತಿಹಾಸವನ್ನು ಉಳಿಸಿ';
 
   @override
-  String get settingsEnableBin => 'Use recycle bin';
+  String get settingsEnableBin => 'ಮರುಬಳಕೆಯ ತೊಟ್ಟಿಯನ್ನು ಬಳಸಿ';
 
   @override
-  String get settingsEnableBinSubtitle => 'Keep deleted items for 30 days';
+  String get settingsEnableBinSubtitle => 'ಅಳಿಸಿದ ವಸ್ತುಗಳನ್ನು 30 ದಿನಗಳವರೆಗೆ ಇರಿಸಿ';
 
   @override
-  String get settingsDisablingBinWarningDialogMessage => 'Items in the recycle bin will be deleted forever.';
+  String get settingsDisablingBinWarningDialogMessage => 'ಮರುಬಳಕೆ ತೊಟ್ಟಿಯಲ್ಲಿರುವ ವಸ್ತುಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತಿದೆ.';
 
   @override
-  String get settingsAllowMediaManagement => 'Allow media management';
+  String get settingsAllowMediaManagement => 'ಮಾಧ್ಯಮ ನಿರ್ವಹಣೆಯನ್ನು ಅನುಮತಿಸಿ';
 
   @override
-  String get settingsHiddenItemsTile => 'Hidden items';
+  String get settingsHiddenItemsTile => 'ಮರೆಮಾಡಿದ ವಸ್ತುಗಳು';
 
   @override
-  String get settingsHiddenItemsPageTitle => 'Hidden Items';
+  String get settingsHiddenItemsPageTitle => 'ಮರೆಮಾಡಿದ ವಸ್ತುಗಳು';
 
   @override
-  String get settingsHiddenFiltersBanner => 'Photos and videos matching hidden filters will not appear in your collection.';
+  String get settingsHiddenFiltersBanner => 'ಮರೆಮಾಡಿದ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಚಿತ್ರಗಳು ಮತ್ತು ವೀಡಿಯೊಗಳು ನಿಮ್ಮ ಸಂಗ್ರಹಣೆಯಲ್ಲಿ ಗೋಚರಿಸುವುದಿಲ್ಲ.';
 
   @override
-  String get settingsHiddenFiltersEmpty => 'No hidden filters';
+  String get settingsHiddenFiltersEmpty => 'ಮರೆಮಾಡಿದ ಫಿಲ್ಟರ್‌ಗಳಿಲ್ಲ';
 
   @override
-  String get settingsStorageAccessTile => 'Storage access';
+  String get settingsStorageAccessTile => 'ಸಂಗ್ರಹಣೆ ಪ್ರವೇಶಾಧಿಕಾರ';
 
   @override
-  String get settingsStorageAccessPageTitle => 'Storage Access';
+  String get settingsStorageAccessPageTitle => 'ಸಂಗ್ರಹಣೆ ಪ್ರವೇಶಾಧಿಕಾರ';
 
   @override
-  String get settingsStorageAccessBanner => 'Some directories require an explicit access grant to modify files in them. You can review here directories to which you previously gave access.';
+  String get settingsStorageAccessBanner => 'ಕೆಲವು ಕೋಶಗಳಿಗೆ ಕಡತಗಳನ್ನು ಮಾರ್ಪಡಿಸಲು ಸ್ಪಷ್ಟ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸುವ ಅಗತ್ಯವಿದೆ. ನೀವು ಈ ಹಿಂದೆ ಪ್ರವೇಶವನ್ನು ನೀಡಿದ ಕೋಶಗಳನ್ನು ನೀವು ಇಲ್ಲಿ ಪರಿಶೀಲಿಸಬಹುದು.';
 
   @override
-  String get settingsStorageAccessEmpty => 'No access grants';
+  String get settingsStorageAccessEmpty => 'ಪ್ರವೇಶ ಅನುಮತಿಸಿಲ್ಲ';
 
   @override
-  String get settingsStorageAccessRevokeTooltip => 'Revoke';
+  String get settingsStorageAccessRevokeTooltip => 'ಹಿಂಪಡೆಯಿರಿ';
 
   @override
-  String get settingsAccessibilitySectionTitle => 'Accessibility';
+  String get settingsAccessibilitySectionTitle => 'ಎಟುಕು';
 
   @override
-  String get settingsRemoveAnimationsTile => 'Remove animations';
+  String get settingsRemoveAnimationsTile => 'ಅನಿಮೇಷನ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ';
 
   @override
-  String get settingsRemoveAnimationsDialogTitle => 'Remove Animations';
+  String get settingsRemoveAnimationsDialogTitle => 'ಅನಿಮೇಷನ್‌ಗಳನ್ನು ತೆಗೆಯಿರಿ';
 
   @override
-  String get settingsTimeToTakeActionTile => 'Time to take action';
+  String get settingsTimeToTakeActionTile => 'ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಲು ಸಮಯ';
 
   @override
-  String get settingsAccessibilityShowPinchGestureAlternatives => 'Show multi-touch gesture alternatives';
+  String get settingsAccessibilityShowPinchGestureAlternatives => 'ಬಹುಸ್ಪರ್ಶ ಗೆಸ್ಚರ್ ಪರ್ಯಾಯಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get settingsDisplaySectionTitle => 'Display';
+  String get settingsDisplaySectionTitle => 'ಪ್ರದರ್ಶಕ';
 
   @override
-  String get settingsThemeBrightnessTile => 'Theme';
+  String get settingsThemeBrightnessTile => 'ಅಲಂಕಾರ';
 
   @override
-  String get settingsThemeBrightnessDialogTitle => 'Theme';
+  String get settingsThemeBrightnessDialogTitle => 'ಅಲಂಕಾರ';
 
   @override
-  String get settingsThemeColorHighlights => 'Color highlights';
+  String get settingsThemeColorHighlights => 'ಬಣ್ಣದ ಮುಖ್ಯಾಂಶಗಳು';
 
   @override
-  String get settingsThemeEnableDynamicColor => 'Dynamic color';
+  String get settingsThemeEnableDynamicColor => 'ಡೈನಾಮಿಕ್ ಬಣ್ಣ';
 
   @override
-  String get settingsDisplayRefreshRateModeTile => 'Display refresh rate';
+  String get settingsDisplayRefreshRateModeTile => 'ರಿಫ್ರೆಶ್ ದರವನ್ನು ಪ್ರದರ್ಶಿಸಿ';
 
   @override
-  String get settingsDisplayRefreshRateModeDialogTitle => 'Refresh Rate';
+  String get settingsDisplayRefreshRateModeDialogTitle => 'ರಿಫ್ರೆಶ್ ದರ';
 
   @override
-  String get settingsDisplayUseTvInterface => 'Android TV interface';
+  String get settingsDisplayUseTvInterface => 'ಆಂಡ್ರಾಯ್ಡ್ ಟಿವಿ ಇಂಟರ್ಫೇಸ್';
 
   @override
-  String get settingsLanguageSectionTitle => 'Language & Formats';
+  String get settingsLanguageSectionTitle => 'ಭಾಷೆ ಮತ್ತು ಸ್ವರೂಪಗಳು';
 
   @override
-  String get settingsLanguageTile => 'Language';
+  String get settingsLanguageTile => 'ಭಾಷೆ';
 
   @override
-  String get settingsLanguagePageTitle => 'Language';
+  String get settingsLanguagePageTitle => 'ಭಾಷೆ';
 
   @override
-  String get settingsCoordinateFormatTile => 'Coordinate format';
+  String get settingsCoordinateFormatTile => 'ನಿರ್ದೇಶಾಂಕ ಸ್ವರೂಪ';
 
   @override
-  String get settingsCoordinateFormatDialogTitle => 'Coordinate Format';
+  String get settingsCoordinateFormatDialogTitle => 'ನಿರ್ದೇಶಾಂಕ ಸ್ವರೂಪ';
 
   @override
-  String get settingsUnitSystemTile => 'Units';
+  String get settingsUnitSystemTile => 'ಏಕಮಾನಗಳು';
 
   @override
-  String get settingsUnitSystemDialogTitle => 'Units';
+  String get settingsUnitSystemDialogTitle => 'ಏಕಮಾನಗಳು';
 
   @override
-  String get settingsForceWesternArabicNumeralsTile => 'Force Arabic numerals';
+  String get settingsForceWesternArabicNumeralsTile => 'ಅರೇಬಿಕ್ ಅಂಕಿಗಳನ್ನು ಒತ್ತಾಯಿಸಿ';
 
   @override
-  String get settingsScreenSaverPageTitle => 'Screen Saver';
+  String get settingsScreenSaverPageTitle => 'ಪರದೆ ರಕ್ಷಕ';
 
   @override
-  String get settingsWidgetPageTitle => 'Photo Frame';
+  String get settingsWidgetPageTitle => 'ಚಿತ್ರ ಚೌಕಟ್ಟು';
 
   @override
-  String get settingsWidgetShowOutline => 'Outline';
+  String get settingsWidgetShowOutline => 'ರೂಪರೇಖೆ';
 
   @override
-  String get settingsWidgetOpenPage => 'When tapping on the widget';
+  String get settingsWidgetOpenPage => 'ವಿಜೆಟ್ ಮೇಲೆ ಸ್ಪರ್ಶಿಸುವಾಗ';
 
   @override
-  String get settingsWidgetDisplayedItem => 'Displayed item';
+  String get settingsWidgetDisplayedItem => 'ಪ್ರದರ್ಶಿಸಲಾದ ವಸ್ತು';
 
   @override
-  String get settingsCollectionTile => 'Collection';
+  String get settingsCollectionTile => 'ಸಂಗ್ರಹ';
 
   @override
-  String get statsPageTitle => 'Stats';
+  String get statsPageTitle => 'ಅಂಕಿಅಂಶಗಳು';
 
   @override
   String statsWithGps(int count) {
@@ -2173,198 +2173,198 @@ class AppLocalizationsKn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString items with location',
-      one: '1 item with location',
+      other: 'ಸ್ಥಳ ಮಾಹಿತಿಯನ್ನು $countString ವಸ್ತುಗಳು ಹೊಂದಿವೆ',
+      one: 'ಸ್ಥಳ ಮಾಹಿತಿಯನ್ನು 1 ವಸ್ತು ಹೊಂದಿದೆ ',
     );
     return '$_temp0';
   }
 
   @override
-  String get statsTopCountriesSectionTitle => 'Top Countries';
+  String get statsTopCountriesSectionTitle => 'ಅಗ್ರ ದೇಶಗಳು';
 
   @override
-  String get statsTopStatesSectionTitle => 'Top States';
+  String get statsTopStatesSectionTitle => 'ಅಗ್ರ ರಾಜ್ಯಗಳು';
 
   @override
-  String get statsTopPlacesSectionTitle => 'Top Places';
+  String get statsTopPlacesSectionTitle => 'ಅಗ್ರ ಸ್ಥಳಗಳು';
 
   @override
-  String get statsTopTagsSectionTitle => 'Top Tags';
+  String get statsTopTagsSectionTitle => 'ಅಗ್ರ ಟ್ಯಾಗುಗಳು';
 
   @override
-  String get statsTopAlbumsSectionTitle => 'Top Albums';
+  String get statsTopAlbumsSectionTitle => 'ಅಗ್ರ ಆಲ್ಬಮ್ ಗಳು';
 
   @override
-  String get viewerOpenPanoramaButtonLabel => 'OPEN PANORAMA';
+  String get viewerOpenPanoramaButtonLabel => 'ಪನೋರಮಾ ತೆರೆಯಿರಿ';
 
   @override
-  String get viewerSetWallpaperButtonLabel => 'SET WALLPAPER';
+  String get viewerSetWallpaperButtonLabel => 'ಭಿತ್ತಿಚಿತ್ರ ಹೊಂದಿಸಿ';
 
   @override
-  String get viewerErrorUnknown => 'Oops!';
+  String get viewerErrorUnknown => 'ಅಯ್ಯೋ!';
 
   @override
-  String get viewerErrorDoesNotExist => 'The file no longer exists.';
+  String get viewerErrorDoesNotExist => 'ಕಡತವು ಇನ್ಮುಂದೆ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.';
 
   @override
-  String get viewerInfoPageTitle => 'Info';
+  String get viewerInfoPageTitle => 'ವಿವರ';
 
   @override
-  String get viewerInfoBackToViewerTooltip => 'Back to viewer';
+  String get viewerInfoBackToViewerTooltip => 'ವೀಕ್ಷಕಕ್ಕೆ ಹಿಂದಿರುಗಿ';
 
   @override
-  String get viewerInfoUnknown => 'unknown';
+  String get viewerInfoUnknown => 'ಅಜ್ಞಾತ';
 
   @override
-  String get viewerInfoLabelDescription => 'Description';
+  String get viewerInfoLabelDescription => 'ವಿವರಣೆ';
 
   @override
-  String get viewerInfoLabelTitle => 'Title';
+  String get viewerInfoLabelTitle => 'ಶೀರ್ಷಿಕೆ';
 
   @override
-  String get viewerInfoLabelDate => 'Date';
+  String get viewerInfoLabelDate => 'ದಿನಾಂಕ';
 
   @override
-  String get viewerInfoLabelResolution => 'Resolution';
+  String get viewerInfoLabelResolution => 'ಅಳತೆ';
 
   @override
-  String get viewerInfoLabelSize => 'Size';
+  String get viewerInfoLabelSize => 'ಪ್ರಮಾಣ';
 
   @override
-  String get viewerInfoLabelUri => 'URI';
+  String get viewerInfoLabelUri => 'ಯು ಆರ್ ಐ';
 
   @override
-  String get viewerInfoLabelPath => 'Path';
+  String get viewerInfoLabelPath => 'ಹಾದಿ';
 
   @override
-  String get viewerInfoLabelDuration => 'Duration';
+  String get viewerInfoLabelDuration => 'ಅವಧಿ';
 
   @override
-  String get viewerInfoLabelOwner => 'Owner';
+  String get viewerInfoLabelOwner => 'ಒಡೆಯ';
 
   @override
-  String get viewerInfoLabelCoordinates => 'Coordinates';
+  String get viewerInfoLabelCoordinates => 'ನಿರ್ದೇಶಾಂಕ';
 
   @override
-  String get viewerInfoLabelAddress => 'Address';
+  String get viewerInfoLabelAddress => 'ವಿಳಾಸ';
 
   @override
-  String get mapStyleDialogTitle => 'Map Style';
+  String get mapStyleDialogTitle => 'ನಕ್ಷೆಯ ಪ್ರಕಾರ';
 
   @override
-  String get mapStyleTooltip => 'Select map style';
+  String get mapStyleTooltip => 'ನಕ್ಷೆಯ ಶೈಲಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ';
 
   @override
-  String get mapZoomInTooltip => 'Zoom in';
+  String get mapZoomInTooltip => 'ಹಿಗ್ಗಿಸು';
 
   @override
-  String get mapZoomOutTooltip => 'Zoom out';
+  String get mapZoomOutTooltip => 'ಕುಗ್ಗಿಸು';
 
   @override
-  String get mapPointNorthUpTooltip => 'Point north up';
+  String get mapPointNorthUpTooltip => 'ಉತ್ತರದಿಕ್ಕನ್ನು ಮೇಲ್ಮುಖವಾಗಿ ಸೂಚಿಸು';
 
   @override
-  String get mapAttributionOsmData => 'Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors';
+  String get mapAttributionOsmData => 'ನಕ್ಷೆಯ ದತ್ತಾಂಶ © [OpenStreetMap](https://www.openstreetmap.org/copyright) ಕೊಡುಗೆದಾರರು';
 
   @override
-  String get mapAttributionOsmLiberty => 'Tiles by [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)';
+  String get mapAttributionOsmLiberty => 'ಬಿಲ್ಲೆಗಳನ್ನು ಒದಗಿಸಿದವರು [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • ಆಶ್ರಯದಾತರು [OSM Americana](https://tile.ourmap.us)';
 
   @override
-  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles by [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
+  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | ಬಿಲ್ಲೆಗಳನ್ನು ಒದಗಿಸಿದವರು [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
 
   @override
-  String get mapAttributionOsmHot => 'Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)';
+  String get mapAttributionOsmHot => 'ಬಿಲ್ಲೆಗಳನ್ನು ಒದಗಿಸಿದವರು [HOT](https://www.hotosm.org/) • ಆಶ್ರಯದಾತರು [OSM France](https://openstreetmap.fr/)';
 
   @override
-  String get mapAttributionStamen => 'Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
+  String get mapAttributionStamen => 'ಬಿಲ್ಲೆಗಳನ್ನು ಒದಗಿಸಿದವರು [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
 
   @override
-  String get openMapPageTooltip => 'View on Map page';
+  String get openMapPageTooltip => 'ನಕ್ಷೆ ಪುಟದಲ್ಲಿ ವೀಕ್ಷಿಸಿ';
 
   @override
-  String get mapEmptyRegion => 'No images in this region';
+  String get mapEmptyRegion => 'ಈ ಪ್ರದೇಶದಲ್ಲಿ ಯಾವುದೇ ಚಿತ್ರಗಳಿಲ್ಲ';
 
   @override
-  String get viewerInfoOpenEmbeddedFailureFeedback => 'Failed to extract embedded data';
+  String get viewerInfoOpenEmbeddedFailureFeedback => 'ಹುದುಗಿಸಿದ ದತ್ತಾಂಶವನ್ನು ಹೊರತೆಗೆಯಲು ವಿಫಲವಾಗಿದೆ';
 
   @override
-  String get viewerInfoOpenLinkText => 'Open';
+  String get viewerInfoOpenLinkText => 'ತೆರೆಯಿರಿ';
 
   @override
-  String get viewerInfoViewXmlLinkText => 'View XML';
+  String get viewerInfoViewXmlLinkText => 'XML ನೋಡಿ';
 
   @override
-  String get viewerInfoSearchFieldLabel => 'Search metadata';
+  String get viewerInfoSearchFieldLabel => 'ಹುದುಗಿಸಿದ ದತ್ತಾಂಶವನ್ನು ಹುಡುಕಿ';
 
   @override
-  String get viewerInfoSearchEmpty => 'No matching keys';
+  String get viewerInfoSearchEmpty => 'ಹೊಂದಾಣಿಕೆಯ ಕೀಲಿಗಳಿಲ್ಲ';
 
   @override
-  String get viewerInfoSearchSuggestionDate => 'Date & time';
+  String get viewerInfoSearchSuggestionDate => 'ದಿನಾಂಕ ಮತ್ತು ಸಮಯ';
 
   @override
-  String get viewerInfoSearchSuggestionDescription => 'Description';
+  String get viewerInfoSearchSuggestionDescription => 'ವಿವರಣೆ';
 
   @override
-  String get viewerInfoSearchSuggestionDimensions => 'Dimensions';
+  String get viewerInfoSearchSuggestionDimensions => 'ಆಯಾಮ';
 
   @override
-  String get viewerInfoSearchSuggestionResolution => 'Resolution';
+  String get viewerInfoSearchSuggestionResolution => 'ಅಳತೆ';
 
   @override
-  String get viewerInfoSearchSuggestionRights => 'Rights';
+  String get viewerInfoSearchSuggestionRights => 'ಹಕ್ಕುಗಳು';
 
   @override
-  String get wallpaperUseScrollEffect => 'Use scroll effect on home screen';
+  String get wallpaperUseScrollEffect => 'ಮುಖಪುಟದಲ್ಲಿ ಸುರುಳಿ ಪರಿಣಾಮವನ್ನು ಬಳಸಿ';
 
   @override
-  String get tagEditorPageTitle => 'Edit Tags';
+  String get tagEditorPageTitle => 'Tagಗಳನ್ನು ತಿದ್ದಿ';
 
   @override
-  String get tagEditorPageNewTagFieldLabel => 'New tag';
+  String get tagEditorPageNewTagFieldLabel => 'ಹೊಸ ಟ್ಯಾಗು';
 
   @override
-  String get tagEditorPageAddTagTooltip => 'Add tag';
+  String get tagEditorPageAddTagTooltip => 'ಟ್ಯಾಗು ಸೇರಿಸಿ';
 
   @override
-  String get tagEditorSectionRecent => 'Recent';
+  String get tagEditorSectionRecent => 'ಇತ್ತೀಚಿನವು';
 
   @override
-  String get tagEditorSectionPlaceholders => 'Placeholders';
+  String get tagEditorSectionPlaceholders => 'ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್‌ಗಳು';
 
   @override
-  String get tagEditorDiscardDialogMessage => 'Do you want to discard changes?';
+  String get tagEditorDiscardDialogMessage => 'ನೀವು ಬದಲಾವಣೆಗಳನ್ನು ತ್ಯಜಿಸಲು ಬಯಸುವಿರಾ?';
 
   @override
-  String get tagPlaceholderCountry => 'Country';
+  String get tagPlaceholderCountry => 'ದೇಶ';
 
   @override
-  String get tagPlaceholderState => 'State';
+  String get tagPlaceholderState => 'ರಾಜ್ಯ';
 
   @override
-  String get tagPlaceholderPlace => 'Place';
+  String get tagPlaceholderPlace => 'ಸ್ಥಳ';
 
   @override
-  String get panoramaEnableSensorControl => 'Enable sensor control';
+  String get panoramaEnableSensorControl => 'ಸಂವೇದಕ ನಿಯಂತ್ರಣವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ';
 
   @override
-  String get panoramaDisableSensorControl => 'Disable sensor control';
+  String get panoramaDisableSensorControl => 'ಸಂವೇದಕ ನಿಯಂತ್ರಣವನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ';
 
   @override
-  String get sourceViewerPageTitle => 'Source';
+  String get sourceViewerPageTitle => 'ಮೂಲ';
 
   @override
-  String get filePickerShowHiddenFiles => 'Show hidden files';
+  String get filePickerShowHiddenFiles => 'ಮರೆಮಾಡಿದ ಕಡತಗಳನ್ನು ತೋರಿಸಿ';
 
   @override
-  String get filePickerDoNotShowHiddenFiles => 'Don’t show hidden files';
+  String get filePickerDoNotShowHiddenFiles => 'ಮರೆಮಾಡಿದ ಕಡತಗಳನ್ನು ತೋರಿಸಬೇಡಿ';
 
   @override
-  String get filePickerOpenFrom => 'Open from';
+  String get filePickerOpenFrom => 'ಇಂದ ತೆರೆಯಿರಿ';
 
   @override
-  String get filePickerNoItems => 'No items';
+  String get filePickerNoItems => 'ವಸ್ತುಗಳಿಲ್ಲ';
 
   @override
-  String get filePickerUseThisFolder => 'Use this folder';
+  String get filePickerUseThisFolder => 'ಈ ಕೋಶವನ್ನು ಬಳಸಿ';
 }
