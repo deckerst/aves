@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.9"></a>[v1.12.9] - 2025-04-06
+
 ### Added
 
 - Kannada translation (thanks Chethan, Prasannakumar T Bhat)
@@ -11,6 +13,10 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - enable Impeller rendering engine
+
+### Fixed
+
+- memory pressure during browsing
 
 ## <a id="v1.12.8"></a>[v1.12.8] - 2025-03-25
 
