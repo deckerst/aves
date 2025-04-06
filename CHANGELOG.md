@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- enable Impeller rendering engine
+
 ## <a id="v1.12.8"></a>[v1.12.8] - 2025-03-25
 
 ### Fixed

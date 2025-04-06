@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
@@ -220,6 +221,7 @@ class AvesFloatingBar extends StatefulWidget {
 class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   // prevent expensive blurring when the current page is hidden
   final ValueNotifier<bool> _isBlurAllowedNotifier = ValueNotifier(true);
+  Timer? _blurBlockTimer;
 
   @override
   void didChangeDependencies() {
@@ -240,6 +242,8 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
   @override
   void didPopNext() {
     // post to prevent single frame flash during hero
+    _blurBlockTimer?.cancel();
+    _blurBlockTimer = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _isBlurAllowedNotifier.value = true;
@@ -249,8 +253,9 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
 
   @override
   void didPushNext() {
-    // post to prevent single frame flash during hero
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // delay blur disabling, otherwise visual artifacts appear during page transition with Impeller
+    _blurBlockTimer?.cancel();
+    _blurBlockTimer = Timer(ADurations.pageTransitionLoose, () {
       if (mounted) {
         _isBlurAllowedNotifier.value = false;
       }
