@@ -4548,7 +4548,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get mapAttributionOsmLiberty => '地圖由 [OpenMapTiles](https://www.openmaptiles.org/) 所提供，以 [CC BY](http://creativecommons.org/licenses/by/4.0) 授權 • 托管於 [OSM Americana](https://tile.ourmap.us)';
 
   @override
-  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 地圖由 [OpenTopoMap](https://opentopomap.org/)，以 [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/) 授權';
+  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | 地圖由 [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
 
   @override
   String get mapAttributionOsmHot => '繪製於 [HOT](https://www.hotosm.org/) • 主辦方 [OSM France](https://openstreetmap.fr/)';

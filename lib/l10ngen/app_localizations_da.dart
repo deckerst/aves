@@ -315,7 +315,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get entryActionRemoveFavourite => 'Fjern fra favoritter';
 
   @override
-  String get videoActionCaptureFrame => 'Capture frame';
+  String get videoActionCaptureFrame => 'Tag billede af frame';
 
   @override
   String get videoActionMute => 'Slå lyden fra';
@@ -336,19 +336,19 @@ class AppLocalizationsDa extends AppLocalizations {
   String get videoActionSkip10 => 'Spol 10 sekunder frem';
 
   @override
-  String get videoActionShowPreviousFrame => 'Show previous frame';
+  String get videoActionShowPreviousFrame => 'Vis forrige frame';
 
   @override
-  String get videoActionShowNextFrame => 'Show next frame';
+  String get videoActionShowNextFrame => 'Vis næste frame';
 
   @override
-  String get videoActionSelectStreams => 'Select tracks';
+  String get videoActionSelectStreams => 'Vælg spor';
 
   @override
   String get videoActionSetSpeed => 'Afspilningshastighed';
 
   @override
-  String get videoActionABRepeat => 'A-B repeat';
+  String get videoActionABRepeat => 'A-B gentagelse';
 
   @override
   String get videoRepeatActionSetStart => 'Sæt start';
@@ -360,10 +360,10 @@ class AppLocalizationsDa extends AppLocalizations {
   String get viewerActionSettings => 'Indstillinger';
 
   @override
-  String get viewerActionLock => 'Lock viewer';
+  String get viewerActionLock => 'Lås fremviser';
 
   @override
-  String get viewerActionUnlock => 'Unlock viewer';
+  String get viewerActionUnlock => 'Oplås fremviser';
 
   @override
   String get slideshowActionResume => 'Genoptag';
@@ -548,7 +548,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get keepScreenOnVideoPlayback => 'Under videoafspilning';
 
   @override
-  String get keepScreenOnViewerOnly => 'Viewer page only';
+  String get keepScreenOnViewerOnly => 'Kun fremvisningsside';
 
   @override
   String get keepScreenOnAlways => 'Altid';
@@ -575,7 +575,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get mapStyleOpenTopoMap => 'OpenTopoMap';
 
   @override
-  String get mapStyleOsmHot => 'Humanitarian OSM';
+  String get mapStyleOsmHot => 'Humanitært OSM';
 
   @override
   String get mapStyleStamenWatercolor => 'Stamen Watercolor';
@@ -701,7 +701,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get widgetOpenPageCollection => 'Åbn samling';
 
   @override
-  String get widgetOpenPageViewer => 'Open viewer';
+  String get widgetOpenPageViewer => 'Åbn fremviser';
 
   @override
   String get widgetTapUpdateWidget => 'Opdater widget';
@@ -756,7 +756,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get nameConflictDialogMultipleSourceMessage => 'Nogle filer har samme navn.';
 
   @override
-  String get addShortcutDialogLabel => 'Shortcut label';
+  String get addShortcutDialogLabel => 'Genvejsetiket';
 
   @override
   String get addShortcutButtonLabel => 'TILFØJ';
@@ -793,7 +793,7 @@ class AppLocalizationsDa extends AppLocalizations {
   }
 
   @override
-  String get moveUndatedConfirmationDialogMessage => 'Save item dates before proceeding?';
+  String get moveUndatedConfirmationDialogMessage => 'Gem elementdatoer, før du fortsætter?';
 
   @override
   String get moveUndatedConfirmationDialogSetDate => 'Gem datoer';
@@ -976,10 +976,10 @@ class AppLocalizationsDa extends AppLocalizations {
   String get editEntryDateDialogExtractFromTitle => 'Udtræk fra titel';
 
   @override
-  String get editEntryDateDialogShift => 'Shift';
+  String get editEntryDateDialogShift => 'Skift';
 
   @override
-  String get editEntryDateDialogSourceFileModifiedDate => 'File modified date';
+  String get editEntryDateDialogSourceFileModifiedDate => 'Filens ændringsdato';
 
   @override
   String get durationDialogHours => 'Timer';
@@ -1000,7 +1000,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'Vælg på kort';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'Importér GPX';
 
   @override
   String get editEntryLocationDialogLatitude => 'Breddegrad';
@@ -1009,7 +1009,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Længdegrad';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Tidsskift';
 
   @override
   String get locationPickerUseThisLocationButton => 'Brug denne placering';
@@ -1021,7 +1021,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Fjernelse af metadata';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Alle';
 
   @override
   String get removeEntryMetadataDialogMore => 'Mere';
@@ -1045,10 +1045,10 @@ class AppLocalizationsDa extends AppLocalizations {
   String get videoStreamSelectionDialogOff => 'Fra';
 
   @override
-  String get videoStreamSelectionDialogTrack => 'Track';
+  String get videoStreamSelectionDialogTrack => 'Spor';
 
   @override
-  String get videoStreamSelectionDialogNoSelection => 'There are no other tracks.';
+  String get videoStreamSelectionDialogNoSelection => 'Der er ingen andre spor.';
 
   @override
   String get genericSuccessFeedback => 'Færdig!';
@@ -1174,7 +1174,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get aboutDataUsageClearCache => 'Ryd cache';
 
   @override
-  String get aboutCreditsSectionTitle => 'Credits';
+  String get aboutCreditsSectionTitle => 'Kreditering';
 
   @override
   String get aboutCreditsWorldAtlas1 => 'Denne app bruger en TopoJSON-fil fra';
@@ -1428,10 +1428,10 @@ class AppLocalizationsDa extends AppLocalizations {
   String get collectionEmptyGrantAccessButtonLabel => 'Giv adgang';
 
   @override
-  String get collectionSelectSectionTooltip => 'Select section';
+  String get collectionSelectSectionTooltip => 'Vælg sektion';
 
   @override
-  String get collectionDeselectSectionTooltip => 'Deselect section';
+  String get collectionDeselectSectionTooltip => 'Fravælg sektion';
 
   @override
   String get drawerAboutButton => 'Om';
@@ -1440,7 +1440,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get drawerSettingsButton => 'Indstillinger';
 
   @override
-  String get drawerCollectionAll => 'All collection';
+  String get drawerCollectionAll => 'Alle samlinger';
 
   @override
   String get drawerCollectionFavourites => 'Favoritter';
@@ -1530,7 +1530,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get sortOrderLongestFirst => 'Længste først';
 
   @override
-  String get albumGroupTier => 'By tier';
+  String get albumGroupTier => 'Efter kategori';
 
   @override
   String get albumGroupType => 'Efter type';
@@ -1542,7 +1542,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get albumGroupNone => 'Gruppér ikke';
 
   @override
-  String get albumMimeTypeMixed => 'Mixed';
+  String get albumMimeTypeMixed => 'Blandet';
 
   @override
   String get albumPickPageTitleCopy => 'Kopiér til album';
@@ -1794,7 +1794,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsThumbnailShowRawIcon => 'Vis RAW-ikon';
 
   @override
-  String get settingsThumbnailShowVideoDuration => 'Show video duration';
+  String get settingsThumbnailShowVideoDuration => 'Vis videovarighed';
 
   @override
   String get settingsCollectionQuickActionsTile => 'Hurtighandlinger';
@@ -1806,7 +1806,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsCollectionQuickActionTabBrowsing => 'Browsing';
 
   @override
-  String get settingsCollectionQuickActionTabSelecting => 'Selecting';
+  String get settingsCollectionQuickActionTabSelecting => 'Valg';
 
   @override
   String get settingsCollectionBrowsingQuickActionEditorBanner => 'Tryk og hold for at flytte knapper og vælge, hvilke handlinger der vises, når du gennemser elementer.';
@@ -1815,13 +1815,13 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsCollectionSelectionQuickActionEditorBanner => 'Tryk og hold for at flytte knapper og vælge, hvilke handlinger der vises, når du vælger elementer.';
 
   @override
-  String get settingsCollectionBurstPatternsTile => 'Burst patterns';
+  String get settingsCollectionBurstPatternsTile => 'Filnavnmønstre';
 
   @override
   String get settingsCollectionBurstPatternsNone => 'Ingen';
 
   @override
-  String get settingsViewerSectionTitle => 'Viewer';
+  String get settingsViewerSectionTitle => 'Fremviser';
 
   @override
   String get settingsViewerGestureSideTapNext => 'Tryk på skærmkanterne for at vise forrige/næste element';
@@ -1845,7 +1845,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsViewerQuickActionEditorPageTitle => 'Hurtighandlinger';
 
   @override
-  String get settingsViewerQuickActionEditorBanner => 'Touch and hold to move buttons and select which actions are displayed in the viewer.';
+  String get settingsViewerQuickActionEditorBanner => 'Tryk og hold for at flytte knapper og vælge, hvilke handlinger der vises i fremviseren.';
 
   @override
   String get settingsViewerQuickActionEditorDisplayedButtonsSectionTitle => 'Viste knapper';
@@ -1938,7 +1938,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsVideoPlaybackPageTitle => 'Afspilning';
 
   @override
-  String get settingsVideoEnableHardwareAcceleration => 'Hardware acceleration';
+  String get settingsVideoEnableHardwareAcceleration => 'Hardwareacceleration';
 
   @override
   String get settingsVideoAutoPlay => 'Afspil automatisk';
@@ -2031,7 +2031,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsPrivacySectionTitle => 'Privatliv';
 
   @override
-  String get settingsAllowInstalledAppAccess => 'Allow access to app inventory';
+  String get settingsAllowInstalledAppAccess => 'Tillad adgang til app-lager';
 
   @override
   String get settingsAllowInstalledAppAccessSubtitle => 'Bruges til at forbedre albumvisning';
@@ -2106,7 +2106,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsThemeBrightnessDialogTitle => 'Tema';
 
   @override
-  String get settingsThemeColorHighlights => 'Color highlights';
+  String get settingsThemeColorHighlights => 'Farvemarkeringer';
 
   @override
   String get settingsThemeEnableDynamicColor => 'Dynamisk farve';
@@ -2210,7 +2210,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get viewerInfoPageTitle => 'Info';
 
   @override
-  String get viewerInfoBackToViewerTooltip => 'Back to viewer';
+  String get viewerInfoBackToViewerTooltip => 'Tilbage til fremviser';
 
   @override
   String get viewerInfoUnknown => 'ukendt';
@@ -2279,7 +2279,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get mapAttributionStamen => 'Fliser af [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
 
   @override
-  String get openMapPageTooltip => 'View on Map page';
+  String get openMapPageTooltip => 'Se på kortside';
 
   @override
   String get mapEmptyRegion => 'Ingen billeder i denne region';
@@ -2297,7 +2297,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get viewerInfoSearchFieldLabel => 'Søg i metadata';
 
   @override
-  String get viewerInfoSearchEmpty => 'No matching keys';
+  String get viewerInfoSearchEmpty => 'Ingen matchende nøgler';
 
   @override
   String get viewerInfoSearchSuggestionDate => 'Dato og tid';
@@ -2315,7 +2315,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get viewerInfoSearchSuggestionRights => 'Rettigheder';
 
   @override
-  String get wallpaperUseScrollEffect => 'Use scroll effect on home screen';
+  String get wallpaperUseScrollEffect => 'Brug rulleeffekt på startside';
 
   @override
   String get tagEditorPageTitle => 'Rediger Tags';
