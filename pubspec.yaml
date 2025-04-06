@@ -7,7 +7,7 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.12.8+148
+version: 1.12.9+149
 publish_to: none
 
 environment:
@@ -130,18 +130,6 @@ dependencies:
   volume_controller:
   xml:
 
-dependency_overrides:
-  media_kit:
-    git:
-      url: https://github.com/media-kit/media-kit.git
-      ref: d2145a50f68394096845915a28874341fbf5b3fe
-      path: media_kit
-  media_kit_video:
-    git:
-      url: https://github.com/media-kit/media-kit.git
-      ref: d2145a50f68394096845915a28874341fbf5b3fe
-      path: media_kit_video
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -170,9 +158,6 @@ flutter:
 
 ################################################################################
 # Test driver
-
-# capture shaders (profile mode, real device only):
-# % ./flutterw drive --flavor play -t test_driver/driver_shaders.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
 
 # generate screenshots (profile mode, specific collection):
 # % ./flutterw drive --flavor play -t test_driver/driver_screenshots.dart --profile

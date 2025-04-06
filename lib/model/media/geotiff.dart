@@ -157,7 +157,7 @@ class MappedGeoTiff with MapOverlay {
   String get id => entry.uri;
 
   @override
-  ImageProvider get imageProvider => entry.uriImage;
+  ImageProvider get imageProvider => entry.fullImage;
 
   @override
   bool get canOverlay => center != null;

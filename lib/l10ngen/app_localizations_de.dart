@@ -1006,7 +1006,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Längengrad';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Zeitverschiebung';
 
   @override
   String get locationPickerUseThisLocationButton => 'Diesen Standort verwenden';
@@ -1018,7 +1018,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Entfernung von Metadaten';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Alle';
 
   @override
   String get removeEntryMetadataDialogMore => 'Mehr';

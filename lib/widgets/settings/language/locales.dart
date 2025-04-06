@@ -24,6 +24,7 @@ class SupportedLocales {
     'is': 'Íslenska',
     'it': 'Italiano',
     'ja': '日本語',
+    'kn': 'ಕನ್ನಡ',
     'ko': '한국어',
     'lt': 'Lietuvių',
     'nb': 'Norsk (Bokmål)',

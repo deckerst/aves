@@ -90,7 +90,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                 }
               },
               child: Image(
-                image: entry.uriImage,
+                image: entry.fullImage,
               ),
             ),
             Positioned(

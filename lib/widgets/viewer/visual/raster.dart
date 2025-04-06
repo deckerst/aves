@@ -43,6 +43,8 @@ class _RasterImageViewState extends State<RasterImageView> {
   final ValueNotifier<bool> _fullImageLoaded = ValueNotifier(false);
   ImageInfo? _fullImageInfo;
 
+  static const double _tilesByShortestSide = 2;
+
   AvesEntry get entry => widget.entry;
 
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
@@ -61,7 +63,7 @@ class _RasterImageViewState extends State<RasterImageView> {
         region: fullImageRegion,
       );
     } else {
-      return entry.uriImage;
+      return entry.fullImage;
     }
   }
 
@@ -158,7 +160,7 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   void _initTiling(Size viewportSize) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    _tileSide = viewportSize.shortestSide * devicePixelRatio;
+    _tileSide = viewportSize.shortestSide * devicePixelRatio / _tilesByShortestSide;
     // scale for initial state `contained`
     final containedScale = min(viewportSize.width / _displaySize.width, viewportSize.height / _displaySize.height);
     _maxSampleSize = ExtraAvesEntryImages.sampleSizeForScale(magnifierScale: containedScale, devicePixelRatio: devicePixelRatio);
