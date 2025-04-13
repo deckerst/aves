@@ -1581,6 +1581,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get searchDateSectionTitle => 'Data';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Àlbums';
 
   @override

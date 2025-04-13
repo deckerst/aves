@@ -1610,6 +1610,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get searchDateSectionTitle => '日期';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => '相册';
 
   @override

@@ -1626,6 +1626,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get searchDateSectionTitle => 'Ημερομηνια';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Άλμπουμ';
 
   @override

@@ -1590,6 +1590,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get searchDateSectionTitle => 'ရက်စွဲ';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'အယ်လ်ဘမ်များ';
 
   @override

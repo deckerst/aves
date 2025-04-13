@@ -1576,6 +1576,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get searchDateSectionTitle => 'Thời gian';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Bộ sưu tập';
 
   @override

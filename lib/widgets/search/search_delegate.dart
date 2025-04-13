@@ -21,7 +21,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
@@ -41,6 +40,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   final ValueNotifier<String?> _expandedSectionNotifier = ValueNotifier(null);
   final FocusNode _suggestionsTopFocusNode = FocusNode();
   final ScrollController _suggestionsScrollController = ScrollController();
+  late final List<MimeFilter> _mimeTypeFilters;
 
   @override
   FocusNode? get suggestionsFocusNode => _suggestionsTopFocusNode;
@@ -62,7 +62,6 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     TypeFilter.geotiff,
     TypeFilter.hdr,
     TypeFilter.raw,
-    MimeFilter(MimeTypes.svg),
   ];
 
   static final _monthFilters = List.generate(12, (i) => DateFilter(DateLevel.m, DateTime(1, i + 1)));
@@ -78,6 +77,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
           routeName: SearchPage.routeName,
         ) {
     query = initialQuery ?? '';
+    _mimeTypeFilters = source.allEntries.map((entry) => entry.mimeType).toSet().map(MimeFilter.new).toList()..sort();
   }
 
   @override
@@ -149,6 +149,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                         filters: history,
                       ),
                     _buildDateFilters(context, containQuery),
+                    _buildMimeTypeFilters(context, containQuery),
                     _buildAlbumFilters(containQuery),
                     _buildCountryFilters(containQuery),
                     _buildStateFilters(containQuery),
@@ -201,6 +202,15 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     return _buildFilterRow(
       context: context,
       title: context.l10n.searchDateSectionTitle,
+      filters: filters,
+    );
+  }
+
+  Widget _buildMimeTypeFilters(BuildContext context, _ContainQuery containQuery) {
+    final filters = _mimeTypeFilters.where((f) => containQuery(f.universalLabel)).toList();
+    return _buildFilterRow(
+      context: context,
+      title: context.l10n.searchFormatSectionTitle,
       filters: filters,
     );
   }

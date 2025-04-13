@@ -815,6 +815,7 @@
   "searchCollectionFieldHint": "Search collection",
   "searchRecentSectionTitle": "Recent",
   "searchDateSectionTitle": "Date",
+  "searchFormatSectionTitle": "Formats",
   "searchAlbumsSectionTitle": "Albums",
   "searchCountriesSectionTitle": "Countries",
   "searchStatesSectionTitle": "States",

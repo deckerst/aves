@@ -1588,6 +1588,9 @@ class AppLocalizationsLt extends AppLocalizations {
   String get searchDateSectionTitle => 'Datos';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Albumai';
 
   @override

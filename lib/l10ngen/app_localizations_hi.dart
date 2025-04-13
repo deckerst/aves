@@ -1620,6 +1620,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get searchDateSectionTitle => 'दिनांक';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'एल्बम';
 
   @override

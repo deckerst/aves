@@ -1626,6 +1626,9 @@ class AppLocalizationsGl extends AppLocalizations {
   String get searchDateSectionTitle => 'Data';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Álbums';
 
   @override

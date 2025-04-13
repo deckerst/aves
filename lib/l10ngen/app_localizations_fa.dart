@@ -1578,6 +1578,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get searchDateSectionTitle => 'تاریخ';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'آلبوم ها';
 
   @override
