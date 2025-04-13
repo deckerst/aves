@@ -4,21 +4,21 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for Hebrew (`he`).
-class AppLocalizationsHe extends AppLocalizations {
-  AppLocalizationsHe([String locale = 'he']) : super(locale);
+/// The translations for Nepali (`ne`).
+class AppLocalizationsNe extends AppLocalizations {
+  AppLocalizationsNe([String locale = 'ne']) : super(locale);
 
   @override
-  String get appName => 'אייבז';
+  String get appName => 'Aves';
 
   @override
-  String get welcomeMessage => 'ברוך הבא לאייבז';
+  String get welcomeMessage => 'Welcome to Aves';
 
   @override
-  String get welcomeOptional => 'אופציונלי';
+  String get welcomeOptional => 'Optional';
 
   @override
-  String get welcomeTermsToggle => 'אני מסכימ/ה לתנאים';
+  String get welcomeTermsToggle => 'I agree to the terms and conditions';
 
   @override
   String itemCount(int count) {
@@ -28,8 +28,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString פריטים',
-      one: '$countString פריט',
+      other: '$countString items',
+      one: '$countString item',
     );
     return '$_temp0';
   }
@@ -42,8 +42,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString עמודות',
-      one: '$countString עמודה',
+      other: '$countString columns',
+      one: '$countString column',
     );
     return '$_temp0';
   }
@@ -56,8 +56,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString שניות',
-      one: '$countString שניה',
+      other: '$countString seconds',
+      one: '$countString second',
     );
     return '$_temp0';
   }
@@ -70,8 +70,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString דקות',
-      one: '$countString דקה',
+      other: '$countString minutes',
+      one: '$countString minute',
     );
     return '$_temp0';
   }
@@ -84,8 +84,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString ימים',
-      one: '$countString יום',
+      other: '$countString days',
+      one: '$countString day',
     );
     return '$_temp0';
   }
@@ -96,130 +96,130 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
-  String get applyButtonLabel => 'החל';
+  String get applyButtonLabel => 'APPLY';
 
   @override
-  String get deleteButtonLabel => 'מחק';
+  String get deleteButtonLabel => 'DELETE';
 
   @override
-  String get nextButtonLabel => 'הבא';
+  String get nextButtonLabel => 'NEXT';
 
   @override
-  String get showButtonLabel => 'הצג';
+  String get showButtonLabel => 'SHOW';
 
   @override
-  String get hideButtonLabel => 'הסתר';
+  String get hideButtonLabel => 'HIDE';
 
   @override
-  String get continueButtonLabel => 'המשך';
+  String get continueButtonLabel => 'CONTINUE';
 
   @override
-  String get saveCopyButtonLabel => 'שמור עותק';
+  String get saveCopyButtonLabel => 'SAVE COPY';
 
   @override
-  String get applyTooltip => 'החל';
+  String get applyTooltip => 'Apply';
 
   @override
-  String get cancelTooltip => 'ביטול';
+  String get cancelTooltip => 'Cancel';
 
   @override
-  String get changeTooltip => 'שינוי';
+  String get changeTooltip => 'Change';
 
   @override
-  String get clearTooltip => 'ניקוי';
+  String get clearTooltip => 'Clear';
 
   @override
-  String get previousTooltip => 'הקודם';
+  String get previousTooltip => 'Previous';
 
   @override
-  String get nextTooltip => 'הבא';
+  String get nextTooltip => 'Next';
 
   @override
-  String get showTooltip => 'הצג';
+  String get showTooltip => 'Show';
 
   @override
-  String get hideTooltip => 'הסתר';
+  String get hideTooltip => 'Hide';
 
   @override
-  String get actionRemove => 'הסרה';
+  String get actionRemove => 'Remove';
 
   @override
-  String get resetTooltip => 'אפס';
+  String get resetTooltip => 'Reset';
 
   @override
-  String get saveTooltip => 'שמור';
+  String get saveTooltip => 'Save';
 
   @override
-  String get stopTooltip => 'עצור';
+  String get stopTooltip => 'Stop';
 
   @override
-  String get pickTooltip => 'בחר';
+  String get pickTooltip => 'Pick';
 
   @override
-  String get doubleBackExitMessage => 'כדי לצאת הקש שוב על \"חזרה\".';
+  String get doubleBackExitMessage => 'Tap “back” again to exit.';
 
   @override
-  String get doNotAskAgain => 'אל תשאל שוב';
+  String get doNotAskAgain => 'Do not ask again';
 
   @override
-  String get sourceStateLoading => 'טוען';
+  String get sourceStateLoading => 'Loading';
 
   @override
-  String get sourceStateCataloguing => 'מקטלג';
+  String get sourceStateCataloguing => 'Cataloguing';
 
   @override
-  String get sourceStateLocatingCountries => 'טוען מדינות';
+  String get sourceStateLocatingCountries => 'Locating countries';
 
   @override
-  String get sourceStateLocatingPlaces => 'טוען מקומות';
+  String get sourceStateLocatingPlaces => 'Locating places';
 
   @override
-  String get chipActionDelete => 'מחק';
+  String get chipActionDelete => 'Delete';
 
   @override
-  String get chipActionRemove => 'הסר';
+  String get chipActionRemove => 'Remove';
 
   @override
-  String get chipActionShowCollection => 'הצג באוסף';
+  String get chipActionShowCollection => 'Show in Collection';
 
   @override
-  String get chipActionGoToAlbumPage => 'הצג באלבום';
+  String get chipActionGoToAlbumPage => 'Show in Albums';
 
   @override
-  String get chipActionGoToCountryPage => 'הצג במדינות';
+  String get chipActionGoToCountryPage => 'Show in Countries';
 
   @override
-  String get chipActionGoToPlacePage => 'הצג במקומות';
+  String get chipActionGoToPlacePage => 'Show in Places';
 
   @override
-  String get chipActionGoToTagPage => 'הצג בתגיות';
+  String get chipActionGoToTagPage => 'Show in Tags';
 
   @override
-  String get chipActionGoToExplorerPage => 'הצג בסייר';
+  String get chipActionGoToExplorerPage => 'Show in Explorer';
 
   @override
-  String get chipActionDecompose => 'פיצול';
+  String get chipActionDecompose => 'Split';
 
   @override
-  String get chipActionFilterOut => 'סנן החוצה';
+  String get chipActionFilterOut => 'Filter out';
 
   @override
-  String get chipActionFilterIn => 'סנן לבתוך';
+  String get chipActionFilterIn => 'Filter in';
 
   @override
-  String get chipActionHide => 'הסתר';
+  String get chipActionHide => 'Hide';
 
   @override
-  String get chipActionLock => 'נעל';
+  String get chipActionLock => 'Lock';
 
   @override
-  String get chipActionPin => 'הצמד למעלה';
+  String get chipActionPin => 'Pin to top';
 
   @override
-  String get chipActionUnpin => 'בטל הצמד למעלה';
+  String get chipActionUnpin => 'Unpin from top';
 
   @override
-  String get chipActionRename => 'שנה שם';
+  String get chipActionRename => 'Rename';
 
   @override
   String get chipActionSetCover => 'Set cover';
