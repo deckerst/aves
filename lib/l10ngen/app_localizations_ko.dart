@@ -1608,6 +1608,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get searchDateSectionTitle => '날짜';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => '앨범';
 
   @override

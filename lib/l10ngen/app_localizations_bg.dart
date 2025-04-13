@@ -1633,6 +1633,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get searchDateSectionTitle => 'Дата';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Албуми';
 
   @override

@@ -1629,6 +1629,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get searchDateSectionTitle => 'திகதி';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'தொகுப்புகள்';
 
   @override

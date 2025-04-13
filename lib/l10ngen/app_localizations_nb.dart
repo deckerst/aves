@@ -1581,6 +1581,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get searchDateSectionTitle => 'Dato';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Album';
 
   @override

@@ -1626,6 +1626,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchDateSectionTitle => 'Fecha';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Álbumes';
 
   @override

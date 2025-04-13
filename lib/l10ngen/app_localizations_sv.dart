@@ -1609,6 +1609,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get searchDateSectionTitle => 'Datum';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Album';
 
   @override

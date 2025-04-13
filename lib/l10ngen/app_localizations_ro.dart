@@ -1581,6 +1581,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get searchDateSectionTitle => 'Dată';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Albume';
 
   @override

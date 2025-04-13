@@ -1610,6 +1610,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get searchDateSectionTitle => '日付';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'アルバム';
 
   @override

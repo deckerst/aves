@@ -1576,6 +1576,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get searchDateSectionTitle => 'Dátum';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Albumok';
 
   @override

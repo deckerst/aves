@@ -1629,6 +1629,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get searchDateSectionTitle => 'Kuupäevad';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Albumid';
 
   @override

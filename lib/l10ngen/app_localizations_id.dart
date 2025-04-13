@@ -1610,6 +1610,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get searchDateSectionTitle => 'Tanggal';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Album';
 
   @override

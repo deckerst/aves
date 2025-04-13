@@ -83,7 +83,7 @@ class QueryFilter extends CollectionFilter {
   String get universalLabel => query;
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.text, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.text, fill: 1, size: size);
 
   @override
   Future<Color> color(BuildContext context) {

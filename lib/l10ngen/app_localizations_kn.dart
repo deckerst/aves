@@ -1629,6 +1629,9 @@ class AppLocalizationsKn extends AppLocalizations {
   String get searchDateSectionTitle => 'ದಿನಾಂಕ';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'ಆಲ್ಬಮ್ ಗಳು';
 
   @override

@@ -2973,6 +2973,12 @@ abstract class AppLocalizations {
   /// **'Date'**
   String get searchDateSectionTitle;
 
+  /// No description provided for @searchFormatSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Formats'**
+  String get searchFormatSectionTitle;
+
   /// No description provided for @searchAlbumsSectionTitle.
   ///
   /// In en, this message translates to:

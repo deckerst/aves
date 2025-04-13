@@ -1629,6 +1629,9 @@ class AppLocalizationsAz extends AppLocalizations {
   String get searchDateSectionTitle => 'Date';
 
   @override
+  String get searchFormatSectionTitle => 'Formats';
+
+  @override
   String get searchAlbumsSectionTitle => 'Albums';
 
   @override
