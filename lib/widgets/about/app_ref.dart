@@ -80,7 +80,7 @@ class AppReference extends StatelessWidget {
         urlString: '${AppReference.avesGithub}/blob/main/LICENSE',
       ),
       LinkChip(
-        leading: Icon(
+        leading: const Icon(
           AIcons.privacy,
           size: 22,
         ),
