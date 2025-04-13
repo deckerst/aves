@@ -140,7 +140,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(AIcons.disc, color: colorize(context, d)),
+                            Icon(AIcons.circle, fill: 1, color: colorize(context, d)),
                             const SizedBox(width: 8),
                             Flexible(
                               child: Text(
