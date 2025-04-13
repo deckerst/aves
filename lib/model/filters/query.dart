@@ -21,6 +21,7 @@ class QueryFilter extends CollectionFilter {
 
   static final _fieldPattern = RegExp(r'(.+)([=<>])(.+)');
   static final _fileSizePattern = RegExp(r'(\d+)([KMG])?');
+  static const keyContentExtension = 'EXT';
   static const keyContentId = 'ID';
   static const keyContentYear = 'YEAR';
   static const keyContentMonth = 'MONTH';
@@ -112,6 +113,11 @@ class QueryFilter extends CollectionFilter {
     final valueInt = int.tryParse(valueString);
 
     switch (key) {
+      case keyContentExtension:
+        if (op == opEqual) {
+          final extension = '.$valueString';
+          return (entry) => entry.extension?.toUpperCase() == extension;
+        }
       case keyContentId:
         if (valueInt == null) return null;
         if (op == opEqual) {
