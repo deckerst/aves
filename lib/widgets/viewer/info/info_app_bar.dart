@@ -86,7 +86,7 @@ class InfoAppBar extends StatelessWidget {
                       const PopupMenuDivider(),
                       ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
                     ],
-                    if (!kReleaseMode) ...[
+                    if (isVisible(EntryAction.debug)) ...[
                       const PopupMenuDivider(),
                       _toMenuItem(context, EntryAction.debug, enabled: true),
                     ]

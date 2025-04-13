@@ -34,9 +34,8 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
 
   Set<AvesEntry> get entries => widget.entries;
 
-  static const isFavouriteIcon = AIcons.favouriteActive;
-  static const isNotFavouriteIcon = AIcons.favourite;
-  static const favouriteSweeperIcon = AIcons.favourite;
+  static const isFavouriteIcon = Icon(AIcons.favourite, fill: 1);
+  static const isNotFavouriteIcon = Icon(AIcons.favourite, fill: 0);
 
   @override
   void initState() {
@@ -67,11 +66,11 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
           return isFavourite
               ? MenuRow(
                   text: context.l10n.entryActionRemoveFavourite,
-                  icon: const Icon(isFavouriteIcon),
+                  icon: isFavouriteIcon,
                 )
               : MenuRow(
                   text: context.l10n.entryActionAddFavourite,
-                  icon: const Icon(isNotFavouriteIcon),
+                  icon: isNotFavouriteIcon,
                 );
         }
         final animate = context.select<Settings, bool>((v) => v.animate);
@@ -79,7 +78,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
           alignment: Alignment.center,
           children: [
             IconButton(
-              icon: Icon(isFavourite ? isFavouriteIcon : isNotFavouriteIcon),
+              icon: isFavourite ? isFavouriteIcon : isNotFavouriteIcon,
               onPressed: widget.onPressed,
               focusNode: widget.focusNode,
               tooltip: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
@@ -88,7 +87,8 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
               Sweeper(
                 key: ValueKey(entries.length == 1 ? entries.first : entries.length),
                 builder: (context) => Icon(
-                  favouriteSweeperIcon,
+                  AIcons.favourite,
+                  fill: 0,
                   color: context.select<AvesColorsData, Color>((v) => v.favourite),
                 ),
                 toggledNotifier: _isFavouriteNotifier,

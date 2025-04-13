@@ -56,6 +56,9 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         return canWrite && targetEntry.isMotionPhoto;
       case EntryAction.viewMotionPhotoVideo:
         return appMode.canNavigate && targetEntry.isMotionPhoto;
+      // debug
+      case EntryAction.debug:
+        return !kReleaseMode;
       default:
         return false;
     }

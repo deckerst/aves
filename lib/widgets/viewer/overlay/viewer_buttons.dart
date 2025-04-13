@@ -250,7 +250,11 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
   @override
   Widget build(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
-    final showOrientationActions = EntryActions.orientationActions.any((v) => actionDelegate.isVisible(appMode: appMode, action: v));
+    bool isVisible(EntryAction action) => actionDelegate.isVisible(
+          appMode: appMode,
+          action: action,
+        );
+    final showOrientationActions = EntryActions.orientationActions.any(isVisible);
     final topLevelActions = widget.topLevelActions;
     final exportActions = widget.exportActions;
     final videoActions = widget.videoActions;
@@ -304,7 +308,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                                   ...videoActions.map((action) => _buildPopupMenuItem(context, action, videoController)),
                                 ],
                               ),
-                            if (!kReleaseMode) ...[
+                            if (isVisible(EntryAction.debug)) ...[
                               const PopupMenuDivider(),
                               _buildPopupMenuItem(context, EntryAction.debug, videoController),
                             ]

@@ -227,6 +227,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/ziofat/material_design_icons_flutter',
     ),
     Dependency(
+      name: 'Material Symbols Icons for Flutter',
+      license: apache2,
+      sourceUrl: 'https://github.com/timmaffett/material_symbols_icons',
+    ),
+    Dependency(
       name: 'Overlay Support',
       license: apache2,
       sourceUrl: 'https://github.com/boyan01/overlay_support',

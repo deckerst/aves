@@ -126,7 +126,7 @@ extension ExtraEntryActionView on EntryAction {
       // external
       EntryAction.edit => AIcons.edit,
       EntryAction.open => AIcons.openOutside,
-      EntryAction.openVideoPlayer => AIcons.openVideoPlayer,
+      EntryAction.openVideoPlayer => AIcons.openOutside,
       EntryAction.openMap => AIcons.map,
       EntryAction.setAs => AIcons.setAs,
       EntryAction.cast => AIcons.cast,
