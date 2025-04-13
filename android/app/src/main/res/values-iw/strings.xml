@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">אייבז</string>
+    <string name="app_name">Aves</string>
     <string name="app_widget_label">מסגרת תמונה</string>
     <string name="wallpaper">טפט</string>
     <string name="search_shortcut_short_label">חיפוש</string>

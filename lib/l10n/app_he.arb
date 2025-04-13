@@ -6,5 +6,143 @@
   "welcomeOptional": "אופציונלי",
   "@welcomeOptional": {},
   "welcomeTermsToggle": "אני מסכימ/ה לתנאים",
-  "@welcomeTermsToggle": {}
+  "@welcomeTermsToggle": {},
+  "chipActionShowCollection": "הצג באוסף",
+  "@chipActionShowCollection": {},
+  "chipActionGoToAlbumPage": "הצג באלבום",
+  "@chipActionGoToAlbumPage": {},
+  "chipActionFilterIn": "סנן לבתוך",
+  "@chipActionFilterIn": {},
+  "chipActionFilterOut": "סנן החוצה",
+  "@chipActionFilterOut": {},
+  "chipActionPin": "הצמד למעלה",
+  "@chipActionPin": {},
+  "chipActionUnpin": "בטל הצמד למעלה",
+  "@chipActionUnpin": {},
+  "chipActionRename": "שנה שם",
+  "@chipActionRename": {},
+  "applyTooltip": "החל",
+  "@applyTooltip": {},
+  "changeTooltip": "שינוי",
+  "@changeTooltip": {},
+  "clearTooltip": "ניקוי",
+  "@clearTooltip": {},
+  "previousTooltip": "הקודם",
+  "@previousTooltip": {},
+  "nextTooltip": "הבא",
+  "@nextTooltip": {},
+  "resetTooltip": "אפס",
+  "@resetTooltip": {},
+  "saveTooltip": "שמור",
+  "@saveTooltip": {},
+  "pickTooltip": "בחר",
+  "@pickTooltip": {},
+  "chipActionGoToPlacePage": "הצג במקומות",
+  "@chipActionGoToPlacePage": {},
+  "chipActionGoToTagPage": "הצג בתגיות",
+  "@chipActionGoToTagPage": {},
+  "chipActionDecompose": "פיצול",
+  "@chipActionDecompose": {},
+  "chipActionHide": "הסתר",
+  "@chipActionHide": {},
+  "chipActionLock": "נעל",
+  "@chipActionLock": {},
+  "applyButtonLabel": "החל",
+  "@applyButtonLabel": {},
+  "nextButtonLabel": "הבא",
+  "@nextButtonLabel": {},
+  "showButtonLabel": "הצג",
+  "@showButtonLabel": {},
+  "hideButtonLabel": "הסתר",
+  "@hideButtonLabel": {},
+  "continueButtonLabel": "המשך",
+  "@continueButtonLabel": {},
+  "cancelTooltip": "ביטול",
+  "@cancelTooltip": {},
+  "columnCount": "{count, plural, =1{{count} עמודה} other{{count} עמודות}}",
+  "@columnCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "itemCount": "{count, plural, =1{{count} פריט} other{{count} פריטים}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "focalLength": "{length} mm",
+  "@focalLength": {
+    "placeholders": {
+      "length": {
+        "type": "String",
+        "example": "5.4"
+      }
+    }
+  },
+  "deleteButtonLabel": "מחק",
+  "@deleteButtonLabel": {},
+  "doubleBackExitMessage": "כדי לצאת הקש שוב על \"חזרה\".",
+  "@doubleBackExitMessage": {},
+  "doNotAskAgain": "אל תשאל שוב",
+  "@doNotAskAgain": {},
+  "sourceStateLocatingPlaces": "טוען מקומות",
+  "@sourceStateLocatingPlaces": {},
+  "chipActionRemove": "הסר",
+  "@chipActionRemove": {},
+  "timeSeconds": "{count, plural, =1{{count} שניה} other{{count} שניות}}",
+  "@timeSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeMinutes": "{count, plural, =1{{count} דקה} other{{count} דקות}}",
+  "@timeMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "timeDays": "{count, plural, =1{{count} יום} other{{count} ימים}}",
+  "@timeDays": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "saveCopyButtonLabel": "שמור עותק",
+  "@saveCopyButtonLabel": {},
+  "chipActionGoToCountryPage": "הצג במדינות",
+  "@chipActionGoToCountryPage": {},
+  "chipActionDelete": "מחק",
+  "@chipActionDelete": {},
+  "hideTooltip": "הסתר",
+  "@hideTooltip": {},
+  "showTooltip": "הצג",
+  "@showTooltip": {},
+  "sourceStateLoading": "טוען",
+  "@sourceStateLoading": {},
+  "sourceStateCataloguing": "מקטלג",
+  "@sourceStateCataloguing": {},
+  "actionRemove": "הסרה",
+  "@actionRemove": {},
+  "sourceStateLocatingCountries": "טוען מדינות",
+  "@sourceStateLocatingCountries": {},
+  "stopTooltip": "עצור",
+  "@stopTooltip": {},
+  "chipActionGoToExplorerPage": "הצג בסייר",
+  "@chipActionGoToExplorerPage": {}
 }
