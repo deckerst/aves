@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Search: format filters
 
+### Changed
+
+- upgraded Flutter to stable v3.29.3
+
 ## <a id="v1.12.9"></a>[v1.12.9] - 2025-04-06
 
 ### Added
