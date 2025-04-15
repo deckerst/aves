@@ -43,6 +43,7 @@ class AIcons {
   static const newTier = Symbols.fiber_new;
   static const opacity = Symbols.opacity;
   static const palette = Symbols.palette;
+  static const path = Symbols.account_tree;
   static const privacy = Symbols.shield_person;
   static const rating = Symbols.star;
   static final ratingRejected = MdiIcons.starMinusOutline;

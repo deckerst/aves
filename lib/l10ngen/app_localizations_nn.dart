@@ -1441,6 +1441,9 @@ class AppLocalizationsNn extends AppLocalizations {
   String get sortByDuration => 'By duration';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Nyaste først';
 
   @override

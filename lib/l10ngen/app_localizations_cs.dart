@@ -1465,6 +1465,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get sortByDuration => 'Podle trvání';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Od nejnovějšího';
 
   @override

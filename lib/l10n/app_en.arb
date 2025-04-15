@@ -758,6 +758,7 @@
   "sortByAlbumFileName": "By album & file name",
   "sortByRating": "By rating",
   "sortByDuration": "By duration",
+  "sortByPath": "By path",
 
   "sortOrderNewestFirst": "Newest first",
   "sortOrderOldestFirst": "Oldest first",

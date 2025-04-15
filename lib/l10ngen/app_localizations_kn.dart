@@ -1500,6 +1500,9 @@ class AppLocalizationsKn extends AppLocalizations {
   String get sortByDuration => 'ಅವಧಿಯಂತೆ';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'ಹೊಸದು ಮೊದಲು';
 
   @override

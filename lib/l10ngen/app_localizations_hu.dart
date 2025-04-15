@@ -1447,6 +1447,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get sortByDuration => 'Hossz szerint';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Legújabb legelöl';
 
   @override

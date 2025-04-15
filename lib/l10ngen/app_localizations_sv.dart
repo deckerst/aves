@@ -1480,6 +1480,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get sortByDuration => 'Efter spellängd';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Nyast först';
 
   @override

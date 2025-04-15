@@ -1500,6 +1500,9 @@ class AppLocalizationsDa extends AppLocalizations {
   String get sortByDuration => 'Efter varighed';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Nyeste først';
 
   @override

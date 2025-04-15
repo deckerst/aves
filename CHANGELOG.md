@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Search: format filters
+- Albums: sort by path
 
 ### Changed
 

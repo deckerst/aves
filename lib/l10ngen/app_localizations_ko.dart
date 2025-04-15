@@ -1479,6 +1479,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sortByDuration => '길이';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => '최근 날짜순';
 
   @override

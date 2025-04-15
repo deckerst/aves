@@ -2715,6 +2715,12 @@ abstract class AppLocalizations {
   /// **'By duration'**
   String get sortByDuration;
 
+  /// No description provided for @sortByPath.
+  ///
+  /// In en, this message translates to:
+  /// **'By path'**
+  String get sortByPath;
+
   /// No description provided for @sortOrderNewestFirst.
   ///
   /// In en, this message translates to:

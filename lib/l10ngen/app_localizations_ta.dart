@@ -1500,6 +1500,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get sortByDuration => 'காலப்படி';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'முதலில் புதியது';
 
   @override

@@ -1492,6 +1492,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sortByDuration => 'Süreye göre';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Önce en yeni';
 
   @override
