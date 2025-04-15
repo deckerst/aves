@@ -64,7 +64,7 @@ class PathFilter extends CollectionFilter {
   }
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.explorer, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.path, size: size);
 
   @override
   String get category => type;

@@ -1452,6 +1452,9 @@ class AppLocalizationsEu extends AppLocalizations {
   String get sortByDuration => 'Iraupenaren arabera';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Berriena lehenengo';
 
   @override

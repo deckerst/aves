@@ -1452,6 +1452,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get sortByDuration => 'După durată';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Cele mai noi mai întâi';
 
   @override

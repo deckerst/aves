@@ -1470,6 +1470,9 @@ class AppLocalizationsBe extends AppLocalizations {
   String get sortByDuration => 'Па працягласці';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Спачатку самае новае';
 
   @override

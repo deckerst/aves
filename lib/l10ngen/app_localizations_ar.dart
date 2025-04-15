@@ -1452,6 +1452,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sortByDuration => 'حسب المدة';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'الأحدث أولاً';
 
   @override

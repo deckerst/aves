@@ -1491,6 +1491,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sortByDuration => 'समय के अनुसार';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'नए पहले';
 
   @override

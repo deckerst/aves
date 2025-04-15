@@ -1459,6 +1459,9 @@ class AppLocalizationsLt extends AppLocalizations {
   String get sortByDuration => 'Pagal trukmę';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Naujausi viršuje';
 
   @override

@@ -1462,6 +1462,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get sortByDuration => 'Według czasu trwania';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Najpierw najnowsze';
 
   @override

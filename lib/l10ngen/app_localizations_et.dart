@@ -1500,6 +1500,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get sortByDuration => 'Kestuse järgi';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Esmalt uuemad';
 
   @override

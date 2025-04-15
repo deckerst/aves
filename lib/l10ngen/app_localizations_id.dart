@@ -1481,6 +1481,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get sortByDuration => 'Berdasarkan durasi';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Terbaru pertama';
 
   @override

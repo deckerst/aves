@@ -1452,6 +1452,9 @@ class AppLocalizationsIs extends AppLocalizations {
   String get sortByDuration => 'Eftir tímalengd';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Nýjast fyrst';
 
   @override

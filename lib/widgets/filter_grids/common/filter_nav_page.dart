@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -59,6 +60,18 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     return a.filter.compareTo(b.filter);
   }
 
+  static int compareFiltersByPath<T extends CollectionFilter>(FilterGridItem<T> a, FilterGridItem<T> b) {
+    if (T == AlbumBaseFilter) {
+      final filterA = a.filter;
+      final filterB = b.filter;
+      final pathA = filterA is StoredAlbumFilter ? filterA.album : '';
+      final pathB = filterB is StoredAlbumFilter ? filterB.album : '';
+      final c = pathA.compareTo(pathB);
+      return c != 0 ? c : a.filter.compareTo(b.filter);
+    }
+    return 0;
+  }
+
   static List<FilterGridItem<T>> sort<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>>(
     ChipSortFactor sortFactor,
     bool reverse,
@@ -90,6 +103,8 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
         filtersWithSize.sort(compareFiltersBySize);
         filters = filtersWithSize.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
+      case ChipSortFactor.path:
+        allMapEntries = toGridItem(source, filters)..sort(compareFiltersByPath);
     }
     if (reverse) {
       allMapEntries = allMapEntries.reversed.toList();

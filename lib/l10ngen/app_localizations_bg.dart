@@ -1504,6 +1504,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get sortByDuration => 'По продължителност';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Първо най-новите';
 
   @override

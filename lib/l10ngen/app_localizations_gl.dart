@@ -1497,6 +1497,9 @@ class AppLocalizationsGl extends AppLocalizations {
   String get sortByDuration => 'Por duración';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Novos primeiro';
 
   @override

@@ -1481,6 +1481,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sortByDuration => '按时长';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => '降序';
 
   @override

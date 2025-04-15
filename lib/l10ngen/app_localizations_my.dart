@@ -1461,6 +1461,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get sortByDuration => 'By duration';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'အသစ်ဆုံးက ထိပ်ဆုံး';
 
   @override
