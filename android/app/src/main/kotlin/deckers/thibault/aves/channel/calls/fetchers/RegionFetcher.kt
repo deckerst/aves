@@ -20,6 +20,8 @@ import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -60,7 +62,7 @@ class RegionFetcher internal constructor(
         }
 
         try {
-            val decoder = getOrCreateDecoder(uri, requestKey)
+            val decoder = getOrCreateDecoder(context, uri, requestKey)
             if (decoder == null) {
                 result.error("fetch-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
                 return
@@ -143,26 +145,6 @@ class RegionFetcher internal constructor(
         }
     }
 
-    private fun getOrCreateDecoder(uri: Uri, requestKey: Pair<Uri, Int?>): BitmapRegionDecoder? {
-        var decoderRef = decoderPool.firstOrNull { it.requestKey == requestKey }
-        if (decoderRef == null) {
-            val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
-                BitmapRegionDecoderCompat.newInstance(input)
-            }
-            if (newDecoder == null) {
-                return null
-            }
-            decoderRef = DecoderRef(requestKey, newDecoder)
-        } else {
-            decoderPool.remove(decoderRef)
-        }
-        decoderPool.add(0, decoderRef)
-        while (decoderPool.size > DECODER_POOL_SIZE) {
-            decoderPool.removeAt(decoderPool.size - 1)
-        }
-        return decoderRef.decoder
-    }
-
     private fun createTemporaryJpegExport(uri: Uri, mimeType: String, pageId: Int?): Uri {
         Log.d(LOG_TAG, "create JPEG export for uri=$uri mimeType=$mimeType pageId=$pageId")
         val target = Glide.with(context)
@@ -195,5 +177,29 @@ class RegionFetcher internal constructor(
         private const val DECODER_POOL_SIZE = 3
         private val decoderPool = ArrayList<DecoderRef>()
         private val exportUris = HashMap<Pair<Uri, Int?>, Uri>()
+
+        private val poolLock = ReentrantLock()
+
+        private fun getOrCreateDecoder(context: Context, uri: Uri, requestKey: Pair<Uri, Int?>): BitmapRegionDecoder? {
+            poolLock.withLock {
+                var decoderRef = decoderPool.firstOrNull { it.requestKey == requestKey }
+                if (decoderRef == null) {
+                    val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
+                        BitmapRegionDecoderCompat.newInstance(input)
+                    }
+                    if (newDecoder == null) {
+                        return null
+                    }
+                    decoderRef = DecoderRef(requestKey, newDecoder)
+                } else {
+                    decoderPool.remove(decoderRef)
+                }
+                decoderPool.add(0, decoderRef)
+                while (decoderPool.size > DECODER_POOL_SIZE) {
+                    decoderPool.removeAt(decoderPool.size - 1)
+                }
+                return decoderRef.decoder
+            }
+        }
     }
 }

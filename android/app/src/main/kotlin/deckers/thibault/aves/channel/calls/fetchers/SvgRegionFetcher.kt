@@ -17,6 +17,8 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import kotlin.math.ceil
 
 class SvgRegionFetcher internal constructor(
@@ -38,7 +40,7 @@ class SvgRegionFetcher internal constructor(
         }
 
         try {
-            val svg = getOrCreateDecoder(uri)
+            val svg = getOrCreateDecoder(context, uri)
             if (svg == null) {
                 result.error("fetch-read-null", "failed to open file for uri=$uri regionRect=$regionRect", null)
                 return
@@ -95,27 +97,6 @@ class SvgRegionFetcher internal constructor(
         }
     }
 
-    private fun getOrCreateDecoder(uri: Uri): SVG? {
-        var decoderRef = decoderPool.firstOrNull { it.uri == uri }
-        if (decoderRef == null) {
-            val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
-                SVG.getFromInputStream(SVGParserBufferedInputStream(input))
-            }
-            if (newDecoder == null) {
-                return null
-            }
-            newDecoder.normalizeSize()
-            decoderRef = DecoderRef(uri, newDecoder)
-        } else {
-            decoderPool.remove(decoderRef)
-        }
-        decoderPool.add(0, decoderRef)
-        while (decoderPool.size > DECODER_POOL_SIZE) {
-            decoderPool.removeAt(decoderPool.size - 1)
-        }
-        return decoderRef.decoder
-    }
-
     private data class DecoderRef(
         val uri: Uri,
         val decoder: SVG,
@@ -125,5 +106,30 @@ class SvgRegionFetcher internal constructor(
         private val PREFERRED_CONFIG = Bitmap.Config.ARGB_8888
         private const val DECODER_POOL_SIZE = 3
         private val decoderPool = ArrayList<DecoderRef>()
+
+        private val poolLock = ReentrantLock()
+
+        private fun getOrCreateDecoder(context: Context, uri: Uri): SVG? {
+            poolLock.withLock {
+                var decoderRef = decoderPool.firstOrNull { it.uri == uri }
+                if (decoderRef == null) {
+                    val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
+                        SVG.getFromInputStream(SVGParserBufferedInputStream(input))
+                    }
+                    if (newDecoder == null) {
+                        return null
+                    }
+                    newDecoder.normalizeSize()
+                    decoderRef = DecoderRef(uri, newDecoder)
+                } else {
+                    decoderPool.remove(decoderRef)
+                }
+                decoderPool.add(0, decoderRef)
+                while (decoderPool.size > DECODER_POOL_SIZE) {
+                    decoderPool.removeAt(decoderPool.size - 1)
+                }
+                return decoderRef.decoder
+            }
+        }
     }
 }
