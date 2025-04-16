@@ -1608,5 +1608,9 @@
   "editEntryLocationDialogTimeShift": "Przesunięcie czasowe",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "Wszystko",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "searchFormatSectionTitle": "Formaty",
+  "@searchFormatSectionTitle": {},
+  "sortByPath": "Według ścieżki",
+  "@sortByPath": {}
 }

@@ -1416,5 +1416,9 @@
   "removeEntryMetadataDialogAll": "全部",
   "@removeEntryMetadataDialogAll": {},
   "editEntryLocationDialogTimeShift": "时间时移",
-  "@editEntryLocationDialogTimeShift": {}
+  "@editEntryLocationDialogTimeShift": {},
+  "searchFormatSectionTitle": "格式",
+  "@searchFormatSectionTitle": {},
+  "sortByPath": "按路径",
+  "@sortByPath": {}
 }

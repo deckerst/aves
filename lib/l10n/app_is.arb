@@ -1608,5 +1608,9 @@
   "editEntryLocationDialogTimeShift": "Tímahliðrun",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "Allt",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "searchFormatSectionTitle": "Snið",
+  "@searchFormatSectionTitle": {},
+  "sortByPath": "Eftir slóð",
+  "@sortByPath": {}
 }

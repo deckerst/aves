@@ -1608,5 +1608,9 @@
   "editEntryLocationDialogTimeShift": "التحول الزمني",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "الكل",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "حسب المسار",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "التنسيقات",
+  "@searchFormatSectionTitle": {}
 }

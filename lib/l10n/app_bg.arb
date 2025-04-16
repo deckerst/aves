@@ -266,7 +266,7 @@
   "@welcomeMessage": {},
   "welcomeOptional": "Опционално",
   "@welcomeOptional": {},
-  "itemCount": "{count, plural, =1{{count} обект} few{{count} обекта} other{{count} обекта}}",
+  "itemCount": "{count, plural, =1{{count} елемент} few{{count} елемента} other{{count} елемента}}",
   "@itemCount": {
     "placeholders": {
       "count": {
@@ -663,7 +663,7 @@
   "@videoStartOverButtonLabel": {},
   "videoResumeButtonLabel": "ПРОДЪЛЖИ",
   "@videoResumeButtonLabel": {},
-  "setCoverDialogLatest": "Последен обект",
+  "setCoverDialogLatest": "Последен елемент",
   "@setCoverDialogLatest": {},
   "setCoverDialogCustom": "Персонален",
   "@setCoverDialogCustom": {},
@@ -725,7 +725,7 @@
   "@exportEntryDialogWriteMetadata": {},
   "renameEntryDialogLabel": "Ново име",
   "@renameEntryDialogLabel": {},
-  "editEntryDialogCopyFromItem": "Копиране от друг обект",
+  "editEntryDialogCopyFromItem": "Копиране от друг елемент",
   "@editEntryDialogCopyFromItem": {},
   "editEntryDialogTargetFieldsHeader": "Полета за промяна",
   "@editEntryDialogTargetFieldsHeader": {},
@@ -1454,7 +1454,7 @@
   "@settingsAllowErrorReporting": {},
   "settingsEnableBin": "Използвайте кошчето",
   "@settingsEnableBin": {},
-  "settingsEnableBinSubtitle": "Съхранявайте изтритите обекти за 30 дни",
+  "settingsEnableBinSubtitle": "Съхранявайте изтритите елементи за 30 дни",
   "@settingsEnableBinSubtitle": {},
   "settingsAllowMediaManagement": "Разрешаване на управление на медиите",
   "@settingsAllowMediaManagement": {},

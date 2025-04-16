@@ -1634,5 +1634,9 @@
   "editEntryLocationDialogImportGpx": "Impordi GPX-fail",
   "@editEntryLocationDialogImportGpx": {},
   "removeEntryMetadataDialogAll": "Kõik",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "Asukoha alusel",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Vormingud",
+  "@searchFormatSectionTitle": {}
 }

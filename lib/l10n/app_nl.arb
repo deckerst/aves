@@ -465,7 +465,7 @@
   "@viewDialogGroupSectionTitle": {},
   "viewDialogLayoutSectionTitle": "Layout",
   "@viewDialogLayoutSectionTitle": {},
-  "viewDialogReverseSortOrder": "Draai sorteerrichting om",
+  "viewDialogReverseSortOrder": "Sortering omkeren",
   "@viewDialogReverseSortOrder": {},
   "tileLayoutMosaic": "Mozaïek",
   "@tileLayoutMosaic": {},
@@ -637,9 +637,9 @@
   "@sortOrderNewestFirst": {},
   "sortOrderOldestFirst": "Oudste eerst",
   "@sortOrderOldestFirst": {},
-  "sortOrderAtoZ": "A tot Z",
+  "sortOrderAtoZ": "A - Z",
   "@sortOrderAtoZ": {},
-  "sortOrderZtoA": "Z tot A",
+  "sortOrderZtoA": "Z - A",
   "@sortOrderZtoA": {},
   "sortOrderHighestFirst": "Hoogste eerst",
   "@sortOrderHighestFirst": {},
@@ -1417,5 +1417,9 @@
   "editEntryLocationDialogTimeShift": "Verschuiving van de tijd",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "Alle",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "searchFormatSectionTitle": "Formaten",
+  "@searchFormatSectionTitle": {},
+  "sortByPath": "Op pad",
+  "@sortByPath": {}
 }
