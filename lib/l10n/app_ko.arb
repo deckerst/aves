@@ -1416,5 +1416,9 @@
   "editEntryLocationDialogImportGpx": "GPX 가져오기",
   "@editEntryLocationDialogImportGpx": {},
   "removeEntryMetadataDialogAll": "모두",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "경로",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "형식",
+  "@searchFormatSectionTitle": {}
 }

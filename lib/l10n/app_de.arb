@@ -1414,5 +1414,9 @@
   "editEntryLocationDialogTimeShift": "Zeitverschiebung",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "Alle",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "searchFormatSectionTitle": "Formate",
+  "@searchFormatSectionTitle": {},
+  "sortByPath": "Nach Pfad",
+  "@sortByPath": {}
 }

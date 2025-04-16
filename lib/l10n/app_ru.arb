@@ -1416,5 +1416,7 @@
   "coordinateFormatDdm": "DDM",
   "@coordinateFormatDdm": {},
   "removeEntryMetadataDialogAll": "Все",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "searchFormatSectionTitle": "Форматы",
+  "@searchFormatSectionTitle": {}
 }
