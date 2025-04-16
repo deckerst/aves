@@ -1452,7 +1452,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get sortByDuration => 'După durată';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'După cale';
 
   @override
   String get sortOrderNewestFirst => 'Cele mai noi mai întâi';
@@ -1584,7 +1584,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get searchDateSectionTitle => 'Dată';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'Formate';
 
   @override
   String get searchAlbumsSectionTitle => 'Albume';

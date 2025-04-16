@@ -1471,7 +1471,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sortByDuration => 'За тривалістю';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'Шляхом';
 
   @override
   String get sortOrderNewestFirst => 'Найновіші перші';
@@ -1603,7 +1603,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get searchDateSectionTitle => 'Дата';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'Формати';
 
   @override
   String get searchAlbumsSectionTitle => 'Альбоми';

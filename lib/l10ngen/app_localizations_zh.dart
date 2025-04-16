@@ -1481,7 +1481,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sortByDuration => '按时长';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => '按路径';
 
   @override
   String get sortOrderNewestFirst => '降序';
@@ -1613,7 +1613,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get searchDateSectionTitle => '日期';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => '格式';
 
   @override
   String get searchAlbumsSectionTitle => '相册';

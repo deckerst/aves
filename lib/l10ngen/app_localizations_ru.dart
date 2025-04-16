@@ -1646,7 +1646,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get searchDateSectionTitle => 'Дата';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'Форматы';
 
   @override
   String get searchAlbumsSectionTitle => 'Альбомы';

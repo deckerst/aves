@@ -1002,7 +1002,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Longitud';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Tidsskifte';
 
   @override
   String get locationPickerUseThisLocationButton => 'Använd den här platsen';
@@ -1480,7 +1480,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get sortByDuration => 'Efter spellängd';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'Efter sökväg';
 
   @override
   String get sortOrderNewestFirst => 'Nyast först';
@@ -1612,7 +1612,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get searchDateSectionTitle => 'Datum';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'Format';
 
   @override
   String get searchAlbumsSectionTitle => 'Album';
