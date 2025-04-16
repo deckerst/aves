@@ -1514,6 +1514,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sortByDuration => 'По продолжительности';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Сначала новые';
 
   @override
@@ -1641,6 +1644,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Дата';
+
+  @override
+  String get searchFormatSectionTitle => 'Форматы';
 
   @override
   String get searchAlbumsSectionTitle => 'Альбомы';

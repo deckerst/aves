@@ -1488,6 +1488,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get sortByDuration => 'By duration';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Newest first';
 
   @override
@@ -1615,6 +1618,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Date';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'Albums';

@@ -28,6 +28,7 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
               DraggableThumbLabel.formatMonthThumbLabel(context, filterGridItem.entry?.bestDate),
             ];
           case ChipSortFactor.name:
+          case ChipSortFactor.path:
             return [
               filterGridItem.filter.getLabel(context),
             ];

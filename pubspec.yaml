@@ -7,13 +7,13 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.12.9+149
+version: 1.12.10+150
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.29.2
+  flutter: 3.29.3
   sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
 workspace:
   - plugins/aves_magnifier
@@ -97,6 +97,7 @@ dependencies:
   leak_tracker:
   local_auth:
   material_design_icons_flutter:
+  material_symbols_icons:
   network_info_plus:
   overlay_support:
   package_info_plus:

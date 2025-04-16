@@ -1447,6 +1447,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get sortByDuration => 'Hossz szerint';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Legújabb legelöl';
 
   @override
@@ -1574,6 +1577,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Dátum';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'Albumok';

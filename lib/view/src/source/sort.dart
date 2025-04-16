@@ -45,6 +45,7 @@ extension ExtraChipSortFactorView on ChipSortFactor {
       ChipSortFactor.name => l10n.sortByName,
       ChipSortFactor.count => l10n.sortByItemCount,
       ChipSortFactor.size => l10n.sortBySize,
+      ChipSortFactor.path => l10n.sortByPath,
     };
   }
 
@@ -54,6 +55,7 @@ extension ExtraChipSortFactorView on ChipSortFactor {
       ChipSortFactor.name => AIcons.name,
       ChipSortFactor.count => AIcons.count,
       ChipSortFactor.size => AIcons.size,
+      ChipSortFactor.path => AIcons.path,
     };
   }
 
@@ -61,7 +63,7 @@ extension ExtraChipSortFactorView on ChipSortFactor {
     final l10n = context.l10n;
     return switch (this) {
       ChipSortFactor.date => reverse ? l10n.sortOrderOldestFirst : l10n.sortOrderNewestFirst,
-      ChipSortFactor.name => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
+      ChipSortFactor.name || ChipSortFactor.path => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
       ChipSortFactor.count || ChipSortFactor.size => reverse ? l10n.sortOrderSmallestFirst : l10n.sortOrderLargestFirst,
     };
   }

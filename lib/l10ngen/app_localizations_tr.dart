@@ -169,7 +169,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get chipActionDelete => 'Sil';
 
   @override
-  String get chipActionRemove => 'Remove';
+  String get chipActionRemove => 'Kaldır';
 
   @override
   String get chipActionShowCollection => 'Koleksiyonda göster';
@@ -190,7 +190,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get chipActionGoToExplorerPage => 'Gezginde göster';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'Böl';
 
   @override
   String get chipActionFilterOut => 'Dışarıda bırak';
@@ -496,7 +496,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get albumTierVaults => 'Kilitli albümler';
 
   @override
-  String get albumTierDynamic => 'Dynamic';
+  String get albumTierDynamic => 'Dinamik';
 
   @override
   String get albumTierRegular => 'Diğer';
@@ -829,10 +829,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get newAlbumDialogStorageLabel => 'Depolama:';
 
   @override
-  String get newDynamicAlbumDialogTitle => 'New Dynamic Album';
+  String get newDynamicAlbumDialogTitle => 'Yeni dinamik albüm';
 
   @override
-  String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+  String get dynamicAlbumAlreadyExists => 'Dinamik albüm zaten var';
 
   @override
   String get newVaultWarningDialogMessage => 'Kilitli albümlere yalnızca bu uygulama erişebilir, başka herhangi bir uygulama erişemez.\n\nBu uygulamayı kaldırır veya verilerini silerseniz kilitli albümlerdeki bütün ögeleri kaybedersiniz.';
@@ -992,7 +992,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'Harita üzerinde seç';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'GPX\'i içe aktar';
 
   @override
   String get editEntryLocationDialogLatitude => 'Enlem';
@@ -1013,7 +1013,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Üst Veri Kaldırma';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Tümü';
 
   @override
   String get removeEntryMetadataDialogMore => 'Daha fazla';
@@ -1217,7 +1217,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get collectionActionHideTitleSearch => 'Başlık filtresini gizle';
 
   @override
-  String get collectionActionAddDynamicAlbum => 'Add dynamic album';
+  String get collectionActionAddDynamicAlbum => 'Dinamik albüm ekle';
 
   @override
   String get collectionActionAddShortcut => 'Kısayol ekle';
@@ -1492,6 +1492,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sortByDuration => 'Süreye göre';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Önce en yeni';
 
   @override
@@ -1621,6 +1624,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get searchDateSectionTitle => 'Tarih';
 
   @override
+  String get searchFormatSectionTitle => 'Biçimler';
+
+  @override
   String get searchAlbumsSectionTitle => 'Albümler';
 
   @override
@@ -1681,7 +1687,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appExportCovers => 'Kapaklar';
 
   @override
-  String get appExportDynamicAlbums => 'Dynamic albums';
+  String get appExportDynamicAlbums => 'Dinamik albümler';
 
   @override
   String get appExportFavourites => 'Favoriler';

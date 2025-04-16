@@ -69,7 +69,7 @@ class _TvMetadataPageState extends State<TvMetadataPage> {
               final dir = metadata[titles[i]]!;
               final color = MetadataDirTile.getTitleColor(context, dir);
               return NavigationRailDestination(
-                icon: Icon(AIcons.disc, color: color),
+                icon: Icon(AIcons.circle, fill: 1, color: color),
                 label: Text(title),
               );
             }).toList(),

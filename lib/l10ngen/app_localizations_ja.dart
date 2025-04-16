@@ -1481,6 +1481,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sortByDuration => '期間順';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => '新しいものから表示';
 
   @override
@@ -1608,6 +1611,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => '日付';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'アルバム';

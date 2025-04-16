@@ -1465,6 +1465,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get sortByDuration => 'Podle trvání';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Od nejnovějšího';
 
   @override
@@ -1592,6 +1595,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Datum';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'Alba';

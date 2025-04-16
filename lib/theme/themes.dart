@@ -60,8 +60,10 @@ class Themes {
       dividerColor: colors.outlineVariant,
       scaffoldBackgroundColor: _schemeFirstLayer(colors),
       // TYPOGRAPHY & ICONOGRAPHY
+      iconTheme: _iconTheme(colors),
       typography: _typography,
       // COMPONENT THEMES
+      bottomNavigationBarTheme: _bottomNavigationBarTheme(colors),
       checkboxTheme: _checkboxTheme(colors),
       drawerTheme: _drawerTheme(colors),
       floatingActionButtonTheme: _floatingActionButtonTheme(colors),
@@ -79,12 +81,31 @@ class Themes {
     );
   }
 
+  static BottomNavigationBarThemeData _bottomNavigationBarTheme(ColorScheme colors) {
+    final iconTheme = _iconTheme(colors);
+    return BottomNavigationBarThemeData(
+      elevation: 0,
+      selectedIconTheme: iconTheme.copyWith(color: colors.primary),
+      unselectedIconTheme: iconTheme.copyWith(color: _unselectedWidgetColor(colors)),
+    );
+  }
+
   static CheckboxThemeData _checkboxTheme(ColorScheme colors) => CheckboxThemeData(
         side: BorderSide(width: 2.0, color: _unselectedWidgetColor(colors)),
       );
 
   static DrawerThemeData _drawerTheme(ColorScheme colors) => DrawerThemeData(
         backgroundColor: _schemeSecondLayer(colors),
+      );
+
+  static IconThemeData _iconTheme(ColorScheme colors) => IconThemeData(
+        // increased weight (from default 400 to 600)
+        // applied to variable fonts from `material_symbols_icons`,
+        // to match the fixed-weight icons from `material_design_icons_flutter`
+        weight: 600,
+        grade: 0,
+        opticalSize: 48,
+        color: colors.onSurface,
       );
 
   static const _listTileTheme = ListTileThemeData(

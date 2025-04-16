@@ -1608,5 +1608,9 @@
   "mapStyleOsmLiberty": "OSM Liberty",
   "@mapStyleOsmLiberty": {},
   "removeEntryMetadataDialogAll": "Toate",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "După cale",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Formate",
+  "@searchFormatSectionTitle": {}
 }

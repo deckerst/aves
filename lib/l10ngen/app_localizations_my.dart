@@ -1461,6 +1461,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get sortByDuration => 'By duration';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'အသစ်ဆုံးက ထိပ်ဆုံး';
 
   @override
@@ -1588,6 +1591,9 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'ရက်စွဲ';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'အယ်လ်ဘမ်များ';

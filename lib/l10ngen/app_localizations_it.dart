@@ -1497,6 +1497,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sortByDuration => 'Per durata';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Dal più nuovo';
 
   @override
@@ -1624,6 +1627,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Data';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'Album';

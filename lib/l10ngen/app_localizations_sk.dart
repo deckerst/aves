@@ -1457,6 +1457,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get sortByDuration => 'Trvanie';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Najskôr najnovšie';
 
   @override
@@ -1584,6 +1587,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Dátum';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'Albumy';

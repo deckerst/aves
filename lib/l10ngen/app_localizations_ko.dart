@@ -1479,6 +1479,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sortByDuration => '길이';
 
   @override
+  String get sortByPath => '경로';
+
+  @override
   String get sortOrderNewestFirst => '최근 날짜순';
 
   @override
@@ -1606,6 +1609,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => '날짜';
+
+  @override
+  String get searchFormatSectionTitle => '형식';
 
   @override
   String get searchAlbumsSectionTitle => '앨범';

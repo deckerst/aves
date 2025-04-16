@@ -1500,6 +1500,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get sortByDuration => 'Kestuse järgi';
 
   @override
+  String get sortByPath => 'Asukoha alusel';
+
+  @override
   String get sortOrderNewestFirst => 'Esmalt uuemad';
 
   @override
@@ -1627,6 +1630,9 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Kuupäevad';
+
+  @override
+  String get searchFormatSectionTitle => 'Vormingud';
 
   @override
   String get searchAlbumsSectionTitle => 'Albumid';

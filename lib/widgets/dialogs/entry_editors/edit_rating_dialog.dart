@@ -62,6 +62,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
                   children: [
                     ...List.generate(5, (i) {
                       final thisRating = i + 1;
+                      final disabled = _rating < thisRating;
                       return GestureDetector(
                         onTap: () => setState(() {
                           _action = _RatingAction.set;
@@ -71,8 +72,9 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: Icon(
-                            _rating < thisRating ? AIcons.rating : AIcons.ratingFull,
-                            color: _rating < thisRating ? AColors.starDisabled : AColors.starEnabled,
+                            AIcons.rating,
+                            fill: disabled ? 0 : 1,
+                            color: disabled ? AColors.starDisabled : AColors.starEnabled,
                           ),
                         ),
                       );

@@ -1452,6 +1452,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sortByDuration => 'حسب المدة';
 
   @override
+  String get sortByPath => 'حسب المسار';
+
+  @override
   String get sortOrderNewestFirst => 'الأحدث أولاً';
 
   @override
@@ -1579,6 +1582,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'تاريخ';
+
+  @override
+  String get searchFormatSectionTitle => 'التنسيقات';
 
   @override
   String get searchAlbumsSectionTitle => 'الألبومات';

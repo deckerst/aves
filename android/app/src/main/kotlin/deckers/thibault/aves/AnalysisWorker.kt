@@ -14,6 +14,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import app.loup.streams_channel.StreamsChannel
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.channel.calls.DeviceHandler
 import deckers.thibault.aves.channel.calls.GeocodingHandler
 import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
@@ -44,11 +45,12 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
     private var backgroundChannel: MethodChannel? = null
 
     override suspend fun doWork(): Result {
+        Log.i(LOG_TAG, "Start analysis worker $id")
         defaultScope.launch {
             // prevent ANR triggered by slow operations in main thread
             createNotificationChannel()
             setForeground(createForegroundInfo())
-        }
+        }.join()
         suspendCoroutine { cont ->
             workCont = cont
             onStart()
@@ -68,7 +70,6 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
     }
 
     private fun onStart() {
-        Log.i(LOG_TAG, "Start analysis worker $id")
         runBlocking {
             FlutterUtils.initFlutterEngine(applicationContext, SHARED_PREFERENCES_KEY, PREF_CALLBACK_HANDLE_KEY) {
                 flutterEngine = it
@@ -132,12 +133,7 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
                 result.success(null)
             }
 
-            "updateNotification" -> {
-                val title = call.argument<String>("title")
-                val message = call.argument<String>("message")
-                setForegroundAsync(createForegroundInfo(title, message))
-                result.success(null)
-            }
+            "updateNotification" -> defaultScope.launch { safeSuspend(call, result, ::updateNotification) }
 
             "stop" -> {
                 workCont?.resume(null)
@@ -180,15 +176,20 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             .setContentIntent(openAppIntent)
             .addAction(stopAction)
             .build()
-        return if (Build.VERSION.SDK_INT == 34) {
-            // from Android 14 (API 34), foreground service type is mandatory for long-running workers:
-            // https://developer.android.com/guide/background/persistent/how-to/long-running
-            ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
-        } else if (Build.VERSION.SDK_INT >= 35) {
-            ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)
-        } else {
-            ForegroundInfo(NOTIFICATION_ID, notification)
+        // from Android 14 (API 34), foreground service type is mandatory for long-running workers:
+        // https://developer.android.com/guide/background/persistent/how-to/long-running
+        return when {
+            Build.VERSION.SDK_INT >= 35 -> ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)
+            Build.VERSION.SDK_INT == 34 -> ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            else -> ForegroundInfo(NOTIFICATION_ID, notification)
         }
+    }
+
+    private suspend fun updateNotification(call: MethodCall, result: MethodChannel.Result) {
+        val title = call.argument<String>("title")
+        val message = call.argument<String>("message")
+        setForeground(createForegroundInfo(title, message))
+        result.success(null)
     }
 
     companion object {

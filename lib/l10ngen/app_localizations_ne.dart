@@ -4,21 +4,21 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for Slovenian (`sl`).
-class AppLocalizationsSl extends AppLocalizations {
-  AppLocalizationsSl([String locale = 'sl']) : super(locale);
+/// The translations for Nepali (`ne`).
+class AppLocalizationsNe extends AppLocalizations {
+  AppLocalizationsNe([String locale = 'ne']) : super(locale);
 
   @override
   String get appName => 'Aves';
 
   @override
-  String get welcomeMessage => 'Dobrodošli v Avesu';
+  String get welcomeMessage => 'Welcome to Aves';
 
   @override
-  String get welcomeOptional => 'Izbirno';
+  String get welcomeOptional => 'Optional';
 
   @override
-  String get welcomeTermsToggle => 'Sprejmem pogoje uporabe';
+  String get welcomeTermsToggle => 'I agree to the terms and conditions';
 
   @override
   String itemCount(int count) {

@@ -1447,6 +1447,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get sortByDuration => 'Theo thời lượng';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Mới nhất trước';
 
   @override
@@ -1574,6 +1577,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Thời gian';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'Bộ sưu tập';

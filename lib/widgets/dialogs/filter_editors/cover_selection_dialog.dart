@@ -104,7 +104,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
           _buildTab(
             context,
             const Key('tab-color'),
-            AIcons.opacity,
+            AIcons.palette,
             l10n.coverDialogTabColor,
           ),
           Column(children: _buildColorOptions()),

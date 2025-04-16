@@ -69,12 +69,13 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: List.generate(5, (i) {
-                final thisRating = i + 1;
+                final disabled = _rating < i + 1;
                 return Padding(
                   padding: const EdgeInsets.all(4),
                   child: Icon(
-                    _rating < thisRating ? AIcons.rating : AIcons.ratingFull,
-                    color: _rating < thisRating ? AColors.starDisabled : AColors.starEnabled,
+                    AIcons.rating,
+                    fill: disabled ? 0 : 1,
+                    color: disabled ? AColors.starDisabled : AColors.starEnabled,
                   ),
                 );
               }).toList(),

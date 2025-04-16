@@ -1452,6 +1452,9 @@ class AppLocalizationsIs extends AppLocalizations {
   String get sortByDuration => 'Eftir tímalengd';
 
   @override
+  String get sortByPath => 'Eftir slóð';
+
+  @override
   String get sortOrderNewestFirst => 'Nýjast fyrst';
 
   @override
@@ -1579,6 +1582,9 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Dagsetning';
+
+  @override
+  String get searchFormatSectionTitle => 'Snið';
 
   @override
   String get searchAlbumsSectionTitle => 'Albúm';

@@ -18,7 +18,6 @@ import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_search.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -86,7 +85,7 @@ class InfoAppBar extends StatelessWidget {
                       const PopupMenuDivider(),
                       ...formatSpecificActions.map((action) => _toMenuItem(context, action, enabled: actionDelegate.canApply(entry, action))),
                     ],
-                    if (!kReleaseMode) ...[
+                    if (isVisible(EntryAction.debug)) ...[
                       const PopupMenuDivider(),
                       _toMenuItem(context, EntryAction.debug, enabled: true),
                     ]

@@ -28,8 +28,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString items',
-      one: '$countString item',
+      other: '$countString פריטים',
+      one: '$countString פריט',
     );
     return '$_temp0';
   }
@@ -42,8 +42,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString columns',
-      one: '$countString column',
+      other: '$countString עמודות',
+      one: '$countString עמודה',
     );
     return '$_temp0';
   }
@@ -56,8 +56,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString seconds',
-      one: '$countString second',
+      other: '$countString שניות',
+      one: '$countString שניה',
     );
     return '$_temp0';
   }
@@ -70,8 +70,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString minutes',
-      one: '$countString minute',
+      other: '$countString דקות',
+      one: '$countString דקה',
     );
     return '$_temp0';
   }
@@ -84,8 +84,8 @@ class AppLocalizationsHe extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$countString days',
-      one: '$countString day',
+      other: '$countString ימים',
+      one: '$countString יום',
     );
     return '$_temp0';
   }
@@ -96,130 +96,130 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
-  String get applyButtonLabel => 'APPLY';
+  String get applyButtonLabel => 'החל';
 
   @override
-  String get deleteButtonLabel => 'DELETE';
+  String get deleteButtonLabel => 'מחק';
 
   @override
-  String get nextButtonLabel => 'NEXT';
+  String get nextButtonLabel => 'הבא';
 
   @override
-  String get showButtonLabel => 'SHOW';
+  String get showButtonLabel => 'הצג';
 
   @override
-  String get hideButtonLabel => 'HIDE';
+  String get hideButtonLabel => 'הסתר';
 
   @override
-  String get continueButtonLabel => 'CONTINUE';
+  String get continueButtonLabel => 'המשך';
 
   @override
-  String get saveCopyButtonLabel => 'SAVE COPY';
+  String get saveCopyButtonLabel => 'שמור עותק';
 
   @override
-  String get applyTooltip => 'Apply';
+  String get applyTooltip => 'החל';
 
   @override
-  String get cancelTooltip => 'Cancel';
+  String get cancelTooltip => 'ביטול';
 
   @override
-  String get changeTooltip => 'Change';
+  String get changeTooltip => 'שינוי';
 
   @override
-  String get clearTooltip => 'Clear';
+  String get clearTooltip => 'ניקוי';
 
   @override
-  String get previousTooltip => 'Previous';
+  String get previousTooltip => 'הקודם';
 
   @override
-  String get nextTooltip => 'Next';
+  String get nextTooltip => 'הבא';
 
   @override
-  String get showTooltip => 'Show';
+  String get showTooltip => 'הצג';
 
   @override
-  String get hideTooltip => 'Hide';
+  String get hideTooltip => 'הסתר';
 
   @override
-  String get actionRemove => 'Remove';
+  String get actionRemove => 'הסרה';
 
   @override
-  String get resetTooltip => 'Reset';
+  String get resetTooltip => 'אפס';
 
   @override
-  String get saveTooltip => 'Save';
+  String get saveTooltip => 'שמור';
 
   @override
-  String get stopTooltip => 'Stop';
+  String get stopTooltip => 'עצור';
 
   @override
-  String get pickTooltip => 'Pick';
+  String get pickTooltip => 'בחר';
 
   @override
-  String get doubleBackExitMessage => 'Tap “back” again to exit.';
+  String get doubleBackExitMessage => 'כדי לצאת הקש שוב על \"חזרה\".';
 
   @override
-  String get doNotAskAgain => 'Do not ask again';
+  String get doNotAskAgain => 'אל תשאל שוב';
 
   @override
-  String get sourceStateLoading => 'Loading';
+  String get sourceStateLoading => 'טוען';
 
   @override
-  String get sourceStateCataloguing => 'Cataloguing';
+  String get sourceStateCataloguing => 'מקטלג';
 
   @override
-  String get sourceStateLocatingCountries => 'Locating countries';
+  String get sourceStateLocatingCountries => 'טוען מדינות';
 
   @override
-  String get sourceStateLocatingPlaces => 'Locating places';
+  String get sourceStateLocatingPlaces => 'טוען מקומות';
 
   @override
-  String get chipActionDelete => 'Delete';
+  String get chipActionDelete => 'מחק';
 
   @override
-  String get chipActionRemove => 'Remove';
+  String get chipActionRemove => 'הסר';
 
   @override
-  String get chipActionShowCollection => 'Show in Collection';
+  String get chipActionShowCollection => 'הצג באוסף';
 
   @override
-  String get chipActionGoToAlbumPage => 'Show in Albums';
+  String get chipActionGoToAlbumPage => 'הצג באלבום';
 
   @override
-  String get chipActionGoToCountryPage => 'Show in Countries';
+  String get chipActionGoToCountryPage => 'הצג במדינות';
 
   @override
-  String get chipActionGoToPlacePage => 'Show in Places';
+  String get chipActionGoToPlacePage => 'הצג במקומות';
 
   @override
-  String get chipActionGoToTagPage => 'Show in Tags';
+  String get chipActionGoToTagPage => 'הצג בתגיות';
 
   @override
-  String get chipActionGoToExplorerPage => 'Show in Explorer';
+  String get chipActionGoToExplorerPage => 'הצג בסייר';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'פיצול';
 
   @override
-  String get chipActionFilterOut => 'Filter out';
+  String get chipActionFilterOut => 'סנן החוצה';
 
   @override
-  String get chipActionFilterIn => 'Filter in';
+  String get chipActionFilterIn => 'סנן לבתוך';
 
   @override
-  String get chipActionHide => 'Hide';
+  String get chipActionHide => 'הסתר';
 
   @override
-  String get chipActionLock => 'Lock';
+  String get chipActionLock => 'נעל';
 
   @override
-  String get chipActionPin => 'Pin to top';
+  String get chipActionPin => 'הצמד למעלה';
 
   @override
-  String get chipActionUnpin => 'Unpin from top';
+  String get chipActionUnpin => 'בטל הצמד למעלה';
 
   @override
-  String get chipActionRename => 'Rename';
+  String get chipActionRename => 'שנה שם';
 
   @override
   String get chipActionSetCover => 'Set cover';
@@ -1500,6 +1500,9 @@ class AppLocalizationsHe extends AppLocalizations {
   String get sortByDuration => 'By duration';
 
   @override
+  String get sortByPath => 'By path';
+
+  @override
   String get sortOrderNewestFirst => 'Newest first';
 
   @override
@@ -1627,6 +1630,9 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Date';
+
+  @override
+  String get searchFormatSectionTitle => 'Formats';
 
   @override
   String get searchAlbumsSectionTitle => 'Albums';

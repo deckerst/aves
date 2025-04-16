@@ -37,6 +37,7 @@ import 'app_localizations_lt.dart';
 import 'app_localizations_ml.dart';
 import 'app_localizations_my.dart';
 import 'app_localizations_nb.dart';
+import 'app_localizations_ne.dart';
 import 'app_localizations_nl.dart';
 import 'app_localizations_nn.dart';
 import 'app_localizations_or.dart';
@@ -172,6 +173,7 @@ abstract class AppLocalizations {
     Locale('ml'),
     Locale('my'),
     Locale('nb'),
+    Locale('ne'),
     Locale('nl'),
     Locale('nn'),
     Locale('or'),
@@ -2713,6 +2715,12 @@ abstract class AppLocalizations {
   /// **'By duration'**
   String get sortByDuration;
 
+  /// No description provided for @sortByPath.
+  ///
+  /// In en, this message translates to:
+  /// **'By path'**
+  String get sortByPath;
+
   /// No description provided for @sortOrderNewestFirst.
   ///
   /// In en, this message translates to:
@@ -2970,6 +2978,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date'**
   String get searchDateSectionTitle;
+
+  /// No description provided for @searchFormatSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Formats'**
+  String get searchFormatSectionTitle;
 
   /// No description provided for @searchAlbumsSectionTitle.
   ///
@@ -4439,7 +4453,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['ar', 'az', 'be', 'bg', 'bn', 'ca', 'ckb', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'id', 'is', 'it', 'ja', 'kn', 'ko', 'lt', 'ml', 'my', 'nb', 'nl', 'nn', 'or', 'pl', 'pt', 'ro', 'ru', 'sat', 'sk', 'sl', 'sr', 'sv', 'ta', 'th', 'tr', 'uk', 'vi', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'az', 'be', 'bg', 'bn', 'ca', 'ckb', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'id', 'is', 'it', 'ja', 'kn', 'ko', 'lt', 'ml', 'my', 'nb', 'ne', 'nl', 'nn', 'or', 'pl', 'pt', 'ro', 'ru', 'sat', 'sk', 'sl', 'sr', 'sv', 'ta', 'th', 'tr', 'uk', 'vi', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -4497,6 +4511,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     case 'ml': return AppLocalizationsMl();
     case 'my': return AppLocalizationsMy();
     case 'nb': return AppLocalizationsNb();
+    case 'ne': return AppLocalizationsNe();
     case 'nl': return AppLocalizationsNl();
     case 'nn': return AppLocalizationsNn();
     case 'or': return AppLocalizationsOr();

@@ -1092,7 +1092,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get viewDialogLayoutSectionTitle => 'Layout';
 
   @override
-  String get viewDialogReverseSortOrder => 'Draai sorteerrichting om';
+  String get viewDialogReverseSortOrder => 'Sortering omkeren';
 
   @override
   String get tileLayoutMosaic => 'Mozaïek';
@@ -1499,16 +1499,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get sortByDuration => 'Op lengte';
 
   @override
+  String get sortByPath => 'Op pad';
+
+  @override
   String get sortOrderNewestFirst => 'Nieuwste eerst';
 
   @override
   String get sortOrderOldestFirst => 'Oudste eerst';
 
   @override
-  String get sortOrderAtoZ => 'A tot Z';
+  String get sortOrderAtoZ => 'A - Z';
 
   @override
-  String get sortOrderZtoA => 'Z tot A';
+  String get sortOrderZtoA => 'Z - A';
 
   @override
   String get sortOrderHighestFirst => 'Hoogste eerst';
@@ -1626,6 +1629,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get searchDateSectionTitle => 'Datum';
+
+  @override
+  String get searchFormatSectionTitle => 'Formaten';
 
   @override
   String get searchAlbumsSectionTitle => 'Albums';

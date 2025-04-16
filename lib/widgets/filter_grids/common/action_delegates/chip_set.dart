@@ -57,6 +57,11 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     ChipSortFactor.size,
   ];
 
+  static const albumSortOptions = [
+    ...sortOptions,
+    ChipSortFactor.path,
+  ];
+
   static const layoutOptions = [
     TileLayout.mosaic,
     TileLayout.grid,

@@ -1617,5 +1617,11 @@
   "removeEntryMetadataDialogAll": "Allt",
   "@removeEntryMetadataDialogAll": {},
   "coordinateFormatDdm": "DDM",
-  "@coordinateFormatDdm": {}
+  "@coordinateFormatDdm": {},
+  "editEntryLocationDialogTimeShift": "Tidsskifte",
+  "@editEntryLocationDialogTimeShift": {},
+  "sortByPath": "Efter sökväg",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Format",
+  "@searchFormatSectionTitle": {}
 }
