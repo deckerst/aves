@@ -1,3 +1,0 @@
-In v1.12.2:
-- enjoy the app in Danish
-Full changelog available on GitHub

@@ -1,3 +1,0 @@
-In v1.12.3:
-- edit locations via GPX tracks
-Full changelog available on GitHub

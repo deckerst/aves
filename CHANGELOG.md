@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.12.10"></a>[v1.12.10] - 2025-04-16
+
 ### Added
 
 - Search: format filters
