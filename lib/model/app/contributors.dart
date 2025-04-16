@@ -132,6 +132,9 @@ class Contributors {
     Contributor('hanyang cheng', 'cinxiafortis@tutanota.de'),
     Contributor('Chethan', 'chethan@users.noreply.hosted.weblate.org'),
     Contributor('Prasannakumar T Bhat', 'pbhat99@gmail.com'),
+    Contributor('Bora Atıcı', 'boratici.acc@gmail.com'),
+    Contributor('Ettore Atalan', 'atalanttore@googlemail.com'),
+    Contributor('VertekPlus', 'vertekplus@users.noreply.hosted.weblate.org'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese

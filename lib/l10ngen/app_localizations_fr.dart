@@ -1500,7 +1500,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sortByDuration => 'par durée';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'par chemin';
 
   @override
   String get sortOrderNewestFirst => 'Plus récents d’abord';
