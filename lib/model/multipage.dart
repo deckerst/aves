@@ -1,4 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -81,17 +82,17 @@ class MultiPageInfo {
     final videoPage = _pages.firstWhereOrNull((page) => page.isVideo);
     if (videoPage != null && videoPage.uri == null) {
       final fields = await embeddedDataService.extractMotionPhotoVideo(mainEntry);
-      if (fields.containsKey('uri')) {
+      if (fields.containsKey(EntryFields.uri)) {
         final pageIndex = _pages.indexOf(videoPage);
         _pages.removeAt(pageIndex);
         _pages.insert(
             pageIndex,
             videoPage.copyWith(
-              uri: fields['uri'] as String?,
+              uri: fields[EntryFields.uri] as String?,
               // the initial fake page may contain inaccurate values for the following fields
               // so we override them with values from the extracted standalone video
-              rotationDegrees: fields['sourceRotationDegrees'] as int?,
-              durationMillis: fields['durationMillis'] as int?,
+              rotationDegrees: fields[EntryFields.sourceRotationDegrees] as int?,
+              durationMillis: fields[EntryFields.durationMillis] as int?,
             ));
         _pageEntries.remove(videoPage);
       }

@@ -81,6 +81,7 @@ class PlatformMediaFetchService implements MediaFetchService {
         'mimeType': mimeType,
         'allowUnsized': allowUnsized,
       }) as Map;
+      AvesEntry.normalizeMimeTypeFields(result);
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {
       // do not report issues with media content as it is likely an obsolete Media Store entry

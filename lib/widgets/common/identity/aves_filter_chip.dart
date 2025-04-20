@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -106,12 +107,18 @@ class AvesFilterChip extends StatefulWidget {
       const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
       final actionDelegate = ChipActionDelegate();
       final animations = context.read<Settings>().accessibilityAnimations;
+
+      var title = filter.getLabel(context);
+      if (filter is MimeFilter) {
+        title += ' (${filter.mime})';
+      }
+
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
         items: [
           PopupMenuItem(
-            child: Text(filter.getLabel(context)),
+            child: Text(title),
           ),
           const PopupMenuDivider(),
           ...ChipAction.values.where((action) => actionDelegate.isVisible(action, filter: filter)).map((action) {

@@ -114,9 +114,7 @@ class VideoMetadataFormatter {
 
     // exclude date if it is suspiciously close to epoch
     if (dateMillis != null && !DateTime.fromMillisecondsSinceEpoch(dateMillis).isAtSameDayAs(epoch)) {
-      catalogMetadata = catalogMetadata.copyWith(
-        dateMillis: dateMillis,
-      );
+      catalogMetadata = catalogMetadata.copyWith(dateMillis: dateMillis);
     }
 
     return catalogMetadata;
