@@ -77,7 +77,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
           routeName: SearchPage.routeName,
         ) {
     query = initialQuery ?? '';
-    _mimeTypeFilters = source.allEntries.map((entry) => entry.mimeType).toSet().map(MimeFilter.new).toList()..sort();
+    _mimeTypeFilters = source.visibleEntries.map((entry) => entry.mimeType).toSet().map(MimeFilter.new).toList()..sort();
   }
 
   @override
