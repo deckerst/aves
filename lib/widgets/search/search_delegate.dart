@@ -1,5 +1,6 @@
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
+import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';

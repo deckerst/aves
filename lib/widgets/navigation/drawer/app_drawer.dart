@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';

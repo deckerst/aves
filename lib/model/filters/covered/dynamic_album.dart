@@ -1,5 +1,5 @@
+import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/covered.dart';
-import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves_model/aves_model.dart';
