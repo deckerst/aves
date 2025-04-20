@@ -1,4 +1,4 @@
-import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves_model/aves_model.dart';

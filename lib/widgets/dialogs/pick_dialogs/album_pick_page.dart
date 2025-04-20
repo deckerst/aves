@@ -1,4 +1,5 @@
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';

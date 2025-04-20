@@ -1,4 +1,5 @@
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -11,18 +12,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-
-abstract class AlbumBaseFilter extends CollectionFilter {
-  const AlbumBaseFilter({required super.reversed});
-
-  bool match(String query);
-
-  StorageVolume? get storageVolume;
-
-  bool get canRename;
-
-  bool get isVault;
-}
 
 class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   static const type = 'album';
