@@ -100,7 +100,7 @@ class MimeTypes {
 
   static bool isVisual(String mimeType) => isImage(mimeType) || isVideo(mimeType);
 
-  static String _collapsedType(String mimeType) {
+  static String normalize(String mimeType) {
     switch (mimeType) {
       case avi:
       case aviMSVideo:
@@ -127,7 +127,7 @@ class MimeTypes {
     }
   }
 
-  static bool refersToSameType(String a, b) => _collapsedType(a) == _collapsedType(b);
+  static bool refersToSameType(String a, b) => normalize(a) == normalize(b);
 
   static String? forExtension(String extension) {
     switch (extension) {

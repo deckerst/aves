@@ -85,7 +85,11 @@ class PlatformMediaStoreService implements MediaStoreService {
             'directory': directory,
           })
           .where((event) => event is Map)
-          .map((event) => AvesEntry.fromMap(event as Map));
+          .map((event) {
+            final fields = event as Map;
+            AvesEntry.normalizeMimeTypeFields(fields);
+            return AvesEntry.fromMap(fields);
+          });
     } on PlatformException catch (e, stack) {
       reportService.recordError(e, stack);
       return Stream.error(e);

@@ -149,7 +149,7 @@ class AvesEntry with AvesEntryBase {
   }
 
   // for DB only
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toDatabaseMap() {
     return {
       EntryFields.id: id,
       EntryFields.uri: uri,
@@ -397,6 +397,17 @@ class AvesEntry with AvesEntryBase {
     }.nonNulls.where((v) => v.isNotEmpty).join(', ');
   }
 
+  static void normalizeMimeTypeFields(Map fields) {
+    final mimeType = fields[EntryFields.mimeType] as String?;
+    if (mimeType != null) {
+      fields[EntryFields.mimeType] = MimeTypes.normalize(mimeType);
+    }
+    final sourceMimeType = fields[EntryFields.sourceMimeType] as String?;
+    if (sourceMimeType != null) {
+      fields[EntryFields.sourceMimeType] = MimeTypes.normalize(sourceMimeType);
+    }
+  }
+
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {
     final oldMimeType = mimeType;
     final oldDateModifiedMillis = this.dateModifiedMillis;
@@ -458,7 +469,7 @@ class AvesEntry with AvesEntryBase {
 
     final updatedEntry = await mediaFetchService.getEntry(uri, mimeType);
     if (updatedEntry != null) {
-      await applyNewFields(updatedEntry.toMap(), persist: persist);
+      await applyNewFields(updatedEntry.toDatabaseMap(), persist: persist);
     }
   }
 

@@ -179,7 +179,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   void _batchInsertEntry(Batch batch, AvesEntry entry) {
     batch.insert(
       entryTable,
-      entry.toMap(),
+      entry.toDatabaseMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

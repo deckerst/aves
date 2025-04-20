@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -51,13 +52,14 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
       case EmbeddedDataSource.xmp:
         fields = await embeddedDataService.extractXmpDataProp(entry, notification.props, notification.mimeType);
     }
-    if (!fields.containsKey('mimeType') || !fields.containsKey('uri')) {
+    AvesEntry.normalizeMimeTypeFields(fields);
+    final mimeType = fields[EntryFields.mimeType] as String?;
+    final uri = fields[EntryFields.uri] as String?;
+    if (mimeType == null || uri == null) {
       showFeedback(context, FeedbackType.warn, context.l10n.viewerInfoOpenEmbeddedFailureFeedback);
       return;
     }
 
-    final mimeType = fields['mimeType']!;
-    final uri = fields['uri']!;
     if (!MimeTypes.isImage(mimeType) && !MimeTypes.isVideo(mimeType)) {
       // open with another app
       unawaited(appService.open(uri, mimeType, forceChooser: true).then((success) {
