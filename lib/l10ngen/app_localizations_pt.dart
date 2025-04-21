@@ -216,6 +216,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chipActionUnpin => 'Desafixar do topo';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Renomear';
 
   @override
@@ -490,6 +493,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fixada';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Comum';
@@ -838,6 +844,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'O álbum dinâmico já existe';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Os itens nos cofres estão disponíveis apenas para este aplicativo e nenhum outro.\n\nSe você desinstalar este aplicativo ou limpar os dados do aplicativo, perderá todos esses itens.';

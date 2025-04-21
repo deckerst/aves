@@ -130,6 +130,7 @@ mixin AlbumMixin on SourceBase {
     if (notify) {
       eventBus.fire(StoredAlbumSummaryInvalidatedEvent(directories));
       eventBus.fire(const DynamicAlbumSummaryInvalidatedEvent());
+      eventBus.fire(const AlbumGroupSummaryInvalidatedEvent());
     }
   }
 
@@ -245,6 +246,11 @@ class AlbumsChangedEvent {}
 
 class DynamicAlbumSummaryInvalidatedEvent {
   const DynamicAlbumSummaryInvalidatedEvent();
+}
+
+class AlbumGroupSummaryInvalidatedEvent {
+  // TODO TLAD [nested] dispatch event when appropriate
+  const AlbumGroupSummaryInvalidatedEvent();
 }
 
 class StoredAlbumSummaryInvalidatedEvent {

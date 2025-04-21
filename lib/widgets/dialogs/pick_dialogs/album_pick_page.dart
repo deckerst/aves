@@ -34,7 +34,7 @@ import 'package:provider/provider.dart';
 Future<AlbumBaseFilter?> pickAlbum({
   required BuildContext context,
   required MoveType? moveType,
-  required bool storedAlbumsOnly,
+  required Iterable<AlbumChipType> albumTypes,
 }) async {
   final source = context.read<CollectionSource>();
   if (source.targetScope != CollectionSource.fullScope) {
@@ -46,7 +46,7 @@ Future<AlbumBaseFilter?> pickAlbum({
   return await Navigator.maybeOf(context)?.push(
     MaterialPageRoute<AlbumBaseFilter>(
       settings: const RouteSettings(name: _AlbumPickPage.routeName),
-      builder: (context) => _AlbumPickPage(source: source, moveType: moveType, storedAlbumsOnly: storedAlbumsOnly),
+      builder: (context) => _AlbumPickPage(source: source, moveType: moveType, albumTypes: albumTypes),
     ),
   );
 }
@@ -56,12 +56,12 @@ class _AlbumPickPage extends StatefulWidget {
 
   final CollectionSource source;
   final MoveType? moveType;
-  final bool storedAlbumsOnly;
+  final Iterable<AlbumChipType> albumTypes;
 
   const _AlbumPickPage({
     required this.source,
     required this.moveType,
-    required this.storedAlbumsOnly,
+    required this.albumTypes,
   });
 
   @override
@@ -114,7 +114,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> {
           return StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
             builder: (context, snapshot) {
-              final gridItems = AlbumListPage.getAlbumGridItems(context, source, storedAlbumsOnly: widget.storedAlbumsOnly);
+              final gridItems = AlbumListPage.getAlbumGridItems(context, source, widget.albumTypes);
               return SelectionProvider<FilterGridItem<AlbumBaseFilter>>(
                 child: QueryProvider(
                   startEnabled: settings.getShowTitleQuery(context.currentRouteName!),

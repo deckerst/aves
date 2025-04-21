@@ -221,6 +221,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chipActionUnpin => 'Открепить';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Переименовать';
 
   @override
@@ -495,6 +498,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Закрепленные';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Стандартные';
@@ -845,6 +851,21 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Динамический альбом уже существует';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Элементы внутри хранилищ доступны только для этого приложения, и никакого другого.\n\nЕсли вы удалите приложение или очистите его данные, то вы потеряете все содержимое внутри хранилищ.';

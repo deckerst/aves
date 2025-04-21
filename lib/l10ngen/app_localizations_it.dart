@@ -216,6 +216,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get chipActionUnpin => 'Rimuovi dall’alto';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Rinomina';
 
   @override
@@ -490,6 +493,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fissati';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Frequenti';
@@ -838,6 +844,21 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Album dinamico già esistente';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Gli elementi nelle cassaforti sono disponibili solo per questa app e non per altre.\n\nSe disinstalli l’app o cancelli i relativi dati, perderai tutti questi elementi.';

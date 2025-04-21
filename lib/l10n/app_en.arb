@@ -104,6 +104,7 @@
   "chipActionLock": "Lock",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",
+  "chipActionGroup": "Group",
   "chipActionRename": "Rename",
   "chipActionSetCover": "Set cover",
   "chipActionShowCountryStates": "Show states",
@@ -208,6 +209,7 @@
 
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
+  "albumTierGroups": "Groups",
   "albumTierSpecial": "Common",
   "albumTierApps": "Apps",
   "albumTierVaults": "Vaults",
@@ -442,6 +444,12 @@
 
   "newDynamicAlbumDialogTitle": "New Dynamic Album",
   "dynamicAlbumAlreadyExists": "Dynamic album already exists",
+
+  "groupAlbumsDialogTitle": "Group",
+  "groupAlbumsDialogNameLabel": "Group name",
+  "groupAlreadyExists": "Group already exists",
+  "groupActionCreate": "Create group",
+  "groupActionSelect": "Select group",
 
   "newVaultWarningDialogMessage": "Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.",
   "newVaultDialogTitle": "New Vault",

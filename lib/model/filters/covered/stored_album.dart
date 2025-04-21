@@ -106,7 +106,6 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   @override
   bool match(String query) => (displayName ?? album).toUpperCase().contains(query);
 
-  @override
   StorageVolume? get storageVolume => androidFileUtils.getStorageVolume(album);
 
   @override

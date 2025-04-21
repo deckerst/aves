@@ -188,6 +188,7 @@ class AIcons {
 
   // albums
   static const album = Symbols.photo_album;
+  static const albumGroup = Symbols.collections_bookmark;
   static const dynamicAlbum = Symbols.image_search;
   static const cameraAlbum = Symbols.photo_camera;
   static const downloadAlbum = Symbols.file_download;

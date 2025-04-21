@@ -501,6 +501,12 @@ abstract class AppLocalizations {
   /// **'Unpin from top'**
   String get chipActionUnpin;
 
+  /// No description provided for @chipActionGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get chipActionGroup;
+
   /// No description provided for @chipActionRename.
   ///
   /// In en, this message translates to:
@@ -1052,6 +1058,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pinned'**
   String get albumTierPinned;
+
+  /// No description provided for @albumTierGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups'**
+  String get albumTierGroups;
 
   /// No description provided for @albumTierSpecial.
   ///
@@ -1664,6 +1676,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dynamic album already exists'**
   String get dynamicAlbumAlreadyExists;
+
+  /// No description provided for @groupAlbumsDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get groupAlbumsDialogTitle;
+
+  /// No description provided for @groupAlbumsDialogNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Group name'**
+  String get groupAlbumsDialogNameLabel;
+
+  /// No description provided for @groupAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Group already exists'**
+  String get groupAlreadyExists;
+
+  /// No description provided for @groupActionCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create group'**
+  String get groupActionCreate;
+
+  /// No description provided for @groupActionSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select group'**
+  String get groupActionSelect;
 
   /// No description provided for @newVaultWarningDialogMessage.
   ///

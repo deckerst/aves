@@ -208,6 +208,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get chipActionUnpin => 'ထိပ်ဆုံးမှပင်ဖြုတ်ရန်';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'အမည်ပြောင်းရန်';
 
   @override
@@ -482,6 +485,9 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'ပင်တွဲထား';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'အကြည့်များ';
@@ -826,6 +832,21 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'လျှို့ဝှက်သိုလှောင်ခန်းရှိ ဓာတ်ပုံနှင့်ဗီဒီယိုများကို ဤအက်ပ်တွင်သာမြင်ရမည်ဖြစ်ပြီး အခြားအက်ပ်များတွင် မမြင်ရနိုင်ပါ။\n\nဤအက်ပ်ကိုဖျက်လိုက်သည်ဖြစ်စေ၊ အက်ပ်ဒေတာကိုရှင်းလင်းလိုက်သည်ဖြစ်စေ ၎င်းဓာတ်ပုံနှင့်ဗီဒီယိုအားလုံးကို ဆုံးရှုံးသွားမည်ဖြစ်ပါသည်။';

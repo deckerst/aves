@@ -216,6 +216,9 @@ class AppLocalizationsGl extends AppLocalizations {
   String get chipActionUnpin => 'Desbloquear dende arriba';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Cambiar o nome';
 
   @override
@@ -490,6 +493,9 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fixado';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Común';
@@ -838,6 +844,21 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Xa existe o álbum dinámico';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Os elementos en cofres só están dispoñibles para esta aplicación.\n\nPerderanse ao desinstalala ou ao borrar os seus datos.';

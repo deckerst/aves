@@ -2,7 +2,6 @@ import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 
 class DynamicAlbumFilter extends AlbumBaseFilter with CoveredFilter {
@@ -57,9 +56,6 @@ class DynamicAlbumFilter extends AlbumBaseFilter with CoveredFilter {
 
   @override
   bool match(String query) => name.toUpperCase().contains(query);
-
-  @override
-  StorageVolume? get storageVolume => null;
 
   @override
   bool get canRename => true;

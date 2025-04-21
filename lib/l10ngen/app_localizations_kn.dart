@@ -219,6 +219,9 @@ class AppLocalizationsKn extends AppLocalizations {
   String get chipActionUnpin => 'ಪಿನ್ ತೆಗೆಯಿರಿ';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'ಮರುನಾಮಕರಣ';
 
   @override
@@ -493,6 +496,9 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'ಚುಚ್ಚಿರುವುದು';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'ಸಾಮಾನ್ಯ';
@@ -841,6 +847,21 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'ಡೈನಾಮಿಕ್ ಆಲ್ಬಮ್ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'ನೆಲಮಾಳಿಗೆಯಲ್ಲಿನ ವಸ್ತುಗಳು ಈ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ಮಾತ್ರ ಲಭ್ಯವಿದೆ ಮತ್ತು ಇತರ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಲ್ಲಿ ಇರುವುದಿಲ್ಲ.\n\nನೀವು ಈ ಅಪ್ಲಿಕೇಶನ್ ನನ್ನು ಅಸ್ಥಾಪಿಸಿದರೆ ಅಥವಾ ಈ ಅಪ್ಲಿಕೇಶನ್ ದತ್ತಾಂಶಗಳನ್ನು ತೆರವುಗೊಳಿಸಿದರೆ, ನೀವು ಈ ಎಲ್ಲ ವಸ್ತುಗಳನ್ನು ಕಳೆದುಕೊಳ್ಳುತ್ತೀರಿ.';

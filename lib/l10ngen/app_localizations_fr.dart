@@ -219,6 +219,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chipActionUnpin => 'Retirer';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Renommer';
 
   @override
@@ -493,6 +496,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Épinglés';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Standards';
@@ -841,6 +847,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'L’album dynamique existe déjà';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Les éléments dans les coffres-forts ne sont visibles que dans cette app et nulle autre.\n\nSi vous désinstallez cette app, ou que vous supprimez ses données, vous perdrez tous ces éléments.';

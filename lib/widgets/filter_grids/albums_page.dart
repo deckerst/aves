@@ -3,9 +3,11 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -19,6 +21,8 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+enum AlbumChipType { stored, dynamic, group }
 
 class AlbumListPage extends StatelessWidget {
   static const routeName = '/albums';
@@ -44,7 +48,7 @@ class AlbumListPage extends StatelessWidget {
               builder: (context, child) => StreamBuilder(
                 stream: source.eventBus.on<AlbumsChangedEvent>(),
                 builder: (context, snapshot) {
-                  final gridItems = getAlbumGridItems(context, source);
+                  final gridItems = getAlbumGridItems(context, source, AlbumChipType.values);
                   return StreamBuilder<Set<CollectionFilter>?>(
                     // to update sections by tier
                     stream: covers.packageChangeStream,
@@ -78,10 +82,24 @@ class AlbumListPage extends StatelessWidget {
     return filters.where((item) => item.filter.match(query)).toList();
   }
 
-  static List<FilterGridItem<AlbumBaseFilter>> getAlbumGridItems(BuildContext context, CollectionSource source, {bool storedAlbumsOnly = false}) {
+  // TODO TLAD [nested]
+  static final Uri? pageGroupUri = null;
+
+  static List<FilterGridItem<AlbumBaseFilter>> getAlbumGridItems(BuildContext context, CollectionSource source, Iterable<AlbumChipType> albumTypes) {
+    final listedStoredAlbums = <String>{
+      if (albumTypes.contains(AlbumChipType.stored)) ...source.rawAlbums,
+    };
+    final listedDynamicAlbums = <DynamicAlbumFilter>{
+      if (albumTypes.contains(AlbumChipType.dynamic)) ...dynamicAlbums.all,
+    };
+    final Set<AlbumGroupFilter> albumGroupFilters = {
+      if (albumTypes.contains(AlbumChipType.group)) ...albumGrouping.list(pageGroupUri),
+    };
+
     final filters = <AlbumBaseFilter>{
-      ...source.rawAlbums.map((album) => StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))),
-      if (!storedAlbumsOnly) ...dynamicAlbums.all,
+      ...albumGroupFilters,
+      ...listedStoredAlbums.map((album) => StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))),
+      ...listedDynamicAlbums,
     };
 
     return FilterNavigationPage.sort(settings.albumSortFactor, settings.albumSortReverse, source, filters);
@@ -106,6 +124,7 @@ class AlbumListPage extends StatelessWidget {
     var sections = <ChipSectionKey, List<FilterGridItem<AlbumBaseFilter>>>{};
     switch (settings.albumGroupFactor) {
       case AlbumChipGroupFactor.importance:
+        final groupKey = AlbumImportanceSectionKey.group(context);
         final specialKey = AlbumImportanceSectionKey.special(context);
         final appsKey = AlbumImportanceSectionKey.apps(context);
         final vaultKey = AlbumImportanceSectionKey.vault(context);
@@ -113,25 +132,29 @@ class AlbumListPage extends StatelessWidget {
         final dynamicKey = AlbumImportanceSectionKey.dynamic(context);
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final filter = kv.filter;
-          if (filter is StoredAlbumFilter) {
-            switch (covers.effectiveAlbumType(filter.album)) {
-              case AlbumType.regular:
-                return regularKey;
-              case AlbumType.app:
-                return appsKey;
-              case AlbumType.vault:
-                return vaultKey;
-              default:
-                return specialKey;
-            }
-          } else if (filter is DynamicAlbumFilter) {
-            return dynamicKey;
+          switch (filter) {
+            case StoredAlbumFilter():
+              switch (covers.effectiveAlbumType(filter.album)) {
+                case AlbumType.regular:
+                  return regularKey;
+                case AlbumType.app:
+                  return appsKey;
+                case AlbumType.vault:
+                  return vaultKey;
+                default:
+                  return specialKey;
+              }
+            case DynamicAlbumFilter():
+              return dynamicKey;
+            case AlbumGroupFilter():
+              return groupKey;
           }
           return specialKey;
         });
 
         sections = {
           // group ordering
+          if (sections.containsKey(groupKey)) groupKey: sections[groupKey]!,
           if (sections.containsKey(specialKey)) specialKey: sections[specialKey]!,
           if (sections.containsKey(appsKey)) appsKey: sections[appsKey]!,
           if (sections.containsKey(vaultKey)) vaultKey: sections[vaultKey]!,
@@ -150,7 +173,8 @@ class AlbumListPage extends StatelessWidget {
         });
       case AlbumChipGroupFactor.volume:
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
-          return StorageVolumeSectionKey(context, kv.filter.storageVolume);
+          final filter = kv.filter;
+          return StorageVolumeSectionKey(context, filter is StoredAlbumFilter ? filter.storageVolume : null);
         });
       case AlbumChipGroupFactor.none:
         return {

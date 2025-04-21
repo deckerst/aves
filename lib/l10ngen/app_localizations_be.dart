@@ -217,6 +217,9 @@ class AppLocalizationsBe extends AppLocalizations {
   String get chipActionUnpin => 'Адмацаваць зверху';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Перайменаваць';
 
   @override
@@ -491,6 +494,9 @@ class AppLocalizationsBe extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Замацаваны';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Стандартныя';
@@ -835,6 +841,21 @@ class AppLocalizationsBe extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Элементы ў сховішчах даступныя толькі гэтай праграме і нікому больш.\n\nКалі вы выдаліце гэту праграму або ачысціце даныя праграмы, вы страціце ўсе гэтыя элементы.';

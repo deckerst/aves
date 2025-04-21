@@ -211,6 +211,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chipActionUnpin => '一番上への固定を解除';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => '名前を変更';
 
   @override
@@ -485,6 +488,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get albumTierPinned => '固定';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => '全体';
@@ -832,6 +838,21 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'ダイナミックアルバムはすでに存在します';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => '保管庫のアイテムはアプリ内のみで保存しているため、他のアプリでは利用できません。\n\nこのアプリをアンインストールしたり、データを消去したりすると、これらのアイテムはすべて失われます。';

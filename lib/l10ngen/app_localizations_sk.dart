@@ -213,6 +213,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chipActionUnpin => 'Odstrániť z pripnutia';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Premenovať';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Pripnuté';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Spoločné';
@@ -829,6 +835,21 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamický album už existuje';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Položky v trezoroch sú dostupné iba v tejto aplikácií\n\nAk aplikáciu odinštaluješ alebo vymažeš dáta aplikácie, stratíš všetky položky z trezorov.';

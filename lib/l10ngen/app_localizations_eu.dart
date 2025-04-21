@@ -213,6 +213,9 @@ class AppLocalizationsEu extends AppLocalizations {
   String get chipActionUnpin => 'Desfinkatu goitik';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Aldatu izena';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Finkatua';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Ohiko';
@@ -829,6 +835,21 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Kutxa gotorreko elementuak aplikazio honetarako soilik daude eskuragarri eta ez beste edozeinetarako.\n\nAplikazio hau desinstalatzen baduzu, edo aplikazio honen datuak garbitu, elementu guzti hauek galduko dituzu.';

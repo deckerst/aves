@@ -213,6 +213,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get chipActionUnpin => 'Desancora de dalt';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Canviar nom';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fixat';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Comú';
@@ -829,6 +835,21 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'L’àlbum dinàmic ja existeix';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Els elements en caixes fortes només son disponibles des d’aquesta aplicació.\n\nSi desinstaŀles aquesta aplicació o en borres les dades, perdràs aquests elements.';

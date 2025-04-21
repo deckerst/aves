@@ -211,6 +211,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get chipActionUnpin => 'Sabitlemeyi kaldır';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Yeniden adlandır';
 
   @override
@@ -485,6 +488,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Sabitlenmiş';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Genel';
@@ -833,6 +839,21 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dinamik albüm zaten var';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Kilitli albümlere yalnızca bu uygulama erişebilir, başka herhangi bir uygulama erişemez.\n\nBu uygulamayı kaldırır veya verilerini silerseniz kilitli albümlerdeki bütün ögeleri kaybedersiniz.';

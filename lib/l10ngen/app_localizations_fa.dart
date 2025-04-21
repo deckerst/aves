@@ -210,6 +210,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get chipActionUnpin => 'برداشتن سنجاق از بالا';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'تغییر نام فایل';
 
   @override
@@ -484,6 +487,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'سنجاق شده';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'مشترک';
@@ -826,6 +832,21 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'موارد موجود در گاوصندوق تنها برای این برنامه در دسترس هستند و در هیچ برنامه دیگری وجود ندارد.\n\nاگر این برنامه را پاک کنید، یا داده‌های برنامه را پاک کنید، همه این موارد را از دست خواهید داد.';

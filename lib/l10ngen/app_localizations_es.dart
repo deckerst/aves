@@ -216,6 +216,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chipActionUnpin => 'Dejar de fijar';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Renombrar';
 
   @override
@@ -490,6 +493,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fijado';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Común';
@@ -838,6 +844,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'El álbum dinámico ya existe';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Los elementos de la caja fuerte sólo están disponibles para esta aplicación y no para otras.\n\nSi desinstalas esta aplicación o borras sus datos, perderás todos estos elementos.';

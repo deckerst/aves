@@ -1,6 +1,6 @@
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
@@ -16,7 +16,9 @@ class SetOrFilter extends CollectionFilter {
   @override
   List<Object?> get props => [_filters, reversed];
 
-  CollectionFilter get _first => _filters.first;
+  CollectionFilter? get _first => _filters.firstOrNull;
+
+  Set<CollectionFilter> get innerFilters => _filters.toSet();
 
   SetOrFilter(Set<CollectionFilter> filters, {super.reversed = false}) {
     _filters = filters.toList().sorted();
@@ -64,11 +66,11 @@ class SetOrFilter extends CollectionFilter {
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
-    return _genericIcon != null ? Icon(_genericIcon, size: size) : _first.iconBuilder(context, size, allowGenericIcon: allowGenericIcon);
+    return _genericIcon != null ? Icon(_genericIcon, size: size) : _first?.iconBuilder(context, size, allowGenericIcon: allowGenericIcon);
   }
 
   @override
-  String get category => _first.category;
+  String get category => _first?.category ?? type;
 
   @override
   String get key => '$type-$reversed-${_filters.map((v) => v.key)}';

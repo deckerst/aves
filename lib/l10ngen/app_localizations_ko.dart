@@ -211,6 +211,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chipActionUnpin => '고정 해제';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => '이름 변경';
 
   @override
@@ -485,6 +488,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get albumTierPinned => '고정';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => '기본';
@@ -832,6 +838,21 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => '동적 앨범이 이미 있습니다';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => '금고에 있는 항목들은 이 앱에서만 볼 수 있습니다.\n\n이 앱을 삭제 시, 또한 이 앱의 데이터를 삭제 시, 항목을 완전히 삭제될 것입니다.';

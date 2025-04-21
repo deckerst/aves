@@ -208,6 +208,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get chipActionUnpin => 'Bỏ ghim khỏi đầu';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Đổi tên';
 
   @override
@@ -482,6 +485,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Đã ghim';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Phổ biến';
@@ -824,6 +830,21 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Album động đã tồn tại';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Các mục trong kho bí mật chỉ có sẵn cho ứng dụng này và không có sẵn cho ứng dụng khác.\n\nNếu bạn gỡ cài đặt ứng dụng này hoặc xóa dữ liệu ứng dụng này, bạn sẽ mất tất cả các mục này.';

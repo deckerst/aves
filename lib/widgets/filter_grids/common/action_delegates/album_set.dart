@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:aves/app_mode.dart';
@@ -8,6 +9,7 @@ import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -28,6 +30,7 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/group_albums_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_dynamic_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
@@ -87,6 +90,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         return !settings.isReadOnly && appMode.canCreateFilter && !isSelecting;
+      case ChipSetAction.group:
+        return isMain && isSelecting;
       case ChipSetAction.delete:
         return isMain && isSelecting && !settings.isReadOnly && !(selectedFilters.whereType<StoredAlbumFilter>().isEmpty && selectedFilters.whereType<DynamicAlbumFilter>().isNotEmpty);
       case ChipSetAction.remove:
@@ -155,6 +160,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         _deleteStoredAlbums(context);
       case ChipSetAction.remove:
         _removeDynamicAlbum(context);
+      case ChipSetAction.group:
+        _group(context);
       case ChipSetAction.lockVault:
         lockFilters(_getSelectedStoredAlbumFilters(context));
         browse(context);
@@ -431,6 +438,24 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     settings.drawerAlbumBookmarks = settings.drawerAlbumBookmarks?..removeWhere(isRemoved);
     settings.pinnedFilters = settings.pinnedFilters..removeWhere(isRemoved);
 
+    browse(context);
+  }
+
+  // TODO TLAD [nested]
+  static final Uri? pageGroupUri = null;
+
+  Future<void> _group(BuildContext context) async {
+    final filters = getSelectedFilters(context);
+
+    final groupUri = await showDialog<Uri>(
+      context: context,
+      builder: (context) => GroupAlbumsDialog(parentGroupUri: pageGroupUri),
+      routeSettings: const RouteSettings(name: GroupAlbumsDialog.routeName),
+    );
+    if (groupUri == null) return;
+
+    final childrenUris = filters.map(AlbumGrouping.filterToUri).nonNulls.toSet();
+    albumGrouping.group(childrenUris, groupUri);
     browse(context);
   }
 

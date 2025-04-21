@@ -211,6 +211,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chipActionUnpin => '取消置顶';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => '重命名';
 
   @override
@@ -485,6 +488,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get albumTierPinned => '钉选';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => '普通';
@@ -832,6 +838,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => '动态专辑已存在';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => '保险库中的项目仅供此应用使用，其他应用不可用。\n\n如果您卸载此应用或清除此应用数据，您将丢失所有这些项目。';

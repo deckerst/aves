@@ -218,6 +218,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get chipActionUnpin => 'Odepnij z góry';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Zmień nazwę';
 
   @override
@@ -492,6 +495,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Przypięty';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Wspólne';
@@ -834,6 +840,21 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamiczny album już istnieje';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Elementy w skarbcach są dostępne tylko dla tej aplikacji i żadnej innej.\n\nJeśli odinstalujesz tę aplikację lub wyczyścisz dane tej aplikacji, stracisz wszystkie te elementy.';

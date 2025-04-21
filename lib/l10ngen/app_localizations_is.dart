@@ -213,6 +213,9 @@ class AppLocalizationsIs extends AppLocalizations {
   String get chipActionUnpin => 'Losa af efri hluta';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Endurnefna';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fest';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Algengt';
@@ -829,6 +835,21 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Breytilegt albúm er þegar til staðar';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Atriði í öryggisgeymslum eru einungis aðgengileg í þessu forriti og engum öðrum.\n\nEf þú fjarlægir þetta forrit, eða hreinsar gögn forritsins, muntu tapa öllum þessum atriðum.';

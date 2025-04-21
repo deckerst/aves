@@ -213,6 +213,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chipActionUnpin => 'إلغاء التثبيت في الأعلى';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'إعادة تسمية';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'مثبت';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'شائع';
@@ -829,6 +835,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'الألبوم الديناميكي موجود بالفعل';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'العناصر الموجودة في الخزائن متاحة فقط لهذا التطبيق وليس للتطبيقات الأخرى.\n\nإذا قمت بإلغاء تثبيت هذا التطبيق، أو قمت بحذف بيانات هذا التطبيق، فسوف تفقد كل هذه العناصر.';

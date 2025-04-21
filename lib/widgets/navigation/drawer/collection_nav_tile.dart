@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
@@ -79,16 +80,18 @@ class AlbumNavTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _filter = filter;
+    final storageVolume = _filter is StoredAlbumFilter ? _filter.storageVolume : null;
     return CollectionNavTile(
-      leading: DrawerFilterIcon(filter: filter),
-      title: DrawerFilterTitle(filter: filter),
-      trailing: filter.storageVolume?.isRemovable ?? false
+      leading: DrawerFilterIcon(filter: _filter),
+      title: DrawerFilterTitle(filter: _filter),
+      trailing: storageVolume?.isRemovable ?? false
           ? const Icon(
               AIcons.storageCard,
               size: 16,
             )
           : null,
-      filters: {filter},
+      filters: {_filter},
       isSelected: isSelected,
     );
   }

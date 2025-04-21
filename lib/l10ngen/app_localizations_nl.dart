@@ -219,6 +219,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chipActionUnpin => 'Unpinnen';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Hernoemen';
 
   @override
@@ -493,6 +496,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Gepint';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Veelgebruikt';
@@ -840,6 +846,21 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamisch album bestaat al';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Items in kluizen zijn alleen beschikbaar voor deze app en niet voor andere.\n\nAls je deze app verwijdert of deze app-gegevens wist, verlies je al deze items.';

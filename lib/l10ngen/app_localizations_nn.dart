@@ -211,6 +211,9 @@ class AppLocalizationsNn extends AppLocalizations {
   String get chipActionUnpin => 'losna ifrå toppen';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Byt namn';
 
   @override
@@ -485,6 +488,9 @@ class AppLocalizationsNn extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Festa';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Ofte opna';
@@ -826,6 +832,21 @@ class AppLocalizationsNn extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Ting i kvelva er berre tilgjengelege for denne appen.\n\nOm du slettar denne appen eller tømmer dataa til denne appen, vil du missa alt som er i kvelva.';

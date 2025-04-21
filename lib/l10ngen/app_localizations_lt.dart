@@ -220,6 +220,9 @@ class AppLocalizationsLt extends AppLocalizations {
   String get chipActionUnpin => 'Atsegti nuo viršaus';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Pervadinti';
 
   @override
@@ -494,6 +497,9 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Prisegti';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Bendri';
@@ -836,6 +842,21 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Daiktai saugyklose yra prieinami tik šiai programėlei ir jokiom kitom.\n\nJei pašalinsite šią programą arba išvalysite jos duomenis, jūs prarasite visus šiuos daiktus.';

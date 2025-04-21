@@ -213,6 +213,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get chipActionUnpin => 'Anulați fixarea de sus';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Redenumiți';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fixat';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Uzual';
@@ -829,6 +835,21 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Albumul dinamic există deja';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Elementele din seifuri sunt disponibile doar pentru această aplicație și nu pentru altele.\n\nDacă dezinstalezi această aplicație sau ștergi datele acestei aplicații, vei pierde toate aceste elemente.';

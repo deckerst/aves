@@ -216,6 +216,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get chipActionUnpin => 'Ξέκαρφίτσωμα από την κορυφή';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Μετονομασία';
 
   @override
@@ -490,6 +493,9 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Καρφιτσωμένα';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Συστήματος';
@@ -838,6 +844,21 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Τα αρχεία στα θησαυροφυλάκια είναι διαθέσιμα μόνο σε αυτή την εφαρμογή και σε καμία άλλη.\n\nΑν απεγκαταστήσετε την εφαρμογή ή έστω διαγράψετε τα δεδομένα της εφαρμογής, θα χάσετε όλα σας τα κρυφά αρχεία.';

@@ -216,6 +216,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chipActionUnpin => 'Nicht mehr Anpinen';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Umbenennen';
 
   @override
@@ -490,6 +493,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Angeheftet';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Häufig verwendet';
@@ -838,6 +844,21 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamisches Album existiert bereits';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Elemente in Tresoren sind nur für diese App verfügbar und nicht in anderen.\n\nWenn Sie diese App deinstallieren oder die Daten dieser App löschen, gehen alle diese Elemente verloren.';

@@ -213,6 +213,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get chipActionUnpin => 'Løsne fra toppen';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Gi nytt navn';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Festet';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Ofte åpnet';
@@ -829,6 +835,21 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Elementer i hvelv er kun tilgjengelig for dette programmet, og ikke andre.\n\nHvis du avinstallerer dette programmet, eller tømmer denne programdataen vil du miste alle disse elementene.';

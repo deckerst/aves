@@ -218,6 +218,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chipActionUnpin => 'Відкріпити';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Перейменувати';
 
   @override
@@ -492,6 +495,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Закріплені';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Стандартні';
@@ -836,6 +842,21 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Динамічний альбом уже існує';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Елементи у сховищах доступні лише для цього додатка і ні для кого іншого.\n\nЯкщо ви видалите цей додаток або очистите дані додатку, ви втратите всі ці елементи.';

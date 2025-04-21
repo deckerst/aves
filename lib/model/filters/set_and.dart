@@ -16,7 +16,7 @@ class SetAndFilter extends CollectionFilter {
   @override
   List<Object?> get props => [_filters, reversed];
 
-  CollectionFilter get _first => _filters.first;
+  CollectionFilter? get _first => _filters.firstOrNull;
 
   Set<CollectionFilter> get innerFilters => _filters.toSet();
 
@@ -66,11 +66,11 @@ class SetAndFilter extends CollectionFilter {
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
-    return _genericIcon != null ? Icon(_genericIcon, size: size) : _first.iconBuilder(context, size, allowGenericIcon: allowGenericIcon);
+    return _genericIcon != null ? Icon(_genericIcon, size: size) : _first?.iconBuilder(context, size, allowGenericIcon: allowGenericIcon);
   }
 
   @override
-  String get category => _first.category;
+  String get category => _first?.category ?? type;
 
   @override
   String get key => '$type-$reversed-${_filters.map((v) => v.key)}';

@@ -213,6 +213,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get chipActionUnpin => 'Irrota kiinnitys ylhäältä';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Nimeä uudelleen';
 
   @override
@@ -487,6 +490,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Kiinnitetty';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Yleistä';
@@ -835,6 +841,21 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.';

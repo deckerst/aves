@@ -218,6 +218,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get chipActionUnpin => 'Odepnout seshora';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Přejmenovat';
 
   @override
@@ -492,6 +495,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Připnuté';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Společné';
@@ -836,6 +842,21 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamické album již existuje';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Položky v trezorech jsou přístupné pouze této aplikaci a žádné jiné.\n\nPokud tuto aplikaci odinstalujete, nebo smažete její data, o všechny tyto položky přijdete.';

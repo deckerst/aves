@@ -223,6 +223,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chipActionUnpin => 'Откачи от закачени';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Преименувайте';
 
   @override
@@ -497,6 +500,9 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Закачени';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Стандартни';
@@ -845,6 +851,21 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Динамични албум вече съществува';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Елементите в трезорите са достъпни само за това приложение и за никое друго.\n\nАко деинсталирате или изчистите данните на това приложение, ще загубите цялото съдържание на трезора.';

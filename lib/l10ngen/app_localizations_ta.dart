@@ -219,6 +219,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get chipActionUnpin => 'மேலே இருந்து அவிழ்த்து விடு';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'மறுபெயரிடு';
 
   @override
@@ -493,6 +496,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'பின்செய்த்து';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'பொது';
@@ -841,6 +847,21 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'மாறும் தொகுப்பு ஏற்கனவே உள்ளது';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'பெட்டகங்களில் உள்ள உருப்படிகள் இந்தப் பயன்பாட்டிற்கு மட்டுமே கிடைக்கின்றன, மற்றவைகளுக்கு இல்லை.\n\n இந்தப் பயன்பாட்டை நிறுவல் நீக்கினால் அல்லது இந்தப் பயன்பாட்டு தரவை அழித்தால், இந்த உருப்படிகள் அனைத்தையும் இழப்பீர்கள்.';

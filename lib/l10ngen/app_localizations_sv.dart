@@ -212,6 +212,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chipActionUnpin => 'Släpp från fästet';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Byt namn';
 
   @override
@@ -486,6 +489,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fastnålad';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Vanliga';
@@ -834,6 +840,21 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamiskt album existerar redan';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Objekt i valv är endast tillgängliga i denna app och inga andra.\n\nOm du avinstallerar den här appen eller rensar appens data kommer du att förlora alla dessa objekt.';

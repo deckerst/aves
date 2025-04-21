@@ -219,6 +219,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get chipActionUnpin => 'Eemalda ülalt äärest';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Muuda nime';
 
   @override
@@ -493,6 +496,9 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Esiletõstetud';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Üldised';
@@ -841,6 +847,21 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Selline dünaamiline album on juba olemas';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'Turvaruumis asuvad objektid on nähtavad vaid sellele rakendusele ja mitte ühelgi muul viisil.\n\nKui sa eemaldad nutiseadmest selle rakenduse või kustutad rakenduse andmed, siis kaob igasugune ligipääs nendele objektidele.';

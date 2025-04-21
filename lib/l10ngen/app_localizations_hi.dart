@@ -210,6 +210,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get chipActionUnpin => 'शीर्ष से अनपिन करें';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'नाम बदले';
 
   @override
@@ -484,6 +487,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'पिन किया गया';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'कॉमन';
@@ -832,6 +838,21 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'डायनेमिक एल्बम पहले से ही मौजूद है';
+
+  @override
+  String get groupAlbumsDialogTitle => 'Group';
+
+  @override
+  String get groupAlbumsDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupActionCreate => 'Create group';
+
+  @override
+  String get groupActionSelect => 'Select group';
 
   @override
   String get newVaultWarningDialogMessage => 'वॉल्ट में आइटम केवल इस ऐप के लिए व अन्य के लिए नहीं उपलब्ध हैं।\n\nयदि आप इस ऐप को अनइंस्टॉल करते हैं, या इस ऐप डेटा को साफ़ करते हैं, तो आप इन सभी आइटम को खो देंगे।।';
