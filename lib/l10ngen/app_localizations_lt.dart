@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,12 +22,15 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elementų',
-      few: '$count elementai',
-      one: '$count elementas',
+      other: '$countString elementų',
+      few: '$countString elementai',
+      one: '$countString elementas',
     );
     return '$_temp0';
   }
@@ -767,10 +770,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Perkelti šiuos $count elementus į šiukšlinę?',
+      other: 'Perkelti šiuos $countString elementus į šiukšlinę?',
       one: 'Perkelti šį elementą į šiukšlinę?',
     );
     return '$_temp0';
@@ -778,10 +784,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Ištrinti šiuos $count elementus?',
+      other: 'Ištrinti šiuos $countString elementus?',
       one: 'Ištrinti šį elementą?',
     );
     return '$_temp0';
@@ -908,10 +917,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Ištrinti šį albumą ir jo $count elementus?',
+      other: 'Ištrinti šį albumą ir jo $countString elementus?',
       one: 'Ištrinti šį albumą ir jo elementą?',
     );
     return '$_temp0';
@@ -919,10 +931,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Ištrinti šiuos albumus ir jų $count elementus?',
+      other: 'Ištrinti šiuos albumus ir jų $countString elementus?',
       one: 'Ištrinti šiuos albumus ir jų elementą?',
     );
     return '$_temp0';
@@ -1266,10 +1281,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepavyko ištrinti $count elementų',
+      other: 'Nepavyko ištrinti $countString elementų',
       one: 'Nepavyko ištrinti 1 elemento',
     );
     return '$_temp0';
@@ -1277,10 +1295,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepavyko nukopijuoti $count elementų',
+      other: 'Nepavyko nukopijuoti $countString elementų',
       one: 'Nepavyko nukopijuoti 1 elemento',
     );
     return '$_temp0';
@@ -1288,10 +1309,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepavyko perkelti $count elementų',
+      other: 'Nepavyko perkelti $countString elementų',
       one: 'Nepavyko perkelti 1 elemento',
     );
     return '$_temp0';
@@ -1299,10 +1323,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepavyko pervadinti $count elementų',
+      other: 'Nepavyko pervadinti $countString elementų',
       one: 'Nepavyko pervadinti 1 elemento',
     );
     return '$_temp0';
@@ -1310,10 +1337,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepavyko redaguoti $count elementų',
+      other: 'Nepavyko redaguoti $countString elementų',
       one: 'Nepavyko redaguoti 1 elemento',
     );
     return '$_temp0';
@@ -1321,10 +1351,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nepavyko eksportuoti $count puslapių',
+      other: 'Nepavyko eksportuoti $countString puslapių',
       one: 'Nepavyko eksportuoti 1 puslapio',
     );
     return '$_temp0';
@@ -1332,10 +1365,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Nukopijuoti $count elementai',
+      other: 'Nukopijuoti $countString elementai',
       one: 'Nukopijuota 1 prekė',
     );
     return '$_temp0';
@@ -1343,10 +1379,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Perkelta $count elementų',
+      other: 'Perkelta $countString elementų',
       one: 'Perkeltas 1 elementas',
     );
     return '$_temp0';
@@ -1354,10 +1393,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Pervadinti $count elementai',
+      other: 'Pervadinti $countString elementai',
       one: 'Pervadintas 1 elementas',
     );
     return '$_temp0';
@@ -1365,10 +1407,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Redaguoti $count elementai',
+      other: 'Redaguoti $countString elementai',
       one: 'Redaguotas 1 elementas',
     );
     return '$_temp0';
@@ -2132,10 +2177,13 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String statsWithGps(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count elementai su vieta',
+      other: '$countString elementai su vieta',
       one: '1 elementas su vieta',
     );
     return '$_temp0';

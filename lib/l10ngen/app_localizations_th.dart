@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -766,10 +766,13 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ย้าย $count รายการนี้ไปยังถังขยะ?',
+      other: 'ย้าย $countString รายการนี้ไปยังถังขยะ?',
       one: 'ย้ายรายการนี้ไปยังถังขยะ?',
     );
     return '$_temp0';
@@ -777,10 +780,13 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ลบ $count รายการนี้?',
+      other: 'ลบ $countString รายการนี้?',
       one: 'ลบรายการนี้?',
     );
     return '$_temp0';
@@ -907,10 +913,13 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ลบอัลบั้มนี้และ $count รายการในอัลบั้ม?',
+      other: 'ลบอัลบั้มนี้และ $countString รายการในอัลบั้ม?',
       one: 'ลบอัลบั้มนี้และรายการในอัลบั้มทั้งหมด?',
     );
     return '$_temp0';
@@ -918,10 +927,13 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ลบอัลบั้มเหล่านี้และ $count รายการในอัลบั้ม?',
+      other: 'ลบอัลบั้มเหล่านี้และ $countString รายการในอัลบั้ม?',
       one: 'ลบอัลบั้มเหล่านี้และรายการในอัลบั้มทั้งหมด?',
     );
     return '$_temp0';

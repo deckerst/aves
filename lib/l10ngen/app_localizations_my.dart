@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,20 +22,26 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ခု',
+      other: '$countString ခု',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ကော်လံ',
+      other: '$countString ကော်လံ',
     );
     return '$_temp0';
   }
@@ -755,10 +761,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ဒီ $count ခုကို ပြန်သုံးအမှိုက်ထဲထည့်မှာလား?',
+      other: 'ဒီ $countString ခုကို ပြန်သုံးအမှိုက်ထဲထည့်မှာလား?',
       two: 'ဒီနှစ်ခုကို ပြန်သုံးအမှိုက်ပုံးထဲ ထည့်မှာလား?',
       one: 'ဒီတစ်ခုကို ပြန်သုံးအမှိုက်ပုံးထဲ ထည့်မှာလား?',
     );
@@ -767,10 +776,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ဒီ $count ခုကို ဖျက်မှာလား?',
+      other: 'ဒီ $countString ခုကို ဖျက်မှာလား?',
       two: 'ဒီနှစ်ခုကိုဖျက်မှာလား?',
       one: 'ဒီတစ်ခုကိုဖျက်မှာလား?',
     );
@@ -898,10 +910,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ယခုအယ်လ်ဘမ်နဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယို $count ခုကို ဖျက်မှာလား?',
+      other: 'ယခုအယ်လ်ဘမ်နဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယို $countString ခုကို ဖျက်မှာလား?',
       two: 'ယခုအယ်လ်ဘမ်နဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုနှစ်ခုကိုဖျက်မှာလား?',
       one: 'ယခုအယ်လ်ဘမ်နဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုကိုဖျက်မှာလား?',
     );
@@ -910,10 +925,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ဒီအယ်လ်ဘမ်တွေနဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယို $count ခုကို ဖျက်မှာလား?',
+      other: 'ဒီအယ်လ်ဘမ်တွေနဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယို $countString ခုကို ဖျက်မှာလား?',
       two: 'ဒီအယ်လ်ဘမ်တွေနဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုနှစ်ခုကိုဖျက်မှာလား?',
       one: 'ဒီအယ်လ်ဘမ်တွေနဲ့ အဲ့ဒီထဲက ဓာတ်ပုံ/ဗီဒီယိုကိုဖျက်မှာလား?',
     );
@@ -1258,10 +1276,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို ဖျက်လို့မရခဲ့ပါ',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို ဖျက်လို့မရခဲ့ပါ',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို ဖျက်လို့မရခဲ့ပါ',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို ဖျက်လို့မရခဲ့ပါ',
     );
@@ -1270,10 +1291,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို ကော်ပီကူးလို့မရခဲ့ပါ',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို ကော်ပီကူးလို့မရခဲ့ပါ',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို ကော်ပီကူးလို့မရခဲ့ပါ',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို ကော်ပီကူးလို့မရခဲ့ပါ',
     );
@@ -1282,10 +1306,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို ရွှေ့လို့မရခဲ့ပါ',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို ရွှေ့လို့မရခဲ့ပါ',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို ရွှေ့လို့မရခဲ့ပါ',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို ရွှေ့လို့မရခဲ့ပါ',
     );
@@ -1294,10 +1321,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို အမည်ပြောင်းလို့ မရခဲ့ပါ',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို အမည်ပြောင်းလို့ မရခဲ့ပါ',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို အမည်ပြောင်းလို့ မရခဲ့ပါ',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို အမည်ပြောင်းလို့ မရခဲ့ပါ',
     );
@@ -1306,10 +1336,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို ပြင်ဆင်လို့မရခဲ့ပါ',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို ပြင်ဆင်လို့မရခဲ့ပါ',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို ပြင်ဆင်လို့မရခဲ့ပါ',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို ပြင်ဆင်လို့မရခဲ့ပါ',
     );
@@ -1318,10 +1351,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'စာမျက်နှာ $count မျက်နှာကို ပို့လို့မရခဲ့ပါ',
+      other: 'စာမျက်နှာ $countString မျက်နှာကို ပို့လို့မရခဲ့ပါ',
       two: 'စာမျက်နှာနှစ်မျက်နှာကို ပို့လို့မရခဲ့ပါ',
       one: 'စာမျက်နှာတစ်မျက်နှာကို ပို့လို့မရခဲ့ပါ',
     );
@@ -1330,10 +1366,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို ကော်ပီကူးလိုက်သည်',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို ကော်ပီကူးလိုက်သည်',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို ကော်ပီကူးလိုက်သည်',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို ကော်ပီကူးလိုက်သည်',
     );
@@ -1342,10 +1381,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို ရွှေ့လိုက်သည်',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို ရွှေ့လိုက်သည်',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို ရွှေ့လိုက်သည်',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို ရွှေ့လိုက်သည်',
     );
@@ -1354,10 +1396,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို အမည်ပြောင်းလိုက်သည်',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို အမည်ပြောင်းလိုက်သည်',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို အမည်ပြောင်းလိုက်သည်',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို အမည်ပြောင်းလိုက်သည်',
     );
@@ -1366,10 +1411,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'ပုံ/ဗီဒီယို $count ခုကို ပြင်ဆင်လိုက်သည်',
+      other: 'ပုံ/ဗီဒီယို $countString ခုကို ပြင်ဆင်လိုက်သည်',
       two: 'ပုံ/ဗီဒီယိုနှစ်ခုကို ပြင်ဆင်လိုက်သည်',
       one: 'ပုံ/ဗီဒီယိုတစ်ခုကို ပြင်ဆင်လိုက်သည်',
     );

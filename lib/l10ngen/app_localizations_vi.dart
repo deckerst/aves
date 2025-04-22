@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,20 +22,26 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count mục',
+      other: '$countString mục',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count cột',
+      other: '$countString cột',
     );
     return '$_temp0';
   }
@@ -755,10 +761,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Chuyển $count mục vào thùng rác?',
+      other: 'Chuyển $countString mục vào thùng rác?',
       one: 'Chuyển vào thùng rác?',
     );
     return '$_temp0';
@@ -766,10 +775,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Xóa$count mục?',
+      other: 'Xóa$countString mục?',
       one: 'Xóa mục này? ',
     );
     return '$_temp0';
@@ -896,10 +908,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Xóa bộ sưu tập này với $count mục bên trong?',
+      other: 'Xóa bộ sưu tập này với $countString mục bên trong?',
       one: 'Xóa bộ sưu tập này và các mục bên trong',
     );
     return '$_temp0';
@@ -907,10 +922,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Xóa các Album này với $count mục bên trong?',
+      other: 'Xóa các Album này với $countString mục bên trong?',
       one: 'Xóa các Album này và các mục bên trong',
     );
     return '$_temp0';
@@ -1254,10 +1272,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Lỗi khi xóa $count tệp',
+      other: 'Lỗi khi xóa $countString tệp',
       one: 'Lỗi khi xóa tệp',
     );
     return '$_temp0';
@@ -1265,10 +1286,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Lỗi khi sao chép $count tệp',
+      other: 'Lỗi khi sao chép $countString tệp',
       one: 'Lỗi khi sao chép tệp',
     );
     return '$_temp0';
@@ -1276,10 +1300,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Lỗi khi di chuyển $count tệp',
+      other: 'Lỗi khi di chuyển $countString tệp',
       one: 'Lỗi khi di chuyển tệp',
     );
     return '$_temp0';
@@ -1287,10 +1314,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Lỗi khi đặt lại tên $count tệp',
+      other: 'Lỗi khi đặt lại tên $countString tệp',
       one: 'Lỗi khi đặt lại tên tệp',
     );
     return '$_temp0';
@@ -1298,10 +1328,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Lỗi khi chỉnh sửa $count tệp',
+      other: 'Lỗi khi chỉnh sửa $countString tệp',
       one: 'Lỗi khi chỉnh sửa tệp',
     );
     return '$_temp0';
@@ -1309,10 +1342,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Lỗi khi xuất $count tệp',
+      other: 'Lỗi khi xuất $countString tệp',
       one: 'Lỗi khi xuất tệp',
     );
     return '$_temp0';
@@ -1320,10 +1356,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Đã sao chép $count mục',
+      other: 'Đã sao chép $countString mục',
       one: 'Đã sao chép',
     );
     return '$_temp0';
@@ -1331,10 +1370,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Đã di chuyển $count mục',
+      other: 'Đã di chuyển $countString mục',
       one: 'Đã di chuyển',
     );
     return '$_temp0';
@@ -1342,10 +1384,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Đã thay tên $count mục',
+      other: 'Đã thay tên $countString mục',
       one: 'Đã đặt lại tên',
     );
     return '$_temp0';
@@ -1353,10 +1398,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Đã chỉnh sửa $count mục',
+      other: 'Đã chỉnh sửa $countString mục',
       one: 'Đã chỉnh sửa',
     );
     return '$_temp0';
@@ -2120,10 +2168,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String statsWithGps(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '${count}mục với thông tin vị trí',
+      other: '${countString}mục với thông tin vị trí',
       one: '1 mục với thông tin vị trí',
     );
     return '$_temp0';

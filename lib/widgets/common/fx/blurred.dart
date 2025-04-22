@@ -20,7 +20,7 @@ class BlurredRect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRect(
-      child: BackdropFilter.grouped(
+      child: BackdropFilter(
         // do not modify tree when disabling filter
         filter: enabled ? _filter : _identity,
         child: child,
@@ -59,7 +59,7 @@ class BlurredRRect extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.zero,
-      child: BackdropFilter.grouped(
+      child: BackdropFilter(
         // do not modify tree when disabling filter
         filter: enabled ? _filter : _identity,
         child: child,
@@ -81,7 +81,7 @@ class BlurredOval extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: BackdropFilter.grouped(
+      child: BackdropFilter(
         // do not modify tree when disabling filter
         filter: enabled ? _filter : _identity,
         child: child,

@@ -249,14 +249,12 @@ class _GeoMapState extends State<GeoMap> {
         child = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BackdropGroup(
-              child: mapHeight != null
-                  ? SizedBox(
-                      height: mapHeight,
-                      child: child,
-                    )
-                  : Expanded(child: child),
-            ),
+            mapHeight != null
+                ? SizedBox(
+                    height: mapHeight,
+                    child: child,
+                  )
+                : Expanded(child: child),
             SafeArea(
               top: false,
               bottom: false,

@@ -1,5 +1,5 @@
-// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -35,10 +35,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count 列',
+      other: '$countString 列',
     );
     return '$_temp0';
   }
@@ -2373,20 +2376,26 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String itemCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count 項',
+      other: '$countString 項',
     );
     return '$_temp0';
   }
 
   @override
   String columnCount(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count 列',
+      other: '$countString 列',
     );
     return '$_temp0';
   }
@@ -3105,10 +3114,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String binEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '移動這 $count 項目到資源回收桶?',
+      other: '移動這 $countString 項目到資源回收桶?',
       one: '移動這個項目到資源回收桶?',
     );
     return '$_temp0';
@@ -3116,10 +3128,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String deleteEntriesConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '刪除這 $count 項目?',
+      other: '刪除這 $countString 項目?',
       one: '刪除這個項目?',
     );
     return '$_temp0';
@@ -3246,10 +3261,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String deleteSingleAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '刪除此相簿及其中的$count個項目？',
+      other: '刪除此相簿及其中的$countString個項目？',
       one: '刪除此相簿及其中的項目？',
     );
     return '$_temp0';
@@ -3257,10 +3275,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String deleteMultiAlbumConfirmationDialogMessage(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '刪除這些相簿及其中的$count個項目？',
+      other: '刪除這些相簿及其中的$countString個項目？',
       one: '刪除這些相簿及其內部的項目？',
     );
     return '$_temp0';
@@ -3604,100 +3625,130 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String collectionDeleteFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '刪除 $count 項目失敗',
+      other: '刪除 $countString 項目失敗',
     );
     return '$_temp0';
   }
 
   @override
   String collectionCopyFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '複製 $count 項目失敗',
+      other: '複製 $countString 項目失敗',
     );
     return '$_temp0';
   }
 
   @override
   String collectionMoveFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '移動 $count 項目失敗',
+      other: '移動 $countString 項目失敗',
     );
     return '$_temp0';
   }
 
   @override
   String collectionRenameFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '改名 $count 項目失敗',
+      other: '改名 $countString 項目失敗',
     );
     return '$_temp0';
   }
 
   @override
   String collectionEditFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '編輯 $count 項目失敗',
+      other: '編輯 $countString 項目失敗',
     );
     return '$_temp0';
   }
 
   @override
   String collectionExportFailureFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '匯出 $count 頁',
+      other: '匯出 $countString 頁',
     );
     return '$_temp0';
   }
 
   @override
   String collectionCopySuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '複製 $count 項目',
+      other: '複製 $countString 項目',
     );
     return '$_temp0';
   }
 
   @override
   String collectionMoveSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '移動 $count 項目',
+      other: '移動 $countString 項目',
     );
     return '$_temp0';
   }
 
   @override
   String collectionRenameSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '改名 $count 項目',
+      other: '改名 $countString 項目',
     );
     return '$_temp0';
   }
 
   @override
   String collectionEditSuccessFeedback(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '編輯 $count 項目',
+      other: '編輯 $countString 項目',
     );
     return '$_temp0';
   }
@@ -4454,10 +4505,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String statsWithGps(int count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count條座標資訊',
+      other: '$countString條座標資訊',
       one: '1條座標資訊',
     );
     return '$_temp0';
