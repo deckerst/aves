@@ -41,7 +41,7 @@ class BasicSection extends StatefulWidget {
   final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<bool> isScrollingNotifier;
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
-  final AFilterCallback onFilter;
+  final AFilterCallback onFilterSelection;
 
   const BasicSection({
     super.key,
@@ -50,7 +50,7 @@ class BasicSection extends StatefulWidget {
     required this.actionDelegate,
     required this.isScrollingNotifier,
     required this.isEditingMetadataNotifier,
-    required this.onFilter,
+    required this.onFilterSelection,
   });
 
   @override
@@ -151,7 +151,7 @@ class _BasicSectionState extends State<BasicSection> {
             children: effectiveFilters
                 .map((filter) => AvesFilterChip(
                       filter: filter,
-                      onTap: widget.onFilter,
+                      onTap: widget.onFilterSelection,
                     ))
                 .toList(),
           ),

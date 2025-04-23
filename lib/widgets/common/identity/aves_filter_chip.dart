@@ -23,9 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-typedef AFilterCallback = void Function(CollectionFilter filter);
-typedef TypedFilterCallback<T extends CollectionFilter> = void Function(T filter);
-typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
+typedef AFilterCallback<T extends CollectionFilter> = void Function(T filter);
+typedef OffsetFilterCallback<T extends CollectionFilter> = void Function(BuildContext context, T filter, Offset tapPosition);
 
 enum HeroType { always, onTap, never }
 

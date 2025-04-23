@@ -29,7 +29,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final double extent, thumbnailExtent;
   final bool showText, pinned, locked;
   final String? banner;
-  final TypedFilterCallback? onTap;
+  final AFilterCallback? onTap;
   final HeroType heroType;
 
   const CoveredFilterChip({

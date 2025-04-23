@@ -79,7 +79,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
   final TileLayout tileLayout;
   final String? banner;
   final bool selectable, highlightable;
-  final TypedFilterCallback? onTap;
+  final AFilterCallback? onTap;
   final HeroType heroType;
 
   const FilterTile({

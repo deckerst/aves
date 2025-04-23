@@ -204,7 +204,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       actionDelegate: _actionDelegate,
       isScrollingNotifier: widget.isScrollingNotifier,
       isEditingMetadataNotifier: _isEditingMetadataNotifier,
-      onFilter: _onFilter,
+      onFilterSelection: _onFilterSelection,
     );
     final locationAtTop = widget.split && entry.hasGps;
     final locationSection = LocationSection(
@@ -212,7 +212,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       entry: entry,
       showTitle: !locationAtTop,
       isScrollingNotifier: widget.isScrollingNotifier,
-      onFilter: _onFilter,
+      onFilterSelection: _onFilterSelection,
     );
     final basicAndLocationSliver = locationAtTop
         ? SliverToBoxAdapter(
@@ -236,7 +236,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
     return NotificationListener<SelectFilterNotification>(
       onNotification: (notification) {
-        _onFilter(notification.filter);
+        _onFilterSelection(notification.filter);
         return true;
       },
       child: CustomScrollView(
@@ -285,7 +285,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     });
   }
 
-  void _onFilter(CollectionFilter filter) {
+  void _onFilterSelection(CollectionFilter filter) {
     if (!mounted) return;
     SelectFilterNotification(filter).dispatch(context);
   }
