@@ -59,6 +59,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final FilterTileTapCallback<T> onTileTap;
   final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
   FilterGridPage({
@@ -74,6 +75,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    required this.onTileTap,
   });
 
   @override
@@ -101,6 +103,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               applyQuery: applyQuery,
               emptyBuilder: emptyBuilder,
               heroType: heroType,
+              onTileTap: onTileTap,
             );
           },
         ),
@@ -169,6 +172,7 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final FilterTileTapCallback<T> onTileTap;
 
   const _FilterGrid({
     super.key,
@@ -183,6 +187,7 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    required this.onTileTap,
   });
 
   @override
@@ -230,6 +235,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
           applyQuery: widget.applyQuery,
           emptyBuilder: widget.emptyBuilder,
           heroType: widget.heroType,
+          onTileTap: widget.onTileTap,
         ),
       ),
     );
@@ -246,6 +252,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final Widget Function() emptyBuilder;
   final QueryTest<T> applyQuery;
   final HeroType heroType;
+  final FilterTileTapCallback<T> onTileTap;
 
   const _FilterGridContent({
     super.key,
@@ -259,6 +266,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    required this.onTileTap,
   });
 
   @override
@@ -350,6 +358,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                                   tileLayout: tileLayout,
                                   banner: _getFilterBanner(context, gridItem.filter),
                                   heroType: widget.heroType,
+                                  onTap: widget.onTileTap,
                                 );
                                 if (!settings.useTvLayout) return tile;
 

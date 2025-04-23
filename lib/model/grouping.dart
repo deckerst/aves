@@ -70,13 +70,12 @@ class AlbumGrouping with ChangeNotifier {
     final children = _groups[destinationGroup] ?? {};
     children.addAll(childrenUris);
     _groups[destinationGroup] = children;
-    debugPrint('TLAD $runtimeType group _groups=$_groups');
+    notifyListeners();
   }
 
   Uri createGroup(Uri? parentGroupUri, String name) {
     final uri = buildGroupUri(parentGroupUri, name);
     _groups.putIfAbsent(uri, () => {});
-    debugPrint('TLAD $runtimeType createGroup _groups=$_groups');
     return uri;
   }
 

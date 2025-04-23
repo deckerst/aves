@@ -53,7 +53,7 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   String get universalLabel => displayName ?? pContext.split(album).last;
 
   @override
-  String getTooltip(BuildContext context) => album;
+  String getTooltip(BuildContext context) => isVault ? super.getTooltip(context) : album;
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
