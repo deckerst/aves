@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
@@ -10,6 +11,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
@@ -165,14 +167,19 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
               } else {
                 final filter = gridItem.filter;
                 if (!await unlockFilter(context, filter)) return;
-                final route = MaterialPageRoute(
-                  settings: const RouteSettings(name: CollectionPage.routeName),
-                  builder: (context) => CollectionPage(
-                    source: context.read<CollectionSource>(),
-                    filters: {gridItem.filter},
-                  ),
-                );
-                navigate(route);
+
+                if (filter is AlbumGroupFilter) {
+                  context.read<FilterGroupNotifier>().value = filter.uri;
+                } else {
+                  final route = MaterialPageRoute(
+                    settings: const RouteSettings(name: CollectionPage.routeName),
+                    builder: (context) => CollectionPage(
+                      source: context.read<CollectionSource>(),
+                      filters: {gridItem.filter},
+                    ),
+                  );
+                  navigate(route);
+                }
               }
             },
           ),

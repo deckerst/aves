@@ -8,6 +8,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/collection_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 final AlbumGrouping albumGrouping = AlbumGrouping._private();
@@ -30,19 +31,28 @@ class AlbumGrouping with ChangeNotifier {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
-  Set<AlbumGroupFilter> list(Uri? currentGroupUri) {
-    return _groups.entries.where((kv) => _getParentGroup(kv.key) == currentGroupUri).map((kv) {
-      final groupUri = kv.key;
-      final childrenUri = kv.value;
-      final childrenFilters = childrenUri.map(uriToFilter).nonNulls.toSet();
-      return AlbumGroupFilter(groupUri, SetOrFilter(childrenFilters));
-    }).toSet();
+  Set<CollectionFilter> listGroupContent(Uri? currentGroupUri) {
+    if (currentGroupUri == null) {
+      return _groups.entries.where((kv) => _getParentGroup(kv.key) == currentGroupUri).map((kv) {
+        final groupUri = kv.key;
+        final childrenUri = kv.value;
+        final childrenFilters = childrenUri.map(uriToFilter).nonNulls.toSet();
+        return AlbumGroupFilter(groupUri, SetOrFilter(childrenFilters));
+      }).toSet();
+    }
+
+    final childrenUri = _groups.entries.firstWhereOrNull((kv) => kv.key == currentGroupUri)?.value;
+    if (childrenUri != null) {
+      return childrenUri.map(uriToFilter).nonNulls.toSet();
+    }
+
+    return {};
   }
 
   CollectionFilter? uriToFilter(Uri uri) {
     switch (uri.path) {
       case _groupPath:
-        return AlbumGroupFilter(uri, SetOrFilter(list(uri)));
+        return AlbumGroupFilter(uri, SetOrFilter(listGroupContent(uri)));
       case _storedAlbumPath:
         final album = getStoredAlbumPath(uri);
         if (album != null) {

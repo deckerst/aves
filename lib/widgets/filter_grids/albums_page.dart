@@ -14,6 +14,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
@@ -24,13 +25,40 @@ import 'package:provider/provider.dart';
 
 enum AlbumChipType { stored, dynamic, group }
 
-class AlbumListPage extends StatefulWidget {
+class AlbumListPage extends StatelessWidget {
   static const routeName = '/albums';
 
   const AlbumListPage({super.key});
 
   @override
-  State<AlbumListPage> createState() => _AlbumListPageState();
+  Widget build(BuildContext context) {
+    return FilterGroupProvider(
+      child: Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
+        selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
+        shouldRebuild: (t1, t2) {
+          // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
+          const eq = DeepCollectionEquality();
+          return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4));
+        },
+        builder: (context, s, child) {
+          return ValueListenableBuilder<bool>(
+            valueListenable: appInventory.areAppNamesReadyNotifier,
+            builder: (context, areAppNamesReady, child) {
+              return AnimatedBuilder(
+                animation: Listenable.merge({albumGrouping, dynamicAlbums}),
+                builder: (context, child) => StreamBuilder(
+                  stream: context.read<CollectionSource>().eventBus.on<AlbumsChangedEvent>(),
+                  builder: (context, snapshot) {
+                    return const _AlbumListPageContent();
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 
   // common with album selection page to move/copy entries
 
@@ -44,15 +72,39 @@ class AlbumListPage extends StatefulWidget {
     Iterable<AlbumChipType> albumTypes,
     Uri? groupUri,
   ) {
-    final listedStoredAlbums = <String>{
-      if (albumTypes.contains(AlbumChipType.stored)) ...source.rawAlbums,
-    };
-    final listedDynamicAlbums = <DynamicAlbumFilter>{
-      if (albumTypes.contains(AlbumChipType.dynamic)) ...dynamicAlbums.all,
-    };
-    final Set<AlbumGroupFilter> albumGroupFilters = {
-      if (albumTypes.contains(AlbumChipType.group)) ...albumGrouping.list(groupUri),
-    };
+    final groupContent = albumGrouping.listGroupContent(groupUri);
+
+    Set<T> whereTypeRecursively<T>(Set<CollectionFilter> filters) {
+      return {
+        ...filters.whereType<T>(),
+        ...filters.whereType<AlbumGroupFilter>().expand((v) => whereTypeRecursively<T>(v.filter.innerFilters)),
+      };
+    }
+
+    final listedStoredAlbums = <String>{};
+    if (albumTypes.contains(AlbumChipType.stored)) {
+      if (groupUri == null) {
+        final withinGroups = whereTypeRecursively<StoredAlbumFilter>(groupContent).map((v) => v.album).toSet();
+        listedStoredAlbums.addAll(source.rawAlbums.whereNot(withinGroups.contains));
+      } else {
+        listedStoredAlbums.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album));
+      }
+    }
+
+    final listedDynamicAlbums = <DynamicAlbumFilter>{};
+    if (albumTypes.contains(AlbumChipType.dynamic)) {
+      if (groupUri == null) {
+        final withinGroups = whereTypeRecursively<DynamicAlbumFilter>(groupContent).toSet();
+        listedDynamicAlbums.addAll(dynamicAlbums.all.whereNot(withinGroups.contains));
+      } else {
+        listedDynamicAlbums.addAll(groupContent.whereType<DynamicAlbumFilter>());
+      }
+    }
+
+    final albumGroupFilters = <AlbumGroupFilter>{};
+    if (albumTypes.contains(AlbumChipType.group)) {
+      albumGroupFilters.addAll(groupContent.whereType<AlbumGroupFilter>());
+    }
 
     final filters = <AlbumBaseFilter>{
       ...albumGroupFilters,
@@ -163,64 +215,31 @@ class AlbumListPage extends StatefulWidget {
   }
 }
 
-class _AlbumListPageState extends State<AlbumListPage> {
-  final ValueNotifier<Uri?> _groupUriNotifier = ValueNotifier(null);
-
-  @override
-  void dispose() {
-    _groupUriNotifier.dispose();
-    super.dispose();
-  }
+class _AlbumListPageContent extends StatelessWidget {
+  const _AlbumListPageContent();
 
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    return Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
-      selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
-      shouldRebuild: (t1, t2) {
-        // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
-        const eq = DeepCollectionEquality();
-        return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4));
-      },
-      builder: (context, s, child) {
-        return ValueListenableBuilder<bool>(
-          valueListenable: appInventory.areAppNamesReadyNotifier,
-          builder: (context, areAppNamesReady, child) {
-            return AnimatedBuilder(
-              animation: Listenable.merge({albumGrouping, dynamicAlbums}),
-              builder: (context, child) => StreamBuilder(
-                stream: source.eventBus.on<AlbumsChangedEvent>(),
-                builder: (context, snapshot) {
-                  return ValueListenableBuilder<Uri?>(
-                    valueListenable: _groupUriNotifier,
-                    builder: (context, groupUri, child) {
-                      final gridItems = AlbumListPage.getAlbumGridItems(context, source, AlbumChipType.values, groupUri);
-                      return StreamBuilder<Set<CollectionFilter>?>(
-                        // to update sections by tier
-                        stream: covers.packageChangeStream,
-                        builder: (context, snapshot) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
-                          source: source,
-                          title: context.l10n.albumPageTitle,
-                          sortFactor: settings.albumSortFactor,
-                          showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-                          actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                          filterSections: AlbumListPage.groupToSections(context, source, gridItems),
-                          newFilters: source.getNewAlbumFilters(context),
-                          applyQuery: AlbumListPage.applyQuery,
-                          emptyBuilder: () => EmptyContent(
-                            icon: AIcons.album,
-                            text: context.l10n.albumEmpty,
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            );
-          },
-        );
-      },
+    final groupUri = context.watch<FilterGroupNotifier>().value;
+    final gridItems = AlbumListPage.getAlbumGridItems(context, source, AlbumChipType.values, groupUri);
+    return StreamBuilder<Set<CollectionFilter>?>(
+      // to update sections by tier
+      stream: covers.packageChangeStream,
+      builder: (context, snapshot) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
+        source: source,
+        title: context.l10n.albumPageTitle,
+        sortFactor: settings.albumSortFactor,
+        showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+        actionDelegate: AlbumChipSetActionDelegate(gridItems),
+        filterSections: AlbumListPage.groupToSections(context, source, gridItems),
+        newFilters: source.getNewAlbumFilters(context),
+        applyQuery: AlbumListPage.applyQuery,
+        emptyBuilder: () => EmptyContent(
+          icon: AIcons.album,
+          text: context.l10n.albumEmpty,
+        ),
+      ),
     );
   }
 }
