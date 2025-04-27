@@ -127,7 +127,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
         } else if (!entry.displaySize.isEmpty) {
           if (entry.isVideo) {
             child = _buildVideoView();
-          } else if (entry.canDecode) {
+          } else if (entry.isDecodingSupported) {
             child = _buildRasterView();
           }
         }
