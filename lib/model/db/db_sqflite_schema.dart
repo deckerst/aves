@@ -11,6 +11,7 @@ class SqfliteLocalMediaDbSchema {
   static const vaultTable = 'vaults';
   static const trashTable = 'trash';
   static const videoPlaybackTable = 'videoPlayback';
+  static const debugTable = 'debug';
 
   static const allTables = [
     entryTable,
@@ -23,6 +24,7 @@ class SqfliteLocalMediaDbSchema {
     vaultTable,
     trashTable,
     videoPlaybackTable,
+    debugTable,
   ];
 
   static Future<void> createLatestVersion(Database db) async {
@@ -110,6 +112,11 @@ class SqfliteLocalMediaDbSchema {
         return db.execute('CREATE TABLE $videoPlaybackTable('
             'id INTEGER PRIMARY KEY'
             ', resumeTimeMillis INTEGER'
+            ')');
+      case debugTable:
+        return db.execute('CREATE TABLE $debugTable('
+            'id INTEGER PRIMARY KEY AUTOINCREMENT'
+            ', message TEXT'
             ')');
       default:
         throw Exception('unknown table=$table');

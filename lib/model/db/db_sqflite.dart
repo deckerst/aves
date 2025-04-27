@@ -34,6 +34,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   static const vaultTable = SqfliteLocalMediaDbSchema.vaultTable;
   static const trashTable = SqfliteLocalMediaDbSchema.trashTable;
   static const videoPlaybackTable = SqfliteLocalMediaDbSchema.videoPlaybackTable;
+  static const debugTable = SqfliteLocalMediaDbSchema.debugTable;
 
   static const _entryInsertSliceMaxCount = 10000; // number of entries
   static const _queryCursorBufferSize = 1000; // number of rows
@@ -48,7 +49,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       await path,
       onCreate: (db, version) => SqfliteLocalMediaDbSchema.createLatestVersion(db),
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 15,
+      version: 16,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
@@ -99,6 +100,19 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       }
     });
     await batch.commit(noResult: true);
+  }
+
+  // debug
+
+  @override
+  Future<void> logCatalog(String message) async {
+    await _db.insert(debugTable, {'message': message});
+  }
+
+  @override
+  Future<List<String>> getCatalogLog() async {
+    final rows = await _db.query(debugTable);
+    return rows.map((row) => row['message'] as String).toList();
   }
 
   // entries

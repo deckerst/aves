@@ -22,6 +22,12 @@ abstract class LocalMediaDb {
 
   Future<void> removeIds(Set<int> ids, {Set<EntryDataType>? dataTypes});
 
+  // debug
+
+  Future<void> logCatalog(String message);
+
+  Future<List<String>> getCatalogLog();
+
   // entries
 
   Future<void> clearEntries();

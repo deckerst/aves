@@ -24,4 +24,7 @@ class IntentDataKeys {
   static const secureUris = 'secureUris';
   static const uri = 'uri';
   static const widgetId = 'widgetId';
+
+  // #977
+  static const debug = 'debug';
 }
