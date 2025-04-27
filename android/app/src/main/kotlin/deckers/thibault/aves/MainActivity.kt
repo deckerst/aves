@@ -302,6 +302,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     INTENT_DATA_KEY_PAGE to intent.getStringExtra(EXTRA_KEY_PAGE),
                     INTENT_DATA_KEY_FILTERS to extractFiltersFromIntent(intent),
                     INTENT_DATA_KEY_EXPLORER_PATH to intent.getStringExtra(EXTRA_KEY_EXPLORER_PATH),
+                    INTENT_DATA_KEY_DEBUG to intent.getBooleanExtra(EXTRA_KEY_DEBUG, false),
                 )
             }
 
@@ -533,7 +534,17 @@ open class MainActivity : FlutterFragmentActivity() {
             )
             .build()
 
-        val shortcutInfoList = listOf(videos, search, map)
+        val debug = ShortcutInfoCompat.Builder(this, "debug")
+            .setShortLabel("debug")
+            .setIntent(
+                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                    .putExtra(EXTRA_KEY_DEBUG, true)
+            )
+            .build()
+
+//        val shortcutInfoList = listOf(videos, search, map)
+        val shortcutInfoList = listOf(debug)
+
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcutInfoList)
         Log.i(LOG_TAG, "set shortcuts: ${shortcutInfoList.joinToString(", ") { v -> v.id }}")
     }
@@ -579,12 +590,14 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
+        const val INTENT_DATA_KEY_DEBUG = "debug"
 
         const val EXTRA_KEY_PAGE = "page"
         const val EXTRA_KEY_EXPLORER_PATH = "explorerPath"
         const val EXTRA_KEY_FILTERS_ARRAY = "filters"
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
         const val EXTRA_KEY_WIDGET_ID = "widgetId"
+        const val EXTRA_KEY_DEBUG = "debug"
 
         // dart page routes
         const val COLLECTION_PAGE_ROUTE_NAME = "/collection"
