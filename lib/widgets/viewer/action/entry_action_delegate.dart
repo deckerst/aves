@@ -148,9 +148,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     switch (action) {
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
-        return targetEntry.canRotate;
       case EntryAction.flip:
-        return targetEntry.canFlip;
       case EntryAction.editDate:
       case EntryAction.editLocation:
       case EntryAction.editTitleDescription:
@@ -163,6 +161,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.viewMotionPhotoVideo:
         return _metadataActionDelegate.canApply(targetEntry, action);
       case EntryAction.convert:
+      case EntryAction.rename:
       case EntryAction.copy:
       case EntryAction.move:
         return !availability.isLocked;

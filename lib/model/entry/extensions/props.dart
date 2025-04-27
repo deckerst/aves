@@ -112,29 +112,29 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get canEdit => !settings.isReadOnly && path != null && !trashed && (_isMediaStoreContent || _isVaultContent);
 
-  bool get canEditDate => canEdit && (canEditExif || canEditXmp);
+  bool get canEditDate => canEdit && (isExifEditionSupported || isXmpEditionSupported);
 
-  bool get canEditLocation => canEdit && (canEditExif || mimeType == MimeTypes.mp4);
+  bool get canEditLocation => canEdit && (isExifEditionSupported || mimeType == MimeTypes.mp4);
 
-  bool get canEditTitleDescription => canEdit && canEditXmp;
+  bool get canEditTitleDescription => canEdit && isXmpEditionSupported;
 
-  bool get canEditRating => canEdit && canEditXmp;
+  bool get canEditRating => canEdit && isXmpEditionSupported;
 
-  bool get canEditTags => canEdit && canEditXmp;
+  bool get canEditTags => canEdit && isXmpEditionSupported;
 
-  bool get canRotate => canEdit && (canEditExif || mimeType == MimeTypes.mp4);
+  bool get canRotate => canEdit && (isExifEditionSupported || mimeType == MimeTypes.mp4);
 
-  bool get canFlip => canEdit && canEditExif;
+  bool get canFlip => canEdit && isExifEditionSupported;
 
   // app support
 
-  bool get canDecode => AppSupport.canDecode(mimeType);
+  bool get isDecodingSupported => AppSupport.canDecode(mimeType);
 
-  bool get canEditExif => AppSupport.canEditExif(mimeType);
+  bool get isExifEditionSupported => AppSupport.canEditExif(mimeType);
 
-  bool get canEditIptc => AppSupport.canEditIptc(mimeType);
+  bool get isIptcEditionSupported => AppSupport.canEditIptc(mimeType);
 
-  bool get canEditXmp => AppSupport.canEditXmp(mimeType);
+  bool get isXmpEditionSupported => AppSupport.canEditXmp(mimeType);
 
-  bool get canRemoveMetadata => AppSupport.canRemoveMetadata(mimeType);
+  bool get isMetadataRemovalSupported => AppSupport.canRemoveMetadata(mimeType);
 }

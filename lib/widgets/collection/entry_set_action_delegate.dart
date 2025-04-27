@@ -670,7 +670,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _removeMetadata(BuildContext context) async {
-    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRemoveMetadata);
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.isMetadataRemovalSupported);
     if (entries == null || entries.isEmpty) return;
 
     final types = await selectMetadataToRemove(context, entries);

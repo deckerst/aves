@@ -103,7 +103,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   }
 
   void _initProvider() {
-    if (!entry.canDecode) return;
+    if (!entry.isDecodingSupported) return;
 
     _lastException = null;
     _providers.clear();
@@ -192,7 +192,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   @override
   Widget build(BuildContext context) {
     final animate = context.select<Settings, bool>((v) => v.animate);
-    if (!entry.canDecode || _lastException != null) {
+    if (!entry.isDecodingSupported || _lastException != null) {
       return _buildError(context, animate);
     }
 
