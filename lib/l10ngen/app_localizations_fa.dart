@@ -132,7 +132,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get hideTooltip => 'پنهان';
 
   @override
-  String get actionRemove => 'پاک‌کردن';
+  String get actionRemove => 'برداشتن';
 
   @override
   String get resetTooltip => 'بازنشانی';
@@ -168,7 +168,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get chipActionDelete => 'پاک‌کردن';
 
   @override
-  String get chipActionRemove => 'Remove';
+  String get chipActionRemove => 'برداشتن';
 
   @override
   String get chipActionShowCollection => 'نمایش در مجموعه';
@@ -186,10 +186,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get chipActionGoToTagPage => 'نمایش در برچسب‌ها';
 
   @override
-  String get chipActionGoToExplorerPage => 'Show in Explorer';
+  String get chipActionGoToExplorerPage => 'نمایش در کاوشگر';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'جداکردن';
 
   @override
   String get chipActionFilterOut => 'پاک‌کردن از پالایش';
@@ -219,10 +219,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get chipActionShowCountryStates => 'نمایش شهر‌ها';
 
   @override
-  String get chipActionCreateAlbum => 'ایجاد البوم';
+  String get chipActionCreateAlbum => 'ساخت البوم';
 
   @override
-  String get chipActionCreateVault => 'ایجاد گاوصندوق';
+  String get chipActionCreateVault => 'ساخت گاوصندوق';
 
   @override
   String get chipActionConfigureVault => 'پیکربندی گاوصندوق';
@@ -300,10 +300,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get entryActionRotateScreen => 'چرخش صفحه';
 
   @override
-  String get entryActionAddFavourite => 'اضافه کردن به مورد علاقه ها';
+  String get entryActionAddFavourite => 'افزودن به برگزیده‌ها';
 
   @override
-  String get entryActionRemoveFavourite => 'پاک‌کردن از مورد علاقه ها';
+  String get entryActionRemoveFavourite => 'پاک‌کردن از برگزیده‌ها';
 
   @override
   String get videoActionCaptureFrame => 'ذخیره فریم';
@@ -315,7 +315,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get videoActionUnmute => 'با صدا کردن';
 
   @override
-  String get videoActionPause => 'مکث';
+  String get videoActionPause => 'ایست';
 
   @override
   String get videoActionPlay => 'پخش';
@@ -327,13 +327,13 @@ class AppLocalizationsFa extends AppLocalizations {
   String get videoActionSkip10 => 'جلو رفتن 10 ثانیه';
 
   @override
-  String get videoActionShowPreviousFrame => 'Show previous frame';
+  String get videoActionShowPreviousFrame => 'نمایش قاب پیشین';
 
   @override
-  String get videoActionShowNextFrame => 'Show next frame';
+  String get videoActionShowNextFrame => 'نمایش قاب بعدی';
 
   @override
-  String get videoActionSelectStreams => 'انتخاب قطعه‌ٔ صوتی';
+  String get videoActionSelectStreams => 'انتخاب صوت‌ها';
 
   @override
   String get videoActionSetSpeed => 'سرعت پخش';
@@ -414,7 +414,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get filterBinLabel => 'سطل اشغال';
 
   @override
-  String get filterFavouriteLabel => 'مورد علاقه';
+  String get filterFavouriteLabel => 'برگزیده';
 
   @override
   String get filterNoDateLabel => 'بدون تاریخ';
@@ -495,10 +495,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get albumTierVaults => 'گاوصندوق‌ها';
 
   @override
-  String get albumTierDynamic => 'Dynamic';
+  String get albumTierDynamic => 'پویا';
 
   @override
-  String get albumTierRegular => 'سایر';
+  String get albumTierRegular => 'دیگری‌ها';
 
   @override
   String get coordinateFormatDms => 'DMS';
@@ -560,10 +560,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get mapStyleGoogleTerrain => 'نقشه گوگل (نمایش زمین)';
 
   @override
-  String get mapStyleOsmLiberty => 'OSM Liberty';
+  String get mapStyleOsmLiberty => 'اواس‌ام لیبریتی';
 
   @override
-  String get mapStyleOpenTopoMap => 'OpenTopoMap';
+  String get mapStyleOpenTopoMap => 'اوپن‌توپومپ';
 
   @override
   String get mapStyleOsmHot => 'اوپن‌استریت‌مپ بشردوستانه';
@@ -813,7 +813,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get newAlbumDialogNameLabel => 'نام آلبوم';
 
   @override
-  String get newAlbumDialogAlbumAlreadyExistsHelper => 'Album already exists';
+  String get newAlbumDialogAlbumAlreadyExistsHelper => 'آلبوم از پیش موجود است';
 
   @override
   String get newAlbumDialogNameLabelAlreadyExistsHelper => 'پوشه از پیش موجود است';
@@ -822,10 +822,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get newAlbumDialogStorageLabel => 'حافظه:';
 
   @override
-  String get newDynamicAlbumDialogTitle => 'New Dynamic Album';
+  String get newDynamicAlbumDialogTitle => 'آلبوم پویای جدید';
 
   @override
-  String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+  String get dynamicAlbumAlreadyExists => 'آلبوم پویا از پیش موجود است';
 
   @override
   String get newVaultWarningDialogMessage => 'موارد موجود در گاوصندوق تنها برای این برنامه در دسترس هستند و در هیچ برنامه دیگری وجود ندارد.\n\nاگر این برنامه را پاک کنید، یا داده‌های برنامه را پاک کنید، همه این موارد را از دست خواهید داد.';
@@ -979,7 +979,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'انتخاب در نقشه';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'وارد کردن GPX';
 
   @override
   String get editEntryLocationDialogLatitude => 'عرض جغرافیایی';
@@ -988,7 +988,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'طول جغرافیایی';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'تغییر زمان';
 
   @override
   String get locationPickerUseThisLocationButton => 'استفاده از این مکان';
@@ -1000,7 +1000,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'پاک‌کردن فراداده';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'همه';
 
   @override
   String get removeEntryMetadataDialogMore => 'بیشتر';
@@ -1072,7 +1072,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get viewDialogLayoutSectionTitle => 'چیدمان';
 
   @override
-  String get viewDialogReverseSortOrder => 'ترتیب مرتب سازی معکوس';
+  String get viewDialogReverseSortOrder => 'ترتیب مرتب‌سازی معکوس';
 
   @override
   String get tileLayoutMosaic => 'موزائیک';
@@ -1153,7 +1153,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get aboutDataUsageClearCache => 'پاک ساری حافظه موقت';
 
   @override
-  String get aboutCreditsSectionTitle => 'اعتبار';
+  String get aboutCreditsSectionTitle => 'سپاس‌نامه';
 
   @override
   String get aboutCreditsWorldAtlas1 => 'این برنامه یک پرونده TopoJSON استفاده میکند از';
@@ -1168,7 +1168,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get aboutLicensesSectionTitle => 'مجوز متن-باز';
 
   @override
-  String get aboutLicensesBanner => 'این برنامه از بسته‌ها و کتابخانه‌های منبع باز زیر استفاده می کند.';
+  String get aboutLicensesBanner => 'این برنامه بسته‌ها و کتابخانه‌های آزاد زیر به‌کار می‌برد.';
 
   @override
   String get aboutLicensesAndroidLibrariesSectionTitle => 'کتابخانه‌های اندروید';
@@ -1204,7 +1204,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get collectionActionHideTitleSearch => 'پنهان سازی پالایش عنوان';
 
   @override
-  String get collectionActionAddDynamicAlbum => 'Add dynamic album';
+  String get collectionActionAddDynamicAlbum => 'افزودن آلبوم پویا';
 
   @override
   String get collectionActionAddShortcut => 'افزودن میانبر';
@@ -1365,7 +1365,7 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get collectionEmptyFavourites => 'هیچ مورد علاقه ای وجود ندارد';
+  String get collectionEmptyFavourites => 'هیچ برگزیده‌ای نیست';
 
   @override
   String get collectionEmptyVideos => 'بدون ویدیو';
@@ -1392,7 +1392,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get drawerCollectionAll => 'تمام مجموعه';
 
   @override
-  String get drawerCollectionFavourites => 'مورد علاقه ها';
+  String get drawerCollectionFavourites => 'برگزیده‌ها';
 
   @override
   String get drawerCollectionImages => 'تصاویر';
@@ -1446,10 +1446,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get sortByRating => 'با امتیازبندی';
 
   @override
-  String get sortByDuration => 'By duration';
+  String get sortByDuration => 'بر پایه مدت';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'بر پایه مسیر';
 
   @override
   String get sortOrderNewestFirst => 'اول جدیدترین';
@@ -1476,10 +1476,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get sortOrderSmallestFirst => 'اول کوچکترین';
 
   @override
-  String get sortOrderShortestFirst => 'Shortest first';
+  String get sortOrderShortestFirst => 'اول کوتاه‌ترین';
 
   @override
-  String get sortOrderLongestFirst => 'Longest first';
+  String get sortOrderLongestFirst => 'اول بلندترین';
 
   @override
   String get albumGroupTier => 'با امتیاز';
@@ -1563,13 +1563,13 @@ class AppLocalizationsFa extends AppLocalizations {
   String get binPageTitle => 'سطل زباله';
 
   @override
-  String get explorerPageTitle => 'Explorer';
+  String get explorerPageTitle => 'کاوشگر';
 
   @override
-  String get explorerActionSelectStorageVolume => 'Select storage';
+  String get explorerActionSelectStorageVolume => 'گزینش حافظه';
 
   @override
-  String get selectStorageVolumeDialogTitle => 'Select Storage';
+  String get selectStorageVolumeDialogTitle => 'گزینش حافظه';
 
   @override
   String get searchCollectionFieldHint => 'جستجو مجموعه';
@@ -1581,7 +1581,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get searchDateSectionTitle => 'تاریخ';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'قالب‌ها';
 
   @override
   String get searchAlbumsSectionTitle => 'آلبوم ها';
@@ -1644,10 +1644,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get appExportCovers => 'جلد ها';
 
   @override
-  String get appExportDynamicAlbums => 'Dynamic albums';
+  String get appExportDynamicAlbums => 'آلبوم‌های پویا';
 
   @override
-  String get appExportFavourites => 'مورد علاقه ها';
+  String get appExportFavourites => 'برگزیده‌ها';
 
   @override
   String get appExportSettings => 'تنظیمات';
@@ -1662,7 +1662,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get settingsHomeDialogTitle => 'خانه';
 
   @override
-  String get setHomeCustom => 'Custom';
+  String get setHomeCustom => 'سفارشی';
 
   @override
   String get settingsShowBottomNavigationBar => 'نمایش گزینه‌های پیمایش پایین';
@@ -1704,7 +1704,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get settingsNavigationDrawerEditorPageTitle => 'گزینه‌های پیمایش';
 
   @override
-  String get settingsNavigationDrawerBanner => 'برای جابجایی و مرتب کردن مجدد موارد، لمس کنید و نگه دارید.';
+  String get settingsNavigationDrawerBanner => 'برای جابجایی و مرتب کردن دوباره موارد، لمس کنید و نگه دارید.';
 
   @override
   String get settingsNavigationDrawerTabTypes => 'انواع';
@@ -1731,7 +1731,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get settingsThumbnailShowHdrIcon => 'نمایش نماد HDR';
 
   @override
-  String get settingsThumbnailShowFavouriteIcon => 'نمایش نماد علاقه‌مندی';
+  String get settingsThumbnailShowFavouriteIcon => 'نمایش نماد برگزیدن';
 
   @override
   String get settingsThumbnailShowTagIcon => 'نمایش نماد برچسب';
@@ -2219,10 +2219,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get mapAttributionOsmData => 'داده‌های نقشه © [OpenStreetMap](https:www.openstreetmap.org/copyright) مشارکت‌کنندگان';
 
   @override
-  String get mapAttributionOsmLiberty => 'Tiles by [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)';
+  String get mapAttributionOsmLiberty => 'کاشی‌ها به‌دست [OpenMapTiles](https://www.openmaptiles.org/)، [CC BY](http://creativecommons.org/licenses/by/4.0) • میزبانی‌شده به‌دست [OSM Americana](https://tile.ourmap.us)';
 
   @override
-  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles by [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
+  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | کاشی‌ها به‌دست [OpenTopoMap](https://opentopomap.org/)، [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
 
   @override
   String get mapAttributionOsmHot => 'کاشی ها توسط [HOT](https:www.hotosm.org) • میزبانی شده به دست [OSM France](https:openstreetmap.fr)';

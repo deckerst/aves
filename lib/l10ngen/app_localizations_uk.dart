@@ -1471,7 +1471,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sortByDuration => 'За тривалістю';
 
   @override
-  String get sortByPath => 'Шляхом';
+  String get sortByPath => 'За шляхом';
 
   @override
   String get sortOrderNewestFirst => 'Найновіші перші';
