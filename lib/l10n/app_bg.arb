@@ -1322,7 +1322,7 @@
   "@settingsStorageAccessTile": {},
   "settingsAccessibilityShowPinchGestureAlternatives": "Показване на алтернативи за жестове с мултитъч",
   "@settingsAccessibilityShowPinchGestureAlternatives": {},
-  "settingsDisplaySectionTitle": "Изобразяване",
+  "settingsDisplaySectionTitle": "Изглед",
   "@settingsDisplaySectionTitle": {},
   "settingsThemeBrightnessTile": "Тема",
   "@settingsThemeBrightnessTile": {},
@@ -1634,5 +1634,9 @@
   "editEntryLocationDialogTimeShift": "Изместване на времето",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "Всички",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "Според пътя",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Формати",
+  "@searchFormatSectionTitle": {}
 }

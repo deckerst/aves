@@ -1416,5 +1416,9 @@
   "editEntryLocationDialogTimeShift": "Salto temporal",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "Todos",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "Pelo caminho",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Formatos",
+  "@searchFormatSectionTitle": {}
 }

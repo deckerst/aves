@@ -1416,5 +1416,9 @@
   "editEntryLocationDialogTimeShift": "Pergeseran waktu",
   "@editEntryLocationDialogTimeShift": {},
   "removeEntryMetadataDialogAll": "Semua",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "Melalui lokasi",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Format",
+  "@searchFormatSectionTitle": {}
 }
