@@ -1634,5 +1634,9 @@
   "keepScreenOnViewerOnly": "Kun fremvisningsside",
   "@keepScreenOnViewerOnly": {},
   "widgetOpenPageViewer": "Åbn fremviser",
-  "@widgetOpenPageViewer": {}
+  "@widgetOpenPageViewer": {},
+  "sortByPath": "Efter sti",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Formater",
+  "@searchFormatSectionTitle": {}
 }
