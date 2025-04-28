@@ -135,6 +135,8 @@ class Contributors {
     Contributor('Bora Atıcı', 'boratici.acc@gmail.com'),
     Contributor('Ettore Atalan', 'atalanttore@googlemail.com'),
     Contributor('VertekPlus', 'vertekplus@users.noreply.hosted.weblate.org'),
+    Contributor('slabs37', 'p84haghi@gmail.com'),
+    Contributor('GiannosOB', 'giannos2105@gmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
@@ -157,6 +159,7 @@ class Contributors {
     // Contributor('Enenra', 'nnra2210@gmail.com'), // Serbian
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('Nattapong K', 'mixer5056@gmail.com'), // Thai
+    // Contributor('Feliks-WR', 'aq.1428@tuta.io'), // Urdu
   };
 }
 

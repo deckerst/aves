@@ -177,9 +177,9 @@
   "@dateYesterday": {},
   "dateThisMonth": "இந்தத் திங்கள்",
   "@dateThisMonth": {},
-  "appName": "ஏவ்ச்",
+  "appName": "ஏவ்சு",
   "@appName": {},
-  "welcomeMessage": "ஏவ்ச்க்கு வருக",
+  "welcomeMessage": "ஏவ்சுக்கு வருக",
   "@welcomeMessage": {},
   "welcomeOptional": "விரும்பினால்",
   "@welcomeOptional": {},
@@ -1115,7 +1115,7 @@
   "@maxBrightnessNever": {},
   "mapStyleOsmHot": "மனிதாபிமான திதெவ",
   "@mapStyleOsmHot": {},
-  "mapStyleStamenWatercolor": "ச்டேமன் நீர்நிறம்",
+  "mapStyleStamenWatercolor": "மகரந்தம் நீர்நிறம்",
   "@mapStyleStamenWatercolor": {},
   "maxBrightnessAlways": "எப்போதும்",
   "@maxBrightnessAlways": {},
@@ -1634,5 +1634,9 @@
   "coordinateFormatDdm": "டிடிஎம்",
   "@coordinateFormatDdm": {},
   "removeEntryMetadataDialogAll": "அனைத்தும்",
-  "@removeEntryMetadataDialogAll": {}
+  "@removeEntryMetadataDialogAll": {},
+  "sortByPath": "பாதைமூலம்",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "வடிவங்கள்",
+  "@searchFormatSectionTitle": {}
 }

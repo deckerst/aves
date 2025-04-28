@@ -67,6 +67,11 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
   bool canApply(AvesEntry targetEntry, EntryAction action) {
     switch (action) {
       // general
+      case EntryAction.rotateCCW:
+      case EntryAction.rotateCW:
+        return targetEntry.canRotate;
+      case EntryAction.flip:
+        return targetEntry.canFlip;
       case EntryAction.editDate:
         return targetEntry.canEditDate;
       case EntryAction.editLocation:
@@ -78,15 +83,15 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
       case EntryAction.editTags:
         return targetEntry.canEditTags;
       case EntryAction.removeMetadata:
-        return targetEntry.canRemoveMetadata;
+        return targetEntry.canEdit && targetEntry.isMetadataRemovalSupported;
       case EntryAction.exportMetadata:
-        return true;
+        return !availability.isLocked;
       // GeoTIFF
       case EntryAction.showGeoTiffOnMap:
         return true;
       // motion photo
       case EntryAction.convertMotionPhotoToStillImage:
-        return targetEntry.canEditXmp;
+        return targetEntry.canEdit && targetEntry.isXmpEditionSupported;
       case EntryAction.viewMotionPhotoVideo:
         return true;
       default:

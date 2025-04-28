@@ -1521,7 +1521,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get sortByDuration => 'Efter varighed';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'Efter sti';
 
   @override
   String get sortOrderNewestFirst => 'Nyeste først';
@@ -1653,7 +1653,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get searchDateSectionTitle => 'Dato';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'Formater';
 
   @override
   String get searchAlbumsSectionTitle => 'Album';

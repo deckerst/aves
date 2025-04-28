@@ -147,7 +147,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get saveTooltip => 'Αποθήκευση';
 
   @override
-  String get stopTooltip => 'Stop';
+  String get stopTooltip => 'Σταμάτησε';
 
   @override
   String get pickTooltip => 'Διαλέξτε';
@@ -174,7 +174,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get chipActionDelete => 'Διαγραφή';
 
   @override
-  String get chipActionRemove => 'Remove';
+  String get chipActionRemove => 'Αφαίρεση';
 
   @override
   String get chipActionShowCollection => 'Εμφάνιση στη Συλλογή';
@@ -192,10 +192,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get chipActionGoToTagPage => 'Εμφάνιση στις ετικέτες';
 
   @override
-  String get chipActionGoToExplorerPage => 'Show in Explorer';
+  String get chipActionGoToExplorerPage => 'Εμφάνιση στην Εξερεύνηση';
 
   @override
-  String get chipActionDecompose => 'Split';
+  String get chipActionDecompose => 'Διάσπαση';
 
   @override
   String get chipActionFilterOut => 'Χωρίς φιλτράρισμα';
@@ -300,7 +300,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get entryActionSetAs => 'Ορισμός ως';
 
   @override
-  String get entryActionCast => 'Cast';
+  String get entryActionCast => 'Εκτέλεση';
 
   @override
   String get entryActionOpenMap => 'Εμφάνιση στην εφαρμογή χάρτες';
@@ -336,10 +336,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get videoActionSkip10 => '10 δευτερόλεπτα μπροστά';
 
   @override
-  String get videoActionShowPreviousFrame => 'Show previous frame';
+  String get videoActionShowPreviousFrame => 'Εμφάνιση προηγούμενου καρέ';
 
   @override
-  String get videoActionShowNextFrame => 'Show next frame';
+  String get videoActionShowNextFrame => 'Εμφάνιση επόμενου καρέ';
 
   @override
   String get videoActionSelectStreams => 'Επιλογή γλώσσας';
@@ -348,13 +348,13 @@ class AppLocalizationsEl extends AppLocalizations {
   String get videoActionSetSpeed => 'Ταχύτητα αναπαραγωγής';
 
   @override
-  String get videoActionABRepeat => 'A-B repeat';
+  String get videoActionABRepeat => 'Επανάληψη A-B';
 
   @override
-  String get videoRepeatActionSetStart => 'Set start';
+  String get videoRepeatActionSetStart => 'Ορισμός έναρξης';
 
   @override
-  String get videoRepeatActionSetEnd => 'Set end';
+  String get videoRepeatActionSetEnd => 'Ορισμός τέλους';
 
   @override
   String get viewerActionSettings => 'Ρυθμίσεις';
@@ -507,7 +507,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get albumTierVaults => 'Θησαυροφυλακια';
 
   @override
-  String get albumTierDynamic => 'Dynamic';
+  String get albumTierDynamic => 'Δυναμικό';
 
   @override
   String get albumTierRegular => 'Προσωπικά';
@@ -572,7 +572,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get mapStyleGoogleTerrain => 'Google Maps (Terrain)';
 
   @override
-  String get mapStyleOsmLiberty => 'OSM Liberty';
+  String get mapStyleOsmLiberty => 'OSM Ελευθερία';
 
   @override
   String get mapStyleOpenTopoMap => 'OpenTopoMap';
@@ -831,7 +831,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get newAlbumDialogNameLabel => 'Όνομα άλμπουμ';
 
   @override
-  String get newAlbumDialogAlbumAlreadyExistsHelper => 'Album already exists';
+  String get newAlbumDialogAlbumAlreadyExistsHelper => 'Το άλμπουμ υπάρχει ήδη';
 
   @override
   String get newAlbumDialogNameLabelAlreadyExistsHelper => 'Η ονομασία υπάρχει ήδη';
@@ -840,10 +840,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get newAlbumDialogStorageLabel => 'Aποθηκευτικός χώρος:';
 
   @override
-  String get newDynamicAlbumDialogTitle => 'New Dynamic Album';
+  String get newDynamicAlbumDialogTitle => 'Νέο δυναμικό άλμπουμ';
 
   @override
-  String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+  String get dynamicAlbumAlreadyExists => 'Το άλμπουμ Dynamic υπάρχει ήδη';
 
   @override
   String get groupAlbumsDialogTitle => 'Group';
@@ -924,7 +924,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get renameProcessorCounter => 'Μετρητής';
 
   @override
-  String get renameProcessorHash => 'Hash';
+  String get renameProcessorHash => 'Κατακερματισμός';
 
   @override
   String get renameProcessorName => 'Όνομα';
@@ -937,8 +937,8 @@ class AppLocalizationsEl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Διαγράψτε αυτό το άλμπουμ και όλα τα $countString στοιχεία του;',
-      one: 'Διαγραφή αυτού του άλμπουμ και του περιεχομένου του;',
+      other: 'Διαγράψτε αυτό το άλμπουμ και τα $countString αντικείμενα σε αυτό;',
+      one: 'Διαγράψτε αυτό το άλμπουμ και το αντικείμενο σε αυτό;',
     );
     return '$_temp0';
   }
@@ -951,8 +951,8 @@ class AppLocalizationsEl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Διαγράψτε αυτά τα άλμπουμ και όλα τα $countString στοιχεία τους;',
-      one: 'Διαγράψτε αυτά τα άλμπουμ και το περιεχόμενό τους;',
+      other: 'Διαγράψτε αυτά τα άλμπουμ και τα $countString αντικείμενα σε αυτά;',
+      one: 'Διαγράψτε αυτά τα άλμπουμ και τα αντικείμενα σε αυτά;',
     );
     return '$_temp0';
   }
@@ -1018,7 +1018,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get editEntryLocationDialogChooseOnMap => 'Επιλογή στο χάρτη';
 
   @override
-  String get editEntryLocationDialogImportGpx => 'Import GPX';
+  String get editEntryLocationDialogImportGpx => 'Εισαγωγή GPX';
 
   @override
   String get editEntryLocationDialogLatitude => 'Γεωγραφικό πλάτος';
@@ -1027,7 +1027,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get editEntryLocationDialogLongitude => 'Γεωγραφικό μήκος';
 
   @override
-  String get editEntryLocationDialogTimeShift => 'Time shift';
+  String get editEntryLocationDialogTimeShift => 'Χρονική μετατόπιση';
 
   @override
   String get locationPickerUseThisLocationButton => 'Χρησιμοποίηση της τοποθεσίας';
@@ -1039,7 +1039,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get removeEntryMetadataDialogTitle => 'Αφαιρεση μεταδεδομενων';
 
   @override
-  String get removeEntryMetadataDialogAll => 'All';
+  String get removeEntryMetadataDialogAll => 'Όλα';
 
   @override
   String get removeEntryMetadataDialogMore => 'Περισσότερα';
@@ -1123,7 +1123,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get tileLayoutList => 'Λίστα';
 
   @override
-  String get castDialogTitle => 'Cast Devices';
+  String get castDialogTitle => 'Συσκευές casting';
 
   @override
   String get coverDialogTabCover => 'Εξώφυλλο';
@@ -1168,28 +1168,28 @@ class AppLocalizationsEl extends AppLocalizations {
   String get aboutBugReportButton => 'Αναφορά';
 
   @override
-  String get aboutDataUsageSectionTitle => 'Data Usage';
+  String get aboutDataUsageSectionTitle => 'Χρήση δεδομένων';
 
   @override
-  String get aboutDataUsageData => 'Data';
+  String get aboutDataUsageData => 'Δεδομένα';
 
   @override
-  String get aboutDataUsageCache => 'Cache';
+  String get aboutDataUsageCache => 'Κρυφή μνήμη';
 
   @override
-  String get aboutDataUsageDatabase => 'Database';
+  String get aboutDataUsageDatabase => 'Βάση δεδομένων';
 
   @override
-  String get aboutDataUsageMisc => 'Misc';
+  String get aboutDataUsageMisc => 'Διάφορα στοιχεία';
 
   @override
-  String get aboutDataUsageInternal => 'Internal';
+  String get aboutDataUsageInternal => 'Εσωτερικά';
 
   @override
-  String get aboutDataUsageExternal => 'External';
+  String get aboutDataUsageExternal => 'Εξωτερικά';
 
   @override
-  String get aboutDataUsageClearCache => 'Clear Cache';
+  String get aboutDataUsageClearCache => 'Εκκαθάριση μνήμης cache';
 
   @override
   String get aboutCreditsSectionTitle => 'Αναφορες';
@@ -1243,13 +1243,13 @@ class AppLocalizationsEl extends AppLocalizations {
   String get collectionActionHideTitleSearch => 'Απόκρυψη φίλτρου τίτλου';
 
   @override
-  String get collectionActionAddDynamicAlbum => 'Add dynamic album';
+  String get collectionActionAddDynamicAlbum => 'Προσθήκη δυναμικού άλμπουμ';
 
   @override
   String get collectionActionAddShortcut => 'Προσθήκη συντόμευσης';
 
   @override
-  String get collectionActionSetHome => 'Set as home';
+  String get collectionActionSetHome => 'Ορίστε ως σπίτι';
 
   @override
   String get collectionActionEmptyBin => 'Καθαρισμός του κάδου ανακύκλωσης';
@@ -1515,10 +1515,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get sortByRating => 'Ανά βαθμολογία';
 
   @override
-  String get sortByDuration => 'By duration';
+  String get sortByDuration => 'Με διάρκεια';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'Από τη διαδρομή';
 
   @override
   String get sortOrderNewestFirst => 'Τα πιο πρόσφατα πρώτα';
@@ -1545,10 +1545,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get sortOrderSmallestFirst => 'Τα μικρότερα πρώτα';
 
   @override
-  String get sortOrderShortestFirst => 'Shortest first';
+  String get sortOrderShortestFirst => 'Ο συντομότερος πρώτος';
 
   @override
-  String get sortOrderLongestFirst => 'Longest first';
+  String get sortOrderLongestFirst => 'Μακρύτερο πρώτο';
 
   @override
   String get albumGroupTier => 'Ανά βαθμίδα';
@@ -1632,13 +1632,13 @@ class AppLocalizationsEl extends AppLocalizations {
   String get binPageTitle => 'Καδος ανακυκλωσης';
 
   @override
-  String get explorerPageTitle => 'Explorer';
+  String get explorerPageTitle => 'Εξερεύνηση';
 
   @override
-  String get explorerActionSelectStorageVolume => 'Select storage';
+  String get explorerActionSelectStorageVolume => 'Επιλέξτε αποθηκευτικό χώρο';
 
   @override
-  String get selectStorageVolumeDialogTitle => 'Select Storage';
+  String get selectStorageVolumeDialogTitle => 'Επιλέξτε Αποθήκευση';
 
   @override
   String get searchCollectionFieldHint => 'Αναζήτηση στην συλλογή';
@@ -1650,7 +1650,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get searchDateSectionTitle => 'Ημερομηνια';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'Μορφές';
 
   @override
   String get searchAlbumsSectionTitle => 'Άλμπουμ';
@@ -1713,7 +1713,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get appExportCovers => 'Εξώφυλλα';
 
   @override
-  String get appExportDynamicAlbums => 'Dynamic albums';
+  String get appExportDynamicAlbums => 'Δυναμικά άλμπουμ';
 
   @override
   String get appExportFavourites => 'Αγαπημένα';
@@ -1731,7 +1731,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsHomeDialogTitle => 'Αρχικη σελιδα της εφαρμογης';
 
   @override
-  String get setHomeCustom => 'Custom';
+  String get setHomeCustom => 'Προσαρμοσμένο';
 
   @override
   String get settingsShowBottomNavigationBar => 'Εμφάνιση κάτω γραμμής πλοήγησης';
@@ -1797,7 +1797,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsThumbnailOverlayPageTitle => 'Βοηθητικές πληροφοριες';
 
   @override
-  String get settingsThumbnailShowHdrIcon => 'Show HDR icon';
+  String get settingsThumbnailShowHdrIcon => 'Εμφάνιση εικονιδίου HDR';
 
   @override
   String get settingsThumbnailShowFavouriteIcon => 'Εμφάνιση εικονιδίου για αγαπημένο';
@@ -1890,7 +1890,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsViewerShowOverlayOnOpening => 'Εμφάνιση κατά το άνοιγμα';
 
   @override
-  String get settingsViewerShowHistogram => 'Show histogram';
+  String get settingsViewerShowHistogram => 'Εμφάνιση ιστογράμματος';
 
   @override
   String get settingsViewerShowMinimap => 'Εμφάνιση μικρού χάρτη';
@@ -2166,7 +2166,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsUnitSystemDialogTitle => 'Συστημα μετρησης';
 
   @override
-  String get settingsForceWesternArabicNumeralsTile => 'Force Arabic numerals';
+  String get settingsForceWesternArabicNumeralsTile => 'Δύναμη αραβικών αριθμών';
 
   @override
   String get settingsScreenSaverPageTitle => 'Προφυλαξη οθονης';
@@ -2288,19 +2288,19 @@ class AppLocalizationsEl extends AppLocalizations {
   String get mapPointNorthUpTooltip => 'Εμφάνιση του βορρά στην κορυφή';
 
   @override
-  String get mapAttributionOsmData => 'Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors';
+  String get mapAttributionOsmData => 'Δεδομένα χάρτη © [OpenStreetMap](https://www.openstreetmap.org/copyright) συνεισφέροντες';
 
   @override
-  String get mapAttributionOsmLiberty => 'Tiles by [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Hosted by [OSM Americana](https://tile.ourmap.us)';
+  String get mapAttributionOsmLiberty => 'Πλακάκια από [OpenMapTiles](https://www.openmaptiles.org/), [CC BY](http://creativecommons.org/licenses/by/4.0) • Φιλοξενείται από [OSM Americana](https://tile.ourmap.us)';
 
   @override
-  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Tiles by [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
+  String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Πλακάκια από [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
 
   @override
-  String get mapAttributionOsmHot => 'Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)';
+  String get mapAttributionOsmHot => 'Πλεονεκτήματα από [HOT](https://www.hotosm.org/) • που φιλοξενούνται από [OSM France](https://openstreetmap.fr/)';
 
   @override
-  String get mapAttributionStamen => 'Tiles by [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
+  String get mapAttributionStamen => 'Ποσά από [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
 
   @override
   String get openMapPageTooltip => 'Προβολή στη σελίδα του χάρτη';
