@@ -54,6 +54,7 @@ import 'app_localizations_ta.dart';
 import 'app_localizations_th.dart';
 import 'app_localizations_tr.dart';
 import 'app_localizations_uk.dart';
+import 'app_localizations_ur.dart';
 import 'app_localizations_vi.dart';
 import 'app_localizations_zh.dart';
 
@@ -190,6 +191,7 @@ abstract class AppLocalizations {
     Locale('th'),
     Locale('tr'),
     Locale('uk'),
+    Locale('ur'),
     Locale('vi'),
     Locale('zh'),
     Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')
@@ -4453,7 +4455,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['ar', 'az', 'be', 'bg', 'bn', 'ca', 'ckb', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'id', 'is', 'it', 'ja', 'kn', 'ko', 'lt', 'ml', 'my', 'nb', 'ne', 'nl', 'nn', 'or', 'pl', 'pt', 'ro', 'ru', 'sat', 'sk', 'sl', 'sr', 'sv', 'ta', 'th', 'tr', 'uk', 'vi', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'az', 'be', 'bg', 'bn', 'ca', 'ckb', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hu', 'id', 'is', 'it', 'ja', 'kn', 'ko', 'lt', 'ml', 'my', 'nb', 'ne', 'nl', 'nn', 'or', 'pl', 'pt', 'ro', 'ru', 'sat', 'sk', 'sl', 'sr', 'sv', 'ta', 'th', 'tr', 'uk', 'ur', 'vi', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -4528,6 +4530,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     case 'th': return AppLocalizationsTh();
     case 'tr': return AppLocalizationsTr();
     case 'uk': return AppLocalizationsUk();
+    case 'ur': return AppLocalizationsUr();
     case 'vi': return AppLocalizationsVi();
     case 'zh': return AppLocalizationsZh();
   }

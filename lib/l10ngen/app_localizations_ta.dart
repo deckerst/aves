@@ -9,10 +9,10 @@ class AppLocalizationsTa extends AppLocalizations {
   AppLocalizationsTa([String locale = 'ta']) : super(locale);
 
   @override
-  String get appName => 'ஏவ்ச்';
+  String get appName => 'ஏவ்சு';
 
   @override
-  String get welcomeMessage => 'ஏவ்ச்க்கு வருக';
+  String get welcomeMessage => 'ஏவ்சுக்கு வருக';
 
   @override
   String get welcomeOptional => 'விரும்பினால்';
@@ -578,7 +578,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get mapStyleOsmHot => 'மனிதாபிமான திதெவ';
 
   @override
-  String get mapStyleStamenWatercolor => 'ச்டேமன் நீர்நிறம்';
+  String get mapStyleStamenWatercolor => 'மகரந்தம் நீர்நிறம்';
 
   @override
   String get maxBrightnessNever => 'ஒருபோதும்';
@@ -1500,7 +1500,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get sortByDuration => 'காலப்படி';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'பாதைமூலம்';
 
   @override
   String get sortOrderNewestFirst => 'முதலில் புதியது';
@@ -1632,7 +1632,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get searchDateSectionTitle => 'திகதி';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'வடிவங்கள்';
 
   @override
   String get searchAlbumsSectionTitle => 'தொகுப்புகள்';

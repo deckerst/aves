@@ -1504,7 +1504,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get sortByDuration => 'По продължителност';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'Според пътя';
 
   @override
   String get sortOrderNewestFirst => 'Първо най-новите';
@@ -1636,7 +1636,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get searchDateSectionTitle => 'Дата';
 
   @override
-  String get searchFormatSectionTitle => 'Formats';
+  String get searchFormatSectionTitle => 'Формати';
 
   @override
   String get searchAlbumsSectionTitle => 'Албуми';
@@ -2107,7 +2107,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settingsAccessibilityShowPinchGestureAlternatives => 'Показване на алтернативи за жестове с мултитъч';
 
   @override
-  String get settingsDisplaySectionTitle => 'Изобразяване';
+  String get settingsDisplaySectionTitle => 'Изглед';
 
   @override
   String get settingsThemeBrightnessTile => 'Тема';
