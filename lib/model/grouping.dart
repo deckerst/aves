@@ -33,7 +33,7 @@ class AlbumGrouping with ChangeNotifier {
 
   Set<CollectionFilter> listGroupContent(Uri? currentGroupUri) {
     if (currentGroupUri == null) {
-      return _groups.entries.where((kv) => _getParentGroup(kv.key) == currentGroupUri).map((kv) {
+      return _groups.entries.where((kv) => getParentGroup(kv.key) == currentGroupUri).map((kv) {
         final groupUri = kv.key;
         final childrenUri = kv.value;
         final childrenFilters = childrenUri.map(uriToFilter).nonNulls.toSet();
@@ -69,17 +69,19 @@ class AlbumGrouping with ChangeNotifier {
     return null;
   }
 
-  void ungroup(Set<Uri> uris) {
+  void _removeFromGroups(Set<Uri> uris) {
     _groups.forEach((_, childrenUris) {
       childrenUris.removeAll(uris);
     });
   }
 
-  void group(Set<Uri> childrenUris, Uri destinationGroup) {
-    ungroup(childrenUris);
-    final children = _groups[destinationGroup] ?? {};
-    children.addAll(childrenUris);
-    _groups[destinationGroup] = children;
+  void addToGroup(Set<Uri> childrenUris, Uri? destinationGroup) {
+    _removeFromGroups(childrenUris);
+    if (destinationGroup != null) {
+      final children = _groups[destinationGroup] ?? {};
+      children.addAll(childrenUris);
+      _groups[destinationGroup] = children;
+    }
     notifyListeners();
   }
 
@@ -87,6 +89,21 @@ class AlbumGrouping with ChangeNotifier {
     final uri = buildGroupUri(parentGroupUri, name);
     _groups.putIfAbsent(uri, () => {});
     return uri;
+  }
+
+  int countContent(Uri groupUri) {
+    int count = 0;
+    final childrenUri = _groups[groupUri];
+    if (childrenUri != null) {
+      childrenUri.map(uriToFilter).nonNulls.forEach((filter) {
+        if (filter is AlbumGroupFilter) {
+          count += countContent(filter.uri);
+        } else {
+          count++;
+        }
+      });
+    }
+    return count;
   }
 
   static String? getGroupPath(Uri uri) => uri.queryParameters[_pathParamKey];
@@ -153,17 +170,19 @@ class AlbumGrouping with ChangeNotifier {
   }
 
   // return `null` for root
-  static Uri? _getParentGroup(Uri groupUri) {
-    final path = getGroupPath(groupUri);
-    if (path != null) {
-      final segments = pContext.split(path);
-      final newLength = segments.length - 1;
-      if (newLength > 0) {
-        return groupUri.replace(
-          queryParameters: {
-            _pathParamKey: pContext.joinAll(segments.take(newLength)),
-          },
-        );
+  static Uri? getParentGroup(Uri? groupUri) {
+    if (groupUri != null) {
+      final path = getGroupPath(groupUri);
+      if (path != null) {
+        final segments = pContext.split(path);
+        final newLength = segments.length - 1;
+        if (newLength > 0) {
+          return groupUri.replace(
+            queryParameters: {
+              _pathParamKey: pContext.joinAll(segments.take(newLength)),
+            },
+          );
+        }
       }
     }
     return null;

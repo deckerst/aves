@@ -44,7 +44,7 @@ class SettingsDefaults {
   ];
 
   // collection
-  static const collectionSectionFactor = EntryGroupFactor.month;
+  static const collectionSectionFactor = EntrySectionFactor.month;
   static const collectionSortFactor = EntrySortFactor.date;
   static const collectionBrowsingQuickActions = [
     EntrySetAction.searchCollection,
@@ -63,7 +63,7 @@ class SettingsDefaults {
   static const showThumbnailVideoDuration = true;
 
   // filter grids
-  static const albumGroupFactor = AlbumChipGroupFactor.importance;
+  static const albumGroupFactor = AlbumChipSectionFactor.importance;
   static const chipListSortFactor = ChipSortFactor.name;
 
   // viewer

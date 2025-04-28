@@ -509,6 +509,12 @@ abstract class AppLocalizations {
   /// **'Group'**
   String get chipActionGroup;
 
+  /// No description provided for @chipActionUngroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Ungroup'**
+  String get chipActionUngroup;
+
   /// No description provided for @chipActionRename.
   ///
   /// In en, this message translates to:

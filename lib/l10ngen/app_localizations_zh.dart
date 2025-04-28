@@ -214,6 +214,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => '重命名';
 
   @override

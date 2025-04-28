@@ -222,6 +222,9 @@ class AppLocalizationsAz extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => 'Bir də adlandır';
 
   @override

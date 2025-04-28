@@ -28,17 +28,17 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
         switch (collection.sortFactor) {
           case EntrySortFactor.date:
             switch (collection.sectionFactor) {
-              case EntryGroupFactor.album:
+              case EntrySectionFactor.album:
                 return [
                   DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
                   if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
                 ];
-              case EntryGroupFactor.month:
-              case EntryGroupFactor.none:
+              case EntrySectionFactor.month:
+              case EntrySectionFactor.none:
                 return [
                   DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
                 ];
-              case EntryGroupFactor.day:
+              case EntrySectionFactor.day:
                 return [
                   DraggableThumbLabel.formatDayThumbLabel(context, entry.bestDate),
                 ];

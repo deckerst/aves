@@ -8,6 +8,7 @@ import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
@@ -200,10 +201,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is StoredAlbumFilter && vaults.isVault(filter.album)) _buildDetailIcon(context, AIcons.locked),
         if (filter is DynamicAlbumFilter) _buildDetailIcon(context, AIcons.dynamicAlbum),
         if (filter is AlbumGroupFilter) ...[
-          _buildDetailIcon(context, AIcons.albumGroup),
+          _buildDetailIcon(context, AIcons.group),
           Text(
-            // TODO TLAD [nested] count stored/dynamic albums in depth instead of flat children count
-            '${NumberFormat.decimalPattern(context.locale).format(filter.filter.innerFilters.length)}${AText.separator}',
+            '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countContent(filter.uri))}${AText.separator}',
             style: textStyle,
           ),
         ],

@@ -44,8 +44,13 @@ import 'package:provider/provider.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumBaseFilter>> _items;
+  final Uri? _pageGroupUri;
 
-  AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumBaseFilter>> items) : _items = items;
+  AlbumChipSetActionDelegate(
+    Iterable<FilterGridItem<AlbumBaseFilter>> items,
+    Uri? pageGroupUri,
+  )   : _items = items,
+        _pageGroupUri = pageGroupUri;
 
   @override
   Iterable<FilterGridItem<AlbumBaseFilter>> get allItems => _items;
@@ -68,11 +73,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
   @override
   set tileLayout(TileLayout tileLayout) => settings.setTileLayout(AlbumListPage.routeName, tileLayout);
 
-  static const _groupOptions = [
-    AlbumChipGroupFactor.importance,
-    AlbumChipGroupFactor.mimeType,
-    AlbumChipGroupFactor.volume,
-    AlbumChipGroupFactor.none,
+  static const _sectionOptions = [
+    AlbumChipSectionFactor.importance,
+    AlbumChipSectionFactor.mimeType,
+    AlbumChipSectionFactor.volume,
+    AlbumChipSectionFactor.none,
   ];
 
   @override
@@ -92,6 +97,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         return !settings.isReadOnly && appMode.canCreateFilter && !isSelecting;
       case ChipSetAction.group:
         return isMain && isSelecting;
+      case ChipSetAction.ungroup:
+        return isMain && isSelecting && _pageGroupUri != null;
       case ChipSetAction.delete:
         return isMain && isSelecting && !settings.isReadOnly && !(selectedFilters.whereType<StoredAlbumFilter>().isEmpty && selectedFilters.whereType<DynamicAlbumFilter>().isNotEmpty);
       case ChipSetAction.remove:
@@ -162,6 +169,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         _removeDynamicAlbum(context);
       case ChipSetAction.group:
         _group(context);
+      case ChipSetAction.ungroup:
+        _ungroup(context);
       case ChipSetAction.lockVault:
         lockFilters(_getSelectedStoredAlbumFilters(context));
         browse(context);
@@ -188,18 +197,18 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
   Future<void> configureView(BuildContext context) async {
     final initialValue = (
       sortFactor,
-      settings.albumGroupFactor,
+      settings.albumSectionFactor,
       tileLayout,
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(ChipSortFactor?, AlbumChipGroupFactor?, TileLayout?, bool)>(
+    final value = await showDialog<(ChipSortFactor?, AlbumChipSectionFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<ChipSortFactor, AlbumChipGroupFactor, TileLayout>(
+        return TileViewDialog<ChipSortFactor, AlbumChipSectionFactor, TileLayout>(
           initialValue: initialValue,
           sortOptions: ChipSetActionDelegate.albumSortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sectionOptions: _sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           layoutOptions: ChipSetActionDelegate.layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           tileExtentController: extentController,
@@ -211,7 +220,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
       sortFactor = value.$1!;
-      settings.albumGroupFactor = value.$2!;
+      settings.albumSectionFactor = value.$2!;
       tileLayout = value.$3!;
       sortReverse = value.$4;
     }
@@ -441,21 +450,33 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     browse(context);
   }
 
-  // TODO TLAD [nested]
-  static final Uri? pageGroupUri = null;
-
   Future<void> _group(BuildContext context) async {
     final filters = getSelectedFilters(context);
+    final childrenUris = filters.map(AlbumGrouping.filterToUri).nonNulls.toSet();
 
-    final groupUri = await showDialog<Uri>(
+    final destinationGroupUri = await showDialog<Uri>(
       context: context,
-      builder: (context) => GroupAlbumsDialog(parentGroupUri: pageGroupUri),
+      builder: (context) => GroupAlbumsDialog(parentGroupUri: _pageGroupUri),
       routeSettings: const RouteSettings(name: GroupAlbumsDialog.routeName),
     );
-    if (groupUri == null) return;
+    if (destinationGroupUri == null) return;
 
+    albumGrouping.addToGroup({destinationGroupUri}, AlbumGrouping.getParentGroup(destinationGroupUri));
+    albumGrouping.addToGroup(childrenUris, destinationGroupUri);
+    final source = context.read<CollectionSource>();
+    source.invalidateAlbumGroupFilterSummary(notify: true);
+    browse(context);
+  }
+
+  Future<void> _ungroup(BuildContext context) async {
+    final filters = getSelectedFilters(context);
     final childrenUris = filters.map(AlbumGrouping.filterToUri).nonNulls.toSet();
-    albumGrouping.group(childrenUris, groupUri);
+
+    final destinationGroupUri = AlbumGrouping.getParentGroup(_pageGroupUri);
+
+    albumGrouping.addToGroup(childrenUris, destinationGroupUri);
+    final source = context.read<CollectionSource>();
+    source.invalidateAlbumGroupFilterSummary(notify: true);
     browse(context);
   }
 

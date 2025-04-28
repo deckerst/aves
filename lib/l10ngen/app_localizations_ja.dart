@@ -214,6 +214,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => '名前を変更';
 
   @override

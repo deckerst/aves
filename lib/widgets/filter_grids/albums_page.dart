@@ -33,25 +33,50 @@ class AlbumListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilterGroupProvider(
-      child: Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
-        selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
-        shouldRebuild: (t1, t2) {
-          // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
-          const eq = DeepCollectionEquality();
-          return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4));
-        },
-        builder: (context, s, child) {
-          return ValueListenableBuilder<bool>(
-            valueListenable: appInventory.areAppNamesReadyNotifier,
-            builder: (context, areAppNamesReady, child) {
-              return AnimatedBuilder(
-                animation: Listenable.merge({albumGrouping, dynamicAlbums}),
-                builder: (context, child) => StreamBuilder(
-                  stream: context.read<CollectionSource>().eventBus.on<AlbumsChangedEvent>(),
-                  builder: (context, snapshot) {
-                    return const _AlbumListPageContent();
-                  },
-                ),
+      child: Builder(
+        // to access filter group provider from subtree context
+        builder: (context) {
+          return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
+            selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
+            shouldRebuild: (t1, t2) {
+              // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
+              const eq = DeepCollectionEquality();
+              return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4));
+            },
+            builder: (context, s, child) {
+              return ValueListenableBuilder<bool>(
+                valueListenable: appInventory.areAppNamesReadyNotifier,
+                builder: (context, areAppNamesReady, child) {
+                  return AnimatedBuilder(
+                    animation: Listenable.merge({albumGrouping, dynamicAlbums}),
+                    builder: (context, child) => StreamBuilder(
+                      stream: context.read<CollectionSource>().eventBus.on<AlbumsChangedEvent>(),
+                      builder: (context, snapshot) {
+                        final source = context.read<CollectionSource>();
+                        final groupUri = context.watch<FilterGroupNotifier>().value;
+                        final gridItems = AlbumListPage.getAlbumGridItems(context, source, AlbumChipType.values, groupUri);
+                        return StreamBuilder<Set<CollectionFilter>?>(
+                          // to update sections by tier
+                          stream: covers.packageChangeStream,
+                          builder: (context, snapshot) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
+                            source: source,
+                            title: context.l10n.albumPageTitle,
+                            sortFactor: settings.albumSortFactor,
+                            showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
+                            actionDelegate: AlbumChipSetActionDelegate(gridItems, groupUri),
+                            filterSections: AlbumListPage.groupToSections(context, source, gridItems),
+                            newFilters: source.getNewAlbumFilters(context),
+                            applyQuery: AlbumListPage.applyQuery,
+                            emptyBuilder: () => EmptyContent(
+                              icon: AIcons.album,
+                              text: context.l10n.albumEmpty,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
               );
             },
           );
@@ -132,8 +157,8 @@ class AlbumListPage extends StatelessWidget {
     }
 
     var sections = <ChipSectionKey, List<FilterGridItem<AlbumBaseFilter>>>{};
-    switch (settings.albumGroupFactor) {
-      case AlbumChipGroupFactor.importance:
+    switch (settings.albumSectionFactor) {
+      case AlbumChipSectionFactor.importance:
         final groupKey = AlbumImportanceSectionKey.group(context);
         final specialKey = AlbumImportanceSectionKey.special(context);
         final appsKey = AlbumImportanceSectionKey.apps(context);
@@ -171,7 +196,7 @@ class AlbumListPage extends StatelessWidget {
           if (sections.containsKey(dynamicKey)) dynamicKey: sections[dynamicKey]!,
           if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
         };
-      case AlbumChipGroupFactor.mimeType:
+      case AlbumChipSectionFactor.mimeType:
         final visibleEntries = source.visibleEntries;
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final matches = visibleEntries.where(kv.filter.test);
@@ -181,12 +206,12 @@ class AlbumListPage extends StatelessWidget {
           if (!hasImage && hasVideo) return MimeTypeSectionKey.videos(context);
           return MimeTypeSectionKey.mixed(context);
         });
-      case AlbumChipGroupFactor.volume:
+      case AlbumChipSectionFactor.volume:
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final filter = kv.filter;
           return StorageVolumeSectionKey(context, filter is StoredAlbumFilter ? filter.storageVolume : null);
         });
-      case AlbumChipGroupFactor.none:
+      case AlbumChipSectionFactor.none:
         return {
           if (sortedMapEntries.isNotEmpty)
             const ChipSectionKey(): [
@@ -212,34 +237,5 @@ class AlbumListPage extends StatelessWidget {
     }
 
     return sections;
-  }
-}
-
-class _AlbumListPageContent extends StatelessWidget {
-  const _AlbumListPageContent();
-
-  @override
-  Widget build(BuildContext context) {
-    final source = context.read<CollectionSource>();
-    final groupUri = context.watch<FilterGroupNotifier>().value;
-    final gridItems = AlbumListPage.getAlbumGridItems(context, source, AlbumChipType.values, groupUri);
-    return StreamBuilder<Set<CollectionFilter>?>(
-      // to update sections by tier
-      stream: covers.packageChangeStream,
-      builder: (context, snapshot) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
-        source: source,
-        title: context.l10n.albumPageTitle,
-        sortFactor: settings.albumSortFactor,
-        showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-        actionDelegate: AlbumChipSetActionDelegate(gridItems),
-        filterSections: AlbumListPage.groupToSections(context, source, gridItems),
-        newFilters: source.getNewAlbumFilters(context),
-        applyQuery: AlbumListPage.applyQuery,
-        emptyBuilder: () => EmptyContent(
-          icon: AIcons.album,
-          text: context.l10n.albumEmpty,
-        ),
-      ),
-    );
   }
 }

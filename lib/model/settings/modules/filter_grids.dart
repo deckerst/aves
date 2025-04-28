@@ -3,9 +3,9 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves_model/aves_model.dart';
 
 mixin FilterGridsSettings on SettingsAccess {
-  AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(SettingKeys.albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipGroupFactor.values);
+  AlbumChipSectionFactor get albumSectionFactor => getEnumOrDefault(SettingKeys.albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipSectionFactor.values);
 
-  set albumGroupFactor(AlbumChipGroupFactor newValue) => set(SettingKeys.albumGroupFactorKey, newValue.toString());
+  set albumSectionFactor(AlbumChipSectionFactor newValue) => set(SettingKeys.albumGroupFactorKey, newValue.toString());
 
   ChipSortFactor get albumSortFactor => getEnumOrDefault(SettingKeys.albumSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 

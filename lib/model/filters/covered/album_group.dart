@@ -56,7 +56,7 @@ class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
-    return allowGenericIcon ? Icon(AIcons.albumGroup, size: size) : null;
+    return allowGenericIcon ? Icon(AIcons.group, size: size) : null;
   }
 
   @override

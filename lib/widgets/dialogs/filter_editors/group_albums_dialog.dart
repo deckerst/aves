@@ -140,7 +140,7 @@ class _GroupAlbumsDialogState extends State<GroupAlbumsDialog> {
           Expanded(child: _groupText(context, _selectedGroupUri)),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(AIcons.albumGroup),
+            icon: const Icon(AIcons.group),
             onPressed: () async {
               final filter = await pickAlbum(context: context, moveType: null, albumTypes: {AlbumChipType.group});
               if (filter is AlbumGroupFilter) {

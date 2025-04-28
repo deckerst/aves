@@ -214,6 +214,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => '이름 변경';
 
   @override

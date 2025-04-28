@@ -219,6 +219,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => 'Rinomina';
 
   @override

@@ -114,8 +114,8 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: _appModeNotifier,
-      child: Selector<Settings, (AlbumChipGroupFactor, ChipSortFactor)>(
-        selector: (context, s) => (s.albumGroupFactor, s.albumSortFactor),
+      child: Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor)>(
+        selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor),
         builder: (context, s, child) {
           return StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
@@ -132,7 +132,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                         appBar: FilterGridAppBar(
                           source: source,
                           title: title,
-                          actionDelegate: AlbumChipSetActionDelegate(gridItems),
+                          actionDelegate: AlbumChipSetActionDelegate(gridItems, groupUri),
                           actionsBuilder: _buildActions,
                           isEmpty: false,
                           appBarHeightNotifier: _appBarHeightNotifier,
@@ -141,7 +141,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                         sections: AlbumListPage.groupToSections(context, source, gridItems),
                         newFilters: source.getNewAlbumFilters(context),
                         sortFactor: settings.albumSortFactor,
-                        showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+                        showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
                         selectable: false,
                         applyQuery: AlbumListPage.applyQuery,
                         emptyBuilder: () => EmptyContent(

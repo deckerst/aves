@@ -6,9 +6,9 @@ mixin CollectionSettings on SettingsAccess {
 
   set collectionBurstPatterns(List<String> newValue) => set(SettingKeys.collectionBurstPatternsKey, newValue);
 
-  EntryGroupFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntryGroupFactor.values);
+  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
 
-  set collectionSectionFactor(EntryGroupFactor newValue) => set(SettingKeys.collectionGroupFactorKey, newValue.toString());
+  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionGroupFactorKey, newValue.toString());
 
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
 

@@ -216,6 +216,9 @@ class AppLocalizationsEu extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => 'Aldatu izena';
 
   @override

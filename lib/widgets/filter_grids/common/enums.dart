@@ -23,7 +23,7 @@ extension ExtraAlbumImportance on AlbumImportance {
     return switch (this) {
       AlbumImportance.newAlbum => AIcons.newTier,
       AlbumImportance.pinned => AIcons.pin,
-      AlbumImportance.group => AIcons.albumGroup,
+      AlbumImportance.group => AIcons.group,
       AlbumImportance.special => AIcons.important,
       AlbumImportance.apps => AIcons.app,
       AlbumImportance.vaults => AIcons.locked,

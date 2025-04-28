@@ -211,6 +211,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => 'Đổi tên';
 
   @override

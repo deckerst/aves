@@ -222,6 +222,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => 'เปลี่ยนชื่อใหม่';
 
   @override

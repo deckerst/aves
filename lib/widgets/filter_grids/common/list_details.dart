@@ -124,7 +124,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
       if (pinned) const Icon(AIcons.pin),
       if (removableStorage) const Icon(AIcons.storageCard),
       if (_filter is DynamicAlbumFilter) const Icon(AIcons.dynamicAlbum),
-      if (_filter is AlbumGroupFilter) const Icon(AIcons.albumGroup),
+      if (_filter is AlbumGroupFilter) const Icon(AIcons.group),
     ];
 
     Widget? leading;

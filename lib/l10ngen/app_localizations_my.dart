@@ -211,6 +211,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
+  String get chipActionUngroup => 'Ungroup';
+
+  @override
   String get chipActionRename => 'အမည်ပြောင်းရန်';
 
   @override
