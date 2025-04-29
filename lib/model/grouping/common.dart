@@ -7,6 +7,11 @@ class FilterGrouping {
 
   static String? getGroupPath(Uri? uri) => uri?.queryParameters[_pathParamKey];
 
+  static String? getGroupName(Uri? uri) {
+    final path = getGroupPath(uri);
+    return path != null ? pContext.split(path).lastOrNull : null;
+  }
+
   // parent group URI is `null` for root
   static Uri buildGroupUri(String host, Uri? parentGroupUri, String name) {
     if (parentGroupUri != null) {

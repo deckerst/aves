@@ -47,7 +47,6 @@ class ChipSetActions {
     ChipSetAction.slideshow,
     ChipSetAction.stats,
     null,
-    ChipSetAction.createGroup,
     ChipSetAction.createAlbum,
     ChipSetAction.createVault,
   ];
