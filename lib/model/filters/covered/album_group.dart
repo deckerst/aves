@@ -1,8 +1,8 @@
-import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/set_or.dart';
-import 'package:aves/model/grouping.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/widgets.dart';
@@ -18,7 +18,7 @@ class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
   List<Object?> get props => [uri, filter, reversed];
 
   AlbumGroupFilter(this.uri, this.filter, {super.reversed = false}) {
-    final path = AlbumGrouping.getGroupPath(uri) ?? '';
+    final path = FilterGrouping.getGroupPath(uri) ?? '';
     _name = pContext.split(path).lastOrNull ?? '';
   }
 

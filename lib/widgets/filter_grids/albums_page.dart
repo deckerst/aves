@@ -7,7 +7,7 @@ import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/grouping.dart';
+import 'package:aves/model/grouping/albums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';

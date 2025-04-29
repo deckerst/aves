@@ -5,7 +5,7 @@ import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/set_or.dart';
-import 'package:aves/model/grouping.dart';
+import 'package:aves/model/grouping/albums.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';

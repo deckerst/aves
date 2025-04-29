@@ -6,7 +6,7 @@ import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/set_or.dart';
-import 'package:aves/services/common/services.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -17,13 +17,11 @@ final AlbumGrouping albumGrouping = AlbumGrouping._private();
 // stored album URI: "aves://albums/stored?path=/volume/dir/path12"
 // dynamic album URI: "aves://albums/dynamic?name=dynalbum12"
 class AlbumGrouping with ChangeNotifier {
-  static const _scheme = 'aves';
   static const _host = 'albums';
-  static const _groupPath = '/group';
   static const _storedAlbumPath = '/stored';
   static const _dynamicAlbumPath = '/dynamic';
-  static const _pathParamKey = 'path';
   static const _nameParamKey = 'name';
+  static const _storagePathParamKey = 'path';
 
   final Map<Uri, Set<Uri>> _groups = {};
 
@@ -33,7 +31,7 @@ class AlbumGrouping with ChangeNotifier {
 
   Set<CollectionFilter> listGroupContent(Uri? currentGroupUri) {
     if (currentGroupUri == null) {
-      return _groups.entries.where((kv) => getParentGroup(kv.key) == currentGroupUri).map((kv) {
+      return _groups.entries.where((kv) => FilterGrouping.getParentGroup(kv.key) == currentGroupUri).map((kv) {
         final groupUri = kv.key;
         final childrenUri = kv.value;
         final childrenFilters = childrenUri.map(uriToFilter).nonNulls.toSet();
@@ -50,8 +48,10 @@ class AlbumGrouping with ChangeNotifier {
   }
 
   CollectionFilter? uriToFilter(Uri uri) {
+    if (uri.host != _host) return null;
+
     switch (uri.path) {
-      case _groupPath:
+      case FilterGrouping.groupPath:
         return AlbumGroupFilter(uri, SetOrFilter(listGroupContent(uri)));
       case _storedAlbumPath:
         final album = getStoredAlbumPath(uri);
@@ -110,48 +110,28 @@ class AlbumGrouping with ChangeNotifier {
     return count;
   }
 
-  static String? getGroupPath(Uri? uri) => uri?.queryParameters[_pathParamKey];
-
-  static String? getStoredAlbumPath(Uri uri) => uri.queryParameters[_pathParamKey];
+  static String? getStoredAlbumPath(Uri uri) => uri.queryParameters[_storagePathParamKey];
 
   static String? getDynamicAlbumName(Uri uri) => uri.queryParameters[_nameParamKey];
 
-  // parent group URI is `null` for root
   static Uri buildGroupUri(Uri? parentGroupUri, String name) {
-    if (parentGroupUri != null) {
-      final path = getGroupPath(parentGroupUri);
-      if (path != null) {
-        return parentGroupUri.replace(
-          queryParameters: {
-            _pathParamKey: pContext.join(path, name),
-          },
-        );
-      }
-    }
-    return Uri(
-      scheme: _scheme,
-      host: _host,
-      path: _groupPath,
-      queryParameters: {
-        _pathParamKey: name,
-      },
-    );
+    return FilterGrouping.buildGroupUri(_host, parentGroupUri, name);
   }
 
   static Uri _buildStoredAlbumUri(String album) {
     return Uri(
-      scheme: _scheme,
+      scheme: FilterGrouping.scheme,
       host: _host,
       path: _storedAlbumPath,
       queryParameters: {
-        _pathParamKey: album,
+        _storagePathParamKey: album,
       },
     );
   }
 
   static Uri _buildDynamicAlbumUri(String name) {
     return Uri(
-      scheme: _scheme,
+      scheme: FilterGrouping.scheme,
       host: _host,
       path: _dynamicAlbumPath,
       queryParameters: {
@@ -171,25 +151,6 @@ class AlbumGrouping with ChangeNotifier {
       default:
         return null;
     }
-  }
-
-  // return `null` for root
-  static Uri? getParentGroup(Uri? groupUri) {
-    if (groupUri != null) {
-      final path = getGroupPath(groupUri);
-      if (path != null) {
-        final segments = pContext.split(path);
-        final newLength = segments.length - 1;
-        if (newLength > 0) {
-          return groupUri.replace(
-            queryParameters: {
-              _pathParamKey: pContext.joinAll(segments.take(newLength)),
-            },
-          );
-        }
-      }
-    }
-    return null;
   }
 
   // serialization

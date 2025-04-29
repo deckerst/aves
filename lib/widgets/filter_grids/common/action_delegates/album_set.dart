@@ -10,7 +10,8 @@ import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/grouping.dart';
+import 'package:aves/model/grouping/albums.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -452,7 +453,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final destinationGroupUri = filter is AlbumGroupFilter ? filter.uri : null;
     if (destinationGroupUri == null) return;
 
-    albumGrouping.addToGroup({destinationGroupUri}, AlbumGrouping.getParentGroup(destinationGroupUri));
+    albumGrouping.addToGroup({destinationGroupUri}, FilterGrouping.getParentGroup(destinationGroupUri));
     albumGrouping.addToGroup(childrenUris, destinationGroupUri);
     final source = context.read<CollectionSource>();
     source.invalidateAlbumGroupFilterSummary(notify: true);

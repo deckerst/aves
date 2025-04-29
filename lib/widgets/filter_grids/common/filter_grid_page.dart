@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -28,6 +29,7 @@ import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -221,6 +223,13 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
         APopHandler(
           canPop: (context) => context.select<Selection<FilterGridItem<T>>, bool>((v) => !v.isSelecting),
           onPopBlocked: (context) => context.read<Selection<FilterGridItem<T>>>().browse(),
+        ),
+        APopHandler(
+          canPop: (context) => context.read<FilterGroupNotifier?>()?.value == null,
+          onPopBlocked: (context) {
+            final filterGroupNotifier = context.read<FilterGroupNotifier>();
+            filterGroupNotifier.value = FilterGrouping.getParentGroup(filterGroupNotifier.value);
+          },
         ),
         tvNavigationPopHandler,
         doubleBackPopHandler,
