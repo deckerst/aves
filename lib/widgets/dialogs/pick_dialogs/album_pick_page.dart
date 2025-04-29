@@ -4,6 +4,8 @@ import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/set_or.dart';
+import 'package:aves/model/grouping.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -18,12 +20,15 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_fab.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/create_group_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -50,7 +55,7 @@ Future<AlbumBaseFilter?> pickAlbum({
   return await Navigator.maybeOf(context)?.push(
     MaterialPageRoute<AlbumBaseFilter>(
       settings: const RouteSettings(name: _AlbumPickPage.routeName),
-      builder: (context) => _AlbumPickPage(source: source, moveType: moveType, albumTypes: albumTypes),
+      builder: (context) => _AlbumPickPage(source: source, moveType: moveType, albumChipTypes: albumTypes),
     ),
   );
 }
@@ -60,12 +65,12 @@ class _AlbumPickPage extends StatefulWidget {
 
   final CollectionSource source;
   final MoveType? moveType;
-  final Iterable<AlbumChipType> albumTypes;
+  final Iterable<AlbumChipType> albumChipTypes;
 
   const _AlbumPickPage({
     required this.source,
     required this.moveType,
-    required this.albumTypes,
+    required this.albumChipTypes,
   });
 
   @override
@@ -75,38 +80,31 @@ class _AlbumPickPage extends StatefulWidget {
 class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, VaultAwareMixin {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.pickFilterInternal);
-  final ValueNotifier<Uri?> _groupUriNotifier = ValueNotifier(null);
 
   CollectionSource get source => widget.source;
 
+  Iterable<AlbumChipType> get albumChipTypes => widget.albumChipTypes;
+
+  bool get isPickingGroup => albumChipTypes.length == 1 && albumChipTypes.contains(AlbumChipType.group);
+
   String get title {
     final l10n = context.l10n;
-    return switch (widget.moveType) {
-      MoveType.copy => l10n.albumPickPageTitleCopy,
-      MoveType.move => l10n.albumPickPageTitleMove,
-      MoveType.export => l10n.albumPickPageTitleExport,
-      MoveType.toBin || MoveType.fromBin || null => l10n.albumPickPageTitlePick,
-    };
+    if (isPickingGroup) {
+      return l10n.groupPickerTitle;
+    } else {
+      return switch (widget.moveType) {
+        MoveType.copy => l10n.albumPickPageTitleCopy,
+        MoveType.move => l10n.albumPickPageTitleMove,
+        MoveType.export => l10n.albumPickPageTitleExport,
+        MoveType.toBin || MoveType.fromBin || null => l10n.albumPickPageTitlePick,
+      };
+    }
   }
-
-  static const _quickActions = [
-    ChipSetAction.createAlbum,
-  ];
-
-  // `null` items are converted to dividers
-  static const _menuActions = [
-    ...ChipSetActions.general,
-    null,
-    ChipSetAction.toggleTitleSearch,
-    null,
-    ChipSetAction.createVault,
-  ];
 
   @override
   void dispose() {
     _appBarHeightNotifier.dispose();
     _appModeNotifier.dispose();
-    _groupUriNotifier.dispose();
     super.dispose();
   }
 
@@ -114,56 +112,86 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: _appModeNotifier,
-      child: Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor)>(
-        selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor),
-        builder: (context, s, child) {
-          return StreamBuilder(
-            stream: source.eventBus.on<AlbumsChangedEvent>(),
-            builder: (context, snapshot) {
-              return ValueListenableBuilder<Uri?>(
-                valueListenable: _groupUriNotifier,
-                builder: (context, groupUri, child) {
-                  final gridItems = AlbumListPage.getAlbumGridItems(context, source, widget.albumTypes, groupUri);
-                  return SelectionProvider<FilterGridItem<AlbumBaseFilter>>(
-                    child: QueryProvider(
-                      startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
-                      child: FilterGridPage<AlbumBaseFilter>(
-                        settingsRouteKey: AlbumListPage.routeName,
-                        appBar: FilterGridAppBar(
-                          source: source,
-                          title: title,
-                          actionDelegate: AlbumChipSetActionDelegate(gridItems, groupUri),
-                          actionsBuilder: _buildActions,
-                          isEmpty: false,
+      child: FilterGroupProvider(
+        child: Builder(
+          // to access filter group provider from subtree context
+          builder: (context) {
+            return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor)>(
+              selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor),
+              builder: (context, s, child) {
+                return StreamBuilder(
+                  stream: source.eventBus.on<AlbumsChangedEvent>(),
+                  builder: (context, snapshot) {
+                    final groupUri = context.watch<FilterGroupNotifier>().value;
+                    final gridItems = AlbumListPage.getAlbumGridItems(context, source, albumChipTypes, groupUri);
+                    return SelectionProvider<FilterGridItem<AlbumBaseFilter>>(
+                      child: QueryProvider(
+                        startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
+                        child: FilterGridPage<AlbumBaseFilter>(
+                          settingsRouteKey: AlbumListPage.routeName,
+                          appBar: FilterGridAppBar(
+                            source: source,
+                            title: title,
+                            actionDelegate: AlbumChipSetActionDelegate(gridItems),
+                            actionsBuilder: _buildActions,
+                            isEmpty: false,
+                            appBarHeightNotifier: _appBarHeightNotifier,
+                          ),
                           appBarHeightNotifier: _appBarHeightNotifier,
+                          sections: AlbumListPage.groupToSections(context, source, gridItems),
+                          newFilters: source.getNewAlbumFilters(context),
+                          sortFactor: settings.albumSortFactor,
+                          showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
+                          selectable: false,
+                          applyQuery: AlbumListPage.applyQuery,
+                          emptyBuilder: () => isPickingGroup
+                              ? EmptyContent(
+                                  icon: AIcons.group,
+                                  text: context.l10n.groupEmpty,
+                                )
+                              : EmptyContent(
+                                  icon: AIcons.album,
+                                  text: context.l10n.albumEmpty,
+                                ),
+                          heroType: HeroType.never,
+                          floatingActionButton: _buildFab(context),
+                          onTileTap: (gridItem, _) async {
+                            final filter = gridItem.filter;
+                            if (!await unlockFilter(context, filter)) return;
+                            switch (filter) {
+                              case AlbumGroupFilter():
+                                context.read<FilterGroupNotifier>().value = filter.uri;
+                              case StoredAlbumFilter():
+                              case DynamicAlbumFilter():
+                                _pickFilter(context, filter);
+                            }
+                          },
                         ),
-                        appBarHeightNotifier: _appBarHeightNotifier,
-                        sections: AlbumListPage.groupToSections(context, source, gridItems),
-                        newFilters: source.getNewAlbumFilters(context),
-                        sortFactor: settings.albumSortFactor,
-                        showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
-                        selectable: false,
-                        applyQuery: AlbumListPage.applyQuery,
-                        emptyBuilder: () => EmptyContent(
-                          icon: AIcons.album,
-                          text: context.l10n.albumEmpty,
-                        ),
-                        heroType: HeroType.never,
-                        onTileTap: (gridItem, _) async {
-                          final filter = gridItem.filter;
-                          if (!await unlockFilter(context, filter)) return;
-                          _pickFilter(filter);
-                        },
                       ),
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
+  }
+
+  Widget? _buildFab(BuildContext context) {
+    return isPickingGroup
+        ? AvesFab(
+            tooltip: context.l10n.groupPickerUseThisGroupButton,
+            onPressed: () {
+              final groupUri = context.read<FilterGroupNotifier>().value;
+              final filter = groupUri != null ? albumGrouping.uriToFilter(groupUri) : AlbumGroupFilter(null, SetOrFilter(const {}));
+              if (filter is AlbumGroupFilter) {
+                _pickFilter(context, filter);
+              }
+            },
+          )
+        : null;
   }
 
   List<Widget> _buildActions(
@@ -187,6 +215,9 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
 
     void onActionSelected(ChipSetAction action) {
       switch (action) {
+        case ChipSetAction.createGroup:
+          final parentGroupUri = context.read<FilterGroupNotifier>().value;
+          _createGroup(parentGroupUri);
         case ChipSetAction.createAlbum:
           _createAlbum();
         case ChipSetAction.createVault:
@@ -231,18 +262,35 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     required void Function(ChipSetAction action) onActionSelected,
   }) {
     final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
+
+    final canCreateStoredAlbums = widget.moveType != null;
+    final quickActions = [
+      if (isPickingGroup) ChipSetAction.createGroup,
+      if (canCreateStoredAlbums) ChipSetAction.createAlbum,
+    ];
+
+    // `null` items are converted to dividers
+    final menuActions = [
+      ...ChipSetActions.general,
+      null,
+      ChipSetAction.toggleTitleSearch,
+      if (canCreateStoredAlbums) ...[
+        null,
+        ChipSetAction.createVault,
+      ]
+    ];
+
     return [
-      if (widget.moveType != null)
-        ..._quickActions.where(isVisible).map(
-              (action) => IconButton(
-                icon: action.getIcon(),
-                onPressed: () => onActionSelected(action),
-                tooltip: action.getText(context),
-              ),
+      ...quickActions.where(isVisible).map(
+            (action) => IconButton(
+              icon: action.getIcon(),
+              onPressed: () => onActionSelected(action),
+              tooltip: action.getText(context),
             ),
+          ),
       PopupMenuButton<ChipSetAction>(
         itemBuilder: (context) {
-          return _menuActions.where((v) => v == null || isVisible(v)).map((action) {
+          return menuActions.where((v) => v == null || isVisible(v)).map((action) {
             if (action == null) return const PopupMenuDivider();
             return FilterGridAppBar.toMenuItem(context, action, enabled: true);
           }).toList();
@@ -261,6 +309,20 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     ];
   }
 
+  Future<void> _createGroup(Uri? parentGroupUri) async {
+    final uri = await showDialog<Uri>(
+      context: context,
+      builder: (context) => CreateGroupDialog(parentGroupUri: parentGroupUri),
+      routeSettings: const RouteSettings(name: CreateGroupDialog.routeName),
+    );
+    if (uri == null) return;
+
+    // wait for the dialog to hide
+    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+
+    _pickFilter(context, AlbumGroupFilter(uri, SetOrFilter(const {})));
+  }
+
   Future<void> _createAlbum() async {
     final directory = await showDialog<String>(
       context: context,
@@ -272,7 +334,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
 
-    _pickAlbum(directory);
+    _pickStoredAlbum(context, directory);
   }
 
   Future<void> _createVault() async {
@@ -297,22 +359,16 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
 
     await vaults.create(details);
-    _pickAlbum(details.path);
+    _pickStoredAlbum(context, details.path);
   }
 
-  void _pickAlbum(String directory) {
+  void _pickStoredAlbum(BuildContext context, String directory) {
     source.createStoredAlbum(directory);
-    _pickFilter(StoredAlbumFilter(directory, source.getStoredAlbumDisplayName(context, directory)));
+    final displayName = source.getStoredAlbumDisplayName(context, directory);
+    _pickFilter(context, StoredAlbumFilter(directory, displayName));
   }
 
-  void _pickFilter(AlbumBaseFilter filter) async {
-    switch (filter) {
-      case AlbumGroupFilter():
-        _groupUriNotifier.value = filter.uri;
-      case StoredAlbumFilter():
-      case DynamicAlbumFilter():
-        Navigator.maybeOf(context)?.pop<AlbumBaseFilter>(filter);
-        break;
-    }
+  void _pickFilter(BuildContext context, AlbumBaseFilter filter) async {
+    Navigator.maybeOf(context)?.pop<AlbumBaseFilter>(filter);
   }
 }

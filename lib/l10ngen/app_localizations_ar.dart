@@ -93,6 +93,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get applyButtonLabel => 'تأكيد';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'حذف';
 
   @override
@@ -216,9 +219,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'إعادة تسمية';
 
   @override
@@ -226,6 +226,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'عرض الولايات';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'إنشاء ألبوم';
@@ -840,19 +843,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'الألبوم الديناميكي موجود بالفعل';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'العناصر الموجودة في الخزائن متاحة فقط لهذا التطبيق وليس للتطبيقات الأخرى.\n\nإذا قمت بإلغاء تثبيت هذا التطبيق، أو قمت بحذف بيانات هذا التطبيق، فسوف تفقد كل هذه العناصر.';
@@ -1267,7 +1276,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get collectionGroupDay => 'حسب اليوم';
 
   @override
-  String get collectionGroupNone => 'لا تجمع';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'مجهول';
@@ -1516,9 +1525,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'حسب حجم التخزين';
-
-  @override
-  String get albumGroupNone => 'لا تجمع';
 
   @override
   String get albumMimeTypeMixed => 'مختلط';
@@ -2331,19 +2337,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'المصدر';
-
-  @override
-  String get filePickerShowHiddenFiles => 'إظهار الملفات المخفية';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'عدم إظهار الملفات المخفية';
-
-  @override
-  String get filePickerOpenFrom => 'فتح من';
-
-  @override
-  String get filePickerNoItems => 'لا توجد عناصر';
-
-  @override
-  String get filePickerUseThisFolder => 'إستخدام هذا المجلد';
 }

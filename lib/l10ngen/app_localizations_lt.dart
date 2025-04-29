@@ -100,6 +100,9 @@ class AppLocalizationsLt extends AppLocalizations {
   String get applyButtonLabel => 'TAIKYTI';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'IŠTRINTI';
 
   @override
@@ -223,9 +226,6 @@ class AppLocalizationsLt extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'Pervadinti';
 
   @override
@@ -233,6 +233,9 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Rodyti valstybes';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Sukurti albumą';
@@ -847,19 +850,25 @@ class AppLocalizationsLt extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Daiktai saugyklose yra prieinami tik šiai programėlei ir jokiom kitom.\n\nJei pašalinsite šią programą arba išvalysite jos duomenis, jūs prarasite visus šiuos daiktus.';
@@ -1274,7 +1283,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get collectionGroupDay => 'Pagal dieną';
 
   @override
-  String get collectionGroupNone => 'Negrupuoti';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Nežinoma';
@@ -1523,9 +1532,6 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Pagal apimtį saugykloje';
-
-  @override
-  String get albumGroupNone => 'Negrupuoti';
 
   @override
   String get albumMimeTypeMixed => 'Mišrus';
@@ -2338,19 +2344,4 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Šaltinis';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Rodyti paslėptus failus';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Nerodyti paslėptų failų';
-
-  @override
-  String get filePickerOpenFrom => 'Atidaryti iš';
-
-  @override
-  String get filePickerNoItems => 'Nėra elementų';
-
-  @override
-  String get filePickerUseThisFolder => 'Naudoti šį aplanką';
 }

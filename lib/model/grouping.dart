@@ -91,22 +91,26 @@ class AlbumGrouping with ChangeNotifier {
     return uri;
   }
 
-  int countContent(Uri groupUri) {
+  bool exists(Uri groupUri) => _groups.containsKey(groupUri);
+
+  int countContent(Uri? groupUri) {
     int count = 0;
-    final childrenUri = _groups[groupUri];
-    if (childrenUri != null) {
-      childrenUri.map(uriToFilter).nonNulls.forEach((filter) {
-        if (filter is AlbumGroupFilter) {
-          count += countContent(filter.uri);
-        } else {
-          count++;
-        }
-      });
+    if (groupUri != null) {
+      final childrenUri = _groups[groupUri];
+      if (childrenUri != null) {
+        childrenUri.map(uriToFilter).nonNulls.forEach((filter) {
+          if (filter is AlbumGroupFilter) {
+            count += countContent(filter.uri);
+          } else {
+            count++;
+          }
+        });
+      }
     }
     return count;
   }
 
-  static String? getGroupPath(Uri uri) => uri.queryParameters[_pathParamKey];
+  static String? getGroupPath(Uri? uri) => uri?.queryParameters[_pathParamKey];
 
   static String? getStoredAlbumPath(Uri uri) => uri.queryParameters[_pathParamKey];
 

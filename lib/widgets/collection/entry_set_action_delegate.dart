@@ -43,7 +43,7 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
-import 'package:aves/widgets/dialogs/filter_editors/add_dynamic_album_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/create_dynamic_album_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
@@ -771,8 +771,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final name = await showDialog<String>(
       context: context,
-      builder: (context) => const AddDynamicAlbumDialog(),
-      routeSettings: const RouteSettings(name: AddDynamicAlbumDialog.routeName),
+      builder: (context) => const CreateDynamicAlbumDialog(),
+      routeSettings: const RouteSettings(name: CreateDynamicAlbumDialog.routeName),
     );
     if (name == null) return;
 

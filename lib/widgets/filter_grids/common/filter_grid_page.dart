@@ -59,6 +59,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final Widget? floatingActionButton;
   final FilterTileTapCallback<T> onTileTap;
   final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
@@ -75,6 +76,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    this.floatingActionButton,
     required this.onTileTap,
   });
 
@@ -145,6 +147,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             },
             child: AvesScaffold(
               body: body,
+              floatingActionButton: floatingActionButton,
               drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar
                   ? AppBottomNavBar(

@@ -7,6 +7,7 @@ enum ChipSetAction {
   // browsing
   search,
   toggleTitleSearch,
+  createGroup,
   createAlbum,
   createVault,
   // browsing or selecting
@@ -20,7 +21,6 @@ enum ChipSetAction {
   pin,
   unpin,
   group,
-  ungroup,
   lockVault,
   showCountryStates,
   showCollection,
@@ -47,6 +47,7 @@ class ChipSetActions {
     ChipSetAction.slideshow,
     ChipSetAction.stats,
     null,
+    ChipSetAction.createGroup,
     ChipSetAction.createAlbum,
     ChipSetAction.createVault,
   ];
@@ -62,7 +63,6 @@ class ChipSetActions {
     ChipSetAction.showCountryStates,
     ChipSetAction.hide,
     ChipSetAction.group,
-    ChipSetAction.ungroup,
     null,
     ChipSetAction.showCollection,
     ChipSetAction.map,

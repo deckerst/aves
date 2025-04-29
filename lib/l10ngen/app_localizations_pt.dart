@@ -96,6 +96,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get applyButtonLabel => 'APLICAR';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'EXCLUIR';
 
   @override
@@ -219,9 +222,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'Renomear';
 
   @override
@@ -229,6 +229,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Mostrar estados';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Criar álbum';
@@ -849,19 +852,25 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'O álbum dinâmico já existe';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Os itens nos cofres estão disponíveis apenas para este aplicativo e nenhum outro.\n\nSe você desinstalar este aplicativo ou limpar os dados do aplicativo, perderá todos esses itens.';
@@ -1282,7 +1291,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get collectionGroupDay => 'Por dia';
 
   @override
-  String get collectionGroupNone => 'Não agrupe';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Desconhecido';
@@ -1561,9 +1570,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Por volume de armazenamento';
-
-  @override
-  String get albumGroupNone => 'Não agrupe';
 
   @override
   String get albumMimeTypeMixed => 'Misturado';
@@ -2379,19 +2385,4 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Fonte';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Mostrar arquivos ocultos';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Não mostre arquivos ocultos';
-
-  @override
-  String get filePickerOpenFrom => 'Abrir de';
-
-  @override
-  String get filePickerNoItems => 'Nenhum itens';
-
-  @override
-  String get filePickerUseThisFolder => 'Usar esta pasta';
 }

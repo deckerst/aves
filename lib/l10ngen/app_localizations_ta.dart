@@ -99,6 +99,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get applyButtonLabel => 'இடு';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'நீக்கு';
 
   @override
@@ -222,9 +225,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'மறுபெயரிடு';
 
   @override
@@ -232,6 +232,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'நிலைகளைக் காட்டு';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'ஆல்பத்தை உருவாக்கு';
@@ -852,19 +855,25 @@ class AppLocalizationsTa extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'மாறும் தொகுப்பு ஏற்கனவே உள்ளது';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'பெட்டகங்களில் உள்ள உருப்படிகள் இந்தப் பயன்பாட்டிற்கு மட்டுமே கிடைக்கின்றன, மற்றவைகளுக்கு இல்லை.\n\n இந்தப் பயன்பாட்டை நிறுவல் நீக்கினால் அல்லது இந்தப் பயன்பாட்டு தரவை அழித்தால், இந்த உருப்படிகள் அனைத்தையும் இழப்பீர்கள்.';
@@ -1285,7 +1294,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get collectionGroupDay => 'நாளால்';
 
   @override
-  String get collectionGroupNone => 'குழு வேண்டாம்';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'தெரியாத';
@@ -1564,9 +1573,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'சேமிப்பக அளவுமூலம்';
-
-  @override
-  String get albumGroupNone => 'குழு வேண்டாம்';
 
   @override
   String get albumMimeTypeMixed => 'கலப்பு';
@@ -2382,19 +2388,4 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'மூலம்';
-
-  @override
-  String get filePickerShowHiddenFiles => 'மறைக்கப்பட்ட கோப்புகளைக் காட்டு';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'மறைக்கப்பட்ட கோப்புகளைக் காட்ட வேண்டாம்';
-
-  @override
-  String get filePickerOpenFrom => 'இருந்து திறந்திருக்கும்';
-
-  @override
-  String get filePickerNoItems => 'உருப்படிகள் இல்லை';
-
-  @override
-  String get filePickerUseThisFolder => 'இந்தக் கோப்புறையைப் பயன்படுத்து';
 }

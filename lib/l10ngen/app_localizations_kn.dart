@@ -99,6 +99,9 @@ class AppLocalizationsKn extends AppLocalizations {
   String get applyButtonLabel => 'ಅನ್ವಯಿಸು';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'ಅಳಿಸಿ';
 
   @override
@@ -222,9 +225,6 @@ class AppLocalizationsKn extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'ಮರುನಾಮಕರಣ';
 
   @override
@@ -232,6 +232,9 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'ಅಂಕಿಅಂಶಗಳನ್ನು ತೋರಿಸಿ';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'ಆಲ್ಬಮ್ ರಚಿಸಿ';
@@ -852,19 +855,25 @@ class AppLocalizationsKn extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'ಡೈನಾಮಿಕ್ ಆಲ್ಬಮ್ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'ನೆಲಮಾಳಿಗೆಯಲ್ಲಿನ ವಸ್ತುಗಳು ಈ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ಮಾತ್ರ ಲಭ್ಯವಿದೆ ಮತ್ತು ಇತರ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಲ್ಲಿ ಇರುವುದಿಲ್ಲ.\n\nನೀವು ಈ ಅಪ್ಲಿಕೇಶನ್ ನನ್ನು ಅಸ್ಥಾಪಿಸಿದರೆ ಅಥವಾ ಈ ಅಪ್ಲಿಕೇಶನ್ ದತ್ತಾಂಶಗಳನ್ನು ತೆರವುಗೊಳಿಸಿದರೆ, ನೀವು ಈ ಎಲ್ಲ ವಸ್ತುಗಳನ್ನು ಕಳೆದುಕೊಳ್ಳುತ್ತೀರಿ.';
@@ -1285,7 +1294,7 @@ class AppLocalizationsKn extends AppLocalizations {
   String get collectionGroupDay => 'ದಿನದಂತೆ';
 
   @override
-  String get collectionGroupNone => 'ಗುಂಪು ಮಾಡಬೇಡಿ';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'ಅಜ್ಞಾತ';
@@ -1564,9 +1573,6 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'ಸಂಗ್ರಹಣೆಯ ಗಾತ್ರದಂತೆ';
-
-  @override
-  String get albumGroupNone => 'ಗುಂಪು ಮಾಡಬೇಡಿ';
 
   @override
   String get albumMimeTypeMixed => 'ಮಿಶ್ರಿತ';
@@ -2382,19 +2388,4 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'ಮೂಲ';
-
-  @override
-  String get filePickerShowHiddenFiles => 'ಮರೆಮಾಡಿದ ಕಡತಗಳನ್ನು ತೋರಿಸಿ';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'ಮರೆಮಾಡಿದ ಕಡತಗಳನ್ನು ತೋರಿಸಬೇಡಿ';
-
-  @override
-  String get filePickerOpenFrom => 'ಇಂದ ತೆರೆಯಿರಿ';
-
-  @override
-  String get filePickerNoItems => 'ವಸ್ತುಗಳಿಲ್ಲ';
-
-  @override
-  String get filePickerUseThisFolder => 'ಈ ಕೋಶವನ್ನು ಬಳಸಿ';
 }

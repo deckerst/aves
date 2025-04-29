@@ -6,6 +6,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -30,9 +31,9 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
-import 'package:aves/widgets/dialogs/filter_editors/group_albums_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_dynamic_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_stored_album_dialog.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
@@ -44,13 +45,8 @@ import 'package:provider/provider.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> with EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumBaseFilter>> _items;
-  final Uri? _pageGroupUri;
 
-  AlbumChipSetActionDelegate(
-    Iterable<FilterGridItem<AlbumBaseFilter>> items,
-    Uri? pageGroupUri,
-  )   : _items = items,
-        _pageGroupUri = pageGroupUri;
+  AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumBaseFilter>> items) : _items = items;
 
   @override
   Iterable<FilterGridItem<AlbumBaseFilter>> get allItems => _items;
@@ -92,13 +88,13 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final isMain = appMode == AppMode.main;
 
     switch (action) {
+      case ChipSetAction.createGroup:
+        return true;
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         return !settings.isReadOnly && appMode.canCreateFilter && !isSelecting;
       case ChipSetAction.group:
         return isMain && isSelecting;
-      case ChipSetAction.ungroup:
-        return isMain && isSelecting && _pageGroupUri != null;
       case ChipSetAction.delete:
         return isMain && isSelecting && !settings.isReadOnly && !(selectedFilters.whereType<StoredAlbumFilter>().isEmpty && selectedFilters.whereType<DynamicAlbumFilter>().isNotEmpty);
       case ChipSetAction.remove:
@@ -169,8 +165,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         _removeDynamicAlbum(context);
       case ChipSetAction.group:
         _group(context);
-      case ChipSetAction.ungroup:
-        _ungroup(context);
       case ChipSetAction.lockVault:
         lockFilters(_getSelectedStoredAlbumFilters(context));
         browse(context);
@@ -454,26 +448,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final filters = getSelectedFilters(context);
     final childrenUris = filters.map(AlbumGrouping.filterToUri).nonNulls.toSet();
 
-    final destinationGroupUri = await showDialog<Uri>(
-      context: context,
-      builder: (context) => GroupAlbumsDialog(parentGroupUri: _pageGroupUri),
-      routeSettings: const RouteSettings(name: GroupAlbumsDialog.routeName),
-    );
+    final filter = await pickAlbum(context: context, moveType: null, albumTypes: {AlbumChipType.group});
+    final destinationGroupUri = filter is AlbumGroupFilter ? filter.uri : null;
     if (destinationGroupUri == null) return;
 
     albumGrouping.addToGroup({destinationGroupUri}, AlbumGrouping.getParentGroup(destinationGroupUri));
-    albumGrouping.addToGroup(childrenUris, destinationGroupUri);
-    final source = context.read<CollectionSource>();
-    source.invalidateAlbumGroupFilterSummary(notify: true);
-    browse(context);
-  }
-
-  Future<void> _ungroup(BuildContext context) async {
-    final filters = getSelectedFilters(context);
-    final childrenUris = filters.map(AlbumGrouping.filterToUri).nonNulls.toSet();
-
-    final destinationGroupUri = AlbumGrouping.getParentGroup(_pageGroupUri);
-
     albumGrouping.addToGroup(childrenUris, destinationGroupUri);
     final source = context.read<CollectionSource>();
     source.invalidateAlbumGroupFilterSummary(notify: true);

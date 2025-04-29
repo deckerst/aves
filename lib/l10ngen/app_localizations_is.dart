@@ -93,6 +93,9 @@ class AppLocalizationsIs extends AppLocalizations {
   String get applyButtonLabel => 'VIRKJA';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'EYÐA';
 
   @override
@@ -216,9 +219,6 @@ class AppLocalizationsIs extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'Endurnefna';
 
   @override
@@ -226,6 +226,9 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Birta héruð';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Búa til albúm';
@@ -840,19 +843,25 @@ class AppLocalizationsIs extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Breytilegt albúm er þegar til staðar';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Atriði í öryggisgeymslum eru einungis aðgengileg í þessu forriti og engum öðrum.\n\nEf þú fjarlægir þetta forrit, eða hreinsar gögn forritsins, muntu tapa öllum þessum atriðum.';
@@ -1267,7 +1276,7 @@ class AppLocalizationsIs extends AppLocalizations {
   String get collectionGroupDay => 'Eftir dögum';
 
   @override
-  String get collectionGroupNone => 'Ekki hópa';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Óþekkt';
@@ -1516,9 +1525,6 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Eftir gagnageymslu';
-
-  @override
-  String get albumGroupNone => 'Ekki hópa';
 
   @override
   String get albumMimeTypeMixed => 'Blandað';
@@ -2331,19 +2337,4 @@ class AppLocalizationsIs extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Uppruni';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Birta faldar skrár';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Ekki birta faldar skrár';
-
-  @override
-  String get filePickerOpenFrom => 'Opið frá';
-
-  @override
-  String get filePickerNoItems => 'Engir hlutir';
-
-  @override
-  String get filePickerUseThisFolder => 'Nota þessa möppu';
 }

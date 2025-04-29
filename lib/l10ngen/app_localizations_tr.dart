@@ -91,6 +91,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get applyButtonLabel => 'UYGULA';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'SİL';
 
   @override
@@ -214,9 +217,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'Yeniden adlandır';
 
   @override
@@ -224,6 +224,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Eyaletleri göster';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Albüm oluştur';
@@ -844,19 +847,25 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Dinamik albüm zaten var';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Kilitli albümlere yalnızca bu uygulama erişebilir, başka herhangi bir uygulama erişemez.\n\nBu uygulamayı kaldırır veya verilerini silerseniz kilitli albümlerdeki bütün ögeleri kaybedersiniz.';
@@ -1277,7 +1286,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get collectionGroupDay => 'Güne göre';
 
   @override
-  String get collectionGroupNone => 'Gruplama';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Bilinmeyen';
@@ -1556,9 +1565,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Depolama hacmine göre';
-
-  @override
-  String get albumGroupNone => 'Gruplama';
 
   @override
   String get albumMimeTypeMixed => 'Karışık';
@@ -2374,19 +2380,4 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Kaynak';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Gizli dosyaları göster';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Gizli dosyaları gösterme';
-
-  @override
-  String get filePickerOpenFrom => 'Şuradan aç';
-
-  @override
-  String get filePickerNoItems => 'Öge yok';
-
-  @override
-  String get filePickerUseThisFolder => 'Bu klasörü kullan';
 }

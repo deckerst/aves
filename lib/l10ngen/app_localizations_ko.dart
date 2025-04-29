@@ -91,6 +91,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get applyButtonLabel => '적용';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => '삭제';
 
   @override
@@ -214,9 +217,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => '이름 변경';
 
   @override
@@ -224,6 +224,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => '주 보기';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => '앨범 만들기';
@@ -843,19 +846,25 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => '동적 앨범이 이미 있습니다';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => '금고에 있는 항목들은 이 앱에서만 볼 수 있습니다.\n\n이 앱을 삭제 시, 또한 이 앱의 데이터를 삭제 시, 항목을 완전히 삭제될 것입니다.';
@@ -1274,7 +1283,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get collectionGroupDay => '날짜별로';
 
   @override
-  String get collectionGroupNone => '묶음 없음';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => '없음';
@@ -1543,9 +1552,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get albumGroupVolume => '저장공간별로';
-
-  @override
-  String get albumGroupNone => '묶음 없음';
 
   @override
   String get albumMimeTypeMixed => '혼합';
@@ -2360,19 +2366,4 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => '소스 코드';
-
-  @override
-  String get filePickerShowHiddenFiles => '숨겨진 파일 표시';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => '숨겨진 파일 표시 안함';
-
-  @override
-  String get filePickerOpenFrom => '다음에서 열기:';
-
-  @override
-  String get filePickerNoItems => '항목 없음';
-
-  @override
-  String get filePickerUseThisFolder => '이 폴더 사용';
 }

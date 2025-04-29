@@ -91,6 +91,9 @@ class AppLocalizationsNn extends AppLocalizations {
   String get applyButtonLabel => 'NYTTA';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'SLETT';
 
   @override
@@ -214,9 +217,6 @@ class AppLocalizationsNn extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'Byt namn';
 
   @override
@@ -224,6 +224,9 @@ class AppLocalizationsNn extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Vis landsdelar';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Lag eit album';
@@ -837,19 +840,25 @@ class AppLocalizationsNn extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Ting i kvelva er berre tilgjengelege for denne appen.\n\nOm du slettar denne appen eller tømmer dataa til denne appen, vil du missa alt som er i kvelva.';
@@ -1264,7 +1273,7 @@ class AppLocalizationsNn extends AppLocalizations {
   String get collectionGroupDay => 'Etter dag';
 
   @override
-  String get collectionGroupNone => 'Ikkje hop';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Ukjend';
@@ -1505,9 +1514,6 @@ class AppLocalizationsNn extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Etter gøymestad';
-
-  @override
-  String get albumGroupNone => 'Ikkje hop';
 
   @override
   String get albumMimeTypeMixed => 'Blanda';
@@ -2319,19 +2325,4 @@ class AppLocalizationsNn extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Kjelde';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Vis skjulte filer';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Ikkje vis skjulte filer';
-
-  @override
-  String get filePickerOpenFrom => 'Opne ifrå';
-
-  @override
-  String get filePickerNoItems => 'Ingen ting';
-
-  @override
-  String get filePickerUseThisFolder => 'Bruk denne mappa';
 }

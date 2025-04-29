@@ -97,6 +97,9 @@ class AppLocalizationsBe extends AppLocalizations {
   String get applyButtonLabel => 'УЖЫВАЦЬ';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'ВЫДАЛІЦЬ';
 
   @override
@@ -220,9 +223,6 @@ class AppLocalizationsBe extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => 'Перайменаваць';
 
   @override
@@ -230,6 +230,9 @@ class AppLocalizationsBe extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Паказаць дзяржавы';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Стварыць альбом';
@@ -846,19 +849,25 @@ class AppLocalizationsBe extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Элементы ў сховішчах даступныя толькі гэтай праграме і нікому больш.\n\nКалі вы выдаліце гэту праграму або ачысціце даныя праграмы, вы страціце ўсе гэтыя элементы.';
@@ -1275,7 +1284,7 @@ class AppLocalizationsBe extends AppLocalizations {
   String get collectionGroupDay => 'Па днях';
 
   @override
-  String get collectionGroupNone => 'Не групаваць';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Невядома';
@@ -1534,9 +1543,6 @@ class AppLocalizationsBe extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Па аб\'ёме захоўвання';
-
-  @override
-  String get albumGroupNone => 'Не групаваць';
 
   @override
   String get albumMimeTypeMixed => 'Змешаны';
@@ -2350,19 +2356,4 @@ class AppLocalizationsBe extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Крыніца';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Паказаць схаваныя файлы';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Не паказваць схаваныя файлы';
-
-  @override
-  String get filePickerOpenFrom => 'Адкрыць з';
-
-  @override
-  String get filePickerNoItems => 'Няма элементаў';
-
-  @override
-  String get filePickerUseThisFolder => 'Выкарыстоўваць гэтую тэчку';
 }

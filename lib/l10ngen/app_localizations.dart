@@ -263,6 +263,12 @@ abstract class AppLocalizations {
   /// **'APPLY'**
   String get applyButtonLabel;
 
+  /// No description provided for @createButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CREATE'**
+  String get createButtonLabel;
+
   /// No description provided for @deleteButtonLabel.
   ///
   /// In en, this message translates to:
@@ -509,12 +515,6 @@ abstract class AppLocalizations {
   /// **'Group'**
   String get chipActionGroup;
 
-  /// No description provided for @chipActionUngroup.
-  ///
-  /// In en, this message translates to:
-  /// **'Ungroup'**
-  String get chipActionUngroup;
-
   /// No description provided for @chipActionRename.
   ///
   /// In en, this message translates to:
@@ -532,6 +532,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show states'**
   String get chipActionShowCountryStates;
+
+  /// No description provided for @chipActionCreateGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Create group'**
+  String get chipActionCreateGroup;
 
   /// No description provided for @chipActionCreateAlbum.
   ///
@@ -1685,17 +1691,17 @@ abstract class AppLocalizations {
   /// **'Dynamic album already exists'**
   String get dynamicAlbumAlreadyExists;
 
-  /// No description provided for @groupAlbumsDialogTitle.
+  /// No description provided for @newGroupDialogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Group'**
-  String get groupAlbumsDialogTitle;
+  /// **'New Group'**
+  String get newGroupDialogTitle;
 
-  /// No description provided for @groupAlbumsDialogNameLabel.
+  /// No description provided for @newGroupDialogNameLabel.
   ///
   /// In en, this message translates to:
   /// **'Group name'**
-  String get groupAlbumsDialogNameLabel;
+  String get newGroupDialogNameLabel;
 
   /// No description provided for @groupAlreadyExists.
   ///
@@ -1703,17 +1709,29 @@ abstract class AppLocalizations {
   /// **'Group already exists'**
   String get groupAlreadyExists;
 
-  /// No description provided for @groupActionCreate.
+  /// No description provided for @groupEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Create group'**
-  String get groupActionCreate;
+  /// **'No groups'**
+  String get groupEmpty;
 
-  /// No description provided for @groupActionSelect.
+  /// No description provided for @ungrouped.
   ///
   /// In en, this message translates to:
-  /// **'Select group'**
-  String get groupActionSelect;
+  /// **'Ungrouped'**
+  String get ungrouped;
+
+  /// No description provided for @groupPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Group'**
+  String get groupPickerTitle;
+
+  /// No description provided for @groupPickerUseThisGroupButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this group'**
+  String get groupPickerUseThisGroupButton;
 
   /// No description provided for @newVaultWarningDialogMessage.
   ///
@@ -2162,7 +2180,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewDialogGroupSectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Group'**
+  /// **'Sections'**
   String get viewDialogGroupSectionTitle;
 
   /// No description provided for @viewDialogLayoutSectionTitle.
@@ -2507,11 +2525,11 @@ abstract class AppLocalizations {
   /// **'By day'**
   String get collectionGroupDay;
 
-  /// No description provided for @collectionGroupNone.
+  /// No description provided for @sectionNone.
   ///
   /// In en, this message translates to:
-  /// **'Do not group'**
-  String get collectionGroupNone;
+  /// **'No sections'**
+  String get sectionNone;
 
   /// No description provided for @sectionUnknown.
   ///
@@ -2848,12 +2866,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'By storage volume'**
   String get albumGroupVolume;
-
-  /// No description provided for @albumGroupNone.
-  ///
-  /// In en, this message translates to:
-  /// **'Do not group'**
-  String get albumGroupNone;
 
   /// No description provided for @albumMimeTypeMixed.
   ///
@@ -4462,36 +4474,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Source'**
   String get sourceViewerPageTitle;
-
-  /// No description provided for @filePickerShowHiddenFiles.
-  ///
-  /// In en, this message translates to:
-  /// **'Show hidden files'**
-  String get filePickerShowHiddenFiles;
-
-  /// No description provided for @filePickerDoNotShowHiddenFiles.
-  ///
-  /// In en, this message translates to:
-  /// **'Don’t show hidden files'**
-  String get filePickerDoNotShowHiddenFiles;
-
-  /// No description provided for @filePickerOpenFrom.
-  ///
-  /// In en, this message translates to:
-  /// **'Open from'**
-  String get filePickerOpenFrom;
-
-  /// No description provided for @filePickerNoItems.
-  ///
-  /// In en, this message translates to:
-  /// **'No items'**
-  String get filePickerNoItems;
-
-  /// No description provided for @filePickerUseThisFolder.
-  ///
-  /// In en, this message translates to:
-  /// **'Use this folder'**
-  String get filePickerUseThisFolder;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

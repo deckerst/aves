@@ -91,6 +91,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get applyButtonLabel => '適用';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => '削除';
 
   @override
@@ -214,9 +217,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chipActionGroup => 'Group';
 
   @override
-  String get chipActionUngroup => 'Ungroup';
-
-  @override
   String get chipActionRename => '名前を変更';
 
   @override
@@ -224,6 +224,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => '地域を表示';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'アルバムを作成';
@@ -843,19 +846,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'ダイナミックアルバムはすでに存在します';
 
   @override
-  String get groupAlbumsDialogTitle => 'Group';
+  String get newGroupDialogTitle => 'New Group';
 
   @override
-  String get groupAlbumsDialogNameLabel => 'Group name';
+  String get newGroupDialogNameLabel => 'Group name';
 
   @override
   String get groupAlreadyExists => 'Group already exists';
 
   @override
-  String get groupActionCreate => 'Create group';
+  String get groupEmpty => 'No groups';
 
   @override
-  String get groupActionSelect => 'Select group';
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => '保管庫のアイテムはアプリ内のみで保存しているため、他のアプリでは利用できません。\n\nこのアプリをアンインストールしたり、データを消去したりすると、これらのアイテムはすべて失われます。';
@@ -1276,7 +1285,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get collectionGroupDay => '日別';
 
   @override
-  String get collectionGroupNone => 'グループ化しない';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => '不明';
@@ -1545,9 +1554,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'ストレージ ボリューム別';
-
-  @override
-  String get albumGroupNone => 'グループ化しない';
 
   @override
   String get albumMimeTypeMixed => '混合';
@@ -2362,19 +2368,4 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'ソース';
-
-  @override
-  String get filePickerShowHiddenFiles => '非表示のファイルを表示する';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => '非表示のファイルを表示しない';
-
-  @override
-  String get filePickerOpenFrom => '次から開く';
-
-  @override
-  String get filePickerNoItems => 'アイテムはありません';
-
-  @override
-  String get filePickerUseThisFolder => 'このフォルダを使用';
 }

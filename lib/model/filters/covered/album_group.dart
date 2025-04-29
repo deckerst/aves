@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
   static const type = 'album_group';
 
-  final Uri uri;
+  final Uri? uri;
   final SetOrFilter filter;
   late final String _name;
 
@@ -19,7 +19,7 @@ class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
 
   AlbumGroupFilter(this.uri, this.filter, {super.reversed = false}) {
     final path = AlbumGrouping.getGroupPath(uri) ?? '';
-    _name = pContext.split(path).last;
+    _name = pContext.split(path).lastOrNull ?? '';
   }
 
   static AlbumGroupFilter? fromMap(Map<String, dynamic> json) {

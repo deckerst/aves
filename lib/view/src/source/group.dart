@@ -10,7 +10,7 @@ extension ExtraEntryGroupFactorView on EntrySectionFactor {
       EntrySectionFactor.album => l10n.collectionGroupAlbum,
       EntrySectionFactor.month => l10n.collectionGroupMonth,
       EntrySectionFactor.day => l10n.collectionGroupDay,
-      EntrySectionFactor.none => l10n.collectionGroupNone,
+      EntrySectionFactor.none => l10n.sectionNone,
     };
   }
 
@@ -31,7 +31,7 @@ extension ExtraAlbumChipGroupFactorView on AlbumChipSectionFactor {
       AlbumChipSectionFactor.importance => l10n.albumGroupTier,
       AlbumChipSectionFactor.mimeType => l10n.albumGroupType,
       AlbumChipSectionFactor.volume => l10n.albumGroupVolume,
-      AlbumChipSectionFactor.none => l10n.albumGroupNone,
+      AlbumChipSectionFactor.none => l10n.sectionNone,
     };
   }
 

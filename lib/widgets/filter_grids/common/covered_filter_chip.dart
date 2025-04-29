@@ -201,7 +201,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is StoredAlbumFilter && vaults.isVault(filter.album)) _buildDetailIcon(context, AIcons.locked),
         if (filter is DynamicAlbumFilter) _buildDetailIcon(context, AIcons.dynamicAlbum),
         if (filter is AlbumGroupFilter) ...[
-          _buildDetailIcon(context, AIcons.group),
+          _buildDetailIcon(context, AIcons.album),
           Text(
             '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countContent(filter.uri))}${AText.separator}',
             style: textStyle,

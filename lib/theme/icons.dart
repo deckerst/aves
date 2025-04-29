@@ -112,8 +112,7 @@ class AIcons {
   static const filter = Symbols.filter_alt;
   static const filterOff = Symbols.filter_alt_off;
   static const goUp = Symbols.arrow_upward;
-  static const group = Symbols.ad_group;
-  static const ungroup = Symbols.ad_group_off;
+  static const group = Symbols.stack_group;
   static const hide = Symbols.visibility_off;
   static const info = Symbols.info;
   static const layers = Symbols.layers;
