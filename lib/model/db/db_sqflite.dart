@@ -214,7 +214,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     if (duplicates.isNotEmpty) {
       debugPrint('Found duplicates=$duplicates');
     }
-    // return most recent duplicate for each duplicated content ID
+    // returns most recent duplicate for each duplicated content ID
     return duplicates;
   }
 

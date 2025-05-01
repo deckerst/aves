@@ -49,12 +49,12 @@ abstract class StorageService {
   // returns whether user granted access to URIs
   Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes);
 
-  // return whether operation succeeded (`null` if user cancelled)
+  // returns whether operation succeeded (`null` if user cancelled)
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
 
   Future<Uint8List> openFile([String? mimeType]);
 
-  // return whether operation succeeded (`null` if user cancelled)
+  // returns whether operation succeeded (`null` if user cancelled)
   Future<bool?> copyFile(String name, String mimeType, String sourceUri);
 }
 

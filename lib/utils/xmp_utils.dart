@@ -51,7 +51,7 @@ class XMP {
     return hasMeaningfulAttributes;
   }
 
-  // return time zone designator, formatted as `Z` or `+hh:mm` or `-hh:mm`
+  // returns time zone designator, formatted as `Z` or `+hh:mm` or `-hh:mm`
   // as of intl v0.17.0, formatting time zone offset is not implemented
   static String _xmpTimeZoneDesignator(DateTime date) {
     final offsetMinutes = date.timeZoneOffset.inMinutes;

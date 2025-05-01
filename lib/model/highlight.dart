@@ -67,5 +67,5 @@ class TrackEvent<T> {
 }
 
 // `itemVisibility`: percent of the item tracked already visible in viewport
-// return whether to proceed with tracking
+// returns whether to proceed with tracking
 typedef TrackPredicate = bool Function(double itemVisibility);

@@ -1,32 +1,36 @@
 import 'package:aves/model/grouping/albums.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
-class CreateGroupDialog extends StatefulWidget {
-  static const routeName = '/dialog/create_group';
+class RenameGroupDialog extends StatefulWidget {
+  static const routeName = '/dialog/rename_group';
 
-  final Uri? parentGroupUri;
+  final Uri groupUri;
 
-  const CreateGroupDialog({
+  const RenameGroupDialog({
     super.key,
-    required this.parentGroupUri,
+    required this.groupUri,
   });
 
   @override
-  State<CreateGroupDialog> createState() => _CreateGroupDialogState();
+  State<RenameGroupDialog> createState() => _RenameGroupDialogState();
 }
 
-class _CreateGroupDialogState extends State<CreateGroupDialog> {
+class _RenameGroupDialogState extends State<RenameGroupDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  Uri? get parentGroupUri => widget.parentGroupUri;
+  Uri get initialGroupUri => widget.groupUri;
+
+  Uri? get parentGroupUri => FilterGrouping.getParentGroup(initialGroupUri);
 
   @override
   void initState() {
     super.initState();
+    _nameController.text = FilterGrouping.getGroupName(initialGroupUri) ?? '';
     _validate();
   }
 
@@ -40,25 +44,21 @@ class _CreateGroupDialogState extends State<CreateGroupDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
     return AvesDialog(
-      title: l10n.newGroupDialogTitle,
       content: ValueListenableBuilder<bool>(
-        valueListenable: _existsNotifier,
-        builder: (context, exists, child) {
-          return TextField(
-            controller: _nameController,
-            decoration: InputDecoration(
-              labelText: l10n.newGroupDialogNameLabel,
-              helperText: exists ? l10n.groupAlreadyExists : '',
-            ),
-            autofocus: true,
-            onChanged: (_) => _validate(),
-            onSubmitted: (_) => _submit(context),
-          );
-        },
-      ),
+          valueListenable: _existsNotifier,
+          builder: (context, exists, child) {
+            return TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: context.l10n.renameAlbumDialogLabel,
+                helperText: exists ? context.l10n.groupAlreadyExists : '',
+              ),
+              autofocus: true,
+              onChanged: (_) => _validate(),
+              onSubmitted: (_) => _submit(context),
+            );
+          }),
       actions: [
         const CancelButton(),
         ValueListenableBuilder<bool>(
@@ -66,7 +66,7 @@ class _CreateGroupDialogState extends State<CreateGroupDialog> {
           builder: (context, isValid, child) {
             return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
-              child: Text(l10n.createButtonLabel),
+              child: Text(context.l10n.applyButtonLabel),
             );
           },
         ),
@@ -84,7 +84,7 @@ class _CreateGroupDialogState extends State<CreateGroupDialog> {
     final newGroupUri = _getNewGroupUri();
     final exists = albumGrouping.exists(newGroupUri);
     _isValidNotifier.value = newGroupUri != null && !exists;
-    _existsNotifier.value = exists;
+    _existsNotifier.value = exists && newGroupUri != initialGroupUri;
   }
 
   void _submit(BuildContext context) {

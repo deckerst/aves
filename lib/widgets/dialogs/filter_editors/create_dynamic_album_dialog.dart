@@ -80,9 +80,8 @@ class _CreateDynamicAlbumDialogState extends State<CreateDynamicAlbumDialog> {
 
   void _validate() {
     final name = _formatAlbumName();
-    final isValid = name != null;
-    _isValidNotifier.value = isValid;
-    _existsNotifier.value = isValid && dynamicAlbums.contains(name);
+    _isValidNotifier.value = name != null;
+    _existsNotifier.value = dynamicAlbums.contains(name);
   }
 
   void _submit(BuildContext context) {

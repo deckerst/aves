@@ -56,10 +56,4 @@ class DynamicAlbumFilter extends AlbumBaseFilter with CoveredFilter {
 
   @override
   bool match(String query) => name.toUpperCase().contains(query);
-
-  @override
-  bool get canRename => true;
-
-  @override
-  bool get isVault => false;
 }

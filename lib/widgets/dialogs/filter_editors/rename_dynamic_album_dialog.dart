@@ -80,8 +80,9 @@ class _RenameDynamicAlbumDialogState extends State<RenameDynamicAlbumDialog> {
 
   Future<void> _validate() async {
     final newName = _formatAlbumName();
-    _isValidNotifier.value = newName != null && !dynamicAlbums.contains(newName);
-    _existsNotifier.value = newName != null && dynamicAlbums.contains(newName) && newName != initialValue;
+    final exists = dynamicAlbums.contains(newName);
+    _isValidNotifier.value = newName != null && !exists;
+    _existsNotifier.value = exists && newName != initialValue;
   }
 
   void _submit(BuildContext context) {

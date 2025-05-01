@@ -97,7 +97,7 @@ class AlbumListPage extends StatelessWidget {
     Iterable<AlbumChipType> albumTypes,
     Uri? groupUri,
   ) {
-    final groupContent = albumGrouping.listGroupContent(groupUri);
+    final groupContent = albumGrouping.getDirectChildren(groupUri);
 
     Set<T> whereTypeRecursively<T>(Set<CollectionFilter> filters) {
       return {

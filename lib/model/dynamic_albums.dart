@@ -52,7 +52,7 @@ class DynamicAlbums with ChangeNotifier {
 
   DynamicAlbumFilter? get(String name) => _rows.firstWhereOrNull((row) => row.name == name);
 
-  bool contains(String name) => get(name) != null;
+  bool contains(String? name) => name != null && get(name) != null;
 
   // import/export
 

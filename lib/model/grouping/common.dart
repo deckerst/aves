@@ -2,7 +2,7 @@ import 'package:aves/services/common/services.dart';
 
 class FilterGrouping {
   static const scheme = 'aves';
-  static const groupPath = '/group';
+  static const _groupPath = '/group';
   static const _pathParamKey = 'path';
 
   static String? getGroupPath(Uri? uri) => uri?.queryParameters[_pathParamKey];
@@ -11,6 +11,8 @@ class FilterGrouping {
     final path = getGroupPath(uri);
     return path != null ? pContext.split(path).lastOrNull : null;
   }
+
+  static bool isGroupUri(Uri uri) => uri.path == FilterGrouping._groupPath;
 
   // parent group URI is `null` for root
   static Uri buildGroupUri(String host, Uri? parentGroupUri, String name) {
@@ -27,14 +29,14 @@ class FilterGrouping {
     return Uri(
       scheme: scheme,
       host: host,
-      path: groupPath,
+      path: _groupPath,
       queryParameters: {
         _pathParamKey: name,
       },
     );
   }
 
-  // return `null` for root
+  // returns `null` for root
   static Uri? getParentGroup(Uri? groupUri) {
     if (groupUri != null) {
       final path = getGroupPath(groupUri);

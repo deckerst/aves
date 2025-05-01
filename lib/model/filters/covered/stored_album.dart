@@ -20,6 +20,7 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   final String? displayName;
   late final EntryFilter _test;
 
+  // do not include contextual `displayName` to `props`
   @override
   List<Object?> get props => [album, reversed];
 
@@ -108,7 +109,6 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
 
   StorageVolume? get storageVolume => androidFileUtils.getStorageVolume(album);
 
-  @override
   bool get canRename {
     if (isVault) return true;
 
@@ -117,6 +117,5 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
     return dir != null && dir.relativeDir.isNotEmpty;
   }
 
-  @override
   bool get isVault => vaults.isVault(album);
 }

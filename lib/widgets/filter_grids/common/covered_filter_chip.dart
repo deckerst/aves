@@ -203,7 +203,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is AlbumGroupFilter) ...[
           _buildDetailIcon(context, AIcons.album),
           Text(
-            '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countContent(filter.uri))}${AText.separator}',
+            '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
             style: textStyle,
           ),
         ],

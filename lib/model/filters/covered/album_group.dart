@@ -13,8 +13,9 @@ class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
   final SetOrFilter filter;
   late final String _name;
 
+  // do not include contextual `filter` to `props`
   @override
-  List<Object?> get props => [uri, filter, reversed];
+  List<Object?> get props => [uri, reversed];
 
   AlbumGroupFilter(this.uri, this.filter, {super.reversed = false}) {
     _name = FilterGrouping.getGroupName(uri) ?? '';
@@ -65,10 +66,4 @@ class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
 
   @override
   bool match(String query) => _name.toUpperCase().contains(query);
-
-  @override
-  bool get canRename => true;
-
-  @override
-  bool get isVault => false;
 }

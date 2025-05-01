@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
@@ -94,8 +96,11 @@ class Covers {
     bool notify = true,
   }) async {
     // erase contextual properties from filters before saving them
-    if (filter is StoredAlbumFilter) {
-      filter = StoredAlbumFilter(filter.album, null);
+    switch (filter) {
+      case StoredAlbumFilter():
+        filter = StoredAlbumFilter(filter.album, null);
+      case AlbumGroupFilter():
+        filter = AlbumGroupFilter(filter.uri, SetOrFilter(const {}));
     }
 
     final oldRows = _rows.where((row) => row.filter == filter).toSet();

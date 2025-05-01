@@ -29,7 +29,9 @@ class AlbumGrouping with ChangeNotifier {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
-  Set<CollectionFilter> listGroupContent(Uri? currentGroupUri) {
+  // returns filters directly within the provided group, including subgroups as filters
+  // providing the null root will yield its direct group filters
+  Set<CollectionFilter> getDirectChildren(Uri? currentGroupUri) {
     if (currentGroupUri == null) {
       return _groups.entries.where((kv) => FilterGrouping.getParentGroup(kv.key) == currentGroupUri).map((kv) {
         final groupUri = kv.key;
@@ -47,12 +49,14 @@ class AlbumGrouping with ChangeNotifier {
     return {};
   }
 
-  CollectionFilter? uriToFilter(Uri uri) {
-    if (uri.host != _host) return null;
+  CollectionFilter? uriToFilter(Uri? uri) {
+    if (uri == null || uri.host != _host) return null;
+
+    if (FilterGrouping.isGroupUri(uri)) {
+      return AlbumGroupFilter(uri, SetOrFilter(getDirectChildren(uri)));
+    }
 
     switch (uri.path) {
-      case FilterGrouping.groupPath:
-        return AlbumGroupFilter(uri, SetOrFilter(listGroupContent(uri)));
       case _storedAlbumPath:
         final album = getStoredAlbumPath(uri);
         if (album != null) {
@@ -75,6 +79,30 @@ class AlbumGrouping with ChangeNotifier {
     });
   }
 
+  void _cleanEmptyGroups() {
+    final emptyGroupUris = _groups.entries.where((kv) => kv.value.isEmpty).map((v) => v.key).toSet();
+    if (emptyGroupUris.isNotEmpty) {
+      _removeFromGroups(emptyGroupUris);
+      _groups.removeWhere((groupUri, _) => emptyGroupUris.contains(groupUri));
+      _cleanEmptyGroups();
+    }
+  }
+
+  void _reparentGroupPaths(Uri? parentGroupUri, Set<Uri> childrenUris) {
+    final groupUris = childrenUris.where(FilterGrouping.isGroupUri).toSet();
+    groupUris.forEach((groupUri) {
+      final name = FilterGrouping.getGroupName(groupUri);
+      if (name != null) {
+        final groupChildrenUris = _groups.remove(groupUri);
+        if (groupChildrenUris != null) {
+          final newGroupUri = buildGroupUri(parentGroupUri, name);
+          _groups[newGroupUri] = groupChildrenUris;
+          _reparentGroupPaths(newGroupUri, groupChildrenUris);
+        }
+      }
+    });
+  }
+
   void addToGroup(Set<Uri> childrenUris, Uri? destinationGroup) {
     _removeFromGroups(childrenUris);
     if (destinationGroup != null) {
@@ -82,25 +110,23 @@ class AlbumGrouping with ChangeNotifier {
       children.addAll(childrenUris);
       _groups[destinationGroup] = children;
     }
+    _reparentGroupPaths(destinationGroup, childrenUris);
+    _cleanEmptyGroups();
     notifyListeners();
   }
 
-  Uri createGroup(Uri? parentGroupUri, String name) {
-    final uri = buildGroupUri(parentGroupUri, name);
-    _groups.putIfAbsent(uri, () => {});
-    return uri;
-  }
+  bool exists(Uri? groupUri) => _groups.containsKey(groupUri);
 
-  bool exists(Uri groupUri) => _groups.containsKey(groupUri);
-
-  int countContent(Uri? groupUri) {
+  // returns number of filters within provided group, following subgroups without counting them
+  // providing the null root will yield 0, rather than the total number of filters in the collection (which is out of scope)
+  int countLeaves(Uri? groupUri) {
     int count = 0;
     if (groupUri != null) {
       final childrenUri = _groups[groupUri];
       if (childrenUri != null) {
         childrenUri.map(uriToFilter).nonNulls.forEach((filter) {
           if (filter is AlbumGroupFilter) {
-            count += countContent(filter.uri);
+            count += countLeaves(filter.uri);
           } else {
             count++;
           }
