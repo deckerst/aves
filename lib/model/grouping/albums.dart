@@ -180,11 +180,11 @@ class AlbumGrouping with ChangeNotifier {
 
   static Uri? filterToUri(CollectionFilter filter) {
     switch (filter) {
-      case StoredAlbumFilter():
+      case StoredAlbumFilter _:
         return _buildStoredAlbumUri(filter.album);
-      case DynamicAlbumFilter():
+      case DynamicAlbumFilter _:
         return _buildDynamicAlbumUri(filter.name);
-      case AlbumGroupFilter():
+      case AlbumGroupFilter _:
         return filter.uri;
       default:
         return null;

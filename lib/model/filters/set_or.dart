@@ -24,7 +24,7 @@ class SetOrFilter extends CollectionFilter {
     _filters = filters.toList().sorted();
     _test = (entry) => _filters.any((v) => v.test(entry));
     switch (_first) {
-      case StoredAlbumFilter():
+      case StoredAlbumFilter _:
         _genericIcon = AIcons.album;
       case LocationFilter(level: LocationLevel.country):
         _genericIcon = AIcons.country;

@@ -163,7 +163,7 @@ class AlbumListPage extends StatelessWidget {
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final filter = kv.filter;
           switch (filter) {
-            case StoredAlbumFilter():
+            case StoredAlbumFilter _:
               switch (covers.effectiveAlbumType(filter.album)) {
                 case AlbumType.regular:
                   return regularKey;
@@ -174,9 +174,9 @@ class AlbumListPage extends StatelessWidget {
                 default:
                   return specialKey;
               }
-            case DynamicAlbumFilter():
+            case DynamicAlbumFilter _:
               return dynamicKey;
-            case AlbumGroupFilter():
+            case AlbumGroupFilter _:
               return groupKey;
           }
           return specialKey;

@@ -97,9 +97,9 @@ class Covers {
   }) async {
     // erase contextual properties from filters before saving them
     switch (filter) {
-      case StoredAlbumFilter():
+      case StoredAlbumFilter _:
         filter = StoredAlbumFilter(filter.album, null);
-      case AlbumGroupFilter():
+      case AlbumGroupFilter _:
         filter = AlbumGroupFilter(filter.uri, SetOrFilter(const {}));
     }
 

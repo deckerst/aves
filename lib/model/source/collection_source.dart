@@ -548,15 +548,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     switch (filter) {
       case AlbumBaseFilter _:
         return albumEntryCount(filter);
-      case LocationFilter _:
-        switch (filter.level) {
-          case LocationLevel.country:
-            return countryEntryCount(filter);
-          case LocationLevel.state:
-            return stateEntryCount(filter);
-          case LocationLevel.place:
-            return placeEntryCount(filter);
-        }
+      case LocationFilter(level: LocationLevel.country):
+        return countryEntryCount(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateEntryCount(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeEntryCount(filter);
       case TagFilter _:
         return tagEntryCount(filter);
     }
@@ -567,15 +564,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     switch (filter) {
       case AlbumBaseFilter _:
         return albumSize(filter);
-      case LocationFilter _:
-        switch (filter.level) {
-          case LocationLevel.country:
-            return countrySize(filter);
-          case LocationLevel.state:
-            return stateSize(filter);
-          case LocationLevel.place:
-            return placeSize(filter);
-        }
+      case LocationFilter(level: LocationLevel.country):
+        return countrySize(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateSize(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeSize(filter);
       case TagFilter _:
         return tagSize(filter);
     }
@@ -586,15 +580,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     switch (filter) {
       case AlbumBaseFilter _:
         return albumRecentEntry(filter);
-      case LocationFilter _:
-        switch (filter.level) {
-          case LocationLevel.country:
-            return countryRecentEntry(filter);
-          case LocationLevel.state:
-            return stateRecentEntry(filter);
-          case LocationLevel.place:
-            return placeRecentEntry(filter);
-        }
+      case LocationFilter(level: LocationLevel.country):
+        return countryRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeRecentEntry(filter);
       case TagFilter _:
         return tagRecentEntry(filter);
     }

@@ -158,10 +158,10 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                             final filter = gridItem.filter;
                             if (!await unlockFilter(context, filter)) return;
                             switch (filter) {
-                              case AlbumGroupFilter():
+                              case AlbumGroupFilter _:
                                 context.read<FilterGroupNotifier>().value = filter.uri;
-                              case StoredAlbumFilter():
-                              case DynamicAlbumFilter():
+                              case StoredAlbumFilter _:
+                              case DynamicAlbumFilter _:
                                 _pickFilter(context, filter);
                             }
                           },
