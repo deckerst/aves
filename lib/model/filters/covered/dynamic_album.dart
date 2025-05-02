@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/widgets.dart';
 
-class DynamicAlbumFilter extends AlbumBaseFilter with CoveredFilter {
+class DynamicAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFilter {
   static const type = 'dynamic_album';
 
   final String name;
@@ -53,7 +53,4 @@ class DynamicAlbumFilter extends AlbumBaseFilter with CoveredFilter {
 
   @override
   String get key => '$type-$reversed-$name';
-
-  @override
-  bool match(String query) => name.toUpperCase().contains(query);
 }

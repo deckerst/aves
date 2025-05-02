@@ -11,21 +11,22 @@ import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-final AlbumGrouping albumGrouping = AlbumGrouping._private();
+final AlbumGrouping albumGrouping = AlbumGrouping._private(AlbumGrouping.hostAlbums);
 
 // group URI: "aves://albums/group?path=/group12/subgroup34"
 // stored album URI: "aves://albums/stored?path=/volume/dir/path12"
 // dynamic album URI: "aves://albums/dynamic?name=dynalbum12"
 class AlbumGrouping with ChangeNotifier {
-  static const _host = 'albums';
+  static const hostAlbums = 'albums';
   static const _storedAlbumPath = '/stored';
   static const _dynamicAlbumPath = '/dynamic';
   static const _nameParamKey = 'name';
   static const _storagePathParamKey = 'path';
 
+  final String _host;
   final Map<Uri, Set<Uri>> _groups = {};
 
-  AlbumGrouping._private() {
+  AlbumGrouping._private(this._host) {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
@@ -151,14 +152,14 @@ class AlbumGrouping with ChangeNotifier {
 
   static String? getDynamicAlbumName(Uri uri) => uri.queryParameters[_nameParamKey];
 
-  static Uri buildGroupUri(Uri? parentGroupUri, String name) {
+  Uri buildGroupUri(Uri? parentGroupUri, String name) {
     return FilterGrouping.buildGroupUri(_host, parentGroupUri, name);
   }
 
   static Uri _buildStoredAlbumUri(String album) {
     return Uri(
       scheme: FilterGrouping.scheme,
-      host: _host,
+      host: hostAlbums,
       path: _storedAlbumPath,
       queryParameters: {
         _storagePathParamKey: album,
@@ -169,7 +170,7 @@ class AlbumGrouping with ChangeNotifier {
   static Uri _buildDynamicAlbumUri(String name) {
     return Uri(
       scheme: FilterGrouping.scheme,
-      host: _host,
+      host: hostAlbums,
       path: _dynamicAlbumPath,
       queryParameters: {
         _nameParamKey: name,

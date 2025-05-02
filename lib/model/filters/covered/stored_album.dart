@@ -13,7 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
+class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFilter {
   static const type = 'album';
 
   final String album;
@@ -103,9 +103,6 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   // key is expected by test driver
   @override
   String get key => '$type-$reversed-$album';
-
-  @override
-  bool match(String query) => (displayName ?? album).toUpperCase().contains(query);
 
   StorageVolume? get storageVolume => androidFileUtils.getStorageVolume(album);
 

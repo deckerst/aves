@@ -77,7 +77,7 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
   Uri? _getNewGroupUri() {
     final name = _nameController.text.trim();
     if (name.isEmpty) return null;
-    return AlbumGrouping.buildGroupUri(parentGroupUri, name);
+    return albumGrouping.buildGroupUri(parentGroupUri, name);
   }
 
   void _validate() {

@@ -53,7 +53,7 @@ class TagListPage extends StatelessWidget {
   }
 
   List<FilterGridItem<TagFilter>> applyQuery(BuildContext context, List<FilterGridItem<TagFilter>> filters, String query) {
-    return filters.where((item) => item.filter.tag.toUpperCase().contains(query)).toList();
+    return filters.where((item) => item.filter.match(context, query)).toList();
   }
 
   List<FilterGridItem<TagFilter>> _getGridItems(CollectionSource source) {

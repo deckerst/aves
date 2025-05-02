@@ -31,7 +31,7 @@ void main() {
     final storedAlbumFilter = StoredAlbumFilter(storedAlbumPath, 'display name');
     final dynamicAlbumFilter = DynamicAlbumFilter('dynamic name', storedAlbumFilter);
     dynamicAlbums.add(dynamicAlbumFilter);
-    final groupUri = AlbumGrouping.buildGroupUri(null, groupName);
+    final groupUri = albumGrouping.buildGroupUri(null, groupName);
     final albumGroupFilter = AlbumGroupFilter(groupUri, SetOrFilter({storedAlbumFilter, dynamicAlbumFilter}));
 
     expect(albumGrouping.uriToFilter(AlbumGrouping.filterToUri(storedAlbumFilter)), storedAlbumFilter);
@@ -40,7 +40,7 @@ void main() {
   });
 
   test('Empty group', () {
-    final groupUri = AlbumGrouping.buildGroupUri(null, groupName);
+    final groupUri = albumGrouping.buildGroupUri(null, groupName);
     expect(FilterGrouping.getGroupName(groupUri), groupName);
 
     expect(albumGrouping.exists(groupUri), false);
@@ -50,7 +50,7 @@ void main() {
   });
 
   test('Adding album to group', () {
-    final groupUri = AlbumGrouping.buildGroupUri(null, groupName);
+    final groupUri = albumGrouping.buildGroupUri(null, groupName);
     final childUri = AlbumGrouping.filterToUri(StoredAlbumFilter(storedAlbumPath, null));
     albumGrouping.addToGroup({childUri}.nonNulls.toSet(), groupUri);
 
@@ -61,8 +61,8 @@ void main() {
   });
 
   test('Adding subgroup to group', () {
-    final rootGroupUri = AlbumGrouping.buildGroupUri(null, '$groupName root');
-    final subGroupUri = AlbumGrouping.buildGroupUri(rootGroupUri, '$groupName sub');
+    final rootGroupUri = albumGrouping.buildGroupUri(null, '$groupName root');
+    final subGroupUri = albumGrouping.buildGroupUri(rootGroupUri, '$groupName sub');
     final childUri = AlbumGrouping.filterToUri(StoredAlbumFilter(storedAlbumPath, null));
     albumGrouping.addToGroup({childUri}.nonNulls.toSet(), subGroupUri);
     albumGrouping.addToGroup({subGroupUri}, rootGroupUri);
@@ -77,7 +77,7 @@ void main() {
   });
 
   test('Removing from group', () {
-    final groupUri = AlbumGrouping.buildGroupUri(null, groupName);
+    final groupUri = albumGrouping.buildGroupUri(null, groupName);
     final childUri = AlbumGrouping.filterToUri(StoredAlbumFilter(storedAlbumPath, null));
     albumGrouping.addToGroup({childUri}.nonNulls.toSet(), groupUri);
     albumGrouping.addToGroup({childUri}.nonNulls.toSet(), null);
@@ -91,14 +91,14 @@ void main() {
   test('Reparent group', () {
     const subgroupName = '$groupName sub';
 
-    final rootGroupUri = AlbumGrouping.buildGroupUri(null, '$groupName root old');
-    final subGroupUri = AlbumGrouping.buildGroupUri(rootGroupUri, subgroupName);
+    final rootGroupUri = albumGrouping.buildGroupUri(null, '$groupName root old');
+    final subGroupUri = albumGrouping.buildGroupUri(rootGroupUri, subgroupName);
     final childUri = AlbumGrouping.filterToUri(StoredAlbumFilter(storedAlbumPath, null));
     albumGrouping.addToGroup({childUri}.nonNulls.toSet(), subGroupUri);
     albumGrouping.addToGroup({subGroupUri}, rootGroupUri);
 
-    final newRootGroupUri = AlbumGrouping.buildGroupUri(null, '$groupName root new');
-    final newSubGroupUri = AlbumGrouping.buildGroupUri(newRootGroupUri, subgroupName);
+    final newRootGroupUri = albumGrouping.buildGroupUri(null, '$groupName root new');
+    final newSubGroupUri = albumGrouping.buildGroupUri(newRootGroupUri, subgroupName);
     albumGrouping.addToGroup({subGroupUri}, newRootGroupUri);
     expect(albumGrouping.exists(rootGroupUri), false);
     expect(albumGrouping.exists(subGroupUri), false);
@@ -109,12 +109,12 @@ void main() {
   });
 
   test('Reparent content', () {
-    final rootGroupUri = AlbumGrouping.buildGroupUri(null, '$groupName root');
+    final rootGroupUri = albumGrouping.buildGroupUri(null, '$groupName root');
     final childUriToKeep = AlbumGrouping.filterToUri(StoredAlbumFilter('$storedAlbumPath 1', null));
     final childUriToMove = AlbumGrouping.filterToUri(StoredAlbumFilter('$storedAlbumPath 2', null));
     albumGrouping.addToGroup({childUriToKeep, childUriToMove}.nonNulls.toSet(), rootGroupUri);
 
-    final subGroupUri = AlbumGrouping.buildGroupUri(rootGroupUri, '$groupName sub');
+    final subGroupUri = albumGrouping.buildGroupUri(rootGroupUri, '$groupName sub');
     albumGrouping.addToGroup({childUriToMove}.nonNulls.toSet(), subGroupUri);
 
     expect(albumGrouping.exists(rootGroupUri), true);
@@ -124,14 +124,14 @@ void main() {
   });
 
   test('Reparent group deeper', () {
-    final rootGroupUri = AlbumGrouping.buildGroupUri(null, '$groupName root');
+    final rootGroupUri = albumGrouping.buildGroupUri(null, '$groupName root');
     const movingGroupName = '$groupName moving';
-    final movingGroupUri = AlbumGrouping.buildGroupUri(null, movingGroupName);
+    final movingGroupUri = albumGrouping.buildGroupUri(null, movingGroupName);
     final childUri = AlbumGrouping.filterToUri(StoredAlbumFilter(storedAlbumPath, null));
     albumGrouping.addToGroup({childUri}.nonNulls.toSet(), movingGroupUri);
     albumGrouping.addToGroup({movingGroupUri}.nonNulls.toSet(), rootGroupUri);
 
-    final movedGroupUri = AlbumGrouping.buildGroupUri(rootGroupUri, movingGroupName);
+    final movedGroupUri = albumGrouping.buildGroupUri(rootGroupUri, movingGroupName);
     expect(albumGrouping.exists(rootGroupUri), true);
     expect(albumGrouping.exists(movingGroupUri), false);
     expect(albumGrouping.exists(movedGroupUri), true);

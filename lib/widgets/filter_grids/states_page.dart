@@ -59,7 +59,7 @@ class StateListPage extends StatelessWidget {
   }
 
   List<FilterGridItem<LocationFilter>> applyQuery(BuildContext context, List<FilterGridItem<LocationFilter>> filters, String query) {
-    return filters.where((item) => item.filter.getLabel(context).toUpperCase().contains(query)).toList();
+    return filters.where((item) => item.filter.match(context, query)).toList();
   }
 
   List<FilterGridItem<LocationFilter>> _getGridItems(CollectionSource source) {

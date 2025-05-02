@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
-import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -140,6 +140,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   String getLabel(BuildContext context) => universalLabel;
 
   String getTooltip(BuildContext context) => getLabel(context);
+
+  bool match(BuildContext context, String query) => getLabel(context).toUpperCase().contains(query);
 
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => null;
 

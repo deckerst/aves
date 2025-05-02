@@ -88,7 +88,7 @@ class AlbumListPage extends StatelessWidget {
   // common with album selection page to move/copy entries
 
   static List<FilterGridItem<AlbumBaseFilter>> applyQuery(BuildContext context, List<FilterGridItem<AlbumBaseFilter>> filters, String query) {
-    return filters.where((item) => item.filter.match(query)).toList();
+    return filters.where((item) => item.filter.match(context, query)).toList();
   }
 
   static List<FilterGridItem<AlbumBaseFilter>> getAlbumGridItems(

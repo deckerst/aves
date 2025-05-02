@@ -6,7 +6,7 @@ import 'package:aves/model/grouping/common.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/widgets.dart';
 
-class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
+class AlbumGroupFilter extends CollectionFilter with CoveredFilter, AlbumBaseFilter {
   static const type = 'album_group';
 
   final Uri? uri;
@@ -63,7 +63,4 @@ class AlbumGroupFilter extends AlbumBaseFilter with CoveredFilter {
 
   @override
   String get key => '$type-$reversed-$uri';
-
-  @override
-  bool match(String query) => _name.toUpperCase().contains(query);
 }

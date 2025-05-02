@@ -57,7 +57,7 @@ mixin NavigationSettings on SettingsAccess {
   set setMetadataDateBeforeFileOp(bool newValue) => set(SettingKeys.setMetadataDateBeforeFileOpKey, newValue);
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
-      (getStringList(SettingKeys.drawerTypeBookmarksKey))?.map((v) {
+      getStringList(SettingKeys.drawerTypeBookmarksKey)?.map((v) {
         if (v.isEmpty) return null;
         return CollectionFilter.fromJson(v);
       }).toList() ??
