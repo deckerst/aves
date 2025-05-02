@@ -143,7 +143,6 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                           sortFactor: settings.albumSortFactor,
                           showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
                           selectable: false,
-                          applyQuery: AlbumListPage.applyQuery,
                           emptyBuilder: () => isPickingGroup
                               ? EmptyContent(
                                   icon: AIcons.group,

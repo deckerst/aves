@@ -46,7 +46,6 @@ class StateListPage extends StatelessWidget {
               sortFactor: settings.stateSortFactor,
               actionDelegate: StateChipSetActionDelegate(gridItems),
               filterSections: _groupToSections(gridItems),
-              applyQuery: applyQuery,
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.state,
                 text: context.l10n.stateEmpty,
@@ -56,10 +55,6 @@ class StateListPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<FilterGridItem<LocationFilter>> applyQuery(BuildContext context, List<FilterGridItem<LocationFilter>> filters, String query) {
-    return filters.where((item) => item.filter.match(context, query)).toList();
   }
 
   List<FilterGridItem<LocationFilter>> _getGridItems(CollectionSource source) {

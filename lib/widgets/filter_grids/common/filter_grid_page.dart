@@ -58,7 +58,6 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
   final Widget? floatingActionButton;
@@ -75,7 +74,6 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
     this.floatingActionButton,
@@ -104,7 +102,6 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               sortFactor: sortFactor,
               showHeaders: showHeaders,
               selectable: selectable,
-              applyQuery: applyQuery,
               emptyBuilder: emptyBuilder,
               heroType: heroType,
               onTileTap: onTileTap,
@@ -174,7 +171,6 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
   final FilterTileTapCallback<T> onTileTap;
@@ -189,7 +185,6 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
     required this.onTileTap,
@@ -244,7 +239,6 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
           sortFactor: widget.sortFactor,
           showHeaders: widget.showHeaders,
           selectable: widget.selectable,
-          applyQuery: widget.applyQuery,
           emptyBuilder: widget.emptyBuilder,
           heroType: widget.heroType,
           onTileTap: widget.onTileTap,
@@ -262,7 +256,6 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
-  final QueryTest<T> applyQuery;
   final HeroType heroType;
   final FilterTileTapCallback<T> onTileTap;
 
@@ -275,7 +268,6 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
     required this.onTileTap,
@@ -316,8 +308,9 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
             Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
             if (queryEnabled && query.isNotEmpty) {
               visibleSections = {};
+              final queryUp = query.toUpperCase();
               widget.sections.forEach((sectionKey, sectionFilters) {
-                final visibleFilters = widget.applyQuery(context, sectionFilters, query.toUpperCase());
+                final visibleFilters = sectionFilters.where((item) => item.filter.match(context, queryUp)).toList();
                 if (visibleFilters.isNotEmpty) {
                   visibleSections[sectionKey] = visibleFilters;
                 }

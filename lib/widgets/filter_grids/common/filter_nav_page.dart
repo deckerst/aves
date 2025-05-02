@@ -30,7 +30,6 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   final CSAD actionDelegate;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final Set<T>? newFilters;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
@@ -42,7 +41,6 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     required this.actionDelegate,
     required this.filterSections,
     this.newFilters,
-    required this.applyQuery,
     required this.emptyBuilder,
   });
 
@@ -150,7 +148,6 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
             sortFactor: widget.sortFactor,
             showHeaders: widget.showHeaders,
             selectable: true,
-            applyQuery: widget.applyQuery,
             emptyBuilder: () => ValueListenableBuilder<SourceState>(
               valueListenable: widget.source.stateNotifier,
               builder: (context, sourceState, child) {

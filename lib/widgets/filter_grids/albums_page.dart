@@ -66,7 +66,6 @@ class AlbumListPage extends StatelessWidget {
                             actionDelegate: AlbumChipSetActionDelegate(gridItems),
                             filterSections: AlbumListPage.groupToSections(context, source, gridItems),
                             newFilters: source.getNewAlbumFilters(context),
-                            applyQuery: AlbumListPage.applyQuery,
                             emptyBuilder: () => EmptyContent(
                               icon: AIcons.album,
                               text: context.l10n.albumEmpty,
@@ -86,10 +85,6 @@ class AlbumListPage extends StatelessWidget {
   }
 
   // common with album selection page to move/copy entries
-
-  static List<FilterGridItem<AlbumBaseFilter>> applyQuery(BuildContext context, List<FilterGridItem<AlbumBaseFilter>> filters, String query) {
-    return filters.where((item) => item.filter.match(context, query)).toList();
-  }
 
   static List<FilterGridItem<AlbumBaseFilter>> getAlbumGridItems(
     BuildContext context,

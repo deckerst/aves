@@ -40,7 +40,6 @@ class CountryListPage extends StatelessWidget {
               sortFactor: settings.countrySortFactor,
               actionDelegate: CountryChipSetActionDelegate(gridItems),
               filterSections: _groupToSections(gridItems),
-              applyQuery: applyQuery,
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.country,
                 text: context.l10n.countryEmpty,
@@ -50,10 +49,6 @@ class CountryListPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<FilterGridItem<LocationFilter>> applyQuery(BuildContext context, List<FilterGridItem<LocationFilter>> filters, String query) {
-    return filters.where((item) => item.filter.match(context, query)).toList();
   }
 
   List<FilterGridItem<LocationFilter>> _getGridItems(CollectionSource source) {
