@@ -103,9 +103,20 @@ class AlbumGrouping with ChangeNotifier {
     });
   }
 
+  void _ensureGroupFromRoot(Uri groupUri) {
+    final parentGroupUri = FilterGrouping.getParentGroup(groupUri);
+    if (parentGroupUri != null) {
+      final children = _groups[parentGroupUri] ?? {};
+      children.addAll({groupUri});
+      _groups[parentGroupUri] = children;
+      _ensureGroupFromRoot(parentGroupUri);
+    }
+  }
+
   void addToGroup(Set<Uri> childrenUris, Uri? destinationGroup) {
     _removeFromGroups(childrenUris);
     if (destinationGroup != null) {
+      _ensureGroupFromRoot(destinationGroup);
       final children = _groups[destinationGroup] ?? {};
       children.addAll(childrenUris);
       _groups[destinationGroup] = children;

@@ -119,7 +119,24 @@ void main() {
 
     expect(albumGrouping.exists(rootGroupUri), true);
     expect(albumGrouping.exists(subGroupUri), true);
-    expect(albumGrouping.getDirectChildren(rootGroupUri).length, 1);
+    expect(albumGrouping.getDirectChildren(rootGroupUri).length, 2);
     expect(albumGrouping.getDirectChildren(subGroupUri).length, 1);
+  });
+
+  test('Reparent group deeper', () {
+    final rootGroupUri = AlbumGrouping.buildGroupUri(null, '$groupName root');
+    const movingGroupName = '$groupName moving';
+    final movingGroupUri = AlbumGrouping.buildGroupUri(null, movingGroupName);
+    final childUri = AlbumGrouping.filterToUri(StoredAlbumFilter(storedAlbumPath, null));
+    albumGrouping.addToGroup({childUri}.nonNulls.toSet(), movingGroupUri);
+    albumGrouping.addToGroup({movingGroupUri}.nonNulls.toSet(), rootGroupUri);
+
+    final movedGroupUri = AlbumGrouping.buildGroupUri(rootGroupUri, movingGroupName);
+    expect(albumGrouping.exists(rootGroupUri), true);
+    expect(albumGrouping.exists(movingGroupUri), false);
+    expect(albumGrouping.exists(movedGroupUri), true);
+    expect(albumGrouping.getDirectChildren(rootGroupUri).length, 1);
+    expect(albumGrouping.getDirectChildren(movedGroupUri).length, 1);
+    expect(AlbumGrouping.filterToUri(albumGrouping.getDirectChildren(rootGroupUri).first), movedGroupUri);
   });
 }
