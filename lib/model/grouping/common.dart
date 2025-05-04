@@ -40,9 +40,17 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
       children.addAll(childrenUris);
       _groups[destinationGroup] = children;
     }
-    _reparentGroupPaths(destinationGroup, childrenUris);
+    _reparentGroupPaths(childrenUris, destinationGroup);
     _cleanEmptyGroups();
     notifyListeners();
+  }
+
+  void rename(Uri oldUri, Uri newUri) {
+    final childrenUris = _groups[oldUri];
+    if (childrenUris != null) {
+      // local copy to prevent concurrent modification
+      addToGroup(Set.of(childrenUris), newUri);
+    }
   }
 
   bool exists(Uri? groupUri) => _groups.containsKey(groupUri);
@@ -115,16 +123,26 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     }
   }
 
-  void _reparentGroupPaths(Uri? parentGroupUri, Set<Uri> childrenUris) {
+  void _reparentGroupPaths(Set<Uri> childrenUris, Uri? parentGroupUri) {
     final groupUris = childrenUris.where(FilterGrouping.isGroupUri).toSet();
-    groupUris.forEach((groupUri) {
-      final name = FilterGrouping.getGroupName(groupUri);
+    groupUris.forEach((oldGroupUri) {
+      final name = FilterGrouping.getGroupName(oldGroupUri);
       if (name != null) {
-        final groupChildrenUris = _groups.remove(groupUri);
+        final groupChildrenUris = _groups.remove(oldGroupUri);
         if (groupChildrenUris != null) {
+          // create child group with updated URI
           final newGroupUri = buildGroupUri(parentGroupUri, name);
           _groups[newGroupUri] = groupChildrenUris;
-          _reparentGroupPaths(newGroupUri, groupChildrenUris);
+
+          // update child group URI in parent group itself
+          if (parentGroupUri != null) {
+            final children = _groups[parentGroupUri];
+            if (children != null && children.remove(oldGroupUri)) {
+              children.add(newGroupUri);
+            }
+          }
+
+          _reparentGroupPaths(groupChildrenUris, newGroupUri);
         }
       }
     });
