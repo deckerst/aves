@@ -65,7 +65,12 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
           icon: const Icon(AIcons.add),
           label: context.l10n.settingsNavigationDrawerAddAlbum,
           onPressed: () async {
-            final albumFilter = await pickAlbum(context: context, moveType: null, albumTypes: AlbumChipType.values);
+            final albumFilter = await pickAlbum(
+              context: context,
+              moveType: null,
+              albumTypes: AlbumChipType.values,
+              initialGroup: null,
+            );
             if (albumFilter == null || items.contains(albumFilter)) return;
             setState(() => items.add(albumFilter));
           },

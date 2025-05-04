@@ -292,10 +292,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         highlightInfo.trackItem(FilterGridItem(filter, null), highlightItem: filter);
       } else {
         highlightInfo.set(filter);
+        final initialGroup = albumGrouping.getFilterParent(filter);
         await navigator.pushAndRemoveUntil(
           MaterialPageRoute(
             settings: const RouteSettings(name: AlbumListPage.routeName),
-            builder: (_) => const AlbumListPage(),
+            builder: (_) => AlbumListPage(initialGroup: initialGroup),
           ),
           (route) => false,
         );
@@ -454,7 +455,13 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final filters = getSelectedFilters(context);
     final childrenUris = filters.map(GroupingConversion.filterToUri).nonNulls.toSet();
 
-    final filter = await pickAlbum(context: context, moveType: null, albumTypes: {AlbumChipType.group});
+    final initialGroup = albumGrouping.getFilterParent(filters.first);
+    final filter = await pickAlbum(
+      context: context,
+      moveType: null,
+      albumTypes: {AlbumChipType.group},
+      initialGroup: initialGroup,
+    );
     if (filter == null) return;
 
     final destinationGroupUri = filter is AlbumGroupFilter ? filter.uri : null;

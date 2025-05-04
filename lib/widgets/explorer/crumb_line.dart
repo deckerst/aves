@@ -19,7 +19,7 @@ class ExplorerCrumbLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return CrumbLine<VolumeRelativeDirectory?>(
       split: _split,
-      combine: _combineAt,
+      combine: _combine,
       onTap: onTap,
     );
   }
@@ -33,7 +33,7 @@ class ExplorerCrumbLine extends StatelessWidget {
     ];
   }
 
-  VolumeRelativeDirectory? _combineAt(BuildContext context, int index) {
+  VolumeRelativeDirectory? _combine(BuildContext context, int index) {
     final _directory = directory;
     if (_directory == null) return null;
 

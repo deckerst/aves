@@ -42,6 +42,7 @@ Future<AlbumBaseFilter?> pickAlbum({
   required BuildContext context,
   required MoveType? moveType,
   required Iterable<AlbumChipType> albumTypes,
+  required Uri? initialGroup,
 }) async {
   final source = context.read<CollectionSource>();
   if (source.targetScope != CollectionSource.fullScope) {
@@ -53,7 +54,12 @@ Future<AlbumBaseFilter?> pickAlbum({
   return await Navigator.maybeOf(context)?.push(
     MaterialPageRoute<AlbumBaseFilter>(
       settings: const RouteSettings(name: _AlbumPickPage.routeName),
-      builder: (context) => _AlbumPickPage(source: source, moveType: moveType, albumChipTypes: albumTypes),
+      builder: (context) => _AlbumPickPage(
+        source: source,
+        moveType: moveType,
+        albumChipTypes: albumTypes,
+        initialGroup: initialGroup,
+      ),
     ),
   );
 }
@@ -64,11 +70,13 @@ class _AlbumPickPage extends StatefulWidget {
   final CollectionSource source;
   final MoveType? moveType;
   final Iterable<AlbumChipType> albumChipTypes;
+  final Uri? initialGroup;
 
   const _AlbumPickPage({
     required this.source,
     required this.moveType,
     required this.albumChipTypes,
+    required this.initialGroup,
   });
 
   @override
@@ -110,7 +118,11 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
   Widget build(BuildContext context) {
     return ListenableProvider<ValueNotifier<AppMode>>.value(
       value: _appModeNotifier,
-      child: FilterGroupProvider(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<FilterGrouping>.value(value: albumGrouping),
+          FilterGroupProvider(initialValue: widget.initialGroup),
+        ],
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
@@ -134,7 +146,6 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                             actionsBuilder: _buildActions,
                             isEmpty: false,
                             appBarHeightNotifier: _appBarHeightNotifier,
-                            // TODO TLAD [nested] group crumb line
                           ),
                           appBarHeightNotifier: _appBarHeightNotifier,
                           sections: AlbumListPage.groupToSections(context, source, gridItems),

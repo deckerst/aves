@@ -147,7 +147,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
         builder: (context) {
           switch (routeName) {
             case AlbumListPage.routeName:
-              return const AlbumListPage();
+              return const AlbumListPage(initialGroup: null);
             case CollectionPage.routeName:
             default:
               return CollectionPage(

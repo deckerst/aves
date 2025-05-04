@@ -502,16 +502,13 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   @override
   Widget build(BuildContext context) {
-    // TODO TLAD [nested] move AnimationLimiter below app bar
-    final scrollView = AnimationLimiter(
-      child: _FilterScrollView<T>(
-        scrollableKey: scrollableKey,
-        appBar: appBar,
-        appBarHeightNotifier: appBarHeightNotifier,
-        sortFactor: widget.sortFactor,
-        emptyBuilder: emptyBuilder,
-        scrollController: scrollController,
-      ),
+    final scrollView = _FilterScrollView<T>(
+      scrollableKey: scrollableKey,
+      appBar: appBar,
+      appBarHeightNotifier: appBarHeightNotifier,
+      sortFactor: widget.sortFactor,
+      emptyBuilder: emptyBuilder,
+      scrollController: scrollController,
     );
 
     final scaler = _FilterScaler<T>(
@@ -691,8 +688,9 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
       controller: scrollController,
       slivers: [
         appBar,
-        // TODO TLAD [nested] move AnimationLimiter below app bar
-        Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
+        AnimationLimiter(
+          key: ValueKey(context.select<FilterGroupNotifier?, Uri?>((v) => v?.value)),
+          child: Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
             selector: (context, layout) => layout.sections.isEmpty,
             builder: (context, empty, child) {
               return empty
@@ -701,7 +699,9 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                       child: emptyBuilder(),
                     )
                   : SectionedListSliver<FilterGridItem<T>>();
-            }),
+            },
+          ),
+        ),
         const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
         const TvTileGridBottomPaddingSliver(),

@@ -53,6 +53,8 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     }
   }
 
+  bool get isNotEmpty => _groups.isNotEmpty;
+
   bool exists(Uri? groupUri) => _groups.containsKey(groupUri);
 
   // returns number of filters within provided group, following subgroups without counting them
@@ -192,19 +194,33 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   }
 
   // returns `null` for root
+  Uri? getFilterParent(CollectionFilter filter) {
+    final uri = GroupingConversion.filterToUri(filter);
+    if (uri == null) return null;
+
+    if (isGroupUri(uri)) {
+      return getParentGroup(uri);
+    } else {
+      return _groups.entries.firstWhereOrNull((kv) {
+        return kv.value.contains(uri);
+      })?.key;
+    }
+  }
+
+  // returns `null` for root
   static Uri? getParentGroup(Uri? groupUri) {
-    if (groupUri != null) {
-      final path = getGroupPath(groupUri);
-      if (path != null) {
-        final segments = pContext.split(path);
-        final newLength = segments.length - 1;
-        if (newLength > 0) {
-          return groupUri.replace(
-            queryParameters: {
-              _groupPathParamKey: pContext.joinAll(segments.take(newLength)),
-            },
-          );
-        }
+    if (groupUri == null) return null;
+
+    final path = getGroupPath(groupUri);
+    if (path != null) {
+      final segments = pContext.split(path);
+      final newLength = segments.length - 1;
+      if (newLength > 0) {
+        return groupUri.replace(
+          queryParameters: {
+            _groupPathParamKey: pContext.joinAll(segments.take(newLength)),
+          },
+        );
       }
     }
     return null;

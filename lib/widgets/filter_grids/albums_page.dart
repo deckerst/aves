@@ -27,11 +27,20 @@ enum AlbumChipType { stored, dynamic, group }
 class AlbumListPage extends StatelessWidget {
   static const routeName = '/albums';
 
-  const AlbumListPage({super.key});
+  final Uri? initialGroup;
+
+  const AlbumListPage({
+    super.key,
+    required this.initialGroup,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return FilterGroupProvider(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<FilterGrouping>.value(value: albumGrouping),
+        FilterGroupProvider(initialValue: initialGroup),
+      ],
       child: Builder(
         // to access filter group provider from subtree context
         builder: (context) {
