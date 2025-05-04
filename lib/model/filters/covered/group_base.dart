@@ -11,8 +11,9 @@ abstract class GroupBaseFilter extends CollectionFilter with CoveredFilter {
   late final String _name;
 
   // do not include contextual `filter` to `props`
+  // stringify URI because its runtime type is undetermined and different types falsify equality checks
   @override
-  List<Object?> get props => [uri, reversed];
+  List<Object?> get props => [uri.toString(), reversed];
 
   GroupBaseFilter(this.uri, this.filter, {super.reversed = false}) {
     _name = FilterGrouping.getGroupName(uri) ?? '';
