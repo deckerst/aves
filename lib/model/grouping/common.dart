@@ -32,6 +32,7 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
 
   void clear() => _groups.clear();
 
+  // TODO TLAD [nested] invalidate summary for derived filters (parent groups, dynamic albums)
   void addToGroup(Set<Uri> childrenUris, Uri? destinationGroup) {
     _removeFromGroups(childrenUris);
     if (destinationGroup != null) {

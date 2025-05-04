@@ -114,9 +114,6 @@ class SettingsDefaults {
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.s3;
 
-  // file picker
-  static const filePickerShowHiddenFiles = false;
-
   // slideshow
   static const slideshowRepeat = false;
   static const slideshowShuffle = false;

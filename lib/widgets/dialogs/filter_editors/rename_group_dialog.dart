@@ -47,21 +47,24 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return AvesDialog(
       content: ValueListenableBuilder<bool>(
-          valueListenable: _existsNotifier,
-          builder: (context, exists, child) {
-            return TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: context.l10n.renameAlbumDialogLabel,
-                helperText: exists ? context.l10n.groupAlreadyExists : '',
-              ),
-              autofocus: true,
-              onChanged: (_) => _validate(),
-              onSubmitted: (_) => _submit(context),
-            );
-          }),
+        valueListenable: _existsNotifier,
+        builder: (context, exists, child) {
+          return TextField(
+            controller: _nameController,
+            decoration: InputDecoration(
+              labelText: l10n.renameAlbumDialogLabel,
+              helperText: exists ? l10n.groupAlreadyExists : '',
+            ),
+            autofocus: true,
+            onChanged: (_) => _validate(),
+            onSubmitted: (_) => _submit(context),
+          );
+        },
+      ),
       actions: [
         const CancelButton(),
         ValueListenableBuilder<bool>(
@@ -69,7 +72,7 @@ class _RenameGroupDialogState extends State<RenameGroupDialog> {
           builder: (context, isValid, child) {
             return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
-              child: Text(context.l10n.applyButtonLabel),
+              child: Text(l10n.applyButtonLabel),
             );
           },
         ),
