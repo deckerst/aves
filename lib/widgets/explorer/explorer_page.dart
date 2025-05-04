@@ -54,11 +54,11 @@ class _ExplorerPageState extends State<ExplorerPage> {
     super.initState();
     final path = widget.path;
     if (path != null && androidFileUtils.getStorageVolume(path) != null) {
-      _goTo(path);
+      _goToPath(path);
     } else {
       final primaryVolume = _volumes.firstWhereOrNull((v) => v.isPrimary);
       if (primaryVolume != null) {
-        _goTo(primaryVolume.path);
+        _goToPath(primaryVolume.path);
       }
     }
     _contents.addListener(() => PrimaryScrollController.of(context).jumpTo(0));
@@ -91,7 +91,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
               canPop: (context) => atRoot,
               onPopBlocked: (context) {
                 if (path != null) {
-                  _goTo(pContext.dirname(path));
+                  _goToPath(pContext.dirname(path));
                 }
               },
             ),
@@ -116,7 +116,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
                             ExplorerAppBar(
                               key: const Key('appbar'),
                               directoryNotifier: _directory,
-                              goTo: _goTo,
+                              goToDir: _goToDir,
                             ),
                             AnimationLimiter(
                               // animation limiter should not be above the app bar
@@ -250,17 +250,18 @@ class _ExplorerPageState extends State<ExplorerPage> {
               child: Icon(AIcons.folder),
             ),
       title: Text('${Unicode.FSI}${pContext.split(content.path).last}${Unicode.PDI}'),
-      onTap: () => _goTo(content.path),
+      onTap: () => _goToPath(content.path),
     );
   }
 
-  void _goTo(String path) {
-    final dir = androidFileUtils.relativeDirectoryFromPath(path);
+  void _goToDir(VolumeRelativeDirectory? dir) {
     if (dir != null) {
       _directory.value = dir;
       _updateContents();
     }
   }
+
+  void _goToPath(String path) => _goToDir(androidFileUtils.relativeDirectoryFromPath(path));
 
   void _updateContents() {
     final directory = _directory.value;

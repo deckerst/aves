@@ -502,6 +502,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   @override
   Widget build(BuildContext context) {
+    // TODO TLAD [nested] move AnimationLimiter below app bar
     final scrollView = AnimationLimiter(
       child: _FilterScrollView<T>(
         scrollableKey: scrollableKey,
@@ -690,6 +691,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
       controller: scrollController,
       slivers: [
         appBar,
+        // TODO TLAD [nested] move AnimationLimiter below app bar
         Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
             selector: (context, layout) => layout.sections.isEmpty,
             builder: (context, empty, child) {

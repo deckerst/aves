@@ -10,6 +10,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/app_bar/crumb_line.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -27,12 +28,12 @@ import 'package:provider/provider.dart';
 
 class ExplorerAppBar extends StatefulWidget {
   final ValueNotifier<VolumeRelativeDirectory?> directoryNotifier;
-  final void Function(String path) goTo;
+  final void Function(VolumeRelativeDirectory? dir) goToDir;
 
   const ExplorerAppBar({
     super.key,
     required this.directoryNotifier,
-    required this.goTo,
+    required this.goToDir,
   });
 
   @override
@@ -70,10 +71,10 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
             child: ValueListenableBuilder<VolumeRelativeDirectory?>(
               valueListenable: widget.directoryNotifier,
               builder: (context, directory, child) {
-                return CrumbLine(
+                return ExplorerCrumbLine(
                   key: const Key('crumbs'),
                   directory: directory,
-                  onTap: widget.goTo,
+                  onTap: widget.goToDir,
                 );
               },
             ),
@@ -151,7 +152,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           final icon = otherVolume.isRemovable ? AIcons.storageCard : AIcons.storageMain;
           return IconButton(
             icon: Icon(icon),
-            onPressed: () => widget.goTo(otherVolume.path),
+            onPressed: () => widget.goToDir(VolumeRelativeDirectory.volume(otherVolume)),
             tooltip: otherVolume.getDescription(context),
           );
         },
@@ -180,7 +181,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
             routeSettings: const RouteSettings(name: SelectStorageDialog.routeName),
           );
           if (volume != null) {
-            widget.goTo(volume.path);
+            widget.goToDir(VolumeRelativeDirectory.volume(volume));
           }
         },
         tooltip: context.l10n.explorerActionSelectStorageVolume,

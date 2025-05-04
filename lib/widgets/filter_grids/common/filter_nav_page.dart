@@ -140,6 +140,7 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
               actionDelegate: widget.actionDelegate,
               isEmpty: widget.filterSections.isEmpty,
               appBarHeightNotifier: _appBarHeightNotifier,
+              // TODO TLAD [nested] group crumb line
             ),
             appBarHeightNotifier: _appBarHeightNotifier,
             sections: widget.filterSections,
