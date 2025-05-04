@@ -177,3 +177,28 @@ class FilterGridItem<T extends CollectionFilter> with EquatableMixin {
 }
 
 typedef EntryFilter = bool Function(AvesEntry);
+
+abstract class DummyCollectionFilter extends CollectionFilter {
+  const DummyCollectionFilter({required super.reversed});
+
+  @override
+  String get category => throw UnimplementedError();
+
+  @override
+  bool get exclusiveProp => throw UnimplementedError();
+
+  @override
+  String get key => throw UnimplementedError();
+
+  @override
+  EntryFilter get positiveTest => throw UnimplementedError();
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+
+  @override
+  Map<String, dynamic> toMap() => throw UnimplementedError();
+
+  @override
+  String get universalLabel => throw UnimplementedError();
+}

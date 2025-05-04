@@ -1,11 +1,9 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/set_or.dart';
-import 'package:aves/model/grouping/albums.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -184,8 +182,8 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
             tooltip: context.l10n.groupPickerUseThisGroupButton,
             onPressed: () {
               final groupUri = context.read<FilterGroupNotifier>().value;
-              final filter = groupUri != null ? albumGrouping.uriToFilter(groupUri) : AlbumGroupFilter(null, SetOrFilter(const {}));
-              if (filter is AlbumGroupFilter) {
+              final filter = groupUri != null ? albumGrouping.uriToFilter(groupUri) : AlbumGroupFilter.root;
+              if (filter is AlbumBaseFilter) {
                 _pickFilter(context, filter);
               }
             },
@@ -311,7 +309,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
   Future<void> _createGroup(Uri? parentGroupUri) async {
     final uri = await showDialog<Uri>(
       context: context,
-      builder: (context) => CreateGroupDialog(parentGroupUri: parentGroupUri),
+      builder: (context) => CreateGroupDialog(grouping: albumGrouping, parentGroupUri: parentGroupUri),
       routeSettings: const RouteSettings(name: CreateGroupDialog.routeName),
     );
     if (uri == null) return;
@@ -319,7 +317,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
 
-    _pickFilter(context, AlbumGroupFilter(uri, SetOrFilter(const {})));
+    _pickFilter(context, AlbumGroupFilter.empty(uri));
   }
 
   Future<void> _createAlbum() async {

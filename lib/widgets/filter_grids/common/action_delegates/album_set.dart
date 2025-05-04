@@ -5,12 +5,12 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/album_base.dart';
 import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/grouping/albums.dart';
+import 'package:aves/model/grouping/common.dart';
+import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -451,7 +451,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
   Future<void> _group(BuildContext context) async {
     final filters = getSelectedFilters(context);
-    final childrenUris = filters.map(AlbumGrouping.filterToUri).nonNulls.toSet();
+    final childrenUris = filters.map(GroupingConversion.filterToUri).nonNulls.toSet();
 
     final filter = await pickAlbum(context: context, moveType: null, albumTypes: {AlbumChipType.group});
     if (filter == null) return;
@@ -506,17 +506,14 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
       await _doRenameDynamicAlbum(context, filter, newName);
     } else if (filter is AlbumGroupFilter) {
-      final groupUri = filter.uri;
-      if (groupUri != null) {
-        final newGroupUri = await showDialog<Uri>(
-          context: context,
-          builder: (context) => RenameGroupDialog(groupUri: groupUri),
-          routeSettings: const RouteSettings(name: RenameGroupDialog.routeName),
-        );
-        if (newGroupUri == null) return;
+      final newGroupUri = await showDialog<Uri>(
+        context: context,
+        builder: (context) => RenameGroupDialog(grouping: albumGrouping, groupUri: filter.uri),
+        routeSettings: const RouteSettings(name: RenameGroupDialog.routeName),
+      );
+      if (newGroupUri == null) return;
 
-        await _doRenameAlbumGroup(context, filter, newGroupUri);
-      }
+      await _doRenameAlbumGroup(context, filter, newGroupUri);
     }
   }
 

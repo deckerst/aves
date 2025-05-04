@@ -1,4 +1,4 @@
-import 'package:aves/model/grouping/albums.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class CreateGroupDialog extends StatefulWidget {
   static const routeName = '/dialog/create_group';
 
+  final FilterGrouping grouping;
   final Uri? parentGroupUri;
 
   const CreateGroupDialog({
     super.key,
+    required this.grouping,
     required this.parentGroupUri,
   });
 
@@ -21,6 +23,8 @@ class _CreateGroupDialogState extends State<CreateGroupDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
+
+  FilterGrouping get grouping => widget.grouping;
 
   Uri? get parentGroupUri => widget.parentGroupUri;
 
@@ -77,12 +81,12 @@ class _CreateGroupDialogState extends State<CreateGroupDialog> {
   Uri? _getNewGroupUri() {
     final name = _nameController.text.trim();
     if (name.isEmpty) return null;
-    return albumGrouping.buildGroupUri(parentGroupUri, name);
+    return grouping.buildGroupUri(parentGroupUri, name);
   }
 
   void _validate() {
     final newGroupUri = _getNewGroupUri();
-    final exists = albumGrouping.exists(newGroupUri);
+    final exists = grouping.exists(newGroupUri);
     _isValidNotifier.value = newGroupUri != null && !exists;
     _existsNotifier.value = exists;
   }

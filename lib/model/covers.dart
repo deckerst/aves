@@ -5,7 +5,6 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
@@ -100,7 +99,7 @@ class Covers {
       case StoredAlbumFilter _:
         filter = StoredAlbumFilter(filter.album, null);
       case AlbumGroupFilter _:
-        filter = AlbumGroupFilter(filter.uri, SetOrFilter(const {}));
+        filter = AlbumGroupFilter.empty(filter.uri);
     }
 
     final oldRows = _rows.where((row) => row.filter == filter).toSet();
