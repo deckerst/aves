@@ -26,6 +26,7 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -466,6 +467,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
     final destinationGroupUri = filter is AlbumGroupFilter ? filter.uri : null;
     albumGrouping.addToGroup(childrenUris, destinationGroupUri);
+    context.read<FilterGroupNotifier>().value = destinationGroupUri;
 
     final source = context.read<CollectionSource>();
     source.invalidateAlbumGroupFilterSummary(notify: true);

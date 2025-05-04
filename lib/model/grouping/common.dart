@@ -57,6 +57,8 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
 
   bool exists(Uri? groupUri) => _groups.containsKey(groupUri);
 
+  Set<Uri> getGroups() => _groups.keys.toSet();
+
   // returns number of filters within provided group, following subgroups without counting them
   // providing the null root will yield 0, rather than the total number of filters in the collection (which is out of scope)
   int countLeaves(Uri? groupUri) {
