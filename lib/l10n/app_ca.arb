@@ -1608,5 +1608,9 @@
   "dynamicAlbumAlreadyExists": "L’àlbum dinàmic ja existeix",
   "@dynamicAlbumAlreadyExists": {},
   "sortOrderShortestFirst": "El més curt primer",
-  "@sortOrderShortestFirst": {}
+  "@sortOrderShortestFirst": {},
+  "sortByPath": "Per ruta",
+  "@sortByPath": {},
+  "searchFormatSectionTitle": "Formats",
+  "@searchFormatSectionTitle": {}
 }
