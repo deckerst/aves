@@ -1452,7 +1452,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get sortByDuration => 'Per durada';
 
   @override
-  String get sortByPath => 'By path';
+  String get sortByPath => 'Per ruta';
 
   @override
   String get sortOrderNewestFirst => 'Primer el més nou';
