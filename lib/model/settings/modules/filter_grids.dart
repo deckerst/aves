@@ -54,4 +54,6 @@ mixin FilterGridsSettings on SettingsAccess {
   bool getShowTitleQuery(String routeName) => getBool(SettingKeys.showTitleQueryPrefixKey + routeName) ?? false;
 
   void setShowTitleQuery(String routeName, bool newValue) => set(SettingKeys.showTitleQueryPrefixKey + routeName, newValue);
+
+  // TODO TLAD [nested] save/load
 }

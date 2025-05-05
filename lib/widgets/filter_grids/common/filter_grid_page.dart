@@ -694,6 +694,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
             selector: (context, layout) => layout.sections.isEmpty,
             builder: (context, empty, child) {
               return empty
+                  // TODO TLAD [nested] prevent scrolling when empty (cf CollectionPage)
                   ? SliverFillRemaining(
                       hasScrollBody: false,
                       child: emptyBuilder(),
