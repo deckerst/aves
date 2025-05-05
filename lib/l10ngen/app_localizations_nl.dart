@@ -99,6 +99,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get applyButtonLabel => 'TOEPASSEN';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'VERWIJDEREN';
 
   @override
@@ -219,6 +222,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chipActionUnpin => 'Unpinnen';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Hernoemen';
 
   @override
@@ -226,6 +232,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Staten tonen';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Album aanmaken';
@@ -493,6 +502,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Gepint';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Veelgebruikt';
@@ -840,6 +852,27 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamisch album bestaat al';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Items in kluizen zijn alleen beschikbaar voor deze app en niet voor andere.\n\nAls je deze app verwijdert of deze app-gegevens wist, verlies je al deze items.';
@@ -1260,7 +1293,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get collectionGroupDay => 'Op dag';
 
   @override
-  String get collectionGroupNone => 'Niet groeperen';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Onbekend';
@@ -1539,9 +1572,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Op opslagvolume';
-
-  @override
-  String get albumGroupNone => 'Niet groeperen';
 
   @override
   String get albumMimeTypeMixed => 'Gemengd';
@@ -2357,19 +2387,4 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Source';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Verborgen bestanden weergeven';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Verborgen bestanden niet tonen';
-
-  @override
-  String get filePickerOpenFrom => 'Openen van';
-
-  @override
-  String get filePickerNoItems => 'Geen items';
-
-  @override
-  String get filePickerUseThisFolder => 'Deze map gebruiken';
 }

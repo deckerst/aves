@@ -214,7 +214,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     if (duplicates.isNotEmpty) {
       debugPrint('Found duplicates=$duplicates');
     }
-    // return most recent duplicate for each duplicated content ID
+    // returns most recent duplicate for each duplicated content ID
     return duplicates;
   }
 
@@ -502,9 +502,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     final result = <CoverRow>{};
     final cursor = await _db.queryCursor(coverTable, bufferSize: _queryCursorBufferSize);
     while (await cursor.moveNext()) {
-      final row = CoverRow.fromMap(cursor.current);
+      final rowMap = cursor.current;
+      final row = CoverRow.fromMap(rowMap);
       if (row != null) {
         result.add(row);
+      } else {
+        debugPrint('failed to deserialize cover from row=$rowMap');
       }
     }
     return result;
@@ -572,9 +575,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     final result = <DynamicAlbumRow>{};
     final cursor = await _db.queryCursor(dynamicAlbumTable, bufferSize: _queryCursorBufferSize);
     while (await cursor.moveNext()) {
-      final row = DynamicAlbumRow.fromMap(cursor.current);
+      final rowMap = cursor.current;
+      final row = DynamicAlbumRow.fromMap(rowMap);
       if (row != null) {
         result.add(row);
+      } else {
+        debugPrint('failed to deserialize dynamic album from row=$rowMap');
       }
     }
     return result;
@@ -620,9 +626,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     final result = <VideoPlaybackRow>{};
     final cursor = await _db.queryCursor(videoPlaybackTable, bufferSize: _queryCursorBufferSize);
     while (await cursor.moveNext()) {
-      final row = VideoPlaybackRow.fromMap(cursor.current);
+      final rowMap = cursor.current;
+      final row = VideoPlaybackRow.fromMap(rowMap);
       if (row != null) {
         result.add(row);
+      } else {
+        debugPrint('failed to deserialize video playback from row=$rowMap');
       }
     }
     return result;

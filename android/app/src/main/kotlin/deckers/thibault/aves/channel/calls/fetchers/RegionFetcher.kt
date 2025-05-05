@@ -31,7 +31,7 @@ import kotlin.math.roundToInt
 class RegionFetcher internal constructor(
     private val context: Context,
 ) {
-    // return decoded bytes in ARGB_8888, with trailer bytes:
+    // returns decoded bytes in ARGB_8888, with trailer bytes:
     // - width (int32)
     // - height (int32)
     fun fetch(

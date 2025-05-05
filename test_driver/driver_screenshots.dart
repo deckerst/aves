@@ -35,7 +35,7 @@ Future<void> configureAndLaunch() async {
     ..drawerTypeBookmarks = [null, FavouriteFilter.instance]
     ..drawerAlbumBookmarks = null
     // collection
-    ..collectionSectionFactor = EntryGroupFactor.month
+    ..collectionSectionFactor = EntrySectionFactor.month
     ..collectionSortFactor = EntrySortFactor.date
     ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     ..showThumbnailFavourite = false

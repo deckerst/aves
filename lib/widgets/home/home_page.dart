@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> {
     final source = context.read<CollectionSource>();
     switch (routeName) {
       case AlbumListPage.routeName:
-        return buildRoute((context) => const AlbumListPage());
+        return buildRoute((context) => const AlbumListPage(initialGroup: null));
       case TagListPage.routeName:
         return buildRoute((context) => const TagListPage());
       case MapPage.routeName:

@@ -54,7 +54,7 @@ class TvNavigationPopHandler implements PopHandler {
 
     return switch (homePage) {
       HomePageSetting.collection => buildRoute((context) => CollectionPage(source: context.read<CollectionSource>(), filters: null)),
-      HomePageSetting.albums => buildRoute((context) => const AlbumListPage()),
+      HomePageSetting.albums => buildRoute((context) => const AlbumListPage(initialGroup: null)),
       HomePageSetting.tags => buildRoute((context) => const TagListPage()),
       HomePageSetting.explorer => buildRoute((context) => const ExplorerPage()),
     };

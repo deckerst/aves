@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -13,12 +14,15 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/app_bar/crumb_line.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:aves/widgets/filter_grids/common/group_crumb_line.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves_model/aves_model.dart';
@@ -163,6 +167,25 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
                       children: actionsBuilder(context, appMode, selection, actionDelegate),
                     ),
                   ),
+                if (_showGroupCrumbLine(context))
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        width: constraints.maxWidth,
+                        height: CrumbLine.getPreferredHeight(MediaQuery.textScalerOf(context)),
+                        child: Selector<FilterGroupNotifier, Uri?>(
+                          selector: (context, notifier) => notifier.value,
+                          builder: (context, groupUri, child) {
+                            return FilterGroupCrumbLine(
+                              key: const Key('crumbs'),
+                              groupUri: groupUri,
+                              onTap: (uri) => context.read<FilterGroupNotifier?>()?.value = uri,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 if (queryEnabled)
                   FilterQueryBar<T>(
                     queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
@@ -177,11 +200,16 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     );
   }
 
+  bool _showGroupCrumbLine(BuildContext context) => context.read<FilterGrouping?>()?.isNotEmpty ?? false;
+
   double get appBarContentHeight {
     final textScaler = MediaQuery.textScalerOf(context);
     double height = textScaler.scale(kToolbarHeight);
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
+    }
+    if (_showGroupCrumbLine(context)) {
+      height += CrumbLine.getPreferredHeight(textScaler);
     }
     if (context.read<Query>().enabled) {
       height += FilterQueryBar.getPreferredHeight(textScaler);

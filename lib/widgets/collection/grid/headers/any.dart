@@ -40,21 +40,21 @@ class CollectionSectionHeader extends StatelessWidget {
     switch (collection.sortFactor) {
       case EntrySortFactor.date:
         switch (collection.sectionFactor) {
-          case EntryGroupFactor.album:
+          case EntrySectionFactor.album:
             return _buildAlbumHeader(context);
-          case EntryGroupFactor.month:
+          case EntrySectionFactor.month:
             return MonthSectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
               date: (sectionKey as EntryDateSectionKey).date,
               selectable: selectable,
             );
-          case EntryGroupFactor.day:
+          case EntrySectionFactor.day:
             return DaySectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
               date: (sectionKey as EntryDateSectionKey).date,
               selectable: selectable,
             );
-          case EntryGroupFactor.none:
+          case EntrySectionFactor.none:
             break;
         }
       case EntrySortFactor.name:

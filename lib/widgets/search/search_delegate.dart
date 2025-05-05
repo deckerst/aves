@@ -1,6 +1,6 @@
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
-import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
@@ -15,6 +15,7 @@ import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/set_and.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -223,6 +224,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {
           final filters = <AlbumBaseFilter>[
+            ...albumGrouping.getGroups().map(albumGrouping.uriToFilter).whereType<AlbumBaseFilter>(),
             ...source.rawAlbums
                 .map((album) => StoredAlbumFilter(
                       album,

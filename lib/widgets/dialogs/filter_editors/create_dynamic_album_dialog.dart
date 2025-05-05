@@ -3,16 +3,16 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
-class AddDynamicAlbumDialog extends StatefulWidget {
-  static const routeName = '/dialog/add_dynamic_album';
+class CreateDynamicAlbumDialog extends StatefulWidget {
+  static const routeName = '/dialog/create_dynamic_album';
 
-  const AddDynamicAlbumDialog({super.key});
+  const CreateDynamicAlbumDialog({super.key});
 
   @override
-  State<AddDynamicAlbumDialog> createState() => _AddDynamicAlbumDialogState();
+  State<CreateDynamicAlbumDialog> createState() => _CreateDynamicAlbumDialogState();
 }
 
-class _AddDynamicAlbumDialogState extends State<AddDynamicAlbumDialog> {
+class _CreateDynamicAlbumDialogState extends State<CreateDynamicAlbumDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
@@ -55,13 +55,13 @@ class _AddDynamicAlbumDialogState extends State<AddDynamicAlbumDialog> {
         const CancelButton(),
         ValueListenableBuilder<bool>(
           valueListenable: _existsNotifier,
-          builder: (context, albumExists, child) {
+          builder: (context, exists, child) {
             return ValueListenableBuilder<bool>(
               valueListenable: _isValidNotifier,
               builder: (context, isValid, child) {
                 return TextButton(
                   onPressed: isValid ? () => _submit(context) : null,
-                  child: Text(albumExists ? l10n.showButtonLabel : l10n.createAlbumButtonLabel),
+                  child: Text(exists ? l10n.showButtonLabel : l10n.createAlbumButtonLabel),
                 );
               },
             );
@@ -80,9 +80,8 @@ class _AddDynamicAlbumDialogState extends State<AddDynamicAlbumDialog> {
 
   void _validate() {
     final name = _formatAlbumName();
-    final isValid = name != null;
-    _isValidNotifier.value = isValid;
-    _existsNotifier.value = isValid && dynamicAlbums.contains(name);
+    _isValidNotifier.value = name != null;
+    _existsNotifier.value = dynamicAlbums.contains(name);
   }
 
   void _submit(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves_model/aves_model.dart';
@@ -57,7 +57,7 @@ mixin NavigationSettings on SettingsAccess {
   set setMetadataDateBeforeFileOp(bool newValue) => set(SettingKeys.setMetadataDateBeforeFileOpKey, newValue);
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
-      (getStringList(SettingKeys.drawerTypeBookmarksKey))?.map((v) {
+      getStringList(SettingKeys.drawerTypeBookmarksKey)?.map((v) {
         if (v.isEmpty) return null;
         return CollectionFilter.fromJson(v);
       }).toList() ??

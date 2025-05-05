@@ -1,11 +1,10 @@
-import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 
-class DynamicAlbumFilter extends AlbumBaseFilter with CoveredFilter {
+class DynamicAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFilter {
   static const type = 'dynamic_album';
 
   final String name;
@@ -54,16 +53,4 @@ class DynamicAlbumFilter extends AlbumBaseFilter with CoveredFilter {
 
   @override
   String get key => '$type-$reversed-$name';
-
-  @override
-  bool match(String query) => name.toUpperCase().contains(query);
-
-  @override
-  StorageVolume? get storageVolume => null;
-
-  @override
-  bool get canRename => true;
-
-  @override
-  bool get isVault => false;
 }

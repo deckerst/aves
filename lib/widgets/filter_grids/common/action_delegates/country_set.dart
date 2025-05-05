@@ -1,7 +1,7 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/geo/states.dart';
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';

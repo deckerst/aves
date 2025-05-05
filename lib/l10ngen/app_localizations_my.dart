@@ -88,6 +88,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get applyButtonLabel => 'လုပ်ဆောင်မည်';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'ဖျက်မည်';
 
   @override
@@ -208,6 +211,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get chipActionUnpin => 'ထိပ်ဆုံးမှပင်ဖြုတ်ရန်';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'အမည်ပြောင်းရန်';
 
   @override
@@ -215,6 +221,9 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'နိုင်ငံများပြရန်';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'အယ်လ်ဘမ်ဖန်တီးရန်';
@@ -482,6 +491,9 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'ပင်တွဲထား';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'အကြည့်များ';
@@ -826,6 +838,27 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'လျှို့ဝှက်သိုလှောင်ခန်းရှိ ဓာတ်ပုံနှင့်ဗီဒီယိုများကို ဤအက်ပ်တွင်သာမြင်ရမည်ဖြစ်ပြီး အခြားအက်ပ်များတွင် မမြင်ရနိုင်ပါ။\n\nဤအက်ပ်ကိုဖျက်လိုက်သည်ဖြစ်စေ၊ အက်ပ်ဒေတာကိုရှင်းလင်းလိုက်သည်ဖြစ်စေ ၎င်းဓာတ်ပုံနှင့်ဗီဒီယိုအားလုံးကို ဆုံးရှုံးသွားမည်ဖြစ်ပါသည်။';
@@ -1242,7 +1275,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get collectionGroupDay => 'ရက်အလိုက်';
 
   @override
-  String get collectionGroupNone => 'စုမပြပါနှင့်';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'မသိထားသည်များ';
@@ -1501,9 +1534,6 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'သိုလှောင်မှုပမာဏအလိုက်';
-
-  @override
-  String get albumGroupNone => 'စုမပြပါနှင့်';
 
   @override
   String get albumMimeTypeMixed => 'ရောထား';
@@ -2319,19 +2349,4 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Source';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Show hidden files';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Don’t show hidden files';
-
-  @override
-  String get filePickerOpenFrom => 'Open from';
-
-  @override
-  String get filePickerNoItems => 'No items';
-
-  @override
-  String get filePickerUseThisFolder => 'Use this folder';
 }

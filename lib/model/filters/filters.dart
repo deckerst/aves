@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
-import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -57,6 +58,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
   static CollectionFilter? _fromMap(Map<String, dynamic> jsonMap) {
     final type = jsonMap['type'];
     switch (type) {
+      case AlbumGroupFilter.type:
+        return AlbumGroupFilter.fromMap(jsonMap);
       case AspectRatioFilter.type:
         return AspectRatioFilter.fromMap(jsonMap);
       case CoordinateFilter.type:
@@ -96,6 +99,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
       case TrashFilter.type:
         return TrashFilter.fromMap(jsonMap);
     }
+    debugPrint('failed to deserialize filter from JSON map=$jsonMap');
     return null;
   }
 
@@ -141,6 +145,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   String getTooltip(BuildContext context) => getLabel(context);
 
+  bool match(BuildContext context, String query) => getLabel(context).toUpperCase().contains(query);
+
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => null;
 
   Future<Color> color(BuildContext context) {
@@ -175,3 +181,28 @@ class FilterGridItem<T extends CollectionFilter> with EquatableMixin {
 }
 
 typedef EntryFilter = bool Function(AvesEntry);
+
+abstract class DummyCollectionFilter extends CollectionFilter {
+  const DummyCollectionFilter({required super.reversed});
+
+  @override
+  String get category => throw UnimplementedError();
+
+  @override
+  bool get exclusiveProp => throw UnimplementedError();
+
+  @override
+  String get key => throw UnimplementedError();
+
+  @override
+  EntryFilter get positiveTest => throw UnimplementedError();
+
+  @override
+  List<Object?> get props => throw UnimplementedError();
+
+  @override
+  Map<String, dynamic> toMap() => throw UnimplementedError();
+
+  @override
+  String get universalLabel => throw UnimplementedError();
+}

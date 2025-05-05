@@ -101,6 +101,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get applyButtonLabel => 'ПРИМЕНИТЬ';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'УДАЛИТЬ';
 
   @override
@@ -221,6 +224,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chipActionUnpin => 'Открепить';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Переименовать';
 
   @override
@@ -228,6 +234,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Показать государства';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Создать альбом';
@@ -495,6 +504,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Закрепленные';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Стандартные';
@@ -845,6 +857,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Динамический альбом уже существует';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Элементы внутри хранилищ доступны только для этого приложения, и никакого другого.\n\nЕсли вы удалите приложение или очистите его данные, то вы потеряете все содержимое внутри хранилищ.';
@@ -1265,7 +1298,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get collectionGroupDay => 'По дню';
 
   @override
-  String get collectionGroupNone => 'Не группировать';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Неизвестно';
@@ -1554,9 +1587,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'По накопителю';
-
-  @override
-  String get albumGroupNone => 'Не группировать';
 
   @override
   String get albumMimeTypeMixed => 'Разное';
@@ -2373,19 +2403,4 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Источник';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Показывать скрытые файлы';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Не показывать скрытые файлы';
-
-  @override
-  String get filePickerOpenFrom => 'Открыть';
-
-  @override
-  String get filePickerNoItems => 'Ничего нет';
-
-  @override
-  String get filePickerUseThisFolder => 'Использовать эту папку';
 }

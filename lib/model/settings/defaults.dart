@@ -44,7 +44,7 @@ class SettingsDefaults {
   ];
 
   // collection
-  static const collectionSectionFactor = EntryGroupFactor.month;
+  static const collectionSectionFactor = EntrySectionFactor.month;
   static const collectionSortFactor = EntrySortFactor.date;
   static const collectionBrowsingQuickActions = [
     EntrySetAction.searchCollection,
@@ -63,7 +63,7 @@ class SettingsDefaults {
   static const showThumbnailVideoDuration = true;
 
   // filter grids
-  static const albumGroupFactor = AlbumChipGroupFactor.importance;
+  static const albumGroupFactor = AlbumChipSectionFactor.importance;
   static const chipListSortFactor = ChipSortFactor.name;
 
   // viewer
@@ -113,9 +113,6 @@ class SettingsDefaults {
   static const showPinchGestureAlternatives = false;
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.s3;
-
-  // file picker
-  static const filePickerShowHiddenFiles = false;
 
   // slideshow
   static const slideshowRepeat = false;

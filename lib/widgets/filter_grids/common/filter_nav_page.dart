@@ -1,11 +1,16 @@
-import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
@@ -14,6 +19,7 @@ import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends StatefulWidget {
   final CollectionSource source;
@@ -23,7 +29,6 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   final CSAD actionDelegate;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final Set<T>? newFilters;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
@@ -35,7 +40,6 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
     required this.actionDelegate,
     required this.filterSections,
     this.newFilters,
-    required this.applyQuery,
     required this.emptyBuilder,
   });
 
@@ -114,7 +118,7 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   }
 }
 
-class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterNavigationPage<T, CSAD>> {
+class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterNavigationPage<T, CSAD>> with FeedbackMixin, VaultAwareMixin {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
 
   @override
@@ -143,7 +147,6 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
             sortFactor: widget.sortFactor,
             showHeaders: widget.showHeaders,
             selectable: true,
-            applyQuery: widget.applyQuery,
             emptyBuilder: () => ValueListenableBuilder<SourceState>(
               valueListenable: widget.source.stateNotifier,
               builder: (context, sourceState, child) {
@@ -153,6 +156,28 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
             // do not always enable hero, otherwise unwanted hero gets triggered
             // when using `Show in [...]` action from a chip in the Collection filter bar
             heroType: HeroType.onTap,
+            onTileTap: (gridItem, navigate) async {
+              final selection = context.read<Selection<FilterGridItem<T>>?>();
+              if (selection != null && selection.isSelecting) {
+                selection.toggleSelection(gridItem);
+              } else {
+                final filter = gridItem.filter;
+                if (!await unlockFilter(context, filter)) return;
+
+                if (filter is AlbumGroupFilter) {
+                  context.read<FilterGroupNotifier>().value = filter.uri;
+                } else {
+                  final route = MaterialPageRoute(
+                    settings: const RouteSettings(name: CollectionPage.routeName),
+                    builder: (context) => CollectionPage(
+                      source: context.read<CollectionSource>(),
+                      filters: {gridItem.filter},
+                    ),
+                  );
+                  navigate(route);
+                }
+              }
+            },
           ),
         ),
       ),

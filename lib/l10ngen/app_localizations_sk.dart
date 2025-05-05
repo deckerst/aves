@@ -93,6 +93,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get applyButtonLabel => 'POUŽIŤ';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'ODSTRÁNIŤ';
 
   @override
@@ -213,6 +216,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chipActionUnpin => 'Odstrániť z pripnutia';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Premenovať';
 
   @override
@@ -220,6 +226,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Zobraziť štáty';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Vytvoriť album';
@@ -487,6 +496,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Pripnuté';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Spoločné';
@@ -829,6 +841,27 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamický album už existuje';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Položky v trezoroch sú dostupné iba v tejto aplikácií\n\nAk aplikáciu odinštaluješ alebo vymažeš dáta aplikácie, stratíš všetky položky z trezorov.';
@@ -1243,7 +1276,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get collectionGroupDay => 'Podľa dňa';
 
   @override
-  String get collectionGroupNone => 'Nezoskupovať';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Neznáme';
@@ -1497,9 +1530,6 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Podľa objemu pamäte';
-
-  @override
-  String get albumGroupNone => 'Nezoskupovať';
 
   @override
   String get albumMimeTypeMixed => 'Zmiešané';
@@ -2312,19 +2342,4 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Zdroj';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Ukázať skryté súbory';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Neukazovať skryté súbory';
-
-  @override
-  String get filePickerOpenFrom => 'Otvoriť z';
-
-  @override
-  String get filePickerNoItems => 'Žiadne súbory';
-
-  @override
-  String get filePickerUseThisFolder => 'Použiť tento priečinok';
 }

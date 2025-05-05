@@ -17,22 +17,22 @@ import 'aves_dialog.dart';
 class TileViewDialog<S, G, L> extends StatefulWidget {
   static const routeName = '/dialog/tile_view';
 
-  final (S? sort, G? group, L? layout, bool reverse) initialValue;
+  final (S? sort, G? section, L? layout, bool reverse) initialValue;
   final List<TileViewDialogOption<S>> sortOptions;
-  final List<TileViewDialogOption<G>> groupOptions;
+  final List<TileViewDialogOption<G>> sectionOptions;
   final List<TileViewDialogOption<L>> layoutOptions;
   final String Function(S sort, bool reverse) sortOrder;
   final TileExtentController tileExtentController;
-  final bool Function(S? sort, G? group, L? layout)? canGroup;
+  final bool Function(S? sort, G? section, L? layout)? canSection;
 
   const TileViewDialog({
     super.key,
     required this.initialValue,
     this.sortOptions = const [],
-    this.groupOptions = const [],
+    this.sectionOptions = const [],
     this.layoutOptions = const [],
     required this.sortOrder,
-    this.canGroup,
+    this.canSection,
     required this.tileExtentController,
   });
 
@@ -42,7 +42,7 @@ class TileViewDialog<S, G, L> extends StatefulWidget {
 
 class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with SingleTickerProviderStateMixin {
   late S? _selectedSort;
-  late G? _selectedGroup;
+  late G? _selectedSection;
   late L? _selectedLayout;
   late bool _reverseSort;
   late int _columnMin, _columnMax;
@@ -50,20 +50,20 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
 
   List<TileViewDialogOption<S>> get sortOptions => widget.sortOptions;
 
-  List<TileViewDialogOption<G>> get groupOptions => widget.groupOptions;
+  List<TileViewDialogOption<G>> get sectionOptions => widget.sectionOptions;
 
   List<TileViewDialogOption<L>> get layoutOptions => widget.layoutOptions;
 
   TileExtentController get tileExtentController => widget.tileExtentController;
 
-  bool get canGroup => (widget.canGroup ?? (s, g, l) => true).call(_selectedSort, _selectedGroup, _selectedLayout);
+  bool get canSection => (widget.canSection ?? (s, g, l) => true).call(_selectedSort, _selectedSection, _selectedLayout);
 
   @override
   void initState() {
     super.initState();
     final initialValue = widget.initialValue;
     _selectedSort = initialValue.$1;
-    _selectedGroup = initialValue.$2;
+    _selectedSection = initialValue.$2;
     _selectedLayout = initialValue.$3;
     _reverseSort = initialValue.$4;
 
@@ -107,12 +107,12 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           switchOutCurve: Curves.easeInOutCubic,
           transitionBuilder: AvesTransitions.formTransitionBuilder,
           child: _buildSection(
-            show: canGroup,
-            icon: AIcons.group,
+            show: canSection,
+            icon: AIcons.section,
             title: l10n.viewDialogGroupSectionTitle,
-            options: groupOptions,
-            value: _selectedGroup,
-            onChanged: (v) => _selectedGroup = v,
+            options: sectionOptions,
+            value: _selectedSection,
+            onChanged: (v) => _selectedSection = v,
           ),
         ),
         _buildSection(
@@ -152,7 +152,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           key: const Key('button-apply'),
           onPressed: () {
             tileExtentController.setUserPreferredColumnCount(_columnCountNotifier.value);
-            Navigator.maybeOf(context)?.pop<(S?, G?, L?, bool)>((_selectedSort, _selectedGroup, _selectedLayout, _reverseSort));
+            Navigator.maybeOf(context)?.pop<(S?, G?, L?, bool)>((_selectedSort, _selectedSection, _selectedLayout, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
         )

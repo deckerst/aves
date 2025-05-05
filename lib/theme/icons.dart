@@ -80,7 +80,7 @@ class AIcons {
   static const place = Symbols.place;
 
   // view
-  static const group = Symbols.group_work;
+  static const section = Symbols.group_work;
   static const layout = Symbols.grid_view;
   static const layoutMosaic = Symbols.view_comfy;
   static const layoutGrid = Symbols.view_compact;
@@ -112,6 +112,7 @@ class AIcons {
   static const filter = Symbols.filter_alt;
   static const filterOff = Symbols.filter_alt_off;
   static const goUp = Symbols.arrow_upward;
+  static const group = Symbols.stack_group;
   static const hide = Symbols.visibility_off;
   static const info = Symbols.info;
   static const layers = Symbols.layers;

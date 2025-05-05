@@ -99,6 +99,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get applyButtonLabel => 'APPLY';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'DELETE';
 
   @override
@@ -219,6 +222,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chipActionUnpin => 'Unpin from top';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Rename';
 
   @override
@@ -226,6 +232,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Show states';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Create album';
@@ -493,6 +502,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Pinned';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Common';
@@ -843,6 +855,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
 
   @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
+
+  @override
   String get newVaultWarningDialogMessage => 'Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.';
 
   @override
@@ -1087,7 +1120,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewDialogSortSectionTitle => 'Sort';
 
   @override
-  String get viewDialogGroupSectionTitle => 'Group';
+  String get viewDialogGroupSectionTitle => 'Sections';
 
   @override
   String get viewDialogLayoutSectionTitle => 'Layout';
@@ -1261,7 +1294,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get collectionGroupDay => 'By day';
 
   @override
-  String get collectionGroupNone => 'Do not group';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Unknown';
@@ -1540,9 +1573,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'By storage volume';
-
-  @override
-  String get albumGroupNone => 'Do not group';
 
   @override
   String get albumMimeTypeMixed => 'Mixed';
@@ -2358,21 +2388,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Source';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Show hidden files';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Don’t show hidden files';
-
-  @override
-  String get filePickerOpenFrom => 'Open from';
-
-  @override
-  String get filePickerNoItems => 'No items';
-
-  @override
-  String get filePickerUseThisFolder => 'Use this folder';
 }
 
 /// The translations for English, using the Shavian Shaw script (`en_Shaw`).
@@ -3602,9 +3617,6 @@ class AppLocalizationsEnShaw extends AppLocalizationsEn {
   String get collectionGroupDay => '𐑚𐑲 𐑛𐑱';
 
   @override
-  String get collectionGroupNone => '𐑛𐑵 𐑯𐑪𐑑 𐑜𐑮𐑵𐑐';
-
-  @override
   String get sectionUnknown => '𐑳𐑯𐑯𐑴𐑯';
 
   @override
@@ -3878,9 +3890,6 @@ class AppLocalizationsEnShaw extends AppLocalizationsEn {
 
   @override
   String get albumGroupVolume => '𐑚𐑲 𐑕𐑑𐑹𐑦𐑡 𐑝𐑪𐑤𐑿𐑥';
-
-  @override
-  String get albumGroupNone => '𐑛𐑵 𐑯𐑪𐑑 𐑜𐑮𐑵𐑐';
 
   @override
   String get albumMimeTypeMixed => '𐑥𐑦𐑒𐑕𐑑';
@@ -4690,19 +4699,4 @@ class AppLocalizationsEnShaw extends AppLocalizationsEn {
 
   @override
   String get sourceViewerPageTitle => '𐑕𐑹𐑕';
-
-  @override
-  String get filePickerShowHiddenFiles => '𐑖𐑴 𐑣𐑦𐑛𐑩𐑯 𐑓𐑲𐑤𐑟';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => '𐑛𐑴𐑯\'𐑑 𐑖𐑴 𐑣𐑦𐑛𐑩𐑯 𐑓𐑲𐑤𐑟';
-
-  @override
-  String get filePickerOpenFrom => '𐑴𐑐𐑩𐑯 𐑓𐑮𐑪𐑥';
-
-  @override
-  String get filePickerNoItems => '𐑯𐑴 𐑲𐑑𐑩𐑥𐑟';
-
-  @override
-  String get filePickerUseThisFolder => '𐑿𐑟 𐑞𐑦𐑕 𐑓𐑴𐑤𐑛𐑼';
 }

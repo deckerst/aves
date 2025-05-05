@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -28,6 +29,7 @@ import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -56,9 +58,10 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final Widget? floatingActionButton;
+  final FilterTileTapCallback<T> onTileTap;
   final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
   FilterGridPage({
@@ -71,9 +74,10 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    this.floatingActionButton,
+    required this.onTileTap,
   });
 
   @override
@@ -98,9 +102,9 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               sortFactor: sortFactor,
               showHeaders: showHeaders,
               selectable: selectable,
-              applyQuery: applyQuery,
               emptyBuilder: emptyBuilder,
               heroType: heroType,
+              onTileTap: onTileTap,
             );
           },
         ),
@@ -142,6 +146,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             },
             child: AvesScaffold(
               body: body,
+              floatingActionButton: floatingActionButton,
               drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar
                   ? AppBottomNavBar(
@@ -166,9 +171,9 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final FilterTileTapCallback<T> onTileTap;
 
   const _FilterGrid({
     super.key,
@@ -180,9 +185,9 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    required this.onTileTap,
   });
 
   @override
@@ -214,6 +219,13 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
           canPop: (context) => context.select<Selection<FilterGridItem<T>>, bool>((v) => !v.isSelecting),
           onPopBlocked: (context) => context.read<Selection<FilterGridItem<T>>>().browse(),
         ),
+        APopHandler(
+          canPop: (context) => context.read<FilterGroupNotifier?>()?.value == null,
+          onPopBlocked: (context) {
+            final filterGroupNotifier = context.read<FilterGroupNotifier>();
+            filterGroupNotifier.value = FilterGrouping.getParentGroup(filterGroupNotifier.value);
+          },
+        ),
         tvNavigationPopHandler,
         doubleBackPopHandler,
       ],
@@ -227,9 +239,9 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
           sortFactor: widget.sortFactor,
           showHeaders: widget.showHeaders,
           selectable: widget.selectable,
-          applyQuery: widget.applyQuery,
           emptyBuilder: widget.emptyBuilder,
           heroType: widget.heroType,
+          onTileTap: widget.onTileTap,
         ),
       ),
     );
@@ -244,8 +256,8 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
-  final QueryTest<T> applyQuery;
   final HeroType heroType;
+  final FilterTileTapCallback<T> onTileTap;
 
   const _FilterGridContent({
     super.key,
@@ -256,9 +268,9 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    required this.onTileTap,
   });
 
   @override
@@ -296,8 +308,9 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
             Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
             if (queryEnabled && query.isNotEmpty) {
               visibleSections = {};
+              final queryUp = query.toUpperCase();
               widget.sections.forEach((sectionKey, sectionFilters) {
-                final visibleFilters = widget.applyQuery(context, sectionFilters, query.toUpperCase());
+                final visibleFilters = sectionFilters.where((item) => item.filter.match(context, queryUp)).toList();
                 if (visibleFilters.isNotEmpty) {
                   visibleSections[sectionKey] = visibleFilters;
                 }
@@ -350,6 +363,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                                   tileLayout: tileLayout,
                                   banner: _getFilterBanner(context, gridItem.filter),
                                   heroType: widget.heroType,
+                                  onTap: widget.onTileTap,
                                 );
                                 if (!settings.useTvLayout) return tile;
 
@@ -488,15 +502,13 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   @override
   Widget build(BuildContext context) {
-    final scrollView = AnimationLimiter(
-      child: _FilterScrollView<T>(
-        scrollableKey: scrollableKey,
-        appBar: appBar,
-        appBarHeightNotifier: appBarHeightNotifier,
-        sortFactor: widget.sortFactor,
-        emptyBuilder: emptyBuilder,
-        scrollController: scrollController,
-      ),
+    final scrollView = _FilterScrollView<T>(
+      scrollableKey: scrollableKey,
+      appBar: appBar,
+      appBarHeightNotifier: appBarHeightNotifier,
+      sortFactor: widget.sortFactor,
+      emptyBuilder: emptyBuilder,
+      scrollController: scrollController,
     );
 
     final scaler = _FilterScaler<T>(
@@ -676,16 +688,21 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
       controller: scrollController,
       slivers: [
         appBar,
-        Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
+        AnimationLimiter(
+          key: ValueKey(context.select<FilterGroupNotifier?, Uri?>((v) => v?.value)),
+          child: Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
             selector: (context, layout) => layout.sections.isEmpty,
             builder: (context, empty, child) {
               return empty
+                  // TODO TLAD [nested] prevent scrolling when empty (cf CollectionPage)
                   ? SliverFillRemaining(
                       hasScrollBody: false,
                       child: emptyBuilder(),
                     )
                   : SectionedListSliver<FilterGridItem<T>>();
-            }),
+            },
+          ),
+        ),
         const NavBarPaddingSliver(),
         const BottomPaddingSliver(),
         const TvTileGridBottomPaddingSliver(),

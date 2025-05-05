@@ -1,10 +1,13 @@
-import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
+import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/path.dart';
@@ -12,8 +15,10 @@ import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' as p;
@@ -29,14 +34,12 @@ void main() {
   });
 
   tearDown(() async {
+    albumGrouping.clear();
     await getIt.reset();
   });
 
   test('Filter serialization', () {
     CollectionFilter? jsonRoundTrip(filter) => CollectionFilter.fromJson(filter.toJson());
-
-    final album = StoredAlbumFilter('path/to/album', 'album');
-    expect(album, jsonRoundTrip(album));
 
     final aspectRatio = AspectRatioFilter.landscape;
     expect(aspectRatio, jsonRoundTrip(aspectRatio));
@@ -52,9 +55,6 @@ void main() {
 
     const fav = FavouriteFilter.instance;
     expect(fav, jsonRoundTrip(fav));
-
-    final location = LocationFilter(LocationLevel.country, 'France${LocationFilter.locationSeparator}FR');
-    expect(location, jsonRoundTrip(location));
 
     final mime = MimeFilter.video;
     expect(mime, jsonRoundTrip(mime));
@@ -77,11 +77,35 @@ void main() {
     final recent = RecentlyAddedFilter.instance;
     expect(recent, jsonRoundTrip(recent));
 
+    final type = TypeFilter.sphericalVideo;
+    expect(type, jsonRoundTrip(type));
+
+    // covered
+
+    final album = StoredAlbumFilter('path/to/album', 'album');
+    expect(album, jsonRoundTrip(album));
+
+    final location = LocationFilter(LocationLevel.country, 'France${LocationFilter.locationSeparator}FR');
+    expect(location, jsonRoundTrip(location));
+
     final tag = TagFilter('some tag');
     expect(tag, jsonRoundTrip(tag));
 
-    final type = TypeFilter.sphericalVideo;
-    expect(type, jsonRoundTrip(type));
+    // combinations
+
+    final setAnd = SetAndFilter({album, location, tag});
+    expect(setAnd, jsonRoundTrip(setAnd));
+
+    final setOr = SetOrFilter({album, location, tag});
+    expect(setOr, jsonRoundTrip(setOr));
+
+    final dynamicAlbum = DynamicAlbumFilter('dynamic album', setAnd);
+    expect(dynamicAlbum, jsonRoundTrip(dynamicAlbum));
+
+    // groups
+
+    final albumGroup = AlbumGroupFilter(albumGrouping.buildGroupUri(null, 'some group'), setOr);
+    expect(albumGroup, jsonRoundTrip(albumGroup));
   });
 
   test('Path filter', () {

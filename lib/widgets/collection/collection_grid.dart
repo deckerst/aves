@@ -697,10 +697,10 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
     switch (collection.sortFactor) {
       case EntrySortFactor.date:
         switch (collection.sectionFactor) {
-          case EntryGroupFactor.album:
+          case EntrySectionFactor.album:
             addAlbums(collection, sectionLayouts, crumbs);
-          case EntryGroupFactor.month:
-          case EntryGroupFactor.day:
+          case EntrySectionFactor.month:
+          case EntrySectionFactor.day:
             final firstKey = sectionLayouts.first.sectionKey;
             final lastKey = sectionLayouts.last.sectionKey;
             if (firstKey is EntryDateSectionKey && lastKey is EntryDateSectionKey) {
@@ -722,7 +722,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                 });
               }
             }
-          case EntryGroupFactor.none:
+          case EntrySectionFactor.none:
             break;
         }
       case EntrySortFactor.name:

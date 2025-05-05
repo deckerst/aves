@@ -1,5 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -124,12 +124,14 @@ mixin AlbumMixin on SourceBase {
         _filterRecentEntryMap.remove(key);
       });
 
-      // clear entries for all dynamic albums
+      // clear entries for all dynamic albums and groups
       invalidateDynamicAlbumFilterSummary(notify: false);
+      invalidateAlbumGroupFilterSummary(notify: false);
     }
     if (notify) {
       eventBus.fire(StoredAlbumSummaryInvalidatedEvent(directories));
       eventBus.fire(const DynamicAlbumSummaryInvalidatedEvent());
+      eventBus.fire(const AlbumGroupSummaryInvalidatedEvent());
     }
   }
 
@@ -143,7 +145,19 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
+  void invalidateAlbumGroupFilterSummary({bool notify = true}) {
+    _filterEntryCountMap.removeWhere(_isAlbumGroupKey);
+    _filterSizeMap.removeWhere(_isAlbumGroupKey);
+    _filterRecentEntryMap.removeWhere(_isAlbumGroupKey);
+
+    if (notify) {
+      eventBus.fire(const AlbumGroupSummaryInvalidatedEvent());
+    }
+  }
+
   bool _isDynamicAlbumKey(String key, _) => key.startsWith('${DynamicAlbumFilter.type}-');
+
+  bool _isAlbumGroupKey(String key, _) => key.startsWith('${AlbumGroupFilter.type}-');
 
   int albumEntryCount(AlbumBaseFilter filter) {
     return _filterEntryCountMap.putIfAbsent(filter.key, () => visibleEntries.where(filter.test).length);
@@ -245,6 +259,10 @@ class AlbumsChangedEvent {}
 
 class DynamicAlbumSummaryInvalidatedEvent {
   const DynamicAlbumSummaryInvalidatedEvent();
+}
+
+class AlbumGroupSummaryInvalidatedEvent {
+  const AlbumGroupSummaryInvalidatedEvent();
 }
 
 class StoredAlbumSummaryInvalidatedEvent {

@@ -29,7 +29,7 @@ Future<void> configureAndLaunch() async {
     ..setHome(HomePageSetting.collection)
     ..enableBottomNavigationBar = true
     // collection
-    ..collectionSectionFactor = EntryGroupFactor.album
+    ..collectionSectionFactor = EntrySectionFactor.album
     ..collectionSortFactor = EntrySortFactor.date
     ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
     // viewer

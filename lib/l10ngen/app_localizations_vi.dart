@@ -88,6 +88,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get applyButtonLabel => 'ÁP DỤNG';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'XÓA BỎ';
 
   @override
@@ -208,6 +211,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get chipActionUnpin => 'Bỏ ghim khỏi đầu';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Đổi tên';
 
   @override
@@ -215,6 +221,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Hiển thị tỉnh';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Tạo bộ sưu tập';
@@ -482,6 +491,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Đã ghim';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Phổ biến';
@@ -824,6 +836,27 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Album động đã tồn tại';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Các mục trong kho bí mật chỉ có sẵn cho ứng dụng này và không có sẵn cho ứng dụng khác.\n\nNếu bạn gỡ cài đặt ứng dụng này hoặc xóa dữ liệu ứng dụng này, bạn sẽ mất tất cả các mục này.';
@@ -1238,7 +1271,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get collectionGroupDay => 'Theo ngày';
 
   @override
-  String get collectionGroupNone => 'Không kết hợp';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Không biết';
@@ -1487,9 +1520,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Theo dung lượng lưu trữ';
-
-  @override
-  String get albumGroupNone => 'Không nhóm các mục';
 
   @override
   String get albumMimeTypeMixed => 'Trộn';
@@ -2302,19 +2332,4 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Nguồn';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Hiển thị tệp ẩn';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Đừng hiển thị tệp ẩn';
-
-  @override
-  String get filePickerOpenFrom => 'Mở từ';
-
-  @override
-  String get filePickerNoItems => 'Không có mục nào';
-
-  @override
-  String get filePickerUseThisFolder => 'Dùng thư mục này';
 }

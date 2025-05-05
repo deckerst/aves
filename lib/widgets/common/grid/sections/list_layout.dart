@@ -18,7 +18,7 @@ abstract class SectionedListLayout<T> {
     required this.sectionLayouts,
   });
 
-  // return tile rectangle in layout space, i.e. x=0 is start
+  // returns tile rectangle in layout space, i.e. x=0 is start
   Rect? getTileRect(T item);
 
   SectionLayout? getSectionAt(double offsetY) => sectionLayouts.firstWhereOrNull((sl) => offsetY < sl.maxOffset);
