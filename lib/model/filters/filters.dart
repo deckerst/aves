@@ -21,6 +21,7 @@ import 'package:aves/model/filters/set_and.dart';
 import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -36,11 +37,13 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     SetAndFilter.type,
     SetOrFilter.type,
     MimeFilter.type,
+    AlbumGroupFilter.type,
     DynamicAlbumFilter.type,
     StoredAlbumFilter.type,
     TypeFilter.type,
     RecentlyAddedFilter.type,
     DateFilter.type,
+    WeekDayFilter.type,
     LocationFilter.type,
     CoordinateFilter.type,
     FavouriteFilter.type,
@@ -98,6 +101,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return TypeFilter.fromMap(jsonMap);
       case TrashFilter.type:
         return TrashFilter.fromMap(jsonMap);
+      case WeekDayFilter.type:
+        return WeekDayFilter.fromMap(jsonMap);
     }
     debugPrint('failed to deserialize filter from JSON map=$jsonMap');
     return null;

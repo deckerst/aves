@@ -13,6 +13,7 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -130,7 +131,7 @@ class _BasicSectionState extends State<BasicSection> {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
-      if (dateTime != null) DateFilter(DateLevel.ymd, dateTime.date),
+      if (dateTime != null) ...[DateFilter(DateLevel.ymd, dateTime.date), WeekDayFilter(dateTime.weekday)],
       if (album != null) StoredAlbumFilter(album, collection?.source.getStoredAlbumDisplayName(context, album)),
       if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map(TagFilter.new),

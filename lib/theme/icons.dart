@@ -72,6 +72,7 @@ class AIcons {
   static const dateByMonth = Symbols.calendar_month;
   static const dateRecent = Symbols.today;
   static const dateUndated = Symbols.event_busy;
+  static const dateWeekday = Symbols.today;
   static const geoBounds = Symbols.public;
   static const location = Symbols.place;
   static const locationUnlocated = Symbols.location_off;
