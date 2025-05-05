@@ -837,7 +837,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get newDynamicAlbumDialogTitle => 'Νέο δυναμικό άλμπουμ';
 
   @override
-  String get dynamicAlbumAlreadyExists => 'Το άλμπουμ Dynamic υπάρχει ήδη';
+  String get dynamicAlbumAlreadyExists => 'Το δυναμικό άλμπουμ υπάρχει ήδη';
 
   @override
   String get newVaultWarningDialogMessage => 'Τα αρχεία στα θησαυροφυλάκια είναι διαθέσιμα μόνο σε αυτή την εφαρμογή και σε καμία άλλη.\n\nΑν απεγκαταστήσετε την εφαρμογή ή έστω διαγράψετε τα δεδομένα της εφαρμογής, θα χάσετε όλα σας τα κρυφά αρχεία.';
@@ -1102,7 +1102,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get tileLayoutList => 'Λίστα';
 
   @override
-  String get castDialogTitle => 'Συσκευές casting';
+  String get castDialogTitle => 'Συσκευές Απεικόνισης';
 
   @override
   String get coverDialogTabCover => 'Εξώφυλλο';
@@ -1168,7 +1168,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get aboutDataUsageExternal => 'Εξωτερικά';
 
   @override
-  String get aboutDataUsageClearCache => 'Εκκαθάριση μνήμης cache';
+  String get aboutDataUsageClearCache => 'Εκκαθάριση μνήμης';
 
   @override
   String get aboutCreditsSectionTitle => 'Αναφορες';
@@ -2276,10 +2276,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get mapAttributionOpenTopoMap => '[SRTM](https://www.earthdata.nasa.gov/sensors/srtm) | Πλακάκια από [OpenTopoMap](https://opentopomap.org/), [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0/)';
 
   @override
-  String get mapAttributionOsmHot => 'Πλεονεκτήματα από [HOT](https://www.hotosm.org/) • που φιλοξενούνται από [OSM France](https://openstreetmap.fr/)';
+  String get mapAttributionOsmHot => 'Πλακάκια από [HOT](https://www.hotosm.org/) • Φιλοξενείται από [OSM France](https://openstreetmap.fr/)';
 
   @override
-  String get mapAttributionStamen => 'Ποσά από [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
+  String get mapAttributionStamen => 'Πλακάκια από [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)';
 
   @override
   String get openMapPageTooltip => 'Προβολή στη σελίδα του χάρτη';
