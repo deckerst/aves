@@ -77,6 +77,11 @@ class MimeFilter extends CollectionFilter {
   }
 
   @override
+  String getTooltip(BuildContext context) {
+    return '${getLabel(context)} ($mime)';
+  }
+
+  @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(_icon, size: size);
 
   @override

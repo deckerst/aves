@@ -7,11 +7,11 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
-import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -41,7 +41,7 @@ class BasicSection extends StatefulWidget {
   final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<bool> isScrollingNotifier;
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
-  final AFilterCallback onFilter;
+  final AFilterCallback onFilterSelection;
 
   const BasicSection({
     super.key,
@@ -50,7 +50,7 @@ class BasicSection extends StatefulWidget {
     required this.actionDelegate,
     required this.isScrollingNotifier,
     required this.isEditingMetadataNotifier,
-    required this.onFilter,
+    required this.onFilterSelection,
   });
 
   @override
@@ -151,7 +151,7 @@ class _BasicSectionState extends State<BasicSection> {
             children: effectiveFilters
                 .map((filter) => AvesFilterChip(
                       filter: filter,
-                      onTap: widget.onFilter,
+                      onTap: widget.onFilterSelection,
                     ))
                 .toList(),
           ),

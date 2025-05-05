@@ -93,6 +93,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get applyButtonLabel => 'APLICAR';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'SUPRIMEIX';
 
   @override
@@ -213,6 +216,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get chipActionUnpin => 'Desancora de dalt';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Canviar nom';
 
   @override
@@ -220,6 +226,9 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Mostrar estats';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Crear àlbum';
@@ -487,6 +496,9 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fixat';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Comú';
@@ -829,6 +841,27 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'L’àlbum dinàmic ja existeix';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Els elements en caixes fortes només son disponibles des d’aquesta aplicació.\n\nSi desinstaŀles aquesta aplicació o en borres les dades, perdràs aquests elements.';
@@ -1243,7 +1276,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get collectionGroupDay => 'Per dia';
 
   @override
-  String get collectionGroupNone => 'No per grup';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Desconegut';
@@ -1492,9 +1525,6 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Per volum d’emmagatzematge';
-
-  @override
-  String get albumGroupNone => 'No agrupar';
 
   @override
   String get albumMimeTypeMixed => 'Barrejat';
@@ -2307,19 +2337,4 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Font';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Mostra arxius amagats';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'No mostris arxius amagats';
-
-  @override
-  String get filePickerOpenFrom => 'Obrir des de';
-
-  @override
-  String get filePickerNoItems => 'Sense element';
-
-  @override
-  String get filePickerUseThisFolder => 'Utilitza aquesta carpeta';
 }

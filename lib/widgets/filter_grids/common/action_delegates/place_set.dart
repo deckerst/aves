@@ -1,5 +1,5 @@
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';

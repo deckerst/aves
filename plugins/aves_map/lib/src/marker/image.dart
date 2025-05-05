@@ -83,31 +83,7 @@ class ImageMarker extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
             decoration: ShapeDecoration(
               color: theme.colorScheme.primary,
-              shape: Directionality.of(context) == TextDirection.rtl
-                  ? CustomRoundedRectangleBorder(
-                      leftSide: borderSide,
-                      rightSide: borderSide,
-                      topSide: borderSide,
-                      bottomSide: borderSide,
-                      topRightCornerSide: borderSide,
-                      bottomLeftCornerSide: borderSide,
-                      borderRadius: const BorderRadius.only(
-                        topRight: innerRadius,
-                        bottomLeft: innerRadius,
-                      ),
-                    )
-                  : CustomRoundedRectangleBorder(
-                      leftSide: borderSide,
-                      rightSide: borderSide,
-                      topSide: borderSide,
-                      bottomSide: borderSide,
-                      topLeftCornerSide: borderSide,
-                      bottomRightCornerSide: borderSide,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: innerRadius,
-                        bottomRight: innerRadius,
-                      ),
-                    ),
+              shape: _buildCornerDetailShape(context, borderSide),
             ),
             child: Text(
               countFormatter.format(count),
@@ -142,6 +118,26 @@ class ImageMarker extends StatelessWidget {
     }
 
     return child;
+  }
+
+  ShapeBorder _buildCornerDetailShape(BuildContext context, BorderSide side) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    return CustomRoundedRectangleBorder(
+      leftSide: side,
+      rightSide: side,
+      topSide: side,
+      bottomSide: side,
+      topLeftCornerSide: isRtl ? null : side,
+      topRightCornerSide: isRtl ? side : null,
+      bottomLeftCornerSide: isRtl ? side : null,
+      bottomRightCornerSide: isRtl ? null : side,
+      borderRadius: BorderRadius.only(
+        topLeft: isRtl ? Radius.zero : innerRadius,
+        topRight: isRtl ? innerRadius : Radius.zero,
+        bottomLeft: isRtl ? innerRadius : Radius.zero,
+        bottomRight: isRtl ? Radius.zero : innerRadius,
+      ),
+    );
   }
 
   static const _crs = Epsg3857();

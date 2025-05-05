@@ -12,6 +12,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/naming_pattern.dart';
@@ -43,7 +44,7 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
-import 'package:aves/widgets/dialogs/filter_editors/add_dynamic_album_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/create_dynamic_album_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
@@ -771,8 +772,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final name = await showDialog<String>(
       context: context,
-      builder: (context) => const AddDynamicAlbumDialog(),
-      routeSettings: const RouteSettings(name: AddDynamicAlbumDialog.routeName),
+      builder: (context) => const CreateDynamicAlbumDialog(),
+      routeSettings: const RouteSettings(name: CreateDynamicAlbumDialog.routeName),
     );
     if (name == null) return;
 
@@ -792,19 +793,20 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  Future<void> _showDynamicAlbum(NavigatorState? navigator, DynamicAlbumFilter album) async {
+  Future<void> _showDynamicAlbum(NavigatorState? navigator, DynamicAlbumFilter albumFilter) async {
     // local context may be deactivated when action is triggered after navigation
     if (navigator != null) {
       final context = navigator.context;
       final highlightInfo = context.read<HighlightInfo>();
       if (context.currentRouteName == AlbumListPage.routeName) {
-        highlightInfo.trackItem(FilterGridItem(album, null), highlightItem: album);
+        highlightInfo.trackItem(FilterGridItem(albumFilter, null), highlightItem: albumFilter);
       } else {
-        highlightInfo.set(album);
+        highlightInfo.set(albumFilter);
+        final initialGroup = albumGrouping.getFilterParent(albumFilter);
         await navigator.pushAndRemoveUntil(
           MaterialPageRoute(
             settings: const RouteSettings(name: AlbumListPage.routeName),
-            builder: (_) => const AlbumListPage(),
+            builder: (_) => AlbumListPage(initialGroup: initialGroup),
           ),
           (route) => false,
         );

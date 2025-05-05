@@ -88,6 +88,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get applyButtonLabel => 'ALKALMAZ';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'TÖRLÉS';
 
   @override
@@ -208,6 +211,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chipActionUnpin => 'Kitűzés megszüntetése';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Átnevezés';
 
   @override
@@ -215,6 +221,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Megyék megjelenítése';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Új album';
@@ -482,6 +491,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Kitűzött';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Gyakori';
@@ -824,6 +836,27 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'A dinamikus album már létezik';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'A széfben lévő elemek csak ebben az alkalmazásban érhetőek el.\n\nHa eltávolítod az alkalmazást vagy törlöd az adatokat, ezeket az elemeket is elveszíted.';
@@ -1238,7 +1271,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get collectionGroupDay => 'Napok szerint';
 
   @override
-  String get collectionGroupNone => 'Nincs csoportositás';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Ismeretlen';
@@ -1487,9 +1520,6 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Tárhely alapján';
-
-  @override
-  String get albumGroupNone => 'Nincs csoportositás';
 
   @override
   String get albumMimeTypeMixed => 'Vegyesen';
@@ -2301,19 +2331,4 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Forrás';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Rejtett fájlok mutatása';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Ne mutassa a rejtett fájlokat';
-
-  @override
-  String get filePickerOpenFrom => 'Megnyitás innen';
-
-  @override
-  String get filePickerNoItems => 'Nincsenek elemek';
-
-  @override
-  String get filePickerUseThisFolder => 'Mappa használata';
 }

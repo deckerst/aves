@@ -93,6 +93,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get applyButtonLabel => 'APLICA';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'ȘTERGE';
 
   @override
@@ -213,6 +216,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get chipActionUnpin => 'Anulați fixarea de sus';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Redenumiți';
 
   @override
@@ -220,6 +226,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Afișare state';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Creați album';
@@ -487,6 +496,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fixat';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Uzual';
@@ -829,6 +841,27 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Albumul dinamic există deja';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Elementele din seifuri sunt disponibile doar pentru această aplicație și nu pentru altele.\n\nDacă dezinstalezi această aplicație sau ștergi datele acestei aplicații, vei pierde toate aceste elemente.';
@@ -1243,7 +1276,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get collectionGroupDay => 'După zi';
 
   @override
-  String get collectionGroupNone => 'Nu grupați';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Necunoscut';
@@ -1492,9 +1525,6 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'După volumul de stocare';
-
-  @override
-  String get albumGroupNone => 'Nu se grupează';
 
   @override
   String get albumMimeTypeMixed => 'Amestecat';
@@ -2307,19 +2337,4 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Sursă';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Afișare fișiere ascunse';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Nu se afișează fișiere ascunse';
-
-  @override
-  String get filePickerOpenFrom => 'Deschidere din';
-
-  @override
-  String get filePickerNoItems => 'Fără articole';
-
-  @override
-  String get filePickerUseThisFolder => 'Utilizați acest dosar';
 }

@@ -30,7 +30,7 @@ class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   List<String> burstPatterns;
-  EntryGroupFactor sectionFactor;
+  EntrySectionFactor sectionFactor;
   EntrySortFactor sortFactor;
   bool sortReverse;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
@@ -147,13 +147,13 @@ class CollectionLens with ChangeNotifier {
     switch (sortFactor) {
       case EntrySortFactor.date:
         switch (sectionFactor) {
-          case EntryGroupFactor.none:
+          case EntrySectionFactor.none:
             return false;
-          case EntryGroupFactor.album:
+          case EntrySectionFactor.album:
             return showAlbumHeaders();
-          case EntryGroupFactor.month:
+          case EntrySectionFactor.month:
             return true;
-          case EntryGroupFactor.day:
+          case EntrySectionFactor.day:
             return true;
         }
       case EntrySortFactor.name:
@@ -281,13 +281,13 @@ class CollectionLens with ChangeNotifier {
       switch (sortFactor) {
         case EntrySortFactor.date:
           switch (sectionFactor) {
-            case EntryGroupFactor.album:
+            case EntrySectionFactor.album:
               sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-            case EntryGroupFactor.month:
+            case EntrySectionFactor.month:
               sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
-            case EntryGroupFactor.day:
+            case EntrySectionFactor.day:
               sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
-            case EntryGroupFactor.none:
+            case EntrySectionFactor.none:
               sections = Map.fromEntries([
                 MapEntry(const SectionKey(), _filteredSortedEntries),
               ]);

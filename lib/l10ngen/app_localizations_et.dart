@@ -99,6 +99,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get applyButtonLabel => 'RAKENDA';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'KUSTUTA';
 
   @override
@@ -219,6 +222,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get chipActionUnpin => 'Eemalda ülalt äärest';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Muuda nime';
 
   @override
@@ -226,6 +232,9 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Näita osariike';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Loo album';
@@ -493,6 +502,9 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Esiletõstetud';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Üldised';
@@ -841,6 +853,27 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Selline dünaamiline album on juba olemas';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Turvaruumis asuvad objektid on nähtavad vaid sellele rakendusele ja mitte ühelgi muul viisil.\n\nKui sa eemaldad nutiseadmest selle rakenduse või kustutad rakenduse andmed, siis kaob igasugune ligipääs nendele objektidele.';
@@ -1261,7 +1294,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get collectionGroupDay => 'Päevade kaupa';
 
   @override
-  String get collectionGroupNone => 'Ära rühmita';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Teadmata';
@@ -1540,9 +1573,6 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Andmemahu alusel';
-
-  @override
-  String get albumGroupNone => 'Ära rühmita';
 
   @override
   String get albumMimeTypeMixed => 'Erinev sisu';
@@ -2358,19 +2388,4 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Allikas';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Näita peidetud faile';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Ära näita peidetud faile';
-
-  @override
-  String get filePickerOpenFrom => 'Ava asukohast';
-
-  @override
-  String get filePickerNoItems => 'Meediafaile pole';
-
-  @override
-  String get filePickerUseThisFolder => 'Kasuta seda kausta';
 }

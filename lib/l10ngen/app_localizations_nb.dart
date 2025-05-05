@@ -93,6 +93,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get applyButtonLabel => 'BRUK';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'SLETT';
 
   @override
@@ -213,6 +216,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get chipActionUnpin => 'Løsne fra toppen';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Gi nytt navn';
 
   @override
@@ -220,6 +226,9 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Vis tilstander';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Opprett album';
@@ -487,6 +496,9 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Festet';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Ofte åpnet';
@@ -829,6 +841,27 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Elementer i hvelv er kun tilgjengelig for dette programmet, og ikke andre.\n\nHvis du avinstallerer dette programmet, eller tømmer denne programdataen vil du miste alle disse elementene.';
@@ -1243,7 +1276,7 @@ class AppLocalizationsNb extends AppLocalizations {
   String get collectionGroupDay => 'Etter dag';
 
   @override
-  String get collectionGroupNone => 'Ikke grupper';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Ukjent';
@@ -1492,9 +1525,6 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Etter lagringsdataområde';
-
-  @override
-  String get albumGroupNone => 'Ikke grupper';
 
   @override
   String get albumMimeTypeMixed => 'Blandet';
@@ -2307,19 +2337,4 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Kilde';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Vis skjulte filer';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Ikke vis skjulte filer';
-
-  @override
-  String get filePickerOpenFrom => 'Åpne fra';
-
-  @override
-  String get filePickerNoItems => 'Ingen elementer';
-
-  @override
-  String get filePickerUseThisFolder => 'Bruk denne mappen';
 }

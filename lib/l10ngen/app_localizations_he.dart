@@ -99,6 +99,9 @@ class AppLocalizationsHe extends AppLocalizations {
   String get applyButtonLabel => 'החל';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'מחק';
 
   @override
@@ -219,6 +222,9 @@ class AppLocalizationsHe extends AppLocalizations {
   String get chipActionUnpin => 'בטל הצמד למעלה';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'שנה שם';
 
   @override
@@ -226,6 +232,9 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Show states';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Create album';
@@ -493,6 +502,9 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Pinned';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Common';
@@ -843,6 +855,27 @@ class AppLocalizationsHe extends AppLocalizations {
   String get dynamicAlbumAlreadyExists => 'Dynamic album already exists';
 
   @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
+
+  @override
   String get newVaultWarningDialogMessage => 'Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.';
 
   @override
@@ -1087,7 +1120,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get viewDialogSortSectionTitle => 'Sort';
 
   @override
-  String get viewDialogGroupSectionTitle => 'Group';
+  String get viewDialogGroupSectionTitle => 'Sections';
 
   @override
   String get viewDialogLayoutSectionTitle => 'Layout';
@@ -1261,7 +1294,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get collectionGroupDay => 'By day';
 
   @override
-  String get collectionGroupNone => 'Do not group';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Unknown';
@@ -1540,9 +1573,6 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'By storage volume';
-
-  @override
-  String get albumGroupNone => 'Do not group';
 
   @override
   String get albumMimeTypeMixed => 'Mixed';
@@ -2358,19 +2388,4 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Source';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Show hidden files';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Don’t show hidden files';
-
-  @override
-  String get filePickerOpenFrom => 'Open from';
-
-  @override
-  String get filePickerNoItems => 'No items';
-
-  @override
-  String get filePickerUseThisFolder => 'Use this folder';
 }

@@ -158,9 +158,6 @@ class SettingKeys {
   static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
 
-  // file picker
-  static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
-
   // screen saver
   static const screenSaverFillScreenKey = 'screen_saver_fill_screen';
   static const screenSaverAnimatedZoomEffectKey = 'screen_saver_animated_zoom_effect';

@@ -92,6 +92,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get applyButtonLabel => 'TILLÄMPA';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'Ta bort';
 
   @override
@@ -212,6 +215,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chipActionUnpin => 'Släpp från fästet';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Byt namn';
 
   @override
@@ -219,6 +225,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Visa delstater';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Skapa album';
@@ -486,6 +495,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fastnålad';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Vanliga';
@@ -834,6 +846,27 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Dynamiskt album existerar redan';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Objekt i valv är endast tillgängliga i denna app och inga andra.\n\nOm du avinstallerar den här appen eller rensar appens data kommer du att förlora alla dessa objekt.';
@@ -1254,7 +1287,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get collectionGroupDay => 'Efter dag';
 
   @override
-  String get collectionGroupNone => 'Gruppera inte';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Okänd';
@@ -1520,9 +1553,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Efter lagringsmedia';
-
-  @override
-  String get albumGroupNone => 'Gruppera inte';
 
   @override
   String get albumMimeTypeMixed => 'Blandat';
@@ -2338,19 +2368,4 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Källa';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Visa dolda filer';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Visa inte dolda filer';
-
-  @override
-  String get filePickerOpenFrom => 'Öppna från';
-
-  @override
-  String get filePickerNoItems => 'Inga objekt';
-
-  @override
-  String get filePickerUseThisFolder => 'Använd denna katalog';
 }

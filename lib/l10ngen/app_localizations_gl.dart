@@ -96,6 +96,9 @@ class AppLocalizationsGl extends AppLocalizations {
   String get applyButtonLabel => 'APLICAR';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'ELIMINAR';
 
   @override
@@ -216,6 +219,9 @@ class AppLocalizationsGl extends AppLocalizations {
   String get chipActionUnpin => 'Desbloquear dende arriba';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Cambiar o nome';
 
   @override
@@ -223,6 +229,9 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Amosar estados';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Crear álbum';
@@ -490,6 +499,9 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Fixado';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Común';
@@ -838,6 +850,27 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Xa existe o álbum dinámico';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Os elementos en cofres só están dispoñibles para esta aplicación.\n\nPerderanse ao desinstalala ou ao borrar os seus datos.';
@@ -1258,7 +1291,7 @@ class AppLocalizationsGl extends AppLocalizations {
   String get collectionGroupDay => 'Por día';
 
   @override
-  String get collectionGroupNone => 'Non agrupar';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Descoñecido';
@@ -1537,9 +1570,6 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Por volume de almacenaxe';
-
-  @override
-  String get albumGroupNone => 'Non agrupar';
 
   @override
   String get albumMimeTypeMixed => 'Mesturado';
@@ -2355,19 +2385,4 @@ class AppLocalizationsGl extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Fonte';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Amosar arquivos agochados';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Non amosar arquivos agochados';
-
-  @override
-  String get filePickerOpenFrom => 'Abrir dende';
-
-  @override
-  String get filePickerNoItems => 'Sen elementos';
-
-  @override
-  String get filePickerUseThisFolder => 'Usar este cartafol';
 }

@@ -90,6 +90,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get applyButtonLabel => 'اعمال';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'پاک کردن';
 
   @override
@@ -210,6 +213,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get chipActionUnpin => 'برداشتن سنجاق از بالا';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'تغییر نام فایل';
 
   @override
@@ -217,6 +223,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'نمایش شهر‌ها';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'ساخت البوم';
@@ -484,6 +493,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'سنجاق شده';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'مشترک';
@@ -826,6 +838,27 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'آلبوم پویا از پیش موجود است';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'موارد موجود در گاوصندوق تنها برای این برنامه در دسترس هستند و در هیچ برنامه دیگری وجود ندارد.\n\nاگر این برنامه را پاک کنید، یا داده‌های برنامه را پاک کنید، همه این موارد را از دست خواهید داد.';
@@ -1240,7 +1273,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get collectionGroupDay => 'با روز';
 
   @override
-  String get collectionGroupNone => 'گروه نکن';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'ناشناس';
@@ -1489,9 +1522,6 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'با حجم ذخیره سازی';
-
-  @override
-  String get albumGroupNone => 'گروه نکن';
 
   @override
   String get albumMimeTypeMixed => 'ترکیبی';
@@ -2304,19 +2334,4 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'منبع';
-
-  @override
-  String get filePickerShowHiddenFiles => 'نمایش پرونده‌های پنهان';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'پرونده‌های پنهان را نمایش نده';
-
-  @override
-  String get filePickerOpenFrom => 'بازکردن از';
-
-  @override
-  String get filePickerNoItems => 'چیزی نیست';
-
-  @override
-  String get filePickerUseThisFolder => 'استفاده از این پوشه';
 }

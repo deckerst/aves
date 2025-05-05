@@ -96,6 +96,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get applyButtonLabel => 'ΕΦΑΡΜΟΓΗ';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'ΔΙΑΓΡΑΦΗ';
 
   @override
@@ -216,6 +219,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get chipActionUnpin => 'Ξέκαρφίτσωμα από την κορυφή';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Μετονομασία';
 
   @override
@@ -223,6 +229,9 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Εμφάνιση πολιτειών';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Δημιουργία άλμπουμ';
@@ -490,6 +499,9 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Καρφιτσωμένα';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Συστήματος';
@@ -838,6 +850,27 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Το δυναμικό άλμπουμ υπάρχει ήδη';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Τα αρχεία στα θησαυροφυλάκια είναι διαθέσιμα μόνο σε αυτή την εφαρμογή και σε καμία άλλη.\n\nΑν απεγκαταστήσετε την εφαρμογή ή έστω διαγράψετε τα δεδομένα της εφαρμογής, θα χάσετε όλα σας τα κρυφά αρχεία.';
@@ -1258,7 +1291,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get collectionGroupDay => 'Ανά ημέρα';
 
   @override
-  String get collectionGroupNone => 'Να μην γίνει ομαδοποίηση';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Χωρίς λεπτομέρειες';
@@ -1537,9 +1570,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Ανά αποθηκευτική μονάδα';
-
-  @override
-  String get albumGroupNone => 'Να μην γίνει ομαδοποίηση';
 
   @override
   String get albumMimeTypeMixed => 'Μικτα';
@@ -2355,19 +2385,4 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Πηγη';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Εμφάνιση κρυφών αρχείων';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Να μην εμφανίζονται τα κρυφά αρχεία';
-
-  @override
-  String get filePickerOpenFrom => 'Άνοιγμα από';
-
-  @override
-  String get filePickerNoItems => 'Κανένα στοιχείο';
-
-  @override
-  String get filePickerUseThisFolder => 'Χρησιμοποιήστε αυτόν τον φάκελο';
 }

@@ -91,6 +91,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get applyButtonLabel => 'TERAPKAN';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => 'BUANG';
 
   @override
@@ -211,6 +214,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get chipActionUnpin => 'Lepas sematan dari atas';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => 'Ganti nama';
 
   @override
@@ -218,6 +224,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => 'Tampilkan wilayah';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => 'Buat album';
@@ -485,6 +494,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get albumTierPinned => 'Disemat';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => 'Biasa';
@@ -832,6 +844,27 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => 'Album dinamis sudah ada';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => 'Item dalam brankas hanya tersedia untuk aplikasi ini dan bukan yang lain.\n\nJika Anda menghapus aplikasi ini, atau menghapus data aplikasi ini, Anda akan kehilangan semua item tersebut.';
@@ -1252,7 +1285,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get collectionGroupDay => 'Lewat hari';
 
   @override
-  String get collectionGroupNone => 'Jangan kelompokkan';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => 'Tidak dikenal';
@@ -1521,9 +1554,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get albumGroupVolume => 'Lewat volume penyimpanan';
-
-  @override
-  String get albumGroupNone => 'Jangan kelompokkan';
 
   @override
   String get albumMimeTypeMixed => 'Tercampur';
@@ -2338,19 +2368,4 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => 'Sumber';
-
-  @override
-  String get filePickerShowHiddenFiles => 'Tampilkan file tersembunyi';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => 'Jangan tampilkan file tersembunyi';
-
-  @override
-  String get filePickerOpenFrom => 'Buka dari';
-
-  @override
-  String get filePickerNoItems => 'Tidak ada benda';
-
-  @override
-  String get filePickerUseThisFolder => 'Gunakan folder ini';
 }

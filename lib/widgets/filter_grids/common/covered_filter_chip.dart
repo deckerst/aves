@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/filters/covered/album_group.dart';
 import 'package:aves/model/filters/covered/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
@@ -82,6 +84,13 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
               {
                 return StreamBuilder<DynamicAlbumSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<DynamicAlbumSummaryInvalidatedEvent>(),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            case AlbumGroupFilter _:
+              {
+                return StreamBuilder<AlbumGroupSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<AlbumGroupSummaryInvalidatedEvent>(),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
@@ -180,6 +189,10 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   Color _detailColor(BuildContext context) => Theme.of(context).colorScheme.onSurfaceVariant;
 
   Widget _buildDetails(BuildContext context, CollectionSource source, T filter) {
+    final textStyle = TextStyle(
+      color: _detailColor(context),
+      fontSize: detailFontSize(extent),
+    );
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -187,12 +200,16 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is StoredAlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)) _buildDetailIcon(context, AIcons.storageCard),
         if (filter is StoredAlbumFilter && vaults.isVault(filter.album)) _buildDetailIcon(context, AIcons.locked),
         if (filter is DynamicAlbumFilter) _buildDetailIcon(context, AIcons.dynamicAlbum),
+        if (filter is AlbumGroupFilter) ...[
+          _buildDetailIcon(context, AIcons.album),
+          Text(
+            '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
+            style: textStyle,
+          ),
+        ],
         Text(
           locked ? AText.valueNotAvailable : NumberFormat.decimalPattern(context.locale).format(source.count(filter)),
-          style: TextStyle(
-            color: _detailColor(context),
-            fontSize: detailFontSize(extent),
-          ),
+          style: textStyle,
         ),
       ],
     );

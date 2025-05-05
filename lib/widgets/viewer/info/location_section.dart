@@ -24,7 +24,7 @@ class LocationSection extends StatefulWidget {
   final AvesEntry entry;
   final bool showTitle;
   final ValueNotifier<bool> isScrollingNotifier;
-  final AFilterCallback onFilter;
+  final AFilterCallback onFilterSelection;
 
   const LocationSection({
     super.key,
@@ -32,7 +32,7 @@ class LocationSection extends StatefulWidget {
     required this.entry,
     required this.showTitle,
     required this.isScrollingNotifier,
-    required this.onFilter,
+    required this.onFilterSelection,
   });
 
   @override
@@ -133,7 +133,7 @@ class _LocationSectionState extends State<LocationSection> {
                         children: filters
                             .map((filter) => AvesFilterChip(
                                   filter: filter,
-                                  onTap: widget.onFilter,
+                                  onTap: widget.onFilterSelection,
                                 ))
                             .toList(),
                       ),

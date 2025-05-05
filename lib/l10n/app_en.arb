@@ -60,6 +60,7 @@
   },
 
   "applyButtonLabel": "APPLY",
+  "createButtonLabel": "CREATE",
   "deleteButtonLabel": "DELETE",
   "nextButtonLabel": "NEXT",
   "showButtonLabel": "SHOW",
@@ -104,9 +105,11 @@
   "chipActionLock": "Lock",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",
+  "chipActionGroup": "Group",
   "chipActionRename": "Rename",
   "chipActionSetCover": "Set cover",
   "chipActionShowCountryStates": "Show states",
+  "chipActionCreateGroup": "Create group",
   "chipActionCreateAlbum": "Create album",
   "chipActionCreateVault": "Create vault",
   "chipActionConfigureVault": "Configure vault",
@@ -208,6 +211,7 @@
 
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
+  "albumTierGroups": "Groups",
   "albumTierSpecial": "Common",
   "albumTierApps": "Apps",
   "albumTierVaults": "Vaults",
@@ -443,6 +447,14 @@
   "newDynamicAlbumDialogTitle": "New Dynamic Album",
   "dynamicAlbumAlreadyExists": "Dynamic album already exists",
 
+  "newGroupDialogTitle": "New Group",
+  "newGroupDialogNameLabel": "Group name",
+  "groupAlreadyExists": "Group already exists",
+  "groupEmpty": "No groups",
+  "ungrouped": "Ungrouped",
+  "groupPickerTitle": "Pick Group",
+  "groupPickerUseThisGroupButton": "Use this group",
+
   "newVaultWarningDialogMessage": "Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.",
   "newVaultDialogTitle": "New Vault",
   "configureVaultDialogTitle": "Configure Vault",
@@ -558,7 +570,7 @@
   "menuActionStats": "Stats",
 
   "viewDialogSortSectionTitle": "Sort",
-  "viewDialogGroupSectionTitle": "Group",
+  "viewDialogGroupSectionTitle": "Sections",
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Reverse sort order",
 
@@ -630,8 +642,8 @@
   "collectionGroupAlbum": "By album",
   "collectionGroupMonth": "By month",
   "collectionGroupDay": "By day",
-  "collectionGroupNone": "Do not group",
 
+  "sectionNone": "No sections",
   "sectionUnknown": "Unknown",
   "dateToday": "Today",
   "dateYesterday": "Yesterday",
@@ -774,7 +786,6 @@
   "albumGroupTier": "By tier",
   "albumGroupType": "By type",
   "albumGroupVolume": "By storage volume",
-  "albumGroupNone": "Do not group",
 
   "albumMimeTypeMixed": "Mixed",
 
@@ -1101,11 +1112,5 @@
   "panoramaEnableSensorControl": "Enable sensor control",
   "panoramaDisableSensorControl": "Disable sensor control",
 
-  "sourceViewerPageTitle": "Source",
-
-  "filePickerShowHiddenFiles": "Show hidden files",
-  "filePickerDoNotShowHiddenFiles": "Don’t show hidden files",
-  "filePickerOpenFrom": "Open from",
-  "filePickerNoItems": "No items",
-  "filePickerUseThisFolder": "Use this folder"
+  "sourceViewerPageTitle": "Source"
 }

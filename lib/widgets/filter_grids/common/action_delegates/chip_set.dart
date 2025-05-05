@@ -94,6 +94,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return !useTvLayout && appMode.canNavigate && !isSelecting;
       case ChipSetAction.toggleTitleSearch:
         return !useTvLayout && !isSelecting;
+      case ChipSetAction.createGroup:
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         return false;
@@ -113,6 +114,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return appMode.canNavigate;
       case ChipSetAction.delete:
       case ChipSetAction.remove:
+      case ChipSetAction.group:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
         return false;
@@ -144,6 +146,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // browsing
       case ChipSetAction.search:
       case ChipSetAction.toggleTitleSearch:
+      case ChipSetAction.createGroup:
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         return true;
@@ -158,6 +161,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.hide:
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
+      case ChipSetAction.group:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
       case ChipSetAction.showCollection:
@@ -189,6 +193,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         final routeName = context.currentRouteName!;
         settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));
         context.read<Query>().toggle();
+      case ChipSetAction.createGroup:
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         break;
@@ -212,6 +217,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         _goToCollection(context);
       case ChipSetAction.delete:
       case ChipSetAction.remove:
+      case ChipSetAction.group:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
         break;

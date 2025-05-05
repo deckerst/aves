@@ -91,6 +91,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get applyButtonLabel => '应用';
 
   @override
+  String get createButtonLabel => 'CREATE';
+
+  @override
   String get deleteButtonLabel => '删除';
 
   @override
@@ -211,6 +214,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chipActionUnpin => '取消置顶';
 
   @override
+  String get chipActionGroup => 'Group';
+
+  @override
   String get chipActionRename => '重命名';
 
   @override
@@ -218,6 +224,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chipActionShowCountryStates => '显示区域';
+
+  @override
+  String get chipActionCreateGroup => 'Create group';
 
   @override
   String get chipActionCreateAlbum => '创建相册';
@@ -485,6 +494,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get albumTierPinned => '钉选';
+
+  @override
+  String get albumTierGroups => 'Groups';
 
   @override
   String get albumTierSpecial => '普通';
@@ -832,6 +844,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dynamicAlbumAlreadyExists => '动态专辑已存在';
+
+  @override
+  String get newGroupDialogTitle => 'New Group';
+
+  @override
+  String get newGroupDialogNameLabel => 'Group name';
+
+  @override
+  String get groupAlreadyExists => 'Group already exists';
+
+  @override
+  String get groupEmpty => 'No groups';
+
+  @override
+  String get ungrouped => 'Ungrouped';
+
+  @override
+  String get groupPickerTitle => 'Pick Group';
+
+  @override
+  String get groupPickerUseThisGroupButton => 'Use this group';
 
   @override
   String get newVaultWarningDialogMessage => '保险库中的项目仅供此应用使用，其他应用不可用。\n\n如果您卸载此应用或清除此应用数据，您将丢失所有这些项目。';
@@ -1252,7 +1285,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get collectionGroupDay => '按天';
 
   @override
-  String get collectionGroupNone => '不分组';
+  String get sectionNone => 'No sections';
 
   @override
   String get sectionUnknown => '未知';
@@ -1521,9 +1554,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get albumGroupVolume => '按存储卷';
-
-  @override
-  String get albumGroupNone => '不分组';
 
   @override
   String get albumMimeTypeMixed => '混合';
@@ -2338,21 +2368,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sourceViewerPageTitle => '源码';
-
-  @override
-  String get filePickerShowHiddenFiles => '显示隐藏文件';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => '不显示隐藏文件';
-
-  @override
-  String get filePickerOpenFrom => '打开自';
-
-  @override
-  String get filePickerNoItems => '无项目';
-
-  @override
-  String get filePickerUseThisFolder => '使用此文件夹';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -3588,9 +3603,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get collectionGroupDay => '依照日期';
 
   @override
-  String get collectionGroupNone => '不分群組';
-
-  @override
   String get sectionUnknown => '未知';
 
   @override
@@ -3824,9 +3836,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get albumGroupVolume => '依儲存容量';
-
-  @override
-  String get albumGroupNone => '不分群組';
 
   @override
   String get albumMimeTypeMixed => '混合的';
@@ -4636,19 +4645,4 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sourceViewerPageTitle => '原始碼';
-
-  @override
-  String get filePickerShowHiddenFiles => '顯示隱藏檔案';
-
-  @override
-  String get filePickerDoNotShowHiddenFiles => '不顯示隱藏檔案';
-
-  @override
-  String get filePickerOpenFrom => '開啟自';
-
-  @override
-  String get filePickerNoItems => '沒有項目';
-
-  @override
-  String get filePickerUseThisFolder => '使用此資料夾';
 }
