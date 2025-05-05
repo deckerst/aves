@@ -18,6 +18,7 @@ import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/set_and.dart';
 import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:latlong2/latlong.dart';
@@ -79,6 +80,9 @@ void main() {
 
     final type = TypeFilter.sphericalVideo;
     expect(type, jsonRoundTrip(type));
+
+    final weekday = WeekDayFilter(5);
+    expect(weekday, jsonRoundTrip(weekday));
 
     // covered
 

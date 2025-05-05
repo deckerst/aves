@@ -15,6 +15,7 @@ import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/set_and.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -67,6 +68,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   ];
 
   static final _monthFilters = List.generate(12, (i) => DateFilter(DateLevel.m, DateTime(1, i + 1)));
+  static final _weekdayFilters = List.generate(7, (i) => WeekDayFilter(i + 1));
 
   CollectionSearchDelegate({
     required super.searchFieldLabel,
@@ -200,6 +202,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
       DateFilter.onThisDay,
       RecentlyAddedFilter.instance,
       ..._monthFilters,
+      ..._weekdayFilters,
     ].where((f) => containQuery(f.getLabel(context))).toList();
     return _buildFilterRow(
       context: context,
