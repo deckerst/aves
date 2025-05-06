@@ -18,6 +18,7 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
+import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
@@ -683,30 +684,37 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   }
 
   Widget _buildScrollView(BuildContext context) {
-    return CustomScrollView(
-      key: scrollableKey,
-      controller: scrollController,
-      slivers: [
-        appBar,
-        AnimationLimiter(
-          key: ValueKey(context.select<FilterGroupNotifier?, Uri?>((v) => v?.value)),
-          child: Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
-            selector: (context, layout) => layout.sections.isEmpty,
-            builder: (context, empty, child) {
-              return empty
-                  // TODO TLAD [nested] prevent scrolling when empty (cf CollectionPage)
+    return Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
+      selector: (context, layout) => layout.sections.isEmpty,
+      builder: (context, isEmpty, child) {
+        return CustomScrollView(
+          key: scrollableKey,
+          controller: scrollController,
+          // workaround to prevent scrolling the app bar away
+          // when there is no content and we use `SliverFillRemaining`
+          physics: isEmpty
+              ? const NeverScrollableScrollPhysics()
+              : SloppyScrollPhysics(
+                  gestureSettings: MediaQuery.gestureSettingsOf(context),
+                  parent: const AlwaysScrollableScrollPhysics(),
+                ),
+          slivers: [
+            appBar,
+            AnimationLimiter(
+              key: ValueKey(context.select<FilterGroupNotifier?, Uri?>((v) => v?.value)),
+              child: isEmpty
                   ? SliverFillRemaining(
                       hasScrollBody: false,
                       child: emptyBuilder(),
                     )
-                  : SectionedListSliver<FilterGridItem<T>>();
-            },
-          ),
-        ),
-        const NavBarPaddingSliver(),
-        const BottomPaddingSliver(),
-        const TvTileGridBottomPaddingSliver(),
-      ],
+                  : SectionedListSliver<FilterGridItem<T>>(),
+            ),
+            const NavBarPaddingSliver(),
+            const BottomPaddingSliver(),
+            const TvTileGridBottomPaddingSliver(),
+          ],
+        );
+      },
     );
   }
 }
