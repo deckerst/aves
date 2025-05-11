@@ -4,8 +4,10 @@ import 'dart:math';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/device.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/enums/map_style.dart';
@@ -67,10 +69,21 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
   Future<void> init({required bool monitorPlatformSettings}) async {
     await store.init();
     resetAppliedLocale();
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+    _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) {
+      final changes = e.changes;
+      updateBookmarkedDynamicAlbums(changes);
+      updatePinnedDynamicAlbums(changes);
+    }));
+    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) {
+      final oldGroupUri = e.oldGroupUri;
+      final newGroupUri = e.newGroupUri;
+      updateBookmarkedGroup(oldGroupUri, newGroupUri);
+      updatePinnedGroup(oldGroupUri, newGroupUri);
+    }));
     if (monitorPlatformSettings) {
-      _subscriptions
-        ..forEach((sub) => sub.cancel())
-        ..clear();
       _subscriptions.add(_platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?)));
     }
     initAppSettings();

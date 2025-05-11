@@ -1,9 +1,9 @@
 import 'package:aves/model/db/db.dart';
 import 'package:aves/model/dynamic_albums.dart';
-import 'package:aves/model/filters/covered/album_group.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
-import 'package:aves/model/filters/set_or.dart';
+import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/services/common/services.dart';

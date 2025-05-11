@@ -14,7 +14,7 @@ class QueryFilter extends CollectionFilter {
 
   final String query;
   final bool colorful, live;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   @override
   List<Object?> get props => [query, live, reversed];
@@ -74,7 +74,7 @@ class QueryFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => false;
@@ -101,7 +101,7 @@ class QueryFilter extends CollectionFilter {
   @override
   String get key => '$type-$reversed-$query';
 
-  EntryFilter? fieldTest(String upQuery) {
+  EntryPredicate? fieldTest(String upQuery) {
     var match = _fieldPattern.firstMatch(upQuery);
     if (match == null) return null;
 

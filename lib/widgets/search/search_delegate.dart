@@ -1,7 +1,7 @@
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
-import 'package:aves/model/filters/covered/album_group.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
@@ -13,7 +13,7 @@ import 'package:aves/model/filters/missing.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/grouping/common.dart';

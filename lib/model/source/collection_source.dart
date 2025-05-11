@@ -8,7 +8,7 @@ import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/covered/album_group.dart';
+import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';

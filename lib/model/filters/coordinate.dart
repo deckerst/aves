@@ -15,7 +15,7 @@ class CoordinateFilter extends CollectionFilter {
   final LatLng sw;
   final LatLng ne;
   final bool minuteSecondPadding;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   @override
   List<Object?> get props => [sw, ne, reversed];
@@ -41,7 +41,7 @@ class CoordinateFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   String _formatBounds(String Function(LatLng latLng) s) => '${s(ne)}\n${s(sw)}';
 

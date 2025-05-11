@@ -8,7 +8,7 @@ class WeekDayFilter extends CollectionFilter {
   static const type = 'weekday';
 
   late final int weekday;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   @override
   List<Object?> get props => [weekday, reversed];
@@ -32,7 +32,7 @@ class WeekDayFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;

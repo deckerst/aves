@@ -76,7 +76,7 @@ class PlaceholderFilter extends CollectionFilter {
   }
 
   @override
-  EntryFilter get positiveTest => (entry) => throw Exception('this is not a test');
+  EntryPredicate get positiveTest => (entry) => throw Exception('this is not a test');
 
   @override
   bool get exclusiveProp => false;

@@ -1,6 +1,10 @@
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:synchronized/synchronized.dart';
 
 mixin FilterGridsSettings on SettingsAccess {
   AlbumChipSectionFactor get albumSectionFactor => getEnumOrDefault(SettingKeys.albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipSectionFactor.values);
@@ -56,4 +60,41 @@ mixin FilterGridsSettings on SettingsAccess {
   void setShowTitleQuery(String routeName, bool newValue) => set(SettingKeys.showTitleQueryPrefixKey + routeName, newValue);
 
   // TODO TLAD [nested] save/load
+
+  final _lockForPins = Lock();
+
+  Future<void> updatePinnedDynamicAlbums(Map<DynamicAlbumFilter, DynamicAlbumFilter?> changes) async {
+    await _lockForPins.synchronized(() async {
+      final _pinnedFilters = pinnedFilters;
+      bool changed = false;
+      changes.forEach((oldFilter, newFilter) {
+        if (newFilter != null) {
+          changed |= _pinnedFilters.replace(oldFilter, newFilter);
+        } else {
+          changed |= _pinnedFilters.remove(oldFilter);
+        }
+      });
+      if (changed) {
+        pinnedFilters = _pinnedFilters;
+      }
+    });
+  }
+
+  Future<void> updatePinnedGroup(Uri oldGroupUri, Uri newGroupUri) async {
+    await _lockForPins.synchronized(() async {
+      final _pinnedFilters = pinnedFilters;
+      bool changed = false;
+      final grouping = FilterGrouping.forUri(oldGroupUri);
+      if (grouping != null) {
+        final oldFilter = grouping.uriToFilter(oldGroupUri);
+        final newFilter = grouping.uriToFilter(newGroupUri);
+        if (oldFilter != null && newFilter != null) {
+          changed |= _pinnedFilters.replace(oldFilter, newFilter);
+        }
+      }
+      if (changed) {
+        pinnedFilters = _pinnedFilters;
+      }
+    });
+  }
 }

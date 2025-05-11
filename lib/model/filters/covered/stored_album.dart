@@ -1,5 +1,5 @@
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/filters/covered/album_group.dart';
+import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -18,7 +18,7 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
 
   final String album;
   final String? displayName;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   // do not include contextual `displayName` to `props`
   @override
@@ -45,7 +45,7 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;

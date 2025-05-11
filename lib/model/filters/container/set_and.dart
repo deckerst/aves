@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/container/container.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/covered/location.dart';
@@ -5,20 +6,20 @@ import 'package:aves/theme/icons.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
-class SetAndFilter extends CollectionFilter {
+// `AND` op for multiple filters
+// can handle containing no filters
+class SetAndFilter extends CollectionFilter with ContainerFilter {
   static const type = 'and';
 
   late final List<CollectionFilter> _filters;
 
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
   late final IconData? _genericIcon;
 
   @override
   List<Object?> get props => [_filters, reversed];
 
   CollectionFilter? get _first => _filters.firstOrNull;
-
-  Set<CollectionFilter> get innerFilters => _filters.toSet();
 
   SetAndFilter(Set<CollectionFilter> filters, {super.reversed = false}) {
     _filters = filters.toList().sorted();
@@ -53,7 +54,7 @@ class SetAndFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => false;
@@ -74,4 +75,17 @@ class SetAndFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$reversed-${_filters.map((v) => v.key)}';
+
+  // container
+
+  @override
+  Set<CollectionFilter> get innerFilters => _filters.toSet();
+
+  @override
+  SetAndFilter replaceFilters(CollectionFilter? Function(CollectionFilter oldFilter) toElement) {
+    return SetAndFilter(
+      _filters.map((v) => toElement(v)).nonNulls.toSet(),
+      reversed: reversed,
+    );
+  }
 }

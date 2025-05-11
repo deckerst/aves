@@ -14,7 +14,7 @@ class PathFilter extends CollectionFilter {
   // without trailing separator
   late final String _rootAlbum;
 
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   @override
   List<Object?> get props => [path, reversed];
@@ -45,7 +45,7 @@ class PathFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;

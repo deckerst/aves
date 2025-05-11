@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
-import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
