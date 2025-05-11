@@ -1,6 +1,7 @@
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -38,6 +39,7 @@ extension ExtraAppExportItem on AppExportItem {
         favourites.import(jsonMap, source);
       case AppExportItem.settings:
         await settings.import(jsonMap);
+        albumGrouping.init(settings.albumGroups);
     }
   }
 }
