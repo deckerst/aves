@@ -69,9 +69,20 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
   Future<void> init({required bool monitorPlatformSettings}) async {
     await store.init();
     resetAppliedLocale();
+    _unregister();
+    _register(monitorPlatformSettings);
+    initAppSettings();
+  }
+
+  void _unregister() {
+    albumGrouping.removeListener(saveAlbumGroups);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+  }
+
+  void _register(bool monitorPlatformSettings) {
+    albumGrouping.addListener(saveAlbumGroups);
     _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) {
       final changes = e.changes;
       updateBookmarkedDynamicAlbums(changes);
@@ -86,7 +97,6 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     if (monitorPlatformSettings) {
       _subscriptions.add(_platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?)));
     }
-    initAppSettings();
   }
 
   Future<void> reload() => store.reload();
@@ -387,12 +397,13 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.collectionSortFactorKey:
             case SettingKeys.thumbnailLocationIconKey:
             case SettingKeys.thumbnailTagIconKey:
-            case SettingKeys.albumGroupFactorKey:
+            case SettingKeys.albumSectionFactorKey:
             case SettingKeys.albumSortFactorKey:
             case SettingKeys.countrySortFactorKey:
             case SettingKeys.stateSortFactorKey:
             case SettingKeys.placeSortFactorKey:
             case SettingKeys.tagSortFactorKey:
+            case SettingKeys.albumGroupsKey:
             case SettingKeys.imageBackgroundKey:
             case SettingKeys.videoAutoPlayModeKey:
             case SettingKeys.videoBackgroundModeKey:

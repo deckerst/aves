@@ -6,6 +6,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/origins.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -59,6 +60,7 @@ class MediaStoreSource extends CollectionSource {
     await localMediaDb.init();
     await vaults.init();
     await favourites.init();
+    albumGrouping.init(settings.albumGroups);
     await covers.init();
     await dynamicAlbums.init();
 

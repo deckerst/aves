@@ -76,7 +76,7 @@ class SettingKeys {
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids
-  static const albumGroupFactorKey = 'album_group_factor';
+  static const albumSectionFactorKey = 'album_section_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const stateSortFactorKey = 'state_sort_factor';
@@ -87,6 +87,7 @@ class SettingKeys {
   static const stateSortReverseKey = 'state_sort_reverse';
   static const placeSortReverseKey = 'place_sort_reverse';
   static const tagSortReverseKey = 'tag_sort_reverse';
+  static const albumGroupsKey = 'album_groups';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
   static const deactivatedHiddenFiltersKey = 'deactivated_hidden_filters';

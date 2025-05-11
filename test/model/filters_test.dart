@@ -35,7 +35,7 @@ void main() {
   });
 
   tearDown(() async {
-    albumGrouping.clear();
+    albumGrouping.init({});
     await getIt.reset();
   });
 

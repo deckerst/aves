@@ -7,9 +7,9 @@ import 'package:aves_model/aves_model.dart';
 import 'package:synchronized/synchronized.dart';
 
 mixin FilterGridsSettings on SettingsAccess {
-  AlbumChipSectionFactor get albumSectionFactor => getEnumOrDefault(SettingKeys.albumGroupFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipSectionFactor.values);
+  AlbumChipSectionFactor get albumSectionFactor => getEnumOrDefault(SettingKeys.albumSectionFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipSectionFactor.values);
 
-  set albumSectionFactor(AlbumChipSectionFactor newValue) => set(SettingKeys.albumGroupFactorKey, newValue.toString());
+  set albumSectionFactor(AlbumChipSectionFactor newValue) => set(SettingKeys.albumSectionFactorKey, newValue.toString());
 
   ChipSortFactor get albumSortFactor => getEnumOrDefault(SettingKeys.albumSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
@@ -59,7 +59,11 @@ mixin FilterGridsSettings on SettingsAccess {
 
   void setShowTitleQuery(String routeName, bool newValue) => set(SettingKeys.showTitleQueryPrefixKey + routeName, newValue);
 
-  // TODO TLAD [nested] save/load
+  Map<Uri, Set<Uri>> get albumGroups => FilterGrouping.fromJson(getString(SettingKeys.albumGroupsKey)) ?? {};
+
+  set albumGroups(Map<Uri, Set<Uri>> groups) => set(SettingKeys.albumGroupsKey, FilterGrouping.toJson(groups));
+
+  // listening
 
   final _lockForPins = Lock();
 
@@ -97,4 +101,6 @@ mixin FilterGridsSettings on SettingsAccess {
       }
     });
   }
+
+  void saveAlbumGroups() => albumGroups = albumGrouping.allGroups;
 }

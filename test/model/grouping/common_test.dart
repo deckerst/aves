@@ -23,7 +23,7 @@ void main() {
   });
 
   tearDown(() async {
-    albumGrouping.clear();
+    albumGrouping.init({});
     await dynamicAlbums.clear();
     await getIt.reset();
   });
