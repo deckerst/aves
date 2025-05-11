@@ -77,6 +77,8 @@ mixin NavigationSettings on SettingsAccess {
 
   set drawerPageBookmarks(List<String> newValue) => set(SettingKeys.drawerPageBookmarksKey, newValue);
 
+  // listening
+
   final _lockForBookmarks = Lock();
 
   Future<void> updateBookmarkedDynamicAlbums(Map<DynamicAlbumFilter, DynamicAlbumFilter?> changes) async {

@@ -29,22 +29,17 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   final T Function(Uri uri, SetOrFilter filter) _createGroupFilter;
   final Map<Uri, Set<Uri>> _groups = {};
 
+  Map<Uri, Set<Uri>> get allGroups => Map.unmodifiable(_groups);
+
   FilterGrouping._private(this._host, this._createGroupFilter) {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
-  static FilterGrouping? forUri(Uri uri) {
-    switch (uri.host) {
-      case hostAlbums:
-        return albumGrouping;
-      default:
-        return null;
-    }
+  void init(Map<Uri, Set<Uri>> groups) {
+    _groups.clear();
+    _groups.addAll(groups);
   }
 
-  void clear() => _groups.clear();
-
-  // TODO TLAD [nested] invalidate summary for derived filters (parent groups, dynamic albums)
   void addToGroup(Set<Uri> childrenUris, Uri? destinationGroup) {
     _removeFromGroups(childrenUris);
     if (destinationGroup != null) {
@@ -60,10 +55,10 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
 
   void rename(Uri oldUri, Uri newUri) {
     final childrenUris = _groups[oldUri];
-    if (childrenUris != null) {
-      // local copy to prevent concurrent modification
-      addToGroup(Set.of(childrenUris), newUri);
-    }
+    if (childrenUris == null) return;
+
+    // local copy to prevent concurrent modification
+    addToGroup(Set.of(childrenUris), newUri);
     eventBus.fire(GroupUriChangedEvent(oldUri, newUri));
   }
 
@@ -243,10 +238,19 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     return null;
   }
 
+  static FilterGrouping? forUri(Uri uri) {
+    switch (uri.host) {
+      case hostAlbums:
+        return albumGrouping;
+      default:
+        return null;
+    }
+  }
+
   // serialization
 
   static String toJson(Map<Uri, Set<Uri>> groups) => jsonEncode(groups.map((parentUri, childrenUris) {
-        return MapEntry(parentUri.toString(), childrenUris.map((v) => v.toString()));
+        return MapEntry(parentUri.toString(), childrenUris.map((v) => v.toString()).toList());
       }));
 
   static Map<Uri, Set<Uri>>? fromJson(String? jsonString) {
