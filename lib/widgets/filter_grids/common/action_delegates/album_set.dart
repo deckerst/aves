@@ -5,8 +5,8 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/album_group.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
@@ -21,7 +21,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -41,7 +40,6 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -526,68 +524,19 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     }
   }
 
-  Future<void> _doRenameNonStoredAlbum<T extends AlbumBaseFilter>(
-    BuildContext context,
-    T oldFilter,
-    Future<T?> Function() createNewFilter,
-    bool Function(T filter) isRenamed,
-  ) async {
-    // save cover and bookmark before renaming
-    final cover = await covers.remove(oldFilter, notify: false);
-    final bookmarks = settings.drawerAlbumBookmarks;
-    final pinnedFilters = settings.pinnedFilters;
-
-    // new filter to match new name
-    final newFilter = await createNewFilter();
+  Future<void> _doRenameAlbumGroup(BuildContext context, AlbumGroupFilter oldFilter, Uri newUri) async {
+    albumGrouping.rename(oldFilter.uri, newUri);
+    final newFilter = albumGrouping.uriToFilter(newUri);
     if (newFilter == null) {
       showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
       return;
     }
-    bool _isRenamed(CollectionFilter? v) => v is T && isRenamed(v);
-
-    // update cover
-    if (cover != null) {
-      await covers.set(
-        filter: newFilter,
-        entryId: cover.$1,
-        packageName: cover.$2,
-        color: cover.$3,
-        notify: true,
-      );
-    }
-
-    // update drawer bookmark
-    final bookmark = bookmarks?.firstWhereOrNull(_isRenamed);
-    if (bookmark != null) {
-      bookmarks?.replace(bookmark, newFilter);
-      settings.drawerAlbumBookmarks = bookmarks;
-    }
-
-    // update pin
-    final pin = pinnedFilters.firstWhereOrNull(_isRenamed);
-    if (pin != null) {
-      pinnedFilters.replace(pin, newFilter);
-      settings.pinnedFilters = pinnedFilters;
-    }
-
     browse(context);
   }
 
-  Future<void> _doRenameAlbumGroup(BuildContext context, AlbumGroupFilter oldFilter, Uri newUri) async {
-    final oldUri = oldFilter.uri;
-    await _doRenameNonStoredAlbum<AlbumGroupFilter>(context, oldFilter, () {
-      albumGrouping.rename(oldUri, newUri);
-      final newFilter = albumGrouping.uriToFilter(newUri);
-      return SynchronousFuture(newFilter is AlbumGroupFilter ? newFilter : null);
-    }, (filter) => filter.uri == oldUri);
-  }
-
   Future<void> _doRenameDynamicAlbum(BuildContext context, DynamicAlbumFilter oldFilter, String newName) async {
-    final oldName = oldFilter.name;
-    await _doRenameNonStoredAlbum<DynamicAlbumFilter>(context, oldFilter, () async {
-      await dynamicAlbums.rename(oldFilter, newName);
-      return DynamicAlbumFilter(newName, oldFilter.filter);
-    }, (filter) => filter.name == oldName);
+    await dynamicAlbums.rename(oldFilter, newName);
+    browse(context);
   }
 
   Future<void> _doRenameStoredAlbum(BuildContext context, StoredAlbumFilter albumFilter, String newName) async {

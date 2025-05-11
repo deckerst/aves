@@ -1,6 +1,6 @@
 import 'package:aves/model/dynamic_albums.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
-import 'package:aves/model/filters/covered/group_base.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';

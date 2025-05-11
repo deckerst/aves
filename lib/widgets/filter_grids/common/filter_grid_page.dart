@@ -311,7 +311,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
               visibleSections = {};
               final queryUp = query.toUpperCase();
               widget.sections.forEach((sectionKey, sectionFilters) {
-                final visibleFilters = sectionFilters.where((item) => item.filter.match(context, queryUp)).toList();
+                final visibleFilters = sectionFilters.where((item) => item.filter.matchLabel(context, queryUp)).toList();
                 if (visibleFilters.isNotEmpty) {
                   visibleSections[sectionKey] = visibleFilters;
                 }

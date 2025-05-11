@@ -1,6 +1,6 @@
-import 'package:aves/model/filters/covered/group_base.dart';
+import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/set_or.dart';
+import 'package:aves/model/filters/container/set_or.dart';
 
 mixin AlbumBaseFilter on CollectionFilter {}
 
@@ -46,4 +46,15 @@ class AlbumGroupFilter extends GroupBaseFilter with AlbumBaseFilter {
 
   @override
   String get key => '$type-$reversed-$uri';
+
+  // container
+
+  @override
+  AlbumGroupFilter? replaceFilters(CollectionFilter? Function(CollectionFilter oldFilter) toElement) {
+    return AlbumGroupFilter(
+      uri,
+      filter.replaceFilters(toElement),
+      reversed: reversed,
+    );
+  }
 }

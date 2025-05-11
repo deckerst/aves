@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/filters/covered/album_group.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';

@@ -375,6 +375,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/dart-lang/stack_trace',
     ),
     Dependency(
+      name: 'Synchronized',
+      license: mit,
+      sourceUrl: 'https://github.com/tekartik/synchronized.dart/tree/master/synchronized',
+    ),
+    Dependency(
       name: 'Vector Math',
       license: '$zlib, $bsd3',
       sourceUrl: 'https://github.com/google/vector_math.dart',

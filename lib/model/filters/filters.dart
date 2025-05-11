@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/coordinate.dart';
-import 'package:aves/model/filters/covered/album_group.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
@@ -17,8 +17,8 @@ import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/set_and.dart';
-import 'package:aves/model/filters/set_or.dart';
+import 'package:aves/model/filters/container/set_and.dart';
+import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/filters/weekday.dart';
@@ -128,9 +128,9 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   String toJson() => jsonEncode(toMap());
 
-  EntryFilter get positiveTest;
+  EntryPredicate get positiveTest;
 
-  EntryFilter get test => reversed ? (v) => !positiveTest(v) : positiveTest;
+  EntryPredicate get test => reversed ? (v) => !positiveTest(v) : positiveTest;
 
   CollectionFilter reverse() => _fromMap(toMap()..['reversed'] = !reversed)!;
 
@@ -150,7 +150,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   String getTooltip(BuildContext context) => getLabel(context);
 
-  bool match(BuildContext context, String query) => getLabel(context).toUpperCase().contains(query);
+  bool matchLabel(BuildContext context, String query) => getLabel(context).toUpperCase().contains(query);
 
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => null;
 
@@ -185,7 +185,8 @@ class FilterGridItem<T extends CollectionFilter> with EquatableMixin {
   const FilterGridItem(this.filter, this.entry);
 }
 
-typedef EntryFilter = bool Function(AvesEntry);
+typedef EntryPredicate = bool Function(AvesEntry entry);
+typedef CollectionFilterPredicate = bool Function(CollectionFilter filter);
 
 abstract class DummyCollectionFilter extends CollectionFilter {
   const DummyCollectionFilter({required super.reversed});
@@ -200,7 +201,7 @@ abstract class DummyCollectionFilter extends CollectionFilter {
   String get key => throw UnimplementedError();
 
   @override
-  EntryFilter get positiveTest => throw UnimplementedError();
+  EntryPredicate get positiveTest => throw UnimplementedError();
 
   @override
   List<Object?> get props => throw UnimplementedError();

@@ -1,10 +1,14 @@
-import 'package:aves/model/filters/covered/album_group.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/container.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/widgets.dart';
 
-class DynamicAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFilter {
+// a dynamic album can act as:
+// - an alias, when inner filter is a simple filter,
+// - a combination, when inner filter is a container.
+class DynamicAlbumFilter extends CollectionFilter with ContainerFilter, CoveredFilter, AlbumBaseFilter {
   static const type = 'dynamic_album';
 
   final String name;
@@ -35,7 +39,7 @@ class DynamicAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseF
       };
 
   @override
-  EntryFilter get positiveTest => filter.test;
+  EntryPredicate get positiveTest => filter.test;
 
   @override
   bool get exclusiveProp => false;
@@ -53,4 +57,21 @@ class DynamicAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseF
 
   @override
   String get key => '$type-$reversed-$name';
+
+  // container
+
+  @override
+  Set<CollectionFilter> get innerFilters => {filter};
+
+  @override
+  DynamicAlbumFilter? replaceFilters(CollectionFilter? Function(CollectionFilter oldFilter) toElement) {
+    final newFilter = toElement(filter);
+    return newFilter != null
+        ? DynamicAlbumFilter(
+            name,
+            newFilter,
+            reversed: reversed,
+          )
+        : null;
+  }
 }

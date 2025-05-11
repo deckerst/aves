@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 class RecentlyAddedFilter extends CollectionFilter {
   static const type = 'recently_added';
 
-  static late EntryFilter _test;
+  static late EntryPredicate _test;
 
   static final instance = RecentlyAddedFilter._private();
   static final instanceReversed = RecentlyAddedFilter._private(reversed: true);
@@ -39,7 +39,7 @@ class RecentlyAddedFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => false;

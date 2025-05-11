@@ -9,7 +9,7 @@ class RatingFilter extends CollectionFilter {
 
   final int rating;
   final String op;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   static const opEqual = '=';
   static const opOrLower = '<=';
@@ -49,7 +49,7 @@ class RatingFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;

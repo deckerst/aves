@@ -1,13 +1,14 @@
 import 'dart:convert';
 
-import 'package:aves/model/filters/covered/album_group.dart';
-import 'package:aves/model/filters/covered/group_base.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/group_base.dart';
+import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
 final FilterGrouping albumGrouping = FilterGrouping._private(FilterGrouping.hostAlbums, AlbumGroupFilter.new);
@@ -22,12 +23,23 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   static const _groupPath = '/group';
   static const _groupPathParamKey = 'path';
 
+  final EventBus eventBus = EventBus();
+
   final String _host;
   final T Function(Uri uri, SetOrFilter filter) _createGroupFilter;
   final Map<Uri, Set<Uri>> _groups = {};
 
   FilterGrouping._private(this._host, this._createGroupFilter) {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+  }
+
+  static FilterGrouping? forUri(Uri uri) {
+    switch (uri.host) {
+      case hostAlbums:
+        return albumGrouping;
+      default:
+        return null;
+    }
   }
 
   void clear() => _groups.clear();
@@ -52,6 +64,7 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
       // local copy to prevent concurrent modification
       addToGroup(Set.of(childrenUris), newUri);
     }
+    eventBus.fire(GroupUriChangedEvent(oldUri, newUri));
   }
 
   bool get isNotEmpty => _groups.isNotEmpty;
@@ -147,6 +160,7 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
             }
           }
 
+          eventBus.fire(GroupUriChangedEvent(oldGroupUri, newGroupUri));
           _reparentGroupPaths(groupChildrenUris, newGroupUri);
         }
       }
@@ -247,4 +261,12 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
       return MapEntry(parentUri, childrenUris);
     }).whereNotNullKey();
   }
+}
+
+@immutable
+class GroupUriChangedEvent {
+  final Uri oldGroupUri;
+  final Uri newGroupUri;
+
+  const GroupUriChangedEvent(this.oldGroupUri, this.newGroupUri);
 }

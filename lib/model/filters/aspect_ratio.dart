@@ -9,7 +9,7 @@ class AspectRatioFilter extends CollectionFilter {
 
   final double threshold;
   final String op;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   static final landscape = AspectRatioFilter(1, QueryFilter.opGreater);
   static final portrait = AspectRatioFilter(1, QueryFilter.opLower);
@@ -45,7 +45,7 @@ class AspectRatioFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;

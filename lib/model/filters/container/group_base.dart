@@ -1,11 +1,12 @@
+import 'package:aves/model/filters/container/container.dart';
+import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/set_or.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/widgets.dart';
 
-abstract class GroupBaseFilter extends CollectionFilter with CoveredFilter {
+abstract class GroupBaseFilter extends CollectionFilter with ContainerFilter, CoveredFilter {
   final Uri uri;
   final SetOrFilter filter;
   late final String _name;
@@ -20,7 +21,7 @@ abstract class GroupBaseFilter extends CollectionFilter with CoveredFilter {
   }
 
   @override
-  EntryFilter get positiveTest => filter.test;
+  EntryPredicate get positiveTest => filter.test;
 
   @override
   bool get exclusiveProp => false;
@@ -32,4 +33,9 @@ abstract class GroupBaseFilter extends CollectionFilter with CoveredFilter {
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
     return allowGenericIcon ? Icon(AIcons.group, size: size) : null;
   }
+
+  // container
+
+  @override
+  Set<CollectionFilter> get innerFilters => {filter};
 }

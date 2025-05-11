@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/home_page.dart';

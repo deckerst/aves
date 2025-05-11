@@ -8,7 +8,7 @@ class TagFilter extends CollectionFilter with CoveredFilter {
   static const type = 'tag';
 
   final String tag;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   @override
   List<Object?> get props => [tag, reversed];
@@ -36,7 +36,7 @@ class TagFilter extends CollectionFilter with CoveredFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => false;

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/filters/covered/album_group.dart';
+import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';

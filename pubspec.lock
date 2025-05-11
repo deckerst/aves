@@ -1508,7 +1508,7 @@ packages:
     source: hosted
     version: "0.3.1"
   synchronized:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: synchronized
       sha256: "0669c70faae6270521ee4f05bffd2919892d42d1276e6c495be80174b6bc0ef6"
