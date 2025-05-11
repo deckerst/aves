@@ -748,7 +748,7 @@
   "@videoStreamSelectionDialogNoSelection": {},
   "viewDialogSortSectionTitle": "Järjesta",
   "@viewDialogSortSectionTitle": {},
-  "viewDialogGroupSectionTitle": "Rühmita",
+  "viewDialogGroupSectionTitle": "Rubriigid",
   "@viewDialogGroupSectionTitle": {},
   "viewDialogLayoutSectionTitle": "Paiguta",
   "@viewDialogLayoutSectionTitle": {},
@@ -1644,5 +1644,9 @@
   "groupPickerUseThisGroupButton": "Kasuta seda gruppi",
   "@groupPickerUseThisGroupButton": {},
   "createButtonLabel": "LOO",
-  "@createButtonLabel": {}
+  "@createButtonLabel": {},
+  "chipActionGroup": "Rühmita",
+  "@chipActionGroup": {},
+  "sectionNone": "Rubriike pole",
+  "@sectionNone": {}
 }

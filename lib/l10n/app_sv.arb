@@ -652,7 +652,7 @@
   "@collectionActionMove": {},
   "viewDialogSortSectionTitle": "Sortera",
   "@viewDialogSortSectionTitle": {},
-  "viewDialogGroupSectionTitle": "Gruppera",
+  "viewDialogGroupSectionTitle": "Sektioner",
   "@viewDialogGroupSectionTitle": {},
   "viewDialogLayoutSectionTitle": "Layout",
   "@viewDialogLayoutSectionTitle": {},
@@ -880,7 +880,7 @@
   "@addShortcutButtonLabel": {},
   "addShortcutDialogLabel": "Rubrik för genväg",
   "@addShortcutDialogLabel": {},
-  "unsupportedTypeDialogMessage": "{count, plural, =1{Denna åtgärd stöds ej för filer av denna typ: {types}.} other{Denna åtgärd stöds ej för följande typer av filer: {types}.}}",
+  "unsupportedTypeDialogMessage": "{count, plural, =1{Denna åtgärd stöds ej för objekt av denna typ: {types}.} other{Denna åtgärd stöds ej för följande typer av objekt: {types}.}}",
   "@unsupportedTypeDialogMessage": {
     "placeholders": {
       "count": {
@@ -899,7 +899,7 @@
   "@chipActionGoToExplorerPage": {},
   "videoRepeatActionSetEnd": "Ange slut",
   "@videoRepeatActionSetEnd": {},
-  "moveUndatedConfirmationDialogMessage": "Registrera datum för filerna innan vi går vidare?",
+  "moveUndatedConfirmationDialogMessage": "Registrera datum för objekten innan vi går vidare?",
   "@moveUndatedConfirmationDialogMessage": {},
   "renameProcessorHash": "Hash",
   "@renameProcessorHash": {},
@@ -911,7 +911,7 @@
   "@castDialogTitle": {},
   "renameEntrySetPageTitle": "Ändra namn",
   "@renameEntrySetPageTitle": {},
-  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Vill du ta bort denna fil?} other{Vill du ta bort dessa {count} filer?}}",
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Vill du ta bort detta objekt?} other{Vill du ta bort dessa {count} objekt?}}",
   "@deleteEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -928,7 +928,7 @@
   "@aboutLicensesDartPackagesSectionTitle": {},
   "collectionActionShowTitleSearch": "Visa titelfilter",
   "@collectionActionShowTitleSearch": {},
-  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytta denna fil till papperskorgen?} other{Flytta dessa {count} filer till papperskorgen?}}",
+  "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flytta detta objekt till papperskorgen?} other{Flytta dessa {count} objekt till papperskorgen?}}",
   "@binEntriesConfirmationDialogMessage": {
     "placeholders": {
       "count": {
@@ -1609,5 +1609,29 @@
   "sortByPath": "Efter sökväg",
   "@sortByPath": {},
   "searchFormatSectionTitle": "Format",
-  "@searchFormatSectionTitle": {}
+  "@searchFormatSectionTitle": {},
+  "chipActionCreateGroup": "Skapa grupp",
+  "@chipActionCreateGroup": {},
+  "createButtonLabel": "SKAPA",
+  "@createButtonLabel": {},
+  "groupPickerUseThisGroupButton": "Använd den här gruppen",
+  "@groupPickerUseThisGroupButton": {},
+  "sectionNone": "Inga sektioner",
+  "@sectionNone": {},
+  "chipActionGroup": "Gruppera",
+  "@chipActionGroup": {},
+  "albumTierGroups": "Grupper",
+  "@albumTierGroups": {},
+  "newGroupDialogTitle": "Ny grupp",
+  "@newGroupDialogTitle": {},
+  "newGroupDialogNameLabel": "Gruppnamn",
+  "@newGroupDialogNameLabel": {},
+  "groupAlreadyExists": "Gruppen existerar redan",
+  "@groupAlreadyExists": {},
+  "groupEmpty": "Inga grupper",
+  "@groupEmpty": {},
+  "ungrouped": "Ogrupperad",
+  "@ungrouped": {},
+  "groupPickerTitle": "Välj Grupp",
+  "@groupPickerTitle": {}
 }
