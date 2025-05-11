@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Albums: groups
 - Search: week day filters
 
 ### Changed
