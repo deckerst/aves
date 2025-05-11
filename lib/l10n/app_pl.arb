@@ -229,7 +229,7 @@
   "@displayRefreshRatePreferLowest": {},
   "videoPlaybackMuted": "Odtwarzaj bez dźwięku",
   "@videoPlaybackMuted": {},
-  "itemCount": "{count, plural, =1{{count} element} few{{count} elementy} other{{count} elelmentów}}",
+  "itemCount": "{count, plural, =1{{count} element} few{{count} elementy} other{{count} elementów}}",
   "@itemCount": {
     "placeholders": {
       "count": {
@@ -663,7 +663,7 @@
   "@menuActionMap": {},
   "menuActionStats": "Statystyki",
   "@menuActionStats": {},
-  "viewDialogGroupSectionTitle": "Grupuj",
+  "viewDialogGroupSectionTitle": "Sekcje",
   "@viewDialogGroupSectionTitle": {},
   "viewDialogLayoutSectionTitle": "Układ",
   "@viewDialogLayoutSectionTitle": {},
@@ -1598,5 +1598,29 @@
   "searchFormatSectionTitle": "Formaty",
   "@searchFormatSectionTitle": {},
   "sortByPath": "Według ścieżki",
-  "@sortByPath": {}
+  "@sortByPath": {},
+  "sectionNone": "Brak sekcji",
+  "@sectionNone": {},
+  "createButtonLabel": "UTWÓRZ",
+  "@createButtonLabel": {},
+  "chipActionGroup": "Grupuj",
+  "@chipActionGroup": {},
+  "chipActionCreateGroup": "Utwórz grupę",
+  "@chipActionCreateGroup": {},
+  "albumTierGroups": "Grupy",
+  "@albumTierGroups": {},
+  "newGroupDialogTitle": "Nowa grupa",
+  "@newGroupDialogTitle": {},
+  "newGroupDialogNameLabel": "Nazwa grupy",
+  "@newGroupDialogNameLabel": {},
+  "groupAlreadyExists": "Grupa już istnieje",
+  "@groupAlreadyExists": {},
+  "groupEmpty": "Brak grup",
+  "@groupEmpty": {},
+  "ungrouped": "Nie pogrupowano",
+  "@ungrouped": {},
+  "groupPickerTitle": "Wybierz grupę",
+  "@groupPickerTitle": {},
+  "groupPickerUseThisGroupButton": "Używaj tej grupy",
+  "@groupPickerUseThisGroupButton": {}
 }

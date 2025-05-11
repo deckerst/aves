@@ -1598,5 +1598,9 @@
   "sortByPath": "حسب المسار",
   "@sortByPath": {},
   "searchFormatSectionTitle": "التنسيقات",
-  "@searchFormatSectionTitle": {}
+  "@searchFormatSectionTitle": {},
+  "chipActionGroup": "مجموعة",
+  "@chipActionGroup": {},
+  "createButtonLabel": "خلق",
+  "@createButtonLabel": {}
 }
