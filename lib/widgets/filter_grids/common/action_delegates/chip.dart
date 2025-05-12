@@ -1,10 +1,12 @@
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -58,7 +60,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
     reportService.log('$runtimeType handles $action');
     switch (action) {
       case ChipAction.goToAlbumPage:
-        _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
+        final initialGroup = albumGrouping.getFilterParent(filter);
+        _goTo(context, filter, AlbumListPage.routeName, (context) => AlbumListPage(initialGroup: initialGroup));
       case ChipAction.goToCountryPage:
         _goTo(context, filter, CountryListPage.routeName, (context) => const CountryListPage());
       case ChipAction.goToPlacePage:

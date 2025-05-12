@@ -1,5 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -123,6 +124,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
       if (pinned) const Icon(AIcons.pin),
       if (removableStorage) const Icon(AIcons.storageCard),
       if (_filter is DynamicAlbumFilter) const Icon(AIcons.dynamicAlbum),
+      if (_filter is AlbumGroupFilter) const Icon(AIcons.group),
     ];
 
     Widget? leading;

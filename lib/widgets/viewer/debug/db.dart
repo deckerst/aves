@@ -103,7 +103,7 @@ class _DbTabState extends State<DbTab> {
                     child: const Text('Duplicate entry'),
                   ),
                   InfoRowGroup(
-                    info: Map.fromEntries(data.toMap().entries.map((kv) => MapEntry(kv.key, kv.value?.toString() ?? ''))),
+                    info: Map.fromEntries(data.toDatabaseMap().entries.map((kv) => MapEntry(kv.key, kv.value?.toString() ?? ''))),
                   ),
                 ],
               ],

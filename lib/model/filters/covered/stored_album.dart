@@ -1,4 +1,5 @@
 import 'package:aves/model/covers.dart';
+import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -12,25 +13,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-abstract class AlbumBaseFilter extends CollectionFilter {
-  const AlbumBaseFilter({required super.reversed});
-
-  bool match(String query);
-
-  StorageVolume? get storageVolume;
-
-  bool get canRename;
-
-  bool get isVault;
-}
-
-class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
+class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFilter {
   static const type = 'album';
 
   final String album;
   final String? displayName;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
+  // do not include contextual `displayName` to `props`
   @override
   List<Object?> get props => [album, reversed];
 
@@ -55,7 +45,7 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;
@@ -64,7 +54,7 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   String get universalLabel => displayName ?? pContext.split(album).last;
 
   @override
-  String getTooltip(BuildContext context) => album;
+  String getTooltip(BuildContext context) => isVault ? super.getTooltip(context) : album;
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
@@ -114,13 +104,8 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
   @override
   String get key => '$type-$reversed-$album';
 
-  @override
-  bool match(String query) => (displayName ?? album).toUpperCase().contains(query);
-
-  @override
   StorageVolume? get storageVolume => androidFileUtils.getStorageVolume(album);
 
-  @override
   bool get canRename {
     if (isVault) return true;
 
@@ -129,6 +114,5 @@ class StoredAlbumFilter extends AlbumBaseFilter with CoveredFilter {
     return dir != null && dir.relativeDir.isNotEmpty;
   }
 
-  @override
   bool get isVault => vaults.isVault(album);
 }

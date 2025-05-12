@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
-import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -81,13 +81,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     EntrySortFactor.name,
     EntrySortFactor.rating,
     EntrySortFactor.duration,
+    EntrySortFactor.path,
   ];
 
-  static const _groupOptions = [
-    EntryGroupFactor.album,
-    EntryGroupFactor.month,
-    EntryGroupFactor.day,
-    EntryGroupFactor.none,
+  static const _sectionOptions = [
+    EntrySectionFactor.album,
+    EntrySectionFactor.month,
+    EntrySectionFactor.day,
+    EntrySectionFactor.none,
   ];
 
   static const _layoutOptions = [
@@ -690,16 +691,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(EntrySortFactor?, EntryGroupFactor?, TileLayout?, bool)>(
+    final value = await showDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
+        return TileViewDialog<EntrySortFactor, EntrySectionFactor, TileLayout>(
           initialValue: initialValue,
           sortOptions: _sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sectionOptions: _sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
-          canGroup: (s, g, l) => s == EntrySortFactor.date,
+          canSection: (s, g, l) => s == EntrySortFactor.date,
           tileExtentController: extentController,
         );
       },

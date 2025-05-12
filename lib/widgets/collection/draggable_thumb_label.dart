@@ -27,26 +27,28 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
       lineBuilder: (context, entry) {
         switch (collection.sortFactor) {
           case EntrySortFactor.date:
+            final date = entry.bestDate;
             switch (collection.sectionFactor) {
-              case EntryGroupFactor.album:
+              case EntrySectionFactor.album:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, date),
                   if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
                 ];
-              case EntryGroupFactor.month:
-              case EntryGroupFactor.none:
+              case EntrySectionFactor.month:
+              case EntrySectionFactor.none:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, date),
                 ];
-              case EntryGroupFactor.day:
+              case EntrySectionFactor.day:
                 return [
-                  DraggableThumbLabel.formatDayThumbLabel(context, entry.bestDate),
+                  DraggableThumbLabel.formatDayThumbLabel(context, date),
                 ];
             }
           case EntrySortFactor.name:
+            final entryTitle = entry.bestTitle;
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
-              if (entry.bestTitle != null) entry.bestTitle!,
+              if (entryTitle != null) entryTitle,
             ];
           case EntrySortFactor.rating:
             return [
@@ -54,12 +56,19 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
             ];
           case EntrySortFactor.size:
+            final sizeBytes = entry.sizeBytes;
             return [
-              if (entry.sizeBytes != null) formatFileSize(context.locale, entry.sizeBytes!, round: 0),
+              if (sizeBytes != null) formatFileSize(context.locale, sizeBytes, round: 0),
             ];
           case EntrySortFactor.duration:
             return [
               if (entry.durationMillis != null) entry.durationText,
+            ];
+          case EntrySortFactor.path:
+            final entryFilename = entry.filenameWithoutExtension;
+            return [
+              if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
+              if (entryFilename != null) entryFilename,
             ];
         }
       },

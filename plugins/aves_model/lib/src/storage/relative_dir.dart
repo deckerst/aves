@@ -1,3 +1,4 @@
+import 'package:aves_model/aves_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -14,6 +15,10 @@ class VolumeRelativeDirectory extends Equatable {
     required this.volumePath,
     required this.relativeDir,
   });
+
+  factory VolumeRelativeDirectory.volume(StorageVolume volume) {
+    return VolumeRelativeDirectory(volumePath: volume.path, relativeDir: '');
+  }
 
   static VolumeRelativeDirectory fromMap(Map map) {
     return VolumeRelativeDirectory(

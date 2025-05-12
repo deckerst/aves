@@ -43,4 +43,10 @@ class AvesEntrySort {
     final c = (b.durationMillis ?? 0).compareTo(a.durationMillis ?? 0);
     return c != 0 ? c : compareByDate(a, b);
   }
+
+  // compare by:
+  // 1) path ascending
+  static int compareByPath(AvesEntry a, AvesEntry b) {
+    return compareAsciiUpperCase(a.path ?? '', b.path ?? '');
+  }
 }

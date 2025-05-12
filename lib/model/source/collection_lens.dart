@@ -30,7 +30,7 @@ class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   List<String> burstPatterns;
-  EntryGroupFactor sectionFactor;
+  EntrySectionFactor sectionFactor;
   EntrySortFactor sortFactor;
   bool sortReverse;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
@@ -147,16 +147,17 @@ class CollectionLens with ChangeNotifier {
     switch (sortFactor) {
       case EntrySortFactor.date:
         switch (sectionFactor) {
-          case EntryGroupFactor.none:
+          case EntrySectionFactor.none:
             return false;
-          case EntryGroupFactor.album:
+          case EntrySectionFactor.album:
             return showAlbumHeaders();
-          case EntryGroupFactor.month:
+          case EntrySectionFactor.month:
             return true;
-          case EntryGroupFactor.day:
+          case EntrySectionFactor.day:
             return true;
         }
       case EntrySortFactor.name:
+      case EntrySortFactor.path:
         return showAlbumHeaders();
       case EntrySortFactor.rating:
         return !filters.any((f) => f is RatingFilter);
@@ -266,6 +267,8 @@ class CollectionLens with ChangeNotifier {
         _filteredSortedEntries.sort(AvesEntrySort.compareBySize);
       case EntrySortFactor.duration:
         _filteredSortedEntries.sort(AvesEntrySort.compareByDuration);
+      case EntrySortFactor.path:
+        _filteredSortedEntries.sort(AvesEntrySort.compareByPath);
     }
     if (sortReverse) {
       _filteredSortedEntries = _filteredSortedEntries.reversed.toList();
@@ -281,13 +284,13 @@ class CollectionLens with ChangeNotifier {
       switch (sortFactor) {
         case EntrySortFactor.date:
           switch (sectionFactor) {
-            case EntryGroupFactor.album:
+            case EntrySectionFactor.album:
               sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-            case EntryGroupFactor.month:
+            case EntrySectionFactor.month:
               sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
-            case EntryGroupFactor.day:
+            case EntrySectionFactor.day:
               sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
-            case EntryGroupFactor.none:
+            case EntrySectionFactor.none:
               sections = Map.fromEntries([
                 MapEntry(const SectionKey(), _filteredSortedEntries),
               ]);
@@ -303,6 +306,10 @@ class CollectionLens with ChangeNotifier {
           sections = Map.fromEntries([
             MapEntry(const SectionKey(), _filteredSortedEntries),
           ]);
+        case EntrySortFactor.path:
+          final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+          final int Function(EntryAlbumSectionKey, EntryAlbumSectionKey) compare = sortReverse ? (a, b) => source.compareAlbumsByPath(b.directory, a.directory) : (a, b) => source.compareAlbumsByPath(a.directory, b.directory);
+          sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, compare);
       }
     }
     sections = Map.unmodifiable(sections);

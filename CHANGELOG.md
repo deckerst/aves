@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.0"></a>[v1.13.0] - 2025-05-12
+
+### Added
+
+- Albums: groups
+- Collection: sort by storage path
+- Search: week day filters
+
+### Changed
+
+- revert to Skia rendering engine
+
 ## <a id="v1.12.10"></a>[v1.12.10] - 2025-04-16
 
 ### Added

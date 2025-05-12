@@ -3,10 +3,10 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/media/geotiff.dart';
+import 'package:aves/model/media/panorama.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/model/media/panorama.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
@@ -88,6 +88,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
           'sizeBytes': entry.sizeBytes,
         }) as Map;
         result['id'] = entry.id;
+        AvesEntry.normalizeMimeTypeFields(result);
         return CatalogMetadata.fromMap(result);
       } on PlatformException catch (e, stack) {
         if (entry.isValid) {
@@ -164,6 +165,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         imagePage['height'] = entry.height;
         imagePage['rotationDegrees'] = entry.rotationDegrees;
       }
+      pageMaps.forEach(AvesEntry.normalizeMimeTypeFields);
       return MultiPageInfo.fromPageMaps(entry, pageMaps);
     } on PlatformException catch (e, stack) {
       if (entry.isValid) {

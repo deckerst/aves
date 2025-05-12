@@ -1,14 +1,19 @@
+import 'dart:async';
+
+import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CollectionNavTile extends StatelessWidget {
+class CollectionNavTile extends StatelessWidget with FeedbackMixin, VaultAwareMixin {
   final Widget? leading;
   final Widget title;
   final Widget? trailing;
@@ -52,18 +57,27 @@ class CollectionNavTile extends StatelessWidget {
     );
   }
 
-  void _goToCollection(BuildContext context) {
+  Future<void> _goToCollection(BuildContext context) async {
+    final _filters = filters;
+    if (_filters != null) {
+      for (final filter in _filters) {
+        if (filter != null) {
+          if (!await unlockFilter(context, filter)) return;
+        }
+      }
+    }
+
     Navigator.maybeOf(context)?.pop();
-    Navigator.maybeOf(context)?.pushAndRemoveUntil(
+    unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(
           source: context.read<CollectionSource>(),
-          filters: filters,
+          filters: _filters,
         ),
       ),
       (route) => false,
-    );
+    ));
   }
 }
 
@@ -79,16 +93,18 @@ class AlbumNavTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _filter = filter;
+    final storageVolume = _filter is StoredAlbumFilter ? _filter.storageVolume : null;
     return CollectionNavTile(
-      leading: DrawerFilterIcon(filter: filter),
-      title: DrawerFilterTitle(filter: filter),
-      trailing: filter.storageVolume?.isRemovable ?? false
+      leading: DrawerFilterIcon(filter: _filter),
+      title: DrawerFilterTitle(filter: _filter),
+      trailing: storageVolume?.isRemovable ?? false
           ? const Icon(
               AIcons.storageCard,
               size: 16,
             )
           : null,
-      filters: {filter},
+      filters: {_filter},
       isSelected: isSelected,
     );
   }

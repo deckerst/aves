@@ -77,6 +77,7 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
                   'systemLocales': '${WidgetsBinding.instance.platformDispatcher.locales}',
                   'topEntryIds': '${settings.topEntryIds}',
                   'longPressTimeout': '${settings.longPressTimeout}',
+                  'albumGroups': toMultiline(settings.albumGroups.entries),
                 },
               ),
             ),

@@ -8,6 +8,7 @@ import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
@@ -544,55 +545,49 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   // filter summary
 
   int count(CollectionFilter filter) {
-    if (filter is AlbumBaseFilter) {
-      return albumEntryCount(filter);
-    } else if (filter is LocationFilter) {
-      switch (filter.level) {
-        case LocationLevel.country:
-          return countryEntryCount(filter);
-        case LocationLevel.state:
-          return stateEntryCount(filter);
-        case LocationLevel.place:
-          return placeEntryCount(filter);
-      }
-    } else if (filter is TagFilter) {
-      return tagEntryCount(filter);
+    switch (filter) {
+      case AlbumBaseFilter _:
+        return albumEntryCount(filter);
+      case LocationFilter(level: LocationLevel.country):
+        return countryEntryCount(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateEntryCount(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeEntryCount(filter);
+      case TagFilter _:
+        return tagEntryCount(filter);
     }
     return 0;
   }
 
   int size(CollectionFilter filter) {
-    if (filter is AlbumBaseFilter) {
-      return albumSize(filter);
-    } else if (filter is LocationFilter) {
-      switch (filter.level) {
-        case LocationLevel.country:
-          return countrySize(filter);
-        case LocationLevel.state:
-          return stateSize(filter);
-        case LocationLevel.place:
-          return placeSize(filter);
-      }
-    } else if (filter is TagFilter) {
-      return tagSize(filter);
+    switch (filter) {
+      case AlbumBaseFilter _:
+        return albumSize(filter);
+      case LocationFilter(level: LocationLevel.country):
+        return countrySize(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateSize(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeSize(filter);
+      case TagFilter _:
+        return tagSize(filter);
     }
     return 0;
   }
 
   AvesEntry? recentEntry(CollectionFilter filter) {
-    if (filter is AlbumBaseFilter) {
-      return albumRecentEntry(filter);
-    } else if (filter is LocationFilter) {
-      switch (filter.level) {
-        case LocationLevel.country:
-          return countryRecentEntry(filter);
-        case LocationLevel.state:
-          return stateRecentEntry(filter);
-        case LocationLevel.place:
-          return placeRecentEntry(filter);
-      }
-    } else if (filter is TagFilter) {
-      return tagRecentEntry(filter);
+    switch (filter) {
+      case AlbumBaseFilter _:
+        return albumRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.country):
+        return countryRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeRecentEntry(filter);
+      case TagFilter _:
+        return tagRecentEntry(filter);
     }
     return null;
   }

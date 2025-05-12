@@ -23,8 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-typedef AFilterCallback = void Function(CollectionFilter filter);
-typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
+typedef AFilterCallback<T extends CollectionFilter> = void Function(T filter);
+typedef OffsetFilterCallback<T extends CollectionFilter> = void Function(BuildContext context, T filter, Offset tapPosition);
 
 enum HeroType { always, onTap, never }
 
@@ -106,12 +106,13 @@ class AvesFilterChip extends StatefulWidget {
       const touchArea = Size(kMinInteractiveDimension, kMinInteractiveDimension);
       final actionDelegate = ChipActionDelegate();
       final animations = context.read<Settings>().accessibilityAnimations;
+
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
         items: [
           PopupMenuItem(
-            child: Text(filter.getLabel(context)),
+            child: Text(filter.getTooltip(context)),
           ),
           const PopupMenuDivider(),
           ...ChipAction.values.where((action) => actionDelegate.isVisible(action, filter: filter)).map((action) {

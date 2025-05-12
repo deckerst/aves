@@ -13,7 +13,7 @@ class DateFilter extends CollectionFilter {
   final DateLevel level;
   late final DateTime? date;
   late final DateTime _effectiveDate;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   static final onThisDay = DateFilter(DateLevel.md, null);
 
@@ -63,7 +63,7 @@ class DateFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;

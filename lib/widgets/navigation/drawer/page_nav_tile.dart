@@ -99,7 +99,7 @@ class PageNavTile extends StatelessWidget {
   static WidgetBuilder _materialPageBuilder(String routeName) {
     switch (routeName) {
       case AlbumListPage.routeName:
-        return (_) => const AlbumListPage();
+        return (_) => const AlbumListPage(initialGroup: null);
       case CountryListPage.routeName:
         return (_) => const CountryListPage();
       case PlaceListPage.routeName:

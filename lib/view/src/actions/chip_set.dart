@@ -17,6 +17,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       ChipSetAction.toggleTitleSearch =>
         // different data depending on toggle state
         l10n.collectionActionShowTitleSearch,
+      ChipSetAction.createGroup => l10n.chipActionCreateGroup,
       ChipSetAction.createAlbum => l10n.chipActionCreateAlbum,
       ChipSetAction.createVault => l10n.chipActionCreateVault,
       // browsing or selecting
@@ -29,6 +30,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       ChipSetAction.hide => l10n.chipActionHide,
       ChipSetAction.pin => l10n.chipActionPin,
       ChipSetAction.unpin => l10n.chipActionUnpin,
+      ChipSetAction.group => l10n.chipActionGroup,
       ChipSetAction.lockVault => l10n.chipActionLock,
       ChipSetAction.showCountryStates => l10n.chipActionShowCountryStates,
       ChipSetAction.showCollection => l10n.chipActionShowCollection,
@@ -53,6 +55,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       ChipSetAction.toggleTitleSearch =>
         // different data depending on toggle state
         AIcons.filter,
+      ChipSetAction.createGroup => AIcons.add,
       ChipSetAction.createAlbum => AIcons.add,
       ChipSetAction.createVault => AIcons.vaultAdd,
       // browsing or selecting
@@ -65,6 +68,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       ChipSetAction.hide => AIcons.hide,
       ChipSetAction.pin => AIcons.pin,
       ChipSetAction.unpin => AIcons.unpin,
+      ChipSetAction.group => AIcons.group,
       ChipSetAction.lockVault => AIcons.vaultLock,
       ChipSetAction.showCountryStates => AIcons.state,
       ChipSetAction.showCollection => AIcons.allCollection,

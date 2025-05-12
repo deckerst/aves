@@ -1,7 +1,11 @@
-import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:synchronized/synchronized.dart';
 
 mixin NavigationSettings on SettingsAccess {
   bool get mustBackTwiceToExit => getBool(SettingKeys.mustBackTwiceToExitKey) ?? SettingsDefaults.mustBackTwiceToExit;
@@ -57,7 +61,7 @@ mixin NavigationSettings on SettingsAccess {
   set setMetadataDateBeforeFileOp(bool newValue) => set(SettingKeys.setMetadataDateBeforeFileOpKey, newValue);
 
   List<CollectionFilter?> get drawerTypeBookmarks =>
-      (getStringList(SettingKeys.drawerTypeBookmarksKey))?.map((v) {
+      getStringList(SettingKeys.drawerTypeBookmarksKey)?.map((v) {
         if (v.isEmpty) return null;
         return CollectionFilter.fromJson(v);
       }).toList() ??
@@ -72,4 +76,47 @@ mixin NavigationSettings on SettingsAccess {
   List<String> get drawerPageBookmarks => getStringList(SettingKeys.drawerPageBookmarksKey) ?? SettingsDefaults.drawerPageBookmarks;
 
   set drawerPageBookmarks(List<String> newValue) => set(SettingKeys.drawerPageBookmarksKey, newValue);
+
+  // listening
+
+  final _lockForBookmarks = Lock();
+
+  Future<void> updateBookmarkedDynamicAlbums(Map<DynamicAlbumFilter, DynamicAlbumFilter?> changes) async {
+    await _lockForBookmarks.synchronized(() async {
+      final _bookmarks = drawerAlbumBookmarks;
+      bool changed = false;
+      if (_bookmarks != null) {
+        changes.forEach((oldFilter, newFilter) {
+          if (newFilter != null) {
+            changed |= _bookmarks.replace(oldFilter, newFilter);
+          } else {
+            changed |= _bookmarks.remove(oldFilter);
+          }
+        });
+      }
+      if (changed) {
+        drawerAlbumBookmarks = _bookmarks;
+      }
+    });
+  }
+
+  Future<void> updateBookmarkedGroup(Uri oldGroupUri, Uri newGroupUri) async {
+    await _lockForBookmarks.synchronized(() async {
+      final _bookmarks = drawerAlbumBookmarks;
+      bool changed = false;
+      if (_bookmarks != null) {
+        final grouping = FilterGrouping.forUri(oldGroupUri);
+        if (grouping != null) {
+          final oldFilter = grouping.uriToFilter(oldGroupUri);
+          final newFilter = grouping.uriToFilter(newGroupUri);
+          if (oldFilter is AlbumBaseFilter && newFilter is AlbumBaseFilter) {
+            changed |= _bookmarks.replace(oldFilter, newFilter);
+          }
+        }
+      }
+      if (changed) {
+        drawerAlbumBookmarks = _bookmarks;
+      }
+    });
+  }
 }

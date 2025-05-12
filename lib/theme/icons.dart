@@ -72,6 +72,7 @@ class AIcons {
   static const dateByMonth = Symbols.calendar_month;
   static const dateRecent = Symbols.today;
   static const dateUndated = Symbols.event_busy;
+  static const dateWeekday = Symbols.today;
   static const geoBounds = Symbols.public;
   static const location = Symbols.place;
   static const locationUnlocated = Symbols.location_off;
@@ -80,7 +81,7 @@ class AIcons {
   static const place = Symbols.place;
 
   // view
-  static const group = Symbols.group_work;
+  static const section = Symbols.subheader;
   static const layout = Symbols.grid_view;
   static const layoutMosaic = Symbols.view_comfy;
   static const layoutGrid = Symbols.view_compact;
@@ -112,6 +113,7 @@ class AIcons {
   static const filter = Symbols.filter_alt;
   static const filterOff = Symbols.filter_alt_off;
   static const goUp = Symbols.arrow_upward;
+  static const group = Symbols.stack_group;
   static const hide = Symbols.visibility_off;
   static const info = Symbols.info;
   static const layers = Symbols.layers;

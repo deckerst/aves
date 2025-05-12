@@ -21,7 +21,7 @@ class TypeFilter extends CollectionFilter {
 
   final String itemType;
   late final IconData _icon;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);
@@ -75,7 +75,7 @@ class TypeFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => false;

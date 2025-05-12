@@ -1007,7 +1007,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
-    // return description from these fields (by precedence):
+    // returns description from these fields (by precedence):
     // - XMP / dc:description
     // - IPTC / caption-abstract
     // - Exif / UserComment
@@ -1192,8 +1192,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.success(null)
     }
 
-    // return XMP components
-    // return an empty list if there is no XMP
+    // returns XMP components
+    // returns an empty list if there is no XMP
     private fun getXmp(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
