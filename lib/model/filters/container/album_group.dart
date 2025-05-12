@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/container/group_base.dart';
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/container/set_or.dart';
+import 'package:aves/model/filters/filters.dart';
 
 mixin AlbumBaseFilter on CollectionFilter {}
 
