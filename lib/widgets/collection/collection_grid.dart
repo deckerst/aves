@@ -726,6 +726,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             break;
         }
       case EntrySortFactor.name:
+      case EntrySortFactor.path:
         addAlbums(collection, sectionLayouts, crumbs);
       case EntrySortFactor.rating:
       case EntrySortFactor.size:

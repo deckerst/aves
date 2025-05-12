@@ -81,6 +81,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     EntrySortFactor.name,
     EntrySortFactor.rating,
     EntrySortFactor.duration,
+    EntrySortFactor.path,
   ];
 
   static const _sectionOptions = [

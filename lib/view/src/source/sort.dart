@@ -12,6 +12,7 @@ extension ExtraEntrySortFactorView on EntrySortFactor {
       EntrySortFactor.rating => l10n.sortByRating,
       EntrySortFactor.size => l10n.sortBySize,
       EntrySortFactor.duration => l10n.sortByDuration,
+      EntrySortFactor.path => l10n.sortByPath,
     };
   }
 
@@ -22,6 +23,7 @@ extension ExtraEntrySortFactorView on EntrySortFactor {
       EntrySortFactor.rating => AIcons.rating,
       EntrySortFactor.size => AIcons.size,
       EntrySortFactor.duration => AIcons.duration,
+      EntrySortFactor.path => AIcons.path,
     };
   }
 
@@ -33,6 +35,7 @@ extension ExtraEntrySortFactorView on EntrySortFactor {
       EntrySortFactor.rating => reverse ? l10n.sortOrderLowestFirst : l10n.sortOrderHighestFirst,
       EntrySortFactor.size => reverse ? l10n.sortOrderSmallestFirst : l10n.sortOrderLargestFirst,
       EntrySortFactor.duration => reverse ? l10n.sortOrderShortestFirst : l10n.sortOrderLongestFirst,
+      EntrySortFactor.path => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
     };
   }
 }

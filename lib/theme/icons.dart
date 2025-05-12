@@ -81,7 +81,7 @@ class AIcons {
   static const place = Symbols.place;
 
   // view
-  static const section = Symbols.group_work;
+  static const section = Symbols.subheader;
   static const layout = Symbols.grid_view;
   static const layoutMosaic = Symbols.view_comfy;
   static const layoutGrid = Symbols.view_compact;
