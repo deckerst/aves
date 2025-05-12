@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Albums: groups
+- Collection: sort by storage path
 - Search: week day filters
 
 ### Changed

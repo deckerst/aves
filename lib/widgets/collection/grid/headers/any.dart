@@ -58,6 +58,7 @@ class CollectionSectionHeader extends StatelessWidget {
             break;
         }
       case EntrySortFactor.name:
+      case EntrySortFactor.path:
         return _buildAlbumHeader(context);
       case EntrySortFactor.rating:
         return RatingSectionHeader<AvesEntry>(

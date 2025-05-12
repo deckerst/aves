@@ -21,6 +21,8 @@ mixin AlbumMixin on SourceBase {
 
   Set<StoredAlbumFilter> getNewAlbumFilters(BuildContext context) => Set.unmodifiable(_newAlbums.map((v) => StoredAlbumFilter(v, getStoredAlbumDisplayName(context, v))));
 
+  int compareAlbumsByPath(String? a, String? b) => compareAsciiUpperCase(a ??= '', b ??= '');
+
   int compareAlbumsByName(String? a, String? b) {
     a ??= '';
     b ??= '';
