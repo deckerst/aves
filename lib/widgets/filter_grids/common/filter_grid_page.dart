@@ -473,11 +473,21 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   final GlobalKey scrollableKey = GlobalKey(debugLabel: 'filter-grid-page-scrollable');
 
+  FilterGrouping? _grouping;
+
   @override
   void initState() {
     super.initState();
     _registerWidget(widget);
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _unregisterDependencies();
+    _grouping = context.read<FilterGrouping?>();
+    _registerDependencies();
   }
 
   @override
@@ -489,8 +499,17 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   @override
   void dispose() {
+    _unregisterDependencies();
     _unregisterWidget(widget);
     super.dispose();
+  }
+
+  void _registerDependencies() {
+    _grouping?.addListener(_scrollToTop);
+  }
+
+  void _unregisterDependencies() {
+    _grouping?.removeListener(_scrollToTop);
   }
 
   void _registerWidget(_FilterSectionedContent<T> widget) {
@@ -553,6 +572,8 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
     final animate = context.read<Settings>().animate;
     highlightInfo.trackItem(item, animate: animate, highlightItem: filter);
   }
+
+  void _scrollToTop() => widget.scrollController.jumpTo(0);
 }
 
 class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
