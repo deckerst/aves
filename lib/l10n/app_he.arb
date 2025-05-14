@@ -144,5 +144,19 @@
   "stopTooltip": "עצור",
   "@stopTooltip": {},
   "chipActionGoToExplorerPage": "הצג בסייר",
-  "@chipActionGoToExplorerPage": {}
+  "@chipActionGoToExplorerPage": {},
+  "chipActionSetCover": "הגדר עטיפה",
+  "@chipActionSetCover": {},
+  "chipActionCreateAlbum": "צור אלבום",
+  "@chipActionCreateAlbum": {},
+  "chipActionShowCountryStates": "הצג סטטיסטיקות",
+  "@chipActionShowCountryStates": {},
+  "createButtonLabel": "צור",
+  "@createButtonLabel": {},
+  "chipActionGroup": "קבוצה",
+  "@chipActionGroup": {},
+  "chipActionCreateGroup": "צור קבוצה",
+  "@chipActionCreateGroup": {},
+  "chipActionCreateVault": "צור כספת",
+  "@chipActionCreateVault": {}
 }
