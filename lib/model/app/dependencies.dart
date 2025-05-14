@@ -212,9 +212,9 @@ class Dependencies {
       sourceUrl: 'https://github.com/fleaflet/flutter_map',
     ),
     Dependency(
-      name: 'Flutter Markdown',
+      name: 'Flutter Markdown Plus',
       license: bsd3,
-      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/flutter_markdown',
+      sourceUrl: 'https://github.com/foresightmobile/flutter_markdown_plus',
     ),
     Dependency(
       name: 'Flutter Staggered Animations',
