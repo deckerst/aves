@@ -473,7 +473,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   final GlobalKey scrollableKey = GlobalKey(debugLabel: 'filter-grid-page-scrollable');
 
-  FilterGrouping? _grouping;
+  FilterGroupNotifier? _groupNotifier;
 
   @override
   void initState() {
@@ -486,7 +486,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   void didChangeDependencies() {
     super.didChangeDependencies();
     _unregisterDependencies();
-    _grouping = context.read<FilterGrouping?>();
+    _groupNotifier = context.read<FilterGroupNotifier?>();
     _registerDependencies();
   }
 
@@ -505,11 +505,11 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   }
 
   void _registerDependencies() {
-    _grouping?.addListener(_scrollToTop);
+    _groupNotifier?.addListener(_scrollToTop);
   }
 
   void _unregisterDependencies() {
-    _grouping?.removeListener(_scrollToTop);
+    _groupNotifier?.removeListener(_scrollToTop);
   }
 
   void _registerWidget(_FilterSectionedContent<T> widget) {
