@@ -97,7 +97,7 @@ class AlbumListPage extends StatelessWidget {
   static List<FilterGridItem<AlbumBaseFilter>> getAlbumGridItems(
     BuildContext context,
     CollectionSource source,
-    Iterable<AlbumChipType> albumTypes,
+    Iterable<AlbumChipType> albumChipTypes,
     Uri? groupUri,
   ) {
     final groupContent = albumGrouping.getDirectChildren(groupUri);
@@ -110,29 +110,31 @@ class AlbumListPage extends StatelessWidget {
     }
 
     final listedStoredAlbums = <String>{};
-    if (albumTypes.contains(AlbumChipType.stored)) {
+    if (albumChipTypes.contains(AlbumChipType.stored)) {
+      final allAlbums = source.rawAlbums;
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<StoredAlbumFilter>(groupContent).map((v) => v.album).toSet();
-        listedStoredAlbums.addAll(source.rawAlbums.whereNot(withinGroups.contains));
+        listedStoredAlbums.addAll(allAlbums.whereNot(withinGroups.contains));
       } else {
-        listedStoredAlbums.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album));
+        // check that group content is listed from source, to prevent displaying hidden content
+        listedStoredAlbums.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album).where(allAlbums.contains));
       }
     }
 
     final listedDynamicAlbums = <DynamicAlbumFilter>{};
-    if (albumTypes.contains(AlbumChipType.dynamic)) {
+    if (albumChipTypes.contains(AlbumChipType.dynamic)) {
+      final allDynamicAlbums = dynamicAlbums.all;
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<DynamicAlbumFilter>(groupContent).toSet();
-        listedDynamicAlbums.addAll(dynamicAlbums.all.whereNot(withinGroups.contains));
+        listedDynamicAlbums.addAll(allDynamicAlbums.whereNot(withinGroups.contains));
       } else {
-        listedDynamicAlbums.addAll(groupContent.whereType<DynamicAlbumFilter>());
+        // check that group content is listed from source, to prevent displaying hidden content
+        listedDynamicAlbums.addAll(groupContent.whereType<DynamicAlbumFilter>().where(allDynamicAlbums.contains));
       }
     }
 
-    final albumGroupFilters = <AlbumGroupFilter>{};
-    if (albumTypes.contains(AlbumChipType.group)) {
-      albumGroupFilters.addAll(groupContent.whereType<AlbumGroupFilter>());
-    }
+    // always show groups, which are needed to navigate to other types
+    final albumGroupFilters = groupContent.whereType<AlbumGroupFilter>().toSet();
 
     final filters = <AlbumBaseFilter>{
       ...albumGroupFilters,
