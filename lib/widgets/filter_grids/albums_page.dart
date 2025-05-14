@@ -111,21 +111,25 @@ class AlbumListPage extends StatelessWidget {
 
     final listedStoredAlbums = <String>{};
     if (albumChipTypes.contains(AlbumChipType.stored)) {
+      final allAlbums = source.rawAlbums;
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<StoredAlbumFilter>(groupContent).map((v) => v.album).toSet();
-        listedStoredAlbums.addAll(source.rawAlbums.whereNot(withinGroups.contains));
+        listedStoredAlbums.addAll(allAlbums.whereNot(withinGroups.contains));
       } else {
-        listedStoredAlbums.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album));
+        // check that group content is listed from source, to prevent displaying hidden content
+        listedStoredAlbums.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album).where(allAlbums.contains));
       }
     }
 
     final listedDynamicAlbums = <DynamicAlbumFilter>{};
     if (albumChipTypes.contains(AlbumChipType.dynamic)) {
+      final allDynamicAlbums = dynamicAlbums.all;
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<DynamicAlbumFilter>(groupContent).toSet();
-        listedDynamicAlbums.addAll(dynamicAlbums.all.whereNot(withinGroups.contains));
+        listedDynamicAlbums.addAll(allDynamicAlbums.whereNot(withinGroups.contains));
       } else {
-        listedDynamicAlbums.addAll(groupContent.whereType<DynamicAlbumFilter>());
+        // check that group content is listed from source, to prevent displaying hidden content
+        listedDynamicAlbums.addAll(groupContent.whereType<DynamicAlbumFilter>().where(allDynamicAlbums.contains));
       }
     }
 
