@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.1"></a>[v1.13.1] - 2025-05-14
+
 ### Fixed
 
 - albums: show groups to move/copy/export items
