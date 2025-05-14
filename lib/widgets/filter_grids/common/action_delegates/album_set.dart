@@ -458,7 +458,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final filter = await pickAlbum(
       context: context,
       moveType: null,
-      albumTypes: {AlbumChipType.group},
+      albumChipTypes: {AlbumChipType.group},
       initialGroup: initialGroup,
     );
     if (filter == null) return;

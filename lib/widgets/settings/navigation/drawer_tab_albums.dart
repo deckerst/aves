@@ -68,7 +68,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
             final albumFilter = await pickAlbum(
               context: context,
               moveType: null,
-              albumTypes: AlbumChipType.values,
+              albumChipTypes: AlbumChipType.values,
               initialGroup: null,
             );
             if (albumFilter == null || items.contains(albumFilter)) return;

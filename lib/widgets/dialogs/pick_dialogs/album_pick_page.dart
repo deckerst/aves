@@ -40,7 +40,7 @@ import 'package:provider/provider.dart';
 Future<AlbumBaseFilter?> pickAlbum({
   required BuildContext context,
   required MoveType? moveType,
-  required Iterable<AlbumChipType> albumTypes,
+  required Iterable<AlbumChipType> albumChipTypes,
   required Uri? initialGroup,
 }) async {
   final source = context.read<CollectionSource>();
@@ -56,7 +56,7 @@ Future<AlbumBaseFilter?> pickAlbum({
       builder: (context) => _AlbumPickPage(
         source: source,
         moveType: moveType,
-        albumChipTypes: albumTypes,
+        albumChipTypes: albumChipTypes,
         initialGroup: initialGroup,
       ),
     ),

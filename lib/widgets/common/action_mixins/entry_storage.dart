@@ -46,7 +46,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     final destinationAlbumFilter = await pickAlbum(
       context: context,
       moveType: MoveType.export,
-      albumTypes: {AlbumChipType.stored},
+      albumChipTypes: {AlbumChipType.stored},
       initialGroup: null,
     );
     if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
@@ -379,7 +379,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         final destinationAlbumFilter = await pickAlbum(
           context: context,
           moveType: moveType,
-          albumTypes: {AlbumChipType.stored},
+          albumChipTypes: {AlbumChipType.stored},
           initialGroup: null,
         );
         if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
