@@ -158,5 +158,9 @@
   "chipActionCreateGroup": "צור קבוצה",
   "@chipActionCreateGroup": {},
   "chipActionCreateVault": "צור כספת",
-  "@chipActionCreateVault": {}
+  "@chipActionCreateVault": {},
+  "newGroupDialogTitle": "קבוצה חדשה",
+  "@newGroupDialogTitle": {},
+  "groupAlreadyExists": "הקבוצה כבר קיימת",
+  "@groupAlreadyExists": {}
 }
