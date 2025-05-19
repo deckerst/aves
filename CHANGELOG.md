@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- opening home when launching app as media picker
+
 ## <a id="v1.13.1"></a>[v1.13.1] - 2025-05-14
 
 ### Fixed
