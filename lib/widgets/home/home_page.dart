@@ -304,9 +304,6 @@ class _HomePageState extends State<HomePage> {
     String routeName;
     Set<CollectionFilter?>? filters;
     switch (appMode) {
-      case AppMode.pickSingleMediaExternal:
-      case AppMode.pickMultipleMediaExternal:
-        routeName = CollectionPage.routeName;
       case AppMode.setWallpaper:
         return DirectMaterialPageRoute(
           settings: const RouteSettings(name: WallpaperPage.routeName),
@@ -374,7 +371,17 @@ class _HomePageState extends State<HomePage> {
             );
           },
         );
-      default:
+      case AppMode.initialization:
+      case AppMode.main:
+      case AppMode.pickCollectionFiltersExternal:
+      case AppMode.pickSingleMediaExternal:
+      case AppMode.pickMultipleMediaExternal:
+      case AppMode.pickFilteredMediaInternal:
+      case AppMode.pickUnfilteredMediaInternal:
+      case AppMode.pickFilterInternal:
+      case AppMode.previewMap:
+      case AppMode.screenSaver:
+      case AppMode.slideshow:
         routeName = _initialRouteName ?? settings.homePage.routeName;
         filters = _initialFilters ?? (settings.homePage == HomePageSetting.collection ? settings.homeCustomCollection : {});
     }
