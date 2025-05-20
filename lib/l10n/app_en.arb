@@ -767,7 +767,7 @@
   "sortByName": "By name",
   "sortByItemCount": "By item count",
   "sortBySize": "By size",
-  "sortByAlbumFileName": "By album & file name",
+  "sortByAlbumFileName": "By album & item title",
   "sortByRating": "By rating",
   "sortByDuration": "By duration",
   "sortByPath": "By path",
