@@ -85,10 +85,12 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   ) {
     List<FilterGridItem<T>> toGridItem(CollectionSource source, Set<T> filters) {
       return filters
-          .map((filter) => FilterGridItem(
-                filter,
-                source.recentEntry(filter),
-              ))
+          .map(
+            (filter) => FilterGridItem(
+              filter,
+              source.recentEntry(filter),
+            ),
+          )
           .toList();
     }
 

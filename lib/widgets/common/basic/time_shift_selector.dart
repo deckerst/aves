@@ -127,7 +127,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 ),
               ),
             ],
-          )
+          ),
         ],
         defaultColumnWidth: const IntrinsicColumnWidth(),
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,

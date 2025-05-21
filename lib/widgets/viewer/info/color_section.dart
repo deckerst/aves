@@ -114,11 +114,13 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
   // the isolate does not start unless called from a static method
   static Future<PaletteGenerator> _getPaletteGenerator(EncodedImage encodedImage) {
     // `Isolate.run()` closure supports passing `EncodedImage` but not `ui.Image`
-    return Isolate.run(() => PaletteGenerator.fromByteData(
-          encodedImage,
-          maximumColorCount: 10,
-          // do not use the default palette filter
-          filters: [],
-        ));
+    return Isolate.run(
+      () => PaletteGenerator.fromByteData(
+        encodedImage,
+        maximumColorCount: 10,
+        // do not use the default palette filter
+        filters: [],
+      ),
+    );
   }
 }

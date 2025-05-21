@@ -36,8 +36,8 @@ abstract class SectionLayoutBuilder<T> {
     required this.tileHeight,
     required this.tileBuilder,
     required this.tileAnimationDelay,
-  })  : animate = tileAnimationDelay > Duration.zero,
-        bottom = tileHeight - tileWidth;
+  }) : animate = tileAnimationDelay > Duration.zero,
+       bottom = tileHeight - tileWidth;
 
   SectionedListLayout<T> updateLayouts(BuildContext context);
 

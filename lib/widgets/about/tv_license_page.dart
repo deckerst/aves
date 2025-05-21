@@ -168,20 +168,22 @@ class _LicenseData {
   /// which is to put the application package first, followed by every other
   /// package in case-insensitive alphabetical order.
   void sortPackages([int Function(String a, String b)? compare]) {
-    packages.sort(compare ??
-        (a, b) {
-          // Based on how LicenseRegistry currently behaves, the first package
-          // returned is the end user application license. This should be
-          // presented first in the list. So here we make sure that first package
-          // remains at the front regardless of alphabetical sorting.
-          if (a == firstPackage) {
-            return -1;
-          }
-          if (b == firstPackage) {
-            return 1;
-          }
-          return a.toLowerCase().compareTo(b.toLowerCase());
-        });
+    packages.sort(
+      compare ??
+          (a, b) {
+            // Based on how LicenseRegistry currently behaves, the first package
+            // returned is the end user application license. This should be
+            // presented first in the list. So here we make sure that first package
+            // remains at the front regardless of alphabetical sorting.
+            if (a == firstPackage) {
+              return -1;
+            }
+            if (b == firstPackage) {
+              return 1;
+            }
+            return a.toLowerCase().compareTo(b.toLowerCase());
+          },
+    );
   }
 }
 
@@ -232,26 +234,32 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
       );
       if (!mounted) return;
       setState(() {
-        _licenses.add(const Padding(
-          padding: EdgeInsets.all(18),
-          child: Divider(),
-        ));
+        _licenses.add(
+          const Padding(
+            padding: EdgeInsets.all(18),
+            child: Divider(),
+          ),
+        );
         for (final LicenseParagraph paragraph in paragraphs) {
           if (paragraph.indent == LicenseParagraph.centeredIndent) {
-            _licenses.add(Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Text(
-                paragraph.text,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+            _licenses.add(
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(
+                  paragraph.text,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ));
+            );
           } else {
             assert(paragraph.indent >= 0);
-            _licenses.add(Padding(
-              padding: EdgeInsetsDirectional.only(top: 8, start: 16.0 * paragraph.indent),
-              child: Text(paragraph.text),
-            ));
+            _licenses.add(
+              Padding(
+                padding: EdgeInsetsDirectional.only(top: 8, start: 16.0 * paragraph.indent),
+                child: Text(paragraph.text),
+              ),
+            );
           }
         }
       });

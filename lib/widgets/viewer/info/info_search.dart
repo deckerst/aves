@@ -26,8 +26,8 @@ class InfoSearchDelegate extends AvesSearchDelegate {
     required this.metadataNotifier,
     required this.isSelecting,
   }) : super(
-          routeName: pageRouteName,
-        );
+         routeName: pageRouteName,
+       );
 
   @override
   Widget? buildLeading(BuildContext context) {
@@ -68,13 +68,15 @@ class InfoSearchDelegate extends AvesSearchDelegate {
     };
     return ListView(
       children: suggestions.entries
-          .map((kv) => ListTile(
-                title: Text(kv.key),
-                onTap: () {
-                  query = kv.value;
-                  showResults(context);
-                },
-              ))
+          .map(
+            (kv) => ListTile(
+              title: Text(kv.key),
+              onTap: () {
+                query = kv.value;
+                showResults(context);
+              },
+            ),
+          )
           .toList(),
     );
   }
@@ -96,20 +98,24 @@ class InfoSearchDelegate extends AvesSearchDelegate {
       return queryIncludeAny.any(key.contains) && queryExcludeAll.every((q) => !key.contains(q));
     }
 
-    final filteredMetadata = Map.fromEntries(metadata.entries.map((kv) {
-      final filteredDir = kv.value.filterKeys(testKey);
-      return MapEntry(kv.key, filteredDir);
-    }));
+    final filteredMetadata = Map.fromEntries(
+      metadata.entries.map((kv) {
+        final filteredDir = kv.value.filterKeys(testKey);
+        return MapEntry(kv.key, filteredDir);
+      }),
+    );
 
     final tiles = filteredMetadata.entries
         .where((kv) => kv.value.tags.isNotEmpty)
-        .map((kv) => MetadataDirTile(
-              entry: entry,
-              title: kv.key,
-              dir: kv.value,
-              initiallyExpanded: true,
-              showThumbnails: false,
-            ))
+        .map(
+          (kv) => MetadataDirTile(
+            entry: entry,
+            title: kv.key,
+            dir: kv.value,
+            initiallyExpanded: true,
+            showThumbnails: false,
+          ),
+        )
         .toList();
     return MediaQueryDataProvider(
       child: SafeArea(

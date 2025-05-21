@@ -17,8 +17,8 @@ class SettingsSearchDelegate extends AvesSearchDelegate {
     required super.searchFieldStyle,
     required this.sections,
   }) : super(
-          routeName: pageRouteName,
-        );
+         routeName: pageRouteName,
+       );
 
   @override
   Widget buildSuggestions(BuildContext context) {
@@ -27,33 +27,35 @@ class SettingsSearchDelegate extends AvesSearchDelegate {
 
     bool testKey(String key) => key.toUpperCase().contains(upQuery);
 
-    final loader = Future.wait(sections.map((section) async {
-      final allTiles = await section.tiles(context);
-      final filteredTiles = testKey(section.title(context)) ? allTiles : allTiles.where((v) => testKey(v.title(context))).toList();
-      if (filteredTiles.isEmpty) return null;
+    final loader = Future.wait(
+      sections.map((section) async {
+        final allTiles = await section.tiles(context);
+        final filteredTiles = testKey(section.title(context)) ? allTiles : allTiles.where((v) => testKey(v.title(context))).toList();
+        if (filteredTiles.isEmpty) return null;
 
-      return (context) {
-        return <Widget>[
-          Padding(
-            // match header layout in Settings page
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
-            child: Row(
-              children: [
-                section.icon(context),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: HighlightTitle(
-                    title: section.title(context),
-                    showHighlight: false,
+        return (context) {
+          return <Widget>[
+            Padding(
+              // match header layout in Settings page
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+              child: Row(
+                children: [
+                  section.icon(context),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: HighlightTitle(
+                      title: section.title(context),
+                      showHighlight: false,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          ...filteredTiles.map((v) => v.build(context)),
-        ];
-      };
-    }));
+            ...filteredTiles.map((v) => v.build(context)),
+          ];
+        };
+      }),
+    );
 
     return MediaQueryDataProvider(
       child: SafeArea(

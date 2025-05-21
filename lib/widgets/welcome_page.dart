@@ -154,7 +154,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   const SizedBox(width: 16),
                   message,
                 ],
-              )
+              ),
             ]),
       SizedBox(height: padding),
     ];
@@ -238,23 +238,22 @@ class _WelcomePageState extends State<WelcomePage> {
     required Duration delay,
     required Widget Function(Widget) childAnimationBuilder,
     required List<Widget> children,
-  }) =>
-      children
-          .asMap()
-          .map((index, widget) {
-            var child = widget is Flexible ? widget.child : widget;
-            child = AnimationConfiguration.staggeredList(
-              position: index,
-              duration: duration,
-              delay: delay,
-              child: childAnimationBuilder(child),
-            );
-            child = widget is Flexible ? Flexible(child: child) : child;
-            return MapEntry(
-              index,
-              child,
-            );
-          })
-          .values
-          .toList();
+  }) => children
+      .asMap()
+      .map((index, widget) {
+        var child = widget is Flexible ? widget.child : widget;
+        child = AnimationConfiguration.staggeredList(
+          position: index,
+          duration: duration,
+          delay: delay,
+          child: childAnimationBuilder(child),
+        );
+        child = widget is Flexible ? Flexible(child: child) : child;
+        return MapEntry(
+          index,
+          child,
+        );
+      })
+      .values
+      .toList();
 }

@@ -33,16 +33,20 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
   Widget build(BuildContext context) {
     return DropdownButton(
       items: widget.values
-          .map((v) => DropdownMenuItem<T>(
-                value: v,
-                child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: false),
-              ))
+          .map(
+            (v) => DropdownMenuItem<T>(
+              value: v,
+              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: false),
+            ),
+          )
           .toList(),
       selectedItemBuilder: (context) => widget.values
-          .map((v) => DropdownMenuItem<T>(
-                value: v,
-                child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: true),
-              ))
+          .map(
+            (v) => DropdownMenuItem<T>(
+              value: v,
+              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: true),
+            ),
+          )
           .toList(),
       value: widget.value,
       style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal),

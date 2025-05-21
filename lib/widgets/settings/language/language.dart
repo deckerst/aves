@@ -21,20 +21,20 @@ class LanguageSection extends SettingsSection {
 
   @override
   Widget icon(BuildContext context) => SettingsTileLeading(
-        icon: AIcons.language,
-        color: context.select<AvesColorsData, Color>((v) => v.language),
-      );
+    icon: AIcons.language,
+    color: context.select<AvesColorsData, Color>((v) => v.language),
+  );
 
   @override
   String title(BuildContext context) => context.l10n.settingsLanguageSectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
-        SettingsTileLanguageLocale(),
-        SettingsTileLanguageCoordinateFormat(),
-        SettingsTileLanguageUnitSystem(),
-        SettingsTileLanguageNumerals(),
-      ];
+    SettingsTileLanguageLocale(),
+    SettingsTileLanguageCoordinateFormat(),
+    SettingsTileLanguageUnitSystem(),
+    SettingsTileLanguageNumerals(),
+  ];
 }
 
 class SettingsTileLanguageLocale extends SettingsTile {
@@ -51,14 +51,14 @@ class SettingsTileLanguageCoordinateFormat extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<CoordinateFormat>(
-        values: CoordinateFormat.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.coordinateFormat,
-        onSelection: (v) => settings.coordinateFormat = v,
-        tileTitle: title(context),
-        dialogTitle: context.l10n.settingsCoordinateFormatDialogTitle,
-        optionSubtitleBuilder: (value) => value.format(context, PointsOfInterest.pointNemo),
-      );
+    values: CoordinateFormat.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.coordinateFormat,
+    onSelection: (v) => settings.coordinateFormat = v,
+    tileTitle: title(context),
+    dialogTitle: context.l10n.settingsCoordinateFormatDialogTitle,
+    optionSubtitleBuilder: (value) => value.format(context, PointsOfInterest.pointNemo),
+  );
 }
 
 class SettingsTileLanguageUnitSystem extends SettingsTile {
@@ -67,13 +67,13 @@ class SettingsTileLanguageUnitSystem extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<UnitSystem>(
-        values: UnitSystem.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.unitSystem,
-        onSelection: (v) => settings.unitSystem = v,
-        tileTitle: title(context),
-        dialogTitle: context.l10n.settingsUnitSystemDialogTitle,
-      );
+    values: UnitSystem.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.unitSystem,
+    onSelection: (v) => settings.unitSystem = v,
+    tileTitle: title(context),
+    dialogTitle: context.l10n.settingsUnitSystemDialogTitle,
+  );
 }
 
 class SettingsTileLanguageNumerals extends SettingsTile {

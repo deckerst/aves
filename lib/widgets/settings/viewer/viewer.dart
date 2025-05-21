@@ -22,9 +22,9 @@ class ViewerSection extends SettingsSection {
 
   @override
   Widget icon(BuildContext context) => SettingsTileLeading(
-        icon: AIcons.image,
-        color: context.select<AvesColorsData, Color>((v) => v.image),
-      );
+    icon: AIcons.image,
+    color: context.select<AvesColorsData, Color>((v) => v.image),
+  );
 
   @override
   String title(BuildContext context) => context.l10n.settingsViewerSectionTitle;
@@ -50,10 +50,10 @@ class SettingsTileViewerQuickActions extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: ViewerActionEditorPage.routeName,
-        builder: (context) => const ViewerActionEditorPage(),
-      );
+    title: title(context),
+    routeName: ViewerActionEditorPage.routeName,
+    builder: (context) => const ViewerActionEditorPage(),
+  );
 }
 
 class SettingsTileViewerOverlay extends SettingsTile {
@@ -62,10 +62,10 @@ class SettingsTileViewerOverlay extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: ViewerOverlayPage.routeName,
-        builder: (context) => const ViewerOverlayPage(),
-      );
+    title: title(context),
+    routeName: ViewerOverlayPage.routeName,
+    builder: (context) => const ViewerOverlayPage(),
+  );
 }
 
 class SettingsTileViewerSlideshow extends SettingsTile {
@@ -74,10 +74,10 @@ class SettingsTileViewerSlideshow extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: ViewerSlideshowPage.routeName,
-        builder: (context) => const ViewerSlideshowPage(),
-      );
+    title: title(context),
+    routeName: ViewerSlideshowPage.routeName,
+    builder: (context) => const ViewerSlideshowPage(),
+  );
 }
 
 class SettingsTileViewerGestureSideTapNext extends SettingsTile {
@@ -86,10 +86,10 @@ class SettingsTileViewerGestureSideTapNext extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.viewerGestureSideTapNext,
-        onChanged: (v) => settings.viewerGestureSideTapNext = v,
-        title: title(context),
-      );
+    selector: (context, s) => s.viewerGestureSideTapNext,
+    onChanged: (v) => settings.viewerGestureSideTapNext = v,
+    title: title(context),
+  );
 }
 
 class SettingsTileViewerUseCutout extends SettingsTile {
@@ -98,10 +98,10 @@ class SettingsTileViewerUseCutout extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.viewerUseCutout,
-        onChanged: (v) => settings.viewerUseCutout = v,
-        title: title(context),
-      );
+    selector: (context, s) => s.viewerUseCutout,
+    onChanged: (v) => settings.viewerUseCutout = v,
+    title: title(context),
+  );
 }
 
 class SettingsTileViewerMotionPhotoAutoPlay extends SettingsTile {
@@ -110,10 +110,10 @@ class SettingsTileViewerMotionPhotoAutoPlay extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.enableMotionPhotoAutoPlay,
-        onChanged: (v) => settings.enableMotionPhotoAutoPlay = v,
-        title: title(context),
-      );
+    selector: (context, s) => s.enableMotionPhotoAutoPlay,
+    onChanged: (v) => settings.enableMotionPhotoAutoPlay = v,
+    title: title(context),
+  );
 }
 
 class SettingsTileViewerImageBackground extends SettingsTile {
@@ -122,13 +122,13 @@ class SettingsTileViewerImageBackground extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => Selector<Settings, EntryBackground>(
-        selector: (context, s) => s.imageBackground,
-        builder: (context, current, child) => ListTile(
-          title: Text(title(context)),
-          trailing: EntryBackgroundSelector(
-            getter: () => current,
-            setter: (value) => settings.imageBackground = value,
-          ),
-        ),
-      );
+    selector: (context, s) => s.imageBackground,
+    builder: (context, current, child) => ListTile(
+      title: Text(title(context)),
+      trailing: EntryBackgroundSelector(
+        getter: () => current,
+        setter: (value) => settings.imageBackground = value,
+      ),
+    ),
+  );
 }

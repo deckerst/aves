@@ -75,10 +75,12 @@ class FullImage extends ImageProvider<FullImage> with EquatableMixin {
       pageId: pageId,
       sizeBytes: sizeBytes,
       onBytesReceived: (cumulative, total) {
-        chunkEvents.add(ImageChunkEvent(
-          cumulativeBytesLoaded: cumulative,
-          expectedTotalBytes: total,
-        ));
+        chunkEvents.add(
+          ImageChunkEvent(
+            cumulativeBytesLoaded: cumulative,
+            expectedTotalBytes: total,
+          ),
+        );
       },
     );
     try {

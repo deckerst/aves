@@ -117,8 +117,8 @@ class CropControlPanel extends StatelessWidget {
   const CropControlPanel({super.key});
 
   static double preferredHeight(BuildContext context) => CropAspectRatio.values.map((v) {
-        return CaptionedButton.getSize(context, v.getText(context), showCaption: true).height;
-      }).max;
+    return CaptionedButton.getSize(context, v.getText(context), showCaption: true).height;
+  }).max;
 
   @override
   Widget build(BuildContext context) {

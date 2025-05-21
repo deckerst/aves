@@ -122,14 +122,16 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                               ...[
                                 MetadataField.exifMake,
                                 MetadataField.exifModel,
-                              ].map((field) => PopupMenuItem(
-                                    value: MetadataFieldNamingProcessor.keyWithField(field),
-                                    child: MenuRow(text: field.title),
-                                  )),
+                              ].map(
+                                (field) => PopupMenuItem(
+                                  value: MetadataFieldNamingProcessor.keyWithField(field),
+                                  child: MenuRow(text: field.title),
+                                ),
+                              ),
                               PopupMenuItem(
                                 value: HashNamingProcessor.key,
                                 child: MenuRow(text: l10n.renameProcessorHash),
-                              )
+                              ),
                             ],
                           ),
                         ];

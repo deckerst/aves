@@ -144,10 +144,12 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              border: Border.fromBorderSide(BorderSide(
-                color: isMonochrome ? context.select<AvesColorsData, Color>((v) => v.neutral) : Theme.of(context).colorScheme.primary,
-                width: AvesFilterChip.outlineWidth,
-              )),
+              border: Border.fromBorderSide(
+                BorderSide(
+                  color: isMonochrome ? context.select<AvesColorsData, Color>((v) => v.neutral) : Theme.of(context).colorScheme.primary,
+                  width: AvesFilterChip.outlineWidth,
+                ),
+              ),
               shape: BoxShape.circle,
             ),
             child: Text(NumberFormat('0', context.locale).format(step)),

@@ -7,9 +7,9 @@ class ViewerEntryProvider extends ListenableProvider<ViewerEntryNotifier> {
     super.key,
     super.child,
   }) : super(
-          create: (context) => ViewerEntryNotifier(null),
-          dispose: (context, value) => value.dispose(),
-        );
+         create: (context) => ViewerEntryNotifier(null),
+         dispose: (context, value) => value.dispose(),
+       );
 }
 
 class ViewerEntryNotifier extends ValueNotifier<AvesEntry?> {

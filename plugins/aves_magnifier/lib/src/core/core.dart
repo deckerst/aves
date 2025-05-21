@@ -121,14 +121,20 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
       _registerWidget(widget);
     }
 
-    if (oldWidget.allowOriginalScaleBeyondRange != widget.allowOriginalScaleBeyondRange || oldWidget.minScale != widget.minScale || oldWidget.maxScale != widget.maxScale || oldWidget.initialScale != widget.initialScale || oldWidget.contentSize != widget.contentSize) {
-      controller.setScaleBoundaries((controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
-        allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
-        minScale: widget.minScale,
-        maxScale: widget.maxScale,
-        initialScale: widget.initialScale,
-        contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : null,
-      ));
+    if (oldWidget.allowOriginalScaleBeyondRange != widget.allowOriginalScaleBeyondRange ||
+        oldWidget.minScale != widget.minScale ||
+        oldWidget.maxScale != widget.maxScale ||
+        oldWidget.initialScale != widget.initialScale ||
+        oldWidget.contentSize != widget.contentSize) {
+      controller.setScaleBoundaries(
+        (controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
+          allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
+          minScale: widget.minScale,
+          maxScale: widget.maxScale,
+          initialScale: widget.initialScale,
+          contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : null,
+        ),
+      );
     }
   }
 
@@ -540,12 +546,13 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with Equ
   }
 }
 
-typedef MagnifierTapCallback = Function(
-  BuildContext context,
-  MagnifierState state,
-  Alignment alignment,
-  Offset childTapPosition,
-);
+typedef MagnifierTapCallback =
+    Function(
+      BuildContext context,
+      MagnifierState state,
+      Alignment alignment,
+      Offset childTapPosition,
+    );
 typedef MagnifierDoubleTapPredicate = bool Function(Offset localPosition);
 typedef MagnifierDoubleTapCallback = bool Function(Alignment alignment);
 typedef MagnifierGestureScaleStartCallback = void Function(ScaleStartDetails details, bool doubleTap, ScaleBoundaries boundaries);

@@ -35,11 +35,11 @@ class AlbumGroupFilter extends GroupBaseFilter with AlbumBaseFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'uri': uri.toString(),
-        'filter': filter.toJson(),
-        'reversed': reversed,
-      };
+    'type': type,
+    'uri': uri.toString(),
+    'filter': filter.toJson(),
+    'reversed': reversed,
+  };
 
   @override
   String get category => type;

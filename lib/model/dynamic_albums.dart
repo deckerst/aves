@@ -163,9 +163,9 @@ class DynamicAlbumRow extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'name': name,
-        'filter': filter.toJson(),
-      };
+    'name': name,
+    'filter': filter.toJson(),
+  };
 }
 
 @immutable

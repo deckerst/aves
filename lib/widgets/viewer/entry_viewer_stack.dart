@@ -243,8 +243,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
                 overlayOpacity: _overlayInitialized
                     ? _overlayOpacity
                     : settings.showOverlayOnOpening
-                        ? kAlwaysCompleteAnimation
-                        : kAlwaysDismissedAnimation,
+                    ? kAlwaysCompleteAnimation
+                    : kAlwaysDismissedAnimation,
                 verticalPager: _verticalPager,
                 horizontalPager: _horizontalPager,
                 onVerticalPageChanged: _onVerticalPageChanged,
@@ -679,17 +679,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
     await _onLeave();
     final uri = entryNotifier.value?.uri;
-    unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
-      MaterialPageRoute(
-        settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(
-          source: baseCollection.source,
-          filters: {...baseCollection.filters, filter},
-          highlightTest: uri != null ? (entry) => entry.uri == uri : null,
+    unawaited(
+      Navigator.maybeOf(context)?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          settings: const RouteSettings(name: CollectionPage.routeName),
+          builder: (context) => CollectionPage(
+            source: baseCollection.source,
+            filters: {...baseCollection.filters, filter},
+            highlightTest: uri != null ? (entry) => entry.uri == uri : null,
+          ),
         ),
+        (route) => false,
       ),
-      (route) => false,
-    ));
+    );
   }
 
   Future<void> _goToVerticalPage(int page) async {
@@ -887,10 +889,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final entry = entryNotifier.value;
     if (entry != null && hasCollection) {
       context.read<HighlightInfo>().trackItem(
-            entry,
-            predicate: (v) => v < 1,
-            animate: false,
-          );
+        entry,
+        predicate: (v) => v < 1,
+        animate: false,
+      );
       context.read<ViewerEntryNotifier>().value = entry;
     }
   }

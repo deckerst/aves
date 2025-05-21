@@ -77,8 +77,8 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     super.canPop,
     String? initialQuery,
   }) : super(
-          routeName: SearchPage.routeName,
-        ) {
+         routeName: SearchPage.routeName,
+       ) {
     query = initialQuery ?? '';
     _mimeTypeFilters = source.visibleEntries.map((entry) => entry.mimeType).toSet().map(MimeFilter.new).toList()..sort();
   }
@@ -227,13 +227,14 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
         builder: (context, snapshot) {
           final filters = [
             ...albumGrouping.getGroups().map(albumGrouping.uriToFilter),
-            ...source.rawAlbums.map((album) => StoredAlbumFilter(
-                  album,
-                  source.getStoredAlbumDisplayName(context, album),
-                )),
+            ...source.rawAlbums.map(
+              (album) => StoredAlbumFilter(
+                album,
+                source.getStoredAlbumDisplayName(context, album),
+              ),
+            ),
             ...dynamicAlbums.all,
-          ].nonNulls.where(containQuery).toList()
-            ..sort();
+          ].nonNulls.where(containQuery).toList()..sort();
           return _buildFilterRow(
             context: context,
             title: context.l10n.searchAlbumsSectionTitle,

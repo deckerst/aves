@@ -37,7 +37,7 @@ class _WallpaperSettingsDialogState extends State<WallpaperSettingsDialog> {
           value: _useScrollEffect,
           onChanged: (v) => setState(() => _useScrollEffect = v),
           title: Text(context.l10n.wallpaperUseScrollEffect),
-        )
+        ),
       ],
       actions: [
         const CancelButton(),

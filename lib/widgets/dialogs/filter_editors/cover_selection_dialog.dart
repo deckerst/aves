@@ -137,9 +137,11 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                   child: TabBarView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: tabs
-                        .map((t) => SingleChildScrollView(
-                              child: t.$2,
-                            ))
+                        .map(
+                          (t) => SingleChildScrollView(
+                            child: t.$2,
+                          ),
+                        )
                         .toList(),
                   ),
                 ),
@@ -166,7 +168,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
               return Navigator.maybeOf(context)?.pop<(AvesEntry?, String?, Color?)>((entry, package, color));
             },
             child: Text(l10n.applyButtonLabel),
-          )
+          ),
         ],
       ),
     );

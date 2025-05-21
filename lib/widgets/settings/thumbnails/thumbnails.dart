@@ -18,19 +18,19 @@ class ThumbnailsSection extends SettingsSection {
 
   @override
   Widget icon(BuildContext context) => SettingsTileLeading(
-        icon: AIcons.thumbnails,
-        color: context.select<AvesColorsData, Color>((v) => v.thumbnails),
-      );
+    icon: AIcons.thumbnails,
+    color: context.select<AvesColorsData, Color>((v) => v.thumbnails),
+  );
 
   @override
   String title(BuildContext context) => context.l10n.settingsThumbnailSectionTitle;
 
   @override
   List<SettingsTile> tiles(BuildContext context) => [
-        if (!settings.useTvLayout) SettingsTileCollectionQuickActions(),
-        SettingsTileThumbnailOverlay(),
-        SettingsTileBurstPatterns(),
-      ];
+    if (!settings.useTvLayout) SettingsTileCollectionQuickActions(),
+    SettingsTileThumbnailOverlay(),
+    SettingsTileBurstPatterns(),
+  ];
 }
 
 class SettingsTileCollectionQuickActions extends SettingsTile {
@@ -39,10 +39,10 @@ class SettingsTileCollectionQuickActions extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: CollectionActionEditorPage.routeName,
-        builder: (context) => const CollectionActionEditorPage(),
-      );
+    title: title(context),
+    routeName: CollectionActionEditorPage.routeName,
+    builder: (context) => const CollectionActionEditorPage(),
+  );
 }
 
 class SettingsTileThumbnailOverlay extends SettingsTile {
@@ -51,10 +51,10 @@ class SettingsTileThumbnailOverlay extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: ThumbnailOverlayPage.routeName,
-        builder: (context) => const ThumbnailOverlayPage(),
-      );
+    title: title(context),
+    routeName: ThumbnailOverlayPage.routeName,
+    builder: (context) => const ThumbnailOverlayPage(),
+  );
 }
 
 class SettingsTileBurstPatterns extends SettingsTile {
@@ -63,12 +63,12 @@ class SettingsTileBurstPatterns extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsMultiSelectionListTile<String>(
-        values: BurstPatterns.options,
-        getName: (context, v) => BurstPatterns.getName(v),
-        selector: (context, s) => s.collectionBurstPatterns,
-        onSelection: (v) => settings.collectionBurstPatterns = v,
-        tileTitle: title(context),
-        noneSubtitle: context.l10n.settingsCollectionBurstPatternsNone,
-        optionSubtitleBuilder: (value) => '${Unicode.FSI}${BurstPatterns.getExample(value)}${Unicode.PDI}',
-      );
+    values: BurstPatterns.options,
+    getName: (context, v) => BurstPatterns.getName(v),
+    selector: (context, s) => s.collectionBurstPatterns,
+    onSelection: (v) => settings.collectionBurstPatterns = v,
+    tileTitle: title(context),
+    noneSubtitle: context.l10n.settingsCollectionBurstPatternsNone,
+    optionSubtitleBuilder: (value) => '${Unicode.FSI}${BurstPatterns.getExample(value)}${Unicode.PDI}',
+  );
 }

@@ -54,7 +54,7 @@ class PlatformAppService implements AppService {
     'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
     'nekox.messenger': {'NekoX'},
     'org.telegram.messenger': {'Telegram Images', 'Telegram Video'},
-    'com.whatsapp': {'WhatsApp Animated Gifs', 'WhatsApp Documents', 'WhatsApp Images', 'WhatsApp Video'}
+    'com.whatsapp': {'WhatsApp Animated Gifs', 'WhatsApp Documents', 'WhatsApp Images', 'WhatsApp Video'},
   };
 
   @override
@@ -111,18 +111,20 @@ class PlatformAppService implements AppService {
   Future<Map<String, dynamic>> edit(String uri, String mimeType) async {
     try {
       final opCompleter = Completer<Map?>();
-      _stream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'edit',
-        'uri': uri,
-        'mimeType': mimeType,
-      }).listen(
-        (data) => opCompleter.complete(data as Map?),
-        onError: opCompleter.completeError,
-        onDone: () {
-          if (!opCompleter.isCompleted) opCompleter.complete({'error': 'cancelled'});
-        },
-        cancelOnError: true,
-      );
+      _stream
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'edit',
+            'uri': uri,
+            'mimeType': mimeType,
+          })
+          .listen(
+            (data) => opCompleter.complete(data as Map?),
+            onError: opCompleter.completeError,
+            onDone: () {
+              if (!opCompleter.isCompleted) opCompleter.complete({'error': 'cancelled'});
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       final result = await opCompleter.future;
       if (result == null) return {'error': 'cancelled'};
@@ -179,18 +181,20 @@ class PlatformAppService implements AppService {
 
   @override
   Future<bool> shareEntries(Iterable<AvesEntry> entries) {
-    return _share(groupBy<AvesEntry, String>(
-      entries,
-      // loosen MIME type to a generic one, so we can share with badly defined apps
-      // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
-      (e) => e.mimeTypeAnySubtype,
-    ).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList())));
+    return _share(
+      groupBy<AvesEntry, String>(
+        entries,
+        // loosen MIME type to a generic one, so we can share with badly defined apps
+        // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
+        (e) => e.mimeTypeAnySubtype,
+      ).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList())),
+    );
   }
 
   @override
   Future<bool> shareSingle(String uri, String mimeType) {
     return _share({
-      mimeType: [uri]
+      mimeType: [uri],
     });
   }
 

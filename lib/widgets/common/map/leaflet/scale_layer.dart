@@ -68,12 +68,13 @@ class ScaleLayerWidget extends StatelessWidget {
     final map = MapCamera.of(context);
     final center = map.center;
     final latitude = center.latitude.abs();
-    final level = map.zoom.round() +
+    final level =
+        map.zoom.round() +
         (latitude > 80
             ? 4
             : latitude > 60
-                ? 3
-                : 2);
+            ? 3
+            : 2);
     final scaleLevel = level.clamp(0, 20);
     late final double distanceMeters;
     late final String displayDistance;
@@ -139,7 +140,7 @@ class ScaleBar extends StatelessWidget {
                   color: fillColor,
                   fontSize: 11,
                 ),
-              )
+              ),
             ],
             outlineWidth: outlineWidth * 2,
             outlineColor: outlineColor,
@@ -149,10 +150,12 @@ class ScaleBar extends StatelessWidget {
             width: width,
             decoration: const BoxDecoration(
               color: fillColor,
-              border: Border.fromBorderSide(BorderSide(
-                color: outlineColor,
-                width: outlineWidth,
-              )),
+              border: Border.fromBorderSide(
+                BorderSide(
+                  color: outlineColor,
+                  width: outlineWidth,
+                ),
+              ),
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),

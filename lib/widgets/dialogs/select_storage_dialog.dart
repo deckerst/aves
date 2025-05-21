@@ -53,23 +53,23 @@ class _SelectStorageDialogState extends State<SelectStorageDialog> {
   }
 
   Widget _buildVolumeTile(BuildContext context, StorageVolume volume) => RadioListTile<StorageVolume>(
-        value: volume,
-        groupValue: _selectedVolume,
-        onChanged: (volume) {
-          _selectedVolume = volume!;
-          setState(() {});
-        },
-        title: Text(
-          volume.getDescription(context),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-        subtitle: Text(
-          volume.path,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-      );
+    value: volume,
+    groupValue: _selectedVolume,
+    onChanged: (volume) {
+      _selectedVolume = volume!;
+      setState(() {});
+    },
+    title: Text(
+      volume.getDescription(context),
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+    ),
+    subtitle: Text(
+      volume.path,
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+    ),
+  );
 }

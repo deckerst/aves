@@ -47,10 +47,10 @@ class AddressDetails extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'countryCode': countryCode,
-        'countryName': countryName,
-        'adminArea': adminArea,
-        'locality': locality,
-      };
+    'id': id,
+    'countryCode': countryCode,
+    'countryName': countryName,
+    'adminArea': adminArea,
+    'locality': locality,
+  };
 }

@@ -53,7 +53,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
               ),
             ),
             TextSpan(text: tags.join(AText.separator)),
-          ]
+          ],
         ],
       ),
     );

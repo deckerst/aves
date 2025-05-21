@@ -88,13 +88,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => AvesScaffold(
-        body: _setupError != null
-            ? HomeError(
-                error: _setupError!.$1,
-                stack: _setupError!.$2,
-              )
-            : null,
-      );
+    body: _setupError != null
+        ? HomeError(
+            error: _setupError!.$1,
+            stack: _setupError!.$2,
+          )
+        : null,
+  );
 
   Future<void> _setup() async {
     try {
@@ -268,10 +268,12 @@ class _HomePageState extends State<HomePage> {
 
       // `pushReplacement` is not enough in some edge cases
       // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
-      unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
-        await _getRedirectRoute(appMode),
-        (route) => false,
-      ));
+      unawaited(
+        Navigator.maybeOf(context)?.pushAndRemoveUntil(
+          await _getRedirectRoute(appMode),
+          (route) => false,
+        ),
+      );
     } catch (error, stack) {
       debugPrint('failed to setup app with error=$error\n$stack');
       setState(() => _setupError = (error, stack));
@@ -386,9 +388,9 @@ class _HomePageState extends State<HomePage> {
         filters = _initialFilters ?? (settings.homePage == HomePageSetting.collection ? settings.homeCustomCollection : {});
     }
     Route buildRoute(WidgetBuilder builder) => DirectMaterialPageRoute(
-          settings: RouteSettings(name: routeName),
-          builder: builder,
-        );
+      settings: RouteSettings(name: routeName),
+      builder: builder,
+    );
 
     final source = context.read<CollectionSource>();
     switch (routeName) {

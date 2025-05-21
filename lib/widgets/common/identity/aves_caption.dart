@@ -25,7 +25,7 @@ class AvesCaption extends StatelessWidget {
           Shadow(
             color: subtitleChangeShadowColor.withAlpha(0),
             blurRadius: 0,
-          )
+          ),
         ],
       ),
       changedStyle: subtitleStyle.copyWith(
@@ -33,7 +33,7 @@ class AvesCaption extends StatelessWidget {
           Shadow(
             color: subtitleChangeShadowColor,
             blurRadius: 3,
-          )
+          ),
         ],
       ),
       duration: context.read<DurationsData>().formTextStyleTransition,

@@ -48,9 +48,9 @@ class TvNavigationPopHandler implements PopHandler {
   static Route _getHomeRoute() {
     final homePage = settings.homePage;
     Route buildRoute(WidgetBuilder builder) => MaterialPageRoute(
-          settings: RouteSettings(name: homePage.routeName),
-          builder: builder,
-        );
+      settings: RouteSettings(name: homePage.routeName),
+      builder: builder,
+    );
 
     return switch (homePage) {
       HomePageSetting.collection => buildRoute((context) => CollectionPage(source: context.read<CollectionSource>(), filters: null)),

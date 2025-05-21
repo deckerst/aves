@@ -1,4 +1,3 @@
-
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/theme/durations.dart';
@@ -80,7 +79,7 @@ class SourceStateSubtitle extends StatelessWidget {
                     text: '${progress.done}/${progress.total}',
                     style: TextStyle(color: theme.isDark ? Colors.white30 : Colors.black26),
                   ),
-                ]
+                ],
               ],
             ),
             softWrap: false,

@@ -155,7 +155,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             Navigator.maybeOf(context)?.pop<(S?, G?, L?, bool)>((_selectedSort, _selectedSection, _selectedLayout, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
-        )
+        ),
       ],
     );
   }

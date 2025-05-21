@@ -87,7 +87,7 @@ class VideoSubtitles extends StatelessWidget {
                                 TextSpan(
                                   text: text,
                                   style: const TextStyle(fontSize: 14),
-                                )
+                                ),
                               ],
                               outlineWidth: 1,
                               outlineColor: Colors.black,
@@ -116,11 +116,13 @@ class VideoSubtitles extends StatelessWidget {
                               style: style.copyWith(
                                 letterSpacing: letterSpacing != null ? letterSpacing * viewScale : null,
                                 shadows: shadows
-                                    ?.map((v) => Shadow(
-                                          color: v.color,
-                                          offset: v.offset * viewScale,
-                                          blurRadius: v.blurRadius * viewScale,
-                                        ))
+                                    ?.map(
+                                      (v) => Shadow(
+                                        color: v.color,
+                                        offset: v.offset * viewScale,
+                                        blurRadius: v.blurRadius * viewScale,
+                                      ),
+                                    )
                                     .toList(),
                               ),
                             );
@@ -242,9 +244,11 @@ class VideoSubtitles extends StatelessWidget {
                                 alignment: Alignment(alignX, alignY),
                                 child: TextBackgroundPainter(
                                   spans: spans,
-                                  style: DefaultTextStyle.of(context).style.merge(spans.first.style!.copyWith(
-                                        backgroundColor: settings.subtitleBackgroundColor,
-                                      )),
+                                  style: DefaultTextStyle.of(context).style.merge(
+                                    spans.first.style!.copyWith(
+                                      backgroundColor: settings.subtitleBackgroundColor,
+                                    ),
+                                  ),
                                   textAlign: textHAlign,
                                   child: child,
                                 ),
@@ -292,16 +296,16 @@ class SubtitlePathPainter extends CustomPainter {
     required this.scale,
     required Color? fillColor,
     required Color? strokeColor,
-  })  : fillPaint = fillColor != null
-            ? (Paint()
-              ..style = PaintingStyle.fill
-              ..color = fillColor)
-            : null,
-        strokePaint = strokeColor != null
-            ? (Paint()
-              ..style = PaintingStyle.stroke
-              ..color = strokeColor)
-            : null;
+  }) : fillPaint = fillColor != null
+           ? (Paint()
+               ..style = PaintingStyle.fill
+               ..color = fillColor)
+           : null,
+       strokePaint = strokeColor != null
+           ? (Paint()
+               ..style = PaintingStyle.stroke
+               ..color = strokeColor)
+           : null;
 
   @override
   void paint(Canvas canvas, Size size) {

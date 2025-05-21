@@ -54,7 +54,8 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
   @override
   void initState() {
     super.initState();
-    final details = initialDetails ??
+    final details =
+        initialDetails ??
         VaultDetails(
           name: '',
           autoLockScreenOff: true,
@@ -86,18 +87,19 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ValueListenableBuilder<bool>(
-              valueListenable: _existsNotifier,
-              builder: (context, exists, child) {
-                return TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: l10n.newAlbumDialogNameLabel,
-                    helperText: exists ? l10n.newAlbumDialogNameLabelAlreadyExistsHelper : '',
-                  ),
-                  onChanged: (_) => _validate(),
-                  onSubmitted: (_) => _submit(context),
-                );
-              }),
+            valueListenable: _existsNotifier,
+            builder: (context, exists, child) {
+              return TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: l10n.newAlbumDialogNameLabel,
+                  helperText: exists ? l10n.newAlbumDialogNameLabelAlreadyExistsHelper : '',
+                ),
+                onChanged: (_) => _validate(),
+                onSubmitted: (_) => _submit(context),
+              );
+            },
+          ),
         ),
         if (_lockTypeOptions.length > 1)
           ListTile(

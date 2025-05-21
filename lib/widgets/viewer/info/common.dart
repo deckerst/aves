@@ -19,11 +19,11 @@ class SectionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     const dim = 32.0;
     Widget buildDivider() => const SizedBox(
-          width: dim,
-          child: Divider(
-            thickness: AvesFilterChip.outlineWidth,
-          ),
-        );
+      width: dim,
+      child: Divider(
+        thickness: AvesFilterChip.outlineWidth,
+      ),
+    );
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

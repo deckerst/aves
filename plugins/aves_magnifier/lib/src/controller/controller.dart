@@ -83,11 +83,13 @@ class AvesMagnifierController {
     assert((scale ?? 0) >= 0);
 
     previousState = currentState;
-    _setState(MagnifierState(
-      position: position,
-      scale: scale,
-      source: source,
-    ));
+    _setState(
+      MagnifierState(
+        position: position,
+        scale: scale,
+        source: source,
+      ),
+    );
   }
 
   void setScaleState(ScaleState newValue, ChangeSource source, {Offset? childFocalPoint}) {

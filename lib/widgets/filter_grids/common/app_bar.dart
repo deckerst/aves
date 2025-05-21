@@ -30,12 +30,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-typedef ActionsBuilder<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> = List<Widget> Function(
-  BuildContext context,
-  AppMode appMode,
-  Selection<FilterGridItem<T>> selection,
-  CSAD actionDelegate,
-);
+typedef ActionsBuilder<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> =
+    List<Widget> Function(
+      BuildContext context,
+      AppMode appMode,
+      Selection<FilterGridItem<T>> selection,
+      CSAD actionDelegate,
+    );
 
 class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends StatefulWidget {
   final CollectionSource source;
@@ -286,18 +287,18 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     final selectedFilters = selectedItems.map((v) => v.filter).toSet();
 
     bool isVisible(ChipSetAction action) => actionDelegate.isVisible(
-          action,
-          appMode: appMode,
-          isSelecting: isSelecting,
-          itemCount: itemCount,
-          selectedFilters: selectedFilters,
-        );
+      action,
+      appMode: appMode,
+      isSelecting: isSelecting,
+      itemCount: itemCount,
+      selectedFilters: selectedFilters,
+    );
     bool canApply(ChipSetAction action) => actionDelegate.canApply(
-          action,
-          isSelecting: isSelecting,
-          itemCount: itemCount,
-          selectedFilters: selectedFilters,
-        );
+      action,
+      isSelecting: isSelecting,
+      itemCount: itemCount,
+      selectedFilters: selectedFilters,
+    );
 
     return settings.useTvLayout
         ? _buildTelevisionActions(
@@ -353,7 +354,9 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }) {
     final isSelecting = selection.isSelecting;
 
-    final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions).where(isVisible).map(
+    final quickActionButtons = (isSelecting ? selectionQuickActions : browsingQuickActions)
+        .where(isVisible)
+        .map(
           (action) => _buildButtonIcon(context, actionDelegate, action, enabled: canApply(action)),
         );
 
@@ -362,7 +365,9 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
       ...quickActionButtons,
       PopupMenuButton<ChipSetAction>(
         itemBuilder: (context) {
-          final generalMenuItems = ChipSetActions.general.where(isVisible).map(
+          final generalMenuItems = ChipSetActions.general
+              .where(isVisible)
+              .map(
                 (action) => FilterGridAppBar.toMenuItem(context, action, enabled: canApply(action)),
               );
 

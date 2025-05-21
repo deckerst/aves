@@ -66,10 +66,12 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
     if (value == null) return;
 
     final reportController = StreamController.broadcast();
-    unawaited(showOpReport(
-      context: context,
-      opStream: reportController.stream,
-    ));
+    unawaited(
+      showOpReport(
+        context: context,
+        opStream: reportController.stream,
+      ),
+    );
 
     var region = _getVisibleRegion(context);
     if (region == null) return;

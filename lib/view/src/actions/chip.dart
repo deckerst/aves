@@ -12,8 +12,7 @@ extension ExtraChipActionView on ChipAction {
       ChipAction.goToPlacePage => l10n.chipActionGoToPlacePage,
       ChipAction.goToTagPage => l10n.chipActionGoToTagPage,
       ChipAction.goToExplorerPage => l10n.chipActionGoToExplorerPage,
-      ChipAction.ratingOrGreater ||
-      ChipAction.ratingOrLower =>
+      ChipAction.ratingOrGreater || ChipAction.ratingOrLower =>
         // different data depending on state
         toString(),
       ChipAction.decompose => l10n.chipActionDecompose,
@@ -28,15 +27,15 @@ extension ExtraChipActionView on ChipAction {
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() => switch (this) {
-        ChipAction.goToAlbumPage => AIcons.album,
-        ChipAction.goToCountryPage => AIcons.country,
-        ChipAction.goToPlacePage => AIcons.place,
-        ChipAction.goToTagPage => AIcons.tag,
-        ChipAction.goToExplorerPage => AIcons.explorer,
-        ChipAction.ratingOrGreater || ChipAction.ratingOrLower => AIcons.rating,
-        ChipAction.decompose => AIcons.split,
-        ChipAction.reverse => AIcons.reverse,
-        ChipAction.hide => AIcons.hide,
-        ChipAction.lockVault => AIcons.vaultLock,
-      };
+    ChipAction.goToAlbumPage => AIcons.album,
+    ChipAction.goToCountryPage => AIcons.country,
+    ChipAction.goToPlacePage => AIcons.place,
+    ChipAction.goToTagPage => AIcons.tag,
+    ChipAction.goToExplorerPage => AIcons.explorer,
+    ChipAction.ratingOrGreater || ChipAction.ratingOrLower => AIcons.rating,
+    ChipAction.decompose => AIcons.split,
+    ChipAction.reverse => AIcons.reverse,
+    ChipAction.hide => AIcons.hide,
+    ChipAction.lockVault => AIcons.vaultLock,
+  };
 }

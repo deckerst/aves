@@ -68,10 +68,10 @@ class Package {
   }
 
   Set<String> get potentialDirs => [
-        currentLabel,
-        englishLabel,
-        ...ownedDirs,
-      ].nonNulls.map(normalizePotentialDir).toSet();
+    currentLabel,
+    englishLabel,
+    ...ownedDirs,
+  ].nonNulls.map(normalizePotentialDir).toSet();
 
   static String normalizePotentialDir(String dir) {
     return dir.replaceAll('_', ' ').trim().toLowerCase();

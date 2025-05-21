@@ -36,10 +36,12 @@ class MultiPageInfo {
 
       final stackedEntries = mainEntry.stackedEntries;
       if (stackedEntries != null) {
-        _pageEntries.addEntries(pages.map((pageInfo) {
-          final pageEntry = stackedEntries.firstWhere((entry) => entry.uri == pageInfo.uri);
-          return MapEntry(pageInfo, pageEntry);
-        }));
+        _pageEntries.addEntries(
+          pages.map((pageInfo) {
+            final pageEntry = stackedEntries.firstWhere((entry) => entry.uri == pageInfo.uri);
+            return MapEntry(pageInfo, pageEntry);
+          }),
+        );
       }
     }
   }
@@ -86,14 +88,15 @@ class MultiPageInfo {
         final pageIndex = _pages.indexOf(videoPage);
         _pages.removeAt(pageIndex);
         _pages.insert(
-            pageIndex,
-            videoPage.copyWith(
-              uri: fields[EntryFields.uri] as String?,
-              // the initial fake page may contain inaccurate values for the following fields
-              // so we override them with values from the extracted standalone video
-              rotationDegrees: fields[EntryFields.sourceRotationDegrees] as int?,
-              durationMillis: fields[EntryFields.durationMillis] as int?,
-            ));
+          pageIndex,
+          videoPage.copyWith(
+            uri: fields[EntryFields.uri] as String?,
+            // the initial fake page may contain inaccurate values for the following fields
+            // so we override them with values from the extracted standalone video
+            rotationDegrees: fields[EntryFields.sourceRotationDegrees] as int?,
+            durationMillis: fields[EntryFields.durationMillis] as int?,
+          ),
+        );
         _pageEntries.remove(videoPage);
       }
     }
@@ -108,32 +111,33 @@ class MultiPageInfo {
     // dynamically extracted video is not in the trash like the original motion photo
     final trashed = (mainEntry.isMotionPhoto && pageInfo.isVideo) ? false : mainEntry.trashed;
 
-    final pageEntry = AvesEntry(
-      id: mainEntry.id,
-      uri: pageInfo.uri ?? mainEntry.uri,
-      path: mainEntry.path,
-      contentId: mainEntry.contentId,
-      pageId: pageId,
-      sourceMimeType: pageInfo.mimeType,
-      width: pageInfo.width,
-      height: pageInfo.height,
-      sourceRotationDegrees: pageInfo.rotationDegrees ?? mainEntry.sourceRotationDegrees,
-      sizeBytes: mainEntry.sizeBytes,
-      sourceTitle: mainEntry.sourceTitle,
-      dateAddedSecs: mainEntry.dateAddedSecs,
-      dateModifiedMillis: mainEntry.dateModifiedMillis,
-      sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
-      durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
-      trashed: trashed,
-      origin: mainEntry.origin,
-    )
-      ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
-        mimeType: pageInfo.mimeType,
-        isMultiPage: false,
-        rotationDegrees: pageInfo.rotationDegrees,
-      )
-      ..addressDetails = mainEntry.addressDetails?.copyWith()
-      ..trashDetails = trashed ? mainEntry.trashDetails : null;
+    final pageEntry =
+        AvesEntry(
+            id: mainEntry.id,
+            uri: pageInfo.uri ?? mainEntry.uri,
+            path: mainEntry.path,
+            contentId: mainEntry.contentId,
+            pageId: pageId,
+            sourceMimeType: pageInfo.mimeType,
+            width: pageInfo.width,
+            height: pageInfo.height,
+            sourceRotationDegrees: pageInfo.rotationDegrees ?? mainEntry.sourceRotationDegrees,
+            sizeBytes: mainEntry.sizeBytes,
+            sourceTitle: mainEntry.sourceTitle,
+            dateAddedSecs: mainEntry.dateAddedSecs,
+            dateModifiedMillis: mainEntry.dateModifiedMillis,
+            sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
+            durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
+            trashed: trashed,
+            origin: mainEntry.origin,
+          )
+          ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
+            mimeType: pageInfo.mimeType,
+            isMultiPage: false,
+            rotationDegrees: pageInfo.rotationDegrees,
+          )
+          ..addressDetails = mainEntry.addressDetails?.copyWith()
+          ..trashDetails = trashed ? mainEntry.trashDetails : null;
     _transientEntries.add(pageEntry);
     return pageEntry;
   }

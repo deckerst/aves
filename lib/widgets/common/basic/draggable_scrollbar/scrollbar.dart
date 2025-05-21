@@ -19,13 +19,14 @@ import 'package:flutter/widgets.dart';
  */
 
 /// Build the Scroll Thumb and label using the current configuration
-typedef ScrollThumbBuilder = Widget Function(
-  Color backgroundColor,
-  Animation<double> thumbAnimation,
-  Animation<double> labelAnimation,
-  double height, {
-  Widget? labelText,
-});
+typedef ScrollThumbBuilder =
+    Widget Function(
+      Color backgroundColor,
+      Animation<double> thumbAnimation,
+      Animation<double> labelAnimation,
+      double height, {
+      Widget? labelText,
+    });
 
 /// Build a Text widget using the current scroll offset
 typedef OffsetLabelBuilder = Widget Function(double offsetY);

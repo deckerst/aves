@@ -83,39 +83,37 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
     BuildContext context,
     T action,
     Widget child,
-  ) =>
-      LongPressDraggable<T>(
-        feedback: MediaQueryDataProvider(
-          child: _buildActionButton(
-            context,
-            action,
-            showCaption: false,
-          ),
-        ),
-        data: action,
-        dragAnchorStrategy: (draggable, context, position) {
-          return childDragAnchorStrategy(draggable, context, position) + Offset(0, OverlayButton.getSize(context));
-        },
-        maxSimultaneousDrags: 1,
-        onDragStarted: () => _setDraggedAvailableAction(action),
-        onDragEnd: (details) => _setDraggedAvailableAction(null),
-        delay: settings.longPressTimeout,
-        childWhenDragging: child,
-        child: child,
-      );
+  ) => LongPressDraggable<T>(
+    feedback: MediaQueryDataProvider(
+      child: _buildActionButton(
+        context,
+        action,
+        showCaption: false,
+      ),
+    ),
+    data: action,
+    dragAnchorStrategy: (draggable, context, position) {
+      return childDragAnchorStrategy(draggable, context, position) + Offset(0, OverlayButton.getSize(context));
+    },
+    maxSimultaneousDrags: 1,
+    onDragStarted: () => _setDraggedAvailableAction(action),
+    onDragEnd: (details) => _setDraggedAvailableAction(null),
+    delay: settings.longPressTimeout,
+    childWhenDragging: child,
+    child: child,
+  );
 
   Widget _buildActionButton(
     BuildContext context,
     T action, {
     bool enabled = true,
     bool showCaption = true,
-  }) =>
-      CaptionedButton(
-        icon: actionIcon(action),
-        caption: actionText(context, action),
-        showCaption: showCaption,
-        onPressed: enabled ? () {} : null,
-      );
+  }) => CaptionedButton(
+    icon: actionIcon(action),
+    caption: actionText(context, action),
+    showCaption: showCaption,
+    onPressed: enabled ? () {} : null,
+  );
 
   void _setDraggedQuickAction(T? action) => draggedQuickAction.value = action;
 

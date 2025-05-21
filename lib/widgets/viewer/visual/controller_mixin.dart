@@ -256,10 +256,12 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
         );
 
         try {
-          final status = await Floating().enable(OnLeavePiP(
-            aspectRatio: pipAspectRatio,
-            sourceRectHint: sourceRectHint,
-          ));
+          final status = await Floating().enable(
+            OnLeavePiP(
+              aspectRatio: pipAspectRatio,
+              sourceRectHint: sourceRectHint,
+            ),
+          );
           debugPrint('Enabled picture-in-picture with status=$status');
           return;
         } on PlatformException catch (e, stack) {

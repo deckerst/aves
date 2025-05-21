@@ -35,17 +35,18 @@ class _XmpDirTileBodyState extends State<XmpDirTileBody> {
 
   @override
   Widget build(BuildContext context) {
-    final sections = groupBy<MapEntry<String, String>, String>(_tags.entries, (kv) {
-      final fullKey = kv.key;
-      final i = fullKey.indexOf(XMP.propNamespaceSeparator);
-      final nsPrefix = i == -1 ? '' : fullKey.substring(0, i + 1);
-      return nsPrefix;
-    }).entries.map((kv) {
-      final nsPrefix = kv.key;
-      final rawProps = Map.fromEntries(kv.value);
-      return XmpNamespace.create(_schemaRegistryPrefixes, nsPrefix, rawProps);
-    }).toList()
-      ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
+    final sections =
+        groupBy<MapEntry<String, String>, String>(_tags.entries, (kv) {
+            final fullKey = kv.key;
+            final i = fullKey.indexOf(XMP.propNamespaceSeparator);
+            final nsPrefix = i == -1 ? '' : fullKey.substring(0, i + 1);
+            return nsPrefix;
+          }).entries.map((kv) {
+            final nsPrefix = kv.key;
+            final rawProps = Map.fromEntries(kv.value);
+            return XmpNamespace.create(_schemaRegistryPrefixes, nsPrefix, rawProps);
+          }).toList()
+          ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

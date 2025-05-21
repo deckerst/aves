@@ -310,12 +310,13 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       return details?.useBin ?? settings.enableBin;
     });
     await Future.forEach(
-        byBinUsage.entries,
-        (kv) => _doDelete(
-              context: context,
-              filters: kv.value.toSet(),
-              enableBin: kv.key,
-            ));
+      byBinUsage.entries,
+      (kv) => _doDelete(
+        context: context,
+        filters: kv.value.toSet(),
+        enableBin: kv.key,
+      ),
+    );
     browse(context);
   }
 

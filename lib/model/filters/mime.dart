@@ -52,10 +52,10 @@ class MimeFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'mime': mime,
-        'reversed': reversed,
-      };
+    'type': type,
+    'mime': mime,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

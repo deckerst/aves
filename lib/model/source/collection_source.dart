@@ -145,9 +145,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 
   Set<CollectionFilter> _getAppHiddenFilters() => {
-        ...settings.hiddenFilters,
-        ...vaults.vaultDirectories.where(vaults.isLocked).map((v) => StoredAlbumFilter(v, null)),
-      };
+    ...settings.hiddenFilters,
+    ...vaults.vaultDirectories.where(vaults.isLocked).map((v) => StoredAlbumFilter(v, null)),
+  };
 
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
     final hiddenFilters = {
@@ -362,17 +362,19 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         final sourceEntry = todoEntries.firstWhereOrNull((entry) => entry.uri == sourceUri);
         if (sourceEntry != null) {
           fromAlbums.add(sourceEntry.directory);
-          movedEntries.add(sourceEntry.copyWith(
-            id: localMediaDb.nextId,
-            uri: newFields[EntryFields.uri] as String?,
-            path: newFields[EntryFields.path] as String?,
-            contentId: newFields[EntryFields.contentId] as int?,
-            // title can change when moved files are automatically renamed to avoid conflict
-            title: newFields[EntryFields.title] as String?,
-            dateAddedSecs: newFields[EntryFields.dateAddedSecs] as int?,
-            dateModifiedMillis: newFields[EntryFields.dateModifiedMillis] as int?,
-            origin: newFields[EntryFields.origin] as int?,
-          ));
+          movedEntries.add(
+            sourceEntry.copyWith(
+              id: localMediaDb.nextId,
+              uri: newFields[EntryFields.uri] as String?,
+              path: newFields[EntryFields.path] as String?,
+              contentId: newFields[EntryFields.contentId] as int?,
+              // title can change when moved files are automatically renamed to avoid conflict
+              title: newFields[EntryFields.title] as String?,
+              dateAddedSecs: newFields[EntryFields.dateAddedSecs] as int?,
+              dateModifiedMillis: newFields[EntryFields.dateModifiedMillis] as int?,
+              origin: newFields[EntryFields.origin] as int?,
+            ),
+          );
         } else {
           debugPrint('failed to find source entry with uri=$sourceUri');
         }

@@ -8,7 +8,7 @@ class ViewerShortcuts {
     SingleActivator(LogicalKeyboardKey.delete): EntryActionIntent(action: EntryAction.delete),
   };
 
-// cf https://developer.android.com/training/tv/start/controllers#media-events
+  // cf https://developer.android.com/training/tv/start/controllers#media-events
   static const media = {
     // KEYCODE_MEDIA_PLAY_PAUSE / 85 / play/pause
     SingleActivator(LogicalKeyboardKey.mediaPlayPause): PlayPauseIntent.toggle(),

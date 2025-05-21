@@ -1,4 +1,3 @@
-
 import 'package:flutter/painting.dart';
 
 class AStyles {
@@ -19,6 +18,6 @@ class AStyles {
     Shadow(
       color: Color(0xFF000000),
       offset: Offset(0.5, 1.0),
-    )
+    ),
   ];
 }

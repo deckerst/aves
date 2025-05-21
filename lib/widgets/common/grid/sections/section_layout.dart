@@ -22,8 +22,8 @@ abstract class SectionLayout extends Equatable {
     required this.headerExtent,
     required this.spacing,
     required this.builder,
-  })  : bodyFirstIndex = firstIndex + 1,
-        bodyMinOffset = minOffset + headerExtent;
+  }) : bodyFirstIndex = firstIndex + 1,
+       bodyMinOffset = minOffset + headerExtent;
 
   bool hasChild(int index) => firstIndex <= index && index <= lastIndex;
 

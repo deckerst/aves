@@ -221,12 +221,12 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   // use 1 painter per line so that the dashes of one line
   // do not get offset depending on the previous line length
   Widget _buildDashLine(List<Offset> points) => CustomPaint(
-        painter: DashedPathPainter(
-          originalPath: Path()..addPolygon(points, false),
-          pathColor: CropperPainter.borderColor,
-          strokeWidth: CropperPainter.borderWidth,
-        ),
-      );
+    painter: DashedPathPainter(
+      originalPath: Path()..addPolygon(points, false),
+      pathColor: CropperPainter.borderColor,
+      strokeWidth: CropperPainter.borderWidth,
+    ),
+  );
 
   void _handleOutline({
     double? left,
@@ -520,10 +520,12 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
       final edgeOutlineCorners = edgeRegionCorners.map(regionToOutlineMatrix.transformOffset).toSet();
       if (edgeOutlineCorners.isNotEmpty) {
         final direction = edgeOutlineCorners.map((v) => newOutline.center - v).reduce((prev, v) => prev + v);
-        final movedOutline = targetOutline.shift(Offset(
-          outlineWidthDelta * direction.dx.sign,
-          outlineHeightDelta * direction.dy.sign,
-        ));
+        final movedOutline = targetOutline.shift(
+          Offset(
+            outlineWidthDelta * direction.dx.sign,
+            outlineHeightDelta * direction.dy.sign,
+          ),
+        );
         targetRegion = _regionFromOutline(viewState, movedOutline);
         newOutline = _containedOutlineFromRegion(viewState, targetRegion);
       }
@@ -715,53 +717,69 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
           );
         }
       case _RatioStrategy.pinTopLeft:
-        return pinnedRect((targetSize) => Rect.fromPoints(
-              outline.topLeft,
-              outline.topLeft.translate(targetSize.width, targetSize.height),
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromPoints(
+            outline.topLeft,
+            outline.topLeft.translate(targetSize.width, targetSize.height),
+          ),
+        );
       case _RatioStrategy.pinTopRight:
-        return pinnedRect((targetSize) => Rect.fromPoints(
-              outline.topRight,
-              outline.topRight.translate(-targetSize.width, targetSize.height),
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromPoints(
+            outline.topRight,
+            outline.topRight.translate(-targetSize.width, targetSize.height),
+          ),
+        );
       case _RatioStrategy.pinBottomRight:
-        return pinnedRect((targetSize) => Rect.fromPoints(
-              outline.bottomRight,
-              outline.bottomRight.translate(-targetSize.width, -targetSize.height),
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromPoints(
+            outline.bottomRight,
+            outline.bottomRight.translate(-targetSize.width, -targetSize.height),
+          ),
+        );
       case _RatioStrategy.pinBottomLeft:
-        return pinnedRect((targetSize) => Rect.fromPoints(
-              outline.bottomLeft,
-              outline.bottomLeft.translate(targetSize.width, -targetSize.height),
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromPoints(
+            outline.bottomLeft,
+            outline.bottomLeft.translate(targetSize.width, -targetSize.height),
+          ),
+        );
       case _RatioStrategy.pinLeft:
-        return pinnedRect((targetSize) => Rect.fromLTRB(
-              outline.left,
-              outline.center.dy - targetSize.height / 2,
-              outline.left + targetSize.width,
-              outline.center.dy + targetSize.height / 2,
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromLTRB(
+            outline.left,
+            outline.center.dy - targetSize.height / 2,
+            outline.left + targetSize.width,
+            outline.center.dy + targetSize.height / 2,
+          ),
+        );
       case _RatioStrategy.pinTop:
-        return pinnedRect((targetSize) => Rect.fromLTRB(
-              outline.center.dx - targetSize.width / 2,
-              outline.top,
-              outline.center.dx + targetSize.width / 2,
-              outline.top + targetSize.height,
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromLTRB(
+            outline.center.dx - targetSize.width / 2,
+            outline.top,
+            outline.center.dx + targetSize.width / 2,
+            outline.top + targetSize.height,
+          ),
+        );
       case _RatioStrategy.pinRight:
-        return pinnedRect((targetSize) => Rect.fromLTRB(
-              outline.right - targetSize.width,
-              outline.center.dy - targetSize.height / 2,
-              outline.right,
-              outline.center.dy + targetSize.height / 2,
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromLTRB(
+            outline.right - targetSize.width,
+            outline.center.dy - targetSize.height / 2,
+            outline.right,
+            outline.center.dy + targetSize.height / 2,
+          ),
+        );
       case _RatioStrategy.pinBottom:
-        return pinnedRect((targetSize) => Rect.fromLTRB(
-              outline.center.dx - targetSize.width / 2,
-              outline.bottom - targetSize.height,
-              outline.center.dx + targetSize.width / 2,
-              outline.bottom,
-            ));
+        return pinnedRect(
+          (targetSize) => Rect.fromLTRB(
+            outline.center.dx - targetSize.width / 2,
+            outline.bottom - targetSize.height,
+            outline.center.dx + targetSize.width / 2,
+            outline.bottom,
+          ),
+        );
     }
   }
 }

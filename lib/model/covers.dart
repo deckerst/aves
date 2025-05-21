@@ -140,13 +140,14 @@ class Covers {
 
   Future<void> _removeEntryFromRows(Set<CoverRow> rows) {
     return Future.forEach<CoverRow>(
-        rows,
-        (row) => set(
-              filter: row.filter,
-              entryId: null,
-              packageName: row.packageName,
-              color: row.color,
-            ));
+      rows,
+      (row) => set(
+        filter: row.filter,
+        entryId: null,
+        packageName: row.packageName,
+        color: row.color,
+      ),
+    );
   }
 
   Future<void> moveEntry(AvesEntry entry) async {
@@ -330,9 +331,9 @@ class CoverRow extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'filter': filter.toJson(),
-        'entryId': entryId,
-        'packageName': packageName,
-        'color': color?.toJson(),
-      };
+    'filter': filter.toJson(),
+    'entryId': entryId,
+    'packageName': packageName,
+    'color': color?.toJson(),
+  };
 }

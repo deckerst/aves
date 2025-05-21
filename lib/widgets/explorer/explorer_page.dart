@@ -271,23 +271,26 @@ class _ExplorerPageState extends State<ExplorerPage> {
     final contents = <Directory>[];
     final source = context.read<CollectionSource>();
     final albums = source.rawAlbums.map((v) => v.toLowerCase()).toSet();
-    Directory(dirPath).list().listen((event) {
-      final entity = event.absolute;
-      if (entity is Directory) {
-        final dirPath = entity.path.toLowerCase();
-        if (albums.any((v) => v.startsWith(dirPath))) {
-          contents.add(entity);
+    Directory(dirPath).list().listen(
+      (event) {
+        final entity = event.absolute;
+        if (entity is Directory) {
+          final dirPath = entity.path.toLowerCase();
+          if (albums.any((v) => v.startsWith(dirPath))) {
+            contents.add(entity);
+          }
         }
-      }
-    }, onDone: () {
-      _contents.value = contents
-        ..sort((a, b) {
-          final nameA = pContext.split(a.path).last;
-          final nameB = pContext.split(b.path).last;
-          return compareAsciiUpperCaseNatural(nameA, nameB);
-        });
-      _contentsDirectory.value = directory;
-    });
+      },
+      onDone: () {
+        _contents.value = contents
+          ..sort((a, b) {
+            final nameA = pContext.split(a.path).last;
+            final nameB = pContext.split(b.path).last;
+            return compareAsciiUpperCaseNatural(nameA, nameB);
+          });
+        _contentsDirectory.value = directory;
+      },
+    );
   }
 
   void _goToCollectionPage(BuildContext context, CollectionFilter filter) {

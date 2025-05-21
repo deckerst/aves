@@ -53,7 +53,7 @@ class EmptyContent extends StatelessWidget {
                   size: 64,
                   color: color,
                 ),
-                const SizedBox(height: 16)
+                const SizedBox(height: 16),
               ],
               if (text.isNotEmpty)
                 Text(

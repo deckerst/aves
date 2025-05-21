@@ -1290,8 +1290,10 @@ class DiffMatchPatch {
           try {
             text = text1.substring(pointer, pointer += n);
           } on RangeError {
-            throw ArgumentError('Delta length ($pointer)'
-                ' larger than source text length (${text1.length}).');
+            throw ArgumentError(
+              'Delta length ($pointer)'
+              ' larger than source text length (${text1.length}).',
+            );
           }
           if (token[0] == '=') {
             diffs.add(Diff(Operation.equal, text));
@@ -1304,8 +1306,10 @@ class DiffMatchPatch {
       }
     }
     if (pointer != text1.length) {
-      throw ArgumentError('Delta length ($pointer)'
-          ' smaller than source text length (${text1.length}).');
+      throw ArgumentError(
+        'Delta length ($pointer)'
+        ' smaller than source text length (${text1.length}).',
+      );
     }
     return diffs;
   }

@@ -49,9 +49,9 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
     required MosaicRowLayout rowLayout,
     required double spacing,
     required TextDirection textDirection,
-  })  : _rowLayout = rowLayout,
-        _spacing = spacing,
-        _textDirection = textDirection {
+  }) : _rowLayout = rowLayout,
+       _spacing = spacing,
+       _textDirection = textDirection {
     addAll(children);
   }
 

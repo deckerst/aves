@@ -36,16 +36,16 @@ class MultiPageController {
   }
 
   void reset() => entry.getMultiPageInfo().then((info) {
-        if (info == null || _disposed) return;
-        final currentPage = pageNotifier.value;
-        if (currentPage == null) {
-          pageNotifier.value = info.defaultPage?.index ?? 0;
-        } else {
-          pageNotifier.value = min(currentPage, info.pageCount - 1);
-        }
-        _info = info;
-        _infoStreamController.add(_info);
-      });
+    if (info == null || _disposed) return;
+    final currentPage = pageNotifier.value;
+    if (currentPage == null) {
+      pageNotifier.value = info.defaultPage?.index ?? 0;
+    } else {
+      pageNotifier.value = min(currentPage, info.pageCount - 1);
+    }
+    _info = info;
+    _infoStreamController.add(_info);
+  });
 
   void dispose() {
     if (kFlutterMemoryAllocationsEnabled) {

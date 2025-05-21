@@ -33,13 +33,13 @@ class MosaicScaleOverlay extends StatelessWidget {
               final theme = Theme.of(context);
               final colorScheme = theme.colorScheme;
               Widget _buildBar(double width, Color color) => ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                    child: Container(
-                      color: color,
-                      width: width,
-                      height: 4,
-                    ),
-                  );
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
+                child: Container(
+                  color: color,
+                  width: width,
+                  height: 4,
+                ),
+              );
               return SafeArea(
                 left: false,
                 right: false,

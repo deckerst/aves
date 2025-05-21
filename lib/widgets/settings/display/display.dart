@@ -21,23 +21,23 @@ class DisplaySection extends SettingsSection {
 
   @override
   Widget icon(BuildContext context) => SettingsTileLeading(
-        icon: AIcons.display,
-        color: context.select<AvesColorsData, Color>((v) => v.display),
-      );
+    icon: AIcons.display,
+    color: context.select<AvesColorsData, Color>((v) => v.display),
+  );
 
   @override
   String title(BuildContext context) => context.l10n.settingsDisplaySectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
-        if (!settings.useTvLayout) SettingsTileDisplayThemeBrightness(),
-        SettingsTileDisplayThemeColorMode(),
-        if (device.isDynamicColorAvailable) SettingsTileDisplayEnableDynamicColor(),
-        SettingsTileDisplayEnableBlurEffect(),
-        if (!settings.useTvLayout) SettingsTileDisplayMaxBrightness(),
-        if (!settings.useTvLayout) SettingsTileDisplayRefreshRateMode(),
-        if (!device.isTelevision) SettingsTileDisplayForceTvLayout(),
-      ];
+    if (!settings.useTvLayout) SettingsTileDisplayThemeBrightness(),
+    SettingsTileDisplayThemeColorMode(),
+    if (device.isDynamicColorAvailable) SettingsTileDisplayEnableDynamicColor(),
+    SettingsTileDisplayEnableBlurEffect(),
+    if (!settings.useTvLayout) SettingsTileDisplayMaxBrightness(),
+    if (!settings.useTvLayout) SettingsTileDisplayRefreshRateMode(),
+    if (!device.isTelevision) SettingsTileDisplayForceTvLayout(),
+  ];
 }
 
 class SettingsTileDisplayThemeBrightness extends SettingsTile {
@@ -46,13 +46,13 @@ class SettingsTileDisplayThemeBrightness extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<AvesThemeBrightness>(
-        values: AvesThemeBrightness.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.themeBrightness,
-        onSelection: (v) => settings.themeBrightness = v,
-        tileTitle: title(context),
-        dialogTitle: context.l10n.settingsThemeBrightnessDialogTitle,
-      );
+    values: AvesThemeBrightness.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.themeBrightness,
+    onSelection: (v) => settings.themeBrightness = v,
+    tileTitle: title(context),
+    dialogTitle: context.l10n.settingsThemeBrightnessDialogTitle,
+  );
 }
 
 class SettingsTileDisplayThemeColorMode extends SettingsTile {
@@ -61,10 +61,10 @@ class SettingsTileDisplayThemeColorMode extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.themeColorMode == AvesThemeColorMode.polychrome,
-        onChanged: (v) => settings.themeColorMode = v ? AvesThemeColorMode.polychrome : AvesThemeColorMode.monochrome,
-        title: title(context),
-      );
+    selector: (context, s) => s.themeColorMode == AvesThemeColorMode.polychrome,
+    onChanged: (v) => settings.themeColorMode = v ? AvesThemeColorMode.polychrome : AvesThemeColorMode.monochrome,
+    title: title(context),
+  );
 }
 
 class SettingsTileDisplayEnableDynamicColor extends SettingsTile {
@@ -73,10 +73,10 @@ class SettingsTileDisplayEnableDynamicColor extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.enableDynamicColor,
-        onChanged: (v) => settings.enableDynamicColor = v,
-        title: title(context),
-      );
+    selector: (context, s) => s.enableDynamicColor,
+    onChanged: (v) => settings.enableDynamicColor = v,
+    title: title(context),
+  );
 }
 
 class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
@@ -85,10 +85,10 @@ class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.enableBlurEffect,
-        onChanged: (v) => settings.enableBlurEffect = v,
-        title: title(context),
-      );
+    selector: (context, s) => s.enableBlurEffect,
+    onChanged: (v) => settings.enableBlurEffect = v,
+    title: title(context),
+  );
 }
 
 class SettingsTileDisplayMaxBrightness extends SettingsTile {
@@ -97,12 +97,12 @@ class SettingsTileDisplayMaxBrightness extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<MaxBrightness>(
-        values: MaxBrightness.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.maxBrightness,
-        onSelection: (v) => settings.maxBrightness = v,
-        tileTitle: title(context),
-      );
+    values: MaxBrightness.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.maxBrightness,
+    onSelection: (v) => settings.maxBrightness = v,
+    tileTitle: title(context),
+  );
 }
 
 class SettingsTileDisplayRefreshRateMode extends SettingsTile {
@@ -111,13 +111,13 @@ class SettingsTileDisplayRefreshRateMode extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<DisplayRefreshRateMode>(
-        values: DisplayRefreshRateMode.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.displayRefreshRateMode,
-        onSelection: (v) => settings.displayRefreshRateMode = v,
-        tileTitle: title(context),
-        dialogTitle: context.l10n.settingsDisplayRefreshRateModeDialogTitle,
-      );
+    values: DisplayRefreshRateMode.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.displayRefreshRateMode,
+    onSelection: (v) => settings.displayRefreshRateMode = v,
+    tileTitle: title(context),
+    dialogTitle: context.l10n.settingsDisplayRefreshRateModeDialogTitle,
+  );
 }
 
 class SettingsTileDisplayForceTvLayout extends SettingsTile {
@@ -126,33 +126,35 @@ class SettingsTileDisplayForceTvLayout extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.forceTvLayout,
-        onChanged: (v) async {
-          if (v) {
-            final l10n = context.l10n;
-            final confirmed = await showDialog<bool>(
-              context: context,
-              builder: (context) => AvesDialog(
-                content: Text([
-                  l10n.settingsModificationWarningDialogMessage,
-                  l10n.genericDangerWarningDialogMessage,
-                ].join('\n\n')),
-                actions: [
-                  const CancelButton(),
-                  TextButton(
-                    onPressed: () => Navigator.maybeOf(context)?.pop(true),
-                    child: Text(l10n.applyButtonLabel),
-                  ),
-                ],
+    selector: (context, s) => s.forceTvLayout,
+    onChanged: (v) async {
+      if (v) {
+        final l10n = context.l10n;
+        final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (context) => AvesDialog(
+            content: Text(
+              [
+                l10n.settingsModificationWarningDialogMessage,
+                l10n.genericDangerWarningDialogMessage,
+              ].join('\n\n'),
+            ),
+            actions: [
+              const CancelButton(),
+              TextButton(
+                onPressed: () => Navigator.maybeOf(context)?.pop(true),
+                child: Text(l10n.applyButtonLabel),
               ),
-            );
-            if (confirmed == null || !confirmed) return;
-          }
+            ],
+          ),
+        );
+        if (confirmed == null || !confirmed) return;
+      }
 
-          if (v && !(await SettingsTilePrivacyEnableBin.setBinUsage(context, false))) return;
+      if (v && !(await SettingsTilePrivacyEnableBin.setBinUsage(context, false))) return;
 
-          settings.forceTvLayout = v;
-        },
-        title: title(context),
-      );
+      settings.forceTvLayout = v;
+    },
+    title: title(context),
+  );
 }

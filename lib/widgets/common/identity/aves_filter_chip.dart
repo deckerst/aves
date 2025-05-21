@@ -166,13 +166,15 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     _tapped = false;
     _subscriptions.add(covers.packageChangeStream.listen(_onCoverColorChanged));
     _subscriptions.add(covers.colorChangeStream.listen(_onCoverColorChanged));
-    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.themeColorModeKey).listen((_) {
-      // delay so that contextual colors reflect the new settings
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        _onCoverColorChanged(null);
-      });
-    }));
+    _subscriptions.add(
+      settings.updateStream.where((event) => event.key == SettingKeys.themeColorModeKey).listen((_) {
+        // delay so that contextual colors reflect the new settings
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          _onCoverColorChanged(null);
+        });
+      }),
+    );
   }
 
   @override
@@ -326,14 +328,15 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       constraints: BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
         maxWidth: max(
-            AvesFilterChip.minChipWidth,
-            widget.maxWidth ??
-                AvesFilterChip.computeMaxWidthForRow(
-                  context,
-                  minChipPerRow: 2,
-                  chipPadding: FilterBar.chipPadding.horizontal,
-                  rowPadding: FilterBar.rowPadding.horizontal,
-                )),
+          AvesFilterChip.minChipWidth,
+          widget.maxWidth ??
+              AvesFilterChip.computeMaxWidthForRow(
+                context,
+                minChipPerRow: 2,
+                chipPadding: FilterBar.chipPadding.horizontal,
+                rowPadding: FilterBar.rowPadding.horizontal,
+              ),
+        ),
         minHeight: AvesFilterChip.minChipHeight,
       ),
       child: Stack(
@@ -367,10 +370,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   }
                   return DecoratedBox(
                     decoration: BoxDecoration(
-                      border: Border.fromBorderSide(BorderSide(
-                        color: widget.useFilterColor ? _outlineColor : context.select<AvesColorsData, Color>((v) => v.neutral),
-                        width: AvesFilterChip.outlineWidth,
-                      )),
+                      border: Border.fromBorderSide(
+                        BorderSide(
+                          color: widget.useFilterColor ? _outlineColor : context.select<AvesColorsData, Color>((v) => v.neutral),
+                          width: AvesFilterChip.outlineWidth,
+                        ),
+                      ),
                       borderRadius: borderRadius,
                     ),
                     position: DecorationPosition.foreground,

@@ -249,9 +249,11 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
 
   // serialization
 
-  static String toJson(Map<Uri, Set<Uri>> groups) => jsonEncode(groups.map((parentUri, childrenUris) {
-        return MapEntry(parentUri.toString(), childrenUris.map((v) => v.toString()).toList());
-      }));
+  static String toJson(Map<Uri, Set<Uri>> groups) => jsonEncode(
+    groups.map((parentUri, childrenUris) {
+      return MapEntry(parentUri.toString(), childrenUris.map((v) => v.toString()).toList());
+    }),
+  );
 
   static Map<Uri, Set<Uri>>? fromJson(String? jsonString) {
     if (jsonString == null || jsonString.isEmpty) return null;

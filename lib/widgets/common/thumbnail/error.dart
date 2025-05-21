@@ -40,15 +40,16 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
   Widget build(BuildContext context) {
     final color = Themes.backgroundTextColor(context);
     return FutureBuilder<bool>(
-        future: _exists,
-        builder: (context, snapshot) {
-          Widget child;
-          if (snapshot.connectionState != ConnectionState.done) {
-            child = const SizedBox();
-          } else {
-            final exists = snapshot.data!;
-            child = exists
-                ? LayoutBuilder(builder: (context, constraints) {
+      future: _exists,
+      builder: (context, snapshot) {
+        Widget child;
+        if (snapshot.connectionState != ConnectionState.done) {
+          child = const SizedBox();
+        } else {
+          final exists = snapshot.data!;
+          child = exists
+              ? LayoutBuilder(
+                  builder: (context, constraints) {
                     final fontSize = min(extent, constraints.biggest.width) / 5;
                     return Text(
                       MimeUtils.displayType(entry.mimeType),
@@ -58,20 +59,22 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
                       ),
                       textAlign: TextAlign.center,
                     );
-                  })
-                : Icon(
-                    AIcons.broken,
-                    size: extent / 2,
-                    color: color,
-                  );
-          }
-          return Container(
-            alignment: Alignment.center,
-            color: Themes.firstLayerColor(context),
-            width: extent,
-            height: extent,
-            child: child,
-          );
-        });
+                  },
+                )
+              : Icon(
+                  AIcons.broken,
+                  size: extent / 2,
+                  color: color,
+                );
+        }
+        return Container(
+          alignment: Alignment.center,
+          color: Themes.firstLayerColor(context),
+          width: extent,
+          height: extent,
+          child: child,
+        );
+      },
+    );
   }
 }

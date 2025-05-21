@@ -29,8 +29,8 @@ class AvesDialog extends StatelessWidget {
     this.horizontalContentPadding = defaultHorizontalContentPadding,
     this.content,
     this.actions = const [],
-  })  : assert((scrollableContent != null) ^ (content != null)),
-        scrollController = scrollController ?? ScrollController();
+  }) : assert((scrollableContent != null) ^ (content != null)),
+       scrollController = scrollController ?? ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -114,10 +114,10 @@ class AvesDialog extends StatelessWidget {
   }
 
   static Decoration contentDecoration(BuildContext context) => BoxDecoration(
-        border: Border(
-          bottom: Divider.createBorderSide(context, width: borderWidth),
-        ),
-      );
+    border: Border(
+      bottom: Divider.createBorderSide(context, width: borderWidth),
+    ),
+  );
 
   static ShapeBorder shape(BuildContext context) {
     return RoundedRectangleBorder(
@@ -150,13 +150,13 @@ class DialogTitle extends StatelessWidget {
 }
 
 Future<void> showNoMatchingAppDialog(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AvesDialog(
-        content: Text(context.l10n.noMatchingAppDialogMessage),
-        actions: const [OkButton()],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
+  context: context,
+  builder: (context) => AvesDialog(
+    content: Text(context.l10n.noMatchingAppDialogMessage),
+    actions: const [OkButton()],
+  ),
+  routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+);
 
 class CancelButton extends StatelessWidget {
   const CancelButton({super.key});

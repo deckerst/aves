@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/container/container.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
@@ -48,10 +48,10 @@ class SetAndFilter extends CollectionFilter with ContainerFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'filters': _filters.map((v) => v.toJson()).toList(),
-        'reversed': reversed,
-      };
+    'type': type,
+    'filters': _filters.map((v) => v.toJson()).toList(),
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

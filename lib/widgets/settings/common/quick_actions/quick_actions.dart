@@ -60,23 +60,23 @@ class QuickActionButton<T extends Object> extends StatelessWidget {
   }
 
   Widget _buildDraggable(Widget child, T action) => LongPressDraggable(
-        feedback: MediaQueryDataProvider(
-          child: draggableFeedbackBuilder!(action),
-        ),
-        data: action,
-        dragAnchorStrategy: (draggable, context, position) {
-          return childDragAnchorStrategy(draggable, context, position) + Offset(0, OverlayButton.getSize(context));
-        },
-        maxSimultaneousDrags: 1,
-        onDragStarted: () => _setDraggedQuickAction(action),
-        // `onDragEnd` is only called when the widget is mounted,
-        // so we rely on `onDraggableCanceled` and `onDragCompleted` instead
-        onDraggableCanceled: (velocity, offset) => _setDraggedQuickAction(null),
-        onDragCompleted: () => _setDraggedQuickAction(null),
-        delay: settings.longPressTimeout,
-        childWhenDragging: child,
-        child: child,
-      );
+    feedback: MediaQueryDataProvider(
+      child: draggableFeedbackBuilder!(action),
+    ),
+    data: action,
+    dragAnchorStrategy: (draggable, context, position) {
+      return childDragAnchorStrategy(draggable, context, position) + Offset(0, OverlayButton.getSize(context));
+    },
+    maxSimultaneousDrags: 1,
+    onDragStarted: () => _setDraggedQuickAction(action),
+    // `onDragEnd` is only called when the widget is mounted,
+    // so we rely on `onDraggableCanceled` and `onDragCompleted` instead
+    onDraggableCanceled: (velocity, offset) => _setDraggedQuickAction(null),
+    onDragCompleted: () => _setDraggedQuickAction(null),
+    delay: settings.longPressTimeout,
+    childWhenDragging: child,
+    child: child,
+  );
 
   void _setDraggedQuickAction(T? action) => draggedQuickAction.value = action;
 

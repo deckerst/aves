@@ -53,48 +53,56 @@ class CollectionLens with ChangeNotifier {
     this.stackDevelopedRaws = true,
     this.fixedSort = false,
     this.fixedSelection,
-  })  : filters = (filters ?? {}).nonNulls.toSet(),
-        burstPatterns = settings.collectionBurstPatterns,
-        sectionFactor = settings.collectionSectionFactor,
-        sortFactor = settings.collectionSortFactor,
-        sortReverse = settings.collectionSortReverse {
+  }) : filters = (filters ?? {}).nonNulls.toSet(),
+       burstPatterns = settings.collectionBurstPatterns,
+       sectionFactor = settings.collectionSectionFactor,
+       sortFactor = settings.collectionSortFactor,
+       sortReverse = settings.collectionSortReverse {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;
       _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => _onEntryAdded(e.entries)));
       _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => _onEntryRemoved(e.entries)));
-      _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) {
-        switch (e.type) {
-          case MoveType.copy:
-          case MoveType.export:
-            // refreshing new items is already handled via `EntryAddedEvent`s
-            break;
-          case MoveType.move:
-          case MoveType.fromBin:
-            refresh();
-          case MoveType.toBin:
-            _onEntryRemoved(e.entries);
-        }
-      }));
+      _subscriptions.add(
+        sourceEvents.on<EntryMovedEvent>().listen((e) {
+          switch (e.type) {
+            case MoveType.copy:
+            case MoveType.export:
+              // refreshing new items is already handled via `EntryAddedEvent`s
+              break;
+            case MoveType.move:
+            case MoveType.fromBin:
+              refresh();
+            case MoveType.toBin:
+              _onEntryRemoved(e.entries);
+          }
+        }),
+      );
       _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => refresh()));
       _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => refresh()));
       _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => refresh()));
-      _subscriptions.add(sourceEvents.on<AddressMetadataChangedEvent>().listen((e) {
-        if (this.filters.any((filter) => filter is LocationFilter)) {
-          refresh();
-        }
-      }));
+      _subscriptions.add(
+        sourceEvents.on<AddressMetadataChangedEvent>().listen((e) {
+          if (this.filters.any((filter) => filter is LocationFilter)) {
+            refresh();
+          }
+        }),
+      );
       favourites.addListener(_onFavouritesChanged);
     }
-    _subscriptions.add(settings.updateStream
-        .where((event) => [
+    _subscriptions.add(
+      settings.updateStream
+          .where(
+            (event) => [
               SettingKeys.collectionBurstPatternsKey,
               SettingKeys.collectionSortFactorKey,
               SettingKeys.collectionGroupFactorKey,
               SettingKeys.collectionSortReverseKey,
-            ].contains(event.key))
-        .listen((_) => _onSettingsChanged()));
+            ].contains(event.key),
+          )
+          .listen((_) => _onSettingsChanged()),
+    );
     refresh();
   }
 
@@ -115,14 +123,13 @@ class CollectionLens with ChangeNotifier {
     Set<CollectionFilter>? filters,
     bool? listenToSource,
     List<AvesEntry>? fixedSelection,
-  }) =>
-      CollectionLens(
-        source: source ?? this.source,
-        filters: filters ?? this.filters,
-        id: id,
-        listenToSource: listenToSource ?? this.listenToSource,
-        fixedSelection: fixedSelection ?? this.fixedSelection,
-      );
+  }) => CollectionLens(
+    source: source ?? this.source,
+    filters: filters ?? this.filters,
+    id: id,
+    listenToSource: listenToSource ?? this.listenToSource,
+    fixedSelection: fixedSelection ?? this.fixedSelection,
+  );
 
   void _disposeSyntheticEntries() {
     _syntheticEntries.forEach((v) => v.dispose());

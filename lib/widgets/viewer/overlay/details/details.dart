@@ -103,13 +103,13 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
 
           final multiPageController = widget.multiPageController;
           Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
-                pageEntry: pageEntry ?? mainEntry,
-                details: _lastDetails,
-                position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
-                availableWidth: widget.availableSize.width,
-                multiPageController: multiPageController,
-                expandedNotifier: widget.expandedNotifier,
-              );
+            pageEntry: pageEntry ?? mainEntry,
+            details: _lastDetails,
+            position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
+            availableWidth: widget.availableSize.width,
+            multiPageController: multiPageController,
+            expandedNotifier: widget.expandedNotifier,
+          );
 
           return multiPageController != null
               ? PageEntryBuilder(
@@ -155,8 +155,8 @@ class ViewerDetailOverlayContent extends StatelessWidget {
       animation: pageEntry.metadataChangeNotifier,
       builder: (context, child) => DefaultTextStyle(
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              shadows: shadows(context),
-            ),
+          shadows: shadows(context),
+        ),
         softWrap: false,
         overflow: TextOverflow.fade,
         maxLines: 1,
@@ -192,10 +192,12 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
     final rows = <Widget>[];
     if (positionTitle.isNotEmpty) {
-      rows.add(OverlayRowExpander(
-        expandedNotifier: expandedNotifier,
-        child: positionTitle,
-      ));
+      rows.add(
+        OverlayRowExpander(
+          expandedNotifier: expandedNotifier,
+          child: positionTitle,
+        ),
+      );
       rows.add(const SizedBox(height: _interRowPadding));
     }
     if (twoColumns) {
@@ -227,64 +229,64 @@ class ViewerDetailOverlayContent extends StatelessWidget {
   }
 
   Widget _buildDateSubRow(double subRowWidth) => SizedBox(
-        width: subRowWidth,
-        child: OverlayDateRow(
-          entry: pageEntry,
-          multiPageController: multiPageController,
-        ),
-      );
+    width: subRowWidth,
+    child: OverlayDateRow(
+      entry: pageEntry,
+      multiPageController: multiPageController,
+    ),
+  );
 
   Widget _buildRatingTagsFullRow(BuildContext context) => _buildFullRowSwitcher(
-        context: context,
-        visible: pageEntry.rating != 0 || pageEntry.tags.isNotEmpty,
-        builder: (context) => OverlayRowExpander(
-          expandedNotifier: expandedNotifier,
-          child: OverlayRatingTagsRow(entry: pageEntry),
-        ),
-      );
+    context: context,
+    visible: pageEntry.rating != 0 || pageEntry.tags.isNotEmpty,
+    builder: (context) => OverlayRowExpander(
+      expandedNotifier: expandedNotifier,
+      child: OverlayRatingTagsRow(entry: pageEntry),
+    ),
+  );
 
   Widget _buildDescriptionFullRow(BuildContext context, double infoMaxWidth) => _buildFullRowSwitcher(
-        context: context,
-        visible: details.description != null,
-        builder: (context) => SizedBox(
-          // size it so that a long description with multiple short lines
-          // expands to the full width and the scroll bar is at the edge
-          width: infoMaxWidth,
-          child: OverlayRowExpander(
-            expandedNotifier: expandedNotifier,
-            child: OverlayDescriptionRow(description: details.description!),
-          ),
-        ),
-      );
+    context: context,
+    visible: details.description != null,
+    builder: (context) => SizedBox(
+      // size it so that a long description with multiple short lines
+      // expands to the full width and the scroll bar is at the edge
+      width: infoMaxWidth,
+      child: OverlayRowExpander(
+        expandedNotifier: expandedNotifier,
+        child: OverlayDescriptionRow(description: details.description!),
+      ),
+    ),
+  );
 
   Widget _buildShootingFullRow(BuildContext context, double subRowWidth) => _buildFullRowSwitcher(
-        context: context,
-        visible: details.hasShootingDetails,
-        builder: (context) => SizedBox(
-          width: subRowWidth,
-          child: OverlayShootingRow(details: details),
-        ),
-      );
+    context: context,
+    visible: details.hasShootingDetails,
+    builder: (context) => SizedBox(
+      width: subRowWidth,
+      child: OverlayShootingRow(details: details),
+    ),
+  );
 
   Widget _buildShootingSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
-        context: context,
-        subRowWidth: subRowWidth,
-        visible: details.hasShootingDetails,
-        builder: (context) => OverlayShootingRow(details: details),
-      );
+    context: context,
+    subRowWidth: subRowWidth,
+    visible: details.hasShootingDetails,
+    builder: (context) => OverlayShootingRow(details: details),
+  );
 
   Widget _buildLocationFullRow(BuildContext context) => _buildFullRowSwitcher(
-        context: context,
-        visible: pageEntry.hasGps,
-        builder: (context) => OverlayLocationRow(entry: pageEntry),
-      );
+    context: context,
+    visible: pageEntry.hasGps,
+    builder: (context) => OverlayLocationRow(entry: pageEntry),
+  );
 
   Widget _buildLocationSubRow(BuildContext context, double subRowWidth) => _buildSubRowSwitcher(
-        context: context,
-        subRowWidth: subRowWidth,
-        visible: pageEntry.hasGps,
-        builder: (context) => OverlayLocationRow(entry: pageEntry),
-      );
+    context: context,
+    subRowWidth: subRowWidth,
+    visible: pageEntry.hasGps,
+    builder: (context) => OverlayLocationRow(entry: pageEntry),
+  );
 
   Widget _buildSubRowSwitcher({
     required BuildContext context,

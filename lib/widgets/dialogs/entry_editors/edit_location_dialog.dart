@@ -110,52 +110,54 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
         data: TooltipTheme.of(context).copyWith(
           preferBelow: false,
         ),
-        child: Builder(builder: (context) {
-          final l10n = context.l10n;
+        child: Builder(
+          builder: (context) {
+            final l10n = context.l10n;
 
-          return AvesDialog(
-            title: l10n.editEntryLocationDialogTitle,
-            scrollableContent: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
-                child: TextDropdownButton<LocationEditAction>(
-                  values: LocationEditAction.values,
-                  valueText: (v) => v.getText(context),
-                  value: _action,
-                  onChanged: (v) => setState(() {
-                    _action = v!;
-                    _validate();
-                  }),
-                  isExpanded: true,
-                  dropdownColor: Themes.thirdLayerColor(context),
+            return AvesDialog(
+              title: l10n.editEntryLocationDialogTitle,
+              scrollableContent: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                  child: TextDropdownButton<LocationEditAction>(
+                    values: LocationEditAction.values,
+                    valueText: (v) => v.getText(context),
+                    value: _action,
+                    onChanged: (v) => setState(() {
+                      _action = v!;
+                      _validate();
+                    }),
+                    isExpanded: true,
+                    dropdownColor: Themes.thirdLayerColor(context),
+                  ),
                 ),
-              ),
-              AnimatedSwitcher(
-                duration: context.read<DurationsData>().formTransition,
-                switchInCurve: Curves.easeInOutCubic,
-                switchOutCurve: Curves.easeInOutCubic,
-                transitionBuilder: AvesTransitions.formTransitionBuilder,
-                child: KeyedSubtree(
-                  key: ValueKey(_action),
-                  child: _buildContent(),
+                AnimatedSwitcher(
+                  duration: context.read<DurationsData>().formTransition,
+                  switchInCurve: Curves.easeInOutCubic,
+                  switchOutCurve: Curves.easeInOutCubic,
+                  transitionBuilder: AvesTransitions.formTransitionBuilder,
+                  child: KeyedSubtree(
+                    key: ValueKey(_action),
+                    child: _buildContent(),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-            ],
-            actions: [
-              const CancelButton(),
-              ValueListenableBuilder<bool>(
-                valueListenable: _isValidNotifier,
-                builder: (context, isValid, child) {
-                  return TextButton(
-                    onPressed: isValid ? () => _submit(context) : null,
-                    child: Text(l10n.applyButtonLabel),
-                  );
-                },
-              ),
-            ],
-          );
-        }),
+                const SizedBox(height: 8),
+              ],
+              actions: [
+                const CancelButton(),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isValidNotifier,
+                  builder: (context, isValid, child) {
+                    return TextButton(
+                      onPressed: isValid ? () => _submit(context) : null,
+                      child: Text(l10n.applyButtonLabel),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -440,19 +442,21 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
       }
     }
 
-    _gpxMap.addEntries(wptByEntry.entries.map((kv) {
-      final entry = kv.key;
-      final wpt = kv.value;
-      final timeToPoint = entry.bestDate!.difference(wpt.time!.add(_gpxShift)).abs();
-      if (timeToPoint < _minTimeToGpxPoint) {
-        final lat = wpt.lat;
-        final lon = wpt.lon;
-        if (lat != null && lon != null) {
-          return MapEntry(entry, LatLng(lat, lon));
+    _gpxMap.addEntries(
+      wptByEntry.entries.map((kv) {
+        final entry = kv.key;
+        final wpt = kv.value;
+        final timeToPoint = entry.bestDate!.difference(wpt.time!.add(_gpxShift)).abs();
+        if (timeToPoint < _minTimeToGpxPoint) {
+          final lat = wpt.lat;
+          final lon = wpt.lon;
+          if (lat != null && lon != null) {
+            return MapEntry(entry, LatLng(lat, lon));
+          }
         }
-      }
-      return null;
-    }).nonNulls);
+        return null;
+      }).nonNulls,
+    );
 
     setState(_validate);
   }
@@ -479,14 +483,16 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
 
     final tracks = _gpx?.trks
         .expand((trk) => trk.trksegs)
-        .map((trkSeg) => trkSeg.trkpts
-            .map((wpt) {
-              final lat = wpt.lat;
-              final lon = wpt.lon;
-              return (lat != null && lon != null) ? LatLng(lat, lon) : null;
-            })
-            .nonNulls
-            .toList())
+        .map(
+          (trkSeg) => trkSeg.trkpts
+              .map((wpt) {
+                final lat = wpt.lat;
+                final lon = wpt.lon;
+                return (lat != null && lon != null) ? LatLng(lat, lon) : null;
+              })
+              .nonNulls
+              .toList(),
+        )
         .toSet();
 
     await Navigator.maybeOf(context)?.push(

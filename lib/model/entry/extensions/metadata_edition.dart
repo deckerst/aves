@@ -468,21 +468,22 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       XmpNamespaces.gContainer,
     );
 
-    modified |= [
-      XmpAttributes.gCameraMicroVideo,
-      XmpAttributes.gCameraMicroVideoVersion,
-      XmpAttributes.gCameraMicroVideoOffset,
-      XmpAttributes.gCameraMicroVideoPresentationTimestampUs,
-      XmpAttributes.gCameraMotionPhoto,
-      XmpAttributes.gCameraMotionPhotoVersion,
-      XmpAttributes.gCameraMotionPhotoPresentationTimestampUs,
-    ].fold<bool>(modified, (prev, name) {
-      return prev |= XMP.removeElements(
-        descriptions,
-        name,
-        XmpNamespaces.gCamera,
-      );
-    });
+    modified |=
+        [
+          XmpAttributes.gCameraMicroVideo,
+          XmpAttributes.gCameraMicroVideoVersion,
+          XmpAttributes.gCameraMicroVideoOffset,
+          XmpAttributes.gCameraMicroVideoPresentationTimestampUs,
+          XmpAttributes.gCameraMotionPhoto,
+          XmpAttributes.gCameraMotionPhotoVersion,
+          XmpAttributes.gCameraMotionPhotoPresentationTimestampUs,
+        ].fold<bool>(modified, (prev, name) {
+          return prev |= XMP.removeElements(
+            descriptions,
+            name,
+            XmpNamespaces.gCamera,
+          );
+        });
 
     return modified;
   }

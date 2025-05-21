@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
-import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -325,19 +325,19 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final selectedItemCount = selection.selectedItems.length;
 
     bool isVisible(EntrySetAction action) => _actionDelegate.isVisible(
-          action,
-          appMode: appMode,
-          isSelecting: isSelecting,
-          itemCount: collection.entryCount,
-          selectedItemCount: selectedItemCount,
-          isTrash: isTrash,
-        );
+      action,
+      appMode: appMode,
+      isSelecting: isSelecting,
+      itemCount: collection.entryCount,
+      selectedItemCount: selectedItemCount,
+      isTrash: isTrash,
+    );
     bool canApply(EntrySetAction action) => _actionDelegate.canApply(
-          action,
-          isSelecting: isSelecting,
-          collection: collection,
-          selectedItemCount: selectedItemCount,
-        );
+      action,
+      isSelecting: isSelecting,
+      collection: collection,
+      selectedItemCount: selectedItemCount,
+    );
 
     return settings.useTvLayout
         ? _buildTelevisionActions(
@@ -408,7 +408,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
     final selectionQuickActions = isTrash ? _trashSelectionQuickActions : settings.collectionSelectionQuickActions;
     final quickActions = (isSelecting ? selectionQuickActions : browsingQuickActions).take(max(0, availableCount - 1)).toList();
-    final quickActionButtons = quickActions.where(isVisible).map(
+    final quickActionButtons = quickActions
+        .where(isVisible)
+        .map(
           (action) => _buildButtonIcon(context, action, enabled: canApply(action), selection: selection),
         );
 
@@ -420,7 +422,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         key: const Key('appbar-menu-button'),
         itemBuilder: (context) {
           bool _isValidForMenu(EntrySetAction? v) => v == null || (!quickActions.contains(v) && isVisible(v));
-          final generalMenuItems = EntrySetActions.general.where(_isValidForMenu).map(
+          final generalMenuItems = EntrySetActions.general
+              .where(_isValidForMenu)
+              .map(
                 (action) => _toMenuItem(action, enabled: canApply(action), selection: selection),
               );
 
@@ -563,30 +567,30 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     required bool Function(EntrySetAction action) canApply,
   }) {
     Widget buildDivider() => const SizedBox(
-          height: 16,
-          child: VerticalDivider(
-            width: 1,
-            thickness: 1,
-          ),
-        );
+      height: 16,
+      child: VerticalDivider(
+        width: 1,
+        thickness: 1,
+      ),
+    );
 
     Widget buildItem(EntrySetAction action) => Expanded(
-          child: Material(
-            color: Colors.transparent,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: PopupMenuItem(
-              value: action,
-              enabled: canApply(action),
-              child: Tooltip(
-                message: action.getText(context),
-                child: Center(child: action.getIcon()),
-              ),
-            ),
+      child: Material(
+        color: Colors.transparent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: PopupMenuItem(
+          value: action,
+          enabled: canApply(action),
+          child: Tooltip(
+            message: action.getText(context),
+            child: Center(child: action.getIcon()),
           ),
-        );
+        ),
+      ),
+    );
 
     return PopupMenuItemContainer(
       child: Row(

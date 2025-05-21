@@ -98,29 +98,30 @@ class AvesEntry with AvesEntryBase {
     List<AvesEntry>? stackedEntries,
   }) {
     final copyEntryId = id ?? this.id;
-    final copied = AvesEntry(
-      id: copyEntryId,
-      uri: uri ?? this.uri,
-      path: path ?? this.path,
-      contentId: contentId ?? this.contentId,
-      pageId: null,
-      sourceMimeType: sourceMimeType,
-      width: width,
-      height: height,
-      sourceRotationDegrees: sourceRotationDegrees,
-      sizeBytes: sizeBytes,
-      sourceTitle: title ?? sourceTitle,
-      dateAddedSecs: dateAddedSecs ?? this.dateAddedSecs,
-      dateModifiedMillis: dateModifiedMillis ?? this.dateModifiedMillis,
-      sourceDateTakenMillis: sourceDateTakenMillis,
-      durationMillis: durationMillis,
-      trashed: trashed,
-      origin: origin ?? this.origin,
-      stackedEntries: stackedEntries ?? this.stackedEntries,
-    )
-      ..catalogMetadata = _catalogMetadata?.copyWith(id: copyEntryId)
-      ..addressDetails = _addressDetails?.copyWith(id: copyEntryId)
-      ..trashDetails = trashDetails?.copyWith(id: copyEntryId);
+    final copied =
+        AvesEntry(
+            id: copyEntryId,
+            uri: uri ?? this.uri,
+            path: path ?? this.path,
+            contentId: contentId ?? this.contentId,
+            pageId: null,
+            sourceMimeType: sourceMimeType,
+            width: width,
+            height: height,
+            sourceRotationDegrees: sourceRotationDegrees,
+            sizeBytes: sizeBytes,
+            sourceTitle: title ?? sourceTitle,
+            dateAddedSecs: dateAddedSecs ?? this.dateAddedSecs,
+            dateModifiedMillis: dateModifiedMillis ?? this.dateModifiedMillis,
+            sourceDateTakenMillis: sourceDateTakenMillis,
+            durationMillis: durationMillis,
+            trashed: trashed,
+            origin: origin ?? this.origin,
+            stackedEntries: stackedEntries ?? this.stackedEntries,
+          )
+          ..catalogMetadata = _catalogMetadata?.copyWith(id: copyEntryId)
+          ..addressDetails = _addressDetails?.copyWith(id: copyEntryId)
+          ..trashDetails = trashDetails?.copyWith(id: copyEntryId);
 
     return copied;
   }
@@ -475,15 +476,17 @@ class AvesEntry with AvesEntryBase {
 
   Future<bool> delete() {
     final opCompleter = Completer<bool>();
-    mediaEditService.delete(entries: {this}).listen(
-      (event) => opCompleter.complete(event.success && !event.skipped),
-      onError: opCompleter.completeError,
-      onDone: () {
-        if (!opCompleter.isCompleted) {
-          opCompleter.complete(false);
-        }
-      },
-    );
+    mediaEditService
+        .delete(entries: {this})
+        .listen(
+          (event) => opCompleter.complete(event.success && !event.skipped),
+          onError: opCompleter.completeError,
+          onDone: () {
+            if (!opCompleter.isCompleted) {
+              opCompleter.complete(false);
+            }
+          },
+        );
     return opCompleter.future;
   }
 

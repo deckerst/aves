@@ -10,13 +10,13 @@ class ViewStateConductorProvider extends ProxyProvider<MediaQueryData, ViewState
     super.key,
     super.child,
   }) : super(
-          create: (context) => ViewStateConductor(),
-          update: (context, mq, value) {
-            value!.viewportSize = mq.size;
-            return value;
-          },
-          dispose: (context, value) => value.dispose(),
-        );
+         create: (context) => ViewStateConductor(),
+         update: (context, mq, value) {
+           value!.viewportSize = mq.size;
+           return value;
+         },
+         dispose: (context, value) => value.dispose(),
+       );
 }
 
 class VideoConductorProvider extends Provider<VideoConductor> {
@@ -25,9 +25,9 @@ class VideoConductorProvider extends Provider<VideoConductor> {
     CollectionLens? collection,
     super.child,
   }) : super(
-          create: (context) => VideoConductor(collection: collection),
-          dispose: (context, value) => value.dispose(),
-        );
+         create: (context) => VideoConductor(collection: collection),
+         dispose: (context, value) => value.dispose(),
+       );
 }
 
 class MultiPageConductorProvider extends Provider<MultiPageConductor> {
@@ -35,7 +35,7 @@ class MultiPageConductorProvider extends Provider<MultiPageConductor> {
     super.key,
     super.child,
   }) : super(
-          create: (context) => MultiPageConductor(),
-          dispose: (context, value) => value.dispose(),
-        );
+         create: (context) => MultiPageConductor(),
+         dispose: (context, value) => value.dispose(),
+       );
 }

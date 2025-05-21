@@ -113,28 +113,32 @@ class AvesLogoPainter extends CustomPainter {
     path3.close();
 
     canvas.drawPath(
-        path0,
-        Paint()
-          ..style = PaintingStyle.fill
-          ..color = const Color(0xffef435a));
+      path0,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xffef435a),
+    );
 
     canvas.drawPath(
-        path1,
-        Paint()
-          ..style = PaintingStyle.fill
-          ..color = const Color(0xffe0e0e0));
+      path1,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xffe0e0e0),
+    );
 
     canvas.drawPath(
-        path2,
-        Paint()
-          ..style = PaintingStyle.fill
-          ..color = const Color(0xffffc11f));
+      path2,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xffffc11f),
+    );
 
     canvas.drawPath(
-        path3,
-        Paint()
-          ..style = PaintingStyle.fill
-          ..color = const Color(0xff1cc8eb));
+      path3,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xff1cc8eb),
+    );
 
     // stroke should be painted over fill
     canvas.drawPath(path0, strokePaint);

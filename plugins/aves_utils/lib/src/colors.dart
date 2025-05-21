@@ -53,12 +53,12 @@ extension ExtraColor on Color {
   }
 
   Map<String, dynamic> _toMap() => {
-        'a': a,
-        'r': r,
-        'g': g,
-        'b': b,
-        'colorSpace': colorSpace.name,
-      };
+    'a': a,
+    'r': r,
+    'g': g,
+    'b': b,
+    'colorSpace': colorSpace.name,
+  };
 
   static Color _fromMap(Map<String, dynamic> map) {
     return Color.from(

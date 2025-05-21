@@ -48,14 +48,16 @@ class GeoMap extends StatefulWidget {
   final void Function(
     LatLng markerLocation,
     AvesEntry markerEntry,
-  )? onMarkerTap;
+  )?
+  onMarkerTap;
   final void Function(
     LatLng markerLocation,
     AvesEntry markerEntry,
     Set<AvesEntry> clusterEntries,
     Offset tapLocalPosition,
     WidgetBuilder markerBuilder,
-  )? onMarkerLongPress;
+  )?
+  onMarkerLongPress;
   final void Function(BuildContext context)? openMapPage;
 
   const GeoMap({
@@ -139,10 +141,10 @@ class _GeoMapState extends State<GeoMap> {
   Widget build(BuildContext context) {
     final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     void onMarkerLongPress(GeoEntry<AvesEntry> geoEntry, LatLng tapLocation) => _onMarkerLongPress(
-          geoEntry: geoEntry,
-          tapLocation: tapLocation,
-          devicePixelRatio: devicePixelRatio,
-        );
+      geoEntry: geoEntry,
+      tapLocation: tapLocation,
+      devicePixelRatio: devicePixelRatio,
+    );
 
     return Selector<Settings, EntryMapStyle?>(
       selector: (context, s) => s.mapStyle,
@@ -150,16 +152,16 @@ class _GeoMapState extends State<GeoMap> {
         final isHeavy = ExtraEntryMapStyle.isHeavy(mapStyle);
         final locale = context.locale;
         Widget _buildMarkerWidget(MarkerKey<AvesEntry> key) => ImageMarker(
-              key: key,
-              count: key.count,
-              locale: locale,
-              buildThumbnailImage: (extent) => ThumbnailImage(
-                entry: key.entry,
-                extent: extent,
-                devicePixelRatio: devicePixelRatio,
-                progressive: !isHeavy,
-              ),
-            );
+          key: key,
+          count: key.count,
+          locale: locale,
+          buildThumbnailImage: (extent) => ThumbnailImage(
+            entry: key.entry,
+            extent: extent,
+            devicePixelRatio: devicePixelRatio,
+            progressive: !isHeavy,
+          ),
+        );
         bool _isMarkerImageReady(MarkerKey<AvesEntry> key) => key.entry.isThumbnailReady(extent: MapThemeData.markerImageExtent);
 
         Widget child = const SizedBox();
@@ -429,14 +431,16 @@ class _GeoMapState extends State<GeoMap> {
   Map<MarkerKey<AvesEntry>, GeoEntry<AvesEntry>> _buildMarkerClusters() {
     final bounds = _boundsNotifier.value;
     final geoEntries = _defaultMarkerCluster?.clusters(bounds.boundingBox, bounds.zoom.round()) ?? [];
-    return Map.fromEntries(geoEntries.map((v) {
-      if (v.isCluster!) {
-        final uri = v.childMarkerId;
-        final entry = entries.firstWhere((v) => v.uri == uri);
-        return MapEntry(MarkerKey(entry, v.pointsSize), v);
-      }
-      return MapEntry(MarkerKey(v.entry!, null), v);
-    }));
+    return Map.fromEntries(
+      geoEntries.map((v) {
+        if (v.isCluster!) {
+          final uri = v.childMarkerId;
+          final entry = entries.firstWhere((v) => v.uri == uri);
+          return MapEntry(MarkerKey(entry, v.pointsSize), v);
+        }
+        return MapEntry(MarkerKey(v.entry!, null), v);
+      }),
+    );
   }
 
   Set<AvesEntry> _getClusterEntries(GeoEntry<AvesEntry> geoEntry) {
@@ -495,15 +499,15 @@ class _GeoMapState extends State<GeoMap> {
     final locale = context.locale;
     final markerLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
     Widget markerBuilder(BuildContext context) => ImageMarker(
-          count: geoEntry.pointsSize,
-          locale: locale,
-          drawArrow: false,
-          buildThumbnailImage: (extent) => ThumbnailImage(
-            entry: markerEntry,
-            extent: extent,
-            devicePixelRatio: devicePixelRatio,
-          ),
-        );
+      count: geoEntry.pointsSize,
+      locale: locale,
+      drawArrow: false,
+      buildThumbnailImage: (extent) => ThumbnailImage(
+        entry: markerEntry,
+        extent: extent,
+        devicePixelRatio: devicePixelRatio,
+      ),
+    );
     onMarkerLongPress(
       markerLocation,
       markerEntry,

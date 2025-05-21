@@ -55,15 +55,17 @@ class ShareQuickChooser extends StatelessWidget {
     final textScaler = MediaQuery.textScalerOf(context);
     final iconSize = IconTheme.of(context).size ?? 24;
 
-    return options.map((action) {
-      final text = action.getText(context);
-      final paragraph = RenderParagraph(
-        TextSpan(text: text, style: textStyle),
-        textDirection: textDirection,
-        textScaler: textScaler,
-      )..layout(const BoxConstraints(), parentUsesSize: true);
-      final labelWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
-      return iconSize + MenuRow.leadingPadding.horizontal + labelWidth + _itemPadding.horizontal;
-    }).reduce(max);
+    return options
+        .map((action) {
+          final text = action.getText(context);
+          final paragraph = RenderParagraph(
+            TextSpan(text: text, style: textStyle),
+            textDirection: textDirection,
+            textScaler: textScaler,
+          )..layout(const BoxConstraints(), parentUsesSize: true);
+          final labelWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
+          return iconSize + MenuRow.leadingPadding.horizontal + labelWidth + _itemPadding.horizontal;
+        })
+        .reduce(max);
   }
 }

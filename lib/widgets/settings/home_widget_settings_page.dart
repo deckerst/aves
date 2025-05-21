@@ -284,10 +284,10 @@ class _HomeWidgetOutlineSelectorState extends State<HomeWidgetOutlineSelector> {
   }
 
   List<WidgetOutline> get supportedWidgetOutlines => [
-        WidgetOutline.none,
-        WidgetOutline.black,
-        WidgetOutline.white,
-        WidgetOutline.systemBlackAndWhite,
-        if (device.isDynamicColorAvailable) WidgetOutline.systemDynamic,
-      ];
+    WidgetOutline.none,
+    WidgetOutline.black,
+    WidgetOutline.white,
+    WidgetOutline.systemBlackAndWhite,
+    if (device.isDynamicColorAvailable) WidgetOutline.systemDynamic,
+  ];
 }

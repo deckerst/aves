@@ -76,24 +76,26 @@ class _MetadataTabState extends State<MetadataTab> {
   @override
   Widget build(BuildContext context) {
     Widget builderFromSnapshotData(BuildContext context, Map snapshotData, String title) {
-      final data = SplayTreeMap.of(snapshotData.map((k, v) {
-        final key = k.toString();
-        var value = v?.toString() ?? 'null';
-        if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is int && v != 0) {
-          if (secondTimestampKeys.contains(key)) {
-            v *= 1000;
+      final data = SplayTreeMap.of(
+        snapshotData.map((k, v) {
+          final key = k.toString();
+          var value = v?.toString() ?? 'null';
+          if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is int && v != 0) {
+            if (secondTimestampKeys.contains(key)) {
+              v *= 1000;
+            }
+            try {
+              value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+            } catch (error) {
+              value += ' (invalid DateTime})';
+            }
           }
-          try {
-            value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
-          } catch (error) {
-            value += ' (invalid DateTime})';
+          if (key == 'xmp' && v != null && v is Uint8List) {
+            value = String.fromCharCodes(v);
           }
-        }
-        if (key == 'xmp' && v != null && v is Uint8List) {
-          value = String.fromCharCodes(v);
-        }
-        return MapEntry(key, value);
-      }));
+          return MapEntry(key, value);
+        }),
+      );
       return AvesExpansionTile(
         title: title,
         children: [
@@ -101,7 +103,7 @@ class _MetadataTabState extends State<MetadataTab> {
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(info: data),
-            )
+            ),
         ],
       );
     }
@@ -151,7 +153,7 @@ class _MetadataTabState extends State<MetadataTab> {
                       scrollDirection: Axis.horizontal,
                       child: SelectableText(data),
                     ),
-                  )
+                  ),
               ],
             );
           },

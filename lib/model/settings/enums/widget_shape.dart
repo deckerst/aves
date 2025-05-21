@@ -11,11 +11,12 @@ extension ExtraWidgetShape on WidgetShape {
       case WidgetShape.rrect:
         return Path()..addRRect(BorderRadius.circular(cornerRadiusPx ?? (_defaultCornerRadius * devicePixelRatio)).toRRect(rect));
       case WidgetShape.circle:
-        return Path()
-          ..addOval(Rect.fromCircle(
+        return Path()..addOval(
+          Rect.fromCircle(
             center: rect.center,
             radius: rect.shortestSide / 2,
-          ));
+          ),
+        );
       case WidgetShape.heart:
         final center = rect.center;
         final dim = rect.shortestSide;

@@ -109,18 +109,26 @@ class CatalogMetadata {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'mimeType': mimeType,
-        'dateMillis': dateMillis,
-        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0) | (isMotionPhoto ? _isMotionPhotoMask : 0) | (isHdr ? _isHdr : 0),
-        'rotationDegrees': rotationDegrees,
-        'xmpSubjects': xmpSubjects,
-        'xmpTitle': xmpTitle,
-        'latitude': latitude,
-        'longitude': longitude,
-        'rating': rating,
-      };
+    'id': id,
+    'mimeType': mimeType,
+    'dateMillis': dateMillis,
+    'flags':
+        (isAnimated ? _isAnimatedMask : 0) |
+        (isFlipped ? _isFlippedMask : 0) |
+        (isGeotiff ? _isGeotiffMask : 0) |
+        (is360 ? _is360Mask : 0) |
+        (isMultiPage ? _isMultiPageMask : 0) |
+        (isMotionPhoto ? _isMotionPhotoMask : 0) |
+        (isHdr ? _isHdr : 0),
+    'rotationDegrees': rotationDegrees,
+    'xmpSubjects': xmpSubjects,
+    'xmpTitle': xmpTitle,
+    'latitude': latitude,
+    'longitude': longitude,
+    'rating': rating,
+  };
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, isMotionPhoto=$isMotionPhoto, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle, latitude=$latitude, longitude=$longitude, rating=$rating}';
+  String toString() =>
+      '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, isMotionPhoto=$isMotionPhoto, rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle, latitude=$latitude, longitude=$longitude, rating=$rating}';
 }

@@ -55,28 +55,30 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
                     queryNotifier: _queryNotifier,
                     leadingPadding: const EdgeInsetsDirectional.only(start: 24, end: 8),
                   ),
-                ..._getLocaleOptions(context).entries.where((kv) {
-                  if (upQuery.isEmpty) return true;
-                  final title = kv.value;
-                  return title.toUpperCase().contains(upQuery);
-                }).map((kv) {
-                  final value = kv.key;
-                  final title = kv.value;
-                  return ReselectableRadioListTile<Locale>(
-                    // key is expected by test driver
-                    key: Key(value.toString()),
-                    value: value,
-                    groupValue: _selectedValue,
-                    onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
-                    reselectable: true,
-                    title: Text(
-                      title,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      maxLines: 1,
-                    ),
-                  );
-                }),
+                ..._getLocaleOptions(context).entries
+                    .where((kv) {
+                      if (upQuery.isEmpty) return true;
+                      final title = kv.value;
+                      return title.toUpperCase().contains(upQuery);
+                    })
+                    .map((kv) {
+                      final value = kv.key;
+                      final title = kv.value;
+                      return ReselectableRadioListTile<Locale>(
+                        // key is expected by test driver
+                        key: Key(value.toString()),
+                        value: value,
+                        groupValue: _selectedValue,
+                        onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
+                        reselectable: true,
+                        title: Text(
+                          title,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                        ),
+                      );
+                    }),
               ],
             );
           },

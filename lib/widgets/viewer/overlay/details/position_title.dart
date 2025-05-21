@@ -24,12 +24,12 @@ class OverlayPositionTitleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Text toText({String? pagePosition}) => Text(
-          [
-            if (collectionPosition != null) collectionPosition,
-            if (pagePosition != null) pagePosition,
-            if (title != null) '${Unicode.FSI}$title${Unicode.PDI}',
-          ].join(AText.separator),
-        );
+      [
+        if (collectionPosition != null) collectionPosition,
+        if (pagePosition != null) pagePosition,
+        if (title != null) '${Unicode.FSI}$title${Unicode.PDI}',
+      ].join(AText.separator),
+    );
 
     if (multiPageController == null) return toText();
 

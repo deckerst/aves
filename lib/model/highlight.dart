@@ -17,13 +17,15 @@ class HighlightInfo extends ChangeNotifier {
     Object? highlightItem,
   }) {
     if (item != null) {
-      eventBus.fire(TrackEvent<T>(
-        item,
-        predicate ?? (_) => true,
-        alignment ?? Alignment.center,
-        animate ?? true,
-        highlightItem,
-      ));
+      eventBus.fire(
+        TrackEvent<T>(
+          item,
+          predicate ?? (_) => true,
+          alignment ?? Alignment.center,
+          animate ?? true,
+          highlightItem,
+        ),
+      );
     }
   }
 

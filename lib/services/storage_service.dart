@@ -182,9 +182,11 @@ class PlatformStorageService implements StorageService {
         return (result as List)
             .cast<Map>()
             .map(VolumeRelativeDirectory.fromMap)
-            .map((dir) => dir.copyWith(
-                  relativeDir: dir.relativeDir.toLowerCase(),
-                ))
+            .map(
+              (dir) => dir.copyWith(
+                relativeDir: dir.relativeDir.toLowerCase(),
+              ),
+            )
             .toSet();
       }
     } on PlatformException catch (e, stack) {
@@ -269,17 +271,19 @@ class PlatformStorageService implements StorageService {
   Future<bool> requestDirectoryAccess(String path) async {
     try {
       final opCompleter = Completer<bool>();
-      _stream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'requestDirectoryAccess',
-        'path': path,
-      }).listen(
-        (data) => opCompleter.complete(data as bool),
-        onError: opCompleter.completeError,
-        onDone: () {
-          if (!opCompleter.isCompleted) opCompleter.complete(false);
-        },
-        cancelOnError: true,
-      );
+      _stream
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'requestDirectoryAccess',
+            'path': path,
+          })
+          .listen(
+            (data) => opCompleter.complete(data as bool),
+            onError: opCompleter.completeError,
+            onDone: () {
+              if (!opCompleter.isCompleted) opCompleter.complete(false);
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
@@ -293,18 +297,20 @@ class PlatformStorageService implements StorageService {
   Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes) async {
     try {
       final opCompleter = Completer<bool>();
-      _stream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'requestMediaFileAccess',
-        'uris': uris,
-        'mimeTypes': mimeTypes,
-      }).listen(
-        (data) => opCompleter.complete(data as bool),
-        onError: opCompleter.completeError,
-        onDone: () {
-          if (!opCompleter.isCompleted) opCompleter.complete(false);
-        },
-        cancelOnError: true,
-      );
+      _stream
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'requestMediaFileAccess',
+            'uris': uris,
+            'mimeTypes': mimeTypes,
+          })
+          .listen(
+            (data) => opCompleter.complete(data as bool),
+            onError: opCompleter.completeError,
+            onDone: () {
+              if (!opCompleter.isCompleted) opCompleter.complete(false);
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
@@ -324,19 +330,21 @@ class PlatformStorageService implements StorageService {
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes) async {
     try {
       final opCompleter = Completer<bool?>();
-      _stream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'createFile',
-        'name': name,
-        'mimeType': mimeType,
-        'bytes': bytes,
-      }).listen(
-        (data) => opCompleter.complete(data as bool?),
-        onError: opCompleter.completeError,
-        onDone: () {
-          if (!opCompleter.isCompleted) opCompleter.complete(false);
-        },
-        cancelOnError: true,
-      );
+      _stream
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'createFile',
+            'name': name,
+            'mimeType': mimeType,
+            'bytes': bytes,
+          })
+          .listen(
+            (data) => opCompleter.complete(data as bool?),
+            onError: opCompleter.completeError,
+            onDone: () {
+              if (!opCompleter.isCompleted) opCompleter.complete(false);
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
@@ -350,21 +358,23 @@ class PlatformStorageService implements StorageService {
     try {
       final opCompleter = Completer<Uint8List>();
       final sink = OutputBuffer();
-      _stream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'openFile',
-        'mimeType': mimeType,
-      }).listen(
-        (data) {
-          final chunk = data as Uint8List;
-          sink.add(chunk);
-        },
-        onError: opCompleter.completeError,
-        onDone: () {
-          sink.close();
-          opCompleter.complete(sink.bytes);
-        },
-        cancelOnError: true,
-      );
+      _stream
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'openFile',
+            'mimeType': mimeType,
+          })
+          .listen(
+            (data) {
+              final chunk = data as Uint8List;
+              sink.add(chunk);
+            },
+            onError: opCompleter.completeError,
+            onDone: () {
+              sink.close();
+              opCompleter.complete(sink.bytes);
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
@@ -377,19 +387,21 @@ class PlatformStorageService implements StorageService {
   Future<bool?> copyFile(String name, String mimeType, String sourceUri) async {
     try {
       final opCompleter = Completer<bool?>();
-      _stream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'copyFile',
-        'name': name,
-        'mimeType': mimeType,
-        'sourceUri': sourceUri,
-      }).listen(
-        (data) => opCompleter.complete(data as bool?),
-        onError: opCompleter.completeError,
-        onDone: () {
-          if (!opCompleter.isCompleted) opCompleter.complete(false);
-        },
-        cancelOnError: true,
-      );
+      _stream
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'copyFile',
+            'name': name,
+            'mimeType': mimeType,
+            'sourceUri': sourceUri,
+          })
+          .listen(
+            (data) => opCompleter.complete(data as bool?),
+            onError: opCompleter.completeError,
+            onDone: () {
+              if (!opCompleter.isCompleted) opCompleter.complete(false);
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {

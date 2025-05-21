@@ -13,13 +13,12 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.29.3
-  sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
+  flutter: 3.32.0
+  sdk: ">=3.8.0 <4.0.0"
 workspace:
   - plugins/aves_magnifier
   - plugins/aves_map
   - plugins/aves_model
-  - plugins/aves_platform_meta
   - plugins/aves_report
   - plugins/aves_report_crashlytics
   - plugins/aves_screen_state

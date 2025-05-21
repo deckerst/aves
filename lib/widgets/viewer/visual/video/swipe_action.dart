@@ -111,7 +111,7 @@ class SwipeActionFeedback extends StatelessWidget {
           Shadow(
             color: shadowColor,
             blurRadius: 4,
-          )
+          ),
         ],
       ),
     );

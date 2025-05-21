@@ -65,11 +65,13 @@ class _CollectionPageState extends State<CollectionPage> {
       filters: widget.filters,
     );
     super.initState();
-    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.enableBinKey).listen((_) {
-      if (!settings.enableBin) {
-        _collection.removeFilter(TrashFilter.instance);
-      }
-    }));
+    _subscriptions.add(
+      settings.updateStream.where((event) => event.key == SettingKeys.enableBinKey).listen((_) {
+        if (!settings.enableBin) {
+          _collection.removeFilter(TrashFilter.instance);
+        }
+      }),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
   }
 

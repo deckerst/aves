@@ -19,19 +19,19 @@ class AccessibilitySection extends SettingsSection {
 
   @override
   Widget icon(BuildContext context) => SettingsTileLeading(
-        icon: AIcons.accessibility,
-        color: context.select<AvesColorsData, Color>((v) => v.accessibility),
-      );
+    icon: AIcons.accessibility,
+    color: context.select<AvesColorsData, Color>((v) => v.accessibility),
+  );
 
   @override
   String title(BuildContext context) => context.l10n.settingsAccessibilitySectionTitle;
 
   @override
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
-        if (!settings.useTvLayout) SettingsTileAccessibilityShowPinchGestureAlternatives(),
-        SettingsTileAccessibilityAnimations(),
-        SettingsTileAccessibilityTimeToTakeAction(),
-      ];
+    if (!settings.useTvLayout) SettingsTileAccessibilityShowPinchGestureAlternatives(),
+    SettingsTileAccessibilityAnimations(),
+    SettingsTileAccessibilityTimeToTakeAction(),
+  ];
 }
 
 class SettingsTileAccessibilityShowPinchGestureAlternatives extends SettingsTile {
@@ -40,10 +40,10 @@ class SettingsTileAccessibilityShowPinchGestureAlternatives extends SettingsTile
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.showPinchGestureAlternatives,
-        onChanged: (v) => settings.showPinchGestureAlternatives = v,
-        title: title(context),
-      );
+    selector: (context, s) => s.showPinchGestureAlternatives,
+    onChanged: (v) => settings.showPinchGestureAlternatives = v,
+    title: title(context),
+  );
 }
 
 class SettingsTileAccessibilityAnimations extends SettingsTile {
@@ -52,13 +52,13 @@ class SettingsTileAccessibilityAnimations extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<AccessibilityAnimations>(
-        values: AccessibilityAnimations.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.accessibilityAnimations,
-        onSelection: (v) => settings.accessibilityAnimations = v,
-        tileTitle: title(context),
-        dialogTitle: context.l10n.settingsRemoveAnimationsDialogTitle,
-      );
+    values: AccessibilityAnimations.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.accessibilityAnimations,
+    onSelection: (v) => settings.accessibilityAnimations = v,
+    tileTitle: title(context),
+    dialogTitle: context.l10n.settingsRemoveAnimationsDialogTitle,
+  );
 }
 
 class SettingsTileAccessibilityTimeToTakeAction extends SettingsTile {

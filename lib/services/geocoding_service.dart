@@ -50,16 +50,16 @@ class Address extends Equatable {
   });
 
   factory Address.fromMap(Map map) => Address(
-        addressLine: map['addressLine'],
-        adminArea: map['adminArea'],
-        countryCode: map['countryCode'],
-        countryName: map['countryName'],
-        featureName: map['featureName'],
-        locality: map['locality'],
-        postalCode: map['postalCode'],
-        subAdminArea: map['subAdminArea'],
-        subLocality: map['subLocality'],
-        subThoroughfare: map['subThoroughfare'],
-        thoroughfare: map['thoroughfare'],
-      );
+    addressLine: map['addressLine'],
+    adminArea: map['adminArea'],
+    countryCode: map['countryCode'],
+    countryName: map['countryName'],
+    featureName: map['featureName'],
+    locality: map['locality'],
+    postalCode: map['postalCode'],
+    subAdminArea: map['subAdminArea'],
+    subLocality: map['subLocality'],
+    subThoroughfare: map['subThoroughfare'],
+    thoroughfare: map['thoroughfare'],
+  );
 }

@@ -54,7 +54,7 @@ class _DebugOSStorageSectionState extends State<DebugOSStorageSection> with Auto
             ),
             const Divider(),
           ];
-        })
+        }),
       ],
     );
   }

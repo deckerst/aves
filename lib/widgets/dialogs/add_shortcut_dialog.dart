@@ -97,7 +97,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
                     child: Text(context.l10n.addShortcutButtonLabel),
                   );
                 },
-              )
+              ),
             ],
           );
         },

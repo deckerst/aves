@@ -26,9 +26,9 @@ class PrivacySection extends SettingsSection {
 
   @override
   Widget icon(BuildContext context) => SettingsTileLeading(
-        icon: AIcons.privacy,
-        color: context.select<AvesColorsData, Color>((v) => v.privacy),
-      );
+    icon: AIcons.privacy,
+    color: context.select<AvesColorsData, Color>((v) => v.privacy),
+  );
 
   @override
   String title(BuildContext context) => context.l10n.settingsPrivacySectionTitle;
@@ -54,11 +54,11 @@ class SettingsTilePrivacyAllowInstalledAppAccess extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.isInstalledAppAccessAllowed,
-        onChanged: (v) => settings.isInstalledAppAccessAllowed = v,
-        title: title(context),
-        subtitle: context.l10n.settingsAllowInstalledAppAccessSubtitle,
-      );
+    selector: (context, s) => s.isInstalledAppAccessAllowed,
+    onChanged: (v) => settings.isInstalledAppAccessAllowed = v,
+    title: title(context),
+    subtitle: context.l10n.settingsAllowInstalledAppAccessSubtitle,
+  );
 }
 
 class SettingsTilePrivacyAllowErrorReporting extends SettingsTile {
@@ -67,10 +67,10 @@ class SettingsTilePrivacyAllowErrorReporting extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.isErrorReportingAllowed,
-        onChanged: (v) => settings.isErrorReportingAllowed = v,
-        title: title(context),
-      );
+    selector: (context, s) => s.isErrorReportingAllowed,
+    onChanged: (v) => settings.isErrorReportingAllowed = v,
+    title: title(context),
+  );
 }
 
 class SettingsTilePrivacySaveSearchHistory extends SettingsTile {
@@ -79,15 +79,15 @@ class SettingsTilePrivacySaveSearchHistory extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.saveSearchHistory,
-        onChanged: (v) {
-          settings.saveSearchHistory = v;
-          if (!v) {
-            settings.searchHistory = [];
-          }
-        },
-        title: title(context),
-      );
+    selector: (context, s) => s.saveSearchHistory,
+    onChanged: (v) {
+      settings.saveSearchHistory = v;
+      if (!v) {
+        settings.searchHistory = [];
+      }
+    },
+    title: title(context),
+  );
 }
 
 class SettingsTilePrivacyEnableBin extends SettingsTile {
@@ -96,11 +96,11 @@ class SettingsTilePrivacyEnableBin extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.enableBin,
-        onChanged: (v) => setBinUsage(context, v),
-        title: title(context),
-        subtitle: context.l10n.settingsEnableBinSubtitle,
-      );
+    selector: (context, s) => s.enableBin,
+    onChanged: (v) => setBinUsage(context, v),
+    title: title(context),
+    subtitle: context.l10n.settingsEnableBinSubtitle,
+  );
 
   static Future<bool> setBinUsage(BuildContext context, bool enabled) async {
     final l10n = context.l10n;
@@ -152,10 +152,10 @@ class SettingsTilePrivacyHiddenItems extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: HiddenItemsPage.routeName,
-        builder: (context) => const HiddenItemsPage(),
-      );
+    title: title(context),
+    routeName: HiddenItemsPage.routeName,
+    builder: (context) => const HiddenItemsPage(),
+  );
 }
 
 class SettingsTilePrivacyStorageAccess extends SettingsTile {
@@ -164,10 +164,10 @@ class SettingsTilePrivacyStorageAccess extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: StorageAccessPage.routeName,
-        builder: (context) => const StorageAccessPage(),
-      );
+    title: title(context),
+    routeName: StorageAccessPage.routeName,
+    builder: (context) => const StorageAccessPage(),
+  );
 }
 
 class SettingsTilePrivacyManageMedia extends SettingsTile {

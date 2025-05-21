@@ -590,13 +590,15 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     void applyForceTvLayout() {
       _onTvLayoutChanged();
-      unawaited(_navigatorKey.currentState!.pushAndRemoveUntil(
-        MaterialPageRoute(
-          settings: const RouteSettings(name: HomePage.routeName),
-          builder: (_) => _getFirstPage(),
+      unawaited(
+        _navigatorKey.currentState!.pushAndRemoveUntil(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: HomePage.routeName),
+            builder: (_) => _getFirstPage(),
+          ),
+          (route) => false,
         ),
-        (route) => false,
-      ));
+      );
     }
 
     final settingStream = settings.updateStream;
@@ -621,7 +623,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _setupErrorReporting() async {
     await reportService.init();
-    settings.updateStream.where((event) => event.key == SettingKeys.isErrorReportingAllowedKey).listen(
+    settings.updateStream
+        .where((event) => event.key == SettingKeys.isErrorReportingAllowedKey)
+        .listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
     await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);
@@ -632,18 +636,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       'build_mode': kReleaseMode
           ? 'release'
           : kProfileMode
-              ? 'profile'
-              : 'debug',
+          ? 'profile'
+          : 'debug',
       'has_mobile_services': mobileServices.isServiceAvailable,
       'is_television': device.isTelevision,
       'locales': WidgetsBinding.instance.platformDispatcher.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
     await reportService.log('Launch');
-    setState(() => _navigatorObservers = [
-          AvesApp.pageRouteObserver,
-          ReportingRouteTracker(),
-        ]);
+    setState(
+      () => _navigatorObservers = [
+        AvesApp.pageRouteObserver,
+        ReportingRouteTracker(),
+      ],
+    );
   }
 
   // at this level `ModalRoute.of(context)` is null,
@@ -685,10 +691,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
-      settings: const RouteSettings(name: HomePage.routeName),
-      builder: (_) => _getFirstPage(intentData: intentData),
-    ));
+    _navigatorKey.currentState!.pushReplacement(
+      DirectMaterialPageRoute(
+        settings: const RouteSettings(name: HomePage.routeName),
+        builder: (_) => _getFirstPage(intentData: intentData),
+      ),
+    );
   }
 
   Future<void> _onAnalysisCompletion() async {

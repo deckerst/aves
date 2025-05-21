@@ -48,20 +48,22 @@ class IntentService {
   static Future<Set<CollectionFilter>?> pickCollectionFilters(Set<CollectionFilter>? initialFilters) async {
     try {
       final opCompleter = Completer<Set<CollectionFilter>?>();
-      _stream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'pickCollectionFilters',
-        'initialFilters': initialFilters?.map((filter) => filter.toJson()).toList(),
-      }).listen(
-        (data) {
-          final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
-          opCompleter.complete(result);
-        },
-        onError: opCompleter.completeError,
-        onDone: () {
-          if (!opCompleter.isCompleted) opCompleter.complete(null);
-        },
-        cancelOnError: true,
-      );
+      _stream
+          .receiveBroadcastStream(<String, dynamic>{
+            'op': 'pickCollectionFilters',
+            'initialFilters': initialFilters?.map((filter) => filter.toJson()).toList(),
+          })
+          .listen(
+            (data) {
+              final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
+              opCompleter.complete(result);
+            },
+            onError: opCompleter.completeError,
+            onDone: () {
+              if (!opCompleter.isCompleted) opCompleter.complete(null);
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {

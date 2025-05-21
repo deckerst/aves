@@ -29,12 +29,12 @@ class HighlightTitle extends StatelessWidget {
   static const disabledColor = Colors.grey;
 
   static List<Shadow> shadows(BuildContext context) => [
-        Shadow(
-          color: Theme.of(context).isDark ? Colors.black : Colors.white,
-          offset: const Offset(0, 1),
-          blurRadius: 2,
-        )
-      ];
+    Shadow(
+      color: Theme.of(context).isDark ? Colors.black : Colors.white,
+      offset: const Offset(0, 1),
+      blurRadius: 2,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {

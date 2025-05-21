@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -13,7 +14,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
-import 'dart:ui' as ui;
 
 abstract class MediaFetchService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false});
@@ -76,11 +76,13 @@ class PlatformMediaFetchService implements MediaFetchService {
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     try {
-      final result = await _platformObject.invokeMethod('getEntry', <String, dynamic>{
-        'uri': uri,
-        'mimeType': mimeType,
-        'allowUnsized': allowUnsized,
-      }) as Map;
+      final result =
+          await _platformObject.invokeMethod('getEntry', <String, dynamic>{
+                'uri': uri,
+                'mimeType': mimeType,
+                'allowUnsized': allowUnsized,
+              })
+              as Map;
       AvesEntry.normalizeMimeTypeFields(result);
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {
@@ -98,19 +100,18 @@ class PlatformMediaFetchService implements MediaFetchService {
     String mimeType, {
     required int? sizeBytes,
     BytesReceivedCallback? onBytesReceived,
-  }) =>
-      getEncodedImage(
-        ImageRequest(
-          uri,
-          mimeType,
-          rotationDegrees: 0,
-          isFlipped: false,
-          isAnimated: false,
-          pageId: null,
-          sizeBytes: sizeBytes,
-          onBytesReceived: onBytesReceived,
-        ),
-      );
+  }) => getEncodedImage(
+    ImageRequest(
+      uri,
+      mimeType,
+      rotationDegrees: 0,
+      isFlipped: false,
+      isAnimated: false,
+      pageId: null,
+      sizeBytes: sizeBytes,
+      onBytesReceived: onBytesReceived,
+    ),
+  );
 
   @override
   Future<Uint8List> getEncodedImage(ImageRequest request) {
@@ -128,36 +129,38 @@ class PlatformMediaFetchService implements MediaFetchService {
       final opCompleter = Completer<Uint8List>();
       final sink = OutputBuffer();
       var bytesReceived = 0;
-      _byteStream.receiveBroadcastStream(<String, dynamic>{
-        'uri': request.uri,
-        'mimeType': request.mimeType,
-        'sizeBytes': request.sizeBytes,
-        'rotationDegrees': request.rotationDegrees ?? 0,
-        'isFlipped': request.isFlipped,
-        'isAnimated': request.isAnimated,
-        'pageId': request.pageId,
-        'decoded': decoded,
-      }).listen(
-        (data) {
-          final chunk = data as Uint8List;
-          sink.add(chunk);
-          if (_onBytesReceived != null) {
-            bytesReceived += chunk.length;
-            try {
-              _onBytesReceived(bytesReceived, request.sizeBytes);
-            } catch (error, stack) {
-              opCompleter.completeError(error, stack);
-              return;
-            }
-          }
-        },
-        onError: opCompleter.completeError,
-        onDone: () {
-          sink.close();
-          opCompleter.complete(sink.bytes);
-        },
-        cancelOnError: true,
-      );
+      _byteStream
+          .receiveBroadcastStream(<String, dynamic>{
+            'uri': request.uri,
+            'mimeType': request.mimeType,
+            'sizeBytes': request.sizeBytes,
+            'rotationDegrees': request.rotationDegrees ?? 0,
+            'isFlipped': request.isFlipped,
+            'isAnimated': request.isAnimated,
+            'pageId': request.pageId,
+            'decoded': decoded,
+          })
+          .listen(
+            (data) {
+              final chunk = data as Uint8List;
+              sink.add(chunk);
+              if (_onBytesReceived != null) {
+                bytesReceived += chunk.length;
+                try {
+                  _onBytesReceived(bytesReceived, request.sizeBytes);
+                } catch (error, stack) {
+                  opCompleter.completeError(error, stack);
+                  return;
+                }
+              }
+            },
+            onError: opCompleter.completeError,
+            onDone: () {
+              sink.close();
+              opCompleter.complete(sink.bytes);
+            },
+            cancelOnError: true,
+          );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {

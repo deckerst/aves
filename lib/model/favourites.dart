@@ -62,13 +62,15 @@ class Favourites with ChangeNotifier {
     final ids = all;
     final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).nonNulls.toSet();
     final byVolume = groupBy<String, StorageVolume?>(paths, androidFileUtils.getStorageVolume);
-    final jsonMap = Map.fromEntries(byVolume.entries.map((kv) {
-      final volume = kv.key?.path;
-      if (volume == null) return null;
-      final rootLength = volume.length;
-      final relativePaths = kv.value.map((v) => v.substring(rootLength)).toList();
-      return MapEntry(volume, relativePaths);
-    }).nonNulls);
+    final jsonMap = Map.fromEntries(
+      byVolume.entries.map((kv) {
+        final volume = kv.key?.path;
+        if (volume == null) return null;
+        final rootLength = volume.length;
+        final relativePaths = kv.value.map((v) => v.substring(rootLength)).toList();
+        return MapEntry(volume, relativePaths);
+      }).nonNulls,
+    );
     return jsonMap.isNotEmpty ? jsonMap : null;
   }
 
@@ -124,6 +126,6 @@ class FavouriteRow extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': entryId,
-      };
+    'id': entryId,
+  };
 }

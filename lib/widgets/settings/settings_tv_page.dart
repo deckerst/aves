@@ -82,10 +82,12 @@ class _ContentState extends State<_Content> {
         final rail = NavigationRail(
           extended: true,
           destinations: sections
-              .map((section) => NavigationRailDestination(
-                    icon: section.icon(context),
-                    label: Text(section.title(context)),
-                  ))
+              .map(
+                (section) => NavigationRailDestination(
+                  icon: section.icon(context),
+                  label: Text(section.title(context)),
+                ),
+              )
               .toList(),
           selectedIndex: selectedIndex,
           onDestinationSelected: (index) => _indexNotifier.value = index,

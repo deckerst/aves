@@ -79,10 +79,13 @@ mixin EntryEditorMixin {
   Future<Map<AvesEntry, Set<String>>?> selectTags(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final oldTagsByEntry = Map.fromEntries(entries.map((v) {
-      return MapEntry(v, v.tags.map(TagFilter.new).toSet());
-    }));
-    final filtersByEntry = await Navigator.maybeOf(context)?.push<Map<AvesEntry, Set<CollectionFilter>>>(
+    final oldTagsByEntry = Map.fromEntries(
+      entries.map((v) {
+        return MapEntry(v, v.tags.map(TagFilter.new).toSet());
+      }),
+    );
+    final filtersByEntry =
+        await Navigator.maybeOf(context)?.push<Map<AvesEntry, Set<CollectionFilter>>>(
           MaterialPageRoute(
             settings: const RouteSettings(name: TagEditorPage.routeName),
             builder: (context) => TagEditorPage(

@@ -24,9 +24,9 @@ class OutlinedText extends StatelessWidget {
     this.softWrap,
     this.overflow,
     this.maxLines,
-  })  : outlineWidth = outlineWidth ?? 1,
-        outlineColor = outlineColor ?? Colors.black,
-        outlineBlurSigma = outlineBlurSigma ?? 0;
+  }) : outlineWidth = outlineWidth ?? 1,
+       outlineColor = outlineColor ?? Colors.black,
+       outlineBlurSigma = outlineBlurSigma ?? 0;
 
   @override
   Widget build(BuildContext context) {
@@ -81,22 +81,22 @@ class OutlinedText extends StatelessWidget {
   }
 
   TextSpan _toStrokeSpan(TextSpan span) => TextSpan(
-        text: span.text,
-        children: span.children,
-        style: (span.style ?? const TextStyle()).copyWith(
-          foreground: Paint()
-            ..style = PaintingStyle.stroke
-            ..color = outlineColor
-            ..strokeWidth = outlineWidth,
-        ),
-      );
+    text: span.text,
+    children: span.children,
+    style: (span.style ?? const TextStyle()).copyWith(
+      foreground: Paint()
+        ..style = PaintingStyle.stroke
+        ..color = outlineColor
+        ..strokeWidth = outlineWidth,
+    ),
+  );
 
   TextSpan _toFillSpan(TextSpan span) => TextSpan(
-        text: span.text,
-        children: span.children,
-        style: (span.style ?? const TextStyle()).copyWith(
-          backgroundColor: Colors.transparent,
-          shadows: [],
-        ),
-      );
+    text: span.text,
+    children: span.children,
+    style: (span.style ?? const TextStyle()).copyWith(
+      backgroundColor: Colors.transparent,
+      shadows: [],
+    ),
+  );
 }

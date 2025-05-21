@@ -55,17 +55,17 @@ class ViewerBottomOverlay extends StatelessWidget {
     if (mainEntry == null) return const SizedBox();
 
     Widget _buildContent({AvesEntry? pageEntry}) => _BottomOverlayContent(
-          entries: entries,
-          index: index,
-          mainEntry: mainEntry,
-          pageEntry: pageEntry ?? mainEntry,
-          collection: collection,
-          availableSize: availableSize,
-          viewInsets: viewInsets,
-          viewPadding: viewPadding,
-          multiPageController: multiPageController,
-          animationController: animationController,
-        );
+      entries: entries,
+      index: index,
+      mainEntry: mainEntry,
+      pageEntry: pageEntry ?? mainEntry,
+      collection: collection,
+      availableSize: availableSize,
+      viewInsets: viewInsets,
+      viewPadding: viewPadding,
+      multiPageController: multiPageController,
+      animationController: animationController,
+    );
 
     Widget child = multiPageController != null
         ? PageEntryBuilder(

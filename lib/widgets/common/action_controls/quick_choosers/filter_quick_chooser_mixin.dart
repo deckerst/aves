@@ -30,27 +30,29 @@ mixin FilterQuickChooserMixin<T> {
     if (options.isEmpty) return null;
 
     final textStyle = DefaultTextStyle.of(context).style.copyWith(
-          fontSize: AvesFilterChip.fontSize,
-        );
+      fontSize: AvesFilterChip.fontSize,
+    );
     final textDirection = Directionality.of(context);
     final textScaler = MediaQuery.textScalerOf(context);
     final iconSize = textScaler.scale(AvesFilterChip.iconSize);
 
-    return options.map((option) {
-      final filter = buildFilter(context, option);
-      final icon = filter.iconBuilder(context, iconSize, allowGenericIcon: _chipAllowGenericIcon);
-      final label = filter.getLabel(context);
-      final paragraph = RenderParagraph(
-        TextSpan(text: label, style: textStyle),
-        textDirection: textDirection,
-        textScaler: textScaler,
-      )..layout(const BoxConstraints(), parentUsesSize: true);
-      final labelWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
-      double chipWidth = labelWidth + _chipPadding * 4;
-      if (icon != null) {
-        chipWidth += iconSize + _chipPadding;
-      }
-      return max(AvesFilterChip.minChipWidth, chipWidth);
-    }).reduce(max);
+    return options
+        .map((option) {
+          final filter = buildFilter(context, option);
+          final icon = filter.iconBuilder(context, iconSize, allowGenericIcon: _chipAllowGenericIcon);
+          final label = filter.getLabel(context);
+          final paragraph = RenderParagraph(
+            TextSpan(text: label, style: textStyle),
+            textDirection: textDirection,
+            textScaler: textScaler,
+          )..layout(const BoxConstraints(), parentUsesSize: true);
+          final labelWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
+          double chipWidth = labelWidth + _chipPadding * 4;
+          if (icon != null) {
+            chipWidth += iconSize + _chipPadding;
+          }
+          return max(AvesFilterChip.minChipWidth, chipWidth);
+        })
+        .reduce(max);
   }
 }

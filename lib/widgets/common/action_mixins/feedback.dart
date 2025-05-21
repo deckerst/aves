@@ -112,13 +112,15 @@ mixin FeedbackMixin {
           context: context,
         );
       } else {
-        messenger.showSnackBar(SnackBar(
-          content: snackBarContent,
-          padding: action != null ? EdgeInsetsDirectional.only(start: snackBarHorizontalPadding(snackBarTheme)) : null,
-          action: action,
-          duration: duration,
-          dismissDirection: DismissDirection.horizontal,
-        ));
+        messenger.showSnackBar(
+          SnackBar(
+            content: snackBarContent,
+            padding: action != null ? EdgeInsetsDirectional.only(start: snackBarHorizontalPadding(snackBarTheme)) : null,
+            action: action,
+            duration: duration,
+            dismissDirection: DismissDirection.horizontal,
+          ),
+        );
       }
     });
   }
@@ -384,7 +386,8 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
     final textScaler = MediaQuery.textScalerOf(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final contentTextStyle = theme.snackBarTheme.contentTextStyle ??
+    final contentTextStyle =
+        theme.snackBarTheme.contentTextStyle ??
         theme.textTheme.bodyMedium!.copyWith(
           color: colorScheme.onInverseSurface,
         );
@@ -424,7 +427,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                       Shadow(
                         color: timerChangeShadowColor.withAlpha(0),
                         blurRadius: 0,
-                      )
+                      ),
                     ],
                   ),
                   changedStyle: contentTextStyle.copyWith(
@@ -432,7 +435,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                       Shadow(
                         color: timerChangeShadowColor,
                         blurRadius: 5,
-                      )
+                      ),
                     ],
                   ),
                   duration: context.read<DurationsData>().formTextStyleTransition,
@@ -440,7 +443,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
               );
             },
           ),
-        ]
+        ],
       ],
     );
   }

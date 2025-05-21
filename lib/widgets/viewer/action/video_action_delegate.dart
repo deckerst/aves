@@ -109,17 +109,19 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         if (latLng != null) ...{
           'latitude': latLng.latitude,
           'longitude': latLng.longitude,
-        }
+        },
       };
 
-      newFields.addAll(await mediaEditService.captureFrame(
-        entry,
-        desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
-        exif: exif,
-        bytes: bytes,
-        destinationAlbum: destinationAlbum,
-        nameConflictStrategy: NameConflictStrategy.rename,
-      ));
+      newFields.addAll(
+        await mediaEditService.captureFrame(
+          entry,
+          desiredName: '${entry.bestTitle}_${'$positionMillis'.padLeft(8, '0')}',
+          exif: exif,
+          bytes: bytes,
+          destinationAlbum: destinationAlbum,
+          nameConflictStrategy: NameConflictStrategy.rename,
+        ),
+      );
     }
     final success = newFields.isNotEmpty;
 
@@ -164,11 +166,13 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final userSelectedStreams = await showDialog<Map<MediaStreamType, MediaStreamSummary?>>(
       context: context,
       builder: (context) => VideoStreamSelectionDialog(
-        streams: Map.fromEntries(streams.map((stream) {
-          final selectedStream = currentSelectedStreams.nonNulls.firstWhereOrNull((v) => v.type == stream.type);
-          final selected = selectedStream != null && selectedStream.index == stream.index;
-          return MapEntry(stream, selected);
-        })),
+        streams: Map.fromEntries(
+          streams.map((stream) {
+            final selectedStream = currentSelectedStreams.nonNulls.firstWhereOrNull((v) => v.type == stream.type);
+            final selected = selectedStream != null && selectedStream.index == stream.index;
+            return MapEntry(stream, selected);
+          }),
+        ),
       ),
       routeSettings: const RouteSettings(name: VideoStreamSelectionDialog.routeName),
     );

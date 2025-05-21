@@ -33,10 +33,10 @@ class ScaleBoundaries extends Equatable {
     required this.contentSize,
     this.padding,
     this.externalTransform,
-  })  : _allowOriginalScaleBeyondRange = allowOriginalScaleBeyondRange,
-        _minScale = minScale,
-        _maxScale = maxScale,
-        _initialScale = initialScale;
+  }) : _allowOriginalScaleBeyondRange = allowOriginalScaleBeyondRange,
+       _minScale = minScale,
+       _maxScale = maxScale,
+       _initialScale = initialScale;
 
   static const ScaleBoundaries zero = ScaleBoundaries(
     allowOriginalScaleBeyondRange: true,

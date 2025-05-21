@@ -7,8 +7,8 @@ class DurationsProvider extends ProxyProvider<Settings, DurationsData> {
     super.key,
     super.child,
   }) : super(
-          update: (context, settings, __) {
-            return settings.animate ? DurationsData() : DurationsData.noAnimation();
-          },
-        );
+         update: (context, settings, __) {
+           return settings.animate ? DurationsData() : DurationsData.noAnimation();
+         },
+       );
 }

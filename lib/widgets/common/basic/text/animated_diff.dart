@@ -96,10 +96,12 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
                         children: [
                           ...previousChildren.map(
                             (child) => ConstrainedBox(
-                              constraints: BoxConstraints.tight(Size(
-                                min(oldSize.width, newSize.width),
-                                min(oldSize.height, newSize.height),
-                              )),
+                              constraints: BoxConstraints.tight(
+                                Size(
+                                  min(oldSize.width, newSize.width),
+                                  min(oldSize.height, newSize.height),
+                                ),
+                              ),
                               child: child,
                             ),
                           ),
@@ -148,31 +150,35 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
 
     _diffs
       ..clear()
-      ..addAll(d.map((diff) {
-        final text = diff.text;
-        final size = _textSize(text);
-        return switch (diff.operation) {
-          Operation.delete => (text, null, size, Size.zero),
-          Operation.insert => (null, text, Size.zero, size),
-          Operation.equal || _ => (text, text, size, size),
-        };
-      }).fold<List<_TextDiff>>([], (prev, v) {
-        if (prev.isNotEmpty) {
-          final last = prev.last;
-          final prevNewText = last.$2;
-          if (prevNewText == null) {
-            // previous diff is a deletion
-            final thisOldText = v.$1;
-            if (thisOldText == null) {
-              // this diff is an insertion
-              // merge deletion and insertion as a change operation
-              final change = (last.$1, v.$2, last.$3, v.$4);
-              return [...prev.take(prev.length - 1), change];
-            }
-          }
-        }
-        return [...prev, v];
-      }));
+      ..addAll(
+        d
+            .map((diff) {
+              final text = diff.text;
+              final size = _textSize(text);
+              return switch (diff.operation) {
+                Operation.delete => (text, null, size, Size.zero),
+                Operation.insert => (null, text, Size.zero, size),
+                Operation.equal || _ => (text, text, size, size),
+              };
+            })
+            .fold<List<_TextDiff>>([], (prev, v) {
+              if (prev.isNotEmpty) {
+                final last = prev.last;
+                final prevNewText = last.$2;
+                if (prevNewText == null) {
+                  // previous diff is a deletion
+                  final thisOldText = v.$1;
+                  if (thisOldText == null) {
+                    // this diff is an insertion
+                    // merge deletion and insertion as a change operation
+                    final change = (last.$1, v.$2, last.$3, v.$4);
+                    return [...prev.take(prev.length - 1), change];
+                  }
+                }
+              }
+              return [...prev, v];
+            }),
+      );
   }
 }
 

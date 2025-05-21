@@ -98,14 +98,15 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       _subscriptions.add(mediaSessionService.mediaCommands.listen(_onMediaCommand));
     }
     viewerController.startAutopilotAnimation(
-        vsync: this,
-        onUpdate: ({required scaleLevel}) {
-          final boundaries = _magnifierController.scaleBoundaries;
-          if (boundaries != null) {
-            final scale = boundaries.scaleForLevel(scaleLevel);
-            _magnifierController.update(scale: scale, source: ChangeSource.animation);
-          }
-        });
+      vsync: this,
+      onUpdate: ({required scaleLevel}) {
+        final boundaries = _magnifierController.scaleBoundaries;
+        if (boundaries != null) {
+          final scale = boundaries.scaleForLevel(scaleLevel);
+          _magnifierController.update(scale: scale, source: ChangeSource.animation);
+        }
+      },
+    );
   }
 
   void _unregisterWidget(EntryPageView oldWidget) {
@@ -228,7 +229,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
                     Shadow(
                       color: Colors.black,
                       blurRadius: 4,
-                    )
+                    ),
                   ],
                 );
                 VideoActionNotification(

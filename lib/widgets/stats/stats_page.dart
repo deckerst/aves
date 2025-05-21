@@ -249,22 +249,22 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     final hasMore = maxRowCount != null && entryCountMap.length > maxRowCount;
     final onHeaderPressed = hasMore
         ? () => Navigator.maybeOf(context)?.push(
-              MaterialPageRoute(
-                settings: const RouteSettings(name: StatsTopPage.routeName),
-                builder: (context) => StatsTopPage(
-                  title: title,
-                  tableBuilder: (context) => FilterTable(
-                    totalEntryCount: totalEntryCount,
-                    entryCountMap: entryCountMap,
-                    filterBuilder: filterBuilder,
-                    sortByCount: sortByCount,
-                    maxRowCount: null,
-                    onFilterSelection: (filter) => _onFilterSelection(context, filter),
-                  ),
+            MaterialPageRoute(
+              settings: const RouteSettings(name: StatsTopPage.routeName),
+              builder: (context) => StatsTopPage(
+                title: title,
+                tableBuilder: (context) => FilterTable(
+                  totalEntryCount: totalEntryCount,
+                  entryCountMap: entryCountMap,
+                  filterBuilder: filterBuilder,
+                  sortByCount: sortByCount,
+                  maxRowCount: null,
                   onFilterSelection: (filter) => _onFilterSelection(context, filter),
                 ),
+                onFilterSelection: (filter) => _onFilterSelection(context, filter),
               ),
-            )
+            ),
+          )
         : null;
     Widget header = Text(
       title,
@@ -383,21 +383,24 @@ class StatsTopPage extends StatelessWidget {
       body: GestureAreaProtectorStack(
         child: SafeArea(
           bottom: false,
-          child: Builder(builder: (context) {
-            return NotificationListener<SelectFilterNotification>(
-              onNotification: (notification) {
-                onFilterSelection(notification.filter);
-                return true;
-              },
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(vertical: 8) +
-                    EdgeInsets.only(
-                      bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
-                    ),
-                child: tableBuilder(context),
-              ),
-            );
-          }),
+          child: Builder(
+            builder: (context) {
+              return NotificationListener<SelectFilterNotification>(
+                onNotification: (notification) {
+                  onFilterSelection(notification.filter);
+                  return true;
+                },
+                child: SingleChildScrollView(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8) +
+                      EdgeInsets.only(
+                        bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+                      ),
+                  child: tableBuilder(context),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

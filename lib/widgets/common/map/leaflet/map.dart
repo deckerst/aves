@@ -193,7 +193,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
                   child: const DotMarker(),
                   width: dotMarkerSize.width,
                   height: dotMarkerSize.height,
-                )
+                ),
             ],
           ),
         ),
@@ -253,11 +253,13 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     final trackColor = Theme.of(context).colorScheme.primary;
     return PolylineLayer(
       polylines: tracks
-          .map((v) => Polyline(
-                points: v,
-                strokeWidth: MapThemeData.trackWidth.toDouble(),
-                color: trackColor,
-              ))
+          .map(
+            (v) => Polyline(
+              points: v,
+              strokeWidth: MapThemeData.trackWidth.toDouble(),
+              color: trackColor,
+            ),
+          )
           .toList(),
     );
   }

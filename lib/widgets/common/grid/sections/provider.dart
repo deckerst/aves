@@ -33,9 +33,9 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     required this.tileAnimationDelay,
     required this.coverRatioResolver,
     required this.child,
-  })  : assert(scrollableWidth != 0),
-        columnCount = tileLayout == TileLayout.list ? 1 : columnCount,
-        tileWidth = tileLayout == TileLayout.list ? scrollableWidth - (horizontalPadding * 2) : tileWidth;
+  }) : assert(scrollableWidth != 0),
+       columnCount = tileLayout == TileLayout.list ? 1 : columnCount,
+       tileWidth = tileLayout == TileLayout.list ? scrollableWidth - (horizontalPadding * 2) : tileWidth;
 
   @override
   Widget build(BuildContext context) {

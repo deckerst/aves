@@ -74,7 +74,10 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
     final currentScale = controller.scale;
     if (boundaries == null || currentScale == null) return;
 
-    controller.update(position: boundaries.clampPosition(position: position, scale: currentScale), source: state.source);
+    controller.update(
+      position: boundaries.clampPosition(position: position, scale: currentScale),
+      source: state.source,
+    );
     final newScale = controller.scale;
     if (newScale == null || newScale == currentScale) return;
 

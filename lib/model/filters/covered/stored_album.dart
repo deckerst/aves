@@ -38,11 +38,11 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'album': album,
-        'uniqueName': displayName,
-        'reversed': reversed,
-      };
+    'type': type,
+    'album': album,
+    'uniqueName': displayName,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

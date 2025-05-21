@@ -34,11 +34,11 @@ class CoordinateFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'sw': sw.toJson(),
-        'ne': ne.toJson(),
-        'reversed': reversed,
-      };
+    'type': type,
+    'sw': sw.toJson(),
+    'ne': ne.toJson(),
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;
@@ -50,12 +50,14 @@ class CoordinateFilter extends CollectionFilter {
 
   @override
   String get universalLabel {
-    return _formatBounds((latLng) => CoordinateFormat.decimal.formatWithoutDirectionality(
-          lookupAppLocalizations(AppLocalizations.supportedLocales.first),
-          latLng,
-          minuteSecondPadding: minuteSecondPadding,
-          dmsSecondDecimals: 0,
-        ));
+    return _formatBounds(
+      (latLng) => CoordinateFormat.decimal.formatWithoutDirectionality(
+        lookupAppLocalizations(AppLocalizations.supportedLocales.first),
+        latLng,
+        minuteSecondPadding: minuteSecondPadding,
+        dmsSecondDecimals: 0,
+      ),
+    );
   }
 
   @override

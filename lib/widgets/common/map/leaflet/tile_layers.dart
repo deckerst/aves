@@ -87,7 +87,7 @@ class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
         _openMapTileProviderSource: {
           'url': _americanaTileProviderUri,
           'type': 'vector',
-        }
+        },
       },
     ).then(TileProviders.new);
 

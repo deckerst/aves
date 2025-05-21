@@ -21,24 +21,28 @@ mixin PermissionAwareMixin {
       final inaccessibleDirs = await storageService.getInaccessibleDirectories(storageDirs);
 
       final restrictedInaccessibleDirsLowerCase = inaccessibleDirs
-          .map((dir) => dir.copyWith(
-                relativeDir: dir.relativeDir.toLowerCase(),
-              ))
+          .map(
+            (dir) => dir.copyWith(
+              relativeDir: dir.relativeDir.toLowerCase(),
+            ),
+          )
           .where(restrictedDirsLowerCase.contains)
           .toSet();
       if (restrictedInaccessibleDirsLowerCase.isNotEmpty) {
         if (entries != null && await storageService.canRequestMediaFileBulkAccess()) {
           // request media file access for items in restricted directories
           final uris = <String>[], mimeTypes = <String>[];
-          entries.where((entry) {
-            final dirPath = entry.directory;
-            if (dirPath == null) return false;
-            final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
-            return restrictedInaccessibleDirsLowerCase.contains(dir?.copyWith(relativeDir: dir.relativeDir.toLowerCase()));
-          }).forEach((entry) {
-            uris.add(entry.uri);
-            mimeTypes.add(entry.mimeType);
-          });
+          entries
+              .where((entry) {
+                final dirPath = entry.directory;
+                if (dirPath == null) return false;
+                final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
+                return restrictedInaccessibleDirsLowerCase.contains(dir?.copyWith(relativeDir: dir.relativeDir.toLowerCase()));
+              })
+              .forEach((entry) {
+                uris.add(entry.uri);
+                mimeTypes.add(entry.mimeType);
+              });
           final granted = await storageService.requestMediaFileAccess(uris, mimeTypes);
           if (!granted) return false;
         } else if (entries == null && await storageService.canInsertMedia(restrictedInaccessibleDirsLowerCase)) {

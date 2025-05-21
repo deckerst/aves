@@ -62,9 +62,9 @@ class _CrumbLineState<T> extends State<CrumbLine<T>> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       itemBuilder: (context, index) {
         Widget _buildText(String text) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(text),
-            );
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Text(text),
+        );
 
         if (index >= parts.length) return const SizedBox();
         final text = parts[index];

@@ -83,11 +83,13 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
         child: AvesFloatingBar(
           builder: (context, backgroundColor, child) => BottomNavigationBar(
             items: items
-                .map((item) => BottomNavigationBarItem(
-                      icon: item.icon(context),
-                      label: item.label(context),
-                      tooltip: item.label(context),
-                    ))
+                .map(
+                  (item) => BottomNavigationBarItem(
+                    icon: item.icon(context),
+                    label: item.label(context),
+                    tooltip: item.label(context),
+                  ),
+                )
                 .toList(),
             onTap: (index) => _goTo(context, items, index),
             currentIndex: _getCurrentIndex(context, items),

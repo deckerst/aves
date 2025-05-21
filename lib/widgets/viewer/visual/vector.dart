@@ -238,14 +238,16 @@ class _VectorImageViewState extends State<VectorImageView> {
           );
           if (rects != null) {
             final (tileRect, regionRect) = rects;
-            tiles.add(_RegionTile(
-              entry: entry,
-              tileRect: tileRect,
-              regionRect: regionRect,
-              scale: svgScale,
-              backgroundColor: backgroundColor,
-              backgroundFrameBuilder: backgroundFrameBuilder,
-            ));
+            tiles.add(
+              _RegionTile(
+                entry: entry,
+                tileRect: tileRect,
+                regionRect: regionRect,
+                scale: svgScale,
+                backgroundColor: backgroundColor,
+                backgroundFrameBuilder: backgroundFrameBuilder,
+              ),
+            );
           }
         }
       }
@@ -289,8 +291,7 @@ class _VectorImageViewState extends State<VectorImageView> {
   double _imageScaleForViewScale({
     required double scale,
     required double devicePixelRatio,
-  }) =>
-      smallestPowerOf2(scale * devicePixelRatio, allowNegativePower: true).toDouble();
+  }) => smallestPowerOf2(scale * devicePixelRatio, allowNegativePower: true).toDouble();
 }
 
 typedef _BackgroundFrameBuilder = Widget Function(Widget child, int? frame, Rect tileRect);

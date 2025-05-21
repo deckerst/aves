@@ -60,16 +60,18 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
       catalogMetadata.forEach((metadata) => entries.firstWhereOrNull((entry) => entry.id == metadata.id)?.catalogMetadata = metadata);
       entries.sort(AvesEntrySort.compareByDate);
 
-      suggestions.addAll(entries.map((entry) {
-        final date = entry.bestDate;
-        return {
-          'data': entry.uri,
-          'mimeType': entry.mimeType,
-          'title': entry.bestTitle,
-          'subtitle': date != null ? formatDateTime(date, locale, use24hour) : null,
-          'iconUri': entry.uri,
-        };
-      }));
+      suggestions.addAll(
+        entries.map((entry) {
+          final date = entry.bestDate;
+          return {
+            'data': entry.uri,
+            'mimeType': entry.mimeType,
+            'title': entry.bestTitle,
+            'subtitle': date != null ? formatDateTime(date, locale, use24hour) : null,
+            'iconUri': entry.uri,
+          };
+        }),
+      );
     }
   }
   return suggestions;

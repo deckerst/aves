@@ -27,7 +27,8 @@ class DatabasePlaybackStateHandler extends PlaybackStateHandler {
       case VideoResumptionMode.never:
         return 0;
       case VideoResumptionMode.ask:
-        final resume = await showDialog<bool>(
+        final resume =
+            await showDialog<bool>(
               context: context,
               builder: (context) => AvesDialog(
                 content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
@@ -58,7 +59,7 @@ class DatabasePlaybackStateHandler extends PlaybackStateHandler {
         VideoPlaybackRow(
           entryId: entryId,
           resumeTimeMillis: position,
-        )
+        ),
       });
     } else {
       await localMediaDb.removeVideoPlayback({entryId});

@@ -10,8 +10,7 @@ class DirectPageTransitionsTheme extends PageTransitionsTheme {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) =>
-      child;
+  ) => child;
 }
 
 class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
@@ -19,9 +18,9 @@ class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
     super.settings,
     required WidgetBuilder builder,
   }) : super(
-          transitionDuration: Duration.zero,
-          pageBuilder: (context, a, sa) => builder(context),
-        );
+         transitionDuration: Duration.zero,
+         pageBuilder: (context, a, sa) => builder(context),
+       );
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {

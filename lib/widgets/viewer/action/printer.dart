@@ -26,14 +26,16 @@ class EntryPrinter with FeedbackMixin {
 
     final imageWidgets = await _buildImageWidgets(context);
     if (imageWidgets.isNotEmpty) {
-      unawaited(Printing.layoutPdf(
-        onLayout: (pageFormat) {
-          final doc = pdf.Document(title: documentName);
-          imageWidgets.map((v) => _buildPdfPage(v, pageFormat)).forEach(doc.addPage);
-          return doc.save();
-        },
-        name: documentName,
-      ));
+      unawaited(
+        Printing.layoutPdf(
+          onLayout: (pageFormat) {
+            final doc = pdf.Document(title: documentName);
+            imageWidgets.map((v) => _buildPdfPage(v, pageFormat)).forEach(doc.addPage);
+            return doc.save();
+          },
+          name: documentName,
+        ),
+      );
     }
   }
 
@@ -74,11 +76,13 @@ class EntryPrinter with FeedbackMixin {
         final pageCount = multiPageInfo.pageCount;
         if (pageCount > 1) {
           final streamController = StreamController<AvesEntry>.broadcast();
-          unawaited(showOpReport<AvesEntry>(
-            context: context,
-            opStream: streamController.stream,
-            itemCount: pageCount,
-          ));
+          unawaited(
+            showOpReport<AvesEntry>(
+              context: context,
+              opStream: streamController.stream,
+              itemCount: pageCount,
+            ),
+          );
           for (var page = 0; page < pageCount; page++) {
             final pageEntry = multiPageInfo.getPageEntryByIndex(page);
             final widget = await _buildPageImage(pageEntry);

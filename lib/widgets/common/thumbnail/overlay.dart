@@ -66,10 +66,12 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
     return Sweeper(
       builder: (context) => Container(
         decoration: BoxDecoration(
-          border: Border.fromBorderSide(BorderSide(
-            color: Theme.of(context).colorScheme.primary,
-            width: context.select<GridThemeData, double>((t) => t.highlightBorderWidth),
-          )),
+          border: Border.fromBorderSide(
+            BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: context.select<GridThemeData, double>((t) => t.highlightBorderWidth),
+            ),
+          ),
         ),
       ),
       toggledNotifier: _highlightedNotifier,

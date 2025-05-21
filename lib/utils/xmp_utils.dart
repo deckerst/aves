@@ -142,9 +142,13 @@ class XMP {
 
       final builder = XmlBuilder();
       builder.namespace(namespace, prefixOf(namespace));
-      builder.element(name, namespace: namespace, nest: () {
-        builder.text(value);
-      });
+      builder.element(
+        name,
+        namespace: namespace,
+        nest: () {
+          builder.text(value);
+        },
+      );
       node.children.add(builder.buildFragment());
     }
   }
@@ -175,11 +179,15 @@ class XMP {
 
       final bagBuilder = XmlBuilder();
       bagBuilder.namespace(nsRdf, prefixOf(nsRdf));
-      bagBuilder.element('Bag', namespace: nsRdf, nest: () {
-        values.forEach((v) {
-          bagBuilder.element('li', namespace: nsRdf, nest: v);
-        });
-      });
+      bagBuilder.element(
+        'Bag',
+        namespace: nsRdf,
+        nest: () {
+          values.forEach((v) {
+            bagBuilder.element('li', namespace: nsRdf, nest: v);
+          });
+        },
+      );
       node.children.last.children.add(bagBuilder.buildFragment());
       modified = true;
     }
@@ -200,11 +208,16 @@ class XMP {
     if (xmpDoc == null) {
       final builder = XmlBuilder();
       builder.namespace(nsX, prefixOf(nsX));
-      builder.element(XmpElements.xXmpmeta, namespace: nsX, namespaces: {
-        nsX: prefixOf(nsX),
-      }, attributes: {
-        '${prefixOf(nsX)}$propNamespaceSeparator${XmpAttributes.xXmptk}': toolkit,
-      });
+      builder.element(
+        XmpElements.xXmpmeta,
+        namespace: nsX,
+        namespaces: {
+          nsX: prefixOf(nsX),
+        },
+        attributes: {
+          '${prefixOf(nsX)}$propNamespaceSeparator${XmpAttributes.xXmptk}': toolkit,
+        },
+      );
       xmpDoc = builder.buildDocument();
     }
 
@@ -213,9 +226,13 @@ class XMP {
     if (rdf == null) {
       final builder = XmlBuilder();
       builder.namespace(nsRdf, prefixOf(nsRdf));
-      builder.element(XmpElements.rdfRoot, namespace: nsRdf, namespaces: {
-        nsRdf: prefixOf(nsRdf),
-      });
+      builder.element(
+        XmpElements.rdfRoot,
+        namespace: nsRdf,
+        namespaces: {
+          nsRdf: prefixOf(nsRdf),
+        },
+      );
       // get element because doc fragment cannot be used to edit
       root.children.add(builder.buildFragment());
       rdf = root.getElement(XmpElements.rdfRoot, namespace: nsRdf)!;
@@ -229,9 +246,13 @@ class XMP {
     if (descriptions.isEmpty) {
       final builder = XmlBuilder();
       builder.namespace(nsRdf, prefixOf(nsRdf));
-      builder.element(XmpElements.rdfDescription, namespace: nsRdf, attributes: {
-        '${prefixOf(nsRdf)}$propNamespaceSeparator${XmpAttributes.rdfAbout}': '',
-      });
+      builder.element(
+        XmpElements.rdfDescription,
+        namespace: nsRdf,
+        attributes: {
+          '${prefixOf(nsRdf)}$propNamespaceSeparator${XmpAttributes.rdfAbout}': '',
+        },
+      );
       rdf.children.add(builder.buildFragment());
       // get element because doc fragment cannot be used to edit
       descriptions.add(rdf.getElement(XmpElements.rdfDescription, namespace: nsRdf)!);

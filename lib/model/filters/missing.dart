@@ -44,10 +44,10 @@ class MissingFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'metadataType': metadataType,
-        'reversed': reversed,
-      };
+    'type': type,
+    'metadataType': metadataType,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

@@ -22,8 +22,8 @@ class FixedExtentScaleOverlay extends StatelessWidget {
     required this.scaledSizeNotifier,
     required this.gridBuilder,
     required this.builder,
-  })  : xMin = contentRect.left,
-        xMax = contentRect.right;
+  }) : xMin = contentRect.left,
+       xMax = contentRect.right;
 
   @override
   Widget build(BuildContext context) {

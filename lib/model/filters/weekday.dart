@@ -26,10 +26,10 @@ class WeekDayFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'weekday': weekday,
-        'reversed': reversed,
-      };
+    'type': type,
+    'weekday': weekday,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

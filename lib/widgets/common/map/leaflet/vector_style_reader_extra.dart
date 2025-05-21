@@ -45,11 +45,21 @@ extension ExtraStyleReader on StyleReader {
           logger.log(() => 'error reading sprite uri: ${spriteUri.json}');
           continue;
         }
-        sprites = SpriteStyle(atlasProvider: () => _loadBinary(spriteUri.image), index: SpriteIndexReader(logger: logger).read(spritesJson));
+        sprites = SpriteStyle(
+          atlasProvider: () => _loadBinary(spriteUri.image),
+          index: SpriteIndexReader(logger: logger).read(spritesJson),
+        );
         break;
       }
     }
-    return Style(theme: ThemeReader(logger: logger).read(style), providers: TileProviders(providerByName), sprites: sprites, name: name, center: centerPoint, zoom: zoom);
+    return Style(
+      theme: ThemeReader(logger: logger).read(style),
+      providers: TileProviders(providerByName),
+      sprites: sprites,
+      name: name,
+      center: centerPoint,
+      zoom: zoom,
+    );
   }
 
   static Future<Map<String, VectorTileProvider>> readProviderByName(Map<String, dynamic> sources) async {

@@ -81,12 +81,14 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'longitude': longitude (double)
         // 'xmpSubjects': ';' separated XMP subjects (string)
         // 'xmpTitle': XMP title (string)
-        final result = await _platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
-          'mimeType': entry.mimeType,
-          'uri': entry.uri,
-          'path': entry.path,
-          'sizeBytes': entry.sizeBytes,
-        }) as Map;
+        final result =
+            await _platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
+                  'mimeType': entry.mimeType,
+                  'uri': entry.uri,
+                  'path': entry.path,
+                  'sizeBytes': entry.sizeBytes,
+                })
+                as Map;
         result['id'] = entry.id;
         AvesEntry.normalizeMimeTypeFields(result);
         return CatalogMetadata.fromMap(result);
@@ -116,12 +118,14 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'exposureTime' (string),
         // 'focalLength' (double),
         // 'iso' (int),
-        final result = await _platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
-          'mimeType': entry.mimeType,
-          'uri': entry.uri,
-          'sizeBytes': entry.sizeBytes,
-          'fields': fields.map((v) => v.toPlatform).toList(),
-        }) as Map;
+        final result =
+            await _platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
+                  'mimeType': entry.mimeType,
+                  'uri': entry.uri,
+                  'sizeBytes': entry.sizeBytes,
+                  'fields': fields.map((v) => v.toPlatform).toList(),
+                })
+                as Map;
         return OverlayMetadata.fromMap(result);
       } on PlatformException catch (e, stack) {
         if (entry.isValid) {
@@ -135,11 +139,13 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry) async {
     try {
-      final result = await _platform.invokeMethod('getGeoTiffInfo', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-      }) as Map;
+      final result =
+          await _platform.invokeMethod('getGeoTiffInfo', <String, dynamic>{
+                'mimeType': entry.mimeType,
+                'uri': entry.uri,
+                'sizeBytes': entry.sizeBytes,
+              })
+              as Map;
       return GeoTiffInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
       if (entry.isValid) {
@@ -181,11 +187,13 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       // returns map with values for:
       // 'croppedAreaLeft' (int), 'croppedAreaTop' (int), 'croppedAreaWidth' (int), 'croppedAreaHeight' (int),
       // 'fullPanoWidth' (int), 'fullPanoHeight' (int)
-      final result = await _platform.invokeMethod('getPanoramaInfo', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-      }) as Map;
+      final result =
+          await _platform.invokeMethod('getPanoramaInfo', <String, dynamic>{
+                'mimeType': entry.mimeType,
+                'uri': entry.uri,
+                'sizeBytes': entry.sizeBytes,
+              })
+              as Map;
       return PanoramaInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
       if (entry.isValid) {

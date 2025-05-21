@@ -45,26 +45,25 @@ class _DebugOSCodecSectionState extends State<DebugOSCodecSection> with Automati
               if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
               final codecs = snapshot.data!.map((codec) {
                 return codec.map((k, v) => MapEntry(k.toString(), v.toString()));
-              }).toList()
-                ..sort((a, b) => compareAsciiUpperCase(a['supportedTypes'] ?? '', b['supportedTypes'] ?? ''));
+              }).toList()..sort((a, b) => compareAsciiUpperCase(a['supportedTypes'] ?? '', b['supportedTypes'] ?? ''));
               final byEncoder = groupBy<Map<String, String>, bool>(codecs, (v) => v['isEncoder'] == 'true');
               final decoders = byEncoder[false] ?? [];
               final encoders = byEncoder[true] ?? [];
               Widget _toCodecColumn(List<Map<String, String>> codecs) => ValueListenableBuilder<String>(
-                    valueListenable: _queryNotifier,
-                    builder: (context, query, child) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: codecs.expand((v) {
-                        final types = v['supportedTypes'];
-                        return (query.isEmpty || types == null || types.contains(query))
-                            ? [
-                                InfoRowGroup(info: Map.fromEntries(v.entries.where((kv) => kv.key != 'isEncoder'))),
-                                const Divider(),
-                              ]
-                            : <Widget>[];
-                      }).toList(),
-                    ),
-                  );
+                valueListenable: _queryNotifier,
+                builder: (context, query, child) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: codecs.expand((v) {
+                    final types = v['supportedTypes'];
+                    return (query.isEmpty || types == null || types.contains(query))
+                        ? [
+                            InfoRowGroup(info: Map.fromEntries(v.entries.where((kv) => kv.key != 'isEncoder'))),
+                            const Divider(),
+                          ]
+                        : <Widget>[];
+                  }).toList(),
+                ),
+              );
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

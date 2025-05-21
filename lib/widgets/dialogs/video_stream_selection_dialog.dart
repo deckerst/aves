@@ -157,8 +157,8 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
   }
 
   void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop({
-        MediaStreamType.video: _currentVideo,
-        MediaStreamType.audio: _currentAudio,
-        MediaStreamType.text: _currentText,
-      });
+    MediaStreamType.video: _currentVideo,
+    MediaStreamType.audio: _currentAudio,
+    MediaStreamType.text: _currentText,
+  });
 }

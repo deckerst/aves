@@ -109,10 +109,12 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
         );
         if (toExport == null || toExport.isEmpty) return;
 
-        final allMap = Map.fromEntries(toExport.map((v) {
-          final jsonMap = v.export(source);
-          return jsonMap != null ? MapEntry(v.name, jsonMap) : null;
-        }).nonNulls);
+        final allMap = Map.fromEntries(
+          toExport.map((v) {
+            final jsonMap = v.export(source);
+            return jsonMap != null ? MapEntry(v.name, jsonMap) : null;
+          }).nonNulls,
+        );
         allMap[exportVersionKey] = exportVersion;
         final allJsonString = jsonEncode(allMap);
 

@@ -26,9 +26,9 @@ class VideoSection extends SettingsSection {
 
   @override
   Widget icon(BuildContext context) => SettingsTileLeading(
-        icon: AIcons.video,
-        color: context.select<AvesColorsData, Color>((v) => v.video),
-      );
+    icon: AIcons.video,
+    color: context.select<AvesColorsData, Color>((v) => v.video),
+  );
 
   @override
   String title(BuildContext context) => context.l10n.settingsVideoSectionTitle;
@@ -50,10 +50,10 @@ class SettingsTileVideoShowVideos extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => !s.hiddenFilters.contains(MimeFilter.video),
-        onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
-        title: title(context),
-      );
+    selector: (context, s) => !s.hiddenFilters.contains(MimeFilter.video),
+    onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
+    title: title(context),
+  );
 }
 
 class SettingsTileVideoPlayback extends SettingsTile {
@@ -62,10 +62,10 @@ class SettingsTileVideoPlayback extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: VideoPlaybackPage.routeName,
-        builder: (context) => const VideoPlaybackPage(),
-      );
+    title: title(context),
+    routeName: VideoPlaybackPage.routeName,
+    builder: (context) => const VideoPlaybackPage(),
+  );
 }
 
 class SettingsTileVideoControls extends SettingsTile {
@@ -74,10 +74,10 @@ class SettingsTileVideoControls extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: VideoControlsPage.routeName,
-        builder: (context) => const VideoControlsPage(),
-      );
+    title: title(context),
+    routeName: VideoControlsPage.routeName,
+    builder: (context) => const VideoControlsPage(),
+  );
 }
 
 class SettingsTileVideoSubtitleTheme extends SettingsTile {
@@ -86,8 +86,8 @@ class SettingsTileVideoSubtitleTheme extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-        title: title(context),
-        routeName: SubtitleThemePage.routeName,
-        builder: (context) => const SubtitleThemePage(),
-      );
+    title: title(context),
+    routeName: SubtitleThemePage.routeName,
+    builder: (context) => const SubtitleThemePage(),
+  );
 }

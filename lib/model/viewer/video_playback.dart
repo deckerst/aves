@@ -21,7 +21,7 @@ class VideoPlaybackRow extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': entryId,
-        'resumeTimeMillis': resumeTimeMillis,
-      };
+    'id': entryId,
+    'resumeTimeMillis': resumeTimeMillis,
+  };
 }

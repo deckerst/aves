@@ -134,13 +134,13 @@ class SettingsTileThumbnailLocationIcon extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<ThumbnailOverlayLocationIcon>(
-        values: ThumbnailOverlayLocationIcon.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.thumbnailLocationIcon,
-        onSelection: (v) => settings.thumbnailLocationIcon = v,
-        tileTitle: title(context),
-        trailingBuilder: _buildTrailing,
-      );
+    values: ThumbnailOverlayLocationIcon.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.thumbnailLocationIcon,
+    onSelection: (v) => settings.thumbnailLocationIcon = v,
+    tileTitle: title(context),
+    trailingBuilder: _buildTrailing,
+  );
 
   Widget _buildTrailing(BuildContext context) {
     final iconType = context.select<Settings, ThumbnailOverlayLocationIcon>((v) => v.thumbnailLocationIcon);
@@ -159,13 +159,13 @@ class SettingsTileThumbnailTagIcon extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<ThumbnailOverlayTagIcon>(
-        values: ThumbnailOverlayTagIcon.values,
-        getName: (context, v) => v.getName(context),
-        selector: (context, s) => s.thumbnailTagIcon,
-        onSelection: (v) => settings.thumbnailTagIcon = v,
-        tileTitle: title(context),
-        trailingBuilder: _buildTrailing,
-      );
+    values: ThumbnailOverlayTagIcon.values,
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.thumbnailTagIcon,
+    onSelection: (v) => settings.thumbnailTagIcon = v,
+    tileTitle: title(context),
+    trailingBuilder: _buildTrailing,
+  );
 
   Widget _buildTrailing(BuildContext context) {
     final iconType = context.select<Settings, ThumbnailOverlayTagIcon>((v) => v.thumbnailTagIcon);

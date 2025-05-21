@@ -102,10 +102,12 @@ class MetadataDirTileBody extends StatelessWidget {
         case MetadataDirectory.coverDirectory:
           linkHandlers = getVideoCoverLinkHandlers(tags);
         case MetadataDirectory.geoTiffDirectory:
-          tags = SplayTreeMap.from(tags.map((name, value) {
-            final tag = GeoTiffDirectory.tagForName(name);
-            return MapEntry(name, GeoTiffDirectory.formatValue(tag, value));
-          }));
+          tags = SplayTreeMap.from(
+            tags.map((name, value) {
+              final tag = GeoTiffDirectory.tagForName(name);
+              return MapEntry(name, GeoTiffDirectory.formatValue(tag, value));
+            }),
+          );
       }
 
       children = [

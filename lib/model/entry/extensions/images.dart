@@ -31,33 +31,35 @@ extension ExtraAvesEntryImages on AvesEntry {
   }
 
   RegionProvider getRegion({int sampleSize = 1, double scale = 1, required Rectangle<num> region}) {
-    return RegionProvider(RegionProviderKey(
-      uri: uri,
-      mimeType: mimeType,
-      pageId: pageId,
-      sizeBytes: sizeBytes,
-      rotationDegrees: rotationDegrees,
-      isFlipped: isFlipped,
-      sampleSize: sampleSize,
-      region: Rectangle(
-        (region.left * scale).round(),
-        (region.top * scale).round(),
-        (region.width * scale).round(),
-        (region.height * scale).round(),
-      ),
-      imageSize: Size((width * scale).toDouble(), (height * scale).toDouble()),
-    ));
-  }
-
-  FullImage get fullImage => FullImage(
+    return RegionProvider(
+      RegionProviderKey(
         uri: uri,
         mimeType: mimeType,
         pageId: pageId,
+        sizeBytes: sizeBytes,
         rotationDegrees: rotationDegrees,
         isFlipped: isFlipped,
-        isAnimated: isAnimated,
-        sizeBytes: sizeBytes,
-      );
+        sampleSize: sampleSize,
+        region: Rectangle(
+          (region.left * scale).round(),
+          (region.top * scale).round(),
+          (region.width * scale).round(),
+          (region.height * scale).round(),
+        ),
+        imageSize: Size((width * scale).toDouble(), (height * scale).toDouble()),
+      ),
+    );
+  }
+
+  FullImage get fullImage => FullImage(
+    uri: uri,
+    mimeType: mimeType,
+    pageId: pageId,
+    rotationDegrees: rotationDegrees,
+    isFlipped: isFlipped,
+    isAnimated: isAnimated,
+    sizeBytes: sizeBytes,
+  );
 
   bool _isReady(Object providerKey) => imageCache.statusForKey(providerKey).keepAlive;
 

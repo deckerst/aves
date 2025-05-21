@@ -59,7 +59,7 @@ class LiveAvesAvailability implements AvesAvailability {
 
   @override
   List<EntryMapStyle> get mapStyles => [
-        ...mobileServices.mapStyles,
-        ...EntryMapStyle.values.where((v) => !v.needMobileService),
-      ];
+    ...mobileServices.mapStyles,
+    ...EntryMapStyle.values.where((v) => !v.needMobileService),
+  ];
 }

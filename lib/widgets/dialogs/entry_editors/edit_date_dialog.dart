@@ -82,59 +82,61 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         data: TooltipTheme.of(context).copyWith(
           preferBelow: false,
         ),
-        child: Builder(builder: (context) {
-          final l10n = context.l10n;
+        child: Builder(
+          builder: (context) {
+            final l10n = context.l10n;
 
-          return AvesDialog(
-            title: l10n.editEntryDateDialogTitle,
-            scrollableContent: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
-                child: TextDropdownButton<DateEditAction>(
-                  values: DateEditAction.values,
-                  valueText: (v) => v.getText(context),
-                  value: _action,
-                  onChanged: (v) {
-                    _action = v!;
-                    _validate();
-                    setState(() {});
+            return AvesDialog(
+              title: l10n.editEntryDateDialogTitle,
+              scrollableContent: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                  child: TextDropdownButton<DateEditAction>(
+                    values: DateEditAction.values,
+                    valueText: (v) => v.getText(context),
+                    value: _action,
+                    onChanged: (v) {
+                      _action = v!;
+                      _validate();
+                      setState(() {});
+                    },
+                    isExpanded: true,
+                    dropdownColor: Themes.thirdLayerColor(context),
+                  ),
+                ),
+                AnimatedSwitcher(
+                  duration: context.read<DurationsData>().formTransition,
+                  switchInCurve: Curves.easeInOutCubic,
+                  switchOutCurve: Curves.easeInOutCubic,
+                  transitionBuilder: AvesTransitions.formTransitionBuilder,
+                  child: Column(
+                    key: ValueKey(_action),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
+                      if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
+                      if (_action == DateEditAction.copyItem) _buildCopyItemContent(context),
+                      if (_action == DateEditAction.shift) _buildShiftContent(context),
+                      (_action == DateEditAction.shift || _action == DateEditAction.remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
+                    ],
+                  ),
+                ),
+              ],
+              actions: [
+                const CancelButton(),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isValidNotifier,
+                  builder: (context, isValid, child) {
+                    return TextButton(
+                      onPressed: isValid ? () => _submit(context) : null,
+                      child: Text(l10n.applyButtonLabel),
+                    );
                   },
-                  isExpanded: true,
-                  dropdownColor: Themes.thirdLayerColor(context),
                 ),
-              ),
-              AnimatedSwitcher(
-                duration: context.read<DurationsData>().formTransition,
-                switchInCurve: Curves.easeInOutCubic,
-                switchOutCurve: Curves.easeInOutCubic,
-                transitionBuilder: AvesTransitions.formTransitionBuilder,
-                child: Column(
-                  key: ValueKey(_action),
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
-                    if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
-                    if (_action == DateEditAction.copyItem) _buildCopyItemContent(context),
-                    if (_action == DateEditAction.shift) _buildShiftContent(context),
-                    (_action == DateEditAction.shift || _action == DateEditAction.remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
-                  ],
-                ),
-              ),
-            ],
-            actions: [
-              const CancelButton(),
-              ValueListenableBuilder<bool>(
-                valueListenable: _isValidNotifier,
-                builder: (context, isValid, child) {
-                  return TextButton(
-                    onPressed: isValid ? () => _submit(context) : null,
-                    child: Text(l10n.applyButtonLabel),
-                  );
-                },
-              ),
-            ],
-          );
-        }),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -212,15 +214,17 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
             ),
             body: Column(
               children: DateModifier.writableFields
-                  .map((field) => SwitchListTile(
-                        value: _fields.contains(field),
-                        onChanged: (selected) {
-                          selected ? _fields.add(field) : _fields.remove(field);
-                          _validate();
-                          setState(() {});
-                        },
-                        title: Text(field.title),
-                      ))
+                  .map(
+                    (field) => SwitchListTile(
+                      value: _fields.contains(field),
+                      onChanged: (selected) {
+                        selected ? _fields.add(field) : _fields.remove(field);
+                        _validate();
+                        setState(() {});
+                      },
+                      title: Text(field.title),
+                    ),
+                  )
                   .toList(),
             ),
             isExpanded: _showOptions,
@@ -250,13 +254,15 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     );
     if (_time == null) return;
 
-    setState(() => _customDateTime = DateTime(
-          _date.year,
-          _date.month,
-          _date.day,
-          _time.hour,
-          _time.minute,
-        ));
+    setState(
+      () => _customDateTime = DateTime(
+        _date.year,
+        _date.month,
+        _date.day,
+        _time.hour,
+        _time.minute,
+      ),
+    );
   }
 
   CollectionLens? _createPickCollection() {

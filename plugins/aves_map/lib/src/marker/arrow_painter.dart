@@ -22,21 +22,23 @@ class MarkerArrowPainter extends CustomPainter {
     final topRight = bottomCenter + Offset(triangleWidth / 2, -triangleHeight);
 
     canvas.drawPath(
-        Path()
-          ..moveTo(bottomCenter.dx, bottomCenter.dy)
-          ..lineTo(topRight.dx, topRight.dy)
-          ..lineTo(topLeft.dx, topLeft.dy)
-          ..close(),
-        Paint()..color = outlineColor);
+      Path()
+        ..moveTo(bottomCenter.dx, bottomCenter.dy)
+        ..lineTo(topRight.dx, topRight.dy)
+        ..lineTo(topLeft.dx, topLeft.dy)
+        ..close(),
+      Paint()..color = outlineColor,
+    );
 
     canvas.translate(0, -outlineWidth.ceilToDouble());
     canvas.drawPath(
-        Path()
-          ..moveTo(bottomCenter.dx, bottomCenter.dy)
-          ..lineTo(topRight.dx, topRight.dy)
-          ..lineTo(topLeft.dx, topLeft.dy)
-          ..close(),
-        Paint()..color = color);
+      Path()
+        ..moveTo(bottomCenter.dx, bottomCenter.dy)
+        ..lineTo(topRight.dx, topRight.dy)
+        ..lineTo(topLeft.dx, topLeft.dy)
+        ..close(),
+      Paint()..color = color,
+    );
   }
 
   @override

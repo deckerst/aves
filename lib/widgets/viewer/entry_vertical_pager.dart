@@ -112,12 +112,16 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _registerWidget(ViewerVerticalPageView widget) {
-    _subscriptions.add(widget.viewerController.showNextCommands.listen((event) {
-      _goToHorizontalPage(1, animate: true);
-    }));
-    _subscriptions.add(widget.viewerController.overlayCommands.listen((event) {
-      ToggleOverlayNotification(visible: event.visible).dispatch(context);
-    }));
+    _subscriptions.add(
+      widget.viewerController.showNextCommands.listen((event) {
+        _goToHorizontalPage(1, animate: true);
+      }),
+    );
+    _subscriptions.add(
+      widget.viewerController.overlayCommands.listen((event) {
+        ToggleOverlayNotification(visible: event.visible).dispatch(context);
+      }),
+    );
     widget.verticalPager.addListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.addListener(_onEntryChanged);
     if (_oldEntry != entry) _onEntryChanged();
@@ -259,25 +263,27 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           TvShowMoreInfoIntent: CallbackAction<Intent>(onInvoke: (intent) => TvShowMoreInfoNotification().dispatch(context)),
           PlayPauseIntent: CallbackAction<PlayPauseIntent>(onInvoke: _onPlayPauseIntent),
           EntryActionIntent: CallbackAction<EntryActionIntent>(onInvoke: (intent) => _onEntryActionIntent(intent.action)),
-          ActivateIntent: CallbackAction<Intent>(onInvoke: (intent) {
-            if (useTvLayout) {
-              final _entry = entry;
-              if (_entry != null && _entry.isVideo) {
-                // address `TV-PC` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
-                final controller = context.read<VideoConductor>().getController(_entry);
-                if (controller != null) {
-                  VideoActionNotification(
-                    controller: controller,
-                    entry: _entry,
-                    action: EntryAction.videoTogglePlay,
-                  ).dispatch(context);
+          ActivateIntent: CallbackAction<Intent>(
+            onInvoke: (intent) {
+              if (useTvLayout) {
+                final _entry = entry;
+                if (_entry != null && _entry.isVideo) {
+                  // address `TV-PC` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
+                  final controller = context.read<VideoConductor>().getController(_entry);
+                  if (controller != null) {
+                    VideoActionNotification(
+                      controller: controller,
+                      entry: _entry,
+                      action: EntryAction.videoTogglePlay,
+                    ).dispatch(context);
+                  }
+                } else {
+                  const ToggleOverlayNotification().dispatch(context);
                 }
-              } else {
-                const ToggleOverlayNotification().dispatch(context);
               }
-            }
-            return null;
-          }),
+              return null;
+            },
+          ),
         },
         onFocusChange: (focused) => _isImageFocusedNotifier.value = focused,
         child: child,

@@ -270,11 +270,13 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                 final allAvailableActions = widget.allAvailableActions;
                 final maxWidth = constraints.maxWidth;
                 final maxHeight = allAvailableActions
-                    .map((page) => AvailableActionPanel.heightFor(
-                          context,
-                          page.map((v) => widget.actionText(context, v)).toList(),
-                          maxWidth,
-                        ))
+                    .map(
+                      (page) => AvailableActionPanel.heightFor(
+                        context,
+                        page.map((v) => widget.actionText(context, v)).toList(),
+                        maxWidth,
+                      ),
+                    )
                     .max;
                 return Column(
                   children: [
@@ -297,17 +299,19 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                       child: PageView(
                         controller: _availableActionPageController,
                         children: allAvailableActions
-                            .map((allActions) => AvailableActionPanel<T>(
-                                  allActions: allActions,
-                                  quickActions: _quickActions,
-                                  quickActionsChangeNotifier: _quickActionsChangeNotifier,
-                                  panelHighlight: _availableActionHighlight,
-                                  draggedQuickAction: _draggedQuickAction,
-                                  draggedAvailableAction: _draggedAvailableAction,
-                                  removeQuickAction: _removeQuickAction,
-                                  actionIcon: widget.actionIcon,
-                                  actionText: widget.actionText,
-                                ))
+                            .map(
+                              (allActions) => AvailableActionPanel<T>(
+                                allActions: allActions,
+                                quickActions: _quickActions,
+                                quickActionsChangeNotifier: _quickActionsChangeNotifier,
+                                panelHighlight: _availableActionHighlight,
+                                draggedQuickAction: _draggedQuickAction,
+                                draggedAvailableAction: _draggedAvailableAction,
+                                removeQuickAction: _removeQuickAction,
+                                actionIcon: widget.actionIcon,
+                                actionText: widget.actionText,
+                              ),
+                            )
                             .toList(),
                       ),
                     ),

@@ -28,9 +28,9 @@ class FavouriteFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'reversed': reversed,
-      };
+    'type': type,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

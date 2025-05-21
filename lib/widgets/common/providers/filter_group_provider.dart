@@ -7,9 +7,9 @@ class FilterGroupProvider extends ListenableProvider<FilterGroupNotifier> {
     Uri? initialValue,
     super.child,
   }) : super(
-          create: (context) => FilterGroupNotifier(initialValue),
-          dispose: (context, value) => value.dispose(),
-        );
+         create: (context) => FilterGroupNotifier(initialValue),
+         dispose: (context, value) => value.dispose(),
+       );
 }
 
 class FilterGroupNotifier extends ValueNotifier<Uri?> {

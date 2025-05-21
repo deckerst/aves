@@ -74,18 +74,19 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
               Positioned.fill(
                 child: Center(
                   child: ValueListenableBuilder<bool>(
-                      valueListenable: _focusedNotifier,
-                      builder: (context, focused, child) {
-                        return AnimatedContainer(
-                          width: itemSize.width,
-                          height: itemSize.height,
-                          duration: transitionDuration,
-                          decoration: BoxDecoration(
-                            color: foreground.withValues(alpha: focused ? .2 : 0),
-                            borderRadius: const BorderRadius.all(Radius.circular(8)),
-                          ),
-                        );
-                      }),
+                    valueListenable: _focusedNotifier,
+                    builder: (context, focused, child) {
+                      return AnimatedContainer(
+                        width: itemSize.width,
+                        height: itemSize.height,
+                        duration: transitionDuration,
+                        decoration: BoxDecoration(
+                          color: foreground.withValues(alpha: focused ? .2 : 0),
+                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               SizedBox(
@@ -116,14 +117,16 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
                       squeeze: 1.3,
                       onSelectedItemChanged: (i) => valueNotifier.value = values[i],
                       children: values
-                          .map((i) => SizedBox.fromSize(
-                                size: itemSize,
-                                child: Text(
-                                  widget.format(i),
-                                  textAlign: widget.textAlign,
-                                  style: widget.textStyle,
-                                ),
-                              ))
+                          .map(
+                            (i) => SizedBox.fromSize(
+                              size: itemSize,
+                              child: Text(
+                                widget.format(i),
+                                textAlign: widget.textAlign,
+                                style: widget.textStyle,
+                              ),
+                            ),
+                          )
                           .toList(),
                     ),
                   ),

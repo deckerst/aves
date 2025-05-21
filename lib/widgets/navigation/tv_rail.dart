@@ -126,11 +126,13 @@ class _TvRailState extends State<TvRail> {
             child: NavigationRail(
               extended: extended,
               destinations: navEntries
-                  .map((v) => NavigationRailDestination(
-                        icon: v.icon,
-                        label: v.label,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                      ))
+                  .map(
+                    (v) => NavigationRailDestination(
+                      icon: v.icon,
+                      label: v.label,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  )
                   .toList(),
               selectedIndex: max(0, navEntries.indexWhere(((v) => v.isSelected))),
               onDestinationSelected: (index) {

@@ -94,11 +94,11 @@ class MessageConfirmationDialogDelegate extends ConfirmationDialogDelegate {
 
   @override
   List<Widget> build(BuildContext context) => [
-        Padding(
-          padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
-          child: Text(message),
-        ),
-      ];
+    Padding(
+      padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
+      child: Text(message),
+    ),
+  ];
 }
 
 class _SkippableConfirmationDialog extends StatefulWidget {

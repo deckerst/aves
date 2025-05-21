@@ -26,17 +26,9 @@ enum _ScaleState {
 }
 
 class _PointerPanZoomData {
-  _PointerPanZoomData.fromStartEvent(this.parent, PointerPanZoomStartEvent event)
-      : _position = event.position,
-        _pan = Offset.zero,
-        _scale = 1,
-        _rotation = 0;
+  _PointerPanZoomData.fromStartEvent(this.parent, PointerPanZoomStartEvent event) : _position = event.position, _pan = Offset.zero, _scale = 1, _rotation = 0;
 
-  _PointerPanZoomData.fromUpdateEvent(this.parent, PointerPanZoomUpdateEvent event)
-      : _position = event.position,
-        _pan = event.pan,
-        _scale = event.scale,
-        _rotation = event.rotation;
+  _PointerPanZoomData.fromUpdateEvent(this.parent, PointerPanZoomUpdateEvent event) : _position = event.position, _pan = event.pan, _scale = event.scale, _rotation = event.rotation;
 
   final EagerScaleGestureRecognizer parent;
   final Offset _position;
@@ -496,16 +488,18 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
       _scaleVelocityTracker?.addPosition(event.timeStamp, Offset(_scaleFactor, 0));
       if (onUpdate != null) {
         invokeCallback<void>('onUpdate', () {
-          onUpdate!(ScaleUpdateDetails(
-            scale: _scaleFactor,
-            horizontalScale: _horizontalScaleFactor,
-            verticalScale: _verticalScaleFactor,
-            focalPoint: _currentFocalPoint!,
-            localFocalPoint: _localFocalPoint,
-            rotation: _computeRotationFactor(),
-            pointerCount: pointerCount,
-            focalPointDelta: _delta,
-          ));
+          onUpdate!(
+            ScaleUpdateDetails(
+              scale: _scaleFactor,
+              horizontalScale: _horizontalScaleFactor,
+              verticalScale: _verticalScaleFactor,
+              focalPoint: _currentFocalPoint!,
+              localFocalPoint: _localFocalPoint,
+              rotation: _computeRotationFactor(),
+              pointerCount: pointerCount,
+              focalPointDelta: _delta,
+            ),
+          );
         });
       }
     }
@@ -515,11 +509,13 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     assert(_state == _ScaleState.started);
     if (onStart != null) {
       invokeCallback<void>('onStart', () {
-        onStart!(ScaleStartDetails(
-          focalPoint: _currentFocalPoint!,
-          localFocalPoint: _localFocalPoint,
-          pointerCount: pointerCount,
-        ));
+        onStart!(
+          ScaleStartDetails(
+            focalPoint: _currentFocalPoint!,
+            localFocalPoint: _localFocalPoint,
+            pointerCount: pointerCount,
+          ),
+        );
       });
     }
   }

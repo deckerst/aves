@@ -12,10 +12,9 @@ class MpvVideoControllerFactory extends AvesVideoControllerFactory {
     AvesEntryBase entry, {
     required PlaybackStateHandler playbackStateHandler,
     required VideoSettings settings,
-  }) =>
-      MpvVideoController(
-        entry,
-        playbackStateHandler: playbackStateHandler,
-        settings: settings,
-      );
+  }) => MpvVideoController(
+    entry,
+    playbackStateHandler: playbackStateHandler,
+    settings: settings,
+  );
 }

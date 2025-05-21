@@ -81,26 +81,27 @@ class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
         Padding(
           padding: contentHorizontalPadding + const EdgeInsets.only(bottom: 8),
           child: AnimatedBuilder(
-              animation: Listenable.merge([_albumExistsNotifier, _directoryExistsNotifier]),
-              builder: (context, child) {
-                var helperText = '';
-                if (_albumExistsNotifier.value) {
-                  helperText = l10n.newAlbumDialogAlbumAlreadyExistsHelper;
-                } else if (_directoryExistsNotifier.value) {
-                  helperText = l10n.newAlbumDialogNameLabelAlreadyExistsHelper;
-                }
-                return TextField(
-                  controller: _nameController,
-                  focusNode: _nameFieldFocusNode,
-                  decoration: InputDecoration(
-                    labelText: l10n.newAlbumDialogNameLabel,
-                    helperText: helperText,
-                  ),
-                  autofocus: _allVolumes.length == 1,
-                  onChanged: (_) => _validate(),
-                  onSubmitted: (_) => _submit(context),
-                );
-              }),
+            animation: Listenable.merge([_albumExistsNotifier, _directoryExistsNotifier]),
+            builder: (context, child) {
+              var helperText = '';
+              if (_albumExistsNotifier.value) {
+                helperText = l10n.newAlbumDialogAlbumAlreadyExistsHelper;
+              } else if (_directoryExistsNotifier.value) {
+                helperText = l10n.newAlbumDialogNameLabelAlreadyExistsHelper;
+              }
+              return TextField(
+                controller: _nameController,
+                focusNode: _nameFieldFocusNode,
+                decoration: InputDecoration(
+                  labelText: l10n.newAlbumDialogNameLabel,
+                  helperText: helperText,
+                ),
+                autofocus: _allVolumes.length == 1,
+                onChanged: (_) => _validate(),
+                onSubmitted: (_) => _submit(context),
+              );
+            },
+          ),
         ),
       ],
       actions: [
@@ -124,26 +125,26 @@ class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
   }
 
   Widget _buildVolumeTile(BuildContext context, StorageVolume volume) => RadioListTile<StorageVolume>(
-        value: volume,
-        groupValue: _selectedVolume,
-        onChanged: (volume) {
-          _selectedVolume = volume!;
-          _validate();
-          setState(() {});
-        },
-        title: Text(
-          volume.getDescription(context),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-        subtitle: Text(
-          volume.path,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-      );
+    value: volume,
+    groupValue: _selectedVolume,
+    onChanged: (volume) {
+      _selectedVolume = volume!;
+      _validate();
+      setState(() {});
+    },
+    title: Text(
+      volume.getDescription(context),
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+    ),
+    subtitle: Text(
+      volume.path,
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+    ),
+  );
 
   void _onFocus() async {
     // when the field gets focus, we wait for the soft keyboard to appear

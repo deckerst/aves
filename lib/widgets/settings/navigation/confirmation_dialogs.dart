@@ -17,35 +17,37 @@ class ConfirmationDialogPage extends StatelessWidget {
         title: Text(l10n.settingsConfirmationDialogTitle),
       ),
       body: SafeArea(
-        child: ListView(children: [
-          SettingsSwitchListTile(
-            selector: (context, s) => s.confirmMoveUndatedItems,
-            onChanged: (v) => settings.confirmMoveUndatedItems = v,
-            title: l10n.settingsConfirmationBeforeMoveUndatedItems,
-          ),
-          SettingsSwitchListTile(
-            selector: (context, s) => s.confirmMoveToBin,
-            onChanged: (v) => settings.confirmMoveToBin = v,
-            title: l10n.settingsConfirmationBeforeMoveToBinItems,
-          ),
-          SettingsSwitchListTile(
-            selector: (context, s) => s.confirmDeleteForever,
-            onChanged: (v) => settings.confirmDeleteForever = v,
-            title: l10n.settingsConfirmationBeforeDeleteItems,
-          ),
-          const Divider(height: 32),
-          SettingsSwitchListTile(
-            selector: (context, s) => s.confirmAfterMoveToBin,
-            onChanged: (v) => settings.confirmAfterMoveToBin = v,
-            title: l10n.settingsConfirmationAfterMoveToBinItems,
-          ),
-          const Divider(height: 32),
-          SettingsSwitchListTile(
-            selector: (context, s) => s.confirmCreateVault,
-            onChanged: (v) => settings.confirmCreateVault = v,
-            title: l10n.settingsConfirmationVaultDataLoss,
-          ),
-        ]),
+        child: ListView(
+          children: [
+            SettingsSwitchListTile(
+              selector: (context, s) => s.confirmMoveUndatedItems,
+              onChanged: (v) => settings.confirmMoveUndatedItems = v,
+              title: l10n.settingsConfirmationBeforeMoveUndatedItems,
+            ),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.confirmMoveToBin,
+              onChanged: (v) => settings.confirmMoveToBin = v,
+              title: l10n.settingsConfirmationBeforeMoveToBinItems,
+            ),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.confirmDeleteForever,
+              onChanged: (v) => settings.confirmDeleteForever = v,
+              title: l10n.settingsConfirmationBeforeDeleteItems,
+            ),
+            const Divider(height: 32),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.confirmAfterMoveToBin,
+              onChanged: (v) => settings.confirmAfterMoveToBin = v,
+              title: l10n.settingsConfirmationAfterMoveToBinItems,
+            ),
+            const Divider(height: 32),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.confirmCreateVault,
+              onChanged: (v) => settings.confirmCreateVault = v,
+              title: l10n.settingsConfirmationVaultDataLoss,
+            ),
+          ],
+        ),
       ),
     );
   }
