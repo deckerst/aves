@@ -86,6 +86,7 @@ dependencies:
   flutter_localizations_plus:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git
+      ref: 6a8c14bceaefd00e703ad517fd2a32fa2081b5de
   flutter_map:
   flutter_markdown_plus:
   flutter_staggered_animations:
