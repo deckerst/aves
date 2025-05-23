@@ -168,6 +168,7 @@ object MimeTypes {
         HEIC, HEIF -> ".heif"
         MP2T, MP2TS -> ".m2ts"
         PSD_VND, PSD_X -> ".psd"
+        // TODO TLAD [missing extension] check whether to define more manual mapping and raise exception on miss
         else -> MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.let { ".$it" }
     }
 
