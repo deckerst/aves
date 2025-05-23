@@ -710,6 +710,7 @@ class MediaStoreImageProvider : ImageProvider() {
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
         val targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
         val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+        // TODO TLAD [missing extension] check whether targetDocFile.name has a valid extension
 
         try {
             targetDocFile.openOutputStream().use(write)
