@@ -1312,5 +1312,19 @@
   "settingsVideoPlaybackTile": "ဖွင့်ကြည့်ခြင်း",
   "@settingsVideoPlaybackTile": {},
   "chipActionShowCollection": "စုစည်းမှုထဲမှာ ပြရန်",
-  "@chipActionShowCollection": {}
+  "@chipActionShowCollection": {},
+  "chipActionDecompose": "ဖြတ်ထုတ်ရန်",
+  "@chipActionDecompose": {},
+  "chipActionGroup": "အုပ်စုဖွဲ့မည်",
+  "@chipActionGroup": {},
+  "stopTooltip": "ရပ်ရန်",
+  "@stopTooltip": {},
+  "createButtonLabel": "အသစ်ထည့်ရန်",
+  "@createButtonLabel": {},
+  "chipActionRemove": "ဖယ်ရှားမည်",
+  "@chipActionRemove": {},
+  "chipActionGoToExplorerPage": "Explorer ထဲတွင်ပြမည်",
+  "@chipActionGoToExplorerPage": {},
+  "chipActionCreateGroup": "အုပ်စုအသစ်ပြုလုပ်မည်",
+  "@chipActionCreateGroup": {}
 }

@@ -1346,7 +1346,7 @@
   "@binPageTitle": {},
   "tagPlaceholderState": "Hérað",
   "@tagPlaceholderState": {},
-  "sortByAlbumFileName": "Eftir heiti albúma og skráa",
+  "sortByAlbumFileName": "Eftir heiti albúma og atriða",
   "@sortByAlbumFileName": {},
   "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Eyða þessum albúmum og atriðinu í þeim?} other{Eyða þessum albúmum og {count} atriðum í þeim??}}",
   "@deleteMultiAlbumConfirmationDialogMessage": {
