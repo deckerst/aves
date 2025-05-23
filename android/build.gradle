@@ -34,6 +34,21 @@ allprojects {
 
 rootProject.buildDir = '../build'
 subprojects {
+    afterEvaluate { project ->
+        if (project.extensions.findByName("android") != null) {
+            // Specific configuration for libraries
+            if (project.name != 'app') {
+                android {
+                    buildTypes {
+                        all { buildType ->
+                            // Disable applicationIdSuffix for libraries
+                            buildType.applicationIdSuffix = null
+                        }
+                    }
+                }
+            }
+        }
+    }
     project.buildDir = "${rootProject.buildDir}/${project.name}"
     project.evaluationDependsOn(':app')
 }

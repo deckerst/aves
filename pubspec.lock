@@ -440,7 +440,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6a8c14bceaefd00e703ad517fd2a32fa2081b5de"
+      resolved-ref: "52f8101ab82719004cc0daec88318148e7229544"
       url: "https://github.com/deckerst/flutter_localizations_plus.git"
     source: git
     version: "0.0.1"
