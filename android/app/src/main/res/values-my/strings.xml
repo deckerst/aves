@@ -8,4 +8,5 @@
     <string name="videos_shortcut_short_label">ဗီဒီယိုများ</string>
     <string name="analysis_notification_default_title">မီဒီယာ ကိုစကင်ဖတ်နေသည်</string>
     <string name="analysis_notification_action_stop">ရပ်ရန်</string>
+    <string name="map_shortcut_short_label">မြေပုံ</string>
 </resources>

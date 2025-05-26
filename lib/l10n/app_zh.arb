@@ -625,7 +625,7 @@
   "@sortByItemCount": {},
   "sortBySize": "按大小",
   "@sortBySize": {},
-  "sortByAlbumFileName": "按相册和文件名",
+  "sortByAlbumFileName": "按相册和项目标题",
   "@sortByAlbumFileName": {},
   "sortByRating": "按评分",
   "@sortByRating": {},
