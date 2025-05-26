@@ -16,6 +16,10 @@ void main() {
   const groupName = 'some group name';
   const storedAlbumPath = '/path/to/album';
 
+  setUpAll(() async {
+    albumGrouping.init();
+  });
+
   setUp(() async {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
@@ -23,7 +27,7 @@ void main() {
   });
 
   tearDown(() async {
-    albumGrouping.init({});
+    albumGrouping.setGroups({});
     await dynamicAlbums.clear();
     await getIt.reset();
   });

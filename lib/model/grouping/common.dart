@@ -1,10 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/container/set_or.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/convert.dart';
+import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
@@ -28,16 +35,51 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   final String _host;
   final T Function(Uri uri, SetOrFilter filter) _createGroupFilter;
   final Map<Uri, Set<Uri>> _groups = {};
+  final Set<StreamSubscription> _subscriptions = {};
+  final Map<CollectionSource, Set<StreamSubscription>> _sourceSubscriptions = {};
+  CollectionSource? _source;
 
   Map<Uri, Set<Uri>> get allGroups => Map.unmodifiable(_groups);
 
+  // do not subscribe to events from other modules in constructor
+  // so that modules can subscribe to each other
   FilterGrouping._private(this._host, this._createGroupFilter) {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
-  void init(Map<Uri, Set<Uri>> groups) {
+  void init() {
+    _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) => _clearObsoleteFilters()));
+  }
+
+  void setGroups(Map<Uri, Set<Uri>> groups) {
     _groups.clear();
     _groups.addAll(groups);
+  }
+
+  @override
+  void dispose() {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+    _sourceSubscriptions.keys.toSet().forEach(unregisterSource);
+    super.dispose();
+  }
+
+  void registerSource(CollectionSource source) {
+    unregisterSource(_source);
+    final sourceEvents = source.eventBus;
+    _sourceSubscriptions[source] = {
+      sourceEvents.on<EntryMovedEvent>().listen((e) => _clearObsoleteFilters()),
+      sourceEvents.on<EntryRemovedEvent>().listen((e) => _clearObsoleteFilters()),
+      sourceEvents.on<AlbumsChangedEvent>().listen((e) => _clearObsoleteFilters()),
+    };
+    _source = source;
+  }
+
+  void unregisterSource(CollectionSource? source) {
+    _sourceSubscriptions.remove(source)
+      ?..forEach((sub) => sub.cancel())
+      ..clear();
   }
 
   void addToGroup(Set<Uri> childrenUris, Uri? destinationGroup) {
@@ -73,9 +115,9 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   int countLeaves(Uri? groupUri) {
     int count = 0;
     if (groupUri != null) {
-      final childrenUri = _groups[groupUri];
-      if (childrenUri != null) {
-        childrenUri.map(uriToFilter).nonNulls.forEach((filter) {
+      final childrenUris = _groups[groupUri];
+      if (childrenUris != null) {
+        childrenUris.map(uriToFilter).nonNulls.forEach((filter) {
           if (filter is GroupBaseFilter) {
             count += countLeaves(filter.uri);
           } else {
@@ -93,15 +135,15 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     if (currentGroupUri == null) {
       return _groups.entries.where((kv) => getParentGroup(kv.key) == currentGroupUri).map((kv) {
         final groupUri = kv.key;
-        final childrenUri = kv.value;
-        final childrenFilters = childrenUri.map(uriToFilter).nonNulls.toSet();
+        final childrenUris = kv.value;
+        final childrenFilters = childrenUris.map(uriToFilter).nonNulls.toSet();
         return _createGroupFilter(groupUri, SetOrFilter(childrenFilters));
       }).toSet();
     }
 
-    final childrenUri = _groups.entries.firstWhereOrNull((kv) => kv.key == currentGroupUri)?.value;
-    if (childrenUri != null) {
-      return childrenUri.map(uriToFilter).nonNulls.toSet();
+    final childrenUris = _groups.entries.firstWhereOrNull((kv) => kv.key == currentGroupUri)?.value;
+    if (childrenUris != null) {
+      return childrenUris.map(uriToFilter).nonNulls.toSet();
     }
 
     return {};
@@ -170,6 +212,46 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
       _groups[parentGroupUri] = children;
       _ensureGroupFromRoot(parentGroupUri);
     }
+  }
+
+  void _clearObsoleteFilters() {
+    final source = _source;
+    if (source == null || source.targetScope != CollectionSource.fullScope || !source.isReady) return;
+
+    _groups.entries.forEach((kv) {
+      final groupUri = kv.key;
+      final childrenUris = kv.value;
+
+      final rawAlbums = source.rawAlbums;
+      final allEntries = source.allEntries;
+
+      childrenUris.toSet().forEach((childUri) {
+        final filter = uriToFilter(childUri);
+        var valid = false;
+        if (filter != null) {
+          switch (filter) {
+            case GroupBaseFilter _:
+              valid = true;
+            case StoredAlbumFilter _:
+              // check album itself
+              final isVisibleAlbum = rawAlbums.contains(filter.album);
+              if (isVisibleAlbum) {
+                valid = true;
+              } else {
+                // check non-visible content (hidden, trash, etc.)
+                valid = allEntries.any(filter.test);
+              }
+            case DynamicAlbumFilter _:
+              valid = dynamicAlbums.contains(filter.name);
+          }
+        }
+        if (!valid) {
+          childrenUris.remove(childUri);
+          debugPrint('Removed obsolete childUri=$childUri from group=$groupUri');
+        }
+      });
+    });
+    _cleanEmptyGroups();
   }
 
   // group uri / filter conversion

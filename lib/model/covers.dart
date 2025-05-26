@@ -40,6 +40,8 @@ class Covers {
 
   Set<CoverRow> _rows = {};
 
+  // do not subscribe to events from other modules in constructor
+  // so that modules can subscribe to each other
   Covers._private();
 
   Future<void> init() async {
