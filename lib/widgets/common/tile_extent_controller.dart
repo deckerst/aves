@@ -15,7 +15,7 @@ class TileExtentController {
 
   late double userPreferredExtent;
   Size _viewportSize = Size.zero;
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
 
   Size get viewportSize => _viewportSize;
 

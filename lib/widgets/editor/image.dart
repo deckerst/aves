@@ -36,7 +36,7 @@ class EditorImage extends StatefulWidget {
 }
 
 class _EditorImageState extends State<EditorImage> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<double> _scrimOpacityNotifier = ValueNotifier(0);
 
   AvesEntry get entry => widget.entry;

@@ -25,7 +25,7 @@ final Covers covers = Covers._private();
 typedef CoverProps = (int? entryId, String? packageName, Color? color);
 
 class Covers {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final _lock = Lock();
 
   final StreamController<Set<CollectionFilter>?> _entryChangeStreamController = StreamController.broadcast();

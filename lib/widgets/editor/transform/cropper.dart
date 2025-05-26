@@ -38,7 +38,7 @@ class Cropper extends StatefulWidget {
 }
 
 class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<Rect> _outlineNotifier = ValueNotifier(Rect.zero);
   final ValueNotifier<int> _gridDivisionNotifier = ValueNotifier(0);
   late AnimationController _gridAnimationController;

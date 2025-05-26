@@ -44,7 +44,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     return (scrollableContext.findRenderObject() as RenderBox).size;
   }
 
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
 
   // grid section metrics before the app is laid out with the new orientation
   late SectionedListLayout<T> _lastSectionedListLayout;

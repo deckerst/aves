@@ -66,7 +66,7 @@ class EntryLeafletMap<T> extends StatefulWidget {
 
 class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProviderStateMixin {
   final MapController _leafletMapController = MapController();
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   Map<MarkerKey<T>, GeoEntry<T>> _geoEntryByMarkerKey = {};
   final Debouncer _debouncer = Debouncer(delay: ADurations.mapIdleDebounceDelay);
 

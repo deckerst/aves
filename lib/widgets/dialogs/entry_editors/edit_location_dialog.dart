@@ -56,7 +56,7 @@ class EditEntryLocationDialog extends StatefulWidget {
 }
 
 class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with FeedbackMixin {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   LocationEditAction _action = LocationEditAction.chooseOnMap;
   LatLng? _mapCoordinates;
   late final AvesEntry mainEntry;
