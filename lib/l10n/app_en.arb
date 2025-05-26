@@ -105,7 +105,7 @@
   "chipActionLock": "Lock",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",
-  "chipActionGroup": "Group",
+  "chipActionGroup": "Change grouping",
   "chipActionRename": "Rename",
   "chipActionSetCover": "Set cover",
   "chipActionShowCountryStates": "Show states",
