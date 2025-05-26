@@ -150,7 +150,7 @@ class _InfoPageContent extends StatefulWidget {
 }
 
 class _InfoPageContentState extends State<_InfoPageContent> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   late EntryInfoActionDelegate _actionDelegate;
   final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
   final ValueNotifier<EntryAction?> _isEditingMetadataNotifier = ValueNotifier(null);

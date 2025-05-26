@@ -28,7 +28,7 @@ class PlayToggler extends StatefulWidget {
 }
 
 class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStateMixin {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   late AnimationController _playPauseAnimation;
 
   AvesVideoController? get controller => widget.controller;

@@ -25,7 +25,7 @@ abstract class MediaSessionService {
 class PlatformMediaSessionService implements MediaSessionService, Disposable {
   static const _platformObject = MethodChannel('deckers.thibault/aves/media_session');
 
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final EventChannel _mediaCommandChannel = const OptionalEventChannel('deckers.thibault/aves/media_command');
   final StreamController _streamController = StreamController.broadcast();
 

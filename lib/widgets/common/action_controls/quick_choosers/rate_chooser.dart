@@ -23,7 +23,7 @@ class RateQuickChooser extends StatefulWidget {
 }
 
 class _RateQuickChooserState extends State<RateQuickChooser> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
 
   ValueNotifier<int?> get valueNotifier => widget.valueNotifier;
 

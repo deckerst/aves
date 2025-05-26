@@ -83,7 +83,7 @@ class GeoMap extends StatefulWidget {
 }
 
 class _GeoMapState extends State<GeoMap> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
 
   // as of google_maps_flutter v2.0.6, Google map initialization is blocking
   // cf https://github.com/flutter/flutter/issues/28493

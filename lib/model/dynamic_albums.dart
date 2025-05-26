@@ -15,7 +15,7 @@ import 'package:synchronized/synchronized.dart';
 final DynamicAlbums dynamicAlbums = DynamicAlbums._private();
 
 class DynamicAlbums with ChangeNotifier {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final _lock = Lock();
   Set<DynamicAlbumFilter> _rows = {};
 

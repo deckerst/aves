@@ -40,7 +40,7 @@ class ExplorerPage extends StatefulWidget {
 }
 
 class _ExplorerPageState extends State<ExplorerPage> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<VolumeRelativeDirectory?> _directory = ValueNotifier(null);
   final ValueNotifier<VolumeRelativeDirectory?> _contentsDirectory = ValueNotifier(null);
   final ValueNotifier<List<Directory>> _contents = ValueNotifier([]);

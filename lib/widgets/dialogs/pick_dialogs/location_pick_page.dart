@@ -63,7 +63,7 @@ class _Content extends StatefulWidget {
 }
 
 class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final AvesMapController _mapController = AvesMapController();
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
   final ValueNotifier<LatLng?> _dotLocationNotifier = ValueNotifier(null), _infoLocationNotifier = ValueNotifier(null);

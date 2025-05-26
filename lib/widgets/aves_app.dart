@@ -160,7 +160,7 @@ class AvesApp extends StatefulWidget {
 }
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
   final TvRailController _tvRailController = TvRailController();

@@ -64,7 +64,7 @@ class ViewerVerticalPageView extends StatefulWidget {
 }
 
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<double> _backgroundOpacityNotifier = ValueNotifier(1);
   final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isImageFocusedNotifier = ValueNotifier(true);

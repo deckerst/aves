@@ -54,7 +54,7 @@ class EntryPageView extends StatefulWidget {
 class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateMixin {
   late ValueNotifier<ViewState> _viewStateNotifier;
   late AvesMagnifierController _magnifierController;
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<Widget?> _actionFeedbackChildNotifier = ValueNotifier(null);
   OverlayEntry? _actionFeedbackOverlayEntry;
 
