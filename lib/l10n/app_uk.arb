@@ -607,7 +607,7 @@
   "@drawerCountryPage": {},
   "sortByName": "За назвою",
   "@sortByName": {},
-  "sortByAlbumFileName": "За назвою альбому та файлу",
+  "sortByAlbumFileName": "За назвою альбому та елемента",
   "@sortByAlbumFileName": {},
   "sortByItemCount": "За кількістю елементів",
   "@sortByItemCount": {},

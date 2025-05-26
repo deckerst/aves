@@ -627,7 +627,7 @@
   "@sortByItemCount": {},
   "sortBySize": "Op grootte",
   "@sortBySize": {},
-  "sortByAlbumFileName": "Op album- en bestandsnaam",
+  "sortByAlbumFileName": "Op album- en itemnaam",
   "@sortByAlbumFileName": {},
   "sortByRating": "Op waardering",
   "@sortByRating": {},

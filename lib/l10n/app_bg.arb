@@ -1624,5 +1624,19 @@
   "sortByPath": "Според пътя",
   "@sortByPath": {},
   "searchFormatSectionTitle": "Формати",
-  "@searchFormatSectionTitle": {}
+  "@searchFormatSectionTitle": {},
+  "chipActionCreateGroup": "Създайте група",
+  "@chipActionCreateGroup": {},
+  "chipActionGroup": "Групиране",
+  "@chipActionGroup": {},
+  "newGroupDialogTitle": "Нова Група",
+  "@newGroupDialogTitle": {},
+  "groupAlreadyExists": "Групата вече съществува",
+  "@groupAlreadyExists": {},
+  "albumTierGroups": "Групи",
+  "@albumTierGroups": {},
+  "groupPickerUseThisGroupButton": "Използвайте тази група",
+  "@groupPickerUseThisGroupButton": {},
+  "newGroupDialogNameLabel": "Име на групата",
+  "@newGroupDialogNameLabel": {}
 }
