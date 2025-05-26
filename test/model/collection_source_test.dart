@@ -8,6 +8,8 @@ import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/grouping/common.dart';
+import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -32,10 +34,10 @@ import 'package:shared_preferences_platform_interface/shared_preferences_platfor
 
 import '../fake/android_app_service.dart';
 import '../fake/availability.dart';
+import '../fake/db.dart';
 import '../fake/device_service.dart';
 import '../fake/media_fetch_service.dart';
 import '../fake/media_store_service.dart';
-import '../fake/db.dart';
 import '../fake/metadata_fetch_service.dart';
 import '../fake/report_service.dart';
 import '../fake/storage_service.dart';
@@ -73,10 +75,15 @@ void main() {
     await settings.init(monitorPlatformSettings: false);
     settings.canUseAnalysisService = false;
     await androidFileUtils.init();
+    albumGrouping.init();
   });
 
   setUp(() async {
     (getIt<MediaStoreService>() as FakeMediaStoreService).reset();
+  });
+
+  tearDown(() async {
+    albumGrouping.setGroups({});
   });
 
   tearDownAll(() async {
@@ -396,5 +403,29 @@ void main() {
         ),
       ),
     );
+  });
+
+  test('groups are cleared when removing entries', () async {
+    final image1 = FakeMediaStoreService.newImage(testAlbum, 'image1');
+    (mediaStoreService as FakeMediaStoreService).entries = {
+      image1,
+    };
+
+    final albumFilter = StoredAlbumFilter(image1.directory!, 'whatever');
+
+    final source = await _initSource();
+    final groupUri = albumGrouping.buildGroupUri(null, 'some group name');
+    final childUri = GroupingConversion.filterToUri(albumFilter);
+    albumGrouping.addToGroup({childUri}.nonNulls.toSet(), groupUri);
+    expect(source.rawAlbums.length, 1);
+    expect(albumGrouping.exists(groupUri), true);
+
+    await source.removeEntries({image1.uri}, includeTrash: true);
+
+    // waiting for microtask to make sure event bus listeners executed
+    await Future.microtask(() {});
+
+    expect(source.rawAlbums.length, 0);
+    expect(albumGrouping.exists(groupUri), false);
   });
 }

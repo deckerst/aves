@@ -125,6 +125,9 @@ class FakeAvesDb extends Fake implements LocalMediaDb {
   @override
   Future<void> addDynamicAlbums(Set<DynamicAlbumRow> rows) => SynchronousFuture(null);
 
+  @override
+  Future<void> removeDynamicAlbums(Set<String> names) => SynchronousFuture(null);
+
   // video playback
 
   @override

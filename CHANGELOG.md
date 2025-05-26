@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - opening home when launching app as media picker
+- removing groups with obsolete albums
 
 ## <a id="v1.13.1"></a>[v1.13.1] - 2025-05-14
 

@@ -29,13 +29,17 @@ import '../fake/media_store_service.dart';
 import '../fake/storage_service.dart';
 
 void main() {
+  setUpAll(() async {
+    albumGrouping.init();
+  });
+
   setUp(() async {
     // specify Posix style path context for consistent behaviour when running tests on Windows
     getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
   });
 
   tearDown(() async {
-    albumGrouping.init({});
+    albumGrouping.setGroups({});
     await getIt.reset();
   });
 
