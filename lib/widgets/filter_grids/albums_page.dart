@@ -44,12 +44,12 @@ class AlbumListPage extends StatelessWidget {
       child: Builder(
         // to access filter group provider from subtree context
         builder: (context) {
-          return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
-            selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor, s.albumSortReverse, s.pinnedFilters),
+          return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>, Set<CollectionFilter>)>(
+            selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor, s.albumSortReverse, s.hiddenFilters, s.pinnedFilters),
             shouldRebuild: (t1, t2) {
               // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
               const eq = DeepCollectionEquality();
-              return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4));
+              return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4) && eq.equals(t1.$5, t2.$5));
             },
             builder: (context, s, child) {
               return ValueListenableBuilder<bool>(
@@ -123,7 +123,7 @@ class AlbumListPage extends StatelessWidget {
 
     final listedDynamicAlbums = <DynamicAlbumFilter>{};
     if (albumChipTypes.contains(AlbumChipType.dynamic)) {
-      final allDynamicAlbums = dynamicAlbums.all;
+      final allDynamicAlbums = dynamicAlbums.all.whereNot(settings.hiddenFilters.contains).toSet();
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<DynamicAlbumFilter>(groupContent).toSet();
         listedDynamicAlbums.addAll(allDynamicAlbums.whereNot(withinGroups.contains));
@@ -134,7 +134,7 @@ class AlbumListPage extends StatelessWidget {
     }
 
     // always show groups, which are needed to navigate to other types
-    final albumGroupFilters = groupContent.whereType<AlbumGroupFilter>().toSet();
+    final albumGroupFilters = groupContent.whereType<AlbumGroupFilter>().whereNot(settings.hiddenFilters.contains).toSet();
 
     final filters = <AlbumBaseFilter>{
       ...albumGroupFilters,
