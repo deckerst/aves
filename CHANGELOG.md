@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - opening home when launching app as media picker
 - removing groups with obsolete albums
+- loading group custom covers
 
 ## <a id="v1.13.1"></a>[v1.13.1] - 2025-05-14
 
