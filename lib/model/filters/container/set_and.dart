@@ -38,8 +38,6 @@ class SetAndFilter extends CollectionFilter with ContainerFilter {
 
   static SetAndFilter? fromMap(Map<String, dynamic> json) {
     final filters = (json['filters'] as List).cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
-    if (filters.isEmpty) return null;
-
     return SetAndFilter(
       filters,
       reversed: json['reversed'] ?? false,
