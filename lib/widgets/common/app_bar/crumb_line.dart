@@ -8,6 +8,8 @@ class CrumbLine<T> extends StatefulWidget {
   final T Function(BuildContext context, int index) combine;
   final void Function(T combined) onTap;
 
+  static const EdgeInsets padding = EdgeInsets.only(top: 6, bottom: 20);
+
   const CrumbLine({
     super.key,
     required this.split,
@@ -18,7 +20,7 @@ class CrumbLine<T> extends StatefulWidget {
   @override
   State<CrumbLine<T>> createState() => _CrumbLineState<T>();
 
-  static double getPreferredHeight(TextScaler textScaler) => textScaler.scale(kToolbarHeight);
+  static double getPreferredHeight(TextScaler textScaler) => textScaler.scale(22) + padding.vertical;
 }
 
 class _CrumbLineState<T> extends State<CrumbLine<T>> {
