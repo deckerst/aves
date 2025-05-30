@@ -65,7 +65,8 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
       actions: _buildActions,
       bottom: LayoutBuilder(
         builder: (context, constraints) {
-          return SizedBox(
+          return Container(
+            padding: CrumbLine.padding,
             width: constraints.maxWidth,
             height: CrumbLine.getPreferredHeight(MediaQuery.textScalerOf(context)),
             child: ValueListenableBuilder<VolumeRelativeDirectory?>(
