@@ -311,7 +311,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         embeddedByteStream: InputStream,
         embeddedByteLength: Long,
     ) {
-        val extension = extensionFor(mimeType)
+        val extension = extensionFor(mimeType, defaultExtension = null)
         val targetFile = StorageUtils.createTempFile(context, extension).apply {
             transferFrom(embeddedByteStream, embeddedByteLength)
         }
@@ -319,7 +319,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val authority = "${context.applicationContext.packageName}.file_provider"
         val uri = if (displayName != null) {
             // add extension to ease type identification when sharing this content
-            val displayNameWithExtension = if (extension == null || displayName.endsWith(extension, ignoreCase = true)) {
+            val displayNameWithExtension = if (displayName.endsWith(extension, ignoreCase = true)) {
                 displayName
             } else {
                 "$displayName$extension"
