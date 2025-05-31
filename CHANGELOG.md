@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- moved file losing its extension and no longer being detected as media in some cases
 - opening home when launching app as media picker
 - removing groups with obsolete albums
 - loading group custom covers
