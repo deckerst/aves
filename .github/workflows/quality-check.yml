@@ -28,6 +28,9 @@ jobs:
       - name: Get Flutter packages
         run: ./flutterw pub get
 
+      - name: Generate app localizations
+        run: ./flutterw gen-l10n
+
       - name: Static analysis.
         run: ./flutterw analyze
 
