@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- downgraded Flutter to stable v3.27.4
+
 ### Fixed
 
 - moved file losing its extension and no longer being detected as media in some cases
