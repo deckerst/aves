@@ -31,9 +31,15 @@ class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel
 
     init {
         Log.i(LOG_TAG, "start listening to Media Store")
-        context.contentResolver.apply {
-            registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
-            registerContentObserver(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
+        try {
+            context.contentResolver.apply {
+                registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
+                registerContentObserver(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
+            }
+        } catch (e: SecurityException) {
+            // Trying to register an observer may yield a security exception with this message:
+            // "Failed to find provider media for user 0; expected to find a valid ContentProvider for this authority"
+            Log.w(LOG_TAG, "failed to register content observer", e)
         }
     }
 
