@@ -82,8 +82,8 @@ class SettingsTileLanguageNumerals extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSwitchListTile(
-    selector: (context, s) => s.forceWesternArabicNumerals,
-    onChanged: (v) => settings.forceWesternArabicNumerals = v,
-    title: title(context),
-  );
+        selector: (context, s) => s.forceWesternArabicNumerals,
+        onChanged: (v) => settings.forceWesternArabicNumerals = v,
+        title: title(context),
+      );
 }
