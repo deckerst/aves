@@ -1601,7 +1601,7 @@
   "@sortByPath": {},
   "createButtonLabel": "СТВОРИТИ",
   "@createButtonLabel": {},
-  "chipActionGroup": "Згрупувати",
+  "chipActionGroup": "Змінити групування",
   "@chipActionGroup": {},
   "chipActionCreateGroup": "Створити групу",
   "@chipActionCreateGroup": {},

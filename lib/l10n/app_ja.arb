@@ -317,7 +317,7 @@
   "@binEntriesConfirmationDialogMessage": {},
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{このアイテムを削除しますか？} other{{count} 件のアイテムを削除しますか？}}",
   "@deleteEntriesConfirmationDialogMessage": {},
-  "moveUndatedConfirmationDialogMessage": "いくつかのアイテムはメタデータ上に日付がありません。メタデータ上の日付が設定されない場合、この操作によりこれらの現在の日付はリセットされます",
+  "moveUndatedConfirmationDialogMessage": "続行する前にアイテムの日付を保存しますか？",
   "@moveUndatedConfirmationDialogMessage": {},
   "moveUndatedConfirmationDialogSetDate": "日付を設定",
   "@moveUndatedConfirmationDialogSetDate": {},
