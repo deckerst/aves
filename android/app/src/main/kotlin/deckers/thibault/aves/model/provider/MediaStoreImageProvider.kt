@@ -557,6 +557,7 @@ class MediaStoreImageProvider : ImageProvider() {
         toBin: Boolean,
     ): FieldMap {
         val sourcePath = sourceFile?.path
+        val sourceExtension = sourceFile?.extension
         val sourceDir = sourceFile?.parent?.let { ensureTrailingSeparator(it) }
         if (sourceDir == targetDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
             // nothing to do unless it's a renamed copy
@@ -569,6 +570,7 @@ class MediaStoreImageProvider : ImageProvider() {
             dir = targetDir,
             desiredNameWithoutExtension = desiredNameWithoutExtension,
             mimeType = mimeType,
+            defaultExtension = sourceExtension,
             conflictStrategy = nameConflictStrategy,
         )
         val targetNameWithoutExtension = resolution.nameWithoutExtension ?: return skippedFieldMap
@@ -580,6 +582,7 @@ class MediaStoreImageProvider : ImageProvider() {
             targetDir = targetDir,
             targetDirDocFile = targetDirDocFile,
             targetNameWithoutExtension = targetNameWithoutExtension,
+            defaultExtension = sourceExtension,
         ) { output: OutputStream ->
             try {
                 sourceDocFile.copyTo(output)
@@ -615,12 +618,13 @@ class MediaStoreImageProvider : ImageProvider() {
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
         targetNameWithoutExtension: String,
+        defaultExtension: String?,
         write: (OutputStream) -> Unit,
     ): String {
         if (StorageUtils.isInVault(activity, targetDir)) {
             return insertByFile(
                 targetDir = targetDir,
-                targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}",
+                targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}",
                 write = write,
             )
         }
@@ -630,7 +634,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 return insertByMediaStore(
                     activity = activity,
                     targetDir = targetDir,
-                    targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}",
+                    targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}",
                     write = write,
                 )
             }
@@ -642,6 +646,7 @@ class MediaStoreImageProvider : ImageProvider() {
             targetDir = targetDir,
             targetDirDocFile = targetDirDocFile,
             targetNameWithoutExtension = targetNameWithoutExtension,
+            defaultExtension = defaultExtension,
             write = write,
         )
     }
@@ -700,6 +705,7 @@ class MediaStoreImageProvider : ImageProvider() {
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
         targetNameWithoutExtension: String,
+        defaultExtension: String?,
         write: (OutputStream) -> Unit,
     ): String {
         targetDirDocFile ?: throw Exception("failed to get tree doc for directory at path=$targetDir")
@@ -708,8 +714,22 @@ class MediaStoreImageProvider : ImageProvider() {
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
-        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+        var targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
+        var targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+
+        // providing a display name and a MIME type does not guarantee
+        // that the created document will be backed by a file with a valid media extension,
+        // but having an extension is essential for media detection by Android,
+        // so we retry with a display name that includes the extension
+        if ((targetDocFile.extension == null || targetDocFile.extension.isEmpty() || targetDocFile.extension == "bin") && defaultExtension != null) {
+            if (targetDocFile.exists()) {
+                targetDocFile.delete()
+            }
+
+            val extension = if (defaultExtension.startsWith(".")) defaultExtension else ".$defaultExtension"
+            targetTreeFile = targetDirDocFile.createFile(mimeType, "$targetNameWithoutExtension$extension")
+            targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+        }
 
         try {
             targetDocFile.openOutputStream().use(write)

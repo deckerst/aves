@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 class FilterBar extends StatefulWidget {
   static const EdgeInsets chipPadding = EdgeInsets.symmetric(horizontal: 4);
   static const EdgeInsets rowPadding = EdgeInsets.symmetric(horizontal: 4);
-  static const double verticalPadding = 16;
-  static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
+  static const EdgeInsets padding = EdgeInsets.only(top: 4, bottom: 8);
+  static final double preferredHeight = AvesFilterChip.minChipHeight + padding.vertical;
 
   final List<CollectionFilter> filters;
   final bool interactive;
@@ -84,6 +84,7 @@ class _FilterBarState extends State<FilterBar> {
     return Container(
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
+      padding: FilterBar.padding,
       color: Colors.transparent,
       height: FilterBar.preferredHeight,
       child: AnimatedList(

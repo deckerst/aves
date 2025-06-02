@@ -43,10 +43,12 @@ abstract class AvesSearchDelegate extends SearchDelegate {
     final animate = context.read<Settings>().animate;
     return canPop
         ? IconButton(
-            icon: animate ? AnimatedIcon(
-              icon: AnimatedIcons.menu_arrow,
-              progress: transitionAnimation,
-            ): const Icon(Icons.arrow_back),
+            icon: animate
+                ? AnimatedIcon(
+                    icon: AnimatedIcons.menu_arrow,
+                    progress: transitionAnimation,
+                  )
+                : const Icon(Icons.arrow_back),
             onPressed: () => goBack(context),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           )

@@ -79,7 +79,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
 }
 
 class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterGridAppBar<T, CSAD>> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   late AnimationController _browseToSelectAnimation;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
   final FocusNode _queryBarFocusNode = FocusNode();
@@ -170,7 +170,8 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
                 if (_showGroupCrumbLine(context))
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      return SizedBox(
+                      return Container(
+                        padding: CrumbLine.padding,
                         width: constraints.maxWidth,
                         height: CrumbLine.getPreferredHeight(MediaQuery.textScalerOf(context)),
                         child: Selector<FilterGroupNotifier, Uri?>(

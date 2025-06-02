@@ -7,19 +7,18 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.13.1+152
+version: 1.13.2+153
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.29.3
+  flutter: 3.27.4
   sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
 workspace:
   - plugins/aves_magnifier
   - plugins/aves_map
   - plugins/aves_model
-  - plugins/aves_platform_meta
   - plugins/aves_report
   - plugins/aves_report_crashlytics
   - plugins/aves_screen_state
@@ -86,8 +85,9 @@ dependencies:
   flutter_localizations_plus:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git
+      ref: 6a8c14bceaefd00e703ad517fd2a32fa2081b5de
   flutter_map:
-  flutter_markdown: # discontinued on 2025/04/30
+  flutter_markdown_plus:
   flutter_staggered_animations:
   get_it:
   gpx:

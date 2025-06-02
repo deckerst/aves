@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
-import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -57,7 +57,7 @@ class CollectionAppBar extends StatefulWidget {
 }
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);

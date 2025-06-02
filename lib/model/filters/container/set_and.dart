@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/container/container.dart';
+import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
@@ -38,8 +38,6 @@ class SetAndFilter extends CollectionFilter with ContainerFilter {
 
   static SetAndFilter? fromMap(Map<String, dynamic> json) {
     final filters = (json['filters'] as List).cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
-    if (filters.isEmpty) return null;
-
     return SetAndFilter(
       filters,
       reversed: json['reversed'] ?? false,

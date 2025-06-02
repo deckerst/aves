@@ -45,7 +45,7 @@ class MenuQuickChooser<T> extends StatefulWidget {
 }
 
 class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<Rect> _selectedRowRect = ValueNotifier(Rect.zero);
   final ScrollController _scrollController = ScrollController();
   int _scrollDirection = 0;

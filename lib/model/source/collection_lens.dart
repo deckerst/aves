@@ -34,7 +34,7 @@ class CollectionLens with ChangeNotifier {
   EntrySortFactor sortFactor;
   bool sortReverse;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   int? id;
   bool listenToSource, stackBursts, stackDevelopedRaws, fixedSort;
   List<AvesEntry>? fixedSelection;

@@ -163,12 +163,24 @@ object MimeTypes {
 
     // among other refs:
     // - https://android.googlesource.com/platform/external/mime-support/+/refs/heads/master/mime.types
-    fun extensionFor(mimeType: String): String? = when (mimeType) {
+    fun extensionFor(mimeType: String, defaultExtension: String?): String = when (mimeType) {
         AVI, AVI_VND -> ".avi"
+        DNG, DNG_ADOBE -> ".dng"
         HEIC, HEIF -> ".heif"
         MP2T, MP2TS -> ".m2ts"
         PSD_VND, PSD_X -> ".psd"
-        else -> MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.let { ".$it" }
+        else -> {
+            val ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: defaultExtension
+            if (ext != null) {
+                // fallback to provided extension when available,
+                // typically the original file extension when moving/renaming
+                if (ext.startsWith(".")) ext else ".$ext"
+            } else {
+                // fallback to generic extensions,
+                // as incorrect file extensions are better than none for media detection
+                if (isVideo(mimeType)) ".mp4" else ".jpg"
+            }
+        }
     }
 
     val TIFF_EXTENSION_PATTERN = Regex(".*\\.tiff?", RegexOption.IGNORE_CASE)

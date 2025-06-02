@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.2"></a>[v1.13.2] - 2025-06-02
+
+### Changed
+
+- downgraded Flutter to stable v3.27.4
+- prevent display orientation flip when device rotation is locked
+
+### Fixed
+
+- moved file losing its extension and no longer being detected as media in some cases
+- opening home when launching app as media picker
+- removing groups with obsolete albums
+- loading group custom covers
+- crash when parsing some large media with trailing thumbnail
+
 ## <a id="v1.13.1"></a>[v1.13.1] - 2025-05-14
 
 ### Fixed

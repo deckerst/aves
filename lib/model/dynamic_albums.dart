@@ -15,19 +15,21 @@ import 'package:synchronized/synchronized.dart';
 final DynamicAlbums dynamicAlbums = DynamicAlbums._private();
 
 class DynamicAlbums with ChangeNotifier {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final _lock = Lock();
   Set<DynamicAlbumFilter> _rows = {};
 
   final EventBus eventBus = EventBus();
 
+  // do not subscribe to events from other modules in constructor
+  // so that modules can subscribe to each other
   DynamicAlbums._private() {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
-    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _onGroupUriChanged(e.oldGroupUri, e.newGroupUri)));
   }
 
   Future<void> init() async {
     _rows = (await localMediaDb.loadAllDynamicAlbums()).map((v) => DynamicAlbumFilter(v.name, v.filter)).toSet();
+    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _onGroupUriChanged(e.oldGroupUri, e.newGroupUri)));
   }
 
   int get count => _rows.length;
@@ -57,6 +59,7 @@ class DynamicAlbums with ChangeNotifier {
     await _lock.synchronized(() async {
       await _doRemove(filters.map((filter) => filter.name).toSet());
       notifyListeners();
+      eventBus.fire(DynamicAlbumChangedEvent(Map.fromEntries(filters.map((v) => MapEntry(v, null)))));
     });
   }
 
@@ -81,13 +84,7 @@ class DynamicAlbums with ChangeNotifier {
     });
   }
 
-  Future<void> clear() async {
-    await _lock.synchronized(() async {
-      await localMediaDb.clearDynamicAlbums();
-      _rows.clear();
-      notifyListeners();
-    });
-  }
+  Future<void> clear() => remove(all);
 
   DynamicAlbumFilter? get(String name) => _rows.firstWhereOrNull((row) => row.name == name);
 

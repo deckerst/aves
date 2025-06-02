@@ -25,7 +25,7 @@ final Covers covers = Covers._private();
 typedef CoverProps = (int? entryId, String? packageName, Color? color);
 
 class Covers {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final _lock = Lock();
 
   final StreamController<Set<CollectionFilter>?> _entryChangeStreamController = StreamController.broadcast();
@@ -40,6 +40,8 @@ class Covers {
 
   Set<CoverRow> _rows = {};
 
+  // do not subscribe to events from other modules in constructor
+  // so that modules can subscribe to each other
   Covers._private();
 
   Future<void> init() async {

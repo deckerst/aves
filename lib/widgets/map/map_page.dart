@@ -115,7 +115,7 @@ class _Content extends StatefulWidget {
 }
 
 class _ContentState extends State<_Content> with SingleTickerProviderStateMixin {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final AvesMapController _mapController = AvesMapController();
   final ValueNotifier<bool> _isPageAnimatingNotifier = ValueNotifier(false);
   final ValueNotifier<int?> _selectedIndexNotifier = ValueNotifier(0);

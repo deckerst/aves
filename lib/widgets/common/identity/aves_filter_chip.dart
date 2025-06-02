@@ -150,7 +150,7 @@ class AvesFilterChip extends StatefulWidget {
 }
 
 class _AvesFilterChipState extends State<AvesFilterChip> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   late Future<Color> _colorFuture;
   late Color _outlineColor;
   late bool _tapped;

@@ -1,4 +1,3 @@
-
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/theme/durations.dart';
