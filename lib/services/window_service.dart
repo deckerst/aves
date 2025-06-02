@@ -74,20 +74,24 @@ class PlatformWindowService implements WindowService {
     return false;
   }
 
+  // cf https://developer.android.com/guide/topics/manifest/activity-element#screen
+  // cf Android `ActivityInfo.ScreenOrientation`
+  static const screenOrientationUnspecified = -1; // SCREEN_ORIENTATION_UNSPECIFIED
+  // use the `USER` variants rather than the `SENSOR` ones,
+  // so that it does not flip even if it is reversed by sensor
+  static const screenOrientationUserLandscape = 11; // SCREEN_ORIENTATION_USER_LANDSCAPE
+  static const screenOrientationUserPortrait = 12; // SCREEN_ORIENTATION_USER_PORTRAIT
+
   @override
   Future<void> requestOrientation([Orientation? orientation]) async {
-    // cf Android `ActivityInfo.ScreenOrientation`
     late final int orientationCode;
     switch (orientation) {
       case Orientation.landscape:
-        // SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        orientationCode = 6;
+        orientationCode = screenOrientationUserLandscape;
       case Orientation.portrait:
-        // SCREEN_ORIENTATION_SENSOR_PORTRAIT
-        orientationCode = 7;
+        orientationCode = screenOrientationUserPortrait;
       default:
-        // SCREEN_ORIENTATION_UNSPECIFIED
-        orientationCode = -1;
+        orientationCode = screenOrientationUnspecified;
     }
     try {
       await _platform.invokeMethod('requestOrientation', <String, dynamic>{
