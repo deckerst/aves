@@ -118,7 +118,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
   }
 
   void _onActionChanged() {
-    switch(_actionNotifier.value) {
+    switch (_actionNotifier.value) {
       case EditorAction.transform:
         _transformController.reset();
         _marginNotifier.value = Cropper.imageMargin;

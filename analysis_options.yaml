@@ -9,6 +9,11 @@ analyzer:
 #    implicit-casts: false
 #    implicit-dynamic: false
 
+# cf https://github.com/dart-lang/dart_style/wiki/Configuration
+formatter:
+  page_width: 240
+  trailing_commas: preserve
+
 linter:
   rules:
     # from 'flutter_lints', excluded

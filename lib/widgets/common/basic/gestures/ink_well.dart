@@ -522,7 +522,7 @@ class _InkResponseStateWidget extends StatefulWidget {
       if (onSecondaryTap != null) 'secondary tap',
       if (onSecondaryTapUp != null) 'secondary tap up',
       if (onSecondaryTapDown != null) 'secondary tap down',
-      if (onSecondaryTapCancel != null) 'secondary tap cancel'
+      if (onSecondaryTapCancel != null) 'secondary tap cancel',
     ];
     properties.add(IterableProperty<String>('gestures', gestures, ifEmpty: '<none>'));
     properties.add(DiagnosticsProperty<MouseCursor>('mouseCursor', mouseCursor));
@@ -544,10 +544,7 @@ enum _HighlightType {
   focus,
 }
 
-class _InkResponseState extends State<_InkResponseStateWidget>
-    with AutomaticKeepAliveClientMixin<_InkResponseStateWidget>
-    implements _ParentInkResponseState
-{
+class _InkResponseState extends State<_InkResponseStateWidget> with AutomaticKeepAliveClientMixin<_InkResponseStateWidget> implements _ParentInkResponseState {
   Set<InteractiveInkFeature>? _splashes;
   InteractiveInkFeature? _currentSplash;
   bool _hovering = false;
@@ -578,6 +575,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
       widget.parentState?.markChildInkResponsePressed(this, nowAnyPressed);
     }
   }
+
   bool get _anyChildInkResponsePressed => _activeChildren.isNotEmpty;
 
   void activateOnIntent(Intent? intent) {
@@ -611,7 +609,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
 
   void handleStatesControllerChange() {
     // Force a rebuild to resolve widget.overlayColor, widget.mouseCursor
-    setState(() { });
+    setState(() {});
   }
 
   WidgetStatesController get statesController => widget.statesController ?? internalStatesController!;
@@ -642,9 +640,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
       }
       initStatesController();
     }
-    if (widget.radius != oldWidget.radius ||
-        widget.highlightShape != oldWidget.highlightShape ||
-        widget.borderRadius != oldWidget.borderRadius) {
+    if (widget.radius != oldWidget.radius || widget.highlightShape != oldWidget.highlightShape || widget.borderRadius != oldWidget.borderRadius) {
       final InkHighlight? hoverHighlight = _highlights[_HighlightType.hover];
       if (hoverHighlight != null) {
         hoverHighlight.dispose();
@@ -701,7 +697,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
     }
   }
 
-  void updateHighlight(_HighlightType type, { required bool value, bool callOnHover = true }) {
+  void updateHighlight(_HighlightType type, {required bool value, bool callOnHover = true}) {
     final InkHighlight? highlight = _highlights[type];
     void handleInkRemoval() {
       assert(_highlights[type] != null);
@@ -717,7 +713,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
           statesController.update(WidgetState.hovered, value);
         }
       case _HighlightType.focus:
-      // see handleFocusUpdate()
+        // see handleFocusUpdate()
         break;
     }
 
@@ -730,9 +726,9 @@ class _InkResponseState extends State<_InkResponseStateWidget>
 
     if (value) {
       if (highlight == null) {
-        final Color resolvedOverlayColor = widget.overlayColor?.resolve(statesController.value)
-            ?? switch (type) {
-            // Use the backwards compatible defaults
+        final Color resolvedOverlayColor = widget.overlayColor?.resolve(statesController.value) ??
+            switch (type) {
+              // Use the backwards compatible defaults
               _HighlightType.pressed => widget.highlightColor ?? Theme.of(context).highlightColor,
               _HighlightType.focus => widget.focusColor ?? Theme.of(context).focusColor,
               _HighlightType.hover => widget.hoverColor ?? Theme.of(context).hoverColor,
@@ -789,7 +785,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
     final MaterialInkController inkController = Material.of(context);
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(globalPosition);
-    final Color color =  widget.overlayColor?.resolve(statesController.value) ?? widget.splashColor ?? Theme.of(context).splashColor;
+    final Color color = widget.overlayColor?.resolve(statesController.value) ?? widget.splashColor ?? Theme.of(context).splashColor;
     final RectCallback? rectCallback = widget.containedInkWell ? widget.getRectCallback!(referenceBox) : null;
     final BorderRadius? borderRadius = widget.borderRadius;
     final ShapeBorder? customBorder = widget.customBorder;
@@ -846,6 +842,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
   }
 
   bool _hasFocus = false;
+
   void handleFocusUpdate(bool hasFocus) {
     _hasFocus = hasFocus;
     // Set here rather than updateHighlight because this widget's
@@ -978,21 +975,17 @@ class _InkResponseState extends State<_InkResponseStateWidget>
   }
 
   bool _primaryButtonEnabled(_InkResponseStateWidget widget) {
-    return widget.onTap != null
-        || widget.onDoubleTap != null
-        || widget.onLongPress != null
-        || widget.onTapUp != null
-        || widget.onTapDown != null;
+    return widget.onTap != null || widget.onDoubleTap != null || widget.onLongPress != null || widget.onTapUp != null || widget.onTapDown != null;
   }
 
   bool _secondaryButtonEnabled(_InkResponseStateWidget widget) {
-    return widget.onSecondaryTap != null
-        || widget.onSecondaryTapUp != null
-        || widget.onSecondaryTapDown != null;
+    return widget.onSecondaryTap != null || widget.onSecondaryTapUp != null || widget.onSecondaryTapDown != null;
   }
 
   bool get enabled => isWidgetEnabled(widget);
+
   bool get _primaryEnabled => _primaryButtonEnabled(widget);
+
   bool get _secondaryEnabled => _secondaryButtonEnabled(widget);
 
   void handleMouseEnter(PointerEnterEvent event) {
@@ -1032,14 +1025,15 @@ class _InkResponseState extends State<_InkResponseStateWidget>
 
       final ThemeData theme = Theme.of(context);
       return switch (type) {
-      // The pressed state triggers a ripple (ink splash), per the current
-      // Material Design spec. A separate highlight is no longer used.
-      // See https://material.io/design/interaction/states.html#pressed
+        // The pressed state triggers a ripple (ink splash), per the current
+        // Material Design spec. A separate highlight is no longer used.
+        // See https://material.io/design/interaction/states.html#pressed
         _HighlightType.pressed => widget.overlayColor?.resolve(pressed) ?? widget.highlightColor ?? theme.highlightColor,
-        _HighlightType.focus   => widget.overlayColor?.resolve(focused) ?? widget.focusColor ?? theme.focusColor,
-        _HighlightType.hover   => widget.overlayColor?.resolve(hovered) ?? widget.hoverColor ?? theme.hoverColor,
+        _HighlightType.focus => widget.overlayColor?.resolve(focused) ?? widget.focusColor ?? theme.focusColor,
+        _HighlightType.hover => widget.overlayColor?.resolve(hovered) ?? widget.hoverColor ?? theme.hoverColor,
       };
     }
+
     for (final _HighlightType type in _highlights.keys) {
       _highlights[type]?.color = getHighlightColorForType(type);
     }
@@ -1077,7 +1071,7 @@ class _InkResponseState extends State<_InkResponseStateWidget>
                   onDoubleTap: widget.onDoubleTap != null ? handleDoubleTap : null,
                   onLongPress: widget.onLongPress != null ? handleLongPress : null,
                   onSecondaryTapDown: _secondaryEnabled ? handleSecondaryTapDown : null,
-                  onSecondaryTapUp: _secondaryEnabled ? handleSecondaryTapUp: null,
+                  onSecondaryTapUp: _secondaryEnabled ? handleSecondaryTapUp : null,
                   onSecondaryTap: _secondaryEnabled ? handleSecondaryTap : null,
                   onSecondaryTapCancel: _secondaryEnabled ? handleSecondaryTapCancel : null,
                   behavior: HitTestBehavior.opaque,

@@ -14,4 +14,3 @@ mixin CoveredFilter on CollectionFilter {
     return super.color(context);
   }
 }
-

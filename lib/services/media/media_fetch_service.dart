@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -13,7 +14,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
-import 'dart:ui' as ui;
 
 abstract class MediaFetchService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false});
