@@ -1419,7 +1419,7 @@
   "@newGroupDialogTitle": {},
   "createButtonLabel": "创建",
   "@createButtonLabel": {},
-  "chipActionGroup": "分组",
+  "chipActionGroup": "更改分组",
   "@chipActionGroup": {},
   "groupAlreadyExists": "组已存在",
   "@groupAlreadyExists": {},

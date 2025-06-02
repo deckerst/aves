@@ -142,5 +142,15 @@
   "chipActionUnpin": "Sabitləməyin",
   "@chipActionUnpin": {},
   "chipActionRename": "Bir də adlandır",
-  "@chipActionRename": {}
+  "@chipActionRename": {},
+  "chipActionDecompose": "Böl",
+  "@chipActionDecompose": {},
+  "chipActionCreateAlbum": "Albom yarat",
+  "@chipActionCreateAlbum": {},
+  "createButtonLabel": "YARAT",
+  "@createButtonLabel": {},
+  "chipActionGroup": "Qruplandırmanı dəyişdir",
+  "@chipActionGroup": {},
+  "chipActionCreateGroup": "Qrup yarat",
+  "@chipActionCreateGroup": {}
 }
