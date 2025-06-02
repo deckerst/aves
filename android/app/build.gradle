@@ -134,14 +134,14 @@ flutter {
 
 repositories {
     maven {
-        url 'https://jitpack.io'
+        url = 'https://jitpack.io'
         content {
             includeGroup "com.github.deckerst"
             includeGroup "com.github.deckerst.mp4parser"
         }
     }
     maven {
-        url 'https://s3.amazonaws.com/repo.commonsware.com'
+        url = 'https://s3.amazonaws.com/repo.commonsware.com'
         content {
             excludeGroupByRegex "com\\.github\\.deckerst.*"
         }

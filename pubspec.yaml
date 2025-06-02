@@ -19,7 +19,6 @@ workspace:
   - plugins/aves_magnifier
   - plugins/aves_map
   - plugins/aves_model
-  - plugins/aves_platform_meta
   - plugins/aves_report
   - plugins/aves_report_crashlytics
   - plugins/aves_screen_state
