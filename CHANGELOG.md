@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - downgraded Flutter to stable v3.27.4
+- prevent display orientation flip when device rotation is locked
 
 ### Fixed
 
