@@ -138,6 +138,12 @@ public class ExifInterfaceFork {
     // TLAD threshold for safer Exif attribute parsing
     private static final int ATTRIBUTE_SIZE_DANGER_THRESHOLD = 3 * (1 << 20); // MB
 
+    // TLAD available heap size, to check allocations
+    private long getAvailableHeapSize() {
+        final Runtime runtime = Runtime.getRuntime();
+        return runtime.maxMemory() - (runtime.totalMemory() - runtime.freeMemory());
+    }
+
     private static final String TAG = "ExifInterface";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
@@ -7554,6 +7560,13 @@ public class ExifInterfaceFork {
                     Log.d(TAG, "Invalid strip offset value");
                     return;
                 }
+
+                // TLAD start
+                if (bytesToSkip > getAvailableHeapSize()) {
+                    throw new IOException("cannot allocate " + bytesToSkip + " bytes to skip to retrieve thumbnail");
+                }
+                // TLAD end
+
                 try {
                     in.skipFully(bytesToSkip);
                 } catch (EOFException e) {
