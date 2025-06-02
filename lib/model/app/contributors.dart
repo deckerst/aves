@@ -143,6 +143,7 @@ class Contributors {
     Contributor('vm', 'varga.m007@gmail.com'),
     Contributor('WMatheist', 'wmatheist@protonmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
+    // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
     // Contributor('Htet Oo Hlaing', 'htetoh2006@outlook.com'), // Burmese
     // Contributor('Khant', 'khant@users.noreply.hosted.weblate.org'), // Burmese
