@@ -31,7 +31,7 @@ class GeocodingHandler(private val context: Context) : MethodCallHandler {
     private fun getAddress(call: MethodCall, result: MethodChannel.Result) {
         val latitude = call.argument<Number>("latitude")?.toDouble()
         val longitude = call.argument<Number>("longitude")?.toDouble()
-        val localeString = call.argument<String>("locale")
+        val localeLanguageTag = call.argument<String>("localeLanguageTag")
         val maxResults = call.argument<Int>("maxResults") ?: 1
         if (latitude == null || longitude == null) {
             result.error("getAddress-args", "missing arguments", null)
@@ -43,11 +43,8 @@ class GeocodingHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        geocoder = geocoder ?: if (localeString != null) {
-            val split = localeString.split("_")
-            val language = split[0]
-            val country = if (split.size > 1) split[1] else ""
-            Geocoder(context, Locale(language, country))
+        geocoder = geocoder ?: if (localeLanguageTag != null) {
+            Geocoder(context, Locale.forLanguageTag(localeLanguageTag))
         } else {
             Geocoder(context)
         }
