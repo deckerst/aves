@@ -15,7 +15,7 @@ class GeocodingService {
       final result = await _platform.invokeMethod('getAddress', <String, dynamic>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
-        'locale': locale.toString(),
+        'localeLanguageTag': locale.toLanguageTag(),
         // we only really need one address, but sometimes the native geocoder
         // returns nothing with `maxResults` of 1, but succeeds with `maxResults` of 2+
         'maxResults': 2,

@@ -81,12 +81,12 @@ object PixyMetaHelper {
         output: OutputStream,
         iptcDataList: List<FieldMap>?,
     ) {
-        val iptc = iptcDataList?.flatMap {
+        val iptc: List<IPTCDataSet> = iptcDataList?.flatMap {
             val record = it["record"] as Int
             val tag = it["tag"] as Int
             val values = it["values"] as List<*>
             values.map { data -> IPTCDataSet(IPTCRecord.fromRecordNumber(record), tag, data as ByteArray) }
-        } ?: ArrayList<IPTCDataSet>()
+        } ?: ArrayList()
         Metadata.insertIPTC(input, output, iptc)
     }
 

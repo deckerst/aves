@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import android.annotation.SuppressLint
 import android.app.LocaleConfig
 import android.app.LocaleManager
 import android.content.Context
@@ -102,6 +103,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            @SuppressLint("WrongConstant")
             val lm = context.getSystemService(Context.LOCALE_SERVICE) as? LocaleManager
             lm?.overrideLocaleConfig = LocaleConfig(LocaleList.forLanguageTags(locales.joinToString(",")))
         }

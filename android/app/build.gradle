@@ -33,13 +33,13 @@ kotlin {
 }
 
 android {
-    namespace 'deckers.thibault.aves'
-    compileSdk 35
+    namespace = 'deckers.thibault.aves'
+    compileSdk = 36
 
     defaultConfig {
         applicationId packageName
         minSdk flutter.minSdkVersion
-        targetSdk 35
+        targetSdk 36
         versionCode flutter.versionCode
         versionName flutter.versionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>"]
@@ -149,14 +149,14 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
 
-    implementation "androidx.appcompat:appcompat:1.7.0"
+    implementation "androidx.appcompat:appcompat:1.7.1"
     implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.lifecycle:lifecycle-process:2.9.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.9.1'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.security:security-crypto:1.1.0-alpha07'
+    implementation 'androidx.security:security-crypto:1.1.0-beta01'
     implementation 'androidx.work:work-runtime-ktx:2.10.1'
 
     implementation 'com.commonsware.cwac:document:0.5.0'
@@ -164,7 +164,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation 'com.google.android.material:material:1.12.0'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.16'
+    implementation 'org.slf4j:slf4j-simple:2.0.17'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
@@ -178,7 +178,7 @@ dependencies {
     implementation 'com.github.deckerst:pixymeta-android:cb1cdc932e'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.1'
 
     kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"

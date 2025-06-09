@@ -209,7 +209,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
                               bitmapScaling: MapBitmapScaling.none,
                             ),
                             position: _toServiceLatLng(dotLocation),
-                            zIndex: 1,
+                            zIndexInt: 1,
                           )
                       },
                       polylines: {
