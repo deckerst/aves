@@ -247,7 +247,7 @@ class PlatformMediaFetchService implements MediaFetchService {
             return InteropDecoding.bytesToCodec(bytes);
           }
         } on PlatformException catch (e, stack) {
-          if (_isUnknownVisual(mimeType)) {
+          if (_isUnknownVisual(mimeType) || e.code == 'getThumbnail-large') {
             await reportService.recordError(e, stack);
           }
         }
