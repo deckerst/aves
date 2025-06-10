@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import android.util.Size
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -17,6 +19,7 @@ import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.SVG
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -25,6 +28,8 @@ import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodChannel
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 class ThumbnailFetcher internal constructor(
     private val context: Context,
@@ -74,6 +79,29 @@ class ThumbnailFetcher internal constructor(
                 bitmap = getByGlide()
             } catch (e: Exception) {
                 exception = e
+            }
+        }
+
+        if (bitmap != null) {
+            if (bitmap.width > width && bitmap.height > height) {
+                val scalingFactor: Double = min(bitmap.width.toDouble() / width, bitmap.height.toDouble() / height)
+                val dstWidth = (bitmap.width / scalingFactor).roundToInt()
+                val dstHeight = (bitmap.height / scalingFactor).roundToInt()
+                Log.d(
+                    LOG_TAG, "rescale thumbnail for mimeType=$mimeType uri=$uri width=$width height=$height" +
+                            ", with bitmap byteCount=${bitmap.byteCount} size=${bitmap.width}x${bitmap.height}" +
+                            ", to target=${dstWidth}x${dstHeight}"
+                )
+                bitmap = bitmap.scale(dstWidth, dstHeight)
+            }
+
+            if (bitmap.byteCount > BITMAP_SIZE_DANGER_THRESHOLD) {
+                result.error(
+                    "getThumbnail-large", "thumbnail bitmap dangerously large" +
+                            " for mimeType=$mimeType uri=$uri pageId=$pageId width=$width height=$height" +
+                            ", with bitmap byteCount=${bitmap.byteCount} size=${bitmap.width}x${bitmap.height} config=${bitmap.config?.name}", null
+                )
+                return
             }
         }
 
@@ -143,5 +171,10 @@ class ThumbnailFetcher internal constructor(
         } finally {
             Glide.with(context).clear(target)
         }
+    }
+
+    companion object {
+        private val LOG_TAG = LogUtils.createTag<ThumbnailFetcher>()
+        private const val BITMAP_SIZE_DANGER_THRESHOLD = 20 * (1 shl 20) // MB
     }
 }

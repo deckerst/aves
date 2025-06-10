@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Info: show matching dynamic albums
 
+### Fixed
+
+- crash when decoding some large thumbnails
+
 ## <a id="v1.13.2"></a>[v1.13.2] - 2025-06-02
 
 ### Changed
