@@ -32,6 +32,7 @@ class MimeTypes {
   static const dcr = 'image/x-kodak-dcr';
   static const dng = 'image/dng';
   static const dngX = 'image/x-adobe-dng';
+  static const dwg = 'image/vnd.dwg';
   static const erf = 'image/x-epson-erf';
   static const k25 = 'image/x-kodak-k25';
   static const kdc = 'image/x-kodak-kdc';
@@ -42,6 +43,7 @@ class MimeTypes {
   static const pef = 'image/x-pentax-pef';
   static const raf = 'image/x-fuji-raf';
   static const raw = 'image/x-panasonic-raw';
+  static const rgbe = 'image/vnd.radiance';
   static const rw2 = 'image/x-panasonic-rw2';
   static const sr2 = 'image/x-sony-sr2';
   static const srf = 'image/x-sony-srf';
