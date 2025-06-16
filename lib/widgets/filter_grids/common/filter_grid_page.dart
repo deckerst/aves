@@ -55,6 +55,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final String? settingsRouteKey;
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
+  final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
@@ -70,6 +71,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     this.settingsRouteKey,
     required this.appBar,
     required this.appBarHeightNotifier,
+    required this.scrollController,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
@@ -98,6 +100,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               settingsRouteKey: settingsRouteKey,
               appBar: appBar,
               appBarHeight: MediaQuery.paddingOf(context).top + appBarHeight,
+              scrollController: scrollController,
               sections: sections,
               newFilters: newFilters,
               sortFactor: sortFactor,
@@ -168,6 +171,7 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final String? settingsRouteKey;
   final Widget appBar;
   final double appBarHeight;
+  final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
@@ -181,6 +185,7 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.settingsRouteKey,
     required this.appBar,
     required this.appBarHeight,
+    required this.scrollController,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
@@ -235,6 +240,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
         child: _FilterGridContent<T>(
           appBar: widget.appBar,
           appBarHeight: widget.appBarHeight,
+          scrollController: widget.scrollController,
           sections: widget.sections,
           newFilters: widget.newFilters,
           sortFactor: widget.sortFactor,
@@ -252,6 +258,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
 class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final Widget appBar;
   final double appBarHeight;
+  final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
@@ -264,6 +271,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
     super.key,
     required this.appBar,
     required this.appBarHeight,
+    required this.scrollController,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
@@ -414,7 +422,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                 selectable: widget.selectable,
                 emptyBuilder: widget.emptyBuilder,
                 bannerBuilder: _getFilterBanner,
-                scrollController: PrimaryScrollController.of(context),
+                scrollController: widget.scrollController,
                 tileLayout: tileLayout,
               ),
             );
