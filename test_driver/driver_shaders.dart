@@ -41,6 +41,6 @@ Future<void> configureAndLaunch() async {
     ..showOverlayThumbnailPreview = true
     ..imageBackground = EntryBackground.checkered
     // map
-    ..mapStyle = EntryMapStyle.googleNormal;
+    ..mapStyle = EntryMapStyles.googleNormal;
   app.main();
 }
