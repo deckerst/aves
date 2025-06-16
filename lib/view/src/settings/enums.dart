@@ -65,15 +65,16 @@ extension ExtraDisplayRefreshRateModeView on DisplayRefreshRateMode {
 extension ExtraEntryMapStyleView on EntryMapStyle {
   String getName(BuildContext context) {
     final l10n = context.l10n;
-    return switch (this) {
-      EntryMapStyle.googleNormal => l10n.mapStyleGoogleNormal,
-      EntryMapStyle.googleHybrid => l10n.mapStyleGoogleHybrid,
-      EntryMapStyle.googleTerrain => l10n.mapStyleGoogleTerrain,
-      EntryMapStyle.osmLiberty => l10n.mapStyleOsmLiberty,
-      EntryMapStyle.openTopoMap => l10n.mapStyleOpenTopoMap,
-      EntryMapStyle.osmHot => l10n.mapStyleOsmHot,
-      EntryMapStyle.stamenWatercolor => l10n.mapStyleStamenWatercolor,
-    };
+    if (this == EntryMapStyles.googleNormal) return l10n.mapStyleGoogleNormal;
+    if (this == EntryMapStyles.googleHybrid) return l10n.mapStyleGoogleHybrid;
+    if (this == EntryMapStyles.googleTerrain) return l10n.mapStyleGoogleTerrain;
+    if (this == EntryMapStyles.osmLiberty) return l10n.mapStyleOsmLiberty;
+    if (this == EntryMapStyles.openTopoMap) return l10n.mapStyleOpenTopoMap;
+    if (this == EntryMapStyles.osmHot) return l10n.mapStyleOsmHot;
+    if (this == EntryMapStyles.stamenWatercolor) return l10n.mapStyleStamenWatercolor;
+    final _name = name;
+    if (_name != null) return _name;
+    throw Exception('Name is undefined for map style=$this');
   }
 }
 

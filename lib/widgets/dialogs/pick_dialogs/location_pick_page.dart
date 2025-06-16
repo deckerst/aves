@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/model/settings/enums/coordinate_format.dart';
-import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
@@ -75,7 +74,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
+    if (settings.mapStyle?.isHeavy ?? false) {
       _isPageAnimatingNotifier = ValueNotifier(true);
       Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
         if (!mounted) return;

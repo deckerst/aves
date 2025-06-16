@@ -10,7 +10,6 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
-import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/modules/app.dart';
 import 'package:aves/model/settings/modules/collection.dart';
 import 'package:aves/model/settings/modules/debug.dart';
@@ -125,7 +124,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
       if (mobileServices.mapStyles.contains(defaultMapStyle)) {
         mapStyle = defaultMapStyle;
       } else {
-        final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
+        final styles = EntryMapStyles.all.whereNot((v) => v.needMobileService).toList();
         mapStyle = styles[Random().nextInt(styles.length)];
       }
     }
@@ -207,14 +206,21 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
   // map
 
   EntryMapStyle? get mapStyle {
-    final preferred = getEnumOrDefault(SettingKeys.mapStyleKey, null, EntryMapStyle.values);
+    var preferred = getString(SettingKeys.mapStyleKey);
+
+    // backward compatibility with definition as enum
+    if (preferred != null && preferred.contains('.')) {
+      preferred = preferred.substring(preferred.indexOf('.') + 1);
+      if (preferred.isEmpty) preferred = null;
+    }
+
     if (preferred == null) return null;
 
     final available = availability.mapStyles;
-    return available.contains(preferred) ? preferred : available.first;
+    return available.firstWhereOrNull((v) => v.key == preferred) ?? available.first;
   }
 
-  set mapStyle(EntryMapStyle? newValue) => set(SettingKeys.mapStyleKey, newValue?.toString());
+  set mapStyle(EntryMapStyle? newValue) => set(SettingKeys.mapStyleKey, newValue?.key);
 
   LatLng? get mapDefaultCenter {
     final json = getString(SettingKeys.mapDefaultCenterKey);

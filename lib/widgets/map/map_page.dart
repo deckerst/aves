@@ -9,7 +9,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/media/geotiff.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
-import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/tag.dart';
@@ -136,7 +135,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    if (ExtraEntryMapStyle.isHeavy(settings.mapStyle)) {
+    if (settings.mapStyle?.isHeavy ?? false) {
       _isPageAnimatingNotifier.value = true;
       Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
         if (!mounted) return;
@@ -220,7 +219,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         selector: (context, s) => s.mapStyle,
         builder: (context, mapStyle, child) {
           late Widget scroller;
-          if (ExtraEntryMapStyle.isHeavy(mapStyle)) {
+          if (mapStyle?.isHeavy ?? false) {
             // the map widget is too heavy for a smooth resizing animation
             // so we just toggle visibility when overlay animation is done
             scroller = ValueListenableBuilder<double>(
