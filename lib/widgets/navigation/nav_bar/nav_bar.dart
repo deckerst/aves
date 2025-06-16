@@ -167,15 +167,11 @@ class NavBarPaddingSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
+    final enableBottomNavigationBar = context.select<Settings, bool>((v) => v.enableBottomNavigationBar);
+    final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
     return SliverToBoxAdapter(
-      child: Selector<Settings, bool>(
-        selector: (context, s) => s.enableBottomNavigationBar,
-        builder: (context, enableBottomNavigationBar, child) {
-          final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
-          final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
-          return SizedBox(height: showBottomNavigationBar ? AppBottomNavBar.height : 0);
-        },
-      ),
+      child: SizedBox(height: showBottomNavigationBar ? AppBottomNavBar.height : 0),
     );
   }
 }

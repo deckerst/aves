@@ -45,6 +45,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   final ActionsBuilder<T, CSAD>? actionsBuilder;
   final bool isEmpty;
   final ValueNotifier<double> appBarHeightNotifier;
+  final ScrollController scrollController;
 
   const FilterGridAppBar({
     super.key,
@@ -54,6 +55,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
     this.actionsBuilder,
     required this.isEmpty,
     required this.appBarHeightNotifier,
+    required this.scrollController,
   });
 
   @override
@@ -104,6 +106,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     _subscriptions.add(query.enabledStream.listen((e) => _updateAppBarHeight()));
     _queryFocusRequestNotifier = query.focusRequestNotifier;
     _queryFocusRequestNotifier.addListener(_onQueryFocusRequest);
+    _queryBarFocusNode.addListener(_onQueryBarFocusChanged);
     _browseToSelectAnimation = AnimationController(
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
@@ -126,6 +129,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   void dispose() {
     _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
+    _queryBarFocusNode.removeListener(_onQueryBarFocusChanged);
     _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
@@ -480,6 +484,18 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
+
+  void _onQueryBarFocusChanged() {
+    if (_queryBarFocusNode.hasFocus) {
+      // the query bar is in the top sliver of the page scrollable,
+      // so when the bar text field gets focus and requests to be on screen,
+      // it will scroll to show it by default, but it may not end at the very top,
+      // so we do it manually for a more predicable end position
+      _scrollToTop();
+    }
+  }
+
+  void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _updateAppBarHeight() {
     widget.appBarHeightNotifier.value = AvesAppBar.appBarHeightForContentHeight(appBarContentHeight);

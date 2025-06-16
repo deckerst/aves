@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when decoding some large thumbnails
+- scrolling to top when leaving viewer to collection with title filter enabled
 
 ## <a id="v1.13.2"></a>[v1.13.2] - 2025-06-02
 
