@@ -305,7 +305,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (_collection == null || resultUri == null) return;
 
     final editedEntry = await mediaFetchService.getEntry(resultUri, mimeType);
-    if (editedEntry == null) return;
+    if (editedEntry == null) {
+      debugPrint('failed to find edited entry with mimeType=$mimeType uri=$resultUri');
+      return;
+    }
 
     final editedUri = editedEntry.uri;
     final matchCurrentFilters = _collection.filters.every((filter) => filter.test(editedEntry));

@@ -237,6 +237,10 @@ open class MainActivity : FlutterFragmentActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.i(LOG_TAG, "onActivityResult requestCode=$requestCode resultCode=$resultCode data=$data")
+        data?.extras?.takeUnless { it.isEmpty }?.let {
+            Log.i(LOG_TAG, "onActivityResult intent extras=$it")
+        }
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(requestCode, resultCode, data)
