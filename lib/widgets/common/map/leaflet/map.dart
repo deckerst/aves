@@ -213,7 +213,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
       return const OsmLibertyLayer();
     }
 
-    final urlTemplate = style.urlTemplate;
+    final urlTemplate = style.url;
     if (urlTemplate != null) {
       return TileLayer(
         urlTemplate: urlTemplate,

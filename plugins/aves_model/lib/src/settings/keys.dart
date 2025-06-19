@@ -146,6 +146,7 @@ class SettingKeys {
   // map
   static const mapStyleKey = 'info_map_style';
   static const mapDefaultCenterKey = 'map_default_center';
+  static const customMapStylesKey = 'custom_map_styles';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';

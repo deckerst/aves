@@ -25,7 +25,7 @@ class ImageMarker extends StatelessWidget {
   ImageMarker({
     super.key,
     required this.count,
-    required String locale,
+    required String? locale,
     this.drawArrow = true,
     required this.buildThumbnailImage,
   }) : countFormatter = intl.NumberFormat.decimalPattern(locale);
