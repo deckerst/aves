@@ -8,6 +8,7 @@ class SelectionRadioListTile<T> extends StatelessWidget {
   final TextBuilder<T>? optionSubtitleBuilder;
   final bool needConfirmation;
   final bool? dense;
+  final Widget? secondary;
   final T Function() getGroupValue;
   final void Function(T value) setGroupValue;
 
@@ -18,6 +19,7 @@ class SelectionRadioListTile<T> extends StatelessWidget {
     this.optionSubtitleBuilder,
     required this.needConfirmation,
     this.dense,
+    this.secondary,
     required this.getGroupValue,
     required this.setGroupValue,
   });
@@ -51,6 +53,7 @@ class SelectionRadioListTile<T> extends StatelessWidget {
             )
           : null,
       dense: dense,
+      secondary: secondary,
     );
   }
 }

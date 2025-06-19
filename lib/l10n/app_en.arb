@@ -1072,6 +1072,7 @@
   "viewerInfoLabelAddress": "Address",
 
   "mapStyleDialogTitle": "Map Style",
+  "mapStyleDialogAddStyle": "Add style",
   "mapStyleTooltip": "Select map style",
   "mapZoomInTooltip": "Zoom in",
   "mapZoomOutTooltip": "Zoom out",

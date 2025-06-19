@@ -4,16 +4,16 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/view/view.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
-import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
-import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
+import 'package:aves/widgets/dialogs/select_map_style_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class MapActionDelegate with FeedbackMixin {
@@ -36,7 +36,7 @@ class MapActionDelegate with FeedbackMixin {
   void onActionSelected(BuildContext context, MapAction action) {
     switch (action) {
       case MapAction.selectStyle:
-        _selectStyle(context);
+        selectStyle(context);
       case MapAction.openMapApp:
         OpenMapAppNotification().dispatch(context);
       case MapAction.zoomIn:
@@ -48,15 +48,19 @@ class MapActionDelegate with FeedbackMixin {
     }
   }
 
-  Future<void> _selectStyle(BuildContext context) => showSelectionDialog<EntryMapStyle>(
-        context: context,
-        builder: (context) => AvesSingleSelectionDialog<EntryMapStyle?>(
-          initialValue: settings.mapStyle,
-          options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
-          title: context.l10n.mapStyleDialogTitle,
-        ),
-        onSelection: (v) => settings.mapStyle = v,
-      );
+  static Future<void> selectStyle(BuildContext context) async {
+    final value = await Navigator.maybeOf(context)?.push<EntryMapStyle>(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: MapStyleDialog.routeName),
+        builder: (context) => const MapStyleDialog(),
+      ),
+    );
+    // wait for the dialog to hide
+    await Future.delayed(ADurations.pageTransitionLoose * timeDilation);
+    if (value != null) {
+      settings.mapStyle = value;
+    }
+  }
 
   Future<void> _addShortcut(BuildContext context) async {
     final idleBounds = controller.idleBounds;

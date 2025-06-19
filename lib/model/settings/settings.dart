@@ -121,10 +121,10 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     // availability
     if (flavor.hasMapStyleDefault) {
       final defaultMapStyle = mobileServices.defaultMapStyle;
-      if (mobileServices.mapStyles.contains(defaultMapStyle)) {
+      if (defaultMapStyle != null && mobileServices.mapStyles.contains(defaultMapStyle)) {
         mapStyle = defaultMapStyle;
       } else {
-        final styles = EntryMapStyles.all.whereNot((v) => v.needMobileService).toList();
+        final styles = EntryMapStyles.baseStyles;
         mapStyle = styles[Random().nextInt(styles.length)];
       }
     }
@@ -209,15 +209,16 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     var preferred = getString(SettingKeys.mapStyleKey);
 
     // backward compatibility with definition as enum
-    if (preferred != null && preferred.contains('.')) {
-      preferred = preferred.substring(preferred.indexOf('.') + 1);
+    const oldEnumPrefix = 'EntryMapStyle.';
+    if (preferred != null && preferred.startsWith(oldEnumPrefix)) {
+      preferred = preferred.substring(oldEnumPrefix.length);
       if (preferred.isEmpty) preferred = null;
     }
 
     if (preferred == null) return null;
 
-    final available = availability.mapStyles;
-    return available.firstWhereOrNull((v) => v.key == preferred) ?? available.first;
+    final styles = [...availability.mapStyles, ...customMapStyles];
+    return styles.firstWhereOrNull((v) => v.key == preferred) ?? styles.first;
   }
 
   set mapStyle(EntryMapStyle? newValue) => set(SettingKeys.mapStyleKey, newValue?.key);
@@ -228,6 +229,10 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
   }
 
   set mapDefaultCenter(LatLng? newValue) => set(SettingKeys.mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);
+
+  Set<EntryMapStyle> get customMapStyles => (getStringList(SettingKeys.customMapStylesKey) ?? []).map(EntryMapStyle.fromJson).nonNulls.toSet();
+
+  set customMapStyles(Set<EntryMapStyle> newValue) => set(SettingKeys.customMapStylesKey, newValue.map((filter) => filter.toJson()).toList());
 
   // bin
 
@@ -436,6 +441,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not a string');
               }
+            case SettingKeys.customMapStylesKey:
             case SettingKeys.homeCustomCollectionKey:
             case SettingKeys.drawerTypeBookmarksKey:
             case SettingKeys.drawerAlbumBookmarksKey:

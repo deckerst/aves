@@ -12,16 +12,14 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
 import 'package:aves/widgets/common/map/buttons/panel.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
+import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
-import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
@@ -216,15 +214,7 @@ class _GeoMapState extends State<GeoMap> {
         } else {
           final overlay = Center(
             child: OverlayTextButton(
-              onPressed: () => showSelectionDialog<EntryMapStyle>(
-                context: context,
-                builder: (context) => AvesSingleSelectionDialog<EntryMapStyle?>(
-                  initialValue: settings.mapStyle,
-                  options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
-                  title: context.l10n.mapStyleDialogTitle,
-                ),
-                onSelection: (v) => settings.mapStyle = v,
-              ),
+              onPressed: () => MapActionDelegate.selectStyle(context),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
