@@ -222,7 +222,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - IPTC / object-name, if IPTC exists
   // - XMP / dc:title
   // write description:
-  // - Exif / ImageDescription
+  // - Exif / ImageDescription (clear field)
+  // - Exif / UserComment (clear field)
   // - IPTC / caption-abstract, if IPTC exists
   // - XMP / dc:description
   Future<Set<EntryDataType>> editTitleDescription(Map<DescriptionField, String?> fields) async {
@@ -238,7 +239,9 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     if (isExifEditionSupported && editDescription) {
       metadata[MetadataType.exif] = {
+        // clear field because it is subpar, with ASCII support only
         MetadataField.exifImageDescription.toPlatform!: null,
+        // clear field because it is subpar, with ambiguous encoding
         MetadataField.exifUserComment.toPlatform!: null,
       };
     }
