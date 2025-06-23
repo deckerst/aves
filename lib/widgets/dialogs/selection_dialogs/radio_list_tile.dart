@@ -33,9 +33,11 @@ class SelectionRadioListTile<T> extends StatelessWidget {
       value: value,
       groupValue: getGroupValue(),
       onChanged: (v) {
-        if (needConfirmation) {
-          setGroupValue(v as T);
-        } else {
+        // always update the group value even when popping afterwards,
+        // so that the group value can be used in pop handlers
+        // as well as the regular return value from navigation
+        setGroupValue(v as T);
+        if (!needConfirmation) {
           Navigator.maybeOf(context)?.pop(v);
         }
       },

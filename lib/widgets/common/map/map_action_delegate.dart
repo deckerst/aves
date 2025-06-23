@@ -1,19 +1,16 @@
 import 'package:aves/geo/uri.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
-import 'package:aves/widgets/dialogs/select_map_style_dialog.dart';
+import 'package:aves/widgets/dialogs/map/style_selection_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class MapActionDelegate with FeedbackMixin {
@@ -48,18 +45,13 @@ class MapActionDelegate with FeedbackMixin {
     }
   }
 
-  static Future<void> selectStyle(BuildContext context) async {
-    final value = await Navigator.maybeOf(context)?.push<EntryMapStyle>(
+  static void selectStyle(BuildContext context) {
+    Navigator.maybeOf(context)?.push<EntryMapStyle>(
       MaterialPageRoute(
-        settings: const RouteSettings(name: MapStyleDialog.routeName),
-        builder: (context) => const MapStyleDialog(),
+        settings: const RouteSettings(name: MapStyleSelectionDialog.routeName),
+        builder: (context) => const MapStyleSelectionDialog(),
       ),
     );
-    // wait for the dialog to hide
-    await Future.delayed(ADurations.pageTransitionLoose * timeDilation);
-    if (value != null) {
-      settings.mapStyle = value;
-    }
   }
 
   Future<void> _addShortcut(BuildContext context) async {
