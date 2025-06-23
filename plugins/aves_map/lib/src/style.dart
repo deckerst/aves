@@ -11,7 +11,7 @@ class EntryMapStyle extends Equatable {
   final String key;
   final String? name;
   final bool isRaster;
-  final String? url;
+  final String? url; // not strictly a `Uri` as it may contain templates like `{x}`
   final bool needMobileService;
   final bool isHeavy;
 
