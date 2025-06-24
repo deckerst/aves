@@ -1430,5 +1430,7 @@
   "groupPickerTitle": "挑选组",
   "@groupPickerTitle": {},
   "groupPickerUseThisGroupButton": "使用该组",
-  "@groupPickerUseThisGroupButton": {}
+  "@groupPickerUseThisGroupButton": {},
+  "mapStyleDialogAddStyle": "添加样式",
+  "@mapStyleDialogAddStyle": {}
 }

@@ -1622,5 +1622,11 @@
   "groupPickerTitle": "اختر المجموعة",
   "@groupPickerTitle": {},
   "groupPickerUseThisGroupButton": "استخدم هذه المجموعة",
-  "@groupPickerUseThisGroupButton": {}
+  "@groupPickerUseThisGroupButton": {},
+  "mapStyleDialogAddStyle": "إضافة نمط",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "اسم",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }

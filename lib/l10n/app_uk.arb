@@ -1622,5 +1622,11 @@
   "groupPickerUseThisGroupButton": "Використати цю групу",
   "@groupPickerUseThisGroupButton": {},
   "sectionNone": "Розділів немає",
-  "@sectionNone": {}
+  "@sectionNone": {},
+  "mapStyleDialogAddStyle": "Додати стиль",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogUrl": "URL-адреса",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogName": "Ім'я",
+  "@mapStyleEditorDialogName": {}
 }

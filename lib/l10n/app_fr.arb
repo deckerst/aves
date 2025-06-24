@@ -1430,5 +1430,11 @@
   "newGroupDialogNameLabel": "Nom du groupe",
   "@newGroupDialogNameLabel": {},
   "albumTierGroups": "Groupes",
-  "@albumTierGroups": {}
+  "@albumTierGroups": {},
+  "mapStyleDialogAddStyle": "Ajouter un style",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Nom",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }
