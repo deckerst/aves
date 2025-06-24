@@ -1648,5 +1648,11 @@
   "chipActionGroup": "Muuda grupeerimist",
   "@chipActionGroup": {},
   "sectionNone": "Rubriike pole",
-  "@sectionNone": {}
+  "@sectionNone": {},
+  "mapStyleDialogAddStyle": "Lisa stiil",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogUrl": "Võrguaadress",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogName": "Nimi",
+  "@mapStyleEditorDialogName": {}
 }

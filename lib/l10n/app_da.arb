@@ -1648,5 +1648,7 @@
   "ungrouped": "Gruppe opløst",
   "@ungrouped": {},
   "sectionNone": "Ingen sektioner",
-  "@sectionNone": {}
+  "@sectionNone": {},
+  "mapStyleDialogAddStyle": "Tilføj stil",
+  "@mapStyleDialogAddStyle": {}
 }

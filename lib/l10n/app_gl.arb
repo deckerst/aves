@@ -865,7 +865,7 @@
   "@sortByItemCount": {},
   "sortBySize": "Por tamaño",
   "@sortBySize": {},
-  "sortByAlbumFileName": "Por nome de álbum e arquivo",
+  "sortByAlbumFileName": "Por nome de álbum e título",
   "@sortByAlbumFileName": {},
   "sortByRating": "Por valoración",
   "@sortByRating": {},
@@ -1613,7 +1613,7 @@
   "@settingsHiddenFiltersBanner": {},
   "createButtonLabel": "CREAR",
   "@createButtonLabel": {},
-  "chipActionGroup": "Agrupar",
+  "chipActionGroup": "Cambiar agrupamento",
   "@chipActionGroup": {},
   "chipActionCreateGroup": "Crear grupo",
   "@chipActionCreateGroup": {},
@@ -1638,5 +1638,11 @@
   "sortByPath": "Por ruta",
   "@sortByPath": {},
   "searchFormatSectionTitle": "Formatos",
-  "@searchFormatSectionTitle": {}
+  "@searchFormatSectionTitle": {},
+  "mapStyleDialogAddStyle": "Engadir estilo",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogName": "Nome",
+  "@mapStyleEditorDialogName": {}
 }
