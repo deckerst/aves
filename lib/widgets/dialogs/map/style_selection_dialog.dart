@@ -40,10 +40,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
     final customStyles = context.select<Settings, Set<EntryMapStyle>>((v) => v.customMapStyles).sortedBy((v) => v.getName(context));
 
     return PopScope(
-      onPopInvokedWithResult: (didPop, result) {
-        debugPrint('TLAD onPopInvokedWithResult didPop=$didPop, result=$result');
-        settings.mapStyle = _selectedValue;
-      },
+      onPopInvokedWithResult: (didPop, result) => settings.mapStyle = _selectedValue,
       child: AvesScaffold(
         appBar: AppBar(
           automaticallyImplyLeading: !useTvLayout,
