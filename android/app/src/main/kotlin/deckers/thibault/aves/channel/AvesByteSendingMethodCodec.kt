@@ -2,6 +2,7 @@ package deckers.thibault.aves.channel
 
 import android.util.Log
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MemoryUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodCodec
 import io.flutter.plugin.common.StandardMessageCodec
@@ -32,17 +33,23 @@ class AvesByteSendingMethodCodec private constructor() : MethodCodec {
     // `StandardMethodCodec` writes the result to a `ByteArrayOutputStream`, then writes the stream to a `ByteBuffer`.
     // Here we only handle `ByteArray` results, but we avoid the intermediate stream.
     override fun encodeSuccessEnvelope(result: Any?): ByteBuffer {
-        if (result is ByteArray) {
-            return ByteBuffer.allocateDirect(1 + result.size).apply {
-                // following `StandardMethodCodec`:
-                // First byte is zero in success case, and non-zero otherwise.
-                put(0)
-                put(result)
-            }
+        if (result !is ByteArray) {
+            Log.e(LOG_TAG, "encodeSuccessEnvelope failed with result=$result")
+            return encodeErrorEnvelope("invalid-result-type", "Called success with a result which is not a `ByteArray`, type=${result?.javaClass}", null)
         }
 
-        Log.e(LOG_TAG, "encodeSuccessEnvelope failed with result=$result")
-        return encodeErrorEnvelope("invalid-result-type", "Called success with a result which is not a `ByteArray`, type=${result?.javaClass}", null)
+        val resultSize = result.size
+        if (!MemoryUtils.canAllocate(resultSize)) {
+            Log.e(LOG_TAG, "encodeSuccessEnvelope failed with result size=$resultSize")
+            return encodeErrorEnvelope("large-result", "Called success with a result which is too large, size=$resultSize", null)
+        }
+
+        return ByteBuffer.allocateDirect(1 + resultSize).apply {
+            // following `StandardMethodCodec`:
+            // First byte is zero in success case, and non-zero otherwise.
+            put(0)
+            put(result)
+        }
     }
 
     companion object {
