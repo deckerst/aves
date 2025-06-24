@@ -1431,5 +1431,9 @@
   "groupPickerTitle": "Groep kiezen",
   "@groupPickerTitle": {},
   "ungrouped": "Niet gegroepeerd",
-  "@ungrouped": {}
+  "@ungrouped": {},
+  "mapStyleDialogAddStyle": "Stijl toevoegen",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }

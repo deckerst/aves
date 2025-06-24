@@ -1430,5 +1430,11 @@
   "sectionNone": "묶음 없이",
   "@sectionNone": {},
   "createButtonLabel": "추가",
-  "@createButtonLabel": {}
+  "@createButtonLabel": {},
+  "mapStyleDialogAddStyle": "지도 유형 추가",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "이름",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }

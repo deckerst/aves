@@ -1622,5 +1622,11 @@
   "groupPickerTitle": "Wybierz grupę",
   "@groupPickerTitle": {},
   "groupPickerUseThisGroupButton": "Używaj tej grupy",
-  "@groupPickerUseThisGroupButton": {}
+  "@groupPickerUseThisGroupButton": {},
+  "mapStyleDialogAddStyle": "Dodaj styl",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogName": "Nazwa",
+  "@mapStyleEditorDialogName": {}
 }
