@@ -142,6 +142,7 @@ class Contributors {
     Contributor('Murcielago', 'weblate.j9bmx@slmail.me'),
     Contributor('vm', 'varga.m007@gmail.com'),
     Contributor('WMatheist', 'wmatheist@protonmail.com'),
+    Contributor('Daniel Nylander', 'daniel@danielnylander.se'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
