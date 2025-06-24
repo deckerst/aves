@@ -157,7 +157,7 @@ dependencies {
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-beta01'
-    implementation 'androidx.work:work-runtime-ktx:2.10.1'
+    implementation 'androidx.work:work-runtime-ktx:2.10.2'
 
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
@@ -175,10 +175,10 @@ dependencies {
     implementation 'com.github.deckerst:androidsvg:67db933051'
     implementation 'com.github.deckerst.mp4parser:isoparser:c2898f1832'
     implementation 'com.github.deckerst.mp4parser:muxer:c2898f1832'
-    implementation 'com.github.deckerst:pixymeta-android:cb1cdc932e'
+    implementation 'com.github.deckerst:pixymeta-android:f4513291b7'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.2'
 
     kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
