@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Info: show matching dynamic albums
+- Map: allow adding custom map styles
 
 ### Fixed
 
