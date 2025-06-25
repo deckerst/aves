@@ -1430,5 +1430,11 @@
   "groupPickerTitle": "Pilih Kelompok",
   "@groupPickerTitle": {},
   "groupPickerUseThisGroupButton": "Gunakan kelompok ini",
-  "@groupPickerUseThisGroupButton": {}
+  "@groupPickerUseThisGroupButton": {},
+  "mapStyleDialogAddStyle": "Tambahkan gaya",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogName": "Nama",
+  "@mapStyleEditorDialogName": {}
 }
