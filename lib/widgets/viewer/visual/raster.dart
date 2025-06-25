@@ -43,6 +43,7 @@ class _RasterImageViewState extends State<RasterImageView> {
   final ValueNotifier<bool> _fullImageLoaded = ValueNotifier(false);
   ImageInfo? _fullImageInfo;
 
+  static const int _pixelArtMaxSize = 256; // px
   static const double _tilesByShortestSide = 2;
 
   AvesEntry get entry => widget.entry;
@@ -143,7 +144,7 @@ class _RasterImageViewState extends State<RasterImageView> {
   Widget _buildFullImage() {
     final magnifierScale = viewState.scale!;
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final quality = _qualityForScale(
+    final quality = _qualityForScaleAndSize(
       magnifierScale: magnifierScale,
       sampleSize: 1,
       devicePixelRatio: devicePixelRatio,
@@ -257,7 +258,7 @@ class _RasterImageViewState extends State<RasterImageView> {
       tileRect: Rect.fromLTWH(0, 0, displayWidth * magnifierScale, displayHeight * magnifierScale),
       regionRect: fullImageRegion,
       sampleSize: _maxSampleSize,
-      quality: _qualityForScale(
+      quality: _qualityForScaleAndSize(
         magnifierScale: magnifierScale,
         sampleSize: _maxSampleSize,
         devicePixelRatio: devicePixelRatio,
@@ -287,7 +288,7 @@ class _RasterImageViewState extends State<RasterImageView> {
               tileRect: tileRect,
               regionRect: regionRect,
               sampleSize: sampleSize,
-              quality: _qualityForScale(
+              quality: _qualityForScaleAndSize(
                 magnifierScale: magnifierScale,
                 sampleSize: sampleSize,
                 devicePixelRatio: devicePixelRatio,
@@ -358,6 +359,24 @@ class _RasterImageViewState extends State<RasterImageView> {
     } else {
       return renderingScale < .5 ? FilterQuality.medium : FilterQuality.high;
     }
+  }
+
+  // usually follow recommendations, except for small images
+  // (like icons, pixel art, etc.) for which the "nearest neighbor" algorithm is used
+  FilterQuality _qualityForScaleAndSize({
+    required double magnifierScale,
+    required int sampleSize,
+    required double devicePixelRatio,
+  }) {
+    if (_displaySize.longestSide < _pixelArtMaxSize) {
+      return FilterQuality.none;
+    }
+
+    return _qualityForScale(
+      magnifierScale: magnifierScale,
+      sampleSize: sampleSize,
+      devicePixelRatio: devicePixelRatio,
+    );
   }
 }
 
