@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Info: show matching dynamic albums
 - Map: allow adding custom map styles
 
+### Changed
+
+- Viewer: use nearest neighbor algorithm to render small raster images
+
 ### Fixed
 
 - crash when decoding some large thumbnails
