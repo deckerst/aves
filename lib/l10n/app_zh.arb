@@ -1432,5 +1432,9 @@
   "groupPickerUseThisGroupButton": "使用该组",
   "@groupPickerUseThisGroupButton": {},
   "mapStyleDialogAddStyle": "添加样式",
-  "@mapStyleDialogAddStyle": {}
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "名称",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }
