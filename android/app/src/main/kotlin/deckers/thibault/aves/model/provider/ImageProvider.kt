@@ -18,6 +18,7 @@ import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
 import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
 import deckers.thibault.aves.metadata.Metadata.TYPE_MP4
@@ -623,11 +624,11 @@ abstract class ImageProvider {
     }
 
     // cf `MetadataFetchHandler.getCatalogMetadataByMetadataExtractor()` for a more thorough check
-    private fun detectMimeType(context: Context, uri: Uri, mimeType: String): String? {
+    fun detectMimeType(context: Context, uri: Uri, mimeType: String?, sizeBytes: Long?): String? {
         var detectedMimeType: String? = null
         if (MimeTypes.canReadWithMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     detectedMimeType = Helper.readMimeType(input)
                 }
             } catch (e: Exception) {
@@ -691,12 +692,13 @@ abstract class ImageProvider {
         try {
             edit(ExifInterface(editableFile))
 
-            if (editableFile.length() == 0L) {
+            val editableFileSizeBytes = editableFile.length()
+            if (editableFileSizeBytes == 0L) {
                 callback.onFailure(Exception("editing Exif yielded an empty file"))
                 return false
             }
 
-            val editedMimeType = detectMimeType(context, Uri.fromFile(editableFile), mimeType)
+            val editedMimeType = detectMimeType(context, Uri.fromFile(editableFile), mimeType, editableFileSizeBytes)
             if (editedMimeType != mimeType) {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for uri=$uri path=$path")
             }

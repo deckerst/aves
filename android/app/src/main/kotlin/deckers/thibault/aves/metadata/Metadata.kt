@@ -137,7 +137,7 @@ object Metadata {
 
     private val previewFiles = HashMap<Uri, File>()
 
-    private fun getSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): Uri {
+    private fun getSafeUri(context: Context, uri: Uri, mimeType: String?, sizeBytes: Long?): Uri {
         // formats known to yield OOM for large files
         return when (mimeType) {
             // formats known to yield OOM for large files
@@ -148,7 +148,8 @@ object Metadata {
             MimeTypes.MP4,
             MimeTypes.PSD_VND,
             MimeTypes.PSD_X,
-            MimeTypes.TIFF ->
+            MimeTypes.TIFF,
+            null ->
                 if (isDangerouslyLarge(sizeBytes)) {
                     Log.d(LOG_TAG, "Dangerously large file with uri=$uri, mimeType=$mimeType, size=$sizeBytes")
                     // make a preview from the beginning of the file,
@@ -178,7 +179,7 @@ object Metadata {
         }
     }
 
-    fun openSafeInputStream(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): InputStream? {
+    fun openSafeInputStream(context: Context, uri: Uri, mimeType: String?, sizeBytes: Long?): InputStream? {
         val safeUri = getSafeUri(context, uri, mimeType, sizeBytes)
         return StorageUtils.openInputStream(context, safeUri)
     }

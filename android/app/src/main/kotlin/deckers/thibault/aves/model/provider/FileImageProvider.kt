@@ -15,29 +15,41 @@ import java.io.File
 internal class FileImageProvider : ImageProvider() {
     override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
         var mimeType = sourceMimeType
+        val path = uri.path
 
         if (mimeType == null) {
+            // try to guess by file extension
             var extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
-            if (extension.isEmpty()) {
-                uri.path?.let { path ->
-                    val lastDotIndex = path.lastIndexOf('.')
-                    if (lastDotIndex >= 0) {
-                        extension = path.substring(lastDotIndex + 1)
-                    }
+            if (extension.isEmpty() && path != null) {
+                val lastDotIndex = path.lastIndexOf('.')
+                if (lastDotIndex >= 0) {
+                    extension = path.substring(lastDotIndex + 1)
                 }
             }
             if (extension.isNotEmpty()) {
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
             }
         }
+
         if (mimeType == null) {
-            callback.onFailure(Exception("MIME type was not provided and cannot be guessed from extension of uri=$uri"))
+            // try to guess by file preview read
+            var sizeBytes: Long? = null
+            try {
+                path?.let { sizeBytes = File(it).length() }
+            } catch (e: SecurityException) {
+                callback.onFailure(e)
+                return
+            }
+            mimeType = detectMimeType(context, uri, mimeType = null, sizeBytes)
+        }
+
+        if (mimeType == null) {
+            callback.onFailure(Exception("MIME type was not provided and cannot be guessed from extension or preview of uri=$uri"))
             return
         }
 
         val entry = SourceEntry(SourceEntry.ORIGIN_FILE, uri, mimeType)
 
-        val path = uri.path
         if (path != null) {
             try {
                 val file = File(path)
