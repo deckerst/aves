@@ -131,55 +131,60 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
   Widget build(BuildContext context) {
     return SelectionProvider<FilterGridItem<T>>(
       child: Builder(
-        builder: (context) => QueryProvider(
-          startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
-          child: FilterGridPage<T>(
-            appBar: FilterGridAppBar<T, CSAD>(
-              source: widget.source,
-              title: widget.title,
-              actionDelegate: widget.actionDelegate,
-              isEmpty: widget.filterSections.isEmpty,
+        builder: (context) {
+          final scrollController = PrimaryScrollController.of(context);
+          return QueryProvider(
+            startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
+            child: FilterGridPage<T>(
+              appBar: FilterGridAppBar<T, CSAD>(
+                source: widget.source,
+                title: widget.title,
+                actionDelegate: widget.actionDelegate,
+                isEmpty: widget.filterSections.isEmpty,
+                appBarHeightNotifier: _appBarHeightNotifier,
+                scrollController: scrollController,
+              ),
               appBarHeightNotifier: _appBarHeightNotifier,
-            ),
-            appBarHeightNotifier: _appBarHeightNotifier,
-            sections: widget.filterSections,
-            newFilters: widget.newFilters ?? {},
-            sortFactor: widget.sortFactor,
-            showHeaders: widget.showHeaders,
-            selectable: true,
-            emptyBuilder: () => ValueListenableBuilder<SourceState>(
-              valueListenable: widget.source.stateNotifier,
-              builder: (context, sourceState, child) {
-                return sourceState != SourceState.loading ? widget.emptyBuilder() : const SizedBox();
+              scrollController: scrollController,
+              sections: widget.filterSections,
+              newFilters: widget.newFilters ?? {},
+              sortFactor: widget.sortFactor,
+              showHeaders: widget.showHeaders,
+              selectable: true,
+              emptyBuilder: () => ValueListenableBuilder<SourceState>(
+                valueListenable: widget.source.stateNotifier,
+                builder: (context, sourceState, child) {
+                  return sourceState != SourceState.loading ? widget.emptyBuilder() : const SizedBox();
+                },
+              ),
+              // do not always enable hero, otherwise unwanted hero gets triggered
+              // when using `Show in [...]` action from a chip in the Collection filter bar
+              heroType: HeroType.onTap,
+              onTileTap: (gridItem, navigate) async {
+                final selection = context.read<Selection<FilterGridItem<T>>?>();
+                if (selection != null && selection.isSelecting) {
+                  selection.toggleSelection(gridItem);
+                } else {
+                  final filter = gridItem.filter;
+                  if (!await unlockFilter(context, filter)) return;
+
+                  if (filter is AlbumGroupFilter) {
+                    context.read<FilterGroupNotifier>().value = filter.uri;
+                  } else {
+                    final route = MaterialPageRoute(
+                      settings: const RouteSettings(name: CollectionPage.routeName),
+                      builder: (context) => CollectionPage(
+                        source: context.read<CollectionSource>(),
+                        filters: {gridItem.filter},
+                      ),
+                    );
+                    navigate(route);
+                  }
+                }
               },
             ),
-            // do not always enable hero, otherwise unwanted hero gets triggered
-            // when using `Show in [...]` action from a chip in the Collection filter bar
-            heroType: HeroType.onTap,
-            onTileTap: (gridItem, navigate) async {
-              final selection = context.read<Selection<FilterGridItem<T>>?>();
-              if (selection != null && selection.isSelecting) {
-                selection.toggleSelection(gridItem);
-              } else {
-                final filter = gridItem.filter;
-                if (!await unlockFilter(context, filter)) return;
-
-                if (filter is AlbumGroupFilter) {
-                  context.read<FilterGroupNotifier>().value = filter.uri;
-                } else {
-                  final route = MaterialPageRoute(
-                    settings: const RouteSettings(name: CollectionPage.routeName),
-                    builder: (context) => CollectionPage(
-                      source: context.read<CollectionSource>(),
-                      filters: {gridItem.filter},
-                    ),
-                  );
-                  navigate(route);
-                }
-              }
-            },
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -633,7 +633,7 @@
   "@sortByItemCount": {},
   "sortBySize": "Nach Größe",
   "@sortBySize": {},
-  "sortByAlbumFileName": "Nach Album & Dateiname",
+  "sortByAlbumFileName": "Nach Album- und Elementtitel",
   "@sortByAlbumFileName": {},
   "sortByRating": "Nach Bewertung",
   "@sortByRating": {},
@@ -1413,7 +1413,7 @@
   "@coordinateFormatDdm": {},
   "createButtonLabel": "ERSTELLEN",
   "@createButtonLabel": {},
-  "chipActionGroup": "Gruppe",
+  "chipActionGroup": "Gruppierung ändern",
   "@chipActionGroup": {},
   "chipActionCreateGroup": "Gruppe erstellen",
   "@chipActionCreateGroup": {},
@@ -1430,5 +1430,11 @@
   "groupPickerTitle": "Gruppe auswählen",
   "@groupPickerTitle": {},
   "groupPickerUseThisGroupButton": "Diese Gruppe verwenden",
-  "@groupPickerUseThisGroupButton": {}
+  "@groupPickerUseThisGroupButton": {},
+  "mapStyleDialogAddStyle": "Stil hinzufügen",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Name",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }

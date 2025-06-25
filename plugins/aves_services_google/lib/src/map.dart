@@ -209,7 +209,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
                               bitmapScaling: MapBitmapScaling.none,
                             ),
                             position: _toServiceLatLng(dotLocation),
-                            zIndex: 1,
+                            zIndexInt: 1,
                           )
                       },
                       polylines: {
@@ -309,16 +309,10 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
   ll.LatLng _fromServiceLatLng(LatLng location) => ll.LatLng(location.latitude, location.longitude);
 
   MapType _toMapType(EntryMapStyle style) {
-    switch (style) {
-      case EntryMapStyle.googleNormal:
-        return MapType.normal;
-      case EntryMapStyle.googleHybrid:
-        return MapType.hybrid;
-      case EntryMapStyle.googleTerrain:
-        return MapType.terrain;
-      default:
-        return MapType.none;
-    }
+    if (style == EntryMapStyles.googleNormal) return MapType.normal;
+    if (style == EntryMapStyles.googleHybrid) return MapType.hybrid;
+    if (style == EntryMapStyles.googleTerrain) return MapType.terrain;
+    return MapType.none;
   }
 }
 

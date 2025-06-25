@@ -18,6 +18,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
@@ -44,11 +45,13 @@ import 'package:provider/provider.dart';
 
 class CollectionAppBar extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
+  final ScrollController scrollController;
   final CollectionLens collection;
 
   const CollectionAppBar({
     super.key,
     required this.appBarHeightNotifier,
+    required this.scrollController,
     required this.collection,
   });
 
@@ -56,7 +59,7 @@ class CollectionAppBar extends StatefulWidget {
   State<CollectionAppBar> createState() => _CollectionAppBarState();
 }
 
-class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final Set<StreamSubscription> _subscriptions = {};
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
@@ -109,6 +112,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _subscriptions.add(query.enabledStream.listen((e) => _updateAppBarHeight()));
     _queryFocusRequestNotifier = query.focusRequestNotifier;
     _queryFocusRequestNotifier.addListener(_onQueryFocusRequest);
+    _queryBarFocusNode.addListener(_onQueryBarFocusChanged);
     _browseToSelectAnimation = AnimationController(
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
@@ -123,6 +127,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      AvesApp.pageRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void didUpdateWidget(covariant CollectionAppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
@@ -134,12 +147,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _unregisterWidget(widget);
     _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
+    _queryBarFocusNode.removeListener(_onQueryBarFocusChanged);
     _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
     WidgetsBinding.instance.removeObserver(this);
+    AvesApp.pageRouteObserver.unsubscribe(this);
     super.dispose();
   }
 
@@ -149,6 +164,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _unregisterWidget(CollectionAppBar widget) {
     widget.collection.filterChangeNotifier.removeListener(_onFilterChanged);
+  }
+
+  @override
+  void didPushNext() {
+    // unfocus when navigating away, so that when navigating back,
+    // the query bar does not get back focus and bring the keyboard
+    _queryBarFocusNode.unfocus();
   }
 
   @override
@@ -625,6 +647,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
+
+  void _onQueryBarFocusChanged() {
+    if (_queryBarFocusNode.hasFocus) {
+      // the query bar is in the top sliver of the page scrollable,
+      // so when the bar text field gets focus and requests to be on screen,
+      // it will scroll to show it by default, but it may not end at the very top,
+      // so we do it manually for a more predicable end position
+      _scrollToTop();
+    }
+  }
+
+  void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _updateStatusBarHeight() {
     if (!mounted) {

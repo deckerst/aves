@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.3"></a>[v1.13.3] - 2025-06-25
+
+### Added
+
+- Info: show matching dynamic albums
+- Map: allow adding custom map styles
+
+### Changed
+
+- Viewer: use nearest neighbor algorithm to render small raster images
+
+### Fixed
+
+- crash when decoding some large thumbnails
+- crash when editing metadata for some JPEG images
+- scrolling to top when leaving viewer to collection with title filter enabled
+- recovery of untracked binned items without extension
+
 ## <a id="v1.13.2"></a>[v1.13.2] - 2025-06-02
 
 ### Changed

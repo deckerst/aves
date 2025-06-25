@@ -133,6 +133,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                   builder: (context, snapshot) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
                     final gridItems = AlbumListPage.getAlbumGridItems(context, source, albumChipTypes, groupUri);
+                    final scrollController = PrimaryScrollController.of(context);
                     return SelectionProvider<FilterGridItem<AlbumBaseFilter>>(
                       child: QueryProvider(
                         startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
@@ -145,8 +146,10 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                             actionsBuilder: _buildActions,
                             isEmpty: false,
                             appBarHeightNotifier: _appBarHeightNotifier,
+                            scrollController: scrollController,
                           ),
                           appBarHeightNotifier: _appBarHeightNotifier,
+                          scrollController: scrollController,
                           sections: AlbumListPage.groupToSections(context, source, gridItems),
                           newFilters: source.getNewAlbumFilters(context),
                           sortFactor: settings.albumSortFactor,

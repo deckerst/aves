@@ -33,14 +33,14 @@ class PlatformMobileServices extends MobileServices {
   bool get isServiceAvailable => _isAvailable;
 
   @override
-  EntryMapStyle get defaultMapStyle => EntryMapStyle.googleNormal;
+  EntryMapStyle? get defaultMapStyle => EntryMapStyles.googleNormal;
 
   @override
   List<EntryMapStyle> get mapStyles => isServiceAvailable
       ? [
-          EntryMapStyle.googleNormal,
-          EntryMapStyle.googleHybrid,
-          EntryMapStyle.googleTerrain,
+          EntryMapStyles.googleNormal,
+          EntryMapStyles.googleHybrid,
+          EntryMapStyles.googleTerrain,
         ]
       : [];
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
@@ -207,18 +208,21 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   }
 
   Widget _buildMapLayer() {
-    switch (widget.style) {
-      case EntryMapStyle.osmLiberty:
-        return const OsmLibertyLayer();
-      case EntryMapStyle.openTopoMap:
-        return const OpenTopoMapLayer();
-      case EntryMapStyle.osmHot:
-        return const OSMHotLayer();
-      case EntryMapStyle.stamenWatercolor:
-        return const StamenWatercolorLayer();
-      default:
-        return const SizedBox();
+    final style = widget.style;
+    if (style == EntryMapStyles.osmLiberty) {
+      return const OsmLibertyLayer();
     }
+
+    final urlTemplate = style.url;
+    if (urlTemplate != null) {
+      return TileLayer(
+        urlTemplate: urlTemplate,
+        // similar to `RetinaMode.isHighDensity` from `flutter_map`, but only rebuild for target aspect
+        retinaMode: MediaQuery.devicePixelRatioOf(context) > 1,
+        userAgentPackageName: device.userAgent,
+      );
+    }
+    return const SizedBox();
   }
 
   Widget _buildOverlayImageLayer() {

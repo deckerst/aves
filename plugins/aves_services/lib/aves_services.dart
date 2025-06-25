@@ -7,7 +7,7 @@ abstract class MobileServices {
 
   bool get isServiceAvailable;
 
-  EntryMapStyle get defaultMapStyle;
+  EntryMapStyle? get defaultMapStyle;
 
   List<EntryMapStyle> get mapStyles;
 

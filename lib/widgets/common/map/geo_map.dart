@@ -5,7 +5,6 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
-import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/poi.dart';
@@ -13,16 +12,14 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
 import 'package:aves/widgets/common/map/buttons/panel.dart';
 import 'package:aves/widgets/common/map/decorator.dart';
 import 'package:aves/widgets/common/map/leaflet/map.dart';
+import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
-import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
@@ -147,7 +144,7 @@ class _GeoMapState extends State<GeoMap> {
     return Selector<Settings, EntryMapStyle?>(
       selector: (context, s) => s.mapStyle,
       builder: (context, mapStyle, child) {
-        final isHeavy = ExtraEntryMapStyle.isHeavy(mapStyle);
+        final isHeavy = mapStyle?.isHeavy ?? false;
         final locale = context.locale;
         Widget _buildMarkerWidget(MarkerKey<AvesEntry> key) => ImageMarker(
               key: key,
@@ -164,74 +161,60 @@ class _GeoMapState extends State<GeoMap> {
 
         Widget child = const SizedBox();
         if (mapStyle != null) {
-          switch (mapStyle) {
-            case EntryMapStyle.googleNormal:
-            case EntryMapStyle.googleHybrid:
-            case EntryMapStyle.googleTerrain:
-              child = mobileServices.buildMap<AvesEntry>(
-                controller: widget.controller,
-                clusterListenable: _clusterChangeNotifier,
-                boundsNotifier: _boundsNotifier,
-                style: mapStyle,
-                decoratorBuilder: _decorateMap,
-                buttonPanelBuilder: _buildButtonPanel,
-                markerClusterBuilder: _buildMarkerClusters,
-                markerWidgetBuilder: _buildMarkerWidget,
-                markerImageReadyChecker: _isMarkerImageReady,
-                dotLocationNotifier: widget.dotLocationNotifier,
-                overlayOpacityNotifier: widget.overlayOpacityNotifier,
-                overlayEntry: widget.overlayEntry,
-                tracks: widget.tracks,
-                onUserZoomChange: widget.onUserZoomChange,
-                onMapTap: widget.onMapTap,
-                onMarkerTap: _onMarkerTap,
-                onMarkerLongPress: onMarkerLongPress,
-              );
-            case EntryMapStyle.osmLiberty:
-            case EntryMapStyle.openTopoMap:
-            case EntryMapStyle.osmHot:
-            case EntryMapStyle.stamenWatercolor:
-              child = EntryLeafletMap<AvesEntry>(
-                controller: widget.controller,
-                clusterListenable: _clusterChangeNotifier,
-                boundsNotifier: _boundsNotifier,
-                minZoom: 2,
-                maxZoom: 16,
-                style: mapStyle,
-                decoratorBuilder: _decorateMap,
-                buttonPanelBuilder: _buildButtonPanel,
-                markerClusterBuilder: _buildMarkerClusters,
-                markerWidgetBuilder: _buildMarkerWidget,
-                dotLocationNotifier: widget.dotLocationNotifier,
-                markerSize: Size(
-                  MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2,
-                  MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2 + MapThemeData.markerArrowSize.height,
-                ),
-                dotMarkerSize: const Size(
-                  MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
-                  MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
-                ),
-                overlayOpacityNotifier: widget.overlayOpacityNotifier,
-                overlayEntry: widget.overlayEntry,
-                tracks: widget.tracks,
-                onUserZoomChange: widget.onUserZoomChange,
-                onMapTap: widget.onMapTap,
-                onMarkerTap: _onMarkerTap,
-                onMarkerLongPress: onMarkerLongPress,
-              );
+          if (mapStyle.needMobileService) {
+            child = mobileServices.buildMap<AvesEntry>(
+              controller: widget.controller,
+              clusterListenable: _clusterChangeNotifier,
+              boundsNotifier: _boundsNotifier,
+              style: mapStyle,
+              decoratorBuilder: _decorateMap,
+              buttonPanelBuilder: _buildButtonPanel,
+              markerClusterBuilder: _buildMarkerClusters,
+              markerWidgetBuilder: _buildMarkerWidget,
+              markerImageReadyChecker: _isMarkerImageReady,
+              dotLocationNotifier: widget.dotLocationNotifier,
+              overlayOpacityNotifier: widget.overlayOpacityNotifier,
+              overlayEntry: widget.overlayEntry,
+              tracks: widget.tracks,
+              onUserZoomChange: widget.onUserZoomChange,
+              onMapTap: widget.onMapTap,
+              onMarkerTap: _onMarkerTap,
+              onMarkerLongPress: onMarkerLongPress,
+            );
+          } else {
+            child = EntryLeafletMap<AvesEntry>(
+              controller: widget.controller,
+              clusterListenable: _clusterChangeNotifier,
+              boundsNotifier: _boundsNotifier,
+              minZoom: 2,
+              maxZoom: 16,
+              style: mapStyle,
+              decoratorBuilder: _decorateMap,
+              buttonPanelBuilder: _buildButtonPanel,
+              markerClusterBuilder: _buildMarkerClusters,
+              markerWidgetBuilder: _buildMarkerWidget,
+              dotLocationNotifier: widget.dotLocationNotifier,
+              markerSize: Size(
+                MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2,
+                MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2 + MapThemeData.markerArrowSize.height,
+              ),
+              dotMarkerSize: const Size(
+                MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
+                MapThemeData.markerDotDiameter + MapThemeData.markerOuterBorderWidth * 2,
+              ),
+              overlayOpacityNotifier: widget.overlayOpacityNotifier,
+              overlayEntry: widget.overlayEntry,
+              tracks: widget.tracks,
+              onUserZoomChange: widget.onUserZoomChange,
+              onMapTap: widget.onMapTap,
+              onMarkerTap: _onMarkerTap,
+              onMarkerLongPress: onMarkerLongPress,
+            );
           }
         } else {
           final overlay = Center(
             child: OverlayTextButton(
-              onPressed: () => showSelectionDialog<EntryMapStyle>(
-                context: context,
-                builder: (context) => AvesSingleSelectionDialog<EntryMapStyle?>(
-                  initialValue: settings.mapStyle,
-                  options: Map.fromEntries(availability.mapStyles.map((v) => MapEntry(v, v.getName(context)))),
-                  title: context.l10n.mapStyleDialogTitle,
-                ),
-                onSelection: (v) => settings.mapStyle = v,
-              ),
+              onPressed: () => MapActionDelegate.selectStyle(context),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

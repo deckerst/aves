@@ -11,7 +11,7 @@ class PlatformMobileServices extends MobileServices {
   bool get isServiceAvailable => false;
 
   @override
-  EntryMapStyle get defaultMapStyle => EntryMapStyle.values.first;
+  EntryMapStyle? get defaultMapStyle => null;
 
   @override
   List<EntryMapStyle> get mapStyles => [];

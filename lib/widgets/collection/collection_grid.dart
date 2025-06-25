@@ -343,6 +343,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
         collection: collection,
         appBar: CollectionAppBar(
           appBarHeightNotifier: _appBarHeightNotifier,
+          scrollController: scrollController,
           collection: collection,
         ),
         appBarHeightNotifier: _appBarHeightNotifier,

@@ -7,6 +7,7 @@ class AppSupport {
     MimeTypes.cdr,
     MimeTypes.crw,
     MimeTypes.djvu,
+    MimeTypes.dwg,
     MimeTypes.jpeg2000,
     MimeTypes.jxl,
     MimeTypes.pat,
@@ -15,6 +16,7 @@ class AppSupport {
     MimeTypes.psdVnd,
     MimeTypes.psdX,
     MimeTypes.octetStream,
+    MimeTypes.rgbe,
     MimeTypes.zip,
   };
 
