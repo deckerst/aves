@@ -1432,5 +1432,9 @@
   "groupPickerUseThisGroupButton": "Diese Gruppe verwenden",
   "@groupPickerUseThisGroupButton": {},
   "mapStyleDialogAddStyle": "Stil hinzufügen",
-  "@mapStyleDialogAddStyle": {}
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Name",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }
