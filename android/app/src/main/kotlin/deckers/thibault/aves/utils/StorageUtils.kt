@@ -480,30 +480,44 @@ object StorageUtils {
     // returns null if directory does not exist and could not be created
     fun createDirectoryDocIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
         try {
-            val cleanDirPath = ensureTrailingSeparator(dirPath)
-            return if (requireAccessPermission(context, cleanDirPath)) {
-                val grantedDir = getGrantedDirForPath(context, cleanDirPath) ?: return null
+            val targetDirPath = ensureTrailingSeparator(dirPath)
+            return if (requireAccessPermission(context, targetDirPath)) {
+                val grantedDir = getGrantedDirForPath(context, targetDirPath) ?: return null
                 val rootTreeDocumentUri = convertDirPathToTreeDocumentUri(context, grantedDir) ?: return null
                 var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
-                val pathIterator = getPathStepIterator(context, cleanDirPath, grantedDir)
+                val pathIterator = getPathStepIterator(context, targetDirPath, grantedDir)
+                var currentDirPath = ensureTrailingSeparator(grantedDir)
                 while (pathIterator?.hasNext() == true) {
                     val dirName = pathIterator.next()
-                    var dirFile = findDocumentFileIgnoreCase(parentFile, dirName)
-                    if (dirFile == null || !dirFile.exists()) {
-                        dirFile = parentFile?.createDirectory(dirName)
-                        if (dirFile == null) {
+                    var treeDocFile = findDocumentFileIgnoreCase(parentFile, dirName)
+                    currentDirPath = ensureTrailingSeparator(currentDirPath + dirName)
+
+                    if (treeDocFile == null && File(currentDirPath).exists()) {
+                        // `DocumentsProvider` may be temporarily buggy and fail to list children directories.
+                        // Better to fail fast and revoke directory access, so that the user is aware
+                        // of the issue when trying again with `ACTION_OPEN_DOCUMENT_TREE`.
+                        // Otherwise, we would try to recreate the existing (but unlisted) directory,
+                        // and the document provider will create a new one with a "(1)" suffix.
+                        Log.e(LOG_TAG, "failed to get document file for existing path=$currentDirPath from granted dir=$grantedDir. Revoking granted dir...")
+                        PermissionManager.revokeDirectoryAccess(context, grantedDir)
+                        throw Exception("failed to get document file for existing path=$currentDirPath from grantedDir=$grantedDir")
+                    }
+
+                    if (treeDocFile == null || !treeDocFile.exists()) {
+                        treeDocFile = parentFile?.createDirectory(dirName)
+                        if (treeDocFile == null) {
                             Log.e(LOG_TAG, "failed to create directory with name=$dirName from parent=$parentFile")
                             return null
                         }
                     }
-                    parentFile = dirFile
+                    parentFile = treeDocFile
                 }
                 parentFile
             } else {
-                val directory = File(cleanDirPath)
+                val directory = File(targetDirPath)
                 directory.mkdirs()
                 if (!directory.exists()) {
-                    Log.e(LOG_TAG, "failed to create directories at path=$cleanDirPath")
+                    Log.e(LOG_TAG, "failed to create directories at path=$targetDirPath")
                     return null
                 }
                 DocumentFileCompat.fromFile(directory)

@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Viewer: use nearest neighbor algorithm to render small raster images
+- revoke access when `DocumentsProvider` is not listing content as it should
 
 ### Fixed
 
