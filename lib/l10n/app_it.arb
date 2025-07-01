@@ -633,7 +633,7 @@
   "@sortByItemCount": {},
   "sortBySize": "Per dimensione",
   "@sortBySize": {},
-  "sortByAlbumFileName": "Per album e nome file",
+  "sortByAlbumFileName": "Per album e nome elemento",
   "@sortByAlbumFileName": {},
   "sortByRating": "Per valutazione",
   "@sortByRating": {},
@@ -1415,7 +1415,7 @@
   "@removeEntryMetadataDialogAll": {},
   "createButtonLabel": "CREA",
   "@createButtonLabel": {},
-  "chipActionGroup": "Gruppo",
+  "chipActionGroup": "Modifica raggruppamento",
   "@chipActionGroup": {},
   "chipActionCreateGroup": "Crea gruppo",
   "@chipActionCreateGroup": {},
@@ -1430,5 +1430,11 @@
   "groupPickerUseThisGroupButton": "Usa questo gruppo",
   "@groupPickerUseThisGroupButton": {},
   "sectionNone": "Nessuna sezione",
-  "@sectionNone": {}
+  "@sectionNone": {},
+  "mapStyleDialogAddStyle": "Aggiungi stile",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Nome",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }
