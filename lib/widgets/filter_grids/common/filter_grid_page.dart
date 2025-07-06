@@ -11,6 +11,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/collection/loading.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -734,7 +735,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
               child: isEmpty
                   ? SliverFillRemaining(
                       hasScrollBody: false,
-                      child: emptyBuilder(),
+                      child: _buildEmptyContent(context),
                     )
                   : SectionedListSliver<FilterGridItem<T>>(),
             ),
@@ -743,6 +744,20 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
             const TvTileGridBottomPaddingSliver(),
           ],
         );
+      },
+    );
+  }
+
+  Widget _buildEmptyContent(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    return ValueListenableBuilder<SourceState>(
+      valueListenable: source.stateNotifier,
+      builder: (context, sourceState, child) {
+        if (sourceState == SourceState.loading) {
+          return LoadingEmptyContent(source: source);
+        }
+
+        return emptyBuilder();
       },
     );
   }
