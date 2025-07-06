@@ -11,6 +11,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/loading.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
@@ -141,6 +142,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
                             ),
                             contents.isEmpty
                                 ? SliverFillRemaining(
+                                    hasScrollBody: false,
                                     child: _buildEmptyContent(),
                                   )
                                 : const SliverPadding(padding: EdgeInsets.only(bottom: 8)),
@@ -181,41 +183,32 @@ class _ExplorerPageState extends State<ExplorerPage> {
   }
 
   Widget _buildEmptyContent() {
-    return Selector<CollectionSource, bool>(
-      selector: (context, source) => source.state == SourceState.loading,
-      builder: (context, loading, child) {
+    final source = context.read<CollectionSource>();
+    return ValueListenableBuilder<SourceState>(
+      valueListenable: source.stateNotifier,
+      builder: (context, sourceState, child) {
+        if (sourceState == SourceState.loading) {
+          return LoadingEmptyContent(source: source);
+        }
+
         Widget? bottom;
-        if (loading) {
-          bottom = const CircularProgressIndicator();
-        } else {
-          final dirPath = _pathOf(_contentsDirectory.value);
-          if (dirPath != null) {
-            final source = context.read<CollectionSource>();
-            final album = _getAlbumPath(source, Directory(dirPath));
-            if (album != null) {
-              bottom = AvesFilterChip(
-                filter: StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album)),
-                maxWidth: double.infinity,
-                onTap: (filter) => _goToCollectionPage(context, filter),
-                onLongPress: null,
-              );
-            }
+        final dirPath = _pathOf(_contentsDirectory.value);
+        if (dirPath != null) {
+          final album = _getAlbumPath(source, Directory(dirPath));
+          if (album != null) {
+            bottom = AvesFilterChip(
+              filter: StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album)),
+              maxWidth: double.infinity,
+              onTap: (filter) => _goToCollectionPage(context, filter),
+              onLongPress: null,
+            );
           }
         }
 
-        return SafeArea(
-          top: false,
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Center(
-              child: EmptyContent(
-                icon: AIcons.folder,
-                text: '',
-                bottom: bottom,
-              ),
-            ),
-          ),
+        return EmptyContent(
+          icon: AIcons.folder,
+          text: '',
+          bottom: bottom,
         );
       },
     );
