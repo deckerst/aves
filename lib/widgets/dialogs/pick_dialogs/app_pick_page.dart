@@ -52,6 +52,7 @@ class _AppPickPageState extends State<AppPickPage> {
         title: Text(context.l10n.appPickDialogTitle),
       ),
       body: SafeArea(
+        bottom: false,
         child: FutureBuilder<Set<Package>>(
           future: _loader,
           builder: (context, snapshot) {

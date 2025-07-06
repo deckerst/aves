@@ -110,6 +110,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
             settings.drawerPageBookmarks = _pageItems.where(_visiblePages.contains).toList();
           },
           child: SafeArea(
+            bottom: false,
             child: TabBarView(
               children: tabs.map((t) => t.$2).toList(),
             ),
