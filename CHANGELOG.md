@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- showing directories wrongly registered as media in the Media Store
+
 ## <a id="v1.13.3"></a>[v1.13.3] - 2025-06-25
 
 ### Added
