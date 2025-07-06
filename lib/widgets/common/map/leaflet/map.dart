@@ -215,8 +215,15 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
 
     final urlTemplate = style.url;
     if (urlTemplate != null) {
+      final userAgent = style.userAgent;
       return TileLayer(
         urlTemplate: urlTemplate,
+        subdomains: style.subdomains,
+        tileProvider: NetworkTileProvider(
+          headers: {
+            if (userAgent != null) 'User-Agent': userAgent,
+          },
+        ),
         // similar to `RetinaMode.isHighDensity` from `flutter_map`, but only rebuild for target aspect
         retinaMode: MediaQuery.devicePixelRatioOf(context) > 1,
         userAgentPackageName: device.userAgent,

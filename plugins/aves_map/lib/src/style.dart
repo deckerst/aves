@@ -7,11 +7,14 @@ import 'package:flutter/foundation.dart';
 // OSM vector tile providers: https://wiki.openstreetmap.org/wiki/Vector_tiles#Providers
 // Leaflet providers preview: https://leaflet-extras.github.io/leaflet-providers/preview/
 // OpenMapTiles styles: https://openmaptiles.org/styles/
+// Examples: https://github.com/deckerst/aves/wiki/Custom-maps
 class EntryMapStyle extends Equatable {
   final String key;
   final String? name;
   final bool isRaster;
   final String? url; // not strictly a `Uri` as it may contain templates like `{x}`
+  final List<String> subdomains;
+  final String? userAgent;
   final bool needMobileService;
   final bool isHeavy;
 
@@ -23,9 +26,11 @@ class EntryMapStyle extends Equatable {
     this.name,
     this.isRaster = true,
     this.url,
+    List<String>? subdomains,
+    this.userAgent,
     this.needMobileService = false,
     this.isHeavy = false,
-  });
+  }) : subdomains = subdomains ?? const ['a', 'b', 'c'];
 
   static EntryMapStyle? fromJson(String? jsonString) {
     if (jsonString == null || jsonString.isEmpty) return null;
@@ -51,6 +56,8 @@ class EntryMapStyle extends Equatable {
       name: jsonMap['name'],
       isRaster: jsonMap['isRaster'],
       url: jsonMap['url'],
+      subdomains: (jsonMap['subdomains'] as List<dynamic>?)?.cast<String>(),
+      userAgent: jsonMap['userAgent'],
       needMobileService: jsonMap['needMobileService'],
       isHeavy: jsonMap['isHeavy'],
     );
@@ -62,6 +69,8 @@ class EntryMapStyle extends Equatable {
       'name': name,
       'isRaster': isRaster,
       'url': url,
+      'subdomains': subdomains,
+      'userAgent': userAgent,
       'needMobileService': needMobileService,
       'isHeavy': isHeavy,
     };

@@ -22,6 +22,8 @@ class _MapStyleEditorDialogState extends State<MapStyleEditorDialog> {
   late final Set<EntryMapStyle> _otherCustomStyles;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
+  final TextEditingController _subdomainsController = TextEditingController();
+  final TextEditingController _userAgentController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
   @override
@@ -31,6 +33,8 @@ class _MapStyleEditorDialogState extends State<MapStyleEditorDialog> {
     _otherCustomStyles = settings.customMapStyles.where((v) => v != initialValue).toSet();
     _nameController.text = initialValue?.name ?? '';
     _urlController.text = initialValue?.url ?? '';
+    _subdomainsController.text = initialValue?.subdomains.join(',') ?? '';
+    _userAgentController.text = initialValue?.userAgent ?? '';
     _validate();
   }
 
@@ -38,6 +42,8 @@ class _MapStyleEditorDialogState extends State<MapStyleEditorDialog> {
   void dispose() {
     _nameController.dispose();
     _urlController.dispose();
+    _subdomainsController.dispose();
+    _userAgentController.dispose();
     _isValidNotifier.dispose();
     super.dispose();
   }
@@ -69,6 +75,24 @@ class _MapStyleEditorDialogState extends State<MapStyleEditorDialog> {
             onChanged: (_) => _validate(),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: TextField(
+            controller: _subdomainsController,
+            decoration: InputDecoration(
+              labelText: l10n.mapStyleEditorDialogSubdomains,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: TextField(
+            controller: _userAgentController,
+            decoration: InputDecoration(
+              labelText: l10n.mapStyleEditorDialogUserAgent,
+            ),
+          ),
+        ),
       ],
       actions: [
         const CancelButton(),
@@ -88,8 +112,15 @@ class _MapStyleEditorDialogState extends State<MapStyleEditorDialog> {
   EntryMapStyle _buildStyle() {
     final name = _nameController.text.trim();
     final url = _urlController.text.trim();
-    final key = 'custom_$name';
-    return EntryMapStyle(key: key, name: name, url: url);
+    final subdomains = _subdomainsController.text.split(',').map((v) => v.trim()).toList();
+    final userAgent = _userAgentController.text.trim();
+    return EntryMapStyle(
+      key: 'custom_$name',
+      name: name,
+      url: url,
+      subdomains: subdomains,
+      userAgent: userAgent.isNotEmpty ? userAgent : null,
+    );
   }
 
   Future<void> _validate() async {

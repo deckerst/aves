@@ -1076,6 +1076,8 @@
   "mapStyleTooltip": "Select map style",
   "mapStyleEditorDialogName": "Name",
   "mapStyleEditorDialogUrl": "URL",
+  "mapStyleEditorDialogSubdomains": "Subdomains",
+  "mapStyleEditorDialogUserAgent": "User-Agent",
   "mapZoomInTooltip": "Zoom in",
   "mapZoomOutTooltip": "Zoom out",
   "mapPointNorthUpTooltip": "Point north up",
