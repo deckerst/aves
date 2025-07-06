@@ -61,19 +61,21 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
         ),
         const Divider(height: 0),
         const SizedBox(height: 8),
-        AvesOutlinedButton(
-          icon: const Icon(AIcons.add),
-          label: context.l10n.settingsNavigationDrawerAddAlbum,
-          onPressed: () async {
-            final albumFilter = await pickAlbum(
-              context: context,
-              moveType: null,
-              albumChipTypes: AlbumChipType.values,
-              initialGroup: null,
-            );
-            if (albumFilter == null || items.contains(albumFilter)) return;
-            setState(() => items.add(albumFilter));
-          },
+        SafeArea(
+          child: AvesOutlinedButton(
+            icon: const Icon(AIcons.add),
+            label: context.l10n.settingsNavigationDrawerAddAlbum,
+            onPressed: () async {
+              final albumFilter = await pickAlbum(
+                context: context,
+                moveType: null,
+                albumChipTypes: AlbumChipType.values,
+                initialGroup: null,
+              );
+              if (albumFilter == null || items.contains(albumFilter)) return;
+              setState(() => items.add(albumFilter));
+            },
+          ),
         ),
       ],
     );
