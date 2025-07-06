@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Map: allow setting subdomains, user-agent for custom styles
+
 ### Fixed
 
 - showing directories wrongly registered as media in the Media Store
