@@ -55,7 +55,7 @@ android {
         }
     }
 
-    flavorDimensions = ["store"]
+    flavorDimensions += "store"
 
     productFlavors {
         play {
@@ -93,9 +93,9 @@ android {
             applicationIdSuffix ".profile"
         }
         release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources true
+            signingConfig = signingConfigs.release
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -178,7 +178,7 @@ dependencies {
     implementation 'com.github.deckerst:pixymeta-android:f4513291b7'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.3'
 
     kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
