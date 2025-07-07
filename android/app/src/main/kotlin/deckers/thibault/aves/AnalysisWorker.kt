@@ -28,34 +28,40 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlin.coroutines.Continuation
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class AnalysisWorker(context: Context, parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    private var workCont: Continuation<Any?>? = null
+    private var workCont: CancellableContinuation<Any?>? = null
     private var flutterEngine: FlutterEngine? = null
     private var backgroundChannel: MethodChannel? = null
 
     override suspend fun doWork(): Result {
         Log.i(LOG_TAG, "Start analysis worker $id")
-        defaultScope.launch {
-            // prevent ANR triggered by slow operations in main thread
-            createNotificationChannel()
-            setForeground(createForegroundInfo())
-        }.join()
-        suspendCoroutine { cont ->
-            workCont = cont
-            onStart()
+        createNotificationChannel()
+        val foregroundInfo = createForegroundInfo()
+        if (!isStopped) {
+            setForeground(foregroundInfo)
+            suspendCancellableCoroutine { cont ->
+                workCont = cont
+                cont.invokeOnCancellation {
+                    Log.i(LOG_TAG, "Analysis worker got cancelled")
+                    stopDartAnalysisService()
+                    workCont?.resumeWithException(CancellationException())
+                }
+                onStart()
+            }
+            dispose()
         }
-        dispose()
         return Result.success()
     }
 
@@ -81,17 +87,7 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
 
             val preferences = applicationContext.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
             val entryIdStrings = preferences.getStringSet(PREF_ENTRY_IDS_KEY, null)
-
-            runBlocking {
-                FlutterUtils.runOnUiThread {
-                    backgroundChannel?.invokeMethod(
-                        "start", hashMapOf(
-                            "entryIds" to entryIdStrings?.map { Integer.parseUnsignedInt(it) }?.toList(),
-                            "force" to inputData.getBoolean(KEY_FORCE, false),
-                        )
-                    )
-                }
-            }
+            startDartAnalysisService(entryIdStrings)
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to initialize worker", e)
             workCont?.resumeWithException(e)
@@ -126,6 +122,27 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
         }
     }
 
+    private fun startDartAnalysisService(entryIdStrings: Set<String>?) {
+        runBlocking {
+            FlutterUtils.runOnUiThread {
+                backgroundChannel?.invokeMethod(
+                    "start", hashMapOf(
+                        "entryIds" to entryIdStrings?.map { Integer.parseUnsignedInt(it) }?.toList(),
+                        "force" to inputData.getBoolean(KEY_FORCE, false),
+                    )
+                )
+            }
+        }
+    }
+
+    private fun stopDartAnalysisService() {
+        runBlocking {
+            FlutterUtils.runOnUiThread {
+                backgroundChannel?.invokeMethod("stop", null)
+            }
+        }
+    }
+
     private fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "initialized" -> {
@@ -136,7 +153,7 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             "updateNotification" -> defaultScope.launch { safeSuspend(call, result, ::updateNotification) }
 
             "stop" -> {
-                workCont?.resume(null)
+                workCont?.takeIf { it.isActive }?.resume(null)
                 result.success(null)
             }
 
