@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - showing directories wrongly registered as media in the Media Store
+- apply preferred first day of the week for date picker
 
 ## <a id="v1.13.3"></a>[v1.13.3] - 2025-06-25
 
