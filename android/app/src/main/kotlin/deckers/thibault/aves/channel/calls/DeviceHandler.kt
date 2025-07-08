@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
+import androidx.core.text.util.LocalePreferences
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
@@ -36,6 +37,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
             "getLocales" -> safe(call, result, ::getLocales)
             "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
+            "getFirstDayOfWeek" -> safe(call, result, ::getFirstDayOfWeek)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
             "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
@@ -109,6 +111,10 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         }
 
         result.success(true)
+    }
+
+    private fun getFirstDayOfWeek(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(LocalePreferences.getFirstDayOfWeek())
     }
 
     private fun getPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
