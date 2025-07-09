@@ -1,8 +1,52 @@
+import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// allow apply custom regional preferences on an existing localization
+// apply custom regional preferences on context localization
 // until this is fixed: https://github.com/flutter/flutter/issues/122274
+class MaterialLocalizationsRegionalizer extends StatefulWidget {
+  final Widget child;
+
+  const MaterialLocalizationsRegionalizer({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  State<MaterialLocalizationsRegionalizer> createState() => _MaterialLocalizationsRegionalizerState();
+}
+
+class _MaterialLocalizationsRegionalizerState extends State<MaterialLocalizationsRegionalizer> {
+  late final Future<int?> _firstDayOfWeekLoader;
+
+  @override
+  void initState() {
+    super.initState();
+    _firstDayOfWeekLoader = deviceService.getFirstDayOfWeekIndex();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<int?>(
+      future: _firstDayOfWeekLoader,
+      builder: (context, snapshot) {
+        final firstDayOfWeekIndex = snapshot.data;
+        final localizationsDelegate = DerivedMaterialLocalizationsDelegate(
+          Localizations.localeOf(context),
+          DerivedMaterialLocalizations(
+            parent: MaterialLocalizations.of(context),
+            firstDayOfWeekIndex: firstDayOfWeekIndex,
+          ),
+        );
+        return Localizations.override(
+          context: context,
+          delegates: [localizationsDelegate],
+          child: widget.child,
+        );
+      },
+    );
+  }
+}
 
 class DerivedMaterialLocalizationsDelegate extends LocalizationsDelegate<MaterialLocalizations> {
   final Locale locale;
@@ -116,11 +160,7 @@ class DerivedMaterialLocalizations extends MaterialLocalizations {
   String get drawerLabel => parent.drawerLabel;
 
   @override
-  int get firstDayOfWeekIndex {
-    var i = _firstDayOfWeekIndex ?? parent.firstDayOfWeekIndex;
-    debugPrint('TLAD $runtimeType firstDayOfWeekIndex=$i _firstDayOfWeekIndex=$_firstDayOfWeekIndex parent.firstDayOfWeekIndex=${parent.firstDayOfWeekIndex}');
-    return i;
-  }
+  int get firstDayOfWeekIndex => _firstDayOfWeekIndex ?? parent.firstDayOfWeekIndex;
 
   @override
   String get firstPageTooltip => parent.firstPageTooltip;
