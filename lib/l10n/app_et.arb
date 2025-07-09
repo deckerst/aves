@@ -1654,5 +1654,9 @@
   "mapStyleEditorDialogUrl": "Võrguaadress",
   "@mapStyleEditorDialogUrl": {},
   "mapStyleEditorDialogName": "Nimi",
-  "@mapStyleEditorDialogName": {}
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogSubdomains": "Alamdomeenid",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "Rakenduse nimi võrgus",
+  "@mapStyleEditorDialogUserAgent": {}
 }

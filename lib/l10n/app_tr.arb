@@ -1430,5 +1430,11 @@
   "sortByPath": "Yolu",
   "@sortByPath": {},
   "editEntryLocationDialogTimeShift": "Zaman farkı",
-  "@editEntryLocationDialogTimeShift": {}
+  "@editEntryLocationDialogTimeShift": {},
+  "mapStyleDialogAddStyle": "Biçim ekle",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Ad",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }
