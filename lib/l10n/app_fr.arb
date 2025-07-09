@@ -1436,5 +1436,9 @@
   "mapStyleEditorDialogName": "Nom",
   "@mapStyleEditorDialogName": {},
   "mapStyleEditorDialogUrl": "URL",
-  "@mapStyleEditorDialogUrl": {}
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "Sous-domaines",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }

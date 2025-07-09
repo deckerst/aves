@@ -1436,5 +1436,9 @@
   "mapStyleEditorDialogName": "이름",
   "@mapStyleEditorDialogName": {},
   "mapStyleEditorDialogUrl": "URL",
-  "@mapStyleEditorDialogUrl": {}
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "서브도메인",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "사용자 에이전트",
+  "@mapStyleEditorDialogUserAgent": {}
 }

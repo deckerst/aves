@@ -1415,7 +1415,7 @@
   "@removeEntryMetadataDialogAll": {},
   "createButtonLabel": "CREA",
   "@createButtonLabel": {},
-  "chipActionGroup": "Gruppo",
+  "chipActionGroup": "Cambia raggruppamento",
   "@chipActionGroup": {},
   "chipActionCreateGroup": "Crea gruppo",
   "@chipActionCreateGroup": {},
@@ -1430,5 +1430,15 @@
   "groupPickerUseThisGroupButton": "Usa questo gruppo",
   "@groupPickerUseThisGroupButton": {},
   "sectionNone": "Nessuna sezione",
-  "@sectionNone": {}
+  "@sectionNone": {},
+  "mapStyleDialogAddStyle": "Aggiungi stile",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Nome",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "Sottodomini",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "User Agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }

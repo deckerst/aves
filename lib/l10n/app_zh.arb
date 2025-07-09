@@ -1436,5 +1436,9 @@
   "mapStyleEditorDialogName": "名称",
   "@mapStyleEditorDialogName": {},
   "mapStyleEditorDialogUrl": "URL",
-  "@mapStyleEditorDialogUrl": {}
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "子域名",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }

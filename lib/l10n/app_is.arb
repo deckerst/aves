@@ -1607,7 +1607,7 @@
   "@newGroupDialogNameLabel": {},
   "createButtonLabel": "BÚA TIL",
   "@createButtonLabel": {},
-  "chipActionGroup": "Hópa",
+  "chipActionGroup": "Breyta hópun",
   "@chipActionGroup": {},
   "chipActionCreateGroup": "Útbúa hóp",
   "@chipActionCreateGroup": {},
@@ -1622,5 +1622,11 @@
   "groupPickerTitle": "Veldu hóp",
   "@groupPickerTitle": {},
   "groupPickerUseThisGroupButton": "Nota þennan hóp",
-  "@groupPickerUseThisGroupButton": {}
+  "@groupPickerUseThisGroupButton": {},
+  "mapStyleDialogAddStyle": "Bæta við stíl",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Heiti",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "Vefslóð",
+  "@mapStyleEditorDialogUrl": {}
 }

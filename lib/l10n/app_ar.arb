@@ -1628,5 +1628,9 @@
   "mapStyleEditorDialogName": "اسم",
   "@mapStyleEditorDialogName": {},
   "mapStyleEditorDialogUrl": "URL",
-  "@mapStyleEditorDialogUrl": {}
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "المجالات الفرعية",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "وكيل المستخدم",
+  "@mapStyleEditorDialogUserAgent": {}
 }

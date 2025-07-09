@@ -1435,5 +1435,11 @@
   "mapStyleDialogAddStyle": "Stijl toevoegen",
   "@mapStyleDialogAddStyle": {},
   "mapStyleEditorDialogUrl": "URL",
-  "@mapStyleEditorDialogUrl": {}
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogName": "Naam",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "@mapStyleEditorDialogUserAgent": {},
+  "mapStyleEditorDialogSubdomains": "Subdomeinen",
+  "@mapStyleEditorDialogSubdomains": {}
 }
