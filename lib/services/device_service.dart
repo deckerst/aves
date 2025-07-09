@@ -12,6 +12,7 @@ abstract class DeviceService {
 
   Future<void> setLocaleConfig(List<Locale> locales);
 
+  // 0 is Sunday
   Future<int?> getFirstDayOfWeekIndex();
 
   Future<int> getPerformanceClass();

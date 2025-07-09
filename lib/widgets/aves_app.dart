@@ -164,7 +164,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final Set<StreamSubscription> _subscriptions = {};
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
-  late final Future<int?> _firstDayOfWeekLoader;
   final TvRailController _tvRailController = TvRailController();
   final MediaStoreSource _mediaStoreSource = MediaStoreSource();
   Size? _screenSize;
@@ -199,7 +198,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     EquatableConfig.stringify = true;
     _appSetup = _setup();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
-    _firstDayOfWeekLoader = deviceService.getFirstDayOfWeekIndex();
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _mediaStoreSource.onStoreChanged(event as String?)));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
@@ -349,61 +347,46 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     return Selector<Settings, bool>(
       selector: (context, s) => s.initialized ? s.animate : true,
       builder: (context, areAnimationsEnabled, child) {
-        return FutureBuilder<int?>(
-          future: _firstDayOfWeekLoader,
-          builder: (context, snapshot) {
-            final firstDayOfWeekIndex = snapshot.data;
-            final localizationsDelegate = DerivedMaterialLocalizationsDelegate(
-              Localizations.localeOf(context),
-              DerivedMaterialLocalizations(
-                parent: MaterialLocalizations.of(context),
-                firstDayOfWeekIndex: firstDayOfWeekIndex,
-              ),
-            );
-            return Localizations.override(
-              context: context,
-              delegates: [localizationsDelegate],
-              child: FutureBuilder<bool>(
-                future: _shouldUseBoldFontLoader,
-                builder: (context, snapshot) {
-                  // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
-                  // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
-                  final shouldUseBoldFont = snapshot.data ?? false;
-                  final mq = MediaQuery.of(context).copyWith(
-                    boldText: shouldUseBoldFont,
-                  );
-                  return ValueListenableBuilder<TvMediaQueryModifier?>(
-                    valueListenable: _tvMediaQueryModifierNotifier,
-                    builder: (context, modifier, child) {
-                      return MediaQuery(
-                        data: modifier?.call(mq) ?? mq,
-                        child: AvesColorsProvider(
-                          child: ValueListenableBuilder<PageTransitionsBuilder>(
-                            valueListenable: _pageTransitionsBuilderNotifier,
-                            builder: (context, pageTransitionsBuilder, child) {
-                              final theme = Theme.of(context);
-                              return Theme(
-                                data: theme.copyWith(
-                                  pageTransitionsTheme: areAnimationsEnabled
-                                      ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
-                                      // strip page transitions used by `MaterialPageRoute`
-                                      : const DirectPageTransitionsTheme(),
-                                  splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
-                                ),
-                                child: MediaQueryDataProvider(child: child!),
-                              );
-                            },
-                            child: child,
-                          ),
-                        ),
-                      );
-                    },
-                    child: child,
+        return MaterialLocalizationsRegionalizer(
+          child: FutureBuilder<bool>(
+            future: _shouldUseBoldFontLoader,
+            builder: (context, snapshot) {
+              // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+              // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+              final shouldUseBoldFont = snapshot.data ?? false;
+              final mq = MediaQuery.of(context).copyWith(
+                boldText: shouldUseBoldFont,
+              );
+              return ValueListenableBuilder<TvMediaQueryModifier?>(
+                valueListenable: _tvMediaQueryModifierNotifier,
+                builder: (context, modifier, child) {
+                  return MediaQuery(
+                    data: modifier?.call(mq) ?? mq,
+                    child: AvesColorsProvider(
+                      child: ValueListenableBuilder<PageTransitionsBuilder>(
+                        valueListenable: _pageTransitionsBuilderNotifier,
+                        builder: (context, pageTransitionsBuilder, child) {
+                          final theme = Theme.of(context);
+                          return Theme(
+                            data: theme.copyWith(
+                              pageTransitionsTheme: areAnimationsEnabled
+                                  ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                              // strip page transitions used by `MaterialPageRoute`
+                                  : const DirectPageTransitionsTheme(),
+                              splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
+                            ),
+                            child: MediaQueryDataProvider(child: child!),
+                          );
+                        },
+                        child: child,
+                      ),
+                    ),
                   );
                 },
-              ),
-            );
-          },
+                child: child,
+              );
+            },
+          ),
         );
       },
       child: child,
