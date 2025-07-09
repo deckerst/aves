@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.4"></a>[v1.13.4] - 2025-07-09
+
 ### Added
 
 - Map: allow setting subdomains, user-agent for custom styles
