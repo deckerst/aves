@@ -1627,7 +1627,7 @@
   "@searchFormatSectionTitle": {},
   "chipActionCreateGroup": "Създайте група",
   "@chipActionCreateGroup": {},
-  "chipActionGroup": "Групиране",
+  "chipActionGroup": "Прегрупиране",
   "@chipActionGroup": {},
   "newGroupDialogTitle": "Нова Група",
   "@newGroupDialogTitle": {},
@@ -1644,5 +1644,11 @@
   "groupEmpty": "Без група",
   "@groupEmpty": {},
   "ungrouped": "Негрупирани",
-  "@ungrouped": {}
+  "@ungrouped": {},
+  "groupPickerTitle": "Избор Група",
+  "@groupPickerTitle": {},
+  "mapStyleEditorDialogName": "Име",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {}
 }

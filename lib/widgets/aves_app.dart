@@ -26,6 +26,7 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/derived_material_localization.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
@@ -346,44 +347,46 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     return Selector<Settings, bool>(
       selector: (context, s) => s.initialized ? s.animate : true,
       builder: (context, areAnimationsEnabled, child) {
-        return FutureBuilder<bool>(
-          future: _shouldUseBoldFontLoader,
-          builder: (context, snapshot) {
-            // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
-            // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
-            final shouldUseBoldFont = snapshot.data ?? false;
-            final mq = MediaQuery.of(context).copyWith(
-              boldText: shouldUseBoldFont,
-            );
-            return ValueListenableBuilder<TvMediaQueryModifier?>(
-              valueListenable: _tvMediaQueryModifierNotifier,
-              builder: (context, modifier, child) {
-                return MediaQuery(
-                  data: modifier?.call(mq) ?? mq,
-                  child: AvesColorsProvider(
-                    child: ValueListenableBuilder<PageTransitionsBuilder>(
-                      valueListenable: _pageTransitionsBuilderNotifier,
-                      builder: (context, pageTransitionsBuilder, child) {
-                        final theme = Theme.of(context);
-                        return Theme(
-                          data: theme.copyWith(
-                            pageTransitionsTheme: areAnimationsEnabled
-                                ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
-                                // strip page transitions used by `MaterialPageRoute`
-                                : const DirectPageTransitionsTheme(),
-                            splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
-                          ),
-                          child: MediaQueryDataProvider(child: child!),
-                        );
-                      },
-                      child: child,
+        return MaterialLocalizationsRegionalizer(
+          child: FutureBuilder<bool>(
+            future: _shouldUseBoldFontLoader,
+            builder: (context, snapshot) {
+              // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+              // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+              final shouldUseBoldFont = snapshot.data ?? false;
+              final mq = MediaQuery.of(context).copyWith(
+                boldText: shouldUseBoldFont,
+              );
+              return ValueListenableBuilder<TvMediaQueryModifier?>(
+                valueListenable: _tvMediaQueryModifierNotifier,
+                builder: (context, modifier, child) {
+                  return MediaQuery(
+                    data: modifier?.call(mq) ?? mq,
+                    child: AvesColorsProvider(
+                      child: ValueListenableBuilder<PageTransitionsBuilder>(
+                        valueListenable: _pageTransitionsBuilderNotifier,
+                        builder: (context, pageTransitionsBuilder, child) {
+                          final theme = Theme.of(context);
+                          return Theme(
+                            data: theme.copyWith(
+                              pageTransitionsTheme: areAnimationsEnabled
+                                  ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                              // strip page transitions used by `MaterialPageRoute`
+                                  : const DirectPageTransitionsTheme(),
+                              splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
+                            ),
+                            child: MediaQueryDataProvider(child: child!),
+                          );
+                        },
+                        child: child,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: child,
-            );
-          },
+                  );
+                },
+                child: child,
+              );
+            },
+          ),
         );
       },
       child: child,

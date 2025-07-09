@@ -1,4 +1,0 @@
-In v1.12.8:
-- play more kinds of motion photos
-- enjoy the app in Galician
-Full changelog available on GitHub

@@ -44,6 +44,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
         title: Text(context.l10n.settingsLanguagePageTitle),
       ),
       body: SafeArea(
+        bottom: false,
         child: ValueListenableBuilder<String>(
           valueListenable: _queryNotifier,
           builder: (context, query, child) {

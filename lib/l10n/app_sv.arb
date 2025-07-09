@@ -1554,7 +1554,7 @@
   "@viewerInfoLabelAddress": {},
   "mapStyleDialogTitle": "Kartstil",
   "@mapStyleDialogTitle": {},
-  "mapStyleTooltip": "Välj stil på karta",
+  "mapStyleTooltip": "Välj kartstil",
   "@mapStyleTooltip": {},
   "mapAttributionOsmHot": "Brickor av [HOT](https://www.hotosm.org/) • Tillhandahållen av [OSM France](https://openstreetmap.fr/)",
   "@mapAttributionOsmHot": {},
@@ -1633,5 +1633,15 @@
   "ungrouped": "Ogrupperad",
   "@ungrouped": {},
   "groupPickerTitle": "Välj Grupp",
-  "@groupPickerTitle": {}
+  "@groupPickerTitle": {},
+  "mapStyleDialogAddStyle": "Lägg till stil",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Namn",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "Underdomäner",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "Användar-Agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }

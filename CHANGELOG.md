@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.4"></a>[v1.13.4] - 2025-07-09
+
+### Added
+
+- Map: allow setting subdomains, user-agent for custom styles
+
+### Fixed
+
+- showing directories wrongly registered as media in the Media Store
+- apply preferred first day of the week for date picker
+
 ## <a id="v1.13.3"></a>[v1.13.3] - 2025-06-25
 
 ### Added

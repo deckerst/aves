@@ -47,6 +47,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
           title: Text(context.l10n.mapStyleDialogTitle),
         ),
         body: SafeArea(
+          bottom: false,
           child: ListView(
             children: [
               ...defaultStyles.map((v) {

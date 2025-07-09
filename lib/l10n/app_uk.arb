@@ -1628,5 +1628,9 @@
   "mapStyleEditorDialogUrl": "URL-адреса",
   "@mapStyleEditorDialogUrl": {},
   "mapStyleEditorDialogName": "Ім'я",
-  "@mapStyleEditorDialogName": {}
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogSubdomains": "Субдомени",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "Користувацький агент",
+  "@mapStyleEditorDialogUserAgent": {}
 }

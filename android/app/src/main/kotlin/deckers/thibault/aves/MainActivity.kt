@@ -5,7 +5,6 @@ import android.app.KeyguardManager
 import android.app.SearchManager
 import android.appwidget.AppWidgetManager
 import android.content.ClipData
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -85,10 +84,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(LOG_TAG, "onCreate intent=$intent")
-
-        intent.extras?.takeUnless { it.isEmpty }?.let {
-            Log.i(LOG_TAG, "onCreate intent extras=$it")
-        }
+        logExtras(intent, "onCreate")
 
 //        StrictMode.setThreadPolicy(
 //            StrictMode.ThreadPolicy.Builder()
@@ -103,6 +99,17 @@ open class MainActivity : FlutterFragmentActivity() {
 //                .build()
 //        )
         super.onCreate(savedInstanceState)
+    }
+
+    private fun logExtras(intent: Intent?, method: String) {
+        try {
+            intent?.extras?.takeUnless { it.isEmpty }?.let {
+                Log.i(LOG_TAG, "$method intent extras=$it")
+            }
+        } catch (e: Exception) {
+            // accessing extras may fail if their type comes from sending app
+            Log.w(LOG_TAG, "failed to parse extras", e)
+        }
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -228,9 +235,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         Log.i(LOG_TAG, "onNewIntent intent=$intent")
-        intent.extras?.takeUnless { it.isEmpty }?.let {
-            Log.i(LOG_TAG, "onNewIntent intent extras=$it")
-        }
+        logExtras(intent, "onNewIntent")
         super.onNewIntent(intent)
         intentStreamHandler.notifyNewIntent(extractIntentData(intent))
     }
@@ -238,9 +243,7 @@ open class MainActivity : FlutterFragmentActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.i(LOG_TAG, "onActivityResult requestCode=$requestCode resultCode=$resultCode data=$data")
-        data?.extras?.takeUnless { it.isEmpty }?.let {
-            Log.i(LOG_TAG, "onActivityResult intent extras=$it")
-        }
+        logExtras(data, "onActivityResult")
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(requestCode, resultCode, data)
@@ -332,7 +335,7 @@ open class MainActivity : FlutterFragmentActivity() {
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
 
-                    val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+                    val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
                     val isLocked = keyguardManager.isKeyguardLocked
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                         setShowWhenLocked(isLocked)

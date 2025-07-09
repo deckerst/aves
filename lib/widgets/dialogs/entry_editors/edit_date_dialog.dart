@@ -233,20 +233,23 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Future<void> _editDate() async {
+    final l10n = context.l10n;
+    final cancelText = Themes.asButtonLabel(l10n.cancelTooltip);
+
     final _date = await showDatePicker(
       context: context,
       initialDate: _customDateTime,
       firstDate: DateTime(0),
       lastDate: DateTime(2100),
-      cancelText: Themes.asButtonLabel(context.l10n.cancelTooltip),
-      confirmText: context.l10n.nextButtonLabel,
+      cancelText: cancelText,
+      confirmText: l10n.nextButtonLabel,
     );
     if (_date == null) return;
 
     final _time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_customDateTime),
-      cancelText: Themes.asButtonLabel(context.l10n.cancelTooltip),
+      cancelText: cancelText,
     );
     if (_time == null) return;
 

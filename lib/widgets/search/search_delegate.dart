@@ -67,7 +67,6 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   ];
 
   static final _monthFilters = List.generate(12, (i) => DateFilter(DateLevel.m, DateTime(1, i + 1)));
-  static final _weekdayFilters = List.generate(7, (i) => WeekDayFilter(i + 1));
 
   CollectionSearchDelegate({
     required super.searchFieldLabel,
@@ -197,12 +196,17 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildDateFilters(BuildContext context, _ContainQuery containQuery) {
+    final firstDayOfWeekIndex = MaterialLocalizations.of(context).firstDayOfWeekIndex;
+    const daysPerWeek = DateTime.daysPerWeek;
+    final _weekdayFilters = List.generate(daysPerWeek, (i) => WeekDayFilter((i + firstDayOfWeekIndex - 1) % daysPerWeek + 1));
+
     final filters = [
       DateFilter.onThisDay,
       RecentlyAddedFilter.instance,
       ..._monthFilters,
       ..._weekdayFilters,
     ].where(containQuery).toList();
+
     return _buildFilterRow(
       context: context,
       title: context.l10n.searchDateSectionTitle,
