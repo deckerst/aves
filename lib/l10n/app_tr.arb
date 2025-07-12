@@ -1436,5 +1436,9 @@
   "mapStyleEditorDialogName": "Ad",
   "@mapStyleEditorDialogName": {},
   "mapStyleEditorDialogUrl": "URL",
-  "@mapStyleEditorDialogUrl": {}
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "Alt alan adları",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }
