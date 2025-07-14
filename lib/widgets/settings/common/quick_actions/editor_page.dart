@@ -21,7 +21,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final String title, bannerText;
   final TextDirection? displayedButtonsDirection;
   final List<List<T>> allAvailableActions;
-  final Widget Function(T action) actionIcon;
+  final Widget Function(BuildContext context, T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
   final List<T> Function() load;
   final void Function(List<T> actions) save;
@@ -63,7 +63,7 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   final String bannerText;
   final TextDirection? displayedButtonsDirection;
   final List<List<T>> allAvailableActions;
-  final Widget Function(T action) actionIcon;
+  final Widget Function(BuildContext context, T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
   final List<T> Function() load;
   final void Function(List<T> actions) save;
@@ -224,7 +224,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                               removeAction: _removeQuickAction,
                               onTargetLeave: _onQuickActionTargetLeave,
                               draggableFeedbackBuilder: (action) => CaptionedButton(
-                                icon: widget.actionIcon(action),
+                                icon: widget.actionIcon(context, action),
                                 caption: widget.actionText(context, action),
                                 showCaption: false,
                                 onPressed: () {},
@@ -376,7 +376,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
           padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorBodyState.quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
-              icon: widget.actionIcon(action),
+              icon: widget.actionIcon(context, action),
               onPressed: () {},
             ),
           ),

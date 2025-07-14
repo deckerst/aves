@@ -16,11 +16,11 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
-import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -31,6 +31,7 @@ import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/drawer/collection_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
+import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
@@ -293,8 +294,8 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     const leading = DrawerPageIcon(route: displayRoute);
     const title = DrawerPageTitle(route: displayRoute);
 
-    switch (settings.homePage) {
-      case HomePageSetting.collection:
+    switch (settings.homeNavItem.route) {
+      case CollectionPage.routeName:
         final filters = settings.homeCustomCollection;
         if (filters.isNotEmpty) {
           return CollectionNavTile(
@@ -304,25 +305,16 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
             isSelected: () => setEquals(currentCollection?.filters, filters),
           );
         }
-      case HomePageSetting.explorer:
+      case ExplorerPage.routeName:
         final path = settings.homeCustomExplorerPath;
         if (path != null) {
           return PageNavTile(
             leading: leading,
             title: title,
-            routeName: ExplorerPage.routeName,
+            navItem: AvesNavItem(route: ExplorerPage.routeName, path: path),
             isSelected: () => widget.currentExplorerPath == path,
-            routeBuilder: (context, routeName, _) {
-              return MaterialPageRoute(
-                settings: RouteSettings(name: routeName),
-                builder: (_) => ExplorerPage(path: path),
-              );
-            },
           );
         }
-      case HomePageSetting.albums:
-      case HomePageSetting.tags:
-        break;
     }
     return const SizedBox();
   }
@@ -412,8 +404,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
           // key is expected by test driver
           key: Key('drawer-page-$route'),
           trailing: trailing,
-          topLevel: route != SearchPage.routeName,
-          routeName: route,
+          navItem: AvesNavItem(route: route),
         );
       }),
     ];
@@ -436,7 +427,6 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
   Widget get debugTile => const PageNavTile(
         // key is expected by test driver
         key: Key('drawer-debug'),
-        topLevel: false,
-        routeName: AppDebugPage.routeName,
+        navItem: AvesNavItem(route: AppDebugPage.routeName),
       );
 }

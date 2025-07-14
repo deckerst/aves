@@ -59,6 +59,11 @@ mixin FilterGridsSettings on SettingsAccess {
 
   void setShowTitleQuery(String routeName, bool newValue) => set(SettingKeys.showTitleQueryPrefixKey + routeName, newValue);
 
+  void resetShowTitleQuery() {
+    final configuredKeys = store.getKeys().where((v) => v.startsWith(SettingKeys.showTitleQueryPrefixKey)).toSet();
+    configuredKeys.forEach((key) => set(key, false));
+  }
+
   Map<Uri, Set<Uri>> get albumGroups => FilterGrouping.fromJson(getString(SettingKeys.albumGroupsKey)) ?? {};
 
   set albumGroups(Map<Uri, Set<Uri>> groups) => set(SettingKeys.albumGroupsKey, FilterGrouping.toJson(groups));

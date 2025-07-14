@@ -18,7 +18,21 @@ import 'package:aves/widgets/settings/navigation/drawer_tab_fixed.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDrawerEditorPage extends StatefulWidget {
-  static const routeName = '/settings/navigation_drawer';
+  static const routeName = '/settings/navigation/drawer';
+
+  static final List<CollectionFilter?> collectionFilterOptions = [
+    null,
+    RecentlyAddedFilter.instance,
+    ...CollectionSearchDelegate.typeFilters,
+  ];
+  static const List<String> pageOptions = [
+    AlbumListPage.routeName,
+    CountryListPage.routeName,
+    PlaceListPage.routeName,
+    TagListPage.routeName,
+    ExplorerPage.routeName,
+    SearchPage.routeName,
+  ];
 
   const NavigationDrawerEditorPage({super.key});
 
@@ -33,34 +47,20 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
   final List<String> _pageItems = [];
   final Set<String> _visiblePages = {};
 
-  static final Set<CollectionFilter?> _typeOptions = {
-    null,
-    RecentlyAddedFilter.instance,
-    ...CollectionSearchDelegate.typeFilters,
-  };
-  static const Set<String> _pageOptions = {
-    AlbumListPage.routeName,
-    CountryListPage.routeName,
-    PlaceListPage.routeName,
-    TagListPage.routeName,
-    ExplorerPage.routeName,
-    SearchPage.routeName,
-  };
-
   @override
   void initState() {
     super.initState();
     final userTypeLinks = settings.drawerTypeBookmarks;
     _visibleTypes.addAll(userTypeLinks);
     _typeItems.addAll(userTypeLinks);
-    _typeItems.addAll(_typeOptions.where((v) => !userTypeLinks.contains(v)));
+    _typeItems.addAll(NavigationDrawerEditorPage.collectionFilterOptions.where((v) => !userTypeLinks.contains(v)));
 
     _albumItems.addAll(AppDrawer.effectiveAlbumBookmarks(context));
 
     final userPageLinks = settings.drawerPageBookmarks;
     _visiblePages.addAll(userPageLinks);
     _pageItems.addAll(userPageLinks);
-    _pageItems.addAll(_pageOptions.where((v) => !userPageLinks.contains(v)));
+    _pageItems.addAll(NavigationDrawerEditorPage.pageOptions.where((v) => !userPageLinks.contains(v)));
   }
 
   @override
