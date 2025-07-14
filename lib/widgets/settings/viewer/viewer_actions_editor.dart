@@ -7,10 +7,17 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-class ViewerActionEditorPage extends StatelessWidget {
+class ViewerActionEditorPage extends StatefulWidget {
   static const routeName = '/settings/viewer/actions';
 
   const ViewerActionEditorPage({super.key});
+
+  @override
+  State<ViewerActionEditorPage> createState() => _ViewerActionEditorPageState();
+}
+
+class _ViewerActionEditorPageState extends State<ViewerActionEditorPage> {
+  late final QuickActionEditorController<EntryAction> _controller;
 
   static final allAvailableActions = [
     [
@@ -37,6 +44,21 @@ class ViewerActionEditorPage extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _controller = QuickActionEditorController(
+      load: () => settings.viewerQuickActions,
+      save: (actions) => settings.viewerQuickActions = actions,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return QuickActionEditorPage<EntryAction>(
       title: context.l10n.settingsViewerQuickActionEditorPageTitle,
@@ -45,8 +67,7 @@ class ViewerActionEditorPage extends StatelessWidget {
       allAvailableActions: allAvailableActions,
       actionIcon: (context, action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),
-      load: () => settings.viewerQuickActions,
-      save: (actions) => settings.viewerQuickActions = actions,
+      controller: _controller,
     );
   }
 }
