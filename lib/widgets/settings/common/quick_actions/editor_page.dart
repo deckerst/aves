@@ -12,30 +12,84 @@ import 'package:aves/widgets/settings/common/quick_actions/action_panel.dart';
 import 'package:aves/widgets/settings/common/quick_actions/available_actions.dart';
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:aves/widgets/settings/common/quick_actions/quick_actions.dart';
-import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+class QuickActionEditorController<T extends Object> with ChangeNotifier {
+  final List<T> Function() load;
+  final void Function(List<T> actions) save;
+
+  List<T> _currentItems = [];
+  final StreamController<EditorControllerEvent<T>> _eventsController = StreamController.broadcast();
+
+  Stream<EditorControllerEvent<T>> get events => _eventsController.stream;
+
+  QuickActionEditorController({
+    required this.load,
+    required this.save,
+  });
+
+  void notify() {
+    notifyListeners();
+  }
+
+  bool add(T? item) => insert(_currentItems.length, item);
+
+  bool insert(int index, T? item) {
+    if (item == null || _currentItems.contains(item)) return false;
+
+    _currentItems.insert(index, item);
+    _eventsController.add(_ItemAddedEvent(index, item));
+    notify();
+    return true;
+  }
+
+  bool remove(T? item) {
+    if (item == null || !_currentItems.contains(item)) return false;
+
+    final index = _currentItems.indexOf(item);
+    _currentItems.removeAt(index);
+    _eventsController.add(_ItemRemovedEvent(index, item));
+    notify();
+    return true;
+  }
+}
+
+class EditorControllerEvent<T> {
+  final int index;
+  final T item;
+
+  EditorControllerEvent(this.index, this.item);
+}
+
+class _ItemAddedEvent<T> extends EditorControllerEvent<T> {
+  _ItemAddedEvent(super.index, super.item);
+}
+
+class _ItemRemovedEvent<T> extends EditorControllerEvent<T> {
+  _ItemRemovedEvent(super.index, super.item);
+}
+
 class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final String title, bannerText;
+  final List<Widget>? appBarActions;
   final TextDirection? displayedButtonsDirection;
   final List<List<T>> allAvailableActions;
   final Widget Function(BuildContext context, T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
-  final List<T> Function() load;
-  final void Function(List<T> actions) save;
+  final QuickActionEditorController<T> controller;
 
   const QuickActionEditorPage({
     super.key,
     required this.title,
+    this.appBarActions,
     required this.bannerText,
     this.displayedButtonsDirection,
     required this.allAvailableActions,
     required this.actionIcon,
     required this.actionText,
-    required this.load,
-    required this.save,
+    required this.controller,
   });
 
   @override
@@ -43,16 +97,17 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
     return AvesScaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: appBarActions,
       ),
       body: SafeArea(
+        bottom: false,
         child: QuickActionEditorBody(
           bannerText: bannerText,
           displayedButtonsDirection: displayedButtonsDirection,
           allAvailableActions: allAvailableActions,
           actionIcon: actionIcon,
           actionText: actionText,
-          load: load,
-          save: save,
+          controller: controller,
         ),
       ),
     );
@@ -65,8 +120,7 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   final List<List<T>> allAvailableActions;
   final Widget Function(BuildContext context, T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
-  final List<T> Function() load;
-  final void Function(List<T> actions) save;
+  final QuickActionEditorController<T> controller;
 
   const QuickActionEditorBody({
     super.key,
@@ -75,8 +129,7 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
     required this.allAvailableActions,
     required this.actionIcon,
     required this.actionText,
-    required this.load,
-    required this.save,
+    required this.controller,
   });
 
   @override
@@ -84,26 +137,43 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
 }
 
 class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEditorBody<T>> with AutomaticKeepAliveClientMixin {
+  final Set<StreamSubscription> _subscriptions = {};
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'quick-actions-animated-list');
   Timer? _targetLeavingTimer;
-  late List<T> _quickActions;
   final ValueNotifier<T?> _draggedQuickAction = ValueNotifier(null);
   final ValueNotifier<T?> _draggedAvailableAction = ValueNotifier(null);
   final ValueNotifier<bool> _quickActionHighlight = ValueNotifier(false);
   final ValueNotifier<bool> _availableActionHighlight = ValueNotifier(false);
-  final AChangeNotifier _quickActionsChangeNotifier = AChangeNotifier();
   final PageController _availableActionPageController = PageController();
 
   // use a flag to prevent quick action target accept/leave when already animating reorder
   // as dragging a button against axis direction messes index resolution while items pop in and out
   bool _reordering = false;
 
-  static const double quickActionVerticalPadding = 16.0;
+  QuickActionEditorController<T> get controller => widget.controller;
+
+  static const _listAnimation = ADurations.quickActionListAnimation;
+  static const double _quickActionVerticalPadding = 16.0;
 
   @override
   void initState() {
     super.initState();
-    _quickActions = widget.load().toList();
+    controller._currentItems = controller.load().toList();
+    _subscriptions.add(controller.events.listen((e) {
+      switch (e) {
+        case _ItemAddedEvent():
+          _animatedListKey.currentState!.insertItem(
+            e.index,
+            duration: _listAnimation,
+          );
+        case _ItemRemovedEvent():
+          _animatedListKey.currentState!.removeItem(
+            e.index,
+            (context, animation) => DraggedPlaceholder(child: _buildQuickActionButton(e.item, animation)),
+            duration: _listAnimation,
+          );
+      }
+    }));
   }
 
   @override
@@ -112,7 +182,6 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     _draggedAvailableAction.dispose();
     _quickActionHighlight.dispose();
     _availableActionHighlight.dispose();
-    _quickActionsChangeNotifier.dispose();
     _availableActionPageController.dispose();
 
     _stopLeavingTimer();
@@ -122,7 +191,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
   void _onQuickActionTargetLeave() {
     _stopLeavingTimer();
     final action = _draggedAvailableAction.value;
-    _targetLeavingTimer = Timer(ADurations.quickActionListAnimation + const Duration(milliseconds: 50), () {
+    _targetLeavingTimer = Timer(_listAnimation + const Duration(milliseconds: 50), () {
       _removeQuickAction(action);
       _quickActionHighlight.value = false;
     });
@@ -132,6 +201,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
   Widget build(BuildContext context) {
     super.build(context);
 
+    final _quickActions = controller._currentItems;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final header = QuickActionButton<T>(
@@ -154,7 +224,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     );
     final originalDirection = Directionality.of(context);
     return PopScope(
-      onPopInvokedWithResult: (didPop, result) => widget.save(_quickActions),
+      onPopInvokedWithResult: (didPop, result) => widget.controller.save(_quickActions),
       child: ListView(
         children: [
           Padding(
@@ -184,7 +254,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
             child: Directionality(
               textDirection: widget.displayedButtonsDirection ?? originalDirection,
               child: SizedBox(
-                height: OverlayButton.getSize(context) + quickActionVerticalPadding * 2,
+                height: OverlayButton.getSize(context) + _quickActionVerticalPadding * 2,
                 child: Stack(
                   children: [
                     Positioned.fill(
@@ -236,7 +306,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                       ),
                     ),
                     AnimatedBuilder(
-                      animation: _quickActionsChangeNotifier,
+                      animation: controller,
                       builder: (context, child) => _quickActions.isEmpty
                           ? Center(
                               child: Text(
@@ -299,7 +369,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                             .map((allActions) => AvailableActionPanel<T>(
                                   allActions: allActions,
                                   quickActions: _quickActions,
-                                  quickActionsChangeNotifier: _quickActionsChangeNotifier,
+                                  quickActionsChangeNotifier: controller,
                                   panelHighlight: _availableActionHighlight,
                                   draggedQuickAction: _draggedQuickAction,
                                   draggedAvailableAction: _draggedAvailableAction,
@@ -326,6 +396,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     _stopLeavingTimer();
     if (_reordering) return false;
 
+    final _quickActions = controller._currentItems;
     final currentIndex = _quickActions.indexOf(action);
     final contained = currentIndex != -1;
     int? targetIndex;
@@ -341,29 +412,12 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
 
     _reordering = true;
     _removeQuickAction(action);
-    _quickActions.insert(targetIndex, action);
-    _animatedListKey.currentState!.insertItem(
-      targetIndex,
-      duration: ADurations.quickActionListAnimation,
-    );
-    _quickActionsChangeNotifier.notify();
-    Future.delayed(ADurations.quickActionListAnimation).then((value) => _reordering = false);
+    controller.insert(targetIndex, action);
+    Future.delayed(_listAnimation).then((value) => _reordering = false);
     return true;
   }
 
-  bool _removeQuickAction(T? action) {
-    if (action == null || !_quickActions.contains(action)) return false;
-
-    final index = _quickActions.indexOf(action);
-    _quickActions.removeAt(index);
-    _animatedListKey.currentState!.removeItem(
-      index,
-      (context, animation) => DraggedPlaceholder(child: _buildQuickActionButton(action, animation)),
-      duration: ADurations.quickActionListAnimation,
-    );
-    _quickActionsChangeNotifier.notify();
-    return true;
-  }
+  bool _removeQuickAction(T? action) => controller.remove(action);
 
   Widget _buildQuickActionButton(T action, Animation<double> animation) {
     animation = animation.drive(CurveTween(curve: Curves.easeInOut));
@@ -373,7 +427,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
         axis: Axis.horizontal,
         sizeFactor: animation,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorBodyState.quickActionVerticalPadding, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorBodyState._quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
               icon: widget.actionIcon(context, action),
