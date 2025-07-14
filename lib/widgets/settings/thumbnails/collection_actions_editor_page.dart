@@ -22,7 +22,7 @@ class CollectionActionEditorPage extends StatelessWidget {
           allAvailableActions: const [
             EntrySetActions.collectionEditorBrowsing,
           ],
-          actionIcon: (action) => action.getIcon(),
+          actionIcon: (context, action) => action.getIcon(),
           actionText: (context, action) => action.getText(context),
           load: () => settings.collectionBrowsingQuickActions,
           save: (actions) => settings.collectionBrowsingQuickActions = actions,
@@ -36,7 +36,7 @@ class CollectionActionEditorPage extends StatelessWidget {
             EntrySetActions.collectionEditorSelectionRegular,
             EntrySetActions.collectionEditorSelectionEdit,
           ],
-          actionIcon: (action) => action.getIcon(),
+          actionIcon: (context, action) => action.getIcon(),
           actionText: (context, action) => action.getText(context),
           load: () => settings.collectionSelectionQuickActions,
           save: (actions) => settings.collectionSelectionQuickActions = actions,

@@ -43,7 +43,7 @@ class ViewerActionEditorPage extends StatelessWidget {
       bannerText: context.l10n.settingsViewerQuickActionEditorBanner,
       displayedButtonsDirection: ViewerBottomOverlay.actionsDirection,
       allAvailableActions: allAvailableActions,
-      actionIcon: (action) => action.getIcon(),
+      actionIcon: (context, action) => action.getIcon(),
       actionText: (context, action) => action.getText(context),
       load: () => settings.viewerQuickActions,
       save: (actions) => settings.viewerQuickActions = actions,

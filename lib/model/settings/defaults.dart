@@ -1,10 +1,14 @@
+import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves_model/aves_model.dart';
 
 class SettingsDefaults {
@@ -29,7 +33,6 @@ class SettingsDefaults {
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
-  static const enableBottomNavigationBar = true;
   static const confirm = true;
   static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
@@ -41,6 +44,12 @@ class SettingsDefaults {
     CountryListPage.routeName,
     TagListPage.routeName,
     ExplorerPage.routeName,
+  ];
+  static final bottomNavigationActions = [
+    const AvesNavItem(route: CollectionPage.routeName),
+    AvesNavItem(route: CollectionPage.routeName, filters: {MimeFilter.video}),
+    AvesNavItem(route: CollectionPage.routeName, filters: {FavouriteFilter.instance}),
+    const AvesNavItem(route: AlbumListPage.routeName),
   ];
 
   // collection

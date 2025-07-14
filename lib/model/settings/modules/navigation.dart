@@ -4,6 +4,11 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/utils/collection_utils.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/explorer/explorer_page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:synchronized/synchronized.dart';
 
@@ -22,6 +27,19 @@ mixin NavigationSettings on SettingsAccess {
 
   String? get homeCustomExplorerPath => getString(SettingKeys.homeCustomExplorerPathKey);
 
+  AvesNavItem get homeNavItem {
+    switch (homePage) {
+      case HomePageSetting.collection:
+        return AvesNavItem(route: CollectionPage.routeName, filters: homeCustomCollection);
+      case HomePageSetting.albums:
+        return const AvesNavItem(route: AlbumListPage.routeName);
+      case HomePageSetting.tags:
+        return const AvesNavItem(route: TagListPage.routeName);
+      case HomePageSetting.explorer:
+        return AvesNavItem(route: ExplorerPage.routeName, path: homeCustomExplorerPath);
+    }
+  }
+
   void setHome(
     HomePageSetting homePage, {
     Set<CollectionFilter> customCollection = const {},
@@ -31,10 +49,6 @@ mixin NavigationSettings on SettingsAccess {
     set(SettingKeys.homeCustomCollectionKey, customCollection.map((filter) => filter.toJson()).toList());
     set(SettingKeys.homeCustomExplorerPathKey, customExplorerPath);
   }
-
-  bool get enableBottomNavigationBar => getBool(SettingKeys.enableBottomNavigationBarKey) ?? SettingsDefaults.enableBottomNavigationBar;
-
-  set enableBottomNavigationBar(bool newValue) => set(SettingKeys.enableBottomNavigationBarKey, newValue);
 
   bool get confirmCreateVault => getBool(SettingKeys.confirmCreateVaultKey) ?? SettingsDefaults.confirm;
 
@@ -76,6 +90,12 @@ mixin NavigationSettings on SettingsAccess {
   List<String> get drawerPageBookmarks => getStringList(SettingKeys.drawerPageBookmarksKey) ?? SettingsDefaults.drawerPageBookmarks;
 
   set drawerPageBookmarks(List<String> newValue) => set(SettingKeys.drawerPageBookmarksKey, newValue);
+
+  List<AvesNavItem> get bottomNavigationActions => getStringList(SettingKeys.bottomNavigationActionsKey)?.map(AvesNavItem.fromJson).nonNulls.toList() ?? SettingsDefaults.bottomNavigationActions;
+
+  set bottomNavigationActions(List<AvesNavItem>? newValue) => set(SettingKeys.bottomNavigationActionsKey, newValue?.map((v) => v.toJson()).toList());
+
+  bool get enableBottomNavigationBar => bottomNavigationActions.length >= 2;
 
   // listening
 

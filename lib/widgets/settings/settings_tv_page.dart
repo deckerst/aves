@@ -36,15 +36,8 @@ class SettingsTvPage extends StatelessWidget {
                       primary: false,
                     ),
                   ),
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeLeft: true,
-                      removeTop: true,
-                      removeRight: true,
-                      removeBottom: true,
-                      child: const _Content(),
-                    ),
+                  const Expanded(
+                    child: _Content(),
                   ),
                 ],
               ),
@@ -95,10 +88,17 @@ class _ContentState extends State<_Content> {
           builder: (context, constraints) {
             return Row(
               children: [
-                SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                    child: IntrinsicHeight(child: rail),
+                MediaQuery.removePadding(
+                  context: context,
+                  removeLeft: true,
+                  removeTop: true,
+                  removeRight: true,
+                  removeBottom: true,
+                  child: SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(child: rail),
+                    ),
                   ),
                 ),
                 Expanded(

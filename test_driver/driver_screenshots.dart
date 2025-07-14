@@ -31,9 +31,9 @@ Future<void> configureAndLaunch() async {
     // navigation
     ..keepScreenOn = KeepScreenOn.always
     ..setHome(HomePageSetting.collection)
-    ..enableBottomNavigationBar = true
     ..drawerTypeBookmarks = [null, FavouriteFilter.instance]
     ..drawerAlbumBookmarks = null
+    ..bottomNavigationActions = SettingsDefaults.bottomNavigationActions
     // collection
     ..collectionSectionFactor = EntrySectionFactor.month
     ..collectionSortFactor = EntrySortFactor.date

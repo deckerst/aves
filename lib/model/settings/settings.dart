@@ -140,7 +140,6 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     mustBackTwiceToExit = false;
     // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
     keepScreenOn = KeepScreenOn.videoPlayback;
-    enableBottomNavigationBar = false;
     drawerTypeBookmarks = [
       null,
       MimeFilter.video,
@@ -153,6 +152,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
       TagListPage.routeName,
       SearchPage.routeName,
     ];
+    bottomNavigationActions = [];
     showOverlayOnOpening = false;
     showOverlayMinimap = false;
     showOverlayThumbnailPreview = false;
@@ -164,6 +164,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     videoGestureSideDoubleTapSeek = false;
     enableBin = false;
     showPinchGestureAlternatives = true;
+    resetShowTitleQuery();
   }
 
   Future<void> sanitize() async {
@@ -346,7 +347,6 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.forceWesternArabicNumeralsKey:
             case SettingKeys.enableDynamicColorKey:
             case SettingKeys.enableBlurEffectKey:
-            case SettingKeys.enableBottomNavigationBarKey:
             case SettingKeys.mustBackTwiceToExitKey:
             case SettingKeys.confirmCreateVaultKey:
             case SettingKeys.confirmDeleteForeverKey:
@@ -446,6 +446,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.drawerTypeBookmarksKey:
             case SettingKeys.drawerAlbumBookmarksKey:
             case SettingKeys.drawerPageBookmarksKey:
+            case SettingKeys.bottomNavigationActionsKey:
             case SettingKeys.collectionBurstPatternsKey:
             case SettingKeys.pinnedFiltersKey:
             case SettingKeys.hiddenFiltersKey:
