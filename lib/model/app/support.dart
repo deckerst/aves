@@ -8,6 +8,8 @@ class AppSupport {
     MimeTypes.crw,
     MimeTypes.djvu,
     MimeTypes.dwg,
+    MimeTypes.dxf,
+    MimeTypes.flic,
     MimeTypes.jpeg2000,
     MimeTypes.jxl,
     MimeTypes.pat,
