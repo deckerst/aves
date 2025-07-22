@@ -2,12 +2,14 @@ import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
 
 mixin GroupingConversion {
   static const _storedAlbumPath = '/stored';
   static const _dynamicAlbumPath = '/dynamic';
+  static const _tagPath = '/tag';
   static const _nameParamKey = 'name';
   static const _storagePathParamKey = 'path';
 
@@ -22,6 +24,11 @@ mixin GroupingConversion {
         final name = uri.queryParameters[_nameParamKey];
         if (name != null) {
           return dynamicAlbums.get(name);
+        }
+      case _tagPath:
+        final tag = uri.queryParameters[_nameParamKey];
+        if (tag != null) {
+          return TagFilter(tag);
         }
       default:
         throw Exception('unhandled path=${uri.path} with uri=$uri');
@@ -38,6 +45,8 @@ mixin GroupingConversion {
         return _buildStoredAlbumUri(filter.album);
       case DynamicAlbumFilter _:
         return _buildDynamicAlbumUri(filter.name);
+      case TagFilter _:
+        return _buildTagUri(filter.tag);
       default:
         throw Exception('unknown type with filter=$filter');
     }
@@ -61,6 +70,17 @@ mixin GroupingConversion {
       path: _dynamicAlbumPath,
       queryParameters: {
         _nameParamKey: name,
+      },
+    );
+  }
+
+  static Uri _buildTagUri(String tag) {
+    return Uri(
+      scheme: FilterGrouping.scheme,
+      host: FilterGrouping.hostTags,
+      path: _tagPath,
+      queryParameters: {
+        _nameParamKey: tag,
       },
     );
   }

@@ -117,7 +117,7 @@ class AvesNavItem extends Equatable {
       case PlaceListPage.routeName:
         return (_) => const PlaceListPage();
       case TagListPage.routeName:
-        return (_) => const TagListPage();
+        return (_) => const TagListPage(initialGroup: null);
       case AboutPage.routeName:
         return (_) => const AboutPage();
       case AppDebugPage.routeName:

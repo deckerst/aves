@@ -80,6 +80,7 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
                   'topEntryIds': '${settings.topEntryIds}',
                   'longPressTimeout': '${settings.longPressTimeout}',
                   'albumGroups': toMultiline(settings.albumGroups.entries),
+                  'tagGroups': toMultiline(settings.tagGroups.entries),
                 },
               ),
             ),

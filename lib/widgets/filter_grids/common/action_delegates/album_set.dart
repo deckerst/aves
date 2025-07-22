@@ -38,6 +38,7 @@ import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -98,9 +99,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       case ChipSetAction.group:
         return isMain && isSelecting;
       case ChipSetAction.delete:
-        return isMain && isSelecting && !settings.isReadOnly && !(selectedFilters.whereType<StoredAlbumFilter>().isEmpty && selectedFilters.whereType<DynamicAlbumFilter>().isNotEmpty);
+        return isMain && isSelecting && !settings.isReadOnly && (selectedFilters.isEmpty || selectedFilters.every((v) => v is StoredAlbumFilter));
       case ChipSetAction.remove:
-        return isMain && isSelecting && !settings.isReadOnly && selectedFilters.whereType<StoredAlbumFilter>().isEmpty && selectedFilters.whereType<DynamicAlbumFilter>().isNotEmpty;
+        return isMain && isSelecting && !settings.isReadOnly && selectedFilters.isNotEmpty && selectedFilters.every((v) => v is DynamicAlbumFilter);
       case ChipSetAction.rename:
         return isMain && isSelecting && !settings.isReadOnly;
       case ChipSetAction.hide:
@@ -132,7 +133,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
     switch (action) {
       case ChipSetAction.delete:
-        return selectedFilters.whereType<StoredAlbumFilter>().isNotEmpty && selectedFilters.whereType<DynamicAlbumFilter>().isEmpty;
+        return selectedFilters.isNotEmpty && selectedFilters.every((v) => v is StoredAlbumFilter);
       case ChipSetAction.rename:
         if (selectedFilters.length != 1) return false;
         final filter = selectedFilters.first;
@@ -458,7 +459,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final filter = await pickAlbum(
       context: context,
       moveType: null,
-      albumChipTypes: {AlbumChipType.group},
+      chipTypes: {AlbumChipType.group},
       initialGroup: initialGroup,
     );
     if (filter == null) return;

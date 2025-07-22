@@ -394,7 +394,7 @@ class _HomePageState extends State<HomePage> {
       case AlbumListPage.routeName:
         return buildRoute((context) => const AlbumListPage(initialGroup: null));
       case TagListPage.routeName:
-        return buildRoute((context) => const TagListPage());
+        return buildRoute((context) => const TagListPage(initialGroup: null));
       case MapPage.routeName:
         return buildRoute((context) {
           final mapCollection = CollectionLens(

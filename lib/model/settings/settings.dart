@@ -75,6 +75,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
 
   void _unregister() {
     albumGrouping.removeListener(saveAlbumGroups);
+    tagGrouping.removeListener(saveTagGroups);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -82,20 +83,24 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
 
   void _register(bool monitorPlatformSettings) {
     albumGrouping.addListener(saveAlbumGroups);
+    tagGrouping.addListener(saveTagGroups);
     _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) {
       final changes = e.changes;
       updateBookmarkedDynamicAlbums(changes);
       updatePinnedDynamicAlbums(changes);
     }));
-    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) {
-      final oldGroupUri = e.oldGroupUri;
-      final newGroupUri = e.newGroupUri;
-      updateBookmarkedGroup(oldGroupUri, newGroupUri);
-      updatePinnedGroup(oldGroupUri, newGroupUri);
-    }));
+    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen(_onGroupingChange));
+    _subscriptions.add(tagGrouping.eventBus.on<GroupUriChangedEvent>().listen(_onGroupingChange));
     if (monitorPlatformSettings) {
       _subscriptions.add(_platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?)));
     }
+  }
+
+  void _onGroupingChange(GroupUriChangedEvent event) {
+    final oldGroupUri = event.oldGroupUri;
+    final newGroupUri = event.newGroupUri;
+    updateBookmarkedGroup(oldGroupUri, newGroupUri);
+    updatePinnedGroup(oldGroupUri, newGroupUri);
   }
 
   Future<void> reload() => store.reload();
@@ -415,6 +420,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.placeSortFactorKey:
             case SettingKeys.tagSortFactorKey:
             case SettingKeys.albumGroupsKey:
+            case SettingKeys.tagGroupsKey:
             case SettingKeys.imageBackgroundKey:
             case SettingKeys.videoAutoPlayModeKey:
             case SettingKeys.videoBackgroundModeKey:
