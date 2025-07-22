@@ -9,9 +9,9 @@ import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
-import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/metadata/trash.dart';
@@ -554,7 +554,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         return stateEntryCount(filter);
       case LocationFilter(level: LocationLevel.place):
         return placeEntryCount(filter);
-      case TagFilter _:
+      case TagBaseFilter _:
         return tagEntryCount(filter);
     }
     return 0;
@@ -570,7 +570,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         return stateSize(filter);
       case LocationFilter(level: LocationLevel.place):
         return placeSize(filter);
-      case TagFilter _:
+      case TagBaseFilter _:
         return tagSize(filter);
     }
     return 0;
@@ -586,7 +586,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         return stateRecentEntry(filter);
       case LocationFilter(level: LocationLevel.place):
         return placeRecentEntry(filter);
-      case TagFilter _:
+      case TagBaseFilter _:
         return tagRecentEntry(filter);
     }
     return null;

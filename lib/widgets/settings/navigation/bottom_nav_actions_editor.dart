@@ -8,7 +8,8 @@ import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
-import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/tag_pick_page.dart';
+import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
@@ -108,14 +109,19 @@ class _BottomNavigationActionEditorPageState extends State<BottomNavigationActio
         final albumFilter = await pickAlbum(
           context: context,
           moveType: null,
-          albumChipTypes: AlbumChipType.values,
+          chipTypes: AlbumChipType.values,
           initialGroup: null,
         );
         if (albumFilter == null) return;
         _controller.add(AvesNavItem(route: CollectionPage.routeName, filters: {albumFilter}));
       case _EditorAction.addTag:
-        // TODO TLAD tag picker
-        break;
+        final tagFilter = await pickTag(
+          context: context,
+          chipTypes: ChipType.values,
+          initialGroup: null,
+        );
+        if (tagFilter == null) return;
+        _controller.add(AvesNavItem(route: CollectionPage.routeName, filters: {tagFilter}));
     }
   }
 }

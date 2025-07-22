@@ -19,33 +19,15 @@ class AlbumGroupFilter extends GroupBaseFilter with AlbumBaseFilter {
   factory AlbumGroupFilter.empty(Uri uri) => AlbumGroupFilter(uri, SetOrFilter(const {}));
 
   static AlbumGroupFilter? fromMap(Map<String, dynamic> json) {
-    final filter = CollectionFilter.fromJson(json['filter']);
-    if (filter == null || filter is! SetOrFilter) return null;
+    final props = GroupBaseFilter.fromMap(json);
+    if (props == null) return null;
 
-    final uriString = json['uri'];
-    final uri = uriString is String ? Uri.tryParse(uriString) : null;
-    if (uri == null) return null;
-
-    return AlbumGroupFilter(
-      uri,
-      filter,
-      reversed: json['reversed'] ?? false,
-    );
+    final (uri, filter, reversed) = props;
+    return AlbumGroupFilter(uri, filter, reversed: reversed);
   }
 
   @override
-  Map<String, dynamic> toMap() => {
-        'type': type,
-        'uri': uri.toString(),
-        'filter': filter.toJson(),
-        'reversed': reversed,
-      };
-
-  @override
   String get category => type;
-
-  @override
-  String get key => '$type-$reversed-$uri';
 
   // container
 

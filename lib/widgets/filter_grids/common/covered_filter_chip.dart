@@ -4,6 +4,7 @@ import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
@@ -95,6 +96,13 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
               {
                 return StreamBuilder<AlbumGroupSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<AlbumGroupSummaryInvalidatedEvent>(),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            case TagGroupFilter _:
+              {
+                return StreamBuilder<TagGroupSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<TagGroupSummaryInvalidatedEvent>(),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
@@ -208,6 +216,13 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           _buildDetailIcon(context, AIcons.album, padding: detailIconTextPadding(extent)),
           Text(
             '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
+            style: textStyle,
+          ),
+        ],
+        if (filter is TagGroupFilter) ...[
+          _buildDetailIcon(context, AIcons.tag, padding: detailIconTextPadding(extent)),
+          Text(
+            '${NumberFormat.decimalPattern(context.locale).format(tagGrouping.countLeaves(filter.uri))}${AText.separator}',
             style: textStyle,
           ),
         ],

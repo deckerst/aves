@@ -67,7 +67,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.goToPlacePage:
         _goTo(context, filter, PlaceListPage.routeName, (context) => const PlaceListPage());
       case ChipAction.goToTagPage:
-        _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
+        final initialGroup = tagGrouping.getFilterParent(filter);
+        _goTo(context, filter, TagListPage.routeName, (context) => TagListPage(initialGroup: initialGroup));
       case ChipAction.goToExplorerPage:
         String? path;
         if (filter is StoredAlbumFilter) {

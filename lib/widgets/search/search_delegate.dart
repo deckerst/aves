@@ -291,10 +291,15 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     return StreamBuilder(
       stream: source.eventBus.on<TagsChangedEvent>(),
       builder: (context, snapshot) {
+        final filters = [
+          ...tagGrouping.getGroups().map(tagGrouping.uriToFilter),
+          ...source.sortedTags.map(TagFilter.new),
+        ].nonNulls.where(containQuery).toList()
+          ..sort();
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchTagsSectionTitle,
-          filters: source.sortedTags.map(TagFilter.new).where(containQuery).toList(),
+          filters: filters,
         );
       },
     );

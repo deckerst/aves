@@ -4,7 +4,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
-import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +69,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
               final albumFilter = await pickAlbum(
                 context: context,
                 moveType: null,
-                albumChipTypes: AlbumChipType.values,
+                chipTypes: AlbumChipType.values,
                 initialGroup: null,
               );
               if (albumFilter == null || items.contains(albumFilter)) return;

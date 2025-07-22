@@ -2,6 +2,10 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
+enum ChipType { regular, group }
+
+enum AlbumChipType { stored, dynamic, group }
+
 enum AlbumImportance { newAlbum, pinned, group, special, apps, vaults, dynamic, regular }
 
 extension ExtraAlbumImportance on AlbumImportance {

@@ -68,6 +68,10 @@ mixin FilterGridsSettings on SettingsAccess {
 
   set albumGroups(Map<Uri, Set<Uri>> groups) => set(SettingKeys.albumGroupsKey, FilterGrouping.toJson(groups));
 
+  Map<Uri, Set<Uri>> get tagGroups => FilterGrouping.fromJson(getString(SettingKeys.tagGroupsKey)) ?? {};
+
+  set tagGroups(Map<Uri, Set<Uri>> groups) => set(SettingKeys.tagGroupsKey, FilterGrouping.toJson(groups));
+
   // listening
 
   final _lockForPins = Lock();
@@ -108,4 +112,6 @@ mixin FilterGridsSettings on SettingsAccess {
   }
 
   void saveAlbumGroups() => albumGroups = albumGrouping.allGroups;
+
+  void saveTagGroups() => tagGroups = tagGrouping.allGroups;
 }

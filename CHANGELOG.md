@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Tags: groups
+- bottom navigation bar customization
+
 ## <a id="v1.13.4"></a>[v1.13.4] - 2025-07-09
 
 ### Added

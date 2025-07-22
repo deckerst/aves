@@ -1,25 +1,31 @@
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
+import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/pick_dialogs/tag_pick_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
-  final Iterable<FilterGridItem<TagFilter>> _items;
+class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
+  final Iterable<FilterGridItem<TagBaseFilter>> _items;
 
-  TagChipSetActionDelegate(Iterable<FilterGridItem<TagFilter>> items) : _items = items;
+  TagChipSetActionDelegate(Iterable<FilterGridItem<TagBaseFilter>> items) : _items = items;
 
   @override
-  Iterable<FilterGridItem<TagFilter>> get allItems => _items;
+  Iterable<FilterGridItem<TagBaseFilter>> get allItems => _items;
 
   @override
   ChipSortFactor get sortFactor => settings.tagSortFactor;
@@ -45,17 +51,41 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
     required AppMode appMode,
     required bool isSelecting,
     required int itemCount,
-    required Set<TagFilter> selectedFilters,
+    required Set<TagBaseFilter> selectedFilters,
   }) {
     final isMain = appMode == AppMode.main;
 
     switch (action) {
+      case ChipSetAction.createGroup:
+        return true;
+      case ChipSetAction.group:
+        return isMain && isSelecting;
       case ChipSetAction.remove:
-        return isMain && isSelecting && !settings.isReadOnly;
+        return isMain && isSelecting && !settings.isReadOnly && (selectedFilters.isEmpty || selectedFilters.every((v) => v is TagFilter));
       default:
         return super.isVisible(
           action,
           appMode: appMode,
+          isSelecting: isSelecting,
+          itemCount: itemCount,
+          selectedFilters: selectedFilters,
+        );
+    }
+  }
+
+  @override
+  bool canApply(
+    ChipSetAction action, {
+    required bool isSelecting,
+    required int itemCount,
+    required Set<TagBaseFilter> selectedFilters,
+  }) {
+    switch (action) {
+      case ChipSetAction.delete:
+        return selectedFilters.isNotEmpty && selectedFilters.every((v) => v is TagFilter);
+      default:
+        return super.canApply(
+          action,
           isSelecting: isSelecting,
           itemCount: itemCount,
           selectedFilters: selectedFilters,
@@ -70,6 +100,8 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
       // single/multiple filters
       case ChipSetAction.remove:
         _remove(context);
+      case ChipSetAction.group:
+        _group(context);
       default:
         break;
     }
@@ -77,7 +109,7 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
   }
 
   Future<void> _remove(BuildContext context) async {
-    final filters = getSelectedFilters(context);
+    final filters = getSelectedFilters(context).whereType<TagFilter>().toSet();
 
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
@@ -102,6 +134,27 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagFilter> {
 
     await EntrySetActionDelegate().removeTags(context, entries: todoEntries, tags: todoTags);
 
+    browse(context);
+  }
+
+  Future<void> _group(BuildContext context) async {
+    final filters = getSelectedFilters(context);
+    final childrenUris = filters.map(GroupingConversion.filterToUri).nonNulls.toSet();
+
+    final initialGroup = tagGrouping.getFilterParent(filters.first);
+    final filter = await pickTag(
+      context: context,
+      chipTypes: {ChipType.group},
+      initialGroup: initialGroup,
+    );
+    if (filter == null) return;
+
+    final destinationGroupUri = filter is TagGroupFilter ? filter.uri : null;
+    tagGrouping.addToGroup(childrenUris, destinationGroupUri);
+    context.read<FilterGroupNotifier>().value = destinationGroupUri;
+
+    final source = context.read<CollectionSource>();
+    source.invalidateTagGroupFilterSummary(notify: true);
     browse(context);
   }
 }

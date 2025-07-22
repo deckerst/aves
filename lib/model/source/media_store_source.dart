@@ -63,6 +63,9 @@ class MediaStoreSource extends CollectionSource {
     albumGrouping.init();
     albumGrouping.setGroups(settings.albumGroups);
     albumGrouping.registerSource(this);
+    tagGrouping.init();
+    tagGrouping.setGroups(settings.tagGroups);
+    tagGrouping.registerSource(this);
     await covers.init();
     await dynamicAlbums.init();
 

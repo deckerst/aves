@@ -6,7 +6,9 @@ import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/container/set_or.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/source/album.dart';
@@ -19,6 +21,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
 final FilterGrouping albumGrouping = FilterGrouping._private(FilterGrouping.hostAlbums, AlbumGroupFilter.new);
+final FilterGrouping tagGrouping = FilterGrouping._private(FilterGrouping.hostTags, TagGroupFilter.new);
 
 // album group URI: "aves://albums/group?path=/group12/subgroup34"
 // stored album URI: "aves://albums/stored?path=/volume/dir/path12"
@@ -26,6 +29,7 @@ final FilterGrouping albumGrouping = FilterGrouping._private(FilterGrouping.host
 class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   static const scheme = 'aves';
   static const hostAlbums = 'albums';
+  static const hostTags = 'tags';
 
   static const _groupPath = '/group';
   static const _groupPathParamKey = 'path';
@@ -222,8 +226,9 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
       final groupUri = kv.key;
       final childrenUris = kv.value;
 
-      final rawAlbums = source.rawAlbums;
       final allEntries = source.allEntries;
+      final rawAlbums = source.rawAlbums;
+      final sortedTags = source.sortedTags;
 
       childrenUris.toSet().forEach((childUri) {
         final filter = uriToFilter(childUri);
@@ -232,6 +237,8 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
           switch (filter) {
             case GroupBaseFilter _:
               valid = true;
+            case DynamicAlbumFilter _:
+              valid = dynamicAlbums.contains(filter.name);
             case StoredAlbumFilter _:
               // check album itself
               final isVisibleAlbum = rawAlbums.contains(filter.album);
@@ -241,8 +248,15 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
                 // check non-visible content (hidden, trash, etc.)
                 valid = allEntries.any(filter.test);
               }
-            case DynamicAlbumFilter _:
-              valid = dynamicAlbums.contains(filter.name);
+            case TagFilter _:
+              // check tag itself
+              final isVisibleTag = sortedTags.contains(filter.tag);
+              if (isVisibleTag) {
+                valid = true;
+              } else {
+                // check non-visible content (hidden, trash, etc.)
+                valid = allEntries.any(filter.test);
+              }
           }
         }
         if (!valid) {
@@ -324,6 +338,8 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     switch (uri.host) {
       case hostAlbums:
         return albumGrouping;
+      case hostTags:
+        return tagGrouping;
       default:
         return null;
     }

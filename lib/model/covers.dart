@@ -5,6 +5,7 @@ import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
@@ -48,6 +49,7 @@ class Covers {
     _rows = await localMediaDb.loadAllCovers();
     _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) => _updateCoveredDynamicAlbums(e.changes)));
     _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _updateCoveredGroup(e.oldGroupUri, e.newGroupUri)));
+    _subscriptions.add(tagGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _updateCoveredGroup(e.oldGroupUri, e.newGroupUri)));
   }
 
   int get count => _rows.length;
@@ -111,6 +113,8 @@ class Covers {
         filter = StoredAlbumFilter(filter.album, null);
       case AlbumGroupFilter _:
         filter = AlbumGroupFilter.empty(filter.uri);
+      case TagGroupFilter _:
+        filter = TagGroupFilter.empty(filter.uri);
     }
 
     final oldRows = _rows.where((row) => row.filter == filter).toSet();
