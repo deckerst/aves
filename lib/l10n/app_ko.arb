@@ -1440,5 +1440,13 @@
   "mapStyleEditorDialogSubdomains": "서브도메인",
   "@mapStyleEditorDialogSubdomains": {},
   "mapStyleEditorDialogUserAgent": "사용자 에이전트",
-  "@mapStyleEditorDialogUserAgent": {}
+  "@mapStyleEditorDialogUserAgent": {},
+  "tagPickPageTitle": "태그 선택",
+  "@tagPickPageTitle": {},
+  "settingsNavigationBottomActionsTile": "하단 탐색 모음",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "하단 탐색 모음",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "버튼을 길게 누른 후 이동하여 하단 탐색 모음에 표시될 버튼을 선택하세요.",
+  "@settingsNavigationBottomActionEditorBanner": {}
 }
