@@ -1628,5 +1628,15 @@
   "mapStyleEditorDialogUrl": "URL",
   "@mapStyleEditorDialogUrl": {},
   "mapStyleEditorDialogName": "Nazwa",
-  "@mapStyleEditorDialogName": {}
+  "@mapStyleEditorDialogName": {},
+  "settingsNavigationBottomActionsTile": "Dolna nawigacja",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Dolna nawigacja",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Dotknij i przytrzymaj, aby przesunąć przyciski i wybrać działania wyświetlane na dolnym pasku nawigacyjnym.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "mapStyleEditorDialogSubdomains": "Poddomeny",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "Użytkownik-agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }

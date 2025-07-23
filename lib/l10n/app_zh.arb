@@ -1440,5 +1440,13 @@
   "mapStyleEditorDialogSubdomains": "子域名",
   "@mapStyleEditorDialogSubdomains": {},
   "mapStyleEditorDialogUserAgent": "User-Agent",
-  "@mapStyleEditorDialogUserAgent": {}
+  "@mapStyleEditorDialogUserAgent": {},
+  "settingsNavigationBottomActionsTile": "底部导航",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "底部导航",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "长按以移动按钮，并选择在底部导航栏中显示哪些操作。",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "tagPickPageTitle": "选择标签",
+  "@tagPickPageTitle": {}
 }
