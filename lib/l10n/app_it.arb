@@ -1439,6 +1439,14 @@
   "@mapStyleEditorDialogUrl": {},
   "mapStyleEditorDialogSubdomains": "Sottodomini",
   "@mapStyleEditorDialogSubdomains": {},
-  "mapStyleEditorDialogUserAgent": "User Agent",
-  "@mapStyleEditorDialogUserAgent": {}
+  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "@mapStyleEditorDialogUserAgent": {},
+  "settingsNavigationBottomActionsTile": "Navigazione in basso",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Navigazione in basso",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Tocca e tieni premuto per spostare i pulsanti e selezionare quali azioni vengono visualizzate nella barra di navigazione in basso.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "tagPickPageTitle": "Seleziona tag",
+  "@tagPickPageTitle": {}
 }

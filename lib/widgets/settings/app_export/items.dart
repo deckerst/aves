@@ -40,6 +40,7 @@ extension ExtraAppExportItem on AppExportItem {
       case AppExportItem.settings:
         await settings.import(jsonMap);
         albumGrouping.setGroups(settings.albumGroups);
+        tagGrouping.setGroups(settings.tagGroups);
     }
   }
 }

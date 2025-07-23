@@ -6,10 +6,38 @@ import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
-class CollectionActionEditorPage extends StatelessWidget {
+class CollectionActionEditorPage extends StatefulWidget {
   static const routeName = '/settings/collection_actions';
 
   const CollectionActionEditorPage({super.key});
+
+  @override
+  State<CollectionActionEditorPage> createState() => _CollectionActionEditorPageState();
+}
+
+class _CollectionActionEditorPageState extends State<CollectionActionEditorPage> {
+  late final QuickActionEditorController<EntrySetAction> _browsingController;
+  late final QuickActionEditorController<EntrySetAction> _selectingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _browsingController = QuickActionEditorController(
+      load: () => settings.collectionBrowsingQuickActions,
+      save: (actions) => settings.collectionBrowsingQuickActions = actions,
+    );
+    _selectingController = QuickActionEditorController(
+      load: () => settings.collectionSelectionQuickActions,
+      save: (actions) => settings.collectionSelectionQuickActions = actions,
+    );
+  }
+
+  @override
+  void dispose() {
+    _browsingController.dispose();
+    _selectingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +50,9 @@ class CollectionActionEditorPage extends StatelessWidget {
           allAvailableActions: const [
             EntrySetActions.collectionEditorBrowsing,
           ],
-          actionIcon: (action) => action.getIcon(),
+          actionIcon: (context, action) => action.getIcon(),
           actionText: (context, action) => action.getText(context),
-          load: () => settings.collectionBrowsingQuickActions,
-          save: (actions) => settings.collectionBrowsingQuickActions = actions,
+          controller: _browsingController,
         ),
       ),
       (
@@ -36,10 +63,9 @@ class CollectionActionEditorPage extends StatelessWidget {
             EntrySetActions.collectionEditorSelectionRegular,
             EntrySetActions.collectionEditorSelectionEdit,
           ],
-          actionIcon: (action) => action.getIcon(),
+          actionIcon: (context, action) => action.getIcon(),
           actionText: (context, action) => action.getText(context),
-          load: () => settings.collectionSelectionQuickActions,
-          save: (actions) => settings.collectionSelectionQuickActions = actions,
+          controller: _selectingController,
         ),
       ),
     ];

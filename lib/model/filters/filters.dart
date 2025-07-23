@@ -6,6 +6,7 @@ import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/container/set_or.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
@@ -38,6 +39,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     SetOrFilter.type,
     MimeFilter.type,
     AlbumGroupFilter.type,
+    TagGroupFilter.type,
     DynamicAlbumFilter.type,
     StoredAlbumFilter.type,
     TypeFilter.type,

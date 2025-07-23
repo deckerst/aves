@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -15,10 +14,9 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
-import 'package:aves/widgets/navigation/drawer/page_nav_tile.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
+import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -208,10 +206,11 @@ class _TvRailState extends State<TvRail> {
         return currentFilters.firstOrNull == filter;
       }
 
+      final homeRoute = settings.homeNavItem.route;
       return _NavEntry(
         icon: DrawerFilterIcon(filter: filter),
         label: DrawerFilterTitle(filter: filter),
-        isHome: settings.homePage == HomePageSetting.collection && filter == null,
+        isHome: homeRoute == CollectionPage.routeName && filter == null,
         isSelected: isSelected(),
         onSelection: () => _goToCollection(context, filter),
       );
@@ -249,19 +248,20 @@ class _TvRailState extends State<TvRail> {
   }
 
   _NavEntry _routeNavEntry(String routeName) {
-    final homePage = settings.homePage;
+    final homeRoute = settings.homeNavItem.route;
     return _NavEntry(
       icon: DrawerPageIcon(route: routeName),
       label: DrawerPageTitle(route: routeName),
-      isHome: homePage != HomePageSetting.collection && routeName == homePage.routeName,
+      isHome: homeRoute != CollectionPage.routeName && routeName == homeRoute,
       isSelected: context.currentRouteName == routeName,
       onSelection: () => _goTo(routeName),
     );
   }
 
   void _goTo(String routeName) {
+    final navItem = AvesNavItem(route: routeName);
     Navigator.maybeOf(context)?.pushAndRemoveUntil(
-      PageNavTile.defaultRouteBuilder(context, routeName, true),
+      navItem.routeBuilder(context, topLevel: true),
       (route) => false,
     );
   }

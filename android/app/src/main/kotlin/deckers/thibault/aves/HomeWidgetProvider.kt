@@ -51,19 +51,18 @@ class HomeWidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         Log.d(LOG_TAG, "Widget onUpdate widgetIds=${appWidgetIds.contentToString()}")
-        for (widgetId in appWidgetIds) {
-            val widgetInfo = appWidgetManager.getAppWidgetOptions(widgetId)
+        val pendingResult = goAsync()
+        defaultScope.launch {
+            for (widgetId in appWidgetIds) {
+                val widgetInfo = appWidgetManager.getAppWidgetOptions(widgetId)
 
-            val pendingResult = goAsync()
-            defaultScope.launch {
                 val backgroundProps = getProps(context, widgetId, widgetInfo, drawEntryImage = false)
                 updateWidgetImage(context, appWidgetManager, widgetId, backgroundProps)
 
                 val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = false)
                 updateWidgetImage(context, appWidgetManager, widgetId, imageProps)
-
-                pendingResult?.finish()
             }
+            pendingResult?.finish()
         }
     }
 

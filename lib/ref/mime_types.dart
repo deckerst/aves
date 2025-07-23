@@ -18,6 +18,8 @@ class MimeTypes {
   static const art = 'image/x-jg';
   static const cdr = 'image/x-coreldraw';
   static const djvu = 'image/vnd.djvu';
+  static const dwg = 'image/vnd.dwg';
+  static const dxf = 'image/vnd.dxf';
   static const jpeg2000 = 'image/jp2';
   static const jxl = 'image/jxl';
   static const pat = 'image/x-coreldrawpattern';
@@ -32,7 +34,6 @@ class MimeTypes {
   static const dcr = 'image/x-kodak-dcr';
   static const dng = 'image/dng';
   static const dngX = 'image/x-adobe-dng';
-  static const dwg = 'image/vnd.dwg';
   static const erf = 'image/x-epson-erf';
   static const k25 = 'image/x-kodak-k25';
   static const kdc = 'image/x-kodak-kdc';
@@ -59,6 +60,7 @@ class MimeTypes {
   static const aviVnd = 'video/vnd.avi';
   static const aviXMSVideo = 'video/x-msvideo';
   static const dvd = 'video/dvd';
+  static const flic = 'video/fli';
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
   static const mkv = 'video/mkv';

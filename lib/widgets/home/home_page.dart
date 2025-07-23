@@ -10,7 +10,6 @@ import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -234,7 +233,7 @@ class _HomePageState extends State<HomePage> {
           final source = context.read<CollectionSource>();
           if (source.loadedScope != CollectionSource.fullScope) {
             await reportService.log('Initialize source to start app with mode=$appMode, loaded scope=${source.loadedScope}');
-            final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
+            final loadTopEntriesFirst = settings.homeNavItem.route == CollectionPage.routeName && settings.homeCustomCollection.isEmpty;
             source.canAnalyze = true;
             await source.init(scope: CollectionSource.fullScope, loadTopEntriesFirst: loadTopEntriesFirst);
           }
@@ -382,8 +381,8 @@ class _HomePageState extends State<HomePage> {
       case AppMode.previewMap:
       case AppMode.screenSaver:
       case AppMode.slideshow:
-        routeName = _initialRouteName ?? settings.homePage.routeName;
-        filters = _initialFilters ?? (settings.homePage == HomePageSetting.collection ? settings.homeCustomCollection : {});
+        routeName = _initialRouteName ?? settings.homeNavItem.route;
+        filters = _initialFilters ?? (settings.homeNavItem.route == CollectionPage.routeName ? settings.homeCustomCollection : {});
     }
     Route buildRoute(WidgetBuilder builder) => DirectMaterialPageRoute(
           settings: RouteSettings(name: routeName),
@@ -395,7 +394,7 @@ class _HomePageState extends State<HomePage> {
       case AlbumListPage.routeName:
         return buildRoute((context) => const AlbumListPage(initialGroup: null));
       case TagListPage.routeName:
-        return buildRoute((context) => const TagListPage());
+        return buildRoute((context) => const TagListPage(initialGroup: null));
       case MapPage.routeName:
         return buildRoute((context) {
           final mapCollection = CollectionLens(

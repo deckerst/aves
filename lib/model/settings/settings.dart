@@ -75,6 +75,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
 
   void _unregister() {
     albumGrouping.removeListener(saveAlbumGroups);
+    tagGrouping.removeListener(saveTagGroups);
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -82,20 +83,24 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
 
   void _register(bool monitorPlatformSettings) {
     albumGrouping.addListener(saveAlbumGroups);
+    tagGrouping.addListener(saveTagGroups);
     _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) {
       final changes = e.changes;
       updateBookmarkedDynamicAlbums(changes);
       updatePinnedDynamicAlbums(changes);
     }));
-    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) {
-      final oldGroupUri = e.oldGroupUri;
-      final newGroupUri = e.newGroupUri;
-      updateBookmarkedGroup(oldGroupUri, newGroupUri);
-      updatePinnedGroup(oldGroupUri, newGroupUri);
-    }));
+    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen(_onGroupingChange));
+    _subscriptions.add(tagGrouping.eventBus.on<GroupUriChangedEvent>().listen(_onGroupingChange));
     if (monitorPlatformSettings) {
       _subscriptions.add(_platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?)));
     }
+  }
+
+  void _onGroupingChange(GroupUriChangedEvent event) {
+    final oldGroupUri = event.oldGroupUri;
+    final newGroupUri = event.newGroupUri;
+    updateBookmarkedGroup(oldGroupUri, newGroupUri);
+    updatePinnedGroup(oldGroupUri, newGroupUri);
   }
 
   Future<void> reload() => store.reload();
@@ -140,7 +145,6 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     mustBackTwiceToExit = false;
     // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
     keepScreenOn = KeepScreenOn.videoPlayback;
-    enableBottomNavigationBar = false;
     drawerTypeBookmarks = [
       null,
       MimeFilter.video,
@@ -153,6 +157,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
       TagListPage.routeName,
       SearchPage.routeName,
     ];
+    bottomNavigationActions = [];
     showOverlayOnOpening = false;
     showOverlayMinimap = false;
     showOverlayThumbnailPreview = false;
@@ -164,6 +169,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     videoGestureSideDoubleTapSeek = false;
     enableBin = false;
     showPinchGestureAlternatives = true;
+    resetShowTitleQuery();
   }
 
   Future<void> sanitize() async {
@@ -346,7 +352,6 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.forceWesternArabicNumeralsKey:
             case SettingKeys.enableDynamicColorKey:
             case SettingKeys.enableBlurEffectKey:
-            case SettingKeys.enableBottomNavigationBarKey:
             case SettingKeys.mustBackTwiceToExitKey:
             case SettingKeys.confirmCreateVaultKey:
             case SettingKeys.confirmDeleteForeverKey:
@@ -415,6 +420,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.placeSortFactorKey:
             case SettingKeys.tagSortFactorKey:
             case SettingKeys.albumGroupsKey:
+            case SettingKeys.tagGroupsKey:
             case SettingKeys.imageBackgroundKey:
             case SettingKeys.videoAutoPlayModeKey:
             case SettingKeys.videoBackgroundModeKey:
@@ -446,6 +452,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.drawerTypeBookmarksKey:
             case SettingKeys.drawerAlbumBookmarksKey:
             case SettingKeys.drawerPageBookmarksKey:
+            case SettingKeys.bottomNavigationActionsKey:
             case SettingKeys.collectionBurstPatternsKey:
             case SettingKeys.pinnedFiltersKey:
             case SettingKeys.hiddenFiltersKey:

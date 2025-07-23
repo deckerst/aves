@@ -1628,5 +1628,17 @@
   "mapStyleEditorDialogName": "Heiti",
   "@mapStyleEditorDialogName": {},
   "mapStyleEditorDialogUrl": "Vefslóð",
-  "@mapStyleEditorDialogUrl": {}
+  "@mapStyleEditorDialogUrl": {},
+  "settingsNavigationBottomActionsTile": "Flakkstika neðst",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Flakkstika neðst",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "mapStyleEditorDialogSubdomains": "Undirlén",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "Kennistrengur vafra",
+  "@mapStyleEditorDialogUserAgent": {},
+  "settingsNavigationBottomActionEditorBanner": "Ýttu og haltu niðri til að færa hnappa og velja hvaða aðgerðir eiga að birtast á flakkstikunni neðst.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "tagPickPageTitle": "Veldu merki",
+  "@tagPickPageTitle": {}
 }

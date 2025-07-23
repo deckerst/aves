@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
@@ -168,7 +169,7 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
                   final filter = gridItem.filter;
                   if (!await unlockFilter(context, filter)) return;
 
-                  if (filter is AlbumGroupFilter) {
+                  if (filter is GroupBaseFilter) {
                     context.read<FilterGroupNotifier>().value = filter.uri;
                   } else {
                     final route = MaterialPageRoute(

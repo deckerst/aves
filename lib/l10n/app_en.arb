@@ -816,6 +816,7 @@
 
   "tagPageTitle": "Tags",
   "tagEmpty": "No tags",
+  "tagPickPageTitle": "Pick Tag",
 
   "binPageTitle": "Recycle Bin",
 
@@ -879,6 +880,10 @@
   "settingsNavigationDrawerTabAlbums": "Albums",
   "settingsNavigationDrawerTabPages": "Pages",
   "settingsNavigationDrawerAddAlbum": "Add album",
+
+  "settingsNavigationBottomActionsTile": "Bottom navigation",
+  "settingsNavigationBottomActionEditorPageTitle": "Bottom Navigation",
+  "settingsNavigationBottomActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed in the bottom navigation bar.",
 
   "settingsThumbnailSectionTitle": "Thumbnails",
   "settingsThumbnailOverlayTile": "Overlay",

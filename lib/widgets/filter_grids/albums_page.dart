@@ -15,14 +15,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
+import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-enum AlbumChipType { stored, dynamic, group }
 
 class AlbumListPage extends StatelessWidget {
   static const routeName = '/albums';
@@ -44,6 +43,7 @@ class AlbumListPage extends StatelessWidget {
       child: Builder(
         // to access filter group provider from subtree context
         builder: (context) {
+          final source = context.read<CollectionSource>();
           return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>, Set<CollectionFilter>)>(
             selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor, s.albumSortReverse, s.hiddenFilters, s.pinnedFilters),
             shouldRebuild: (t1, t2) {
@@ -58,11 +58,10 @@ class AlbumListPage extends StatelessWidget {
                   return AnimatedBuilder(
                     animation: Listenable.merge({albumGrouping, dynamicAlbums}),
                     builder: (context, child) => StreamBuilder(
-                      stream: context.read<CollectionSource>().eventBus.on<AlbumsChangedEvent>(),
+                      stream: source.eventBus.on<AlbumsChangedEvent>(),
                       builder: (context, snapshot) {
-                        final source = context.read<CollectionSource>();
                         final groupUri = context.watch<FilterGroupNotifier>().value;
-                        final gridItems = AlbumListPage.getAlbumGridItems(context, source, AlbumChipType.values, groupUri);
+                        final gridItems = getGridItems(context, source, AlbumChipType.values, groupUri);
                         return StreamBuilder<Set<CollectionFilter>?>(
                           // to update sections by tier
                           stream: covers.packageChangeStream,
@@ -72,7 +71,7 @@ class AlbumListPage extends StatelessWidget {
                             sortFactor: settings.albumSortFactor,
                             showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
                             actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                            filterSections: AlbumListPage.groupToSections(context, source, gridItems),
+                            filterSections: groupToSections(context, source, gridItems),
                             newFilters: source.getNewAlbumFilters(context),
                             emptyBuilder: () => EmptyContent(
                               icon: AIcons.album,
@@ -92,9 +91,9 @@ class AlbumListPage extends StatelessWidget {
     );
   }
 
-  // common with album selection page to move/copy entries
+  // common with picking page
 
-  static List<FilterGridItem<AlbumBaseFilter>> getAlbumGridItems(
+  static List<FilterGridItem<AlbumBaseFilter>> getGridItems(
     BuildContext context,
     CollectionSource source,
     Iterable<AlbumChipType> albumChipTypes,

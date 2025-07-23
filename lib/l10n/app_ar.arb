@@ -1632,5 +1632,11 @@
   "mapStyleEditorDialogSubdomains": "المجالات الفرعية",
   "@mapStyleEditorDialogSubdomains": {},
   "mapStyleEditorDialogUserAgent": "وكيل المستخدم",
-  "@mapStyleEditorDialogUserAgent": {}
+  "@mapStyleEditorDialogUserAgent": {},
+  "settingsNavigationBottomActionsTile": "شريط التنقل السفلي",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "شريط التنقل السفلي",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "المس باستمرار لتحريك الأزرار وتحديد الإجراءات التي يتم عرضها في شريط التنقل السفلي.",
+  "@settingsNavigationBottomActionEditorBanner": {}
 }

@@ -48,7 +48,6 @@ class SettingKeys {
   static const homePageKey = 'home_page';
   static const homeCustomCollectionKey = 'home_custom_collection';
   static const homeCustomExplorerPathKey = 'home_custom_explorer_path';
-  static const enableBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmCreateVaultKey = 'confirm_create_vault';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
@@ -58,6 +57,7 @@ class SettingKeys {
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
+  static const bottomNavigationActionsKey = 'bottom_navigation_actions';
 
   // collection
   static const collectionBurstPatternsKey = 'collection_burst_patterns';
@@ -88,6 +88,7 @@ class SettingKeys {
   static const placeSortReverseKey = 'place_sort_reverse';
   static const tagSortReverseKey = 'tag_sort_reverse';
   static const albumGroupsKey = 'album_groups';
+  static const tagGroupsKey = 'tag_groups';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
   static const deactivatedHiddenFiltersKey = 'deactivated_hidden_filters';

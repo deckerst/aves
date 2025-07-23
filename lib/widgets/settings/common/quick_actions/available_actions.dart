@@ -14,7 +14,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
   final ValueNotifier<T?> draggedQuickAction;
   final ValueNotifier<T?> draggedAvailableAction;
   final bool Function(T? action) removeQuickAction;
-  final Widget Function(T action) actionIcon;
+  final Widget Function(BuildContext context, T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
 
   static const double spacing = 8;
@@ -111,7 +111,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
     bool showCaption = true,
   }) =>
       CaptionedButton(
-        icon: actionIcon(action),
+        icon: actionIcon(context, action),
         caption: actionText(context, action),
         showCaption: showCaption,
         onPressed: enabled ? () {} : null,
