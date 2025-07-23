@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Tags: groups
 - bottom navigation bar customization
 
+### Fixed
+
+- crash when updating multiple home widgets
+
 ## <a id="v1.13.4"></a>[v1.13.4] - 2025-07-09
 
 ### Added
