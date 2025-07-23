@@ -1441,5 +1441,13 @@
   "mapStyleEditorDialogUserAgent": "User-Agent",
   "@mapStyleEditorDialogUserAgent": {},
   "mapStyleEditorDialogSubdomains": "Subdomeinen",
-  "@mapStyleEditorDialogSubdomains": {}
+  "@mapStyleEditorDialogSubdomains": {},
+  "settingsNavigationBottomActionsTile": "Navigatie onderaan",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Navigatie onderaan",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Lang indrukken om knoppen te verplaatsen en te selecteren welke acties worden weergegeven in de onderste navigatiebalk.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "tagPickPageTitle": "Label kiezen",
+  "@tagPickPageTitle": {}
 }

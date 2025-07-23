@@ -1632,5 +1632,13 @@
   "mapStyleEditorDialogSubdomains": "Субдомени",
   "@mapStyleEditorDialogSubdomains": {},
   "mapStyleEditorDialogUserAgent": "Користувацький агент",
-  "@mapStyleEditorDialogUserAgent": {}
+  "@mapStyleEditorDialogUserAgent": {},
+  "settingsNavigationBottomActionsTile": "Нижня навігація",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Нижня навігація",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Торкніться та утримуйте, щоб переміщувати кнопки та вибирати дії, які відображаються на нижній панелі навігації.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "tagPickPageTitle": "Вибрати тег",
+  "@tagPickPageTitle": {}
 }
