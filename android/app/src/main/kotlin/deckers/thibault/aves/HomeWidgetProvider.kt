@@ -62,7 +62,11 @@ class HomeWidgetProvider : AppWidgetProvider() {
                 val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = false)
                 updateWidgetImage(context, appWidgetManager, widgetId, imageProps)
             }
-            pendingResult?.finish()
+            try {
+                pendingResult?.finish()
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "failed to finish update for widgetIds=${appWidgetIds.contentToString()}", e)
+            }
         }
     }
 
