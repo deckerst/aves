@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.6"></a>[v1.13.6] - 2025-07-28
+
+### Fixed
+
+- DB init when a serialized dynamic album is too large for cursor window
+
 ## <a id="v1.13.5"></a>[v1.13.5] - 2025-07-23
 
 ### Added
