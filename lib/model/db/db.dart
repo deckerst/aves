@@ -114,7 +114,7 @@ abstract class LocalMediaDb {
 
   // dynamic albums
 
-  Future<void> clearDynamicAlbums();
+  Future<int> clearDynamicAlbums();
 
   Future<Set<DynamicAlbumRow>> loadAllDynamicAlbums();
 
