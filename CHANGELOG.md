@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Collection: support for Motorola burst pattern
+
 ### Fixed
 
 - receiving `geo:` URI in some cases
