@@ -1440,5 +1440,13 @@
   "mapStyleEditorDialogSubdomains": "Subdominios",
   "@mapStyleEditorDialogSubdomains": {},
   "mapStyleEditorDialogUserAgent": "User-Agent",
-  "@mapStyleEditorDialogUserAgent": {}
+  "@mapStyleEditorDialogUserAgent": {},
+  "tagPickPageTitle": "Escoger etiqueta",
+  "@tagPickPageTitle": {},
+  "settingsNavigationBottomActionsTile": "Barra de navegación inferior",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Barra de navegación inferior",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Toque y mantenga para mover botones y seleccionar qué acciones se mostrarán en la barra de navegación inferior.",
+  "@settingsNavigationBottomActionEditorBanner": {}
 }

@@ -1638,5 +1638,7 @@
   "settingsNavigationBottomActionEditorPageTitle": "شريط التنقل السفلي",
   "@settingsNavigationBottomActionEditorPageTitle": {},
   "settingsNavigationBottomActionEditorBanner": "المس باستمرار لتحريك الأزرار وتحديد الإجراءات التي يتم عرضها في شريط التنقل السفلي.",
-  "@settingsNavigationBottomActionEditorBanner": {}
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "tagPickPageTitle": "اختر الوسم",
+  "@tagPickPageTitle": {}
 }

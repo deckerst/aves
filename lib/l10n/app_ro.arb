@@ -1622,5 +1622,21 @@
   "ungrouped": "Fără grup",
   "@ungrouped": {},
   "groupEmpty": "Niciun grup",
-  "@groupEmpty": {}
+  "@groupEmpty": {},
+  "tagPickPageTitle": "Alege eticheta",
+  "@tagPickPageTitle": {},
+  "settingsNavigationBottomActionsTile": "Navigare jos",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Navigare Jos",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Atinge și menține apăsat pentru a muta butoanele și a selecta ce acțiuni sunt afișate în bara de navigare de jos.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "mapStyleDialogAddStyle": "Adaugă stil",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Nume",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "Subdomenii",
+  "@mapStyleEditorDialogSubdomains": {}
 }

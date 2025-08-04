@@ -1439,7 +1439,7 @@
   "@mapStyleEditorDialogUrl": {},
   "mapStyleEditorDialogSubdomains": "子域名",
   "@mapStyleEditorDialogSubdomains": {},
-  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "mapStyleEditorDialogUserAgent": "用户代理（UA）",
   "@mapStyleEditorDialogUserAgent": {},
   "settingsNavigationBottomActionsTile": "底部导航",
   "@settingsNavigationBottomActionsTile": {},
