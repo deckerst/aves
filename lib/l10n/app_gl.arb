@@ -1644,5 +1644,17 @@
   "mapStyleEditorDialogUrl": "URL",
   "@mapStyleEditorDialogUrl": {},
   "mapStyleEditorDialogName": "Nome",
-  "@mapStyleEditorDialogName": {}
+  "@mapStyleEditorDialogName": {},
+  "tagPickPageTitle": "Escoller etiqueta",
+  "@tagPickPageTitle": {},
+  "settingsNavigationBottomActionsTile": "Barra de navegación inferior",
+  "@settingsNavigationBottomActionsTile": {},
+  "settingsNavigationBottomActionEditorPageTitle": "Barra de navegación inferior",
+  "@settingsNavigationBottomActionEditorPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Prema e manteña para mover botóns e escolmar que accións se amosarán na barra de navegación inferior.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "mapStyleEditorDialogSubdomains": "Subdominios",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }
