@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - receiving `geo:` URI in some cases
+- visibility of hidden new albums
 
 ## <a id="v1.13.6"></a>[v1.13.6] - 2025-07-28
 
