@@ -15,6 +15,7 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "keepScreenOn" -> Coresult.safe(call, result, ::keepScreenOn)
             "secureScreen" -> Coresult.safe(call, result, ::secureScreen)
             "isRotationLocked" -> Coresult.safe(call, result, ::isRotationLocked)
+            "getOrientation" -> Coresult.safe(call, result, ::getOrientation)
             "requestOrientation" -> Coresult.safe(call, result, ::requestOrientation)
             "isCutoutAware" -> Coresult.safe(call, result, ::isCutoutAware)
             "getCutoutInsets" -> Coresult.safe(call, result, ::getCutoutInsets)
@@ -40,6 +41,8 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
         }
         result.success(locked)
     }
+
+    abstract fun getOrientation(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun requestOrientation(call: MethodCall, result: MethodChannel.Result)
 

@@ -14,6 +14,9 @@ class FakeWindowService extends Fake implements WindowService {
   Future<bool> isRotationLocked() => SynchronousFuture(false);
 
   @override
+  Future<int> getOrientation() => SynchronousFuture(0);
+
+  @override
   Future<void> requestOrientation([Orientation? orientation]) => SynchronousFuture(null);
 
   @override

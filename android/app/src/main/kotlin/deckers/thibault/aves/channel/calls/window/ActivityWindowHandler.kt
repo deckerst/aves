@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls.window
 
 import android.app.Activity
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.view.WindowManager
@@ -38,6 +39,18 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
 
     override fun secureScreen(call: MethodCall, result: MethodChannel.Result) {
         setWindowFlag(call, result, WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    // display orientation in degrees
+    override fun getOrientation(call: MethodCall, result: MethodChannel.Result) {
+        val displayRotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            activity.display.rotation
+        } else {
+            val windowService = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            @Suppress("deprecation")
+            windowService.defaultDisplay.rotation
+        }
+        result.success(displayRotation * 90)
     }
 
     override fun requestOrientation(call: MethodCall, result: MethodChannel.Result) {
