@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Collection: support for Motorola burst pattern
 
+### Changed
+
+- manual rotation to landscape switches to current sensor orientation, then is fixed to it
+
 ### Fixed
 
 - receiving `geo:` URI in some cases

@@ -91,7 +91,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         var sizes: List<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            @Suppress("DEPRECATION")
+            @Suppress("deprecation")
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES)
         } else {
             null
