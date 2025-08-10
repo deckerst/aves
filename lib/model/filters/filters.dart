@@ -65,6 +65,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     switch (type) {
       case AlbumGroupFilter.type:
         return AlbumGroupFilter.fromMap(jsonMap);
+      case TagGroupFilter.type:
+        return TagGroupFilter.fromMap(jsonMap);
       case AspectRatioFilter.type:
         return AspectRatioFilter.fromMap(jsonMap);
       case CoordinateFilter.type:
