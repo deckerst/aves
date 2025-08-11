@@ -153,11 +153,11 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:1.7.1"
     implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.lifecycle:lifecycle-process:2.9.1'
+    implementation 'androidx.lifecycle:lifecycle-process:2.9.2'
     implementation 'androidx.media:media:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.security:security-crypto:1.1.0-beta01'
-    implementation 'androidx.work:work-runtime-ktx:2.10.2'
+    implementation 'androidx.work:work-runtime-ktx:2.10.3'
 
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
@@ -171,14 +171,14 @@ dependencies {
     // - https://jitpack.io/p/deckerst/androidsvg
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:d6b2b0aa4f'
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:c747ae9ee9'
     implementation 'com.github.deckerst:androidsvg:67db933051'
     implementation 'com.github.deckerst.mp4parser:isoparser:c2898f1832'
     implementation 'com.github.deckerst.mp4parser:muxer:c2898f1832'
     implementation 'com.github.deckerst:pixymeta-android:f4513291b7'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
 
     kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
