@@ -206,7 +206,7 @@ class AIcons {
   static const multiPage = Symbols.burst_mode;
   static const panorama = Symbols.vrpano;
   static const sphericalVideo = Symbols.threesixty;
-  static const videoThumb = Symbols.play_circle;
+  static const videoPlay = Symbols.play_circle;
   static const selected = Symbols.check_circle;
   static const unselected = Symbols.radio_button_unchecked;
 
