@@ -1638,5 +1638,7 @@
   "mapStyleEditorDialogSubdomains": "Poddomeny",
   "@mapStyleEditorDialogSubdomains": {},
   "mapStyleEditorDialogUserAgent": "Użytkownik-agent",
-  "@mapStyleEditorDialogUserAgent": {}
+  "@mapStyleEditorDialogUserAgent": {},
+  "tagPickPageTitle": "Wybierz znacznik",
+  "@tagPickPageTitle": {}
 }
