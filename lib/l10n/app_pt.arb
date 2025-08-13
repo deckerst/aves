@@ -1430,5 +1430,19 @@
   "groupPickerUseThisGroupButton": "Usar este grupo",
   "@groupPickerUseThisGroupButton": {},
   "sectionNone": "Nenhuma seção",
-  "@sectionNone": {}
+  "@sectionNone": {},
+  "tagPickPageTitle": "Escolher etiqueta",
+  "@tagPickPageTitle": {},
+  "settingsNavigationBottomActionEditorBanner": "Toque e segure para mover botões e escolher quais ações são exibidas na barra de navegação inferior.",
+  "@settingsNavigationBottomActionEditorBanner": {},
+  "mapStyleDialogAddStyle": "Adicionar estilo",
+  "@mapStyleDialogAddStyle": {},
+  "mapStyleEditorDialogName": "Nome",
+  "@mapStyleEditorDialogName": {},
+  "mapStyleEditorDialogUrl": "URL",
+  "@mapStyleEditorDialogUrl": {},
+  "mapStyleEditorDialogSubdomains": "Subdomínios",
+  "@mapStyleEditorDialogSubdomains": {},
+  "mapStyleEditorDialogUserAgent": "User-Agent",
+  "@mapStyleEditorDialogUserAgent": {}
 }
