@@ -5137,6 +5137,13 @@ public class ExifInterfaceFork {
 
             ByteOrderedDataInputStream inputStream = new ByteOrderedDataInputStream(in);
             inputStream.skipFully(mThumbnailOffset + mOffsetToExifData);
+
+            // TLAD start
+            if (mThumbnailLength > getAvailableHeapSize()) {
+                throw new IOException("cannot allocate " + mThumbnailLength + " bytes to retrieve thumbnail");
+            }
+            // TLAD end
+
             // TODO: Need to handle potential OutOfMemoryError
             byte[] buffer = new byte[mThumbnailLength];
             inputStream.readFully(buffer);
