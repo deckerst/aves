@@ -9,7 +9,6 @@ import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/services/media/byte_receiving_codec.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +68,6 @@ abstract class MediaFetchService {
 
 class PlatformMediaFetchService implements MediaFetchService {
   static const _platformObject = MethodChannel('deckers.thibault/aves/media_fetch_object');
-  static const _platformBytes = MethodChannel('deckers.thibault/aves/media_fetch_bytes', AvesByteReceivingMethodCodec());
   static final _byteStream = StreamsChannel('deckers.thibault/aves/media_byte_stream');
   static const double _thumbnailDefaultSize = 64.0;
 
@@ -124,11 +122,12 @@ class PlatformMediaFetchService implements MediaFetchService {
 
   Future<Uint8List> _getBytes(ImageRequest request, {required bool decoded}) async {
     final _onBytesReceived = request.onBytesReceived;
+    var bytesReceived = 0;
+    final opCompleter = Completer<Uint8List>();
+    final sink = OutputBuffer();
     try {
-      final opCompleter = Completer<Uint8List>();
-      final sink = OutputBuffer();
-      var bytesReceived = 0;
       _byteStream.receiveBroadcastStream(<String, dynamic>{
+        'op': 'getFullImage',
         'uri': request.uri,
         'mimeType': request.mimeType,
         'sizeBytes': request.sizeBytes,
@@ -185,8 +184,11 @@ class PlatformMediaFetchService implements MediaFetchService {
   }) {
     return servicePolicy.call(
       () async {
+        final opCompleter = Completer<Uint8List>();
+        final sink = OutputBuffer();
         try {
-          final result = await _platformBytes.invokeMethod('getRegion', <String, dynamic>{
+          _byteStream.receiveBroadcastStream(<String, dynamic>{
+            'op': 'getRegion',
             'uri': uri,
             'mimeType': mimeType,
             'sizeBytes': sizeBytes,
@@ -198,11 +200,18 @@ class PlatformMediaFetchService implements MediaFetchService {
             'regionHeight': regionRect.height,
             'imageWidth': imageSize.width.toInt(),
             'imageHeight': imageSize.height.toInt(),
-          });
-          if (result != null) {
-            final bytes = result as Uint8List;
-            return InteropDecoding.bytesToCodec(bytes);
-          }
+          }).listen(
+            (data) => sink.add(data as Uint8List),
+            onError: opCompleter.completeError,
+            onDone: () {
+              sink.close();
+              opCompleter.complete(sink.bytes);
+            },
+            cancelOnError: true,
+          );
+          // `await` here, so that `completeError` will be caught below
+          final bytes = await opCompleter.future;
+          return InteropDecoding.bytesToCodec(bytes);
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType)) {
             await reportService.recordError(e, stack);
@@ -229,8 +238,11 @@ class PlatformMediaFetchService implements MediaFetchService {
   }) {
     return servicePolicy.call(
       () async {
+        final opCompleter = Completer<Uint8List>();
+        final sink = OutputBuffer();
         try {
-          final result = await _platformBytes.invokeMethod('getThumbnail', <String, dynamic>{
+          _byteStream.receiveBroadcastStream(<String, dynamic>{
+            'op': 'getThumbnail',
             'uri': uri,
             'mimeType': mimeType,
             'dateModifiedMillis': dateModifiedMillis,
@@ -241,11 +253,18 @@ class PlatformMediaFetchService implements MediaFetchService {
             'pageId': pageId,
             'defaultSizeDip': _thumbnailDefaultSize,
             'quality': 100,
-          });
-          if (result != null) {
-            final bytes = result as Uint8List;
-            return InteropDecoding.bytesToCodec(bytes);
-          }
+          }).listen(
+            (data) => sink.add(data as Uint8List),
+            onError: opCompleter.completeError,
+            onDone: () {
+              sink.close();
+              opCompleter.complete(sink.bytes);
+            },
+            cancelOnError: true,
+          );
+          // `await` here, so that `completeError` will be caught below
+          final bytes = await opCompleter.future;
+          return InteropDecoding.bytesToCodec(bytes);
         } on PlatformException catch (e, stack) {
           if (_isUnknownVisual(mimeType) || e.code == 'getThumbnail-large') {
             await reportService.recordError(e, stack);

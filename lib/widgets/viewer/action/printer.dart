@@ -81,7 +81,7 @@ class EntryPrinter with FeedbackMixin {
           ));
           for (var page = 0; page < pageCount; page++) {
             final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-            final widget = await _buildPageImage(pageEntry);
+            final widget = await _buildPageImage(context, pageEntry);
             if (widget != null) {
               widgets.add(widget);
             }
@@ -93,7 +93,7 @@ class EntryPrinter with FeedbackMixin {
     }
 
     if (widgets.isEmpty) {
-      final widget = await _buildPageImage(entry);
+      final widget = await _buildPageImage(context, entry);
       if (widget != null) {
         widgets.add(widget);
       }
@@ -102,7 +102,7 @@ class EntryPrinter with FeedbackMixin {
     return widgets;
   }
 
-  Future<pdf.Widget?> _buildPageImage(AvesEntry entry) async {
+  Future<pdf.Widget?> _buildPageImage(BuildContext context, AvesEntry entry) async {
     try {
       if (entry.isSvg) {
         final data = await mediaFetchService.getSvg(
@@ -125,6 +125,7 @@ class EntryPrinter with FeedbackMixin {
     } catch (error) {
       debugPrint('failed to load image for entry=$entry, error=$error');
     }
+    showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
     return null;
   }
 }

@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import com.bumptech.glide.Glide
+import deckers.thibault.aves.channel.streams.ByteSink
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
@@ -19,7 +20,7 @@ import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
-import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayInputStream
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.math.max
@@ -43,7 +44,7 @@ class RegionFetcher internal constructor(
         imageWidth: Int,
         imageHeight: Int,
         requestKey: Pair<Uri, Int?> = Pair(uri, pageId),
-        result: MethodChannel.Result,
+        result: ByteSink,
     ) {
         if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             // use JPEG export for requested page
@@ -118,10 +119,11 @@ class RegionFetcher internal constructor(
             }
 
             val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
-            if (bytes != null) {
-                result.success(bytes)
-            } else {
+            if (bytes == null) {
                 result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
+            } else {
+                result.streamBytes(ByteArrayInputStream(bytes))
+                result.endOfStream()
             }
         } catch (e: Exception) {
             if (mimeType != MimeTypes.JPEG) {
