@@ -4,11 +4,9 @@ import android.service.dreams.DreamService
 import android.util.Log
 import android.view.View
 import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
 import deckers.thibault.aves.channel.calls.DeviceHandler
 import deckers.thibault.aves.channel.calls.EmbeddedDataHandler
-import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
 import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
 import deckers.thibault.aves.channel.calls.MediaSessionHandler
 import deckers.thibault.aves.channel.calls.MediaStoreHandler
@@ -118,7 +116,6 @@ class ScreenSaverService : DreamService() {
         mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
-        MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
         MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))

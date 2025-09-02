@@ -11,12 +11,13 @@ import com.caverock.androidsvg.PreserveAspectRatio
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
+import deckers.thibault.aves.channel.streams.ByteSink
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.StorageUtils
-import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayInputStream
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.math.ceil
@@ -31,7 +32,7 @@ class SvgRegionFetcher internal constructor(
         regionRect: Rect,
         imageWidth: Int,
         imageHeight: Int,
-        result: MethodChannel.Result,
+        result: ByteSink,
     ) {
         if (!MemoryUtils.canAllocate(sizeBytes)) {
             // opening an SVG that large would yield an OOM during parsing from `com.caverock.androidsvg.SVGParser`
@@ -79,7 +80,7 @@ class SvgRegionFetcher internal constructor(
             val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), config)
             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                 // decoding a region that large would yield an OOM when creating the bitmap
-                result.error("fetch-read-large-region", "SVG region too large for uri=$uri regionRect=$regionRect", null)
+                result.error("fetch-large-region", "SVG region too large for uri=$uri regionRect=$regionRect", null)
                 return
             }
 
@@ -89,11 +90,16 @@ class SvgRegionFetcher internal constructor(
 
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)
             val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
-            result.success(bytes)
+            if (bytes == null) {
+                result.error("fetch-null", "failed to decode SVG for uri=$uri regionRect=$regionRect", null)
+            } else {
+                result.streamBytes(ByteArrayInputStream(bytes))
+                result.endOfStream()
+            }
         } catch (e: SVGParseException) {
-            result.error("fetch-parse", "failed to parse SVG for uri=$uri regionRect=$regionRect", null)
+            result.error("fetch-parse", "failed to parse SVG for uri=$uri regionRect=$regionRect", e.message)
         } catch (e: Exception) {
-            result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
+            result.error("fetch-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
         }
     }
 

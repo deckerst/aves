@@ -49,6 +49,8 @@ extension ExtraAvesEntryImages on AvesEntry {
     ));
   }
 
+  Rectangle<double> get fullImageRegion => Rectangle<double>(.0, .0, width.toDouble(), height.toDouble());
+
   FullImage get fullImage => FullImage(
         uri: uri,
         mimeType: mimeType,

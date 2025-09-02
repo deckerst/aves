@@ -106,6 +106,7 @@ class MediaStoreSource extends CollectionSource {
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch known entries');
     final knownEntries = await localMediaDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: scopeDirectory);
     final knownLiveEntries = knownEntries.where((entry) => !entry.trashed).toSet();
+    unawaited(reportService.setCustomKey('is_large_collection', knownEntries.length > 100000));
     unawaited(reportService.log('$runtimeType found ${knownEntries.length} known entries'));
 
     debugPrint('$runtimeType load ${stopwatch.elapsed} check obsolete entries');
