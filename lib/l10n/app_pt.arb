@@ -1444,5 +1444,9 @@
     "mapStyleEditorDialogSubdomains": "Subdomínios",
     "@mapStyleEditorDialogSubdomains": {},
     "mapStyleEditorDialogUserAgent": "User-Agent",
-    "@mapStyleEditorDialogUserAgent": {}
+    "@mapStyleEditorDialogUserAgent": {},
+    "settingsNavigationBottomActionsTile": "Navegação de fundo",
+    "@settingsNavigationBottomActionsTile": {},
+    "settingsNavigationBottomActionEditorPageTitle": "Navegação de fundo",
+    "@settingsNavigationBottomActionEditorPageTitle": {}
 }
