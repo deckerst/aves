@@ -16,6 +16,7 @@ import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MemoryUtils
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.ByteArrayInputStream
 import java.util.concurrent.locks.ReentrantLock
@@ -25,8 +26,9 @@ import kotlin.math.ceil
 class SvgRegionFetcher internal constructor(
     private val context: Context,
 ) {
-    fun fetch(
+    suspend fun fetch(
         uri: Uri,
+        decoded: Boolean,
         sizeBytes: Long?,
         scale: Int,
         regionRect: Rect,
@@ -89,7 +91,7 @@ class SvgRegionFetcher internal constructor(
             svg.renderToCanvas(canvas, renderOptions)
 
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)
-            val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
+            val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, MimeTypes.SVG)
             if (bytes == null) {
                 result.error("fetch-null", "failed to decode SVG for uri=$uri regionRect=$regionRect", null)
             } else {

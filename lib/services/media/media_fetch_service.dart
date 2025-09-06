@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:aves/image_providers/region_provider.dart';
+import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -9,48 +10,37 @@ import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class MediaFetchService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false});
 
-  Future<Uint8List> getSvg(
-    String uri,
-    String mimeType, {
-    required int? sizeBytes,
-    BytesReceivedCallback? onBytesReceived,
+  Future<Uint8List> getOriginalBytes(AvesEntry entry);
+
+  Future<ui.Codec> getFullImage({
+    required bool decoded,
+    required ImageRequest request,
+    required ImageDecoderCallback decode,
   });
 
-  Future<Uint8List> getEncodedImage(ImageRequest request);
-
-  Future<ui.ImageDescriptor?> getDecodedImage(ImageRequest request);
-
   // `rect`: region to decode, with coordinates in reference to `imageSize`
-  Future<ui.ImageDescriptor?> getRegion(
-    String uri,
-    String mimeType,
-    int rotationDegrees,
-    bool isFlipped,
-    int sampleSize,
-    Rectangle<int> regionRect,
-    Size imageSize, {
-    required int? pageId,
-    required int? sizeBytes,
+  Future<ui.Codec> getRegion({
+    required bool decoded,
+    required RegionProviderKey request,
+    required ImageDecoderCallback decode,
     Object? taskKey,
     int? priority,
   });
 
-  Future<ui.ImageDescriptor?> getThumbnail({
-    required String uri,
-    required String mimeType,
-    required int rotationDegrees,
-    required int? pageId,
-    required bool isFlipped,
-    required int? dateModifiedMillis,
-    required double extent,
+  Future<ui.Codec> getThumbnail({
+    required bool decoded,
+    required ThumbnailProviderKey request,
+    ImageDecoderCallback? decode,
     Object? taskKey,
     int? priority,
   });
@@ -71,6 +61,10 @@ class PlatformMediaFetchService implements MediaFetchService {
   static final _byteStream = StreamsChannel('deckers.thibault/aves/media_byte_stream');
   static const double _thumbnailDefaultSize = 64.0;
 
+  static const int formatTrailerLength = 1; // single format byte
+  static const int formatByteEncoded = 0xCA;
+  static const int formatByteDecoded = 0xFE;
+
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     try {
@@ -90,118 +84,44 @@ class PlatformMediaFetchService implements MediaFetchService {
     return null;
   }
 
-  @override
-  Future<Uint8List> getSvg(
-    String uri,
-    String mimeType, {
-    required int? sizeBytes,
+  Map<String, dynamic> _requestToArgs(ImageRequest request, {required bool decoded}) {
+    return <String, dynamic>{
+      'op': 'getFullImage',
+      'decoded': decoded,
+      'uri': request.uri,
+      'pageId': request.pageId,
+      'mimeType': request.mimeType,
+      'sizeBytes': request.sizeBytes,
+      'rotationDegrees': request.rotationDegrees ?? 0,
+      'isFlipped': request.isFlipped,
+      'isAnimated': request.isAnimated,
+    };
+  }
+
+  Future<Uint8List> _getBytes({
+    required String mimeType,
+    required Map<String, dynamic> arguments,
     BytesReceivedCallback? onBytesReceived,
-  }) =>
-      getEncodedImage(
-        ImageRequest(
-          uri,
-          mimeType,
-          rotationDegrees: 0,
-          isFlipped: false,
-          isAnimated: false,
-          pageId: null,
-          sizeBytes: sizeBytes,
-          onBytesReceived: onBytesReceived,
-        ),
-      );
-
-  @override
-  Future<Uint8List> getEncodedImage(ImageRequest request) {
-    return _getBytes(request, decoded: false);
-  }
-
-  @override
-  Future<ui.ImageDescriptor?> getDecodedImage(ImageRequest request) async {
-    return _getBytes(request, decoded: true).then(InteropDecoding.bytesToCodec);
-  }
-
-  Future<Uint8List> _getBytes(ImageRequest request, {required bool decoded}) async {
-    final _onBytesReceived = request.onBytesReceived;
+    int? sizeBytes,
+  }) async {
     var bytesReceived = 0;
     final opCompleter = Completer<Uint8List>();
     final sink = OutputBuffer();
     try {
-      _byteStream.receiveBroadcastStream(<String, dynamic>{
-        'op': 'getFullImage',
-        'uri': request.uri,
-        'mimeType': request.mimeType,
-        'sizeBytes': request.sizeBytes,
-        'rotationDegrees': request.rotationDegrees ?? 0,
-        'isFlipped': request.isFlipped,
-        'isAnimated': request.isAnimated,
-        'pageId': request.pageId,
-        'decoded': decoded,
-      }).listen(
-        (data) {
-          final chunk = data as Uint8List;
-          sink.add(chunk);
-          if (_onBytesReceived != null) {
-            bytesReceived += chunk.length;
-            try {
-              _onBytesReceived(bytesReceived, request.sizeBytes);
-            } catch (error, stack) {
-              opCompleter.completeError(error, stack);
-              return;
-            }
-          }
-        },
-        onError: opCompleter.completeError,
-        onDone: () {
-          sink.close();
-          opCompleter.complete(sink.bytes);
-        },
-        cancelOnError: true,
-      );
-      // `await` here, so that `completeError` will be caught below
-      return await opCompleter.future;
-    } on PlatformException catch (e, stack) {
-      debugPrint('$runtimeType _getBytes failed with error=$e');
-      if (_isUnknownVisual(request.mimeType)) {
-        await reportService.recordError(e, stack);
-      }
-    }
-    return Uint8List(0);
-  }
-
-  @override
-  Future<ui.ImageDescriptor?> getRegion(
-    String uri,
-    String mimeType,
-    int rotationDegrees,
-    bool isFlipped,
-    int sampleSize,
-    Rectangle<int> regionRect,
-    Size imageSize, {
-    required int? pageId,
-    required int? sizeBytes,
-    Object? taskKey,
-    int? priority,
-  }) {
-    return servicePolicy.call(
-      () async {
-        final opCompleter = Completer<Uint8List>();
-        final sink = OutputBuffer();
-        try {
-          _byteStream.receiveBroadcastStream(<String, dynamic>{
-            'op': 'getRegion',
-            'uri': uri,
-            'mimeType': mimeType,
-            'sizeBytes': sizeBytes,
-            'pageId': pageId,
-            'sampleSize': sampleSize,
-            'regionX': regionRect.left,
-            'regionY': regionRect.top,
-            'regionWidth': regionRect.width,
-            'regionHeight': regionRect.height,
-            'imageWidth': imageSize.width.toInt(),
-            'imageHeight': imageSize.height.toInt(),
-          }).listen(
-            (data) => sink.add(data as Uint8List),
+      _byteStream.receiveBroadcastStream(arguments).listen(
+            (data) {
+              final chunk = data as Uint8List;
+              sink.add(chunk);
+              if (onBytesReceived != null) {
+                bytesReceived += chunk.length;
+                try {
+                  onBytesReceived(bytesReceived, sizeBytes);
+                } catch (error, stack) {
+                  opCompleter.completeError(error, stack);
+                  return;
+                }
+              }
+            },
             onError: opCompleter.completeError,
             onDone: () {
               sink.close();
@@ -209,15 +129,112 @@ class PlatformMediaFetchService implements MediaFetchService {
             },
             cancelOnError: true,
           );
-          // `await` here, so that `completeError` will be caught below
-          final bytes = await opCompleter.future;
-          return InteropDecoding.bytesToCodec(bytes);
-        } on PlatformException catch (e, stack) {
-          if (_isUnknownVisual(mimeType)) {
-            await reportService.recordError(e, stack);
-          }
+      // `await` here, so that `completeError` will be caught below
+      return await opCompleter.future;
+    } on PlatformException catch (e, stack) {
+      debugPrint('$runtimeType _getBytes failed with error=$e');
+      if (_isUnknownVisual(mimeType)) {
+        await reportService.recordError(e, stack);
+      }
+    }
+    return Uint8List(0);
+  }
+
+  Future<ui.Codec> _bytesToCodec(Map<String, dynamic> args, Uint8List bytes, ImageDecoderCallback? decode) async {
+    if (bytes.isEmpty) {
+      throw UnreportedStateError('failed to get image bytes for args=$args');
+    }
+
+    final format = bytes[bytes.length - formatTrailerLength];
+    switch (format) {
+      case formatByteEncoded:
+        // bytes are expected to be in a basic format decodable by Flutter
+        if (decode == null) {
+          throw UnreportedStateError('failed to process encoded image bytes because decoder was not provided for args=$args');
         }
-        return null;
+        final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+        return await decode(buffer);
+      case formatByteDecoded:
+        // bytes are expected to be in ARGB_8888, necessary for wide gamut or HDR
+        final descriptor = await InteropDecoding.bytesToCodec(bytes);
+        if (descriptor == null) {
+          throw UnreportedStateError('failed to get descriptor from decoded image bytes for args=$args');
+        }
+        return descriptor.instantiateCodec();
+      default:
+        throw UnreportedStateError('unsupported image format byte=$format for args=$args');
+    }
+  }
+
+  @override
+  Future<Uint8List> getOriginalBytes(AvesEntry entry) async {
+    final request = ImageRequest(
+      entry.uri,
+      entry.mimeType,
+      rotationDegrees: entry.rotationDegrees,
+      isFlipped: entry.isFlipped,
+      isAnimated: entry.isAnimated,
+      pageId: entry.pageId,
+      sizeBytes: entry.sizeBytes,
+    );
+    final bytes = await _getBytes(
+      mimeType: request.mimeType,
+      arguments: _requestToArgs(request, decoded: false),
+      onBytesReceived: request.onBytesReceived,
+      sizeBytes: request.sizeBytes,
+    );
+    if (bytes.isEmpty) {
+      throw UnreportedStateError('failed to get image bytes for request=$request');
+    }
+    return bytes;
+  }
+
+  @override
+  Future<ui.Codec> getFullImage({
+    required bool decoded,
+    required ImageRequest request,
+    required ImageDecoderCallback decode,
+  }) async {
+    final args = _requestToArgs(request, decoded: decoded);
+    final bytes = await _getBytes(
+      mimeType: request.mimeType,
+      arguments: args,
+      onBytesReceived: request.onBytesReceived,
+      sizeBytes: request.sizeBytes,
+    );
+    return await _bytesToCodec(args, bytes, decode);
+  }
+
+  @override
+  Future<ui.Codec> getRegion({
+    required bool decoded,
+    required RegionProviderKey request,
+    required ImageDecoderCallback decode,
+    Object? taskKey,
+    int? priority,
+  }) {
+    final args = <String, dynamic>{
+      'op': 'getRegion',
+      'decoded': decoded,
+      'uri': request.uri,
+      'pageId': request.pageId,
+      'mimeType': request.mimeType,
+      'sizeBytes': request.sizeBytes,
+      'sampleSize': request.sampleSize,
+      'regionX': request.regionRect.left,
+      'regionY': request.regionRect.top,
+      'regionWidth': request.regionRect.width,
+      'regionHeight': request.regionRect.height,
+      'imageWidth': request.imageSize.width.toInt(),
+      'imageHeight': request.imageSize.height.toInt(),
+    };
+    return servicePolicy.call(
+      () async {
+        final bytes = await _getBytes(
+          mimeType: request.mimeType,
+          arguments: args,
+        );
+        return await _bytesToCodec(args, bytes, decode);
       },
       priority: priority ?? ServiceCallPriority.getRegion,
       key: taskKey,
@@ -225,54 +242,36 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  Future<ui.ImageDescriptor?> getThumbnail({
-    required String uri,
-    required String mimeType,
-    required int rotationDegrees,
-    required int? pageId,
-    required bool isFlipped,
-    required int? dateModifiedMillis,
-    required double extent,
+  Future<ui.Codec> getThumbnail({
+    required bool decoded,
+    required ThumbnailProviderKey request,
+    ImageDecoderCallback? decode,
     Object? taskKey,
     int? priority,
   }) {
+    final args = <String, dynamic>{
+      'op': 'getThumbnail',
+      'decoded': decoded,
+      'uri': request.uri,
+      'pageId': request.pageId,
+      'mimeType': request.mimeType,
+      'dateModifiedMillis': request.dateModifiedMillis,
+      'rotationDegrees': request.rotationDegrees,
+      'isFlipped': request.isFlipped,
+      'widthDip': request.extent,
+      'heightDip': request.extent,
+      'defaultSizeDip': _thumbnailDefaultSize,
+      'quality': 100,
+    };
     return servicePolicy.call(
       () async {
-        final opCompleter = Completer<Uint8List>();
-        final sink = OutputBuffer();
-        try {
-          _byteStream.receiveBroadcastStream(<String, dynamic>{
-            'op': 'getThumbnail',
-            'uri': uri,
-            'mimeType': mimeType,
-            'dateModifiedMillis': dateModifiedMillis,
-            'rotationDegrees': rotationDegrees,
-            'isFlipped': isFlipped,
-            'widthDip': extent,
-            'heightDip': extent,
-            'pageId': pageId,
-            'defaultSizeDip': _thumbnailDefaultSize,
-            'quality': 100,
-          }).listen(
-            (data) => sink.add(data as Uint8List),
-            onError: opCompleter.completeError,
-            onDone: () {
-              sink.close();
-              opCompleter.complete(sink.bytes);
-            },
-            cancelOnError: true,
-          );
-          // `await` here, so that `completeError` will be caught below
-          final bytes = await opCompleter.future;
-          return InteropDecoding.bytesToCodec(bytes);
-        } on PlatformException catch (e, stack) {
-          if (_isUnknownVisual(mimeType) || e.code == 'getThumbnail-large') {
-            await reportService.recordError(e, stack);
-          }
-        }
-        return null;
+        final bytes = await _getBytes(
+          mimeType: request.mimeType,
+          arguments: args,
+        );
+        return await _bytesToCodec(args, bytes, decode);
       },
-      priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
+      priority: priority ?? (request.extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
   }

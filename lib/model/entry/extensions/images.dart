@@ -39,7 +39,7 @@ extension ExtraAvesEntryImages on AvesEntry {
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       sampleSize: sampleSize,
-      region: Rectangle(
+      regionRect: Rectangle(
         (region.left * scale).round(),
         (region.top * scale).round(),
         (region.width * scale).round(),

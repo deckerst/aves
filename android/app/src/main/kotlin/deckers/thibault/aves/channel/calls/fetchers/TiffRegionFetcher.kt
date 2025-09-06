@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.net.Uri
 import deckers.thibault.aves.channel.streams.ByteSink
 import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.MimeTypes
 import org.beyka.tiffbitmapfactory.DecodeArea
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.ByteArrayInputStream
@@ -13,9 +14,10 @@ import java.io.ByteArrayInputStream
 class TiffRegionFetcher internal constructor(
     private val context: Context,
 ) {
-    fun fetch(
+    suspend fun fetch(
         uri: Uri,
         page: Int,
+        decoded: Boolean,
         sampleSize: Int,
         regionRect: Rect,
         result: ByteSink,
@@ -34,7 +36,7 @@ class TiffRegionFetcher internal constructor(
                     inDecodeArea = DecodeArea(regionRect.left, regionRect.top, regionRect.width(), regionRect.height())
                 }
                 val bitmap: Bitmap? = TiffBitmapFactory.decodeFileDescriptor(fd, options)
-                val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
+                val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, MimeTypes.TIFF)
                 if (bytes == null) {
                     result.error("fetch-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
                 } else {

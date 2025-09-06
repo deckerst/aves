@@ -10,6 +10,7 @@ import com.adobe.internal.xmp.XMPUtils
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.metadataextractor.Helper
@@ -45,7 +46,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getExifThumbnails" -> ioScope.launch { safe(call, result, ::getExifThumbnails) }
+            "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
             "extractGoogleDeviceItem" -> ioScope.launch { safe(call, result, ::extractGoogleDeviceItem) }
             "extractJpegMpfItem" -> ioScope.launch { safe(call, result, ::extractJpegMpfItem) }
             "extractMotionPhotoImage" -> ioScope.launch { safe(call, result, ::extractMotionPhotoImage) }
@@ -56,7 +57,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
@@ -74,12 +75,11 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     exif.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
                             // do not recycle bitmaps fetched from `ExifInterface` as their lifecycle is unknown
-                            val recycle = false
-                            BitmapUtils.getRawBytes(it, recycle = recycle)?.let { bytes -> thumbnails.add(bytes) }
+                            BitmapUtils.getBytes(it, recycle = false, decoded = true, mimeType = null)?.let { bytes -> thumbnails.add(bytes) }
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // ExifInterface initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
             }

@@ -32,28 +32,17 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   }
 
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, ImageDecoderCallback decode) async {
-    final uri = key.uri;
-    final mimeType = key.mimeType;
-    final pageId = key.pageId;
     try {
-      final descriptor = await mediaFetchService.getThumbnail(
-        uri: uri,
-        mimeType: mimeType,
-        pageId: pageId,
-        rotationDegrees: key.rotationDegrees,
-        isFlipped: key.isFlipped,
-        dateModifiedMillis: key.dateModifiedMillis,
-        extent: key.extent,
+      return await mediaFetchService.getThumbnail(
+        decoded: false,
+        request: key,
+        decode: decode,
         taskKey: key,
       );
-      if (descriptor == null) {
-        throw UnreportedStateError('$uri ($mimeType) thumbnail loading failed');
-      }
-      return descriptor.instantiateCodec();
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
-      debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw UnreportedStateError('$mimeType thumbnail decoding failed (page $pageId)');
+      debugPrint('$runtimeType _loadAsync failed for key=$key, error=$error');
+      throw UnreportedStateError('thumbnail decoding failed for key=$key, error=$error');
     }
   }
 
