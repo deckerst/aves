@@ -41,12 +41,14 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
     private lateinit var handler: Handler
 
     private var op: String? = null
+    private var decoded: Boolean = false
     private val regionFetcher = RegionFetcher(context)
     private val density = context.resources.displayMetrics.density
 
     init {
         if (arguments is Map<*, *>) {
             op = arguments["op"] as String?
+            decoded = arguments["decoded"] as Boolean
         }
     }
 
@@ -104,14 +106,13 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
-        val decoded = arguments["decoded"] as Boolean
-        val mimeType = arguments["mimeType"] as String?
         val uri = (arguments["uri"] as String?)?.toUri()
+        val pageId = arguments["pageId"] as Int?
+        val mimeType = arguments["mimeType"] as String?
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
         val isAnimated = arguments["isAnimated"] as Boolean
-        val pageId = arguments["pageId"] as Int?
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "missing arguments", null)
@@ -177,12 +178,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             }
             if (bitmap != null) {
                 // do not recycle bitmaps fetched from Glide as their lifecycle is unknown
-                val recycle = false
-                val bytes = if (decoded) {
-                    BitmapUtils.getRawBytes(bitmap, recycle = recycle)
-                } else {
-                    BitmapUtils.getEncodedBytes(bitmap, canHaveAlpha = MimeTypes.canHaveAlpha(mimeType), recycle = recycle)
-                }
+                val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
                 streamBytes(ByteArrayInputStream(bytes))
             } else {
                 error("streamImage-image-decode-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
@@ -204,12 +200,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             val bitmap = withContext(Dispatchers.IO) { target.get() }
             if (bitmap != null) {
                 // do not recycle bitmaps fetched from Glide as their lifecycle is unknown
-                val recycle = false
-                val bytes = if (decoded) {
-                    BitmapUtils.getRawBytes(bitmap, recycle = recycle)
-                } else {
-                    BitmapUtils.getEncodedBytes(bitmap, canHaveAlpha = false, recycle = recycle)
-                }
+                val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
                 streamBytes(ByteArrayInputStream(bytes))
             } else {
                 error("streamImage-video-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
@@ -244,15 +235,15 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    private fun streamRegion() {
+    private suspend fun streamRegion() {
         if (arguments !is Map<*, *>) {
             endOfStream()
             return
         }
 
         val uri = (arguments["uri"] as String?)?.toUri()
-        val mimeType = arguments["mimeType"] as String?
         val pageId = arguments["pageId"] as Int?
+        val mimeType = arguments["mimeType"] as String?
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val sampleSize = arguments["sampleSize"] as Int?
         val x = arguments["regionX"] as Int?
@@ -271,6 +262,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         when (mimeType) {
             MimeTypes.SVG -> SvgRegionFetcher(context).fetch(
                 uri = uri,
+                decoded = decoded,
                 sizeBytes = sizeBytes,
                 scale = sampleSize,
                 regionRect = regionRect,
@@ -282,6 +274,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             MimeTypes.TIFF -> TiffRegionFetcher(context).fetch(
                 uri = uri,
                 page = pageId ?: 0,
+                decoded = decoded,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 result = this,
@@ -289,8 +282,9 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 
             else -> regionFetcher.fetch(
                 uri = uri,
-                mimeType = mimeType,
                 pageId = pageId,
+                decoded = decoded,
+                mimeType = mimeType,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
@@ -300,20 +294,20 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    private fun streamThumbnail() {
+    private suspend fun streamThumbnail() {
         if (arguments !is Map<*, *>) {
             endOfStream()
             return
         }
 
         val uri = arguments[EntryFields.URI] as String?
+        val pageId = arguments["pageId"] as Int?
         val mimeType = arguments[EntryFields.MIME_TYPE] as String?
         val dateModifiedMillis = (arguments[EntryFields.DATE_MODIFIED_MILLIS] as Number?)?.toLong()
         val rotationDegrees = arguments[EntryFields.ROTATION_DEGREES] as Int?
         val isFlipped = arguments[EntryFields.IS_FLIPPED] as Boolean?
         val widthDip = (arguments["widthDip"] as Number?)?.toDouble()
         val heightDip = (arguments["heightDip"] as Number?)?.toDouble()
-        val pageId = arguments["pageId"] as Int?
         val defaultSizeDip = (arguments["defaultSizeDip"] as Number?)?.toDouble()
         val quality = arguments["quality"] as Int?
 
@@ -326,13 +320,14 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         ThumbnailFetcher(
             context = context,
             uri = uri,
+            pageId = pageId,
+            decoded = decoded,
             mimeType = mimeType,
             dateModifiedMillis = dateModifiedMillis ?: (Date().time),
             rotationDegrees = rotationDegrees,
             isFlipped = isFlipped,
             width = (widthDip * density).roundToInt(),
             height = (heightDip * density).roundToInt(),
-            pageId = pageId,
             defaultSize = (defaultSizeDip * density).roundToInt(),
             quality = quality,
             result = this,
@@ -350,6 +345,5 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 interface ByteSink {
     fun streamBytes(inputStream: InputStream)
     fun error(errorCode: String, errorMessage: String, errorDetails: Any?)
-
     fun endOfStream()
 }

@@ -32,13 +32,11 @@ import kotlin.math.roundToInt
 class RegionFetcher internal constructor(
     private val context: Context,
 ) {
-    // returns decoded bytes in ARGB_8888, with trailer bytes:
-    // - width (int32)
-    // - height (int32)
-    fun fetch(
+    suspend fun fetch(
         uri: Uri,
-        mimeType: String,
         pageId: Int?,
+        decoded: Boolean,
+        mimeType: String,
         sampleSize: Int,
         regionRect: Rect,
         imageWidth: Int,
@@ -50,8 +48,9 @@ class RegionFetcher internal constructor(
             // use JPEG export for requested page
             fetch(
                 uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
-                mimeType = MimeTypes.JPEG,
                 pageId = null,
+                decoded = decoded,
+                mimeType = MimeTypes.JPEG,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
@@ -118,7 +117,7 @@ class RegionFetcher internal constructor(
                 bitmap = decoder.decodeRegion(effectiveRect, options)
             }
 
-            val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
+            val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, mimeType)
             if (bytes == null) {
                 result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
             } else {
@@ -131,8 +130,9 @@ class RegionFetcher internal constructor(
                 // as some formats are not fully supported by `BitmapRegionDecoder`
                 fetch(
                     uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
-                    mimeType = MimeTypes.JPEG,
                     pageId = null,
+                    decoded = decoded,
+                    mimeType = MimeTypes.JPEG,
                     sampleSize = sampleSize,
                     regionRect = regionRect,
                     imageWidth = imageWidth,

@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - manual rotation to landscape switches to current sensor orientation, then is fixed to it
+- improved image streaming and pixel format selection
 
 ### Fixed
 
