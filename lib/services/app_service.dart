@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:aves/geo/uri.dart';
+import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -10,6 +11,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:streams_channel/streams_channel.dart';
@@ -225,20 +227,24 @@ class PlatformAppService implements AppService {
     Uint8List? iconBytes;
     if (coverEntry != null) {
       final size = coverEntry.isVideo ? 0.0 : 256.0;
-      final iconDescriptor = await mediaFetchService.getThumbnail(
-        uri: coverEntry.uri,
-        mimeType: coverEntry.mimeType,
-        pageId: coverEntry.pageId,
-        rotationDegrees: coverEntry.rotationDegrees,
-        isFlipped: coverEntry.isFlipped,
-        dateModifiedMillis: coverEntry.dateModifiedMillis,
-        extent: size,
-      );
-      if (iconDescriptor != null) {
-        final codec = await iconDescriptor.instantiateCodec();
+      try {
+        final codec = await mediaFetchService.getThumbnail(
+          decoded: false,
+          request: ThumbnailProviderKey(
+            uri: coverEntry.uri,
+            mimeType: coverEntry.mimeType,
+            pageId: coverEntry.pageId,
+            rotationDegrees: coverEntry.rotationDegrees,
+            isFlipped: coverEntry.isFlipped,
+            dateModifiedMillis: coverEntry.dateModifiedMillis ?? -1,
+            extent: size,
+          ),
+        );
         final frameInfo = await codec.getNextFrame();
         final byteData = await frameInfo.image.toByteData(format: ImageByteFormat.png);
         iconBytes = byteData?.buffer.asUint8List();
+      } catch (error) {
+        debugPrint('failed to get home pin thumbnail for entry=$coverEntry, error=$error');
       }
     }
     try {

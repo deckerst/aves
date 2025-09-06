@@ -35,13 +35,14 @@ import kotlin.math.roundToInt
 class ThumbnailFetcher internal constructor(
     private val context: Context,
     uri: String,
+    private val pageId: Int?,
+    private val decoded: Boolean,
     private val mimeType: String,
     private val dateModifiedMillis: Long,
     private val rotationDegrees: Int,
     private val isFlipped: Boolean,
     width: Int?,
     height: Int?,
-    private val pageId: Int?,
     private val defaultSize: Int,
     private val quality: Int,
     private val result: ByteSink,
@@ -54,7 +55,7 @@ class ThumbnailFetcher internal constructor(
     private val multiPageFetch = pageId != null && MultiPageImage.isSupported(mimeType)
     private val customFetch = svgFetch || tiffFetch || multiPageFetch
 
-    fun fetch() {
+    suspend fun fetch() {
         var bitmap: Bitmap? = null
         var exception: Exception? = null
 
@@ -107,8 +108,7 @@ class ThumbnailFetcher internal constructor(
         }
 
         // do not recycle bitmaps fetched from `ContentResolver` or Glide as their lifecycle is unknown
-        val recycle = false
-        val bytes = BitmapUtils.getRawBytes(bitmap, recycle = recycle)
+        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
         if (bytes == null) {
             var errorDetails: String? = exception?.message
             if (errorDetails?.isNotEmpty() == true) {

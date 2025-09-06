@@ -499,11 +499,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
           loader: () async {
-            final data = await mediaFetchService.getSvg(
-              targetEntry.uri,
-              targetEntry.mimeType,
-              sizeBytes: targetEntry.sizeBytes,
-            );
+            final data = await mediaFetchService.getOriginalBytes(targetEntry);
             return utf8.decode(data);
           },
         ),
