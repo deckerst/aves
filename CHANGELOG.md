@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.7"></a>[v1.13.7] - 2025-09-07
+
 ### Added
 
 - Collection: support for Motorola burst pattern
