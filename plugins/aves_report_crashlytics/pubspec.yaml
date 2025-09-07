@@ -11,10 +11,10 @@ dependencies:
     sdk: flutter
   aves_report:
     path: ../aves_report
-  # as of `firebase_core` v2.10.0, upgrading packages downgrades `firebase_core` et al.
-  # so that the transitive `path` gets upgraded to v1.8.3
-  firebase_core: ">=2.10.0"
-  firebase_crashlytics:
+  # `firebase_core` v4.0.0 requires minSdkVersion 23
+  firebase_core:
+  # `firebase_crashlytics` v5.0.0 requires minSdkVersion 23
+  firebase_crashlytics: ^4.3.10
   stack_trace:
 
 dev_dependencies:

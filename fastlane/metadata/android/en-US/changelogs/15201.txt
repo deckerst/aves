@@ -1,4 +1,0 @@
-In v1.13.1:
-- group albums
-- filter by day of the week
-Full changelog available on GitHub

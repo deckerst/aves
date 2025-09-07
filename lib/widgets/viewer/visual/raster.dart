@@ -54,14 +54,12 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   ImageProvider get thumbnailProvider => entry.bestCachedThumbnail;
 
-  Rectangle<int> get fullImageRegion => Rectangle<int>(0, 0, entry.width, entry.height);
-
   ImageProvider get fullImageProvider {
     if (_useTiles) {
       assert(_isTilingInitialized);
       return entry.getRegion(
         sampleSize: _maxSampleSize,
-        region: fullImageRegion,
+        region: entry.fullImageRegion,
       );
     } else {
       return entry.fullImage;
@@ -256,7 +254,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     final fullImageRegionTile = _RegionTile(
       entry: entry,
       tileRect: Rect.fromLTWH(0, 0, displayWidth * magnifierScale, displayHeight * magnifierScale),
-      regionRect: fullImageRegion,
+      regionRect: entry.fullImageRegion,
       sampleSize: _maxSampleSize,
       quality: _qualityForScaleAndSize(
         magnifierScale: magnifierScale,
@@ -312,7 +310,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     return viewOrigin & viewportSize;
   }
 
-  (Rect tileRect, Rectangle<int> regionRect)? _getTileRects({
+  (Rect tileRect, Rectangle<num> regionRect)? _getTileRects({
     required int x,
     required int y,
     required int regionSide,
@@ -330,18 +328,18 @@ class _RasterImageViewState extends State<RasterImageView> {
     // only build visible tiles
     if (!viewRect.overlaps(tileRect)) return null;
 
-    Rectangle<int> regionRect;
+    Rectangle<num> regionRect;
     if (_tileTransform != null) {
       // apply EXIF orientation
       final regionRectDouble = Rect.fromLTWH(x.toDouble(), y.toDouble(), thisRegionWidth.toDouble(), thisRegionHeight.toDouble());
       final tl = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.topLeft);
       final br = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.bottomRight);
-      regionRect = Rectangle<int>.fromPoints(
-        Point<int>(tl.dx.round(), tl.dy.round()),
-        Point<int>(br.dx.round(), br.dy.round()),
+      regionRect = Rectangle<double>.fromPoints(
+        Point<double>(tl.dx, tl.dy),
+        Point<double>(br.dx, br.dy),
       );
     } else {
-      regionRect = Rectangle<int>(x, y, thisRegionWidth, thisRegionHeight);
+      regionRect = Rectangle<num>(x, y, thisRegionWidth, thisRegionHeight);
     }
     return (tileRect, regionRect);
   }
@@ -386,7 +384,7 @@ class _RegionTile extends StatefulWidget {
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
   final Rect tileRect;
-  final Rectangle<int> regionRect;
+  final Rectangle<num> regionRect;
   final int sampleSize;
   final FilterQuality quality;
 
@@ -407,7 +405,7 @@ class _RegionTile extends StatefulWidget {
     properties.add(IntProperty('id', entry.id));
     properties.add(IntProperty('contentId', entry.contentId));
     properties.add(DiagnosticsProperty<Rect>('tileRect', tileRect));
-    properties.add(DiagnosticsProperty<Rectangle<int>>('regionRect', regionRect));
+    properties.add(DiagnosticsProperty<Rectangle<num>>('regionRect', regionRect));
     properties.add(IntProperty('sampleSize', sampleSize));
   }
 }

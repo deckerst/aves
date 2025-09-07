@@ -10,6 +10,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
@@ -60,6 +61,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
   final Map<int, int> _entryCountPerRating = Map.fromEntries(List.generate(7, (i) => MapEntry(5 - i, 0)));
   late final ValueNotifier<bool> _isPageAnimatingNotifier;
   int _totalSizeBytes = 0;
+  int _totalDurationMillis = 0;
 
   Set<AvesEntry> get entries => widget.entries;
 
@@ -75,6 +77,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
 
     entries.forEach((entry) {
       _totalSizeBytes += entry.sizeBytes ?? 0;
+      _totalDurationMillis += entry.durationMillis ?? 0;
 
       if (entry.hasAddress) {
         final address = entry.addressDetails!;
@@ -159,19 +162,6 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
 
             final showRatings = _entryCountPerRating.entries.any((kv) => kv.key != 0 && kv.value > 0);
             final source = widget.source;
-            final sizeIndicator = Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(AIcons.size),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(formatFileSize(context.locale, _totalSizeBytes)),
-                  ),
-                ],
-              ),
-            );
             child = NotificationListener<SelectFilterNotification>(
               onNotification: (notification) {
                 _onFilterSelection(context, notification.filter);
@@ -197,7 +187,11 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
                         onFilterSelection: (filter) => _onFilterSelection(context, filter),
                       ),
                       const SizedBox(height: 16),
-                      sizeIndicator,
+                      _buildTotalSizeIndicator(context),
+                      if (_totalDurationMillis > 0) ...[
+                        const SizedBox(height: 16),
+                        _buildTotalDurationIndicator(),
+                      ],
                       const SizedBox(height: 16),
                       _LocationIndicator(entries: entries),
                       ..._buildFilterSection<String>(context, l10n.statsTopCountriesSectionTitle, _entryCountPerCountry, (v) => LocationFilter(LocationLevel.country, v)),
@@ -232,6 +226,38 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
           ),
         );
       },
+    );
+  }
+
+  Widget _buildTotalSizeIndicator(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(AIcons.size),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(formatFileSize(context.locale, _totalSizeBytes)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTotalDurationIndicator() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(AIcons.videoPlay),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(formatFriendlyDuration(Duration(milliseconds: _totalDurationMillis))),
+          ),
+        ],
+      ),
     );
   }
 

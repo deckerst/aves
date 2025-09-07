@@ -37,5 +37,8 @@ void main() {
     expect(parseUnknownDateFormat('2020-11-01 00.31.02'), DateTime(2020, 11, 1, 0, 31, 2, 0));
     expect(parseUnknownDateFormat('2019-10-31 135703'), DateTime(2019, 10, 31, 13, 57, 3, 0));
     expect(parseUnknownDateFormat('Foo_2023-03-12_01-59-23.614_1920x1080'), DateTime(2023, 3, 12, 1, 59, 23, 614));
+
+    expect(parseUnknownDateFormat('signal-2025-08-26-12-03-16-348'), DateTime(2025, 8, 26, 12, 3, 16, 348));
+    expect(parseUnknownDateFormat('signal-2025-04-18-094154'), DateTime(2025, 4, 18, 9, 41, 54));
   });
 }

@@ -39,7 +39,7 @@ extension ExtraAvesEntryImages on AvesEntry {
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       sampleSize: sampleSize,
-      region: Rectangle(
+      regionRect: Rectangle(
         (region.left * scale).round(),
         (region.top * scale).round(),
         (region.width * scale).round(),
@@ -48,6 +48,8 @@ extension ExtraAvesEntryImages on AvesEntry {
       imageSize: Size((width * scale).toDouble(), (height * scale).toDouble()),
     ));
   }
+
+  Rectangle<double> get fullImageRegion => Rectangle<double>(.0, .0, width.toDouble(), height.toDouble());
 
   FullImage get fullImage => FullImage(
         uri: uri,

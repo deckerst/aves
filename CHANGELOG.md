@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.7"></a>[v1.13.7] - 2025-09-07
+
+### Added
+
+- Collection: support for Motorola burst pattern
+- Stats: total video duration
+
+### Changed
+
+- manual rotation to landscape switches to current sensor orientation, then is fixed to it
+- improved image streaming and pixel format selection
+
+### Fixed
+
+- receiving `geo:` URI in some cases
+- visibility of hidden new albums
+- customizing cover or hiding tag groups
+
 ## <a id="v1.13.6"></a>[v1.13.6] - 2025-07-28
 
 ### Fixed

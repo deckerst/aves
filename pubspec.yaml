@@ -7,7 +7,7 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.13.6+157
+version: 1.13.7+158
 publish_to: none
 
 environment:
@@ -71,7 +71,8 @@ dependencies:
   decorated_icon:
   device_info_plus:
   dlna_dart:
-  dynamic_color:
+  # `dynamic_color` v1.8.1 is broken, relying on `Color.toARGB32` which is not in Flutter v3.27.4
+  dynamic_color: 1.7.0
   equatable:
   event_bus:
   expansion_tile_card:

@@ -39,7 +39,7 @@ class AIcons {
   static const language = Symbols.translate;
   static final legal = MdiIcons.scaleBalance;
   static const mimeType = Symbols.code;
-  static const name = Symbols.abc;
+  static const name = Symbols.match_word;
   static const newTier = Symbols.fiber_new;
   static const opacity = Symbols.opacity;
   static const palette = Symbols.palette;
@@ -120,7 +120,7 @@ class AIcons {
   static const map = Symbols.map;
   static const more = Symbols.more_horiz;
   static final move = MdiIcons.fileMoveOutline;
-  static const rename = Symbols.abc;
+  static const rename = Symbols.match_word;
   static const openOutside = Symbols.open_in_new;
   static final openVideoPart = MdiIcons.moviePlayOutline;
   static const pin = Symbols.keep;
@@ -206,7 +206,7 @@ class AIcons {
   static const multiPage = Symbols.burst_mode;
   static const panorama = Symbols.vrpano;
   static const sphericalVideo = Symbols.threesixty;
-  static const videoThumb = Symbols.play_circle;
+  static const videoPlay = Symbols.play_circle;
   static const selected = Symbols.check_circle;
   static const unselected = Symbols.radio_button_unchecked;
 

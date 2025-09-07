@@ -27,6 +27,7 @@ class MimeTypes {
   static const pnm = 'image/x-portable-anymap';
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
+  static const tap = 'image/vnd.tencent.tap';
 
   static const arw = 'image/x-sony-arw';
   static const cr2 = 'image/x-canon-cr2';

@@ -20,7 +20,6 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
 import deckers.thibault.aves.channel.calls.AnalysisHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
@@ -33,7 +32,6 @@ import deckers.thibault.aves.channel.calls.GeocodingHandler
 import deckers.thibault.aves.channel.calls.GlobalSearchHandler
 import deckers.thibault.aves.channel.calls.HomeWidgetHandler
 import deckers.thibault.aves.channel.calls.MediaEditHandler
-import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
 import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
 import deckers.thibault.aves.channel.calls.MediaSessionHandler
 import deckers.thibault.aves.channel.calls.MediaStoreHandler
@@ -140,7 +138,6 @@ open class MainActivity : FlutterFragmentActivity() {
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
         MethodChannel(messenger, HomeWidgetHandler.CHANNEL).setMethodCallHandler(HomeWidgetHandler(this))
-        MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
         MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))

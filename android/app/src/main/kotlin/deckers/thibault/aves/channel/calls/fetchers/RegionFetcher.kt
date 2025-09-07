@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import com.bumptech.glide.Glide
+import deckers.thibault.aves.channel.streams.ByteSink
 import deckers.thibault.aves.decoder.AvesAppGlideModule
 import deckers.thibault.aves.decoder.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
@@ -19,7 +20,7 @@ import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
-import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayInputStream
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.math.max
@@ -31,26 +32,25 @@ import kotlin.math.roundToInt
 class RegionFetcher internal constructor(
     private val context: Context,
 ) {
-    // returns decoded bytes in ARGB_8888, with trailer bytes:
-    // - width (int32)
-    // - height (int32)
-    fun fetch(
+    suspend fun fetch(
         uri: Uri,
-        mimeType: String,
         pageId: Int?,
+        decoded: Boolean,
+        mimeType: String,
         sampleSize: Int,
         regionRect: Rect,
         imageWidth: Int,
         imageHeight: Int,
         requestKey: Pair<Uri, Int?> = Pair(uri, pageId),
-        result: MethodChannel.Result,
+        result: ByteSink,
     ) {
         if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             // use JPEG export for requested page
             fetch(
                 uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
-                mimeType = MimeTypes.JPEG,
                 pageId = null,
+                decoded = decoded,
+                mimeType = MimeTypes.JPEG,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
@@ -117,11 +117,12 @@ class RegionFetcher internal constructor(
                 bitmap = decoder.decodeRegion(effectiveRect, options)
             }
 
-            val bytes = BitmapUtils.getRawBytes(bitmap, recycle = true)
-            if (bytes != null) {
-                result.success(bytes)
-            } else {
+            val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, mimeType)
+            if (bytes == null) {
                 result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
+            } else {
+                result.streamBytes(ByteArrayInputStream(bytes))
+                result.endOfStream()
             }
         } catch (e: Exception) {
             if (mimeType != MimeTypes.JPEG) {
@@ -129,8 +130,9 @@ class RegionFetcher internal constructor(
                 // as some formats are not fully supported by `BitmapRegionDecoder`
                 fetch(
                     uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
-                    mimeType = MimeTypes.JPEG,
                     pageId = null,
+                    decoded = decoded,
+                    mimeType = MimeTypes.JPEG,
                     sampleSize = sampleSize,
                     regionRect = regionRect,
                     imageWidth = imageWidth,

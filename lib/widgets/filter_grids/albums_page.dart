@@ -108,21 +108,24 @@ class AlbumListPage extends StatelessWidget {
       };
     }
 
-    final listedStoredAlbums = <String>{};
+    final hiddenFilters = settings.hiddenFilters;
+
+    final listedStoredAlbumPaths = <String>{};
     if (albumChipTypes.contains(AlbumChipType.stored)) {
       final allAlbums = source.rawAlbums;
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<StoredAlbumFilter>(groupContent).map((v) => v.album).toSet();
-        listedStoredAlbums.addAll(allAlbums.whereNot(withinGroups.contains));
+        listedStoredAlbumPaths.addAll(allAlbums.whereNot(withinGroups.contains));
       } else {
         // check that group content is listed from source, to prevent displaying hidden content
-        listedStoredAlbums.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album).where(allAlbums.contains));
+        listedStoredAlbumPaths.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album).where(allAlbums.contains));
       }
     }
+    final listedStoredAlbums = listedStoredAlbumPaths.map((album) => StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))).whereNot(hiddenFilters.contains).toSet();
 
     final listedDynamicAlbums = <DynamicAlbumFilter>{};
     if (albumChipTypes.contains(AlbumChipType.dynamic)) {
-      final allDynamicAlbums = dynamicAlbums.all.whereNot(settings.hiddenFilters.contains).toSet();
+      final allDynamicAlbums = dynamicAlbums.all.whereNot(hiddenFilters.contains).toSet();
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<DynamicAlbumFilter>(groupContent).toSet();
         listedDynamicAlbums.addAll(allDynamicAlbums.whereNot(withinGroups.contains));
@@ -133,11 +136,11 @@ class AlbumListPage extends StatelessWidget {
     }
 
     // always show groups, which are needed to navigate to other types
-    final albumGroupFilters = groupContent.whereType<AlbumGroupFilter>().whereNot(settings.hiddenFilters.contains).toSet();
+    final albumGroupFilters = groupContent.whereType<AlbumGroupFilter>().whereNot(hiddenFilters.contains).toSet();
 
     final filters = <AlbumBaseFilter>{
       ...albumGroupFilters,
-      ...listedStoredAlbums.map((album) => StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))),
+      ...listedStoredAlbums,
       ...listedDynamicAlbums,
     };
 

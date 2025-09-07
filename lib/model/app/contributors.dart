@@ -147,6 +147,7 @@ class Contributors {
     Contributor('Sasi Ba', 'sasiba8328@fuasha.com'),
     Contributor('Sevect', 'sevect@users.noreply.hosted.weblate.org'),
     Contributor('Star Athendwyl', 'weblate.tyke961@passmail.net'),
+    Contributor('Marija Grineviciute', 'marijagrine@protonmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali

@@ -17,6 +17,10 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(null)
     }
 
+    override fun getOrientation(call: MethodCall, result: MethodChannel.Result) {
+        result.success(0)
+    }
+
     override fun requestOrientation(call: MethodCall, result: MethodChannel.Result) {
         result.success(false)
     }

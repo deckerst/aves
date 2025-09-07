@@ -19,6 +19,7 @@ class AppSupport {
     MimeTypes.psdX,
     MimeTypes.octetStream,
     MimeTypes.rgbe,
+    MimeTypes.tap,
     MimeTypes.zip,
   };
 
