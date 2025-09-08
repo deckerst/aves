@@ -141,22 +141,24 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   Future<ui.Codec> _bytesToCodec(Map<String, dynamic> args, Uint8List bytes, ImageDecoderCallback? decode) async {
-    if (bytes.isEmpty) {
+    final byteCount = bytes.lengthInBytes;
+    if (byteCount < formatTrailerLength) {
       throw UnreportedStateError('failed to get image bytes for args=$args');
     }
 
-    final format = bytes[bytes.length - formatTrailerLength];
+    final trailerOffset = byteCount - formatTrailerLength;
+    final format = bytes[trailerOffset];
     switch (format) {
       case formatByteEncoded:
         // bytes are expected to be in a basic format decodable by Flutter
-        if (decode == null) {
-          throw UnreportedStateError('failed to process encoded image bytes because decoder was not provided for args=$args');
+        final codec = await InteropDecoding.encodedBytesToCodec(bytes, decode);
+        if (codec == null) {
+          throw UnreportedStateError('failed to get codec from encoded image bytes for args=$args');
         }
-        final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
-        return await decode(buffer);
+        return codec;
       case formatByteDecoded:
         // bytes are expected to be in ARGB_8888, necessary for wide gamut or HDR
-        final descriptor = await InteropDecoding.bytesToCodec(bytes);
+        final descriptor = await InteropDecoding.rawBytesToDescriptor(bytes);
         if (descriptor == null) {
           throw UnreportedStateError('failed to get descriptor from decoded image bytes for args=$args');
         }
@@ -183,10 +185,15 @@ class PlatformMediaFetchService implements MediaFetchService {
       onBytesReceived: request.onBytesReceived,
       sizeBytes: request.sizeBytes,
     );
-    if (bytes.isEmpty) {
+
+    final byteCount = bytes.lengthInBytes;
+    if (byteCount <= formatTrailerLength) {
       throw UnreportedStateError('failed to get image bytes for request=$request');
     }
-    return bytes;
+
+    // trim custom trailer
+    // a view does not reallocate memory and uses the underlying buffer
+    return Uint8List.sublistView(bytes, 0, byteCount - formatTrailerLength);
   }
 
   @override
