@@ -87,7 +87,7 @@ class PlatformAppService implements AppService {
       });
       if (result != null) {
         final bytes = result as Uint8List;
-        return InteropDecoding.bytesToCodec(bytes);
+        return InteropDecoding.rawBytesToDescriptor(bytes);
       }
     } on PlatformException catch (_) {
       // ignore, as some packages legitimately do not have icons

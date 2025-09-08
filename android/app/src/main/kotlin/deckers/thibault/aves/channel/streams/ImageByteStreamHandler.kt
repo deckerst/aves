@@ -121,8 +121,10 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
 
         if (canDecodeWithFlutter(mimeType, isAnimated) && !decoded) {
-            // to be decoded by Flutter
-            streamOriginalEncodedBytes(uri, mimeType, sizeBytes)
+            // the image can be decoded by Flutter codecs,
+            // and there is no need for processing on the platform side
+            // so we stream it without decoding it
+            streamOriginalBytesWithTrailer(uri, mimeType)
         } else if (isVideo(mimeType)) {
             streamVideoByGlide(
                 uri = uri,
@@ -131,6 +133,9 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 decoded = decoded,
             )
         } else {
+            // even if the image could be decoded by Flutter codecs,
+            // it needs to be processed on the platform side
+            // so we decode, process, optionally reencode, then stream it
             streamImageByGlide(
                 uri = uri,
                 pageId = pageId,
@@ -144,14 +149,12 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         endOfStream()
     }
 
-    private fun streamOriginalEncodedBytes(uri: Uri, mimeType: String, sizeBytes: Long?) {
-        if (!MemoryUtils.canAllocate(sizeBytes)) {
-            error("streamImage-image-read-large", "original image too large at $sizeBytes bytes, for mimeType=$mimeType uri=$uri", null)
-            return
-        }
-
+    private fun streamOriginalBytesWithTrailer(uri: Uri, mimeType: String) {
         try {
-            StorageUtils.openInputStream(context, uri)?.use { input -> streamBytes(input) }
+            val sent = StorageUtils.openInputStream(context, uri)?.use { input -> streamBytes(input) }
+            if (sent ?: false) {
+                success(BitmapUtils.FORMAT_BYTE_ENCODED_AS_BYTES)
+            }
         } catch (e: Exception) {
             error("streamImage-image-read-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
         }
@@ -221,7 +224,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    override fun streamBytes(inputStream: InputStream) {
+    override fun streamBytes(inputStream: InputStream): Boolean {
         val buffer = ByteArray(BUFFER_SIZE)
         var len: Int
         while (inputStream.read(buffer).also { len = it } != -1) {
@@ -230,9 +233,10 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 success(buffer.copyOf(len))
             } else {
                 error("streamBytes-memory", "not enough memory to allocate $len bytes", null)
-                return
+                return false
             }
         }
+        return true
     }
 
     private suspend fun streamRegion() {
@@ -343,7 +347,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 }
 
 interface ByteSink {
-    fun streamBytes(inputStream: InputStream)
+    fun streamBytes(inputStream: InputStream): Boolean
     fun error(errorCode: String, errorMessage: String, errorDetails: Any?)
     fun endOfStream()
 }

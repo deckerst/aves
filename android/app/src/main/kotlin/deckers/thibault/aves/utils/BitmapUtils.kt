@@ -28,6 +28,7 @@ object BitmapUtils {
     private const val MAX_10_BITS_FLOAT = 0x3ff.toFloat()
 
     private const val FORMAT_BYTE_ENCODED: Int = 0xCA
+    val FORMAT_BYTE_ENCODED_AS_BYTES: ByteArray = ByteArray(1) { pos -> FORMAT_BYTE_ENCODED.toByte() }
     private const val FORMAT_BYTE_DECODED: Byte = 0xFE.toByte()
     private const val RAW_BYTES_TRAILER_LENGTH = INT_BYTE_SIZE * 2 + 1
 
@@ -77,13 +78,14 @@ object BitmapUtils {
         val config = bitmap.config
         val colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) bitmap.colorSpace else null
 
-        if (!MemoryUtils.canAllocate(byteCount)) {
+        val byteBufferSize = byteCount + RAW_BYTES_TRAILER_LENGTH
+        if (!MemoryUtils.canAllocate(byteBufferSize)) {
             throw Exception("bitmap buffer is $byteCount bytes, which cannot be allocated to a new byte array")
         }
 
         try {
             // `ByteBuffer` initial order is always `BIG_ENDIAN`
-            var bytes = ByteBuffer.allocate(byteCount + RAW_BYTES_TRAILER_LENGTH).apply {
+            var bytes = ByteBuffer.allocate(byteBufferSize).apply {
                 bitmap.copyPixelsToBuffer(this)
             }.array()
 
