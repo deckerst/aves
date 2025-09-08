@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.13.7"></a>[v1.13.7] - 2025-09-07
+## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
 
 ### Added
 
@@ -21,6 +21,8 @@ All notable changes to this project will be documented in this file.
 - receiving `geo:` URI in some cases
 - visibility of hidden new albums
 - customizing cover or hiding tag groups
+
+## <a id="v1.13.7"></a>[v1.13.7] - 2025-09-07 [YANKED]
 
 ## <a id="v1.13.6"></a>[v1.13.6] - 2025-07-28
 
