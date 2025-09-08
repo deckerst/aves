@@ -3,7 +3,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
+  sdk: ">=3.9.2 <4.0.0"
 resolution: workspace
 
 dependencies:
@@ -11,10 +11,8 @@ dependencies:
     sdk: flutter
   aves_report:
     path: ../aves_report
-  # `firebase_core` v4.0.0 requires minSdkVersion 23
   firebase_core:
-  # `firebase_crashlytics` v5.0.0 requires minSdkVersion 23
-  firebase_crashlytics: ^4.3.10
+  firebase_crashlytics:
   stack_trace:
 
 dev_dependencies:

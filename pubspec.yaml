@@ -13,8 +13,8 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.27.4
-  sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
+  flutter: 3.36.0-1.0.pre-460
+  sdk: ">=3.9.2 <4.0.0"
 workspace:
   - plugins/aves_magnifier
   - plugins/aves_map
@@ -86,7 +86,6 @@ dependencies:
   flutter_localizations_plus:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git
-      ref: 6a8c14bceaefd00e703ad517fd2a32fa2081b5de
   flutter_map:
   flutter_markdown_plus:
   flutter_staggered_animations:
