@@ -36,7 +36,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
       if (result != null) {
         final descriptors = <ui.ImageDescriptor?>[];
         await Future.forEach((result as List).cast<Uint8List>(), (bytes) async {
-          descriptors.add(await InteropDecoding.bytesToCodec(bytes));
+          descriptors.add(await InteropDecoding.rawBytesToDescriptor(bytes));
         });
         return descriptors;
       }
