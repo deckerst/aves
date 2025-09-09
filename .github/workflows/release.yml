@@ -46,20 +46,15 @@ jobs:
         # `KEY_JKS` should contain the result of:
         # gpg -c --armor keystore.jks
         # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
-        # The SkSL bundle must be produced with the same Flutter engine as the one used to build the artifact
-        # flutter build <subcommand> --bundle-sksl-path shaders.sksl.json
-        # do not bundle shaders for izzy/libre flavours, to avoid crashes in some environments:
-        # cf https://github.com/deckerst/aves/issues/388
-        # cf https://github.com/deckerst/aves/issues/398
         run: |
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
           mkdir outputs
           scripts/apply_flavor_play.sh
-          ./flutterw build appbundle -t lib/main_play.dart --flavor play --bundle-sksl-path shaders.sksl.json
+          ./flutterw build appbundle -t lib/main_play.dart --flavor play
           cp build/app/outputs/bundle/playRelease/*.aab outputs
-          ./flutterw build apk -t lib/main_play.dart --flavor play --bundle-sksl-path shaders.sksl.json
+          ./flutterw build apk -t lib/main_play.dart --flavor play
           cp build/app/outputs/apk/play/release/*.apk outputs
           scripts/apply_flavor_izzy.sh
           ./flutterw build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi
