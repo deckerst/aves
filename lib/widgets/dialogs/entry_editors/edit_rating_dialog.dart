@@ -48,68 +48,72 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
         data: TooltipTheme.of(context).copyWith(
           preferBelow: false,
         ),
-        child: Builder(builder: (context) {
-          final l10n = context.l10n;
+        child: Builder(
+          builder: (context) {
+            final l10n = context.l10n;
 
-          return AvesDialog(
-            title: l10n.editEntryRatingDialogTitle,
-            scrollableContent: [
-              RadioListTile<_RatingAction>(
-                value: _RatingAction.set,
-                groupValue: _action,
-                onChanged: (v) => setState(() => _action = v!),
-                title: Wrap(
-                  children: [
-                    ...List.generate(5, (i) {
-                      final thisRating = i + 1;
-                      final disabled = _rating < thisRating;
-                      return GestureDetector(
-                        onTap: () => setState(() {
-                          _action = _RatingAction.set;
-                          _rating = thisRating;
-                        }),
-                        behavior: HitTestBehavior.opaque,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: Icon(
-                            AIcons.rating,
-                            fill: disabled ? 0 : 1,
-                            color: disabled ? AColors.starDisabled : AColors.starEnabled,
-                          ),
+            return AvesDialog(
+              title: l10n.editEntryRatingDialogTitle,
+              scrollableContent: [
+                RadioGroup(
+                  groupValue: _action,
+                  onChanged: (v) {
+                    if (v != _RatingAction.set) {
+                      _rating = 0;
+                    }
+                    setState(() => _action = v!);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RadioListTile<_RatingAction>(
+                        value: _RatingAction.set,
+                        title: Wrap(
+                          children: [
+                            ...List.generate(5, (i) {
+                              final thisRating = i + 1;
+                              final disabled = _rating < thisRating;
+                              return GestureDetector(
+                                onTap: () => setState(() {
+                                  _action = _RatingAction.set;
+                                  _rating = thisRating;
+                                }),
+                                behavior: HitTestBehavior.opaque,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Icon(
+                                    AIcons.rating,
+                                    fill: disabled ? 0 : 1,
+                                    color: disabled ? AColors.starDisabled : AColors.starEnabled,
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
                         ),
-                      );
-                    })
-                  ],
+                      ),
+                      RadioListTile<_RatingAction>(
+                        value: _RatingAction.rejected,
+                        title: Text(l10n.filterRatingRejectedLabel),
+                      ),
+                      RadioListTile<_RatingAction>(
+                        value: _RatingAction.unrated,
+                        title: Text(l10n.filterNoRatingLabel),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              RadioListTile<_RatingAction>(
-                value: _RatingAction.rejected,
-                groupValue: _action,
-                onChanged: (v) => setState(() {
-                  _action = v!;
-                  _rating = 0;
-                }),
-                title: Text(l10n.filterRatingRejectedLabel),
-              ),
-              RadioListTile<_RatingAction>(
-                value: _RatingAction.unrated,
-                groupValue: _action,
-                onChanged: (v) => setState(() {
-                  _action = v!;
-                  _rating = 0;
-                }),
-                title: Text(l10n.filterNoRatingLabel),
-              ),
-            ],
-            actions: [
-              const CancelButton(),
-              TextButton(
-                onPressed: isValid ? () => _submit(context) : null,
-                child: Text(l10n.applyButtonLabel),
-              ),
-            ],
-          );
-        }),
+              ],
+              actions: [
+                const CancelButton(),
+                TextButton(
+                  onPressed: isValid ? () => _submit(context) : null,
+                  child: Text(l10n.applyButtonLabel),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

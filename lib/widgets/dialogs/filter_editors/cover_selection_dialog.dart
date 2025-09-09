@@ -87,7 +87,19 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
           AIcons.image,
           l10n.coverDialogTabCover,
         ),
-        Column(children: _buildEntryOptions()),
+        RadioGroup(
+          groupValue: _isCustomEntry,
+          onChanged: (v) {
+            if (v == null) return;
+            if (v && _customEntry == null) {
+              _pickEntry();
+              return;
+            }
+            _isCustomEntry = v;
+            setState(() {});
+          },
+          child: Column(children: _buildEntryOptions()),
+        ),
       ),
       if (showAppTab)
         (
@@ -97,7 +109,19 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
             AIcons.app,
             l10n.coverDialogTabApp,
           ),
-          Column(children: _buildAppOptions()),
+          RadioGroup(
+            groupValue: _isCustomPackage,
+            onChanged: (v) {
+              if (v == null) return;
+              if (v && _customPackage == null) {
+                _pickPackage();
+                return;
+              }
+              _isCustomPackage = v;
+              setState(() {});
+            },
+            child: Column(children: _buildAppOptions()),
+          ),
         ),
       if (showColorTab)
         (
@@ -107,7 +131,19 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
             AIcons.palette,
             l10n.coverDialogTabColor,
           ),
-          Column(children: _buildColorOptions()),
+          RadioGroup(
+            groupValue: _isCustomColor,
+            onChanged: (v) {
+              if (v == null) return;
+              if (v && _customColor == null) {
+                _pickColor();
+                return;
+              }
+              _isCustomColor = v;
+              setState(() {});
+            },
+            child: Column(children: _buildColorOptions()),
+          ),
         ),
     ];
 
@@ -137,9 +173,11 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                   child: TabBarView(
                     physics: const NeverScrollableScrollPhysics(),
                     children: tabs
-                        .map((t) => SingleChildScrollView(
-                              child: t.$2,
-                            ))
+                        .map(
+                          (t) => SingleChildScrollView(
+                            child: t.$2,
+                          ),
+                        )
                         .toList(),
                   ),
                 ),
@@ -166,7 +204,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
               return Navigator.maybeOf(context)?.pop<(AvesEntry?, String?, Color?)>((entry, package, color));
             },
             child: Text(l10n.applyButtonLabel),
-          )
+          ),
         ],
       ),
     );
@@ -209,16 +247,6 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
           minVerticalPadding: isCustom && _customEntry != null ? 0 : null,
           child: RadioListTile<bool>(
             value: isCustom,
-            groupValue: _isCustomEntry,
-            onChanged: (v) {
-              if (v == null) return;
-              if (v && _customEntry == null) {
-                _pickEntry();
-                return;
-              }
-              _isCustomEntry = v;
-              setState(() {});
-            },
             title: isCustom
                 ? Row(
                     children: [
@@ -251,16 +279,6 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         );
         return RadioListTile<bool>(
           value: isCustom,
-          groupValue: _isCustomPackage,
-          onChanged: (v) {
-            if (v == null) return;
-            if (v && _customPackage == null) {
-              _pickPackage();
-              return;
-            }
-            _isCustomPackage = v;
-            setState(() {});
-          },
           title: isCustom
               ? Row(
                   children: [
@@ -308,16 +326,6 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         );
         return RadioListTile<bool>(
           value: isCustom,
-          groupValue: _isCustomColor,
-          onChanged: (v) {
-            if (v == null) return;
-            if (v && _customColor == null) {
-              _pickColor();
-              return;
-            }
-            _isCustomColor = v;
-            setState(() {});
-          },
           title: isCustom
               ? Row(
                   children: [
