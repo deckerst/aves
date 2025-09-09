@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:aves/app_flavor.dart';
-import 'package:aves/flutter_version.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/locales.dart';
@@ -179,7 +178,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Package: ${device.packageName}',
       'Installer: ${packageInfo.installerStore}',
       'Aves version: ${device.packageVersion}-$flavor, build ${packageInfo.buildNumber}',
-      'Flutter: ${version['channel']} ${version['frameworkVersion']}',
+      'Flutter: ${FlutterVersion.channel} ${FlutterVersion.version}',
       'Android version: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}',
       'Android build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',

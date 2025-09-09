@@ -39,9 +39,6 @@ jobs:
       - name: Generate app localizations
         run: ./flutterw gen-l10n
 
-      - name: Update Flutter version file
-        run: scripts/update_flutter_version.sh
-
       - name: Build signed artifacts
         # `KEY_JKS` should contain the result of:
         # gpg -c --armor keystore.jks
