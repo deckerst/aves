@@ -145,10 +145,10 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
         needOrientation = rotationDegrees != 0 || isFlipped;
         if (needOrientation) {
           final transform = Matrix4.identity()
-            ..translate(entry.width / 2.0, entry.height / 2.0)
-            ..scale(isFlipped ? -1.0 : 1.0, 1.0, 1.0)
+            ..translateByDouble(entry.width / 2.0, entry.height / 2.0, 0, 1)
+            ..scaleByDouble(isFlipped ? -1.0 : 1.0, 1.0, 1.0, 1.0)
             ..rotateZ(-degToRadian(rotationDegrees.toDouble()))
-            ..translate(-displaySize.width / 2.0, -displaySize.height / 2.0);
+            ..translateByDouble(-displaySize.width / 2.0, -displaySize.height / 2.0, 0, 1);
 
           // apply EXIF orientation
           final regionRectDouble = Rect.fromLTWH(displayRegion.left.toDouble(), displayRegion.top.toDouble(), displayRegion.width.toDouble(), displayRegion.height.toDouble());

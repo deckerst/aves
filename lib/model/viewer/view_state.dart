@@ -47,8 +47,8 @@ class ViewState extends Equatable {
     final viewOffset = _viewportSize.center(Offset.zero) - scaledContentSize.center(Offset.zero);
 
     return Matrix4.identity()
-      ..translate(position.dx, position.dy)
-      ..translate(viewOffset.dx, viewOffset.dy)
-      ..scale(_scale, _scale, 1);
+      ..translateByDouble(position.dx, position.dy, 0, 1)
+      ..translateByDouble(viewOffset.dx, viewOffset.dy, 0, 1)
+      ..scaleByDouble(_scale, _scale, 1, 1);
   }
 }

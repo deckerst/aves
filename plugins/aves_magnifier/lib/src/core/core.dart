@@ -487,8 +487,8 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
                 final double effectiveScale = (applyScale ? controller.scale : null) ?? 1.0;
                 return Transform(
                   transform: Matrix4.identity()
-                    ..translate(position.dx, position.dy)
-                    ..scale(effectiveScale),
+                    ..translateByDouble(position.dx, position.dy, 0, 1)
+                    ..scaleByDouble(effectiveScale, effectiveScale, effectiveScale, 1),
                   alignment: basePosition,
                   child: child,
                 );

@@ -297,7 +297,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  Future<void> _goToCollection(context) async {
+  Future<void> _goToCollection(BuildContext context) async {
     final filters = getSelectedFilters(context);
     if (filters.isEmpty) return;
 

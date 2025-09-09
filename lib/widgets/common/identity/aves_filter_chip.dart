@@ -383,13 +383,14 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           if (banner != null)
             LayoutBuilder(
               builder: (context, constraints) {
+                final scale = (constraints.maxHeight / 90 - .4).clamp(.45, 1.0);
                 return ClipRRect(
                   borderRadius: borderRadius,
                   child: Align(
                     // align to corner the scaled down banner in RTL
                     alignment: AlignmentDirectional.topStart,
                     child: Transform(
-                      transform: Matrix4.identity().scaled((constraints.maxHeight / 90 - .4).clamp(.45, 1.0)),
+                      transform: Matrix4.identity().scaledByDouble(scale, scale, scale, 1),
                       child: Banner(
                         message: banner.toUpperCase(),
                         location: BannerLocation.topStart,

@@ -170,7 +170,7 @@ class RotationControlPanel extends StatelessWidget {
               final degrees = controller.transformation.straightenDegrees;
               return SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  showValueIndicator: ShowValueIndicator.always,
+                  showValueIndicator: ShowValueIndicator.onDrag,
                 ),
                 child: Slider(
                   value: degrees,

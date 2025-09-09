@@ -563,9 +563,9 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
     final viewportCenter = viewState.viewportSize!.center(Offset.zero);
     final transformOrigin = Matrix4.inverted(magnifierMatrix).transformOffset(viewportCenter);
     final transformMatrix = Matrix4.identity()
-      ..translate(transformOrigin.dx, transformOrigin.dy)
+      ..translateByDouble(transformOrigin.dx, transformOrigin.dy, 0, 1)
       ..multiply(transformation.matrix)
-      ..translate(-transformOrigin.dx, -transformOrigin.dy);
+      ..translateByDouble(-transformOrigin.dx, -transformOrigin.dy, 0, 1);
 
     return magnifierMatrix..multiply(transformMatrix);
   }

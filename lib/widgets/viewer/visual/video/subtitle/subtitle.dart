@@ -183,7 +183,7 @@ class VideoSubtitles extends StatelessWidget {
                             final alignOffset = Offset(anchorOffsetX, anchorOffsetY);
                             final lineOffset = position * viewScale + viewPosition;
                             final translateOffset = viewOffset + lineOffset + alignOffset;
-                            transform.translate(translateOffset.dx, translateOffset.dy);
+                            transform.translateByDouble(translateOffset.dx, translateOffset.dy, 0, 1);
                           }
 
                           if (extraStyle.rotating) {
@@ -199,7 +199,7 @@ class VideoSubtitles extends StatelessWidget {
                           if (extraStyle.scaling) {
                             final x = extraStyle.scaleX ?? 1;
                             final y = extraStyle.scaleY ?? 1;
-                            transform.scale(x, y);
+                            transform.scaleByDouble(x, y, x, 1);
                           }
                           if (extraStyle.shearing) {
                             final x = extraStyle.shearX ?? 0;
@@ -255,8 +255,8 @@ class VideoSubtitles extends StatelessWidget {
                           if (clip != null) {
                             final clipOffset = viewOffset + viewPosition;
                             final matrix = Matrix4.identity()
-                              ..translate(clipOffset.dx, clipOffset.dy)
-                              ..scale(viewScale, viewScale);
+                              ..translateByDouble(clipOffset.dx, clipOffset.dy, 0, 1)
+                              ..scaleByDouble(viewScale, viewScale, viewScale, 1);
                             final transform = matrix.storage;
                             child = ClipPath(
                               clipper: SubtitlePathClipper(

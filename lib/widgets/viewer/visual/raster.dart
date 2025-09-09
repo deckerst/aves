@@ -169,10 +169,10 @@ class _RasterImageViewState extends State<RasterImageView> {
     _tileTransform = null;
     if (rotationDegrees != 0 || isFlipped) {
       _tileTransform = Matrix4.identity()
-        ..translate(entry.width / 2.0, entry.height / 2.0)
-        ..scale(isFlipped ? -1.0 : 1.0, 1.0, 1.0)
+        ..translateByDouble(entry.width / 2.0, entry.height / 2.0, 0, 1)
+        ..scaleByDouble(isFlipped ? -1.0 : 1.0, 1.0, 1.0, 1.0)
         ..rotateZ(-degToRadian(rotationDegrees.toDouble()))
-        ..translate(-_displaySize.width / 2.0, -_displaySize.height / 2.0);
+        ..translateByDouble(-_displaySize.width / 2.0, -_displaySize.height / 2.0, 0, 1);
     }
     _isTilingInitialized = true;
     _registerFullImage();
@@ -472,9 +472,9 @@ class _RegionTileState extends State<_RegionTile> {
       final w = (rotated ? tileRect.height : tileRect.width) / 2.0;
       final h = (rotated ? tileRect.width : tileRect.height) / 2.0;
       final flipper = Matrix4.identity()
-        ..translate(w, h)
-        ..scale(-1.0, 1.0, 1.0)
-        ..translate(-w, -h);
+        ..translateByDouble(w, h, 0, 1)
+        ..scaleByDouble(-1.0, 1.0, 1.0, 1.0)
+        ..translateByDouble(-w, -h, 0, 1);
       child = Transform(
         transform: flipper,
         child: child,

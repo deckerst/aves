@@ -114,9 +114,9 @@ class _MinimapPainter extends CustomPainter {
       final viewportCenter = viewportRect.center;
       final transformOrigin = viewportCenter;
       transformMatrix = Matrix4.identity()
-        ..translate(transformOrigin.dx, transformOrigin.dy)
+        ..translateByDouble(transformOrigin.dx, transformOrigin.dy, 0, 1)
         ..multiply(transformation!.matrix)
-        ..translate(-transformOrigin.dx, -transformOrigin.dy);
+        ..translateByDouble(-transformOrigin.dx, -transformOrigin.dy, 0, 1);
       final transViewportCenter = transformMatrix.transformOffset(viewportCenter);
       final transContentCenter = transformMatrix.transformOffset(contentRect.center);
 

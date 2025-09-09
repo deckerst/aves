@@ -27,7 +27,7 @@ class MapTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProxyProvider<Settings, MapThemeData>(
-      update: (context, settings, __) {
+      update: (context, settings, _) {
         return MapThemeData(
           interactive: interactive,
           showCoordinateFilter: showCoordinateFilter,

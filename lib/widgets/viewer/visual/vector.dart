@@ -376,7 +376,7 @@ class _RegionTileState extends State<_RegionTile> {
 
     Widget child = Image(
       image: _provider,
-      frameBuilder: (_, child, frame, __) => widget.backgroundFrameBuilder?.call(child, frame, tileRect) ?? child,
+      frameBuilder: (_, child, frame, _) => widget.backgroundFrameBuilder?.call(child, frame, tileRect) ?? child,
       width: tileRect.width,
       height: tileRect.height,
       color: widget.backgroundColor,
