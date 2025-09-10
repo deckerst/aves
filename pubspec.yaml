@@ -13,7 +13,7 @@ publish_to: none
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.37.0-1.0.pre-62
+  flutter: 3.37.0-0.0.pre
   sdk: ">=3.9.2 <4.0.0"
 workspace:
   - plugins/aves_magnifier
