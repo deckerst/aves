@@ -3,28 +3,22 @@ package deckers.thibault.aves.channel.streams
 import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
-import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
-import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
-import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
-import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
-import deckers.thibault.aves.decoder.AvesAppGlideModule
+import deckers.thibault.aves.decoding.RegionFetcher
+import deckers.thibault.aves.decoding.SvgRegionFetcher
+import deckers.thibault.aves.decoding.ThumbnailFetcher
+import deckers.thibault.aves.decoding.TiffRegionFetcher
+import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canDecodeWithFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -35,11 +29,8 @@ import java.io.InputStream
 import java.util.Date
 import kotlin.math.roundToInt
 
-class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler, ByteSink {
+class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : BaseStreamHandler(), ByteSink {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var eventSink: EventSink
-    private lateinit var handler: Handler
-
     private var op: String? = null
     private var decoded: Boolean = false
     private val regionFetcher = RegionFetcher(context)
@@ -52,47 +43,14 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    override fun onListen(args: Any, eventSink: EventSink) {
-        this.eventSink = eventSink
-        handler = Handler(Looper.getMainLooper())
+    override val logTag = LOG_TAG
 
+    override fun onCall(args: Any?) {
         when (op) {
-            "getFullImage" -> ioScope.launch { streamFullImage() }
-            "getRegion" -> ioScope.launch { streamRegion() }
-            "getThumbnail" -> ioScope.launch { streamThumbnail() }
+            "getFullImage" -> ioScope.launch { safeSuspend(::streamFullImage) }
+            "getRegion" -> ioScope.launch { safeSuspend(::streamRegion) }
+            "getThumbnail" -> ioScope.launch { safeSuspend(::streamThumbnail) }
             else -> endOfStream()
-        }
-    }
-
-    override fun onCancel(o: Any) {}
-
-    private fun success(bytes: ByteArray?) {
-        handler.post {
-            try {
-                eventSink.success(bytes)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
-
-    override fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
-        handler.post {
-            try {
-                eventSink.error(errorCode, errorMessage, errorDetails)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
-
-    override fun endOfStream() {
-        handler.post {
-            try {
-                eventSink.endOfStream()
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
         }
     }
 
@@ -151,12 +109,12 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 
     private fun streamOriginalBytesWithTrailer(uri: Uri, mimeType: String) {
         try {
-            val sent = StorageUtils.openInputStream(context, uri)?.use { input -> streamBytes(input) }
+            val sent = StorageUtils.openInputStream(context, uri)?.use(::streamBytes)
             if (sent ?: false) {
                 success(BitmapUtils.FORMAT_BYTE_ENCODED_AS_BYTES)
             }
         } catch (e: Exception) {
-            error("streamImage-image-read-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
+            error("streamImage-image-read-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.stackTraceToString())
         }
     }
 
@@ -187,7 +145,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 error("streamImage-image-decode-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
             }
         } catch (e: Exception) {
-            error("streamImage-image-decode-exception", "failed to get image for mimeType=$mimeType uri=$uri", toErrorDetails(e))
+            error("streamImage-image-decode-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.stackTraceToString())
         } finally {
             Glide.with(context).clear(target)
         }
@@ -209,34 +167,10 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 error("streamImage-video-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
             }
         } catch (e: Exception) {
-            error("streamImage-video-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.message)
+            error("streamImage-video-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.stackTraceToString())
         } finally {
             Glide.with(context).clear(target)
         }
-    }
-
-    private fun toErrorDetails(e: Exception): String? {
-        val errorDetails = e.message
-        return if (errorDetails?.isNotEmpty() == true) {
-            errorDetails.split(Regex("\n"), 2).first()
-        } else {
-            errorDetails
-        }
-    }
-
-    override fun streamBytes(inputStream: InputStream): Boolean {
-        val buffer = ByteArray(BUFFER_SIZE)
-        var len: Int
-        while (inputStream.read(buffer).also { len = it } != -1) {
-            // cannot decode image on Flutter side when using `buffer` directly
-            if (MemoryUtils.canAllocate(len)) {
-                success(buffer.copyOf(len))
-            } else {
-                error("streamBytes-memory", "not enough memory to allocate $len bytes", null)
-                return false
-            }
-        }
-        return true
     }
 
     private suspend fun streamRegion() {
@@ -341,13 +275,11 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageByteStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/media_byte_stream"
-
-        private const val BUFFER_SIZE = 2 shl 17 // 256kB
     }
 }
 
 interface ByteSink {
     fun streamBytes(inputStream: InputStream): Boolean
-    fun error(errorCode: String, errorMessage: String, errorDetails: Any?)
+    fun error(errorCode: String, errorMessage: String?, errorDetails: Any?)
     fun endOfStream()
 }

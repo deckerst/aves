@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.calls.fetchers
+package deckers.thibault.aves.decoding
 
 import android.content.Context
 import android.graphics.Bitmap

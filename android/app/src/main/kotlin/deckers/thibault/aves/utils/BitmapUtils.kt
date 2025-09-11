@@ -17,7 +17,7 @@ import java.nio.ByteBuffer
 
 object BitmapUtils {
     private val LOG_TAG = LogUtils.createTag<BitmapUtils>()
-    private const val INITIAL_BUFFER_SIZE = 2 shl 17 // 256kB
+    private const val INITIAL_BUFFER_SIZE = 1 shl 18 // 256kB
 
     private val freeBaos = ArrayList<ByteArrayOutputStream>()
     private val mutex = Mutex()
