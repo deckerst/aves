@@ -1,4 +1,4 @@
-package deckers.thibault.aves.decoder
+package deckers.thibault.aves.glide
 
 import android.content.Context
 import android.net.Uri

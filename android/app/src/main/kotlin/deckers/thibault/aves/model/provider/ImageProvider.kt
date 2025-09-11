@@ -15,7 +15,7 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.decoder.AvesAppGlideModule
+import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.Metadata

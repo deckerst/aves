@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.calls.fetchers
+package deckers.thibault.aves.decoding
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,8 +11,8 @@ import android.os.Build
 import android.util.Log
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.streams.ByteSink
-import deckers.thibault.aves.decoder.AvesAppGlideModule
-import deckers.thibault.aves.decoder.MultiPageImage
+import deckers.thibault.aves.glide.AvesAppGlideModule
+import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
