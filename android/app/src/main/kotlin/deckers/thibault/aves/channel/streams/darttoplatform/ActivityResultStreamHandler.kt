@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.streams
+package deckers.thibault.aves.channel.streams.darttoplatform
 
 import android.app.Activity
 import android.content.Intent
@@ -9,20 +9,17 @@ import androidx.core.net.toUri
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
+import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 // starting activity to get a result (e.g. storage access via native dialog)
 // breaks the regular `MethodChannel` so we use a stream channel instead
 class ActivityResultStreamHandler(private val activity: Activity, arguments: Any?) : BaseStreamHandler() {
-    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var op: String? = null
     private lateinit var args: Map<*, *>
 
