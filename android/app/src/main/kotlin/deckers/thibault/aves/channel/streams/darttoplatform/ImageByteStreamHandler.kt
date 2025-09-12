@@ -16,7 +16,7 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.canDecodeWithFlutter
+import deckers.thibault.aves.utils.MimeTypes.handleEncodedBytesInFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
@@ -67,14 +67,13 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
-        val isAnimated = arguments["isAnimated"] as Boolean
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "missing arguments", null)
             return
         }
 
-        if (canDecodeWithFlutter(mimeType, isAnimated) && !decoded) {
+        if (!decoded && handleEncodedBytesInFlutter(mimeType)) {
             // the image can be decoded by Flutter codecs,
             // and there is no need for processing on the platform side
             // so we stream it without decoding it
