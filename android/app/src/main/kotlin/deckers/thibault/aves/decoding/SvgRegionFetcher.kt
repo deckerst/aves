@@ -11,7 +11,7 @@ import com.caverock.androidsvg.PreserveAspectRatio
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
-import deckers.thibault.aves.channel.streams.ByteSink
+import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils

@@ -1,10 +1,11 @@
-package deckers.thibault.aves.channel.streams
+package deckers.thibault.aves.channel.streams.darttoplatform
 
 import android.content.Context
 import android.graphics.Rect
 import android.net.Uri
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
+import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.decoding.RegionFetcher
 import deckers.thibault.aves.decoding.SvgRegionFetcher
 import deckers.thibault.aves.decoding.ThumbnailFetcher
@@ -19,9 +20,7 @@ import deckers.thibault.aves.utils.MimeTypes.canDecodeWithFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
@@ -30,7 +29,6 @@ import java.util.Date
 import kotlin.math.roundToInt
 
 class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : BaseStreamHandler(), ByteSink {
-    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var op: String? = null
     private var decoded: Boolean = false
     private val regionFetcher = RegionFetcher(context)

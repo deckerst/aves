@@ -1,9 +1,10 @@
-package deckers.thibault.aves.channel.streams
+package deckers.thibault.aves.channel.streams.darttoplatform
 
 import android.app.Activity
 import android.util.Log
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
+import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
@@ -13,13 +14,9 @@ import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : BaseStreamHandler() {
-    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var op: String? = null
     private var opId: String? = null
     private val entryMapList = ArrayList<FieldMap>()
