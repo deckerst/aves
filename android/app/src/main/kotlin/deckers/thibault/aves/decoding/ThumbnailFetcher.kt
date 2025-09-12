@@ -15,7 +15,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
-import deckers.thibault.aves.channel.streams.ByteSink
+import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.utils.BitmapUtils

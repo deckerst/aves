@@ -5,9 +5,13 @@ import android.os.Looper
 import android.util.Log
 import deckers.thibault.aves.utils.MemoryUtils
 import io.flutter.plugin.common.EventChannel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.io.InputStream
 
 abstract class BaseStreamHandler : EventChannel.StreamHandler {
+    val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var eventSink: EventChannel.EventSink
     private lateinit var handler: Handler
 

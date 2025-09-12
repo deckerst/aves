@@ -14,9 +14,9 @@ import deckers.thibault.aves.channel.calls.MetadataFetchHandler
 import deckers.thibault.aves.channel.calls.StorageHandler
 import deckers.thibault.aves.channel.calls.window.ServiceWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
-import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
-import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
-import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.ImageByteStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.FlutterInjector
 import io.flutter.embedding.android.FlutterActivity

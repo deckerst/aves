@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.streams
+package deckers.thibault.aves.channel.streams.platformtodart
 
 import android.content.Context
 import android.database.ContentObserver

@@ -14,7 +14,7 @@ import androidx.core.net.toUri
 import androidx.media.session.MediaButtonReceiver
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
-import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.utils.FlutterUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
