@@ -1642,7 +1642,7 @@
     "@mapStyleEditorDialogUrl": {},
     "mapStyleEditorDialogSubdomains": "Underdomäner",
     "@mapStyleEditorDialogSubdomains": {},
-    "mapStyleEditorDialogUserAgent": "Användar-Agent",
+    "mapStyleEditorDialogUserAgent": "Användaragent",
     "@mapStyleEditorDialogUserAgent": {},
     "tagPickPageTitle": "Välj etikett",
     "@tagPickPageTitle": {},
