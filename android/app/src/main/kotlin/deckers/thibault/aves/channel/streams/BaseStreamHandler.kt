@@ -12,8 +12,12 @@ import java.io.InputStream
 
 abstract class BaseStreamHandler : EventChannel.StreamHandler {
     val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var eventSink: EventChannel.EventSink
-    private lateinit var handler: Handler
+
+    // cannot use `lateinit` because we cannot guarantee
+    // its initialization in `onListen` at the right time
+    // e.g. when resuming the app after the activity got destroyed
+    private var eventSink: EventChannel.EventSink? = null
+    private var handler: Handler? = null
 
     override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink) {
         this.eventSink = eventSink
@@ -26,9 +30,9 @@ abstract class BaseStreamHandler : EventChannel.StreamHandler {
     }
 
     open fun success(event: Any?) {
-        handler.post {
+        handler?.post {
             try {
-                eventSink.success(event)
+                eventSink?.success(event)
             } catch (e: Exception) {
                 Log.w(logTag, "failed to use event sink", e)
             }
@@ -36,9 +40,9 @@ abstract class BaseStreamHandler : EventChannel.StreamHandler {
     }
 
     open fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-        handler.post {
+        handler?.post {
             try {
-                eventSink.error(errorCode, errorMessage, errorDetails)
+                eventSink?.error(errorCode, errorMessage, errorDetails)
             } catch (e: Exception) {
                 Log.w(logTag, "failed to use event sink", e)
             }
@@ -46,9 +50,9 @@ abstract class BaseStreamHandler : EventChannel.StreamHandler {
     }
 
     open fun endOfStream() {
-        handler.post {
+        handler?.post {
             try {
-                eventSink.endOfStream()
+                eventSink?.endOfStream()
             } catch (e: Exception) {
                 Log.w(logTag, "failed to use event sink", e)
             }
@@ -94,7 +98,9 @@ abstract class BaseStreamHandler : EventChannel.StreamHandler {
 
     abstract val logTag: String
 
-    abstract fun onCall(args: Any?)
+    open fun onCall(args: Any?) {
+        // nothing by default
+    }
 
     companion object {
         const val BUFFER_SIZE = 1 shl 18 // 256kB
