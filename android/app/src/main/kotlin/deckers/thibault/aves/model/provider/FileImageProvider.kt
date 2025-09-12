@@ -75,7 +75,7 @@ internal class FileImageProvider : ImageProvider() {
         }
     }
 
-    override suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
+    override fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         path ?: throw Exception("failed to delete file because path is null")
 
         val file = File(path)

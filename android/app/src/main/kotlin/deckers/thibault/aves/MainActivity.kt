@@ -618,7 +618,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
         private var errorStreamHandler: ErrorStreamHandler? = null
 
-        suspend fun notifyError(error: String) {
+        fun notifyError(error: String) {
             Log.e(LOG_TAG, "notifyError error=$error")
             errorStreamHandler?.notifyError(error)
         }

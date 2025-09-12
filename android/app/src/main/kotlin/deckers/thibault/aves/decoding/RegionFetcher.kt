@@ -122,7 +122,6 @@ class RegionFetcher internal constructor(
                 result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
             } else {
                 result.streamBytes(ByteArrayInputStream(bytes))
-                result.endOfStream()
             }
         } catch (e: Exception) {
             if (mimeType != MimeTypes.JPEG) {

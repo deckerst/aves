@@ -117,7 +117,6 @@ class ThumbnailFetcher internal constructor(
             result.error("getThumbnail-null", "failed to get thumbnail for mimeType=$mimeType uri=$uri", errorDetails)
         } else {
             result.streamBytes(ByteArrayInputStream(bytes))
-            result.endOfStream()
         }
     }
 

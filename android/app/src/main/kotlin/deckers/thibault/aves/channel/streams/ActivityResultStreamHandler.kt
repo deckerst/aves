@@ -40,11 +40,11 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         // as it will be closed when getting that activity result
         val closeStream = false
         when (op) {
-            "requestDirectoryAccess" -> ioScope.launch { safeSuspend(::requestDirectoryAccess, closeStream) }
+            "requestDirectoryAccess" -> ioScope.launch { safe(::requestDirectoryAccess, closeStream) }
             "requestMediaFileAccess" -> ioScope.launch { safe(::requestMediaFileAccess, closeStream) }
-            "createFile" -> ioScope.launch { safeSuspend(::createFile, closeStream) }
-            "openFile" -> ioScope.launch { safeSuspend(::openFile, closeStream) }
-            "copyFile" -> ioScope.launch { safeSuspend(::copyFile, closeStream) }
+            "createFile" -> ioScope.launch { safe(::createFile, closeStream) }
+            "openFile" -> ioScope.launch { safe(::openFile, closeStream) }
+            "copyFile" -> ioScope.launch { safe(::copyFile, closeStream) }
             "edit" -> safe(::edit, closeStream)
             "pickCollectionFilters" -> safe(::pickCollectionFilters, closeStream)
             else -> endOfStream()
@@ -56,7 +56,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         endOfStream()
     }
 
-    private suspend fun requestDirectoryAccess() {
+    private fun requestDirectoryAccess() {
         val path = args["path"] as String?
         if (path == null) {
             error("requestDirectoryAccess-args", "missing arguments", null)
@@ -99,7 +99,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
     }
 
-    private suspend fun safeStartActivityForStorageAccessResult(intent: Intent, requestCode: Int, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+    private fun safeStartActivityForStorageAccessResult(intent: Intent, requestCode: Int, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         if (intent.resolveActivity(activity.packageManager) != null) {
             MainActivity.pendingStorageAccessResultHandlers[requestCode] = PendingStorageAccessResultHandler(null, onGranted, onDenied)
             if (!safeStartActivityForResult(intent, requestCode)) {
@@ -112,7 +112,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
     }
 
-    private suspend fun createFile() {
+    private fun createFile() {
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
@@ -149,7 +149,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         safeStartActivityForStorageAccessResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
-    private suspend fun openFile() {
+    private fun openFile() {
         val mimeType = args["mimeType"] as String? // optional
 
         fun onGranted(uri: Uri) {
@@ -175,7 +175,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         safeStartActivityForStorageAccessResult(intent, MainActivity.OPEN_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
-    private suspend fun copyFile() {
+    private fun copyFile() {
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val sourceUri = (args["sourceUri"] as String?)?.toUri()
