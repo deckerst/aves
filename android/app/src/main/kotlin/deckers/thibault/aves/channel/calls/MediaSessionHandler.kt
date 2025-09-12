@@ -33,7 +33,7 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
     private val noisyAudioReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                mediaCommandHandler.onStop()
+                mediaCommandHandler.callback.onStop()
             }
         }
     }
@@ -119,7 +119,7 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
                     val mbrIntent = MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_PLAY_PAUSE)
                     val mbrName = ComponentName(context, MediaButtonReceiver::class.java)
                     session = MediaSessionCompat(context, "aves", mbrName, mbrIntent).apply {
-                        setCallback(mediaCommandHandler)
+                        setCallback(mediaCommandHandler.callback)
                     }
                 }
                 session!!.apply {

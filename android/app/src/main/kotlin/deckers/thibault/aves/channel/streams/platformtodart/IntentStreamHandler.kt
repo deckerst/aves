@@ -1,36 +1,12 @@
 package deckers.thibault.aves.channel.streams.platformtodart
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
+import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.utils.LogUtils
-import io.flutter.plugin.common.EventChannel
 
-class IntentStreamHandler : EventChannel.StreamHandler {
-    // cannot use `lateinit` because we cannot guarantee
-    // its initialization in `onListen` at the right time
-    // e.g. when resuming the app after the activity got destroyed
-    private var eventSink: EventChannel.EventSink? = null
-    private var handler: Handler? = null
+class IntentStreamHandler : BaseStreamHandler() {
+    fun notifyNewIntent(intentData: MutableMap<String, Any?>?) = success(intentData)
 
-    override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink) {
-        this.eventSink = eventSink
-        handler = Handler(Looper.getMainLooper())
-    }
-
-    override fun onCancel(arguments: Any?) {
-        Log.i(LOG_TAG, "onCancel arguments=$arguments")
-    }
-
-    fun notifyNewIntent(intentData: MutableMap<String, Any?>?) {
-        handler?.post {
-            try {
-                eventSink?.success(intentData)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
+    override val logTag = LOG_TAG
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<IntentStreamHandler>()

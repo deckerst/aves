@@ -3,21 +3,13 @@ package deckers.thibault.aves.channel.streams.platformtodart
 import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.ViewConfiguration
-import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.utils.LogUtils
-import io.flutter.plugin.common.EventChannel
 
-class SettingsChangeStreamHandler(private val context: Context) : EventChannel.StreamHandler {
-    // cannot use `lateinit` because we cannot guarantee
-    // its initialization in `onListen` at the right time
-    private var eventSink: EventChannel.EventSink? = null
-    private var handler: Handler? = null
-
+class SettingsChangeStreamHandler(private val context: Context) : BaseStreamHandler() {
     private val contentObserver = object : ContentObserver(null) {
         private var accelerometerRotation: Int = 0
         private var transitionAnimationScale: Float = 1f
@@ -78,24 +70,7 @@ class SettingsChangeStreamHandler(private val context: Context) : EventChannel.S
         context.contentResolver.unregisterContentObserver(contentObserver)
     }
 
-    override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink) {
-        this.eventSink = eventSink
-        handler = Handler(Looper.getMainLooper())
-    }
-
-    override fun onCancel(arguments: Any?) {
-        Log.i(LOG_TAG, "onCancel arguments=$arguments")
-    }
-
-    private fun success(settings: FieldMap) {
-        handler?.post {
-            try {
-                eventSink?.success(settings)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
+    override val logTag = LOG_TAG
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<SettingsChangeStreamHandler>()
