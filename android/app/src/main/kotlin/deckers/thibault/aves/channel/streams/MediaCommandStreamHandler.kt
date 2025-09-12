@@ -7,15 +7,14 @@ import android.util.Log
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.EventChannel.EventSink
 
 class MediaCommandStreamHandler : EventChannel.StreamHandler, MediaSessionCompat.Callback() {
     // cannot use `lateinit` because we cannot guarantee
     // its initialization in `onListen` at the right time
-    private var eventSink: EventSink? = null
+    private var eventSink: EventChannel.EventSink? = null
     private var handler: Handler? = null
 
-    override fun onListen(arguments: Any?, eventSink: EventSink) {
+    override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink) {
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
     }

@@ -3,15 +3,14 @@ package deckers.thibault.aves.channel.streams
 import android.util.Log
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.EventChannel.EventSink
 
 class IntentStreamHandler : EventChannel.StreamHandler {
     // cannot use `lateinit` because we cannot guarantee
     // its initialization in `onListen` at the right time
     // e.g. when resuming the app after the activity got destroyed
-    private var eventSink: EventSink? = null
+    private var eventSink: EventChannel.EventSink? = null
 
-    override fun onListen(arguments: Any?, eventSink: EventSink) {
+    override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink) {
         this.eventSink = eventSink
     }
 

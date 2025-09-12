@@ -86,7 +86,7 @@ abstract class ImageProvider {
         }
     }
 
-    private suspend fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
+    private fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
         if (StorageUtils.isInVault(contextWrapper, path)) {
             FileImageProvider().apply {
                 val uri = Uri.fromFile(File(path))
@@ -101,7 +101,7 @@ abstract class ImageProvider {
         }
     }
 
-    open suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
+    open fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
@@ -577,7 +577,7 @@ abstract class ImageProvider {
     }
 
     // returns available name to use, or `null` to skip it
-    suspend fun resolveTargetFileNameWithoutExtension(
+    fun resolveTargetFileNameWithoutExtension(
         contextWrapper: ContextWrapper,
         dir: String,
         desiredNameWithoutExtension: String,
@@ -711,7 +711,7 @@ abstract class ImageProvider {
 
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(trailerVideoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes)
             }
 
             // copy the edited temporary file back to the original
@@ -802,7 +802,7 @@ abstract class ImageProvider {
 
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(trailerVideoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes)
             }
 
             // copy the edited temporary file back to the original

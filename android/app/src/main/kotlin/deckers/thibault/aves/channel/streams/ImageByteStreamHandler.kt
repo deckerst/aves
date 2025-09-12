@@ -60,7 +60,6 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
     // - Glide: https://github.com/bumptech/glide/blob/master/library/src/main/java/com/bumptech/glide/load/ImageHeaderParser.java
     private suspend fun streamFullImage() {
         if (arguments !is Map<*, *>) {
-            endOfStream()
             return
         }
 
@@ -74,7 +73,6 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "missing arguments", null)
-            endOfStream()
             return
         }
 
@@ -104,7 +102,6 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 decoded = decoded,
             )
         }
-        endOfStream()
     }
 
     private fun streamOriginalBytesWithTrailer(uri: Uri, mimeType: String) {
@@ -175,7 +172,6 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 
     private suspend fun streamRegion() {
         if (arguments !is Map<*, *>) {
-            endOfStream()
             return
         }
 
@@ -234,7 +230,6 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 
     private suspend fun streamThumbnail() {
         if (arguments !is Map<*, *>) {
-            endOfStream()
             return
         }
 
@@ -281,5 +276,4 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
 interface ByteSink {
     fun streamBytes(inputStream: InputStream): Boolean
     fun error(errorCode: String, errorMessage: String?, errorDetails: Any?)
-    fun endOfStream()
 }

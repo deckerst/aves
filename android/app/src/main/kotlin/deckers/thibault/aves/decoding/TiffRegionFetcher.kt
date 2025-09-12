@@ -41,7 +41,6 @@ class TiffRegionFetcher internal constructor(
                     result.error("fetch-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
                 } else {
                     result.streamBytes(ByteArrayInputStream(bytes))
-                    result.endOfStream()
                 }
             }
         } catch (e: Exception) {

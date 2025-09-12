@@ -96,7 +96,6 @@ class SvgRegionFetcher internal constructor(
                 result.error("fetch-null", "failed to decode SVG for uri=$uri regionRect=$regionRect", null)
             } else {
                 result.streamBytes(ByteArrayInputStream(bytes))
-                result.endOfStream()
             }
         } catch (e: SVGParseException) {
             result.error("fetch-parse", "failed to parse SVG for uri=$uri regionRect=$regionRect", e.message)

@@ -40,7 +40,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
     override fun onCall(args: Any?) {
         when (op) {
-            "delete" -> ioScope.launch { safeSuspend(::delete) }
+            "delete" -> ioScope.launch { safe(::delete) }
             "convert" -> ioScope.launch { safeSuspend(::convert) }
             "move" -> ioScope.launch { safeSuspend(::move) }
             "rename" -> ioScope.launch { safeSuspend(::rename) }
@@ -55,7 +55,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
     private fun isCancelledOp() = cancelledOps.contains(opId)
 
-    private suspend fun delete() {
+    private fun delete() {
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
             val mimeType = entry.mimeType

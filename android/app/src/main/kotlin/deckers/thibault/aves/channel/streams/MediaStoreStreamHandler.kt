@@ -8,7 +8,6 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -16,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : EventChannel.StreamHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var eventSink: EventSink
+    private lateinit var eventSink: EventChannel.EventSink
     private lateinit var handler: Handler
 
     // knownEntries: map of contentId -> dateModifiedMillis
@@ -30,7 +29,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
         }
     }
 
-    override fun onListen(arguments: Any?, eventSink: EventSink) {
+    override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink) {
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
 

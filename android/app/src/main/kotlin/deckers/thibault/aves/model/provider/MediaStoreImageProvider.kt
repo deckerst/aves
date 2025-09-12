@@ -349,7 +349,7 @@ class MediaStoreImageProvider : ImageProvider() {
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
-    override suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
+    override fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         path ?: throw Exception("failed to delete file because path is null")
 
         // the following situations are possible:

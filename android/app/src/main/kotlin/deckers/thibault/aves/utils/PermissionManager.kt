@@ -29,7 +29,7 @@ object PermissionManager {
         Environment.DIRECTORY_PICTURES,
     )
 
-    suspend fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+    fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
 
         // `StorageVolume.createOpenDocumentTreeIntent` is an alternative,
