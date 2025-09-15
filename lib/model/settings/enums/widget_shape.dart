@@ -22,6 +22,12 @@ extension ExtraWidgetShape on WidgetShape {
         return _buildConcaveSquarePath(rect);
       case WidgetShape.heart:
         return _buildHeartPath(rect);
+      case WidgetShape.tearRectLeft:
+        final radius = cornerRadiusPx ?? (_defaultCornerRadius * devicePixelRatio);
+        return _buildTearRectPath(rect, topLeftRadiusPx: radius, topRightRadiusPx: radius * 2);
+      case WidgetShape.tearRectRight:
+        final radius = cornerRadiusPx ?? (_defaultCornerRadius * devicePixelRatio);
+        return _buildTearRectPath(rect, topLeftRadiusPx: radius * 2, topRightRadiusPx: radius);
       case WidgetShape.wavyCircle16:
         return _buildWavyCirclePath(rect, 16, .5);
     }
@@ -83,12 +89,24 @@ extension ExtraWidgetShape on WidgetShape {
       ..relativeCubicTo(dim * p1dx, dim * p1dy, dim * p2dx, dim * p2dy, 0, dim * p3dy);
   }
 
+  Path _buildTearRectPath(Rect rect, {required double topLeftRadiusPx, required double topRightRadiusPx}) {
+    final topLeftRadius = Radius.circular(topLeftRadiusPx);
+    final topRightRadius = Radius.circular(topRightRadiusPx);
+    return Path()
+      ..addRRect(BorderRadius.only(
+        topLeft: topLeftRadius,
+        topRight: topRightRadius,
+        bottomLeft: topRightRadius,
+        bottomRight: topLeftRadius,
+      ).toRRect(rect));
+  }
+
   Path _buildWavyCirclePath(Rect rect, int bumpCount, double amplitudeFactor, {double angleOffset = 0}) {
     final center = rect.center;
     final dim = rect.shortestSide;
 
     final waveAmplitude = amplitudeFactor / bumpCount;
-    final circleRadius = dim / 2 - waveAmplitude;
+    final circleRadius = (dim / 2) * (1 - waveAmplitude);
 
     final pointCount = (dim * dim).round();
     final angleIncrement = 2 * pi / pointCount;
@@ -99,7 +117,9 @@ extension ExtraWidgetShape on WidgetShape {
       final dy = r * sin(t) * circleRadius;
       return Offset(center.dx + dx, center.dy + dy);
     });
-    final path = Path();
+    final origin = points.first;
+
+    final path = Path()..moveTo(origin.dx, origin.dy);
     for (var i = 0; i <= pointCount; i++) {
       final p = points[i % pointCount];
       path.lineTo(p.dx, p.dy);
@@ -110,6 +130,8 @@ extension ExtraWidgetShape on WidgetShape {
   double extentPx(Size widgetSizePx, AvesEntry entry) {
     switch (this) {
       case WidgetShape.rrect:
+      case WidgetShape.tearRectLeft:
+      case WidgetShape.tearRectRight:
         final entryRatio = entry.displayAspectRatio;
         final widgetRatio = widgetSizePx.width / widgetSizePx.height;
         if (entryRatio > 1) {

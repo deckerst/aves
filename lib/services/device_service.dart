@@ -17,6 +17,8 @@ abstract class DeviceService {
 
   Future<int> getPerformanceClass();
 
+  Future<double?> getWidgetCornerRadiusPx();
+
   Future<bool> isLocked();
 
   Future<bool> isSystemFilePickerEnabled();
@@ -110,6 +112,17 @@ class PlatformDeviceService implements DeviceService {
       await reportService.recordError(e, stack);
     }
     return 0;
+  }
+
+  @override
+  Future<double?> getWidgetCornerRadiusPx() async {
+    try {
+      final result = await _platform.invokeMethod('getWidgetCornerRadiusPx');
+      if (result != null) return result as double;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
   }
 
   @override

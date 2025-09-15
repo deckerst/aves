@@ -3,6 +3,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/widget_outline.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/services/widget_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -34,6 +35,7 @@ class HomeWidgetSettingsPage extends StatefulWidget {
 }
 
 class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
+  late Future<double?> _cornerRadiusPxLoader;
   late WidgetShape _shape;
   late WidgetOutline _outline;
   late WidgetOpenPage _openPage;
@@ -59,6 +61,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   @override
   void initState() {
     super.initState();
+    _cornerRadiusPxLoader = deviceService.getWidgetCornerRadiusPx();
     _shape = settings.getWidgetShape(widgetId);
     _outline = settings.getWidgetOutline(widgetId);
     _openPage = settings.getWidgetOpenPage(widgetId);
@@ -106,7 +109,14 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
                 Expanded(
                   child: ListView(
                     children: [
-                      _buildShapeSelector(effectiveOutlineColors),
+                      FutureBuilder<double?>(
+                        future: _cornerRadiusPxLoader,
+                        builder: (context, snapshot) {
+                          final cornerRadiusPx = snapshot.data;
+                          final cornerRadius = cornerRadiusPx != null ? cornerRadiusPx / MediaQuery.devicePixelRatioOf(context) : null;
+                          return _buildShapeSelector(effectiveOutlineColors, cornerRadius);
+                        },
+                      ),
                       ListTile(
                         title: Text(l10n.settingsWidgetShowOutline),
                         trailing: HomeWidgetOutlineSelector(
@@ -155,7 +165,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
     );
   }
 
-  Widget _buildShapeSelector(Map<WidgetOutline, Color?> outlineColors) {
+  Widget _buildShapeSelector(Map<WidgetOutline, Color?> outlineColors, double? cornerRadius) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       child: Wrap(
@@ -176,7 +186,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
                 height: 124,
                 decoration: ShapeDecoration(
                   gradient: selected ? gradient : deselectedGradient,
-                  shape: _WidgetShapeBorder(_outline, shape, outlineColors),
+                  shape: _WidgetShapeBorder(_outline, shape, outlineColors, cornerRadius),
                 ),
               ),
             ),
@@ -205,10 +215,11 @@ class _WidgetShapeBorder extends ShapeBorder {
   final WidgetOutline outline;
   final WidgetShape shape;
   final Map<WidgetOutline, Color?> outlineColors;
+  final double? cornerRadius;
 
   static const _devicePixelRatio = 1.0;
 
-  const _WidgetShapeBorder(this.outline, this.shape, this.outlineColors);
+  const _WidgetShapeBorder(this.outline, this.shape, this.outlineColors, this.cornerRadius);
 
   @override
   EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
@@ -220,14 +231,14 @@ class _WidgetShapeBorder extends ShapeBorder {
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    return shape.path(rect.size, _devicePixelRatio);
+    return shape.path(rect.size, _devicePixelRatio, cornerRadiusPx: cornerRadius);
   }
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
     final outlineColor = outlineColors[outline];
     if (outlineColor != null) {
-      final path = shape.path(rect.size, _devicePixelRatio);
+      final path = shape.path(rect.size, _devicePixelRatio, cornerRadiusPx: cornerRadius);
       canvas.clipPath(path);
       HomeWidgetPainter.drawOutline(canvas, path, _devicePixelRatio, outlineColor);
     }
