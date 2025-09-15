@@ -28,6 +28,7 @@ class MimeTypes {
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
   static const tap = 'image/vnd.tencent.tap';
+  static const wmf = 'image/wmf';
 
   static const arw = 'image/x-sony-arw';
   static const cr2 = 'image/x-canon-cr2';
