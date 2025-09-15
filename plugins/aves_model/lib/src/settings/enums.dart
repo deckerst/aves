@@ -48,4 +48,4 @@ enum WidgetOpenPage { home, collection, viewer, updateWidget }
 
 enum WidgetOutline { none, black, white, systemBlackAndWhite, systemDynamic }
 
-enum WidgetShape { rrect, circle, heart }
+enum WidgetShape { rrect, circle, heart, concaveSquare, wavyCircle16 }
