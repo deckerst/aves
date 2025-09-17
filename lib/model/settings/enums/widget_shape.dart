@@ -10,8 +10,10 @@ extension ExtraWidgetShape on WidgetShape {
   Path path(Size widgetSize, double devicePixelRatio, {double? cornerRadiusPx}) {
     final rect = Offset.zero & widgetSize;
     switch (this) {
-      case WidgetShape.rrect:
-        return Path()..addRRect(BorderRadius.circular(cornerRadiusPx ?? (_defaultCornerRadius * devicePixelRatio)).toRRect(rect));
+      case WidgetShape.bumpyColumns:
+        return _buildBumpyColumnsPath(rect);
+      case WidgetShape.bumpyRows:
+        return _buildBumpyRowsPath(rect);
       case WidgetShape.circle:
         return Path()
           ..addOval(Rect.fromCircle(
@@ -22,6 +24,8 @@ extension ExtraWidgetShape on WidgetShape {
         return _buildConcaveSquarePath(rect);
       case WidgetShape.heart:
         return _buildHeartPath(rect);
+      case WidgetShape.rrect:
+        return Path()..addRRect(BorderRadius.circular(cornerRadiusPx ?? (_defaultCornerRadius * devicePixelRatio)).toRRect(rect));
       case WidgetShape.tearRectLeft:
         final radius = cornerRadiusPx ?? (_defaultCornerRadius * devicePixelRatio);
         return _buildTearRectPath(rect, topLeftRadiusPx: radius, topRightRadiusPx: radius * 2);
@@ -31,6 +35,40 @@ extension ExtraWidgetShape on WidgetShape {
       case WidgetShape.wavyCircle16:
         return _buildWavyCirclePath(rect, 16, .5);
     }
+  }
+
+  Path _buildBumpyColumnsPath(Rect rect) {
+    final radius = rect.width / 4;
+    final topY = radius;
+    final bottomY = rect.height - radius;
+    const angleUnit = pi / 6;
+    return Path()
+      ..moveTo(0, topY)
+      ..arcTo(Rect.fromCircle(center: Offset(radius, topY), radius: radius), -6 * angleUnit, 4 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(radius * 2, topY), radius: radius), -4 * angleUnit, 2 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(radius * 3, topY), radius: radius), -4 * angleUnit, 4 * angleUnit, false)
+      ..lineTo(rect.width, bottomY)
+      ..arcTo(Rect.fromCircle(center: Offset(radius * 3, bottomY), radius: radius), 0, 4 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(radius * 2, bottomY), radius: radius), 2 * angleUnit, 2 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(radius, bottomY), radius: radius), 2 * angleUnit, 4 * angleUnit, false)
+      ..lineTo(0, topY);
+  }
+
+  Path _buildBumpyRowsPath(Rect rect) {
+    final radius = rect.height / 4;
+    final leftX = radius;
+    final rightX = rect.width - radius;
+    const angleUnit = pi / 6;
+    return Path()
+      ..moveTo(leftX, 0)
+      ..lineTo(rightX, 0)
+      ..arcTo(Rect.fromCircle(center: Offset(rightX, radius), radius: radius), -3 * angleUnit, 4 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(rightX, radius * 2), radius: radius), -angleUnit, 2 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(rightX, radius * 3), radius: radius), -angleUnit, 4 * angleUnit, false)
+      ..lineTo(leftX, rect.height)
+      ..arcTo(Rect.fromCircle(center: Offset(leftX, radius * 3), radius: radius), 3 * angleUnit, 4 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(leftX, radius * 2), radius: radius), 5 * angleUnit, 2 * angleUnit, false)
+      ..arcTo(Rect.fromCircle(center: Offset(leftX, radius), radius: radius), 5 * angleUnit, 4 * angleUnit, false);
   }
 
   Path _buildConcaveSquarePath(Rect rect) {
@@ -129,6 +167,8 @@ extension ExtraWidgetShape on WidgetShape {
 
   double extentPx(Size widgetSizePx, AvesEntry entry) {
     switch (this) {
+      case WidgetShape.bumpyColumns:
+      case WidgetShape.bumpyRows:
       case WidgetShape.rrect:
       case WidgetShape.tearRectLeft:
       case WidgetShape.tearRectRight:

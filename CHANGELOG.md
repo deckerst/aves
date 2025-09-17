@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Widget: more shape options
+
 ## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
 
 ### Added

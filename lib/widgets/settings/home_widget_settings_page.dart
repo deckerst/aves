@@ -166,32 +166,40 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
   }
 
   Widget _buildShapeSelector(Map<WidgetOutline, Color?> outlineColors, double? cornerRadius) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 16,
-        children: WidgetShape.values.map((shape) {
+    const shapeHeight = 124.0;
+    const shapes = WidgetShape.values;
+    return Container(
+      height: shapeHeight,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        itemBuilder: (context, index) {
+          final shape = WidgetShape.values[index];
           final selected = shape == _shape;
           final duration = context.read<DurationsData>().formTransition;
-          return GestureDetector(
-            onTap: () => setState(() => _shape = shape),
-            child: AnimatedOpacity(
-              duration: duration,
-              // as of Flutter beta v3.3.0-0.0.pre, decoration rendering is at the wrong position if opacity is > .998
-              opacity: selected ? .998 : .4,
-              child: AnimatedContainer(
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: GestureDetector(
+              onTap: () => setState(() => _shape = shape),
+              child: AnimatedOpacity(
                 duration: duration,
-                width: 96,
-                height: 124,
-                decoration: ShapeDecoration(
-                  gradient: selected ? gradient : deselectedGradient,
-                  shape: _WidgetShapeBorder(_outline, shape, outlineColors, cornerRadius),
+                // as of Flutter beta v3.3.0-0.0.pre, decoration rendering is at the wrong position if opacity is > .998
+                opacity: selected ? .998 : .4,
+                child: AnimatedContainer(
+                  duration: duration,
+                  width: 96,
+                  height: shapeHeight,
+                  decoration: ShapeDecoration(
+                    gradient: selected ? gradient : deselectedGradient,
+                    shape: _WidgetShapeBorder(_outline, shape, outlineColors, cornerRadius),
+                  ),
                 ),
               ),
             ),
           );
-        }).toList(),
+        },
+        itemCount: shapes.length,
       ),
     );
   }
