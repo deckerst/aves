@@ -1,7 +1,9 @@
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
@@ -24,6 +26,7 @@ class NavigationDrawerEditorPage extends StatefulWidget {
     null,
     RecentlyAddedFilter.instance,
     ...CollectionSearchDelegate.typeFilters,
+    MimeFilter(MimeTypes.svg),
   ];
   static const List<String> pageOptions = [
     AlbumListPage.routeName,
