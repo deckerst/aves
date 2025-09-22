@@ -342,7 +342,7 @@ object StorageUtils {
                         if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
                             return volumePath
                         }
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         // ignore
                     }
                 }
@@ -718,7 +718,7 @@ object StorageUtils {
                 // (`Input file descriptor already original`), whether we provide the original URI or not
                 setDataSource(context, effectiveUri)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // unsupported format
             Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri effectiveUri=$effectiveUri")
             null

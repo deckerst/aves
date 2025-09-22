@@ -70,7 +70,7 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                     retriever.embeddedPicture?.let { bytes ->
                         try {
                             bitmap = BitmapFactory.decodeStream(ByteArrayInputStream(bytes))
-                        } catch (e: IOException) {
+                        } catch (_: IOException) {
                             // ignore
                         }
                     }

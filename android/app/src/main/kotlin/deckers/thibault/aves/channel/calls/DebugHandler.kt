@@ -149,7 +149,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     options.outConfig?.let { metadataMap["Config"] = it.toString() }
                 }
             }
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             // ignore
         }
         result.success(metadataMap)
@@ -253,7 +253,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 for ((code, name) in MediaMetadataRetrieverHelper.allKeys) {
                     retriever.extractMetadata(code)?.let { metadataMap[name] = it }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // ignore
             } finally {
                 // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
