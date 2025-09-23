@@ -485,7 +485,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 
   Future<void> analyze(AnalysisController? analysisController, {Set<AvesEntry>? entries}) async {
-    final todoEntries = entries ?? visibleEntries;
+    // not only visible entries, as hidden and vault items may be analyzed
+    final todoEntries = entries ?? allEntries;
     final defaultAnalysisController = AnalysisController();
     final _analysisController = analysisController ?? defaultAnalysisController;
     final force = _analysisController.force;
@@ -505,6 +506,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         }
       }
 
+      debugPrint('analyze ${todoEntries.length} entries, force=$force, starting service=$startAnalysisService');
       if (startAnalysisService) {
         final lifecycleState = AvesApp.lifecycleStateNotifier.value;
         switch (lifecycleState) {

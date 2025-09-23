@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - saving metadata date when moving items to bin
+- rescanning items in vaults
 
 ## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
 
