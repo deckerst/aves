@@ -8,6 +8,14 @@ All notable changes to this project will be documented in this file.
 
 - Widget: more shape options
 
+### Changed
+
+- Albums: show hidden albums when they are pinned
+
+### Fixed
+
+- saving metadata date when moving items to bin
+
 ## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
 
 ### Added
