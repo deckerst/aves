@@ -1,7 +1,9 @@
 import 'package:aves/model/filters/aspect_ratio.dart';
-import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/set_and.dart';
+import 'package:aves/model/filters/container/set_or.dart';
+import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
@@ -15,32 +17,27 @@ import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/filters/recent.dart';
-import 'package:aves/model/filters/container/set_and.dart';
-import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/grouping/common.dart';
-import 'package:aves/services/common/services.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
+import '../common.dart';
 import '../fake/media_store_service.dart';
 import '../fake/storage_service.dart';
 
 void main() {
   setUpAll(() async {
-    albumGrouping.init();
+    await setUpAllServices();
   });
 
   setUp(() async {
-    // specify Posix style path context for consistent behaviour when running tests on Windows
-    getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
+    await setUpServices();
   });
 
-  tearDown(() async {
-    albumGrouping.setGroups({});
-    await getIt.reset();
+  tearDownAll(() async {
+    await tearDownAllServices();
   });
 
   test('Filter serialization', () {

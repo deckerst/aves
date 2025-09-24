@@ -14,6 +14,8 @@ import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
+import 'package:aves/model/grouping/common.dart';
+import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -294,6 +296,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     final oldFilter = StoredAlbumFilter(sourceAlbum, null);
     final newFilter = StoredAlbumFilter(destinationAlbum, null);
 
+    final group = albumGrouping.getFilterParent(oldFilter);
     final pinned = settings.pinnedFilters.contains(oldFilter);
 
     if (vaults.isVault(sourceAlbum)) {
@@ -324,6 +327,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         albumBookmarks.removeAt(index);
         albumBookmarks.insert(index, newFilter);
         settings.drawerAlbumBookmarks = albumBookmarks;
+      }
+    }
+    // update group
+    if (group != null) {
+      final newFilterUri = GroupingConversion.filterToUri(newFilter);
+      if (newFilterUri != null) {
+        albumGrouping.addToGroup({newFilterUri}, group);
+      }
+      final oldFilterUri = GroupingConversion.filterToUri(oldFilter);
+      if (oldFilterUri != null) {
+        albumGrouping.addToGroup({oldFilterUri}, null);
       }
     }
     // restore pin, as the obsolete album got removed and its associated state cleaned
