@@ -14,6 +14,7 @@ import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
+import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.handleEncodedBytesInFlutter
@@ -32,7 +33,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
     private var op: String? = null
     private var decoded: Boolean = false
     private val regionFetcher = RegionFetcher(context)
-    private val density = context.resources.displayMetrics.density
+    private val density = context.devicePixelRatio()
 
     init {
         if (arguments is Map<*, *>) {

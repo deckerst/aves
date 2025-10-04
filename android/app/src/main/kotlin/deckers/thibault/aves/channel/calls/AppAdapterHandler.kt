@@ -38,6 +38,7 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getApplicationInfoCompat
@@ -151,7 +152,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         }
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
-        val density = context.resources.displayMetrics.density
+        val density = context.devicePixelRatio()
         val size = (sizeDip * density).roundToInt()
         var bytes: ByteArray? = null
         try {

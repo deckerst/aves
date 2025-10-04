@@ -55,6 +55,7 @@ class AvesMagnifier extends StatefulWidget {
   final MagnifierGestureScaleEndCallback? onScaleEnd;
   final MagnifierGestureFlingCallback? onFling;
   final MagnifierTapCallback? onTap;
+  final GestureLongPressCallback? onLongPress;
   final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
 
@@ -77,6 +78,7 @@ class AvesMagnifier extends StatefulWidget {
     this.onScaleEnd,
     this.onFling,
     this.onTap,
+    this.onLongPress,
     this.onDoubleTap,
     required this.child,
   });
@@ -467,6 +469,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
           onScaleUpdate: onScaleUpdate,
           onScaleEnd: onScaleEnd,
           onTapUp: widget.onTap == null ? null : _onTapUp,
+          onLongPress: widget.onLongPress,
           onDoubleTap: _onDoubleTap,
           allowDoubleTap: _allowDoubleTap,
           child: Padding(

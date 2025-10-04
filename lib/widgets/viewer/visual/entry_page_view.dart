@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/settings/enums/widget_outline.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/services/common/services.dart';
@@ -12,6 +13,7 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/home_widget.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -412,14 +414,41 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       onScaleUpdate: onScaleUpdate,
       onScaleEnd: onScaleEnd,
       onFling: _onFling,
-      onTap: (c, s, a, p) {
-        if (c.mounted) {
-          _onTap(alignment: a);
+      onTap: (context, _, alignment, __) {
+        if (context.mounted) {
+          _onTap(alignment: alignment);
         }
       },
+      onLongPress: _onLongPress,
       onDoubleTap: onDoubleTap,
       child: child,
     );
+  }
+
+  Future<void> _onLongPress() async {
+    final isInMultiWindowMode = await windowService.isInMultiWindowMode() && !(await windowService.isInPictureInPictureMode());
+    if (!isInMultiWindowMode) {
+      return;
+    }
+
+    const dragShadowSize = Size.square(128);
+    final cornerRadiusPx = await deviceService.getWidgetCornerRadiusPx();
+
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    final brightness = Theme.of(context).brightness;
+    final outline = await WidgetOutline.systemBlackAndWhite.color(brightness);
+
+    final dragShadowBytes = await HomeWidgetPainter(
+      entry: entry,
+      devicePixelRatio: devicePixelRatio,
+    ).drawWidget(
+      sizeDip: dragShadowSize,
+      cornerRadiusPx: cornerRadiusPx,
+      outline: outline,
+      shape: WidgetShape.rrect,
+    );
+
+    await windowService.startGlobalDrag(entry.uri, entry.bestTitle, dragShadowSize, dragShadowBytes);
   }
 
   void _onFling(AxisDirection direction) {

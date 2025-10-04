@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Finnish translation (thanks Åzze, Olli, Ricky Tigg, Otso Karttunen)
 - Widget: more shape options
+- Viewer: drag and drop in multi-window mode
 - Vaults: allow hiding like other albums
 
 ### Changed

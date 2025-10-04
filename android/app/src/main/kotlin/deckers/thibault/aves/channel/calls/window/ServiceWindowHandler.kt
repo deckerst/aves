@@ -17,6 +17,14 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(null)
     }
 
+    override fun isInMultiWindowMode(call: MethodCall, result: MethodChannel.Result) {
+        result.success(false)
+    }
+
+    override fun isInPictureInPictureMode(call: MethodCall, result: MethodChannel.Result) {
+        result.success(false)
+    }
+
     override fun getOrientation(call: MethodCall, result: MethodChannel.Result) {
         result.success(0)
     }
@@ -42,6 +50,10 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
     }
 
     override fun setColorMode(call: MethodCall, result: MethodChannel.Result) {
+        result.success(null)
+    }
+
+    override fun startGlobalDrag(call: MethodCall, result: MethodChannel.Result) {
         result.success(null)
     }
 }

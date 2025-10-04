@@ -10,6 +10,10 @@ abstract class WindowService {
 
   Future<void> secureScreen(bool on);
 
+  Future<bool> isInMultiWindowMode();
+
+  Future<bool> isInPictureInPictureMode();
+
   Future<bool> isRotationLocked();
 
   Future<int> getOrientation();
@@ -25,6 +29,8 @@ abstract class WindowService {
   Future<bool> supportsHdr();
 
   Future<void> setColorMode({required bool wideColorGamut, required bool hdr});
+
+  Future<bool> startGlobalDrag(String uri, String? label, Size shadowSize, Uint8List shadowBytes);
 }
 
 class PlatformWindowService implements WindowService {
@@ -63,6 +69,28 @@ class PlatformWindowService implements WindowService {
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
+  }
+
+  @override
+  Future<bool> isInMultiWindowMode() async {
+    try {
+      final result = await _platform.invokeMethod('isInMultiWindowMode');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> isInPictureInPictureMode() async {
+    try {
+      final result = await _platform.invokeMethod('isInPictureInPictureMode');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 
   @override
@@ -196,5 +224,22 @@ class PlatformWindowService implements WindowService {
     // } on PlatformException catch (e, stack) {
     //   await reportService.recordError(e, stack);
     // }
+  }
+
+  @override
+  Future<bool> startGlobalDrag(String uri, String? label, Size shadowSize, Uint8List shadowBytes) async {
+    try {
+      final result = await _platform.invokeMethod('startGlobalDrag', <String, dynamic>{
+        'uri': uri,
+        'label': label,
+        'shadowWidthDip': shadowSize.width,
+        'shadowHeightDip': shadowSize.height,
+        'shadowBytes': shadowBytes,
+      });
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 }
