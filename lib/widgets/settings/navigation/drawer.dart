@@ -14,7 +14,7 @@ import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_albums.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_fixed.dart';
 import 'package:flutter/material.dart';

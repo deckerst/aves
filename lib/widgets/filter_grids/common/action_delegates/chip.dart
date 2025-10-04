@@ -48,9 +48,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.decompose:
         return filter is DynamicAlbumFilter;
       case ChipAction.reverse:
-        return true;
       case ChipAction.hide:
-        return !(filter is StoredAlbumFilter && vaults.isVault(filter.album));
+        return true;
       case ChipAction.lockVault:
         return (filter is StoredAlbumFilter && vaults.isVault(filter.album) && !vaults.isLocked(filter.album));
     }
@@ -134,6 +133,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
+
+    if (!await unlockFilter(context, filter)) return;
 
     settings.changeFilterVisibility({filter}, false);
   }

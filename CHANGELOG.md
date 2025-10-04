@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Finnish translation (thanks Åzze, Olli, Ricky Tigg, Otso Karttunen)
 - Widget: more shape options
+- Vaults: allow hiding like other albums
 
 ### Changed
 

@@ -15,7 +15,7 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
-import 'package:aves/widgets/viewer/info/info_search.dart';
+import 'package:aves/widgets/viewer/info/info_search_delegate.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';

@@ -83,7 +83,7 @@ mixin VaultAwareMixin on FeedbackMixin {
     return filter is StoredAlbumFilter ? unlockAlbum(context, filter.album) : Future.value(true);
   }
 
-  Future<bool> unlockFilters(BuildContext context, Set<StoredAlbumFilter> filters) async {
+  Future<bool> unlockFilters(BuildContext context, Set<CollectionFilter> filters) async {
     var unlocked = true;
     await Future.forEach(filters, (filter) async {
       if (unlocked) {
