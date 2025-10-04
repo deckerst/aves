@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Finnish translation (thanks Åzze, Olli, Ricky Tigg, Otso Karttunen)
 - Widget: more shape options
 
 ### Changed
