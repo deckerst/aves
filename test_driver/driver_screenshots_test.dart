@@ -69,9 +69,9 @@ Future<void> _search(String query, String chipKey) async {
   await driver.tapKeyAndWait(chipKey);
 }
 
-Future<void> _selectMapStyle(String style) async {
+Future<void> _selectMapStyle(String styleKey) async {
   await driver.tapKeyAndWait('map-menu-layers');
-  await driver.tapKeyAndWait('EntryMapStyle.$style');
+  await driver.tapKeyAndWait(styleKey);
 
   // tiles may take time to load
   await Future.delayed(const Duration(seconds: 5));

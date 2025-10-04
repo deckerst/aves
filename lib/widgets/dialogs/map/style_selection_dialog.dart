@@ -52,6 +52,8 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
             children: [
               ...defaultStyles.map((v) {
                 return SelectionRadioListTile(
+                  // key is expected by test driver
+                  key: Key(v.key),
                   value: v,
                   title: v.getName(context),
                   needConfirmation: false,
@@ -62,6 +64,8 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
               }),
               ...customStyles.map((v) {
                 return SelectionRadioListTile(
+                  // key is expected by test driver
+                  key: Key(v.key),
                   value: v,
                   title: v.getName(context),
                   needConfirmation: false,
