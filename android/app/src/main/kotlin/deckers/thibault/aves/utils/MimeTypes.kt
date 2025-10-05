@@ -144,8 +144,8 @@ object MimeTypes {
         return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             true
         } else when (mimeType) {
-            AVIF, DNG, DNG_ADOBE, HEIC, HEIF, PNG, WEBP -> true
-            else -> false
+            AVIF, HEIC, HEIF, PNG, WEBP -> true
+            else -> isRaw(mimeType)
         }
     }
 
