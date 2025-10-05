@@ -141,8 +141,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     switch (action) {
       // general
-      case ChipSetAction.configureView:
       case ChipSetAction.select:
+        return hasItems;
+      case ChipSetAction.configureView:
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
       // browsing

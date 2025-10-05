@@ -74,15 +74,16 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
                   setGroupValue: _setGroupValue,
                 );
               }),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(top: 4, bottom: 8),
-                child: AvesOutlinedButton(
-                  icon: const Icon(AIcons.add),
-                  label: l10n.mapStyleDialogAddStyle,
-                  onPressed: _add,
+              if (!settings.useTvLayout)
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(top: 4, bottom: 8),
+                  child: AvesOutlinedButton(
+                    icon: const Icon(AIcons.add),
+                    label: l10n.mapStyleDialogAddStyle,
+                    onPressed: _add,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
