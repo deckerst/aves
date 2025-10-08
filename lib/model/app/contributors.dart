@@ -154,7 +154,7 @@ class Contributors {
     Contributor('Åzze', 'laitinen.jere222@gmail.com'),
     Contributor('Olli', 'ollinen@ollit.dev'),
     Contributor('Ricky Tigg', 'ricky.tigg@gmail.com'),
-    Contributor('Otso Karttunen', 'otso.karttunen@gmail.com'),
+    Contributor('Oris5', 'otso.karttunen@gmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
