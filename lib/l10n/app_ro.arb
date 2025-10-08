@@ -789,8 +789,6 @@
     "@settingsDisabled": {},
     "settingsActionImportDialogTitle": "Import",
     "@settingsActionImportDialogTitle": {},
-    "settingsShowBottomNavigationBar": "Afișare bară de navigare din partea de jos",
-    "@settingsShowBottomNavigationBar": {},
     "settingsMotionPhotoAutoPlay": "Redarea automată a fotografiilor în mișcare",
     "@settingsMotionPhotoAutoPlay": {},
     "settingsSlideshowIntervalTile": "Interval",

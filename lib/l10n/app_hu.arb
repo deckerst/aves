@@ -1342,8 +1342,6 @@
     "@albumGroupVolume": {},
     "tagEditorSectionPlaceholders": "Helyszűrők",
     "@tagEditorSectionPlaceholders": {},
-    "settingsShowBottomNavigationBar": "Alsó navigációs sáv mutatása",
-    "@settingsShowBottomNavigationBar": {},
     "entryActionShowGeoTiffOnMap": "Térképre helyezve",
     "@entryActionShowGeoTiffOnMap": {},
     "videoActionCaptureFrame": "Képkocka mentése",

@@ -1204,8 +1204,6 @@
             }
         }
     },
-    "settingsShowBottomNavigationBar": "Amosar barra de navegación inferior",
-    "@settingsShowBottomNavigationBar": {},
     "settingsKeepScreenOnTile": "Manter pantalla acesa",
     "@settingsKeepScreenOnTile": {},
     "settingsKeepScreenOnDialogTitle": "Manter pantalla acesa",

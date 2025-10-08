@@ -701,8 +701,6 @@
     "@settingsHomeTile": {},
     "settingsHomeDialogTitle": "Inicio",
     "@settingsHomeDialogTitle": {},
-    "settingsShowBottomNavigationBar": "Mostrar barra de navegación inferior",
-    "@settingsShowBottomNavigationBar": {},
     "settingsKeepScreenOnTile": "Mantener la pantalla encendida",
     "@settingsKeepScreenOnTile": {},
     "settingsKeepScreenOnDialogTitle": "Mantener la pantalla encendida",
