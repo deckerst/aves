@@ -339,17 +339,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
   }
 
-  Future<void> quickMove(BuildContext context, String album, {required bool copy}) async {
-    if (!await unlockAlbum(context, album)) return;
+  Future<void> quickMove(BuildContext context, String destinationAlbum, {required bool copy}) async {
+    if (!await unlockAlbum(context, destinationAlbum)) return;
 
     final targetEntry = _getTargetEntry(context, copy ? EntryAction.copy : EntryAction.move);
-    if (!copy && targetEntry.directory == album) return;
+    if (!copy && targetEntry.directory == destinationAlbum) return;
 
     await doQuickMove(
       context,
       moveType: copy ? MoveType.copy : MoveType.move,
       entriesByDestination: {
-        album: {targetEntry}
+        destinationAlbum: {targetEntry},
       },
     );
   }
