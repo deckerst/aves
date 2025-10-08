@@ -609,8 +609,6 @@
     "@appExportFavourites": {},
     "appExportSettings": "Nustatymai",
     "@appExportSettings": {},
-    "settingsShowBottomNavigationBar": "Rodyti apatinę naršymo juostą",
-    "@settingsShowBottomNavigationBar": {},
     "settingsKeepScreenOnDialogTitle": "Laikyti ekraną įjungtą",
     "@settingsKeepScreenOnDialogTitle": {},
     "settingsConfirmationTile": "Patvirtinimo dialogo langai",

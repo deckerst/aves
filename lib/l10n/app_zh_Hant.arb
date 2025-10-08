@@ -663,8 +663,6 @@
     "@settingsHomeTile": {},
     "settingsHomeDialogTitle": "主畫面",
     "@settingsHomeDialogTitle": {},
-    "settingsShowBottomNavigationBar": "顯示底部操作條",
-    "@settingsShowBottomNavigationBar": {},
     "settingsKeepScreenOnDialogTitle": "保持螢幕開啟",
     "@settingsKeepScreenOnDialogTitle": {},
     "settingsConfirmationTile": "確認對話框",

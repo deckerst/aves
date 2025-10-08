@@ -1097,8 +1097,6 @@
     "@settingsConfirmationTile": {},
     "settingsKeepScreenOnDialogTitle": "صفحه را روشن نگه دار",
     "@settingsKeepScreenOnDialogTitle": {},
-    "settingsShowBottomNavigationBar": "نمایش گزینه‌های پیمایش پایین",
-    "@settingsShowBottomNavigationBar": {},
     "settingsDoubleBackExit": "برای خروج دوبار روی «بازگشت» ضربه بزنید",
     "@settingsDoubleBackExit": {},
     "settingsNavigationDrawerEditorPageTitle": "گزینه‌های پیمایش",

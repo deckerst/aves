@@ -739,8 +739,6 @@
     "@settingsHomeTile": {},
     "settingsHomeDialogTitle": "主页",
     "@settingsHomeDialogTitle": {},
-    "settingsShowBottomNavigationBar": "显示底部导航栏",
-    "@settingsShowBottomNavigationBar": {},
     "settingsKeepScreenOnTile": "保持亮屏",
     "@settingsKeepScreenOnTile": {},
     "settingsKeepScreenOnDialogTitle": "保持亮屏",
