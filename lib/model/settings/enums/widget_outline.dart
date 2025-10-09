@@ -14,10 +14,20 @@ extension ExtraWidgetOutline on WidgetOutline {
         return SynchronousFuture(Colors.white);
       case WidgetOutline.systemBlackAndWhite:
         return SynchronousFuture(brightness == Brightness.dark ? Colors.black : Colors.white);
+      case WidgetOutline.systemBlackAndWhiteHighContrast:
+        return SynchronousFuture(brightness == Brightness.dark ? Colors.white : Colors.black);
+      case WidgetOutline.systemDynamicLowContrast:
+        final color = await _getDynamicColor(brightness == Brightness.dark ? Brightness.light : Brightness.dark);
+        return color ?? await WidgetOutline.systemBlackAndWhite.color(brightness);
       case WidgetOutline.systemDynamic:
-        final corePalette = await DynamicColorPlugin.getCorePalette();
-        final scheme = corePalette?.toColorScheme(brightness: brightness);
-        return scheme?.primary ?? await WidgetOutline.systemBlackAndWhite.color(brightness);
+        final color = await _getDynamicColor(brightness);
+        return color ?? await WidgetOutline.systemBlackAndWhiteHighContrast.color(brightness);
     }
+  }
+
+  Future<Color?> _getDynamicColor(Brightness brightness) async {
+    final corePalette = await DynamicColorPlugin.getCorePalette();
+    final scheme = corePalette?.toColorScheme(brightness: brightness);
+    return scheme?.primary;
   }
 }

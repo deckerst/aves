@@ -307,6 +307,10 @@ class _HomeWidgetOutlineSelectorState extends State<HomeWidgetOutlineSelector> {
         WidgetOutline.black,
         WidgetOutline.white,
         WidgetOutline.systemBlackAndWhite,
-        if (device.isDynamicColorAvailable) WidgetOutline.systemDynamic,
+        WidgetOutline.systemBlackAndWhiteHighContrast,
+        if (device.isDynamicColorAvailable) ...[
+          WidgetOutline.systemDynamicLowContrast,
+          WidgetOutline.systemDynamic,
+        ],
       ];
 }
