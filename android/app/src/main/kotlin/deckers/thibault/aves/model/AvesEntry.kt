@@ -25,6 +25,8 @@ class AvesEntry(map: FieldMap) {
     val displayHeight: Int
         get() = if (isRotated) width else height
 
+    override fun toString(): String = "AvesEntry#${hashCode()}{uri=$uri path=$path pageId=$pageId mimeType=$mimeType width=$width height=$height rotationDegrees=$rotationDegrees isFlipped=$isFlipped sizeBytes=$sizeBytes trashed=$trashed trashPath=$trashPath}"
+
     companion object {
         // convenience method
         private fun toLong(o: Any?): Long? = when (o) {

@@ -309,8 +309,8 @@ abstract class ImageProvider {
                     sourceDocFile.copyTo(output)
                 }
             } else {
-                val targetWidthPx: Int
-                val targetHeightPx: Int
+                var targetWidthPx: Int
+                var targetHeightPx: Int
                 when (lengthUnit) {
                     LENGTH_UNIT_PERCENT -> {
                         targetWidthPx = sourceEntry.displayWidth * width / 100
@@ -323,6 +323,12 @@ abstract class ImageProvider {
                     }
                 }
 
+                val rotationDegrees = sourceEntry.rotationDegrees
+                val needRotationAfterGlide = MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)
+                if (rotationDegrees != 0 && needRotationAfterGlide) {
+                    targetWidthPx = targetHeightPx.also { targetHeightPx = targetWidthPx }
+                }
+
                 target = Glide.with(activity.applicationContext)
                     .asBitmap()
                     .apply(AvesAppGlideModule.uncachedFullImageOptions)
@@ -330,8 +336,8 @@ abstract class ImageProvider {
                     .submit(targetWidthPx, targetHeightPx)
 
                 var bitmap = withContext(Dispatchers.IO) { target.get() }
-                if (MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)) {
-                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
+                if (needRotationAfterGlide) {
+                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")
 

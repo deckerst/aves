@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - rescanning items in vaults
 - grouping when renaming album
 - thumbnail orientation for some RAW formats
+- converting portrait HEIF/RAW to requested size
 
 ## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
 
