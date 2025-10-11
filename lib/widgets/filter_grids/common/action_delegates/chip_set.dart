@@ -28,7 +28,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -141,8 +141,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     switch (action) {
       // general
-      case ChipSetAction.configureView:
       case ChipSetAction.select:
+        return hasItems;
+      case ChipSetAction.configureView:
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
       // browsing
@@ -388,6 +389,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     if (confirmed == null || !confirmed) return;
 
     final filters = getSelectedFilters(context);
+    if (!await unlockFilters(context, filters)) return;
+
     settings.changeFilterVisibility(filters, false);
 
     browse(context);

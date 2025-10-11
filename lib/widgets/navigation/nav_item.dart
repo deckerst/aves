@@ -19,7 +19,7 @@ import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/navigation/nav_display.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';

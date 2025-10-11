@@ -447,7 +447,6 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
     required EntryActionDelegate actionDelegate,
     FocusNode? focusNode,
   }) {
-    Widget? child;
     void onPressed() => actionDelegate.onActionSelected(context, action);
 
     Widget _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
@@ -469,21 +468,21 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
     final blurred = settings.enableBlurEffect;
     switch (action) {
       case EntryAction.copy:
-        child = MoveButton(
+        return MoveButton(
           copy: true,
           blurred: blurred,
           onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: true),
           onPressed: onPressed,
         );
       case EntryAction.move:
-        child = MoveButton(
+        return MoveButton(
           copy: false,
           blurred: blurred,
           onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: false),
           onPressed: onPressed,
         );
       case EntryAction.share:
-        child = ShareButton(
+        return ShareButton(
           blurred: blurred,
           entries: {mainEntry},
           onChooserValue: (action) => actionDelegate.quickShare(context, action),
@@ -492,51 +491,50 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
         );
       case EntryAction.toggleFavourite:
         final favouriteTargetEntry = mainEntry.isStack ? pageEntry : mainEntry;
-        child = FavouriteToggler(
+        return FavouriteToggler(
           entries: {favouriteTargetEntry},
           focusNode: focusNode,
           onPressed: onPressed,
         );
       case EntryAction.videoToggleMute:
-        child = MuteToggler(
+        return MuteToggler(
           controller: videoController,
           focusNode: focusNode,
           onPressed: onPressed,
         );
       case EntryAction.videoTogglePlay:
-        child = PlayToggler(
+        return PlayToggler(
           controller: videoController,
           focusNode: focusNode,
           onPressed: onPressed,
         );
       case EntryAction.videoCaptureFrame:
-        child = _buildFromListenable(videoController?.canCaptureFrameNotifier);
+        return _buildFromListenable(videoController?.canCaptureFrameNotifier);
       case EntryAction.videoSelectStreams:
-        child = _buildFromListenable(videoController?.canSelectStreamNotifier);
+        return _buildFromListenable(videoController?.canSelectStreamNotifier);
       case EntryAction.videoSetSpeed:
-        child = _buildFromListenable(videoController?.canSetSpeedNotifier);
+        return _buildFromListenable(videoController?.canSetSpeedNotifier);
       case EntryAction.editRating:
-        child = RateButton(
+        return RateButton(
           blurred: blurred,
           onChooserValue: (rating) => actionDelegate.quickRate(context, rating),
           focusNode: focusNode,
           onPressed: onPressed,
         );
       case EntryAction.editTags:
-        child = TagButton(
+        return TagButton(
           blurred: blurred,
           onChooserValue: (filter) => actionDelegate.quickTag(context, filter),
           focusNode: focusNode,
           onPressed: onPressed,
         );
       default:
-        child = IconButton(
+        return IconButton(
           icon: action.getIcon(),
           onPressed: onPressed,
           focusNode: focusNode,
           tooltip: action.getText(context),
         );
     }
-    return child;
   }
 }

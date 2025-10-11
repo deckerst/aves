@@ -23,6 +23,9 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
@@ -36,7 +39,7 @@ import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
@@ -507,6 +510,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     FocusNode? focusNode,
     required Selection<AvesEntry> selection,
   }) {
+    final blurred = settings.enableBlurEffect;
     final onPressed = enabled ? () => _onActionSelected(action) : null;
     switch (action) {
       case EntrySetAction.toggleTitleSearch:
@@ -520,6 +524,34 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
               focusNode: focusNode,
             );
           },
+        );
+      case EntrySetAction.copy:
+        return MoveButton(
+          copy: true,
+          blurred: blurred,
+          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: true),
+          onPressed: onPressed,
+        );
+      case EntrySetAction.move:
+        return MoveButton(
+          copy: false,
+          blurred: blurred,
+          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: false),
+          onPressed: onPressed,
+        );
+      case EntrySetAction.editRating:
+        return RateButton(
+          blurred: blurred,
+          onChooserValue: (rating) => _actionDelegate.quickRate(context, rating),
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+      case EntrySetAction.editTags:
+        return TagButton(
+          blurred: blurred,
+          onChooserValue: (filter) => _actionDelegate.quickTag(context, filter),
+          focusNode: focusNode,
+          onPressed: onPressed,
         );
       case EntrySetAction.toggleFavourite:
         return FavouriteToggler(

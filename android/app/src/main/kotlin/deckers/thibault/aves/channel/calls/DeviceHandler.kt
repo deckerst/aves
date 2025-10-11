@@ -39,6 +39,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
             "getFirstDayOfWeek" -> safe(call, result, ::getFirstDayOfWeek)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
+            "getWidgetCornerRadiusPx" -> safe(call, result, ::getWidgetCornerRadiusPx)
             "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             "requestMediaManagePermission" -> safe(call, result, ::requestMediaManagePermission)
@@ -126,6 +127,14 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(Build.VERSION.SDK_INT)
+    }
+
+    private fun getWidgetCornerRadiusPx(@Suppress("unused_parameter") methodCall: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            result.success(context.resources.getDimension(android.R.dimen.system_app_widget_background_radius))
+        } else {
+            result.success(null)
+        }
     }
 
     private fun isLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

@@ -52,6 +52,8 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
             children: [
               ...defaultStyles.map((v) {
                 return SelectionRadioListTile(
+                  // key is expected by test driver
+                  key: Key(v.key),
                   value: v,
                   title: v.getName(context),
                   needConfirmation: false,
@@ -62,6 +64,8 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
               }),
               ...customStyles.map((v) {
                 return SelectionRadioListTile(
+                  // key is expected by test driver
+                  key: Key(v.key),
                   value: v,
                   title: v.getName(context),
                   needConfirmation: false,
@@ -70,15 +74,16 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
                   setGroupValue: _setGroupValue,
                 );
               }),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(top: 4, bottom: 8),
-                child: AvesOutlinedButton(
-                  icon: const Icon(AIcons.add),
-                  label: l10n.mapStyleDialogAddStyle,
-                  onPressed: _add,
+              if (!settings.useTvLayout)
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(top: 4, bottom: 8),
+                  child: AvesOutlinedButton(
+                    icon: const Icon(AIcons.add),
+                    label: l10n.mapStyleDialogAddStyle,
+                    onPressed: _add,
+                  ),
                 ),
-              ),
             ],
           ),
         ),

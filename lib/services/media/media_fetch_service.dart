@@ -94,7 +94,6 @@ class PlatformMediaFetchService implements MediaFetchService {
       'sizeBytes': request.sizeBytes,
       'rotationDegrees': request.rotationDegrees ?? 0,
       'isFlipped': request.isFlipped,
-      'isAnimated': request.isAnimated,
     };
   }
 

@@ -12,6 +12,7 @@ class MagnifierGestureDetector extends StatefulWidget {
 
   final GestureTapDownCallback? onTapDown;
   final GestureTapUpCallback? onTapUp;
+  final GestureLongPressCallback? onLongPress;
   final GestureTapDownCallback? onDoubleTap;
 
   final MagnifierDoubleTapPredicate? allowDoubleTap;
@@ -26,6 +27,7 @@ class MagnifierGestureDetector extends StatefulWidget {
     this.onScaleEnd,
     this.onTapDown,
     this.onTapUp,
+    this.onLongPress,
     this.onDoubleTap,
     this.allowDoubleTap,
     this.behavior,
@@ -57,6 +59,15 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
           instance
             ..onTapDown = widget.onTapDown
             ..onTapUp = widget.onTapUp;
+        },
+      );
+    }
+
+    if (widget.onLongPress != null) {
+      gestures[LongPressGestureRecognizer] = GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
+        () => LongPressGestureRecognizer(debugOwner: this),
+        (instance) {
+          instance.onLongPress = widget.onLongPress;
         },
       );
     }

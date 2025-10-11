@@ -2,7 +2,7 @@
 <resources>
     <string name="analysis_notification_action_stop">Lopeta</string>
     <string name="app_widget_label">Valokuvakehys</string>
-    <string name="analysis_notification_default_title">Mediaan skannataan</string>
+    <string name="analysis_notification_default_title">Mediaa skannataan</string>
     <string name="videos_shortcut_short_label">Videot</string>
     <string name="wallpaper">Taustakuva</string>
     <string name="app_name">Aves</string>

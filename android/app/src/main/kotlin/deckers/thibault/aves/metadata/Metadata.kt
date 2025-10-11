@@ -83,7 +83,7 @@ object Metadata {
                 if (millis in 0..999) {
                     return millis
                 }
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 // ignore
             }
         }
@@ -116,7 +116,7 @@ object Metadata {
             val parser = SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.ROOT)
             parser.timeZone = timeZone ?: TimeZone.getTimeZone("GMT")
             parser.parse(dateString)
-        } catch (e: ParseException) {
+        } catch (_: ParseException) {
             // ignore
             null
         } ?: return 0

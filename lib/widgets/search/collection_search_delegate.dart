@@ -119,13 +119,14 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
               selector: (context, s) => s.hiddenFilters,
               builder: (context, hiddenFilters, child) {
                 bool notHidden(CollectionFilter filter) => !hiddenFilters.contains(filter);
+                bool isVisible(CollectionFilter filter) => containQuery(filter) && notHidden(filter);
 
                 final visibleTypeFilters = typeFilters.where(notHidden).toList();
                 if (hiddenFilters.contains(MimeFilter.video)) {
                   [MimeFilter.image, TypeFilter.sphericalVideo].forEach(visibleTypeFilters.remove);
                 }
 
-                final history = settings.searchHistory.where(notHidden).toList();
+                final history = settings.searchHistory.where(isVisible).toList();
 
                 return ListView(
                   controller: _suggestionsScrollController,
@@ -139,7 +140,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                       filters: [
                         queryFilter,
                         ...visibleTypeFilters,
-                      ].nonNulls.where(containQuery).toList(),
+                      ].nonNulls.where(isVisible).toList(),
                       // usually perform hero animation only on tapped chips,
                       // but we also need to animate the query chip when it is selected by submitting the search query
                       heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
@@ -150,15 +151,15 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                         title: context.l10n.searchRecentSectionTitle,
                         filters: history,
                       ),
-                    _buildDateFilters(context, containQuery),
-                    _buildMimeTypeFilters(context, containQuery),
-                    _buildAlbumFilters(containQuery),
-                    _buildCountryFilters(containQuery),
-                    _buildStateFilters(containQuery),
-                    _buildPlaceFilters(containQuery),
-                    _buildTagFilters(containQuery),
-                    _buildRatingFilters(context, containQuery),
-                    _buildMetadataFilters(context, containQuery),
+                    _buildDateFilters(context, isVisible),
+                    _buildMimeTypeFilters(context, isVisible),
+                    _buildAlbumFilters(isVisible),
+                    _buildCountryFilters(isVisible),
+                    _buildStateFilters(isVisible),
+                    _buildPlaceFilters(isVisible),
+                    _buildTagFilters(isVisible),
+                    _buildRatingFilters(context, isVisible),
+                    _buildMetadataFilters(context, isVisible),
                   ],
                 );
               },
@@ -195,7 +196,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
           );
   }
 
-  Widget _buildDateFilters(BuildContext context, _ContainQuery containQuery) {
+  Widget _buildDateFilters(BuildContext context, CollectionFilterPredicate containQuery) {
     final firstDayOfWeekIndex = MaterialLocalizations.of(context).firstDayOfWeekIndex;
     const daysPerWeek = DateTime.daysPerWeek;
     final _weekdayFilters = List.generate(daysPerWeek, (i) => WeekDayFilter((i + firstDayOfWeekIndex - 1) % daysPerWeek + 1));
@@ -214,7 +215,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildMimeTypeFilters(BuildContext context, _ContainQuery containQuery) {
+  Widget _buildMimeTypeFilters(BuildContext context, CollectionFilterPredicate containQuery) {
     final filters = _mimeTypeFilters.where(containQuery).toList();
     return _buildFilterRow(
       context: context,
@@ -223,7 +224,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildAlbumFilters(_ContainQuery containQuery) {
+  Widget _buildAlbumFilters(CollectionFilterPredicate containQuery) {
     return AnimatedBuilder(
       animation: dynamicAlbums,
       builder: (context, child) => StreamBuilder(
@@ -248,7 +249,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildCountryFilters(_ContainQuery containQuery) {
+  Widget _buildCountryFilters(CollectionFilterPredicate containQuery) {
     return StreamBuilder(
       stream: source.eventBus.on<CountriesChangedEvent>(),
       builder: (context, snapshot) {
@@ -261,7 +262,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildStateFilters(_ContainQuery containQuery) {
+  Widget _buildStateFilters(CollectionFilterPredicate containQuery) {
     return StreamBuilder(
       stream: source.eventBus.on<PlacesChangedEvent>(),
       builder: (context, snapshot) {
@@ -274,7 +275,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildPlaceFilters(_ContainQuery containQuery) {
+  Widget _buildPlaceFilters(CollectionFilterPredicate containQuery) {
     return StreamBuilder(
       stream: source.eventBus.on<PlacesChangedEvent>(),
       builder: (context, snapshot) {
@@ -287,7 +288,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildTagFilters(_ContainQuery containQuery) {
+  Widget _buildTagFilters(CollectionFilterPredicate containQuery) {
     return StreamBuilder(
       stream: source.eventBus.on<TagsChangedEvent>(),
       builder: (context, snapshot) {
@@ -305,7 +306,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildRatingFilters(BuildContext context, _ContainQuery containQuery) {
+  Widget _buildRatingFilters(BuildContext context, CollectionFilterPredicate containQuery) {
     return _buildFilterRow(
       context: context,
       title: context.l10n.searchRatingSectionTitle,
@@ -313,7 +314,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 
-  Widget _buildMetadataFilters(BuildContext context, _ContainQuery containQuery) {
+  Widget _buildMetadataFilters(BuildContext context, CollectionFilterPredicate containQuery) {
     return _buildFilterRow(
       context: context,
       title: context.l10n.searchMetadataSectionTitle,
@@ -403,5 +404,3 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     );
   }
 }
-
-typedef _ContainQuery = bool Function(CollectionFilter filter);

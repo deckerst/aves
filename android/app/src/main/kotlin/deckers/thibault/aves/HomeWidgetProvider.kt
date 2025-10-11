@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -22,9 +21,10 @@ import deckers.thibault.aves.channel.calls.DeviceHandler
 import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
 import deckers.thibault.aves.channel.calls.MediaStoreHandler
 import deckers.thibault.aves.channel.calls.StorageHandler
-import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
-import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.ImageByteStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.FlutterInjector
@@ -83,8 +83,6 @@ class HomeWidgetProvider : AppWidgetProvider() {
         }
     }
 
-    private fun getDevicePixelRatio(): Float = Resources.getSystem().displayMetrics.density
-
     private fun getWidgetSizesDip(context: Context, widgetInfo: Bundle): List<SizeF> {
         var sizes: List<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
@@ -126,7 +124,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val params = hashMapOf(
             "widgetId" to widgetId,
             "sizesDip" to sizesDipMap,
-            "devicePixelRatio" to getDevicePixelRatio(),
+            "devicePixelRatio" to context.devicePixelRatio(),
             "drawEntryImage" to drawEntryImage,
             "reuseEntry" to reuseEntry,
             "isSystemThemeDark" to isNightModeOn,
@@ -215,9 +213,9 @@ class HomeWidgetProvider : AppWidgetProvider() {
             bytes: ByteArray,
             updateOnTap: Boolean,
         ): RemoteViews? {
-            val devicePixelRatio = getDevicePixelRatio()
-            val widthPx = (sizeDip.width * devicePixelRatio).roundToInt()
-            val heightPx = (sizeDip.height * devicePixelRatio).roundToInt()
+            val density = context.devicePixelRatio()
+            val widthPx = (sizeDip.width * density).roundToInt()
+            val heightPx = (sizeDip.height * density).roundToInt()
 
             try {
                 val bitmap = createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888).also {

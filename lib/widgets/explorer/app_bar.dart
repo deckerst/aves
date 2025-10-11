@@ -19,7 +19,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/select_storage_dialog.dart';
 import 'package:aves/widgets/explorer/crumb_line.dart';
 import 'package:aves/widgets/explorer/explorer_action_delegate.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

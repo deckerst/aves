@@ -1,39 +1,37 @@
-import 'package:aves/model/db/db.dart';
+import 'dart:async';
+
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
-import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/grouping/convert.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import '../../fake/db.dart';
+import '../../common.dart';
+import '../../fake/media_store_service.dart';
+import '../../fake/storage_service.dart';
 
 void main() {
   const groupName = 'some group name';
   const storedAlbumPath = '/path/to/album';
 
   setUpAll(() async {
-    albumGrouping.init();
-    tagGrouping.init();
+    await setUpAllServices();
   });
 
   setUp(() async {
-    // specify Posix style path context for consistent behaviour when running tests on Windows
-    getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
-    getIt.registerLazySingleton<LocalMediaDb>(FakeAvesDb.new);
+    await setUpServices();
   });
 
-  tearDown(() async {
-    albumGrouping.setGroups({});
-    tagGrouping.setGroups({});
-    await dynamicAlbums.clear();
-    await getIt.reset();
+  tearDownAll(() async {
+    await tearDownAllServices();
   });
 
   test('Filter URI round trip', () {
@@ -156,5 +154,48 @@ void main() {
     expect(albumGrouping.getDirectChildren(rootGroupUri).length, 1);
     expect(albumGrouping.getDirectChildren(movedGroupUri).length, 1);
     expect(GroupingConversion.filterToUri(albumGrouping.getDirectChildren(rootGroupUri).first), movedGroupUri);
+  });
+
+  Future<MediaStoreSource> _initSource() async {
+    final source = MediaStoreSource();
+    final readyCompleter = Completer();
+    source.stateNotifier.addListener(() {
+      if (source.isReady) {
+        readyCompleter.complete();
+      }
+    });
+    await source.init(scope: CollectionSource.fullScope);
+    await readyCompleter.future;
+    return source;
+  }
+
+  test('Keep group when renaming album', () async {
+    const sourceAlbum = '${FakeStorageService.primaryPath}Pictures/source';
+    const destinationAlbum = '${FakeStorageService.primaryPath}Pictures/destination';
+
+    final image1 = FakeMediaStoreService.newImage(sourceAlbum, 'image1');
+    (mediaStoreService as FakeMediaStoreService).entries = {
+      image1,
+    };
+
+    final oldFilter = StoredAlbumFilter(sourceAlbum, 'whatever');
+    final newFilter = StoredAlbumFilter(destinationAlbum, 'whatever');
+
+    final groupUri = albumGrouping.buildGroupUri(null, groupName);
+    final childUri = GroupingConversion.filterToUri(oldFilter);
+    albumGrouping.addToGroup({childUri}.nonNulls.toSet(), groupUri);
+
+    expect(albumGrouping.getFilterParent(oldFilter), groupUri);
+    expect(albumGrouping.getFilterParent(newFilter), null);
+
+    final source = await _initSource();
+    await source.renameStoredAlbum(sourceAlbum, destinationAlbum, {
+      image1
+    }, {
+      FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
+    });
+
+    expect(albumGrouping.getFilterParent(oldFilter), null);
+    expect(albumGrouping.getFilterParent(newFilter), groupUri);
   });
 }

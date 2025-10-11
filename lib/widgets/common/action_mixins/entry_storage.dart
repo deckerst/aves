@@ -249,7 +249,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     }
 
-    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return false;
+    if ({MoveType.move, MoveType.copy, MoveType.toBin}.contains(moveType) && !await _checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();

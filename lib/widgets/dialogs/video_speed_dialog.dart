@@ -51,7 +51,11 @@ class _VideoSpeedDialogState extends State<VideoSpeedDialog> {
           const SizedBox(height: 16),
           Slider(
             value: _speed,
-            onChanged: (v) => setState(() => _speed = v),
+            onChanged: (v) => setState(() {
+              // provided value may be imprecise on some platforms
+              // e.g. 1.7499999999999998 instead of 1.75
+              _speed = (v / interval).round() * interval;
+            }),
             min: widget.min,
             max: widget.max,
             divisions: ((widget.max - widget.min) / interval).round(),

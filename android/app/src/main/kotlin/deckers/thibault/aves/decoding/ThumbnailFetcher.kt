@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.calls.fetchers
+package deckers.thibault.aves.decoding
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -15,9 +15,9 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
-import deckers.thibault.aves.channel.streams.ByteSink
-import deckers.thibault.aves.decoder.AvesAppGlideModule
-import deckers.thibault.aves.decoder.MultiPageImage
+import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
+import deckers.thibault.aves.glide.AvesAppGlideModule
+import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.LogUtils
@@ -117,7 +117,6 @@ class ThumbnailFetcher internal constructor(
             result.error("getThumbnail-null", "failed to get thumbnail for mimeType=$mimeType uri=$uri", errorDetails)
         } else {
             result.streamBytes(ByteArrayInputStream(bytes))
-            result.endOfStream()
         }
     }
 

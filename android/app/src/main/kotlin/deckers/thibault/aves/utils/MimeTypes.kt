@@ -1,7 +1,7 @@
 package deckers.thibault.aves.utils
 
 import android.webkit.MimeTypeMap
-import deckers.thibault.aves.decoder.MultiPageImage
+import deckers.thibault.aves.glide.MultiPageImage
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object MimeTypes {
@@ -84,11 +84,9 @@ object MimeTypes {
         else -> false
     }
 
-    // as of Flutter v3.16.4, with additional custom handling for SVG in Dart,
-    // while handling still PNG and JPEG on Android for color space and config conversion
-    fun canDecodeWithFlutter(mimeType: String, isAnimated: Boolean) = when (mimeType) {
-        GIF, WEBP, BMP, WBMP, ICO, SVG -> true
-        JPEG, PNG -> isAnimated
+    // as of Flutter v3.16.4, with additional custom handling for SVG in Dart
+    fun handleEncodedBytesInFlutter(mimeType: String) = when (mimeType) {
+        JPEG, PNG, GIF, WEBP, BMP, WBMP, ICO, SVG -> true
         else -> false
     }
 
@@ -146,8 +144,8 @@ object MimeTypes {
         return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             true
         } else when (mimeType) {
-            AVIF, DNG, DNG_ADOBE, HEIC, HEIF, PNG, WEBP -> true
-            else -> false
+            AVIF, HEIC, HEIF, PNG, WEBP -> true
+            else -> isRaw(mimeType)
         }
     }
 

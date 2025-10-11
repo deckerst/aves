@@ -1,4 +1,4 @@
-package deckers.thibault.aves.decoder
+package deckers.thibault.aves.glide
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import kotlin.math.ceil
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 @GlideModule
@@ -70,7 +71,7 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                     retriever.embeddedPicture?.let { bytes ->
                         try {
                             bitmap = BitmapFactory.decodeStream(ByteArrayInputStream(bytes))
-                        } catch (e: IOException) {
+                        } catch (_: IOException) {
                             // ignore
                         }
                     }
@@ -82,7 +83,7 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                         var timeMillis: Long? = null
                         val durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull()
                         if (durationMillis != null) {
-                            timeMillis = if (durationMillis < 15000) 0 else 15000
+                            timeMillis = if (durationMillis < 15000) 0 else min(durationMillis / 2, 15000)
                         }
                         val timeMicros = if (timeMillis != null) timeMillis * 1000 else -1
                         val option = MediaMetadataRetriever.OPTION_CLOSEST_SYNC

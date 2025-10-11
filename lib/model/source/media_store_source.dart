@@ -246,7 +246,8 @@ class MediaStoreSource extends CollectionSource {
         Set<AvesEntry>? analysisEntries;
         final analysisIds = analysisController?.entryIds;
         if (analysisIds != null) {
-          analysisEntries = visibleEntries.where((entry) => analysisIds.contains(entry.id)).toSet();
+          // not only visible entries, as hidden and vault items may be analyzed
+          analysisEntries = allEntries.where((entry) => analysisIds.contains(entry.id)).toSet();
         }
         await analyze(analysisController, entries: analysisEntries);
 

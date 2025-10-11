@@ -15,7 +15,7 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.decoder.AvesAppGlideModule
+import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.Metadata
@@ -86,7 +86,7 @@ abstract class ImageProvider {
         }
     }
 
-    private suspend fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
+    private fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
         if (StorageUtils.isInVault(contextWrapper, path)) {
             FileImageProvider().apply {
                 val uri = Uri.fromFile(File(path))
@@ -101,7 +101,7 @@ abstract class ImageProvider {
         }
     }
 
-    open suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
+    open fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
@@ -309,8 +309,8 @@ abstract class ImageProvider {
                     sourceDocFile.copyTo(output)
                 }
             } else {
-                val targetWidthPx: Int
-                val targetHeightPx: Int
+                var targetWidthPx: Int
+                var targetHeightPx: Int
                 when (lengthUnit) {
                     LENGTH_UNIT_PERCENT -> {
                         targetWidthPx = sourceEntry.displayWidth * width / 100
@@ -323,6 +323,12 @@ abstract class ImageProvider {
                     }
                 }
 
+                val rotationDegrees = sourceEntry.rotationDegrees
+                val needRotationAfterGlide = MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)
+                if (rotationDegrees != 0 && needRotationAfterGlide) {
+                    targetWidthPx = targetHeightPx.also { targetHeightPx = targetWidthPx }
+                }
+
                 target = Glide.with(activity.applicationContext)
                     .asBitmap()
                     .apply(AvesAppGlideModule.uncachedFullImageOptions)
@@ -330,8 +336,8 @@ abstract class ImageProvider {
                     .submit(targetWidthPx, targetHeightPx)
 
                 var bitmap = withContext(Dispatchers.IO) { target.get() }
-                if (MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)) {
-                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
+                if (needRotationAfterGlide) {
+                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")
 
@@ -577,7 +583,7 @@ abstract class ImageProvider {
     }
 
     // returns available name to use, or `null` to skip it
-    suspend fun resolveTargetFileNameWithoutExtension(
+    fun resolveTargetFileNameWithoutExtension(
         contextWrapper: ContextWrapper,
         dir: String,
         desiredNameWithoutExtension: String,
@@ -711,7 +717,7 @@ abstract class ImageProvider {
 
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(trailerVideoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes)
             }
 
             // copy the edited temporary file back to the original
@@ -802,7 +808,7 @@ abstract class ImageProvider {
 
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(trailerVideoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes)
             }
 
             // copy the edited temporary file back to the original

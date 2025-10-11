@@ -1,10 +1,10 @@
-package deckers.thibault.aves.channel.calls.fetchers
+package deckers.thibault.aves.decoding
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
-import deckers.thibault.aves.channel.streams.ByteSink
+import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MimeTypes
 import org.beyka.tiffbitmapfactory.DecodeArea
@@ -41,7 +41,6 @@ class TiffRegionFetcher internal constructor(
                     result.error("fetch-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
                 } else {
                     result.streamBytes(ByteArrayInputStream(bytes))
-                    result.endOfStream()
                 }
             }
         } catch (e: Exception) {

@@ -1,11 +1,10 @@
-package deckers.thibault.aves.channel.streams
+package deckers.thibault.aves.channel.streams.darttoplatform
 
 import android.app.Activity
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
+import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
@@ -15,18 +14,9 @@ import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.EventChannel.EventSink
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
-    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var eventSink: EventSink
-    private lateinit var handler: Handler
-
+class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : BaseStreamHandler() {
     private var op: String? = null
     private var opId: String? = null
     private val entryMapList = ArrayList<FieldMap>()
@@ -43,54 +33,26 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         }
     }
 
-    override fun onListen(args: Any, eventSink: EventSink) {
-        this.eventSink = eventSink
-        handler = Handler(Looper.getMainLooper())
+    override val logTag = LOG_TAG
 
+    override fun onCall(args: Any?) {
         when (op) {
-            "delete" -> ioScope.launch { delete() }
-            "convert" -> ioScope.launch { convert() }
-            "move" -> ioScope.launch { move() }
-            "rename" -> ioScope.launch { rename() }
+            "delete" -> ioScope.launch { safe(::delete) }
+            "convert" -> ioScope.launch { safeSuspend(::convert) }
+            "move" -> ioScope.launch { safeSuspend(::move) }
+            "rename" -> ioScope.launch { safeSuspend(::rename) }
             else -> endOfStream()
         }
     }
 
-    override fun onCancel(o: Any) {}
-
-    // {String uri, bool success, [Map<String, Object> newFields]}
-    private fun success(result: Map<String, *>) {
-        handler.post {
-            try {
-                eventSink.success(result)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
-
-    private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
-        handler.post {
-            try {
-                eventSink.error(errorCode, errorMessage, errorDetails)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
-
-    private fun endOfStream() {
+    override fun endOfStream() {
         cancelledOps.remove(opId)
-        handler.post {
-            try {
-                eventSink.endOfStream()
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
+        super.endOfStream()
     }
 
-    private suspend fun delete() {
+    private fun isCancelledOp() = cancelledOps.contains(opId)
+
+    private fun delete() {
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
             val mimeType = entry.mimeType
@@ -251,8 +213,6 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         endOfStream()
     }
-
-    private fun isCancelledOp() = cancelledOps.contains(opId)
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageOpStreamHandler>()

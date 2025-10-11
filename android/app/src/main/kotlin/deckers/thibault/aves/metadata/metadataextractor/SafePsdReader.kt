@@ -48,7 +48,7 @@ class SafePsdReader {
 
             val colorMode = reader.uInt16
             directory.setInt(PsdHeaderDirectory.TAG_COLOR_MODE, colorMode)
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             directory.addError("Unable to read PSD header")
             return
         }
@@ -70,7 +70,7 @@ class SafePsdReader {
              *                 file.
              */
             reader.skip(sectionLength)
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             return
         }
 
@@ -82,7 +82,7 @@ class SafePsdReader {
             assert(sectionLength <= Int.MAX_VALUE)
 
             SafePhotoshopReader().extract(reader, sectionLength.toInt(), metadata)
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             // ignore
         }
 

@@ -14,6 +14,8 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "isActivity" -> Coresult.safe(call, result, ::isActivity)
             "keepScreenOn" -> Coresult.safe(call, result, ::keepScreenOn)
             "secureScreen" -> Coresult.safe(call, result, ::secureScreen)
+            "isInMultiWindowMode" -> Coresult.safe(call, result, ::isInMultiWindowMode)
+            "isInPictureInPictureMode" -> Coresult.safe(call, result, ::isInPictureInPictureMode)
             "isRotationLocked" -> Coresult.safe(call, result, ::isRotationLocked)
             "getOrientation" -> Coresult.safe(call, result, ::getOrientation)
             "requestOrientation" -> Coresult.safe(call, result, ::requestOrientation)
@@ -22,6 +24,7 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "supportsWideGamut" -> Coresult.safe(call, result, ::supportsWideGamut)
             "supportsHdr" -> Coresult.safe(call, result, ::supportsHdr)
             "setColorMode" -> Coresult.safe(call, result, ::setColorMode)
+            "startGlobalDrag" -> Coresult.safe(call, result, ::startGlobalDrag)
             else -> result.notImplemented()
         }
     }
@@ -31,6 +34,10 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
     abstract fun keepScreenOn(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun secureScreen(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun isInMultiWindowMode(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun isInPictureInPictureMode(call: MethodCall, result: MethodChannel.Result)
 
     private fun isRotationLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var locked = false
@@ -55,6 +62,8 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
     abstract fun supportsHdr(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun setColorMode(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun startGlobalDrag(call: MethodCall, result: MethodChannel.Result)
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<WindowHandler>()

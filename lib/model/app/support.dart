@@ -20,6 +20,7 @@ class AppSupport {
     MimeTypes.octetStream,
     MimeTypes.rgbe,
     MimeTypes.tap,
+    MimeTypes.wmf,
     MimeTypes.zip,
   };
 

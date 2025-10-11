@@ -104,8 +104,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         return isMain && isSelecting && !settings.isReadOnly && selectedFilters.isNotEmpty && selectedFilters.every((v) => v is DynamicAlbumFilter);
       case ChipSetAction.rename:
         return isMain && isSelecting && !settings.isReadOnly;
-      case ChipSetAction.hide:
-        return isMain && selectedFilters.none(isVault);
       case ChipSetAction.configureVault:
         return isMain && selectedSingleItem && isVault(selectedFilters.first);
       case ChipSetAction.lockVault:
@@ -128,9 +126,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     required int itemCount,
     required Set<AlbumBaseFilter> selectedFilters,
   }) {
-    final selectedItemCount = selectedFilters.length;
-    final hasSelection = selectedItemCount > 0;
-
     switch (action) {
       case ChipSetAction.delete:
         return selectedFilters.isNotEmpty && selectedFilters.every((v) => v is StoredAlbumFilter);
@@ -139,8 +134,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         final filter = selectedFilters.first;
         if (filter is StoredAlbumFilter) return filter.canRename;
         return true;
-      case ChipSetAction.hide:
-        return hasSelection;
       case ChipSetAction.lockVault:
         return selectedFilters.whereType<StoredAlbumFilter>().map((v) => v.album).any((v) => vaults.isVault(v) && !vaults.isLocked(v));
       case ChipSetAction.configureVault:

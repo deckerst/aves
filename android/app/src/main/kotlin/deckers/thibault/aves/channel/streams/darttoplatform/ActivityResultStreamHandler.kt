@@ -1,35 +1,25 @@
-package deckers.thibault.aves.channel.streams
+package deckers.thibault.aves.channel.streams.darttoplatform
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.core.net.toUri
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
+import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.EventChannel.EventSink
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 // starting activity to get a result (e.g. storage access via native dialog)
 // breaks the regular `MethodChannel` so we use a stream channel instead
-class ActivityResultStreamHandler(private val activity: Activity, arguments: Any?) : EventChannel.StreamHandler {
-    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private lateinit var eventSink: EventSink
-    private lateinit var handler: Handler
-
+class ActivityResultStreamHandler(private val activity: Activity, arguments: Any?) : BaseStreamHandler() {
     private var op: String? = null
     private lateinit var args: Map<*, *>
 
@@ -40,23 +30,30 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
     }
 
-    override fun onListen(arguments: Any?, eventSink: EventSink) {
-        this.eventSink = eventSink
-        handler = Handler(Looper.getMainLooper())
+    override val logTag = LOG_TAG
 
+    override fun onCall(args: Any?) {
+        // do not automatically close stream when launching activity,
+        // as it will be closed when getting that activity result
+        val closeStream = false
         when (op) {
-            "requestDirectoryAccess" -> ioScope.launch { requestDirectoryAccess() }
-            "requestMediaFileAccess" -> ioScope.launch { requestMediaFileAccess() }
-            "createFile" -> ioScope.launch { createFile() }
-            "openFile" -> ioScope.launch { openFile() }
-            "copyFile" -> ioScope.launch { copyFile() }
-            "edit" -> edit()
-            "pickCollectionFilters" -> pickCollectionFilters()
+            "requestDirectoryAccess" -> ioScope.launch { safe(::requestDirectoryAccess, closeStream) }
+            "requestMediaFileAccess" -> ioScope.launch { safe(::requestMediaFileAccess, closeStream) }
+            "createFile" -> ioScope.launch { safe(::createFile, closeStream) }
+            "openFile" -> ioScope.launch { safe(::openFile, closeStream) }
+            "copyFile" -> ioScope.launch { safe(::copyFile, closeStream) }
+            "edit" -> safe(::edit, closeStream)
+            "pickCollectionFilters" -> safe(::pickCollectionFilters, closeStream)
             else -> endOfStream()
         }
     }
 
-    private suspend fun requestDirectoryAccess() {
+    override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+        super.error(errorCode, errorMessage, errorDetails)
+        endOfStream()
+    }
+
+    private fun requestDirectoryAccess() {
         val path = args["path"] as String?
         if (path == null) {
             error("requestDirectoryAccess-args", "missing arguments", null)
@@ -74,7 +71,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
 
     private fun requestMediaFileAccess() {
         val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) it.toUri() else null }
-        val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { if (it is String) it else null }
+        val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { it as? String }
         if (uris.isNullOrEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
             error("requestMediaFileAccess-args", "missing arguments", null)
             return
@@ -93,13 +90,13 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         try {
             val granted = PermissionManager.requestMediaFileAccess(activity, uris, mimeTypes)
             success(granted)
+            endOfStream()
         } catch (e: Exception) {
             error("requestMediaFileAccess-request", "failed to request access to ${uris.size} uris=$uris", e.message)
         }
-        endOfStream()
     }
 
-    private suspend fun safeStartActivityForStorageAccessResult(intent: Intent, requestCode: Int, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+    private fun safeStartActivityForStorageAccessResult(intent: Intent, requestCode: Int, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         if (intent.resolveActivity(activity.packageManager) != null) {
             MainActivity.pendingStorageAccessResultHandlers[requestCode] = PendingStorageAccessResultHandler(null, onGranted, onDenied)
             if (!safeStartActivityForResult(intent, requestCode)) {
@@ -112,7 +109,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
     }
 
-    private suspend fun createFile() {
+    private fun createFile() {
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
@@ -129,10 +126,10 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
                         output.write(bytes)
                     }
                     success(true)
+                    endOfStream()
                 } catch (e: Exception) {
                     error("createFile-write", "failed to write file at uri=$uri", e.message)
                 }
-                endOfStream()
             }
         }
 
@@ -149,23 +146,16 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         safeStartActivityForStorageAccessResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
-    private suspend fun openFile() {
+    private fun openFile() {
         val mimeType = args["mimeType"] as String? // optional
 
         fun onGranted(uri: Uri) {
             ioScope.launch {
                 try {
-                    activity.contentResolver.openInputStream(uri)?.use { input ->
-                        val buffer = ByteArray(BUFFER_SIZE)
-                        var len: Int
-                        while (input.read(buffer).also { len = it } != -1) {
-                            success(buffer.copyOf(len))
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e(LOG_TAG, "failed to open input stream for uri=$uri", e)
-                } finally {
+                    activity.contentResolver.openInputStream(uri)?.use(::streamBytes)
                     endOfStream()
+                } catch (e: Exception) {
+                    error("openFile-read", "failed to read file at uri=$uri", e.message)
                 }
             }
         }
@@ -182,7 +172,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         safeStartActivityForStorageAccessResult(intent, MainActivity.OPEN_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
-    private suspend fun copyFile() {
+    private fun copyFile() {
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val sourceUri = (args["sourceUri"] as String?)?.toUri()
@@ -205,10 +195,10 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
                         }
                     }
                     success(true)
+                    endOfStream()
                 } catch (e: Exception) {
                     error("copyFile-write", "failed to copy file from sourceUri=$sourceUri to uri=$uri", e.message)
                 }
-                endOfStream()
             }
         }
 
@@ -252,7 +242,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private fun pickCollectionFilters() {
-        val initialFilters = (args["initialFilters"] as? List<*>)?.mapNotNull { if (it is String) it else null } ?: listOf()
+        val initialFilters = (args["initialFilters"] as? List<*>)?.mapNotNull { it as? String } ?: listOf()
         val intent = Intent(MainActivity.INTENT_ACTION_PICK_COLLECTION_FILTERS, null, activity, MainActivity::class.java)
             .putExtra(MainActivity.EXTRA_KEY_FILTERS_ARRAY, initialFilters.toTypedArray())
             .putExtra(MainActivity.EXTRA_KEY_FILTERS_STRING, initialFilters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))
@@ -267,7 +257,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         return try {
             activity.startActivityForResult(intent, requestCode)
             true
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             if (intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
                 // in some environments, providing the write flag yields a `SecurityException`:
                 // "UID XXXX does not have permission to content://XXXX"
@@ -281,44 +271,8 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
     }
 
-    override fun onCancel(arguments: Any?) {
-        Log.i(LOG_TAG, "onCancel arguments=$arguments")
-    }
-
-    private fun success(result: Any?) {
-        handler.post {
-            try {
-                eventSink.success(result)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
-
-    private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
-        handler.post {
-            try {
-                eventSink.error(errorCode, errorMessage, errorDetails)
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-        endOfStream()
-    }
-
-    private fun endOfStream() {
-        handler.post {
-            try {
-                eventSink.endOfStream()
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to use event sink", e)
-            }
-        }
-    }
-
     companion object {
         private val LOG_TAG = LogUtils.createTag<ActivityResultStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/activity_result_stream"
-        private const val BUFFER_SIZE = 1 shl 18 // 256kB
     }
 }

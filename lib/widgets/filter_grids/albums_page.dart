@@ -108,7 +108,9 @@ class AlbumListPage extends StatelessWidget {
       };
     }
 
-    final hiddenFilters = settings.hiddenFilters;
+    // show hidden filters when they are pinned
+    final pinned = settings.pinnedFilters.whereType<AlbumBaseFilter>();
+    final hidden = settings.hiddenFilters.whereNot(pinned.contains).toSet();
 
     final listedStoredAlbumPaths = <String>{};
     if (albumChipTypes.contains(AlbumChipType.stored)) {
@@ -121,11 +123,11 @@ class AlbumListPage extends StatelessWidget {
         listedStoredAlbumPaths.addAll(groupContent.whereType<StoredAlbumFilter>().map((v) => v.album).where(allAlbums.contains));
       }
     }
-    final listedStoredAlbums = listedStoredAlbumPaths.map((album) => StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))).whereNot(hiddenFilters.contains).toSet();
+    final listedStoredAlbums = listedStoredAlbumPaths.map((album) => StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))).whereNot(hidden.contains).toSet();
 
     final listedDynamicAlbums = <DynamicAlbumFilter>{};
     if (albumChipTypes.contains(AlbumChipType.dynamic)) {
-      final allDynamicAlbums = dynamicAlbums.all.whereNot(hiddenFilters.contains).toSet();
+      final allDynamicAlbums = dynamicAlbums.all.whereNot(hidden.contains).toSet();
       if (groupUri == null) {
         final withinGroups = whereTypeRecursively<DynamicAlbumFilter>(groupContent).toSet();
         listedDynamicAlbums.addAll(allDynamicAlbums.whereNot(withinGroups.contains));
@@ -136,7 +138,7 @@ class AlbumListPage extends StatelessWidget {
     }
 
     // always show groups, which are needed to navigate to other types
-    final albumGroupFilters = groupContent.whereType<AlbumGroupFilter>().whereNot(hiddenFilters.contains).toSet();
+    final albumGroupFilters = groupContent.whereType<AlbumGroupFilter>().whereNot(hidden.contains).toSet();
 
     final filters = <AlbumBaseFilter>{
       ...albumGroupFilters,

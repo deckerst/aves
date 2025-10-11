@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.9"></a>[v1.13.9] - 2025-10-11
+
+### Added
+
+- Collection: long press on copy/move/rating/tag quick action for quicker action
+- Widget: more shape options
+- Viewer: drag and drop in multi-window mode
+- Vaults: allow hiding like other albums
+- 16 KB memory page size support
+- Finnish translation (thanks Åzze, Olli, Ricky Tigg, Otso Karttunen)
+
+### Changed
+
+- Albums: show hidden albums when they are pinned
+
+### Fixed
+
+- saving metadata date when moving items to bin
+- rescanning items in vaults
+- grouping when renaming album
+- thumbnail orientation for some RAW formats
+- converting portrait HEIF/RAW to requested size
+
 ## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
 
 ### Added

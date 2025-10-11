@@ -147,7 +147,7 @@ class SourceEntry {
             retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { sourceDateTakenMillis = it }
             retriever.getSafeString(MediaMetadataRetriever.METADATA_KEY_TITLE) { title = it }
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         } finally {
             // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
@@ -203,11 +203,11 @@ class SourceEntry {
                     }
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
-        } catch (e: NoClassDefFoundError) {
+        } catch (_: NoClassDefFoundError) {
             // ignore
-        } catch (e: AssertionError) {
+        } catch (_: AssertionError) {
             // ignore
         }
     }
@@ -225,7 +225,7 @@ class SourceEntry {
                 exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exif.rotationDegrees }
                 exif.getSafeDateMillis(ExifInterface.TAG_DATETIME, ExifInterface.TAG_SUBSEC_TIME) { sourceDateTakenMillis = it }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ExifInterface initialization can fail with a RuntimeException
             // caused by an internal MediaMetadataRetriever failure
         }
@@ -242,7 +242,7 @@ class SourceEntry {
                 width = options.outWidth
                 height = options.outHeight
             }
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             // ignore
         }
     }
@@ -258,7 +258,7 @@ class SourceEntry {
                 width = options.outWidth
                 height = options.outHeight
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignore
         }
     }

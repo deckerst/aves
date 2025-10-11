@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.calls.fetchers
+package deckers.thibault.aves.decoding
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,7 +11,7 @@ import com.caverock.androidsvg.PreserveAspectRatio
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
-import deckers.thibault.aves.channel.streams.ByteSink
+import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils
@@ -96,7 +96,6 @@ class SvgRegionFetcher internal constructor(
                 result.error("fetch-null", "failed to decode SVG for uri=$uri regionRect=$regionRect", null)
             } else {
                 result.streamBytes(ByteArrayInputStream(bytes))
-                result.endOfStream()
             }
         } catch (e: SVGParseException) {
             result.error("fetch-parse", "failed to parse SVG for uri=$uri regionRect=$regionRect", e.message)

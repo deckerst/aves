@@ -1,30 +1,28 @@
-import 'package:aves/model/db/db.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
-import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/container/set_or.dart';
+import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/grouping/convert.dart';
-import 'package:aves/services/common/services.dart';
-import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import '../../fake/db.dart';
+import '../../common.dart';
 
 void main() {
   const groupName = 'some group name';
   const storedAlbumPath = '/path/to/album/';
 
-  setUp(() async {
-    // specify Posix style path context for consistent behaviour when running tests on Windows
-    getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
-    getIt.registerLazySingleton<LocalMediaDb>(FakeAvesDb.new);
+  setUpAll(() async {
+    await setUpAllServices();
   });
 
-  tearDown(() async {
-    await dynamicAlbums.clear();
-    await getIt.reset();
+  setUp(() async {
+    await setUpServices();
+  });
+
+  tearDownAll(() async {
+    await tearDownAllServices();
   });
 
   test('Filter URI round trip', () {
