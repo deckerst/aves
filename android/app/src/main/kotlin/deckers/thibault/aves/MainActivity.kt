@@ -6,6 +6,7 @@ import android.app.SearchManager
 import android.appwidget.AppWidgetManager
 import android.content.ClipData
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -52,6 +53,7 @@ import deckers.thibault.aves.channel.streams.platformtodart.IntentStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaStoreChangeStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.SettingsChangeStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.WindowChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.anyCauseIs
@@ -74,6 +76,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
     private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
+    private lateinit var windowChangeStreamHandler: WindowChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
     private lateinit var analysisStreamHandler: AnalysisStreamHandler
     internal lateinit var intentDataMap: MutableMap<String, Any?>
@@ -122,6 +125,15 @@ open class MainActivity : FlutterFragmentActivity() {
         errorStreamHandler = ErrorStreamHandler().apply {
             EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
         }
+        mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
+            EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        settingsChangeStreamHandler = SettingsChangeStreamHandler(this).apply {
+            EventChannel(messenger, SettingsChangeStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        windowChangeStreamHandler = WindowChangeStreamHandler().apply {
+            EventChannel(messenger, WindowChangeStreamHandler.CHANNEL).setStreamHandler(this)
+        }
         val mediaCommandStreamHandler = MediaCommandStreamHandler().apply {
             EventChannel(messenger, MediaCommandStreamHandler.CHANNEL).setStreamHandler(this)
         }
@@ -160,14 +172,6 @@ open class MainActivity : FlutterFragmentActivity() {
         // - need Activity
         StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, ActivityResultStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ActivityResultStreamHandler(this, args) }
-
-        // change monitoring: platform -> dart
-        mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
-            EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
-        }
-        settingsChangeStreamHandler = SettingsChangeStreamHandler(this).apply {
-            EventChannel(messenger, SettingsChangeStreamHandler.CHANNEL).setStreamHandler(this)
-        }
 
         // intent handling
         // notification: platform -> dart
@@ -229,6 +233,28 @@ open class MainActivity : FlutterFragmentActivity() {
             Log.e(LOG_TAG, "failed while destroying activity", e)
         }
     }
+
+    override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode)
+        notifyWindowModeChanged()
+    }
+
+    override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean, newConfig: Configuration) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig)
+        notifyWindowModeChanged()
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode)
+        notifyWindowModeChanged()
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        notifyWindowModeChanged()
+    }
+
+    private fun notifyWindowModeChanged() = windowChangeStreamHandler.notifyWindowModeChange()
 
     override fun onNewIntent(intent: Intent) {
         Log.i(LOG_TAG, "onNewIntent intent=$intent")
