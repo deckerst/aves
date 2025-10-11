@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: drag and drop in multi-window mode
 - Vaults: allow hiding like other albums
 - 16 KB memory page size support
-- Finnish translation (thanks Åzze, Olli, Ricky Tigg, Otso Karttunen)
+- Finnish translation (thanks Åzze, Olli, Ricky Tigg, Oris5)
 
 ### Changed
 
