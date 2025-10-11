@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.9"></a>[v1.13.9] - 2025-10-11
+
 ### Added
 
 - Collection: long press on copy/move/rating/tag quick action for quicker action
