@@ -1438,5 +1438,13 @@
     "mapStyleEditorDialogSubdomains": "Subdomain",
     "@mapStyleEditorDialogSubdomains": {},
     "mapStyleEditorDialogUserAgent": "Agen Pengguna",
-    "@mapStyleEditorDialogUserAgent": {}
+    "@mapStyleEditorDialogUserAgent": {},
+    "tagPickPageTitle": "Pilih Tagar",
+    "@tagPickPageTitle": {},
+    "settingsNavigationBottomActionsTile": "Navigasi bawah",
+    "@settingsNavigationBottomActionsTile": {},
+    "settingsNavigationBottomActionEditorPageTitle": "Navigasi Bawah",
+    "@settingsNavigationBottomActionEditorPageTitle": {},
+    "settingsNavigationBottomActionEditorBanner": "Sentuh dan tahan untuk memindahkan tombol dan pilih tindakan apa saja yang ditampilkan dalam bilah navigasi bawah.",
+    "@settingsNavigationBottomActionEditorBanner": {}
 }
