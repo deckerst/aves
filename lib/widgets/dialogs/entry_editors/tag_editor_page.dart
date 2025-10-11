@@ -50,6 +50,10 @@ class _TagEditorPageState extends State<TagEditorPage> {
     _expandedSectionNotifier.value = settings.tagEditorExpandedSection;
     _expandedSectionNotifier.addListener(() => settings.tagEditorExpandedSection = _expandedSectionNotifier.value);
     _initTopTags();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final source = context.read<CollectionSource?>();
+      settings.removeObsoleteRecentTags(source);
+    });
   }
 
   @override

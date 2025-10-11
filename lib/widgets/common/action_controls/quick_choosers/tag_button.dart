@@ -36,6 +36,15 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
   String get tooltip => action.getText(context);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final source = context.read<CollectionSource?>();
+      settings.removeObsoleteRecentTags(source);
+    });
+  }
+
+  @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
     final options = settings.recentTags;
     final takeCount = FilterQuickChooserMixin.maxTotalOptionCount - options.length;
