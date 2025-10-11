@@ -10,6 +10,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/media_session_service.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -398,39 +399,40 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == AppMode.setWallpaper;
     final minScale = isWallpaperMode ? const ScaleLevel(ref: ScaleReference.covered) : const ScaleLevel(ref: ScaleReference.contained);
 
-    return AvesMagnifier(
-      // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
-      key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedMillis}'),
-      controller: controller ?? _magnifierController,
-      contentSize: displaySize ?? entry.displaySize,
-      allowOriginalScaleBeyondRange: !isWallpaperMode,
-      allowDoubleTap: _allowDoubleTap,
-      minScale: minScale,
-      maxScale: maxScale,
-      initialScale: viewerController.initialScale,
-      scaleStateCycle: scaleStateCycle,
-      applyScale: applyScale,
-      onScaleStart: onScaleStart,
-      onScaleUpdate: onScaleUpdate,
-      onScaleEnd: onScaleEnd,
-      onFling: _onFling,
-      onTap: (context, _, alignment, __) {
-        if (context.mounted) {
-          _onTap(alignment: alignment);
-        }
+    return ValueListenableBuilder<bool>(
+      valueListenable: AvesApp.canGestureToOtherApps,
+      builder: (context, canGestureToOtherApps, child) {
+        return AvesMagnifier(
+          // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
+          key: Key('${entry.uri}_${entry.pageId}_${entry.dateModifiedMillis}'),
+          controller: controller ?? _magnifierController,
+          contentSize: displaySize ?? entry.displaySize,
+          allowOriginalScaleBeyondRange: !isWallpaperMode,
+          allowDoubleTap: _allowDoubleTap,
+          minScale: minScale,
+          maxScale: maxScale,
+          initialScale: viewerController.initialScale,
+          scaleStateCycle: scaleStateCycle,
+          applyScale: applyScale,
+          onScaleStart: onScaleStart,
+          onScaleUpdate: onScaleUpdate,
+          onScaleEnd: onScaleEnd,
+          onFling: _onFling,
+          onTap: (context, _, alignment, __) {
+            if (context.mounted) {
+              _onTap(alignment: alignment);
+            }
+          },
+          onLongPress: canGestureToOtherApps ? _startGlobalDrag : null,
+          onDoubleTap: onDoubleTap,
+          child: child!,
+        );
       },
-      onLongPress: _onLongPress,
-      onDoubleTap: onDoubleTap,
       child: child,
     );
   }
 
-  Future<void> _onLongPress() async {
-    final isInMultiWindowMode = await windowService.isInMultiWindowMode() && !(await windowService.isInPictureInPictureMode());
-    if (!isInMultiWindowMode) {
-      return;
-    }
-
+  Future<void> _startGlobalDrag() async {
     const dragShadowSize = Size.square(128);
     final cornerRadiusPx = await deviceService.getWidgetCornerRadiusPx();
 

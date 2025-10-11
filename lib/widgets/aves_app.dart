@@ -81,6 +81,7 @@ class AvesApp extends StatefulWidget {
     'ur', // Urdu
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
+  static final ValueNotifier<bool> canGestureToOtherApps = ValueNotifier(false);
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
 
   // children widgets registering as `WidgetsBinding` observers and implementing `didChangeAppLifecycleState`
@@ -178,6 +179,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/new_intent_stream');
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
+  final EventChannel _platformWindowChangeChannel = const OptionalEventChannel('deckers.thibault/aves/window_change');
 
   // Flutter has various page transition implementations for Android:
   // - `FadeUpwardsPageTransitionsBuilder` on Oreo / Android 8 / API 27 and below
@@ -201,7 +203,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
     _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
+    _subscriptions.add(_platformWindowChangeChannel.receiveBroadcastStream().listen((event) => _updateWindowMode()));
     _updateCutoutInsets();
+    _updateWindowMode();
     _appModeNotifier.addListener(_onAppModeChanged);
 
     debugPrint('start listening to app lifecycle');
@@ -370,7 +374,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                             data: theme.copyWith(
                               pageTransitionsTheme: areAnimationsEnabled
                                   ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
-                              // strip page transitions used by `MaterialPageRoute`
+                                  // strip page transitions used by `MaterialPageRoute`
                                   : const DirectPageTransitionsTheme(),
                               splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
                             ),
@@ -433,15 +437,17 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void didChangeMetrics() => _updateCutoutInsets();
 
+  @override
+  void didChangeLocales(List<Locale>? locales) => _applyLocale();
+
   Future<void> _updateCutoutInsets() async {
     if (await windowService.isCutoutAware()) {
       AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
     }
   }
 
-  @override
-  void didChangeLocales(List<Locale>? locales) {
-    _applyLocale();
+  Future<void> _updateWindowMode() async {
+    AvesApp.canGestureToOtherApps.value = await windowService.isInMultiWindowMode() && !(await windowService.isInPictureInPictureMode());
   }
 
   void _applyLocale() {
