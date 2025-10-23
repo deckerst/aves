@@ -1645,5 +1645,9 @@
     "tagPickPageTitle": "Välj etikett",
     "@tagPickPageTitle": {},
     "settingsNavigationBottomActionEditorBanner": "Tryck och håll ner för att flytta knappar och välj vilka återgärder som visas i det nedre navigeringsfältet.",
-    "@settingsNavigationBottomActionEditorBanner": {}
+    "@settingsNavigationBottomActionEditorBanner": {},
+    "settingsNavigationBottomActionsTile": "Nedre navigeringsfält",
+    "@settingsNavigationBottomActionsTile": {},
+    "settingsNavigationBottomActionEditorPageTitle": "Nedre navigeringsfält",
+    "@settingsNavigationBottomActionEditorPageTitle": {}
 }
