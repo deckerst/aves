@@ -19,7 +19,13 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.gradlex.reproducible-builds' version '1.1'
+}
+
 allprojects {
+    apply plugin: 'org.gradlex.reproducible-builds'
+
     repositories {
         google()
         mavenCentral()
