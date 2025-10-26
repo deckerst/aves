@@ -4,12 +4,12 @@ import 'dart:math';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/device.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
-import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/model/settings/modules/app.dart';
 import 'package:aves/model/settings/modules/collection.dart';
 import 'package:aves/model/settings/modules/debug.dart';
@@ -18,8 +18,11 @@ import 'package:aves/model/settings/modules/filter_grids.dart';
 import 'package:aves/model/settings/modules/info.dart';
 import 'package:aves/model/settings/modules/navigation.dart';
 import 'package:aves/model/settings/modules/privacy.dart';
+import 'package:aves/model/settings/modules/screen_saver.dart';
 import 'package:aves/model/settings/modules/search.dart';
+import 'package:aves/model/settings/modules/slideshow.dart';
 import 'package:aves/model/settings/modules/viewer.dart';
+import 'package:aves/model/settings/modules/widget.dart';
 import 'package:aves/ref/bursts.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
@@ -41,8 +44,8 @@ import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
 
-class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, DisplaySettings, NavigationSettings, SearchSettings, CollectionSettings, FilterGridsSettings, PrivacySettings, ViewerSettings, VideoSettings, SubtitlesSettings, InfoSettings {
-  final List<StreamSubscription> _subscriptions = [];
+class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings, CollectionSettings, DebugSettings, DisplaySettings, FilterGridsSettings, InfoSettings, NavigationSettings, PrivacySettings, ScreenSaverSettings, SlideshowSettings, SubtitlesSettings, VideoSettings, ViewerSettings, WidgetSettings {
+  final Set<StreamSubscription> _subscriptions = {};
   final EventChannel _platformSettingsChangeChannel = const OptionalEventChannel('deckers.thibault/aves/settings_change');
   final StreamController<SettingsChangedEvent> _updateStreamController = StreamController.broadcast();
   final StreamController<SettingsChangedEvent> _updateTileExtentStreamController = StreamController.broadcast();
@@ -65,13 +68,39 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
   Future<void> init({required bool monitorPlatformSettings}) async {
     await store.init();
     resetAppliedLocale();
+    _unregister();
+    _register(monitorPlatformSettings);
+    initAppSettings();
+  }
+
+  void _unregister() {
+    albumGrouping.removeListener(saveAlbumGroups);
+    tagGrouping.removeListener(saveTagGroups);
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+  }
+
+  void _register(bool monitorPlatformSettings) {
+    albumGrouping.addListener(saveAlbumGroups);
+    tagGrouping.addListener(saveTagGroups);
+    _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) {
+      final changes = e.changes;
+      updateBookmarkedDynamicAlbums(changes);
+      updatePinnedDynamicAlbums(changes);
+    }));
+    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen(_onGroupingChange));
+    _subscriptions.add(tagGrouping.eventBus.on<GroupUriChangedEvent>().listen(_onGroupingChange));
     if (monitorPlatformSettings) {
-      _subscriptions
-        ..forEach((sub) => sub.cancel())
-        ..clear();
       _subscriptions.add(_platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChanged(event as Map?)));
     }
-    initAppSettings();
+  }
+
+  void _onGroupingChange(GroupUriChangedEvent event) {
+    final oldGroupUri = event.oldGroupUri;
+    final newGroupUri = event.newGroupUri;
+    updateBookmarkedGroup(oldGroupUri, newGroupUri);
+    updatePinnedGroup(oldGroupUri, newGroupUri);
   }
 
   Future<void> reload() => store.reload();
@@ -97,10 +126,10 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
     // availability
     if (flavor.hasMapStyleDefault) {
       final defaultMapStyle = mobileServices.defaultMapStyle;
-      if (mobileServices.mapStyles.contains(defaultMapStyle)) {
+      if (defaultMapStyle != null && mobileServices.mapStyles.contains(defaultMapStyle)) {
         mapStyle = defaultMapStyle;
       } else {
-        final styles = EntryMapStyle.values.whereNot((v) => v.needMobileService).toList();
+        final styles = EntryMapStyles.baseStyles;
         mapStyle = styles[Random().nextInt(styles.length)];
       }
     }
@@ -116,7 +145,6 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
     mustBackTwiceToExit = false;
     // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
     keepScreenOn = KeepScreenOn.videoPlayback;
-    enableBottomNavigationBar = false;
     drawerTypeBookmarks = [
       null,
       MimeFilter.video,
@@ -129,6 +157,7 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
       TagListPage.routeName,
       SearchPage.routeName,
     ];
+    bottomNavigationActions = [];
     showOverlayOnOpening = false;
     showOverlayMinimap = false;
     showOverlayThumbnailPreview = false;
@@ -140,6 +169,7 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
     videoGestureSideDoubleTapSeek = false;
     enableBin = false;
     showPinchGestureAlternatives = true;
+    resetShowTitleQuery();
   }
 
   Future<void> sanitize() async {
@@ -182,14 +212,22 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
   // map
 
   EntryMapStyle? get mapStyle {
-    final preferred = getEnumOrDefault(SettingKeys.mapStyleKey, null, EntryMapStyle.values);
+    var preferred = getString(SettingKeys.mapStyleKey);
+
+    // backward compatibility with definition as enum
+    const oldEnumPrefix = 'EntryMapStyle.';
+    if (preferred != null && preferred.startsWith(oldEnumPrefix)) {
+      preferred = preferred.substring(oldEnumPrefix.length);
+      if (preferred.isEmpty) preferred = null;
+    }
+
     if (preferred == null) return null;
 
-    final available = availability.mapStyles;
-    return available.contains(preferred) ? preferred : available.first;
+    final styles = [...availability.mapStyles, ...customMapStyles];
+    return styles.firstWhereOrNull((v) => v.key == preferred) ?? styles.first;
   }
 
-  set mapStyle(EntryMapStyle? newValue) => set(SettingKeys.mapStyleKey, newValue?.toString());
+  set mapStyle(EntryMapStyle? newValue) => set(SettingKeys.mapStyleKey, newValue?.key);
 
   LatLng? get mapDefaultCenter {
     final json = getString(SettingKeys.mapDefaultCenterKey);
@@ -197,6 +235,10 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
   }
 
   set mapDefaultCenter(LatLng? newValue) => set(SettingKeys.mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);
+
+  Set<EntryMapStyle> get customMapStyles => (getStringList(SettingKeys.customMapStylesKey) ?? []).map(EntryMapStyle.fromJson).nonNulls.toSet();
+
+  set customMapStyles(Set<EntryMapStyle> newValue) => set(SettingKeys.customMapStylesKey, newValue.map((filter) => filter.toJson()).toList());
 
   // bin
 
@@ -219,94 +261,6 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
   AccessibilityTimeout get timeToTakeAction => getEnumOrDefault(SettingKeys.timeToTakeActionKey, SettingsDefaults.timeToTakeAction, AccessibilityTimeout.values);
 
   set timeToTakeAction(AccessibilityTimeout newValue) => set(SettingKeys.timeToTakeActionKey, newValue.toString());
-
-  // file picker
-
-  bool get filePickerShowHiddenFiles => getBool(SettingKeys.filePickerShowHiddenFilesKey) ?? SettingsDefaults.filePickerShowHiddenFiles;
-
-  set filePickerShowHiddenFiles(bool newValue) => set(SettingKeys.filePickerShowHiddenFilesKey, newValue);
-
-  // screen saver
-
-  bool get screenSaverFillScreen => getBool(SettingKeys.screenSaverFillScreenKey) ?? SettingsDefaults.slideshowFillScreen;
-
-  set screenSaverFillScreen(bool newValue) => set(SettingKeys.screenSaverFillScreenKey, newValue);
-
-  bool get screenSaverAnimatedZoomEffect => getBool(SettingKeys.screenSaverAnimatedZoomEffectKey) ?? SettingsDefaults.slideshowAnimatedZoomEffect;
-
-  set screenSaverAnimatedZoomEffect(bool newValue) => set(SettingKeys.screenSaverAnimatedZoomEffectKey, newValue);
-
-  ViewerTransition get screenSaverTransition => getEnumOrDefault(SettingKeys.screenSaverTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
-
-  set screenSaverTransition(ViewerTransition newValue) => set(SettingKeys.screenSaverTransitionKey, newValue.toString());
-
-  SlideshowVideoPlayback get screenSaverVideoPlayback => getEnumOrDefault(SettingKeys.screenSaverVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
-
-  set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => set(SettingKeys.screenSaverVideoPlaybackKey, newValue.toString());
-
-  int get screenSaverInterval => getInt(SettingKeys.screenSaverIntervalKey) ?? SettingsDefaults.slideshowInterval;
-
-  set screenSaverInterval(int newValue) => set(SettingKeys.screenSaverIntervalKey, newValue);
-
-  Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(SettingKeys.screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
-
-  set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => set(SettingKeys.screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJson()).toList());
-
-  // slideshow
-
-  bool get slideshowRepeat => getBool(SettingKeys.slideshowRepeatKey) ?? SettingsDefaults.slideshowRepeat;
-
-  set slideshowRepeat(bool newValue) => set(SettingKeys.slideshowRepeatKey, newValue);
-
-  bool get slideshowShuffle => getBool(SettingKeys.slideshowShuffleKey) ?? SettingsDefaults.slideshowShuffle;
-
-  set slideshowShuffle(bool newValue) => set(SettingKeys.slideshowShuffleKey, newValue);
-
-  bool get slideshowFillScreen => getBool(SettingKeys.slideshowFillScreenKey) ?? SettingsDefaults.slideshowFillScreen;
-
-  set slideshowFillScreen(bool newValue) => set(SettingKeys.slideshowFillScreenKey, newValue);
-
-  bool get slideshowAnimatedZoomEffect => getBool(SettingKeys.slideshowAnimatedZoomEffectKey) ?? SettingsDefaults.slideshowAnimatedZoomEffect;
-
-  set slideshowAnimatedZoomEffect(bool newValue) => set(SettingKeys.slideshowAnimatedZoomEffectKey, newValue);
-
-  ViewerTransition get slideshowTransition => getEnumOrDefault(SettingKeys.slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
-
-  set slideshowTransition(ViewerTransition newValue) => set(SettingKeys.slideshowTransitionKey, newValue.toString());
-
-  SlideshowVideoPlayback get slideshowVideoPlayback => getEnumOrDefault(SettingKeys.slideshowVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
-
-  set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => set(SettingKeys.slideshowVideoPlaybackKey, newValue.toString());
-
-  int get slideshowInterval => getInt(SettingKeys.slideshowIntervalKey) ?? SettingsDefaults.slideshowInterval;
-
-  set slideshowInterval(int newValue) => set(SettingKeys.slideshowIntervalKey, newValue);
-
-  // widget
-
-  WidgetOutline getWidgetOutline(int widgetId) => getEnumOrDefault('${SettingKeys.widgetOutlinePrefixKey}$widgetId', WidgetOutline.none, WidgetOutline.values);
-
-  void setWidgetOutline(int widgetId, WidgetOutline newValue) => set('${SettingKeys.widgetOutlinePrefixKey}$widgetId', newValue.toString());
-
-  WidgetShape getWidgetShape(int widgetId) => getEnumOrDefault('${SettingKeys.widgetShapePrefixKey}$widgetId', SettingsDefaults.widgetShape, WidgetShape.values);
-
-  void setWidgetShape(int widgetId, WidgetShape newValue) => set('${SettingKeys.widgetShapePrefixKey}$widgetId', newValue.toString());
-
-  Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId') ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
-
-  void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => set('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId', newValue.map((filter) => filter.toJson()).toList());
-
-  WidgetOpenPage getWidgetOpenPage(int widgetId) => getEnumOrDefault('${SettingKeys.widgetOpenPagePrefixKey}$widgetId', SettingsDefaults.widgetOpenPage, WidgetOpenPage.values);
-
-  void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => set('${SettingKeys.widgetOpenPagePrefixKey}$widgetId', newValue.toString());
-
-  WidgetDisplayedItem getWidgetDisplayedItem(int widgetId) => getEnumOrDefault('${SettingKeys.widgetDisplayedItemPrefixKey}$widgetId', SettingsDefaults.widgetDisplayedItem, WidgetDisplayedItem.values);
-
-  void setWidgetDisplayedItem(int widgetId, WidgetDisplayedItem newValue) => set('${SettingKeys.widgetDisplayedItemPrefixKey}$widgetId', newValue.toString());
-
-  String? getWidgetUri(int widgetId) => getString('${SettingKeys.widgetUriPrefixKey}$widgetId');
-
-  void setWidgetUri(int widgetId, String? newValue) => set('${SettingKeys.widgetUriPrefixKey}$widgetId', newValue);
 
   // platform settings
 
@@ -398,7 +352,6 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
             case SettingKeys.forceWesternArabicNumeralsKey:
             case SettingKeys.enableDynamicColorKey:
             case SettingKeys.enableBlurEffectKey:
-            case SettingKeys.enableBottomNavigationBarKey:
             case SettingKeys.mustBackTwiceToExitKey:
             case SettingKeys.confirmCreateVaultKey:
             case SettingKeys.confirmDeleteForeverKey:
@@ -437,7 +390,6 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
             case SettingKeys.convertWriteMetadataKey:
             case SettingKeys.saveSearchHistoryKey:
             case SettingKeys.showPinchGestureAlternativesKey:
-            case SettingKeys.filePickerShowHiddenFilesKey:
             case SettingKeys.screenSaverFillScreenKey:
             case SettingKeys.screenSaverAnimatedZoomEffectKey:
             case SettingKeys.slideshowRepeatKey:
@@ -461,12 +413,14 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
             case SettingKeys.collectionSortFactorKey:
             case SettingKeys.thumbnailLocationIconKey:
             case SettingKeys.thumbnailTagIconKey:
-            case SettingKeys.albumGroupFactorKey:
+            case SettingKeys.albumSectionFactorKey:
             case SettingKeys.albumSortFactorKey:
             case SettingKeys.countrySortFactorKey:
             case SettingKeys.stateSortFactorKey:
             case SettingKeys.placeSortFactorKey:
             case SettingKeys.tagSortFactorKey:
+            case SettingKeys.albumGroupsKey:
+            case SettingKeys.tagGroupsKey:
             case SettingKeys.imageBackgroundKey:
             case SettingKeys.videoAutoPlayModeKey:
             case SettingKeys.videoBackgroundModeKey:
@@ -493,10 +447,12 @@ class Settings with ChangeNotifier, SettingsAccess, DebugSettings, AppSettings, 
               } else {
                 debugPrint('failed to import key=$key, value=$newValue is not a string');
               }
+            case SettingKeys.customMapStylesKey:
             case SettingKeys.homeCustomCollectionKey:
             case SettingKeys.drawerTypeBookmarksKey:
             case SettingKeys.drawerAlbumBookmarksKey:
             case SettingKeys.drawerPageBookmarksKey:
+            case SettingKeys.bottomNavigationActionsKey:
             case SettingKeys.collectionBurstPatternsKey:
             case SettingKeys.pinnedFiltersKey:
             case SettingKeys.hiddenFiltersKey:

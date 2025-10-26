@@ -2,6 +2,7 @@ package deckers.thibault.aves.channel.calls
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
@@ -45,7 +46,7 @@ class SecurityHandler(private val context: Context) : MethodCallHandler {
         }
 
         val preferences = getStore()
-        with(preferences.edit()) {
+        preferences.edit {
             when (value) {
                 is Boolean -> putBoolean(key, value)
                 is Float -> putFloat(key, value)
@@ -58,7 +59,6 @@ class SecurityHandler(private val context: Context) : MethodCallHandler {
                     return
                 }
             }
-            apply()
         }
         result.success(true)
     }

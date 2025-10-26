@@ -4,11 +4,9 @@ import android.service.dreams.DreamService
 import android.util.Log
 import android.view.View
 import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
 import deckers.thibault.aves.channel.calls.DeviceHandler
 import deckers.thibault.aves.channel.calls.EmbeddedDataHandler
-import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
 import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
 import deckers.thibault.aves.channel.calls.MediaSessionHandler
 import deckers.thibault.aves.channel.calls.MediaStoreHandler
@@ -16,9 +14,9 @@ import deckers.thibault.aves.channel.calls.MetadataFetchHandler
 import deckers.thibault.aves.channel.calls.StorageHandler
 import deckers.thibault.aves.channel.calls.window.ServiceWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
-import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
-import deckers.thibault.aves.channel.streams.MediaCommandStreamHandler
-import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.ImageByteStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.FlutterInjector
 import io.flutter.embedding.android.FlutterActivity
@@ -118,7 +116,6 @@ class ScreenSaverService : DreamService() {
         mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
-        MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
         MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))

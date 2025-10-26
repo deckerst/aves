@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import android.annotation.SuppressLint
 import android.app.LocaleConfig
 import android.app.LocaleManager
 import android.content.Context
@@ -13,6 +14,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
+import androidx.core.text.util.LocalePreferences
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
@@ -35,7 +37,9 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
             "getLocales" -> safe(call, result, ::getLocales)
             "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
+            "getFirstDayOfWeek" -> safe(call, result, ::getFirstDayOfWeek)
             "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
+            "getWidgetCornerRadiusPx" -> safe(call, result, ::getWidgetCornerRadiusPx)
             "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             "requestMediaManagePermission" -> safe(call, result, ::requestMediaManagePermission)
@@ -102,11 +106,16 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            @SuppressLint("WrongConstant")
             val lm = context.getSystemService(Context.LOCALE_SERVICE) as? LocaleManager
             lm?.overrideLocaleConfig = LocaleConfig(LocaleList.forLanguageTags(locales.joinToString(",")))
         }
 
         result.success(true)
+    }
+
+    private fun getFirstDayOfWeek(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(LocalePreferences.getFirstDayOfWeek())
     }
 
     private fun getPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
@@ -118,6 +127,14 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(Build.VERSION.SDK_INT)
+    }
+
+    private fun getWidgetCornerRadiusPx(@Suppress("unused_parameter") methodCall: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            result.success(context.resources.getDimension(android.R.dimen.system_app_widget_background_radius))
+        } else {
+            result.success(null)
+        }
     }
 
     private fun isLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

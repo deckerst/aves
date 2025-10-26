@@ -47,13 +47,11 @@ class _VectorImageViewState extends State<VectorImageView> {
 
   ImageProvider get thumbnailProvider => entry.bestCachedThumbnail;
 
-  Rectangle<double> get fullImageRegion => Rectangle<double>(.0, .0, entry.width.toDouble(), entry.height.toDouble());
-
   ImageProvider get fullImageProvider {
     assert(_isTilingInitialized);
     return entry.getRegion(
       scale: _minScale,
-      region: fullImageRegion,
+      region: entry.fullImageRegion,
     );
   }
 
@@ -210,7 +208,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     final fullImageRegionTile = _RegionTile(
       entry: entry,
       tileRect: Rect.fromLTWH(0, 0, displayWidth * viewScale, displayHeight * viewScale),
-      regionRect: fullImageRegion,
+      regionRect: entry.fullImageRegion,
       scale: _minScale,
       backgroundColor: backgroundColor,
       backgroundFrameBuilder: backgroundFrameBuilder,

@@ -20,7 +20,7 @@ import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
-import 'package:aves/widgets/settings/settings_search.dart';
+import 'package:aves/widgets/settings/settings_search_delegate.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

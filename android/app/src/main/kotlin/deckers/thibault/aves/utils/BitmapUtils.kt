@@ -17,7 +17,7 @@ import java.nio.ByteBuffer
 
 object BitmapUtils {
     private val LOG_TAG = LogUtils.createTag<BitmapUtils>()
-    private const val INITIAL_BUFFER_SIZE = 2 shl 17 // 256kB
+    private const val INITIAL_BUFFER_SIZE = 1 shl 18 // 256kB
 
     private val freeBaos = ArrayList<ByteArrayOutputStream>()
     private val mutex = Mutex()
@@ -27,7 +27,10 @@ object BitmapUtils {
     private const val MAX_8_BITS_FLOAT = 0xff.toFloat()
     private const val MAX_10_BITS_FLOAT = 0x3ff.toFloat()
 
-    private const val RAW_BYTES_TRAILER_LENGTH = INT_BYTE_SIZE * 2
+    private const val FORMAT_BYTE_ENCODED: Int = 0xCA
+    val FORMAT_BYTE_ENCODED_AS_BYTES: ByteArray = ByteArray(1) { pos -> FORMAT_BYTE_ENCODED.toByte() }
+    private const val FORMAT_BYTE_DECODED: Byte = 0xFE.toByte()
+    private const val RAW_BYTES_TRAILER_LENGTH = INT_BYTE_SIZE * 2 + 1
 
     // bytes per pixel with different bitmap config
     private const val BPP_ALPHA_8 = 1
@@ -58,7 +61,15 @@ object BitmapUtils {
         return pixelCount * getBytePerPixel(config)
     }
 
-    fun getRawBytes(bitmap: Bitmap?, recycle: Boolean): ByteArray? {
+    suspend fun getBytes(bitmap: Bitmap?, recycle: Boolean, decoded: Boolean, mimeType: String?): ByteArray? {
+        return if (decoded) {
+            getRawBytes(bitmap, recycle = recycle)
+        } else {
+            getEncodedBytes(bitmap, canHaveAlpha = MimeTypes.canHaveAlpha(mimeType), recycle = recycle)
+        }
+    }
+
+    private fun getRawBytes(bitmap: Bitmap?, recycle: Boolean): ByteArray? {
         bitmap ?: return null
 
         val byteCount = bitmap.byteCount
@@ -67,13 +78,14 @@ object BitmapUtils {
         val config = bitmap.config
         val colorSpace = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) bitmap.colorSpace else null
 
-        if (!MemoryUtils.canAllocate(byteCount)) {
+        val byteBufferSize = byteCount + RAW_BYTES_TRAILER_LENGTH
+        if (!MemoryUtils.canAllocate(byteBufferSize)) {
             throw Exception("bitmap buffer is $byteCount bytes, which cannot be allocated to a new byte array")
         }
 
         try {
             // `ByteBuffer` initial order is always `BIG_ENDIAN`
-            var bytes = ByteBuffer.allocate(byteCount + RAW_BYTES_TRAILER_LENGTH).apply {
+            var bytes = ByteBuffer.allocate(byteBufferSize).apply {
                 bitmap.copyPixelsToBuffer(this)
             }.array()
 
@@ -105,6 +117,8 @@ object BitmapUtils {
                 position(trailerOffset)
                 putInt(width)
                 putInt(height)
+                // trailer byte to indicate whether the returned bytes are decoded/encoded
+                put(FORMAT_BYTE_DECODED)
             }.array()
 
             return bytes
@@ -114,7 +128,7 @@ object BitmapUtils {
         return null
     }
 
-    suspend fun getEncodedBytes(bitmap: Bitmap?, canHaveAlpha: Boolean = false, quality: Int = 100, recycle: Boolean): ByteArray? {
+    private suspend fun getEncodedBytes(bitmap: Bitmap?, canHaveAlpha: Boolean = false, quality: Int = 100, recycle: Boolean): ByteArray? {
         bitmap ?: return null
 
         val stream: ByteArrayOutputStream
@@ -136,6 +150,9 @@ object BitmapUtils {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
             }
             if (recycle) bitmap.recycle()
+
+            // trailer byte to indicate whether the returned bytes are decoded/encoded
+            stream.write(FORMAT_BYTE_ENCODED)
 
             val bufferSize = stream.size()
             if (!MemoryUtils.canAllocate(bufferSize)) {

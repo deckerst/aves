@@ -10,7 +10,13 @@ abstract class WindowService {
 
   Future<void> secureScreen(bool on);
 
+  Future<bool> isInMultiWindowMode();
+
+  Future<bool> isInPictureInPictureMode();
+
   Future<bool> isRotationLocked();
+
+  Future<int> getOrientation();
 
   Future<void> requestOrientation([Orientation? orientation]);
 
@@ -23,6 +29,8 @@ abstract class WindowService {
   Future<bool> supportsHdr();
 
   Future<void> setColorMode({required bool wideColorGamut, required bool hdr});
+
+  Future<bool> startGlobalDrag(String uri, String? label, Size shadowSize, Uint8List shadowBytes);
 }
 
 class PlatformWindowService implements WindowService {
@@ -64,6 +72,28 @@ class PlatformWindowService implements WindowService {
   }
 
   @override
+  Future<bool> isInMultiWindowMode() async {
+    try {
+      final result = await _platform.invokeMethod('isInMultiWindowMode');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> isInPictureInPictureMode() async {
+    try {
+      final result = await _platform.invokeMethod('isInPictureInPictureMode');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
   Future<bool> isRotationLocked() async {
     try {
       final result = await _platform.invokeMethod('isRotationLocked');
@@ -75,26 +105,57 @@ class PlatformWindowService implements WindowService {
   }
 
   @override
-  Future<void> requestOrientation([Orientation? orientation]) async {
-    // cf Android `ActivityInfo.ScreenOrientation`
-    late final int orientationCode;
-    switch (orientation) {
-      case Orientation.landscape:
-        // SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        orientationCode = 6;
-      case Orientation.portrait:
-        // SCREEN_ORIENTATION_SENSOR_PORTRAIT
-        orientationCode = 7;
-      default:
-        // SCREEN_ORIENTATION_UNSPECIFIED
-        orientationCode = -1;
-    }
+  Future<int> getOrientation() async {
     try {
-      await _platform.invokeMethod('requestOrientation', <String, dynamic>{
-        'orientation': orientationCode,
-      });
+      final result = await _platform.invokeMethod('getOrientation');
+      if (result != null) return result as int;
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
+    }
+    return 0;
+  }
+
+  // cf https://developer.android.com/reference/android/R.attr#screenOrientation
+  // cf Android `ActivityInfo.ScreenOrientation`
+  static const screenOrientationUnspecified = -1; // SCREEN_ORIENTATION_UNSPECIFIED
+  static const screenOrientationLandscape = 0; // SCREEN_ORIENTATION_LANDSCAPE
+  static const screenOrientationPortrait = 1; // SCREEN_ORIENTATION_PORTRAIT
+  static const screenOrientationSensorLandscape = 6; // SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+  static const screenOrientationSensorPortrait = 7; // SCREEN_ORIENTATION_SENSOR_PORTRAIT
+  static const screenOrientationReverseLandscape = 8; // SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+  static const screenOrientationReversePortrait = 9; // SCREEN_ORIENTATION_REVERSE_PORTRAIT
+  static const screenOrientationUserLandscape = 11; // SCREEN_ORIENTATION_USER_LANDSCAPE
+  static const screenOrientationUserPortrait = 12; // SCREEN_ORIENTATION_USER_PORTRAIT
+
+  @override
+  Future<void> requestOrientation([Orientation? orientation]) async {
+    Future<void> apply(int orientationCode) async {
+      try {
+        await _platform.invokeMethod('requestOrientation', <String, dynamic>{
+          'orientation': orientationCode,
+        });
+      } on PlatformException catch (e, stack) {
+        await reportService.recordError(e, stack);
+      }
+    }
+
+    switch (orientation) {
+      case Orientation.landscape:
+        // first use the `sensor` variant to flip according to the sensor,
+        // then switch to a specific landscape orientation
+        // so that it no longer listens to the sensor
+        await apply(screenOrientationSensorLandscape);
+        switch (await getOrientation()) {
+          case 270:
+            await apply(screenOrientationReverseLandscape);
+          case 90:
+          default:
+            await apply(screenOrientationLandscape);
+        }
+      case Orientation.portrait:
+        await apply(screenOrientationUserPortrait);
+      default:
+        await apply(screenOrientationUnspecified);
     }
   }
 
@@ -163,5 +224,22 @@ class PlatformWindowService implements WindowService {
     // } on PlatformException catch (e, stack) {
     //   await reportService.recordError(e, stack);
     // }
+  }
+
+  @override
+  Future<bool> startGlobalDrag(String uri, String? label, Size shadowSize, Uint8List shadowBytes) async {
+    try {
+      final result = await _platform.invokeMethod('startGlobalDrag', <String, dynamic>{
+        'uri': uri,
+        'label': label,
+        'shadowWidthDip': shadowSize.width,
+        'shadowHeightDip': shadowSize.height,
+        'shadowBytes': shadowBytes,
+      });
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 }

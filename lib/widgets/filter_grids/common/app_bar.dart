@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
@@ -10,17 +11,21 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/app_bar/crumb_line.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:aves/widgets/filter_grids/common/group_crumb_line.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -40,6 +45,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   final ActionsBuilder<T, CSAD>? actionsBuilder;
   final bool isEmpty;
   final ValueNotifier<double> appBarHeightNotifier;
+  final ScrollController scrollController;
 
   const FilterGridAppBar({
     super.key,
@@ -49,6 +55,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
     this.actionsBuilder,
     required this.isEmpty,
     required this.appBarHeightNotifier,
+    required this.scrollController,
   });
 
   @override
@@ -74,8 +81,8 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   }
 }
 
-class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterGridAppBar<T, CSAD>> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final List<StreamSubscription> _subscriptions = [];
+class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends State<FilterGridAppBar<T, CSAD>> with RouteAware, SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  final Set<StreamSubscription> _subscriptions = {};
   late AnimationController _browseToSelectAnimation;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
   final FocusNode _queryBarFocusNode = FocusNode();
@@ -99,6 +106,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     _subscriptions.add(query.enabledStream.listen((e) => _updateAppBarHeight()));
     _queryFocusRequestNotifier = query.focusRequestNotifier;
     _queryFocusRequestNotifier.addListener(_onQueryFocusRequest);
+    _queryBarFocusNode.addListener(_onQueryBarFocusChanged);
     _browseToSelectAnimation = AnimationController(
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
@@ -109,16 +117,34 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      AvesApp.pageRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void dispose() {
     _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
+    _queryBarFocusNode.removeListener(_onQueryBarFocusChanged);
     _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
     WidgetsBinding.instance.removeObserver(this);
+    AvesApp.pageRouteObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    // unfocus when navigating away, so that when navigating back,
+    // the query bar does not get back focus and bring the keyboard
+    _queryBarFocusNode.unfocus();
   }
 
   @override
@@ -163,6 +189,26 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
                       children: actionsBuilder(context, appMode, selection, actionDelegate),
                     ),
                   ),
+                if (_showGroupCrumbLine(context))
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Container(
+                        padding: CrumbLine.padding,
+                        width: constraints.maxWidth,
+                        height: CrumbLine.getPreferredHeight(MediaQuery.textScalerOf(context)),
+                        child: Selector<FilterGroupNotifier, Uri?>(
+                          selector: (context, notifier) => notifier.value,
+                          builder: (context, groupUri, child) {
+                            return FilterGroupCrumbLine(
+                              key: const Key('crumbs'),
+                              groupUri: groupUri,
+                              onTap: (uri) => context.read<FilterGroupNotifier?>()?.value = uri,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 if (queryEnabled)
                   FilterQueryBar<T>(
                     queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
@@ -177,11 +223,16 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     );
   }
 
+  bool _showGroupCrumbLine(BuildContext context) => context.read<FilterGrouping?>()?.isNotEmpty ?? false;
+
   double get appBarContentHeight {
     final textScaler = MediaQuery.textScalerOf(context);
     double height = textScaler.scale(kToolbarHeight);
     if (settings.useTvLayout) {
       height += CaptionedButton.getTelevisionButtonHeight(context);
+    }
+    if (_showGroupCrumbLine(context)) {
+      height += CrumbLine.getPreferredHeight(textScaler);
     }
     if (context.read<Query>().enabled) {
       height += FilterQueryBar.getPreferredHeight(textScaler);
@@ -433,6 +484,18 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }
 
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
+
+  void _onQueryBarFocusChanged() {
+    if (_queryBarFocusNode.hasFocus) {
+      // the query bar is in the top sliver of the page scrollable,
+      // so when the bar text field gets focus and requests to be on screen,
+      // it will scroll to show it by default, but it may not end at the very top,
+      // so we do it manually for a more predicable end position
+      _scrollToTop();
+    }
+  }
+
+  void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _updateAppBarHeight() {
     widget.appBarHeightNotifier.value = AvesAppBar.appBarHeightForContentHeight(appBarContentHeight);

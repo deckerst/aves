@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        glide_version = '4.16.0'
+        glide_version = '5.0.5'
         abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
         useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
     }
@@ -13,13 +13,19 @@ buildscript {
     dependencies {
         if (useCrashlytics) {
             // GMS & Firebase Crashlytics (used by some flavors only)
-            classpath 'com.google.gms:google-services:4.4.2'
-            classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+            classpath 'com.google.gms:google-services:4.4.3'
+            classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.4'
         }
     }
 }
 
+plugins {
+    id 'org.gradlex.reproducible-builds' version '1.1'
+}
+
 allprojects {
+    apply plugin: 'org.gradlex.reproducible-builds'
+
     repositories {
         google()
         mavenCentral()

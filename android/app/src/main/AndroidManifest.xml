@@ -183,6 +183,7 @@
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="geo" />
             </intent-filter>
@@ -209,6 +210,13 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+            <!-- launch size in desktop environments, like ChromeOS -->
+            <meta-data
+                android:name="WindowManagerPreference:FreeformWindowSize"
+                android:value="maximize" />
+            <meta-data
+                android:name="WindowManagerPreference:FreeformWindowOrientation"
+                android:value="landscape" />
         </activity>
 
         <activity

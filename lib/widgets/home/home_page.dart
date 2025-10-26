@@ -12,7 +12,6 @@ import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/enums/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -38,7 +37,7 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/home/home_error.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -264,7 +263,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           final source = context.read<CollectionSource>();
           if (source.loadedScope != CollectionSource.fullScope) {
             await reportService.log('Initialize source to start app with mode=$appMode, loaded scope=${source.loadedScope}');
-            final loadTopEntriesFirst = settings.homePage == HomePageSetting.collection && settings.homeCustomCollection.isEmpty;
+            final loadTopEntriesFirst = settings.homeNavItem.route == CollectionPage.routeName && settings.homeCustomCollection.isEmpty;
             source.canAnalyze = true;
             await source.init(scope: CollectionSource.fullScope, loadTopEntriesFirst: loadTopEntriesFirst);
           }
@@ -334,9 +333,6 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
     String routeName;
     Set<CollectionFilter?>? filters;
     switch (appMode) {
-      case AppMode.pickSingleMediaExternal:
-      case AppMode.pickMultipleMediaExternal:
-        routeName = CollectionPage.routeName;
       case AppMode.setWallpaper:
         return DirectMaterialPageRoute(
           settings: const RouteSettings(name: WallpaperPage.routeName),
@@ -404,9 +400,19 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
             );
           },
         );
-      default:
-        routeName = _initialRouteName ?? settings.homePage.routeName;
-        filters = _initialFilters ?? (settings.homePage == HomePageSetting.collection ? settings.homeCustomCollection : {});
+      case AppMode.initialization:
+      case AppMode.main:
+      case AppMode.pickCollectionFiltersExternal:
+      case AppMode.pickSingleMediaExternal:
+      case AppMode.pickMultipleMediaExternal:
+      case AppMode.pickFilteredMediaInternal:
+      case AppMode.pickUnfilteredMediaInternal:
+      case AppMode.pickFilterInternal:
+      case AppMode.previewMap:
+      case AppMode.screenSaver:
+      case AppMode.slideshow:
+        routeName = _initialRouteName ?? settings.homeNavItem.route;
+        filters = _initialFilters ?? (settings.homeNavItem.route == CollectionPage.routeName ? settings.homeCustomCollection : {});
     }
     Route buildRoute(WidgetBuilder builder) => DirectMaterialPageRoute(
           settings: RouteSettings(name: routeName),
@@ -416,9 +422,9 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
     final source = context.read<CollectionSource>();
     switch (routeName) {
       case AlbumListPage.routeName:
-        return buildRoute((context) => const AlbumListPage());
+        return buildRoute((context) => const AlbumListPage(initialGroup: null));
       case TagListPage.routeName:
-        return buildRoute((context) => const TagListPage());
+        return buildRoute((context) => const TagListPage(initialGroup: null));
       case MapPage.routeName:
         return buildRoute((context) {
           final mapCollection = CollectionLens(

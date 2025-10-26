@@ -48,7 +48,6 @@ class SettingKeys {
   static const homePageKey = 'home_page';
   static const homeCustomCollectionKey = 'home_custom_collection';
   static const homeCustomExplorerPathKey = 'home_custom_explorer_path';
-  static const enableBottomNavigationBarKey = 'show_bottom_navigation_bar';
   static const confirmCreateVaultKey = 'confirm_create_vault';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
@@ -58,6 +57,7 @@ class SettingKeys {
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';
+  static const bottomNavigationActionsKey = 'bottom_navigation_actions';
 
   // collection
   static const collectionBurstPatternsKey = 'collection_burst_patterns';
@@ -76,7 +76,7 @@ class SettingKeys {
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids
-  static const albumGroupFactorKey = 'album_group_factor';
+  static const albumSectionFactorKey = 'album_section_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const stateSortFactorKey = 'state_sort_factor';
@@ -87,6 +87,8 @@ class SettingKeys {
   static const stateSortReverseKey = 'state_sort_reverse';
   static const placeSortReverseKey = 'place_sort_reverse';
   static const tagSortReverseKey = 'tag_sort_reverse';
+  static const albumGroupsKey = 'album_groups';
+  static const tagGroupsKey = 'tag_groups';
   static const pinnedFiltersKey = 'pinned_filters';
   static const hiddenFiltersKey = 'hidden_filters';
   static const deactivatedHiddenFiltersKey = 'deactivated_hidden_filters';
@@ -145,6 +147,7 @@ class SettingKeys {
   // map
   static const mapStyleKey = 'info_map_style';
   static const mapDefaultCenterKey = 'map_default_center';
+  static const customMapStylesKey = 'custom_map_styles';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -157,9 +160,6 @@ class SettingKeys {
   static const showPinchGestureAlternativesKey = 'show_pinch_gesture_alternatives';
   static const accessibilityAnimationsKey = 'accessibility_animations';
   static const timeToTakeActionKey = 'time_to_take_action';
-
-  // file picker
-  static const filePickerShowHiddenFilesKey = 'file_picker_show_hidden_files';
 
   // screen saver
   static const screenSaverFillScreenKey = 'screen_saver_fill_screen';

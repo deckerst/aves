@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import androidx.core.content.edit
 import deckers.thibault.aves.SearchSuggestionsProvider
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
@@ -29,9 +30,8 @@ class GlobalSearchHandler(private val context: Context) : MethodCallHandler {
         }
 
         val preferences = context.getSharedPreferences(SearchSuggestionsProvider.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-        with(preferences.edit()) {
+        preferences.edit {
             putLong(SearchSuggestionsProvider.CALLBACK_HANDLE_KEY, callbackHandle)
-            apply()
         }
         result.success(true)
     }

@@ -245,9 +245,8 @@ class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
     _blurBlockTimer?.cancel();
     _blurBlockTimer = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _isBlurAllowedNotifier.value = true;
-      }
+      if (!mounted) return;
+      _isBlurAllowedNotifier.value = true;
     });
   }
 

@@ -10,6 +10,7 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/settings/navigation/bottom_nav_actions_editor.dart';
 import 'package:aves/widgets/settings/navigation/confirmation_dialogs.dart';
 import 'package:aves/widgets/settings/navigation/drawer.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
@@ -35,9 +36,9 @@ class NavigationSection extends SettingsSection {
   FutureOr<List<SettingsTile>> tiles(BuildContext context) => [
         SettingsTileNavigationHomePage(),
         if (!settings.useTvLayout) SettingsTileNavigationKeepScreenOn(),
-        if (!settings.useTvLayout) SettingsTileShowBottomNavigationBar(),
         if (!settings.useTvLayout) SettingsTileNavigationDoubleBackExit(),
         SettingsTileNavigationDrawer(),
+        if (!settings.useTvLayout) SettingsTileNavigationBottomActions(),
         if (!settings.useTvLayout) SettingsTileNavigationConfirmationDialog(),
       ];
 }
@@ -112,18 +113,6 @@ class SettingsTileNavigationHomePage extends SettingsTile {
       );
 }
 
-class SettingsTileShowBottomNavigationBar extends SettingsTile {
-  @override
-  String title(BuildContext context) => context.l10n.settingsShowBottomNavigationBar;
-
-  @override
-  Widget build(BuildContext context) => SettingsSwitchListTile(
-        selector: (context, s) => s.enableBottomNavigationBar,
-        onChanged: (v) => settings.enableBottomNavigationBar = v,
-        title: title(context),
-      );
-}
-
 class SettingsTileNavigationDrawer extends SettingsTile {
   @override
   String title(BuildContext context) => context.l10n.settingsNavigationDrawerTile;
@@ -134,6 +123,18 @@ class SettingsTileNavigationDrawer extends SettingsTile {
         routeName: NavigationDrawerEditorPage.routeName,
         builder: (context) => const NavigationDrawerEditorPage(),
       );
+}
+
+class SettingsTileNavigationBottomActions extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsNavigationBottomActionsTile;
+
+  @override
+  Widget build(BuildContext context) => SettingsSubPageTile(
+    title: title(context),
+    routeName: BottomNavigationActionEditorPage.routeName,
+    builder: (context) => const BottomNavigationActionEditorPage(),
+  );
 }
 
 class SettingsTileNavigationConfirmationDialog extends SettingsTile {

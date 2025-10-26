@@ -223,7 +223,7 @@ object Helper {
                             break
                         }
                     }
-                } catch (ex: ParseException) {
+                } catch (_: ParseException) {
                     // simply try the next pattern
                 }
             }
@@ -251,7 +251,7 @@ object Helper {
                     calendar[Calendar.MILLISECOND] = millisecond
                     return calendar.time
                 }
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 // ignore
             }
         }
@@ -313,7 +313,7 @@ object Helper {
 
         fields[GeoTiffKeys.GEOTIFF_VERSION] = "$directoryVersion.$revision.$minorRevision"
 
-        for (j in 0 until numberOfKeys) {
+        (0 until numberOfKeys).forEach { j ->
             val keyId = geoKeys[i++]
             val tiffTagLocation = geoKeys[i++]
             val valueCount = geoKeys[i++]

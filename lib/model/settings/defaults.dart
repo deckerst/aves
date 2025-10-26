@@ -1,10 +1,14 @@
+import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves_model/aves_model.dart';
 
 class SettingsDefaults {
@@ -29,7 +33,6 @@ class SettingsDefaults {
   static const mustBackTwiceToExit = true;
   static const keepScreenOn = KeepScreenOn.viewerOnly;
   static const homePage = HomePageSetting.collection;
-  static const enableBottomNavigationBar = true;
   static const confirm = true;
   static const setMetadataDateBeforeFileOp = false;
   static final drawerTypeBookmarks = [
@@ -42,9 +45,15 @@ class SettingsDefaults {
     TagListPage.routeName,
     ExplorerPage.routeName,
   ];
+  static final bottomNavigationActions = [
+    const AvesNavItem(route: CollectionPage.routeName),
+    AvesNavItem(route: CollectionPage.routeName, filters: {MimeFilter.video}),
+    AvesNavItem(route: CollectionPage.routeName, filters: {FavouriteFilter.instance}),
+    const AvesNavItem(route: AlbumListPage.routeName),
+  ];
 
   // collection
-  static const collectionSectionFactor = EntryGroupFactor.month;
+  static const collectionSectionFactor = EntrySectionFactor.month;
   static const collectionSortFactor = EntrySortFactor.date;
   static const collectionBrowsingQuickActions = [
     EntrySetAction.searchCollection,
@@ -63,7 +72,7 @@ class SettingsDefaults {
   static const showThumbnailVideoDuration = true;
 
   // filter grids
-  static const albumGroupFactor = AlbumChipGroupFactor.importance;
+  static const albumGroupFactor = AlbumChipSectionFactor.importance;
   static const chipListSortFactor = ChipSortFactor.name;
 
   // viewer
@@ -113,9 +122,6 @@ class SettingsDefaults {
   static const showPinchGestureAlternatives = false;
   static const accessibilityAnimations = AccessibilityAnimations.system;
   static const timeToTakeAction = AccessibilityTimeout.s3;
-
-  // file picker
-  static const filePickerShowHiddenFiles = false;
 
   // slideshow
   static const slideshowRepeat = false;

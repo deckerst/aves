@@ -39,7 +39,7 @@ class AIcons {
   static const language = Symbols.translate;
   static final legal = MdiIcons.scaleBalance;
   static const mimeType = Symbols.code;
-  static const name = Symbols.abc;
+  static const name = Symbols.match_word;
   static const newTier = Symbols.fiber_new;
   static const opacity = Symbols.opacity;
   static const palette = Symbols.palette;
@@ -72,6 +72,7 @@ class AIcons {
   static const dateByMonth = Symbols.calendar_month;
   static const dateRecent = Symbols.today;
   static const dateUndated = Symbols.event_busy;
+  static const dateWeekday = Symbols.today;
   static const geoBounds = Symbols.public;
   static const location = Symbols.place;
   static const locationUnlocated = Symbols.location_off;
@@ -80,7 +81,7 @@ class AIcons {
   static const place = Symbols.place;
 
   // view
-  static const group = Symbols.group_work;
+  static const section = Symbols.subheader;
   static const layout = Symbols.grid_view;
   static const layoutMosaic = Symbols.view_comfy;
   static const layoutGrid = Symbols.view_compact;
@@ -112,13 +113,14 @@ class AIcons {
   static const filter = Symbols.filter_alt;
   static const filterOff = Symbols.filter_alt_off;
   static const goUp = Symbols.arrow_upward;
+  static const group = Symbols.stack_group;
   static const hide = Symbols.visibility_off;
   static const info = Symbols.info;
   static const layers = Symbols.layers;
   static const map = Symbols.map;
   static const more = Symbols.more_horiz;
   static final move = MdiIcons.fileMoveOutline;
-  static const rename = Symbols.abc;
+  static const rename = Symbols.match_word;
   static const openOutside = Symbols.open_in_new;
   static final openVideoPart = MdiIcons.moviePlayOutline;
   static const pin = Symbols.keep;
@@ -204,7 +206,7 @@ class AIcons {
   static const multiPage = Symbols.burst_mode;
   static const panorama = Symbols.vrpano;
   static const sphericalVideo = Symbols.threesixty;
-  static const videoThumb = Symbols.play_circle;
+  static const videoPlay = Symbols.play_circle;
   static const selected = Symbols.check_circle;
   static const unselected = Symbols.radio_button_unchecked;
 

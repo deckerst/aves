@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -18,15 +17,14 @@ import android.widget.RemoteViews
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
 import app.loup.streams_channel.StreamsChannel
-import deckers.thibault.aves.channel.AvesByteSendingMethodCodec
 import deckers.thibault.aves.channel.calls.DeviceHandler
-import deckers.thibault.aves.channel.calls.MediaFetchBytesHandler
 import deckers.thibault.aves.channel.calls.MediaFetchObjectHandler
 import deckers.thibault.aves.channel.calls.MediaStoreHandler
 import deckers.thibault.aves.channel.calls.StorageHandler
-import deckers.thibault.aves.channel.streams.ImageByteStreamHandler
-import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.ImageByteStreamHandler
+import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.FlutterUtils
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.FlutterInjector
@@ -51,18 +49,21 @@ class HomeWidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         Log.d(LOG_TAG, "Widget onUpdate widgetIds=${appWidgetIds.contentToString()}")
-        for (widgetId in appWidgetIds) {
-            val widgetInfo = appWidgetManager.getAppWidgetOptions(widgetId)
+        val pendingResult = goAsync()
+        defaultScope.launch {
+            for (widgetId in appWidgetIds) {
+                val widgetInfo = appWidgetManager.getAppWidgetOptions(widgetId)
 
-            val pendingResult = goAsync()
-            defaultScope.launch {
                 val backgroundProps = getProps(context, widgetId, widgetInfo, drawEntryImage = false)
                 updateWidgetImage(context, appWidgetManager, widgetId, backgroundProps)
 
                 val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = false)
                 updateWidgetImage(context, appWidgetManager, widgetId, imageProps)
-
+            }
+            try {
                 pendingResult?.finish()
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "failed to finish update for widgetIds=${appWidgetIds.contentToString()}", e)
             }
         }
     }
@@ -82,13 +83,11 @@ class HomeWidgetProvider : AppWidgetProvider() {
         }
     }
 
-    private fun getDevicePixelRatio(): Float = Resources.getSystem().displayMetrics.density
-
     private fun getWidgetSizesDip(context: Context, widgetInfo: Bundle): List<SizeF> {
         var sizes: List<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            @Suppress("DEPRECATION")
+            @Suppress("deprecation")
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES)
         } else {
             null
@@ -125,7 +124,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val params = hashMapOf(
             "widgetId" to widgetId,
             "sizesDip" to sizesDipMap,
-            "devicePixelRatio" to getDevicePixelRatio(),
+            "devicePixelRatio" to context.devicePixelRatio(),
             "drawEntryImage" to drawEntryImage,
             "reuseEntry" to reuseEntry,
             "isSystemThemeDark" to isNightModeOn,
@@ -214,9 +213,9 @@ class HomeWidgetProvider : AppWidgetProvider() {
             bytes: ByteArray,
             updateOnTap: Boolean,
         ): RemoteViews? {
-            val devicePixelRatio = getDevicePixelRatio()
-            val widthPx = (sizeDip.width * devicePixelRatio).roundToInt()
-            val heightPx = (sizeDip.height * devicePixelRatio).roundToInt()
+            val density = context.devicePixelRatio()
+            val widthPx = (sizeDip.width * density).roundToInt()
+            val heightPx = (sizeDip.height * density).roundToInt()
 
             try {
                 val bitmap = createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888).also {
@@ -331,7 +330,6 @@ class HomeWidgetProvider : AppWidgetProvider() {
             // - need Context
             MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(context))
             MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(context))
-            MethodChannel(messenger, MediaFetchBytesHandler.CHANNEL, AvesByteSendingMethodCodec.INSTANCE).setMethodCallHandler(MediaFetchBytesHandler(context))
             MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(context))
             MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(context))
 

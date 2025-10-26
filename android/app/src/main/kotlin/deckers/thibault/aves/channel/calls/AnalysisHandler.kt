@@ -2,6 +2,7 @@ package deckers.thibault.aves.channel.calls
 
 import android.app.ActivityManager
 import android.content.Context
+import androidx.core.content.edit
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -17,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-
 
 class AnalysisHandler(private val activity: FlutterFragmentActivity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -38,9 +38,8 @@ class AnalysisHandler(private val activity: FlutterFragmentActivity, private val
         }
 
         val preferences = activity.getSharedPreferences(AnalysisWorker.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-        with(preferences.edit()) {
+        preferences.edit {
             putLong(AnalysisWorker.PREF_CALLBACK_HANDLE_KEY, callbackHandle)
-            apply()
         }
         result.success(true)
     }
@@ -69,9 +68,8 @@ class AnalysisHandler(private val activity: FlutterFragmentActivity, private val
         // work `Data` cannot occupy more than 10240 bytes when serialized
         // so we save the possibly long list of entry IDs to shared preferences
         val preferences = activity.getSharedPreferences(AnalysisWorker.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-        with(preferences.edit()) {
+        preferences.edit {
             putStringSet(AnalysisWorker.PREF_ENTRY_IDS_KEY, allEntryIds?.map { it.toString() }?.toSet())
-            apply()
         }
 
         val workData = workDataOf(

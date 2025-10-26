@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 final Vaults vaults = Vaults._private();
 
 class Vaults extends ChangeNotifier {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   Set<VaultDetails> _rows = {};
   final Set<String> _unlockedDirPaths = {};
 

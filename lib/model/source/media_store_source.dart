@@ -6,6 +6,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/origins.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -59,6 +60,12 @@ class MediaStoreSource extends CollectionSource {
     await localMediaDb.init();
     await vaults.init();
     await favourites.init();
+    albumGrouping.init();
+    albumGrouping.setGroups(settings.albumGroups);
+    albumGrouping.registerSource(this);
+    tagGrouping.init();
+    tagGrouping.setGroups(settings.tagGroups);
+    tagGrouping.registerSource(this);
     await covers.init();
     await dynamicAlbums.init();
 
@@ -99,6 +106,8 @@ class MediaStoreSource extends CollectionSource {
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch known entries');
     final knownEntries = await localMediaDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: scopeDirectory);
     final knownLiveEntries = knownEntries.where((entry) => !entry.trashed).toSet();
+    unawaited(reportService.setCustomKey('is_large_collection', knownEntries.length > 100000));
+    unawaited(reportService.log('$runtimeType found ${knownEntries.length} known entries'));
 
     debugPrint('$runtimeType load ${stopwatch.elapsed} check obsolete entries');
     final knownDateByContentId = Map.fromEntries(knownLiveEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedMillis)));
@@ -206,6 +215,7 @@ class MediaStoreSource extends CollectionSource {
         entry.id = existingEntry?.id ?? localMediaDb.nextId;
 
         newEntries.add(entry);
+        setProgress(done: newEntries.length, total: 0);
       },
       onDone: () async {
         if (newEntries.isNotEmpty) {
@@ -236,7 +246,8 @@ class MediaStoreSource extends CollectionSource {
         Set<AvesEntry>? analysisEntries;
         final analysisIds = analysisController?.entryIds;
         if (analysisIds != null) {
-          analysisEntries = visibleEntries.where((entry) => analysisIds.contains(entry.id)).toSet();
+          // not only visible entries, as hidden and vault items may be analyzed
+          analysisEntries = allEntries.where((entry) => analysisIds.contains(entry.id)).toSet();
         }
         await analyze(analysisController, entries: analysisEntries);
 

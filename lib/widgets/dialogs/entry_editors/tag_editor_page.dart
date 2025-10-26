@@ -1,7 +1,7 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
-import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
@@ -50,6 +50,10 @@ class _TagEditorPageState extends State<TagEditorPage> {
     _expandedSectionNotifier.value = settings.tagEditorExpandedSection;
     _expandedSectionNotifier.addListener(() => settings.tagEditorExpandedSection = _expandedSectionNotifier.value);
     _initTopTags();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final source = context.read<CollectionSource?>();
+      settings.removeObsoleteRecentTags(source);
+    });
   }
 
   @override

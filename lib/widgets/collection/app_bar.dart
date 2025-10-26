@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
-import 'package:aves/model/filters/set_and.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -18,10 +18,14 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
@@ -35,7 +39,7 @@ import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
@@ -44,11 +48,13 @@ import 'package:provider/provider.dart';
 
 class CollectionAppBar extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
+  final ScrollController scrollController;
   final CollectionLens collection;
 
   const CollectionAppBar({
     super.key,
     required this.appBarHeightNotifier,
+    required this.scrollController,
     required this.collection,
   });
 
@@ -56,8 +62,8 @@ class CollectionAppBar extends StatefulWidget {
   State<CollectionAppBar> createState() => _CollectionAppBarState();
 }
 
-class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final List<StreamSubscription> _subscriptions = [];
+class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  final Set<StreamSubscription> _subscriptions = {};
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
@@ -81,13 +87,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     EntrySortFactor.name,
     EntrySortFactor.rating,
     EntrySortFactor.duration,
+    EntrySortFactor.path,
   ];
 
-  static const _groupOptions = [
-    EntryGroupFactor.album,
-    EntryGroupFactor.month,
-    EntryGroupFactor.day,
-    EntryGroupFactor.none,
+  static const _sectionOptions = [
+    EntrySectionFactor.album,
+    EntrySectionFactor.month,
+    EntrySectionFactor.day,
+    EntrySectionFactor.none,
   ];
 
   static const _layoutOptions = [
@@ -108,6 +115,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _subscriptions.add(query.enabledStream.listen((e) => _updateAppBarHeight()));
     _queryFocusRequestNotifier = query.focusRequestNotifier;
     _queryFocusRequestNotifier.addListener(_onQueryFocusRequest);
+    _queryBarFocusNode.addListener(_onQueryBarFocusChanged);
     _browseToSelectAnimation = AnimationController(
       duration: context.read<DurationsData>().iconAnimation,
       vsync: this,
@@ -122,6 +130,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      AvesApp.pageRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void didUpdateWidget(covariant CollectionAppBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
@@ -133,12 +150,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _unregisterWidget(widget);
     _queryBarFocusNode.dispose();
     _queryFocusRequestNotifier.removeListener(_onQueryFocusRequest);
+    _queryBarFocusNode.removeListener(_onQueryBarFocusChanged);
     _isSelectingNotifier.dispose();
     _browseToSelectAnimation.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
     WidgetsBinding.instance.removeObserver(this);
+    AvesApp.pageRouteObserver.unsubscribe(this);
     super.dispose();
   }
 
@@ -148,6 +167,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _unregisterWidget(CollectionAppBar widget) {
     widget.collection.filterChangeNotifier.removeListener(_onFilterChanged);
+  }
+
+  @override
+  void didPushNext() {
+    // unfocus when navigating away, so that when navigating back,
+    // the query bar does not get back focus and bring the keyboard
+    _queryBarFocusNode.unfocus();
   }
 
   @override
@@ -484,6 +510,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     FocusNode? focusNode,
     required Selection<AvesEntry> selection,
   }) {
+    final blurred = settings.enableBlurEffect;
     final onPressed = enabled ? () => _onActionSelected(action) : null;
     switch (action) {
       case EntrySetAction.toggleTitleSearch:
@@ -497,6 +524,34 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               focusNode: focusNode,
             );
           },
+        );
+      case EntrySetAction.copy:
+        return MoveButton(
+          copy: true,
+          blurred: blurred,
+          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: true),
+          onPressed: onPressed,
+        );
+      case EntrySetAction.move:
+        return MoveButton(
+          copy: false,
+          blurred: blurred,
+          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: false),
+          onPressed: onPressed,
+        );
+      case EntrySetAction.editRating:
+        return RateButton(
+          blurred: blurred,
+          onChooserValue: (rating) => _actionDelegate.quickRate(context, rating),
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
+      case EntrySetAction.editTags:
+        return TagButton(
+          blurred: blurred,
+          onChooserValue: (filter) => _actionDelegate.quickTag(context, filter),
+          focusNode: focusNode,
+          onPressed: onPressed,
         );
       case EntrySetAction.toggleFavourite:
         return FavouriteToggler(
@@ -625,6 +680,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _onQueryFocusRequest() => _queryBarFocusNode.requestFocus();
 
+  void _onQueryBarFocusChanged() {
+    if (_queryBarFocusNode.hasFocus) {
+      // the query bar is in the top sliver of the page scrollable,
+      // so when the bar text field gets focus and requests to be on screen,
+      // it will scroll to show it by default, but it may not end at the very top,
+      // so we do it manually for a more predicable end position
+      _scrollToTop();
+    }
+  }
+
+  void _scrollToTop() => widget.scrollController.jumpTo(0);
+
   void _updateStatusBarHeight() {
     if (!mounted) {
       return;
@@ -690,16 +757,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(EntrySortFactor?, EntryGroupFactor?, TileLayout?, bool)>(
+    final value = await showDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<EntrySortFactor, EntryGroupFactor, TileLayout>(
+        return TileViewDialog<EntrySortFactor, EntrySectionFactor, TileLayout>(
           initialValue: initialValue,
           sortOptions: _sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          groupOptions: _groupOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sectionOptions: _sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
-          canGroup: (s, g, l) => s == EntrySortFactor.date,
+          canSection: (s, g, l) => s == EntrySortFactor.date,
           tileExtentController: extentController,
         );
       },

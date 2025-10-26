@@ -16,7 +16,7 @@ class MimeFilter extends CollectionFilter {
   final String mime;
   late final String _label;
   late final IconData _icon;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   static final image = MimeFilter(MimeTypes.anyImage);
   static final video = MimeFilter(MimeTypes.anyVideo);
@@ -58,7 +58,7 @@ class MimeFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;
@@ -74,6 +74,11 @@ class MimeFilter extends CollectionFilter {
       MimeTypes.anyVideo => l10n.filterMimeVideoLabel,
       _ => _label,
     };
+  }
+
+  @override
+  String getTooltip(BuildContext context) {
+    return '${getLabel(context)} ($mime)';
   }
 
   @override

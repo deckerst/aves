@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -10,6 +11,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/collection/loading.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -17,6 +19,7 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
+import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
@@ -28,6 +31,7 @@ import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -52,13 +56,15 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final String? settingsRouteKey;
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
+  final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final Widget? floatingActionButton;
+  final FilterTileTapCallback<T> onTileTap;
   final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
   FilterGridPage({
@@ -66,14 +72,16 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     this.settingsRouteKey,
     required this.appBar,
     required this.appBarHeightNotifier,
+    required this.scrollController,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    this.floatingActionButton,
+    required this.onTileTap,
   });
 
   @override
@@ -93,14 +101,15 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               settingsRouteKey: settingsRouteKey,
               appBar: appBar,
               appBarHeight: MediaQuery.paddingOf(context).top + appBarHeight,
+              scrollController: scrollController,
               sections: sections,
               newFilters: newFilters,
               sortFactor: sortFactor,
               showHeaders: showHeaders,
               selectable: selectable,
-              applyQuery: applyQuery,
               emptyBuilder: emptyBuilder,
               heroType: heroType,
+              onTileTap: onTileTap,
             );
           },
         ),
@@ -142,6 +151,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             },
             child: AvesScaffold(
               body: body,
+              floatingActionButton: floatingActionButton,
               drawer: canNavigate ? const AppDrawer() : null,
               bottomNavigationBar: showBottomNavigationBar
                   ? AppBottomNavBar(
@@ -162,27 +172,29 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final String? settingsRouteKey;
   final Widget appBar;
   final double appBarHeight;
+  final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
-  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
+  final FilterTileTapCallback<T> onTileTap;
 
   const _FilterGrid({
     super.key,
     required this.settingsRouteKey,
     required this.appBar,
     required this.appBarHeight,
+    required this.scrollController,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    required this.onTileTap,
   });
 
   @override
@@ -214,6 +226,13 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
           canPop: (context) => context.select<Selection<FilterGridItem<T>>, bool>((v) => !v.isSelecting),
           onPopBlocked: (context) => context.read<Selection<FilterGridItem<T>>>().browse(),
         ),
+        APopHandler(
+          canPop: (context) => context.read<FilterGroupNotifier?>()?.value == null,
+          onPopBlocked: (context) {
+            final filterGroupNotifier = context.read<FilterGroupNotifier>();
+            filterGroupNotifier.value = FilterGrouping.getParentGroup(filterGroupNotifier.value);
+          },
+        ),
         tvNavigationPopHandler,
         doubleBackPopHandler,
       ],
@@ -222,14 +241,15 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
         child: _FilterGridContent<T>(
           appBar: widget.appBar,
           appBarHeight: widget.appBarHeight,
+          scrollController: widget.scrollController,
           sections: widget.sections,
           newFilters: widget.newFilters,
           sortFactor: widget.sortFactor,
           showHeaders: widget.showHeaders,
           selectable: widget.selectable,
-          applyQuery: widget.applyQuery,
           emptyBuilder: widget.emptyBuilder,
           heroType: widget.heroType,
+          onTileTap: widget.onTileTap,
         ),
       ),
     );
@@ -239,26 +259,28 @@ class _FilterGridState<T extends CollectionFilter> extends State<_FilterGrid<T>>
 class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final Widget appBar;
   final double appBarHeight;
+  final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
-  final QueryTest<T> applyQuery;
   final HeroType heroType;
+  final FilterTileTapCallback<T> onTileTap;
 
   const _FilterGridContent({
     super.key,
     required this.appBar,
     required this.appBarHeight,
+    required this.scrollController,
     required this.sections,
     required this.newFilters,
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
-    required this.applyQuery,
     required this.emptyBuilder,
     required this.heroType,
+    required this.onTileTap,
   });
 
   @override
@@ -296,8 +318,9 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
             Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
             if (queryEnabled && query.isNotEmpty) {
               visibleSections = {};
+              final queryUp = query.toUpperCase();
               widget.sections.forEach((sectionKey, sectionFilters) {
-                final visibleFilters = widget.applyQuery(context, sectionFilters, query.toUpperCase());
+                final visibleFilters = sectionFilters.where((item) => item.filter.matchLabel(context, queryUp)).toList();
                 if (visibleFilters.isNotEmpty) {
                   visibleSections[sectionKey] = visibleFilters;
                 }
@@ -350,6 +373,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                                   tileLayout: tileLayout,
                                   banner: _getFilterBanner(context, gridItem.filter),
                                   heroType: widget.heroType,
+                                  onTap: widget.onTileTap,
                                 );
                                 if (!settings.useTvLayout) return tile;
 
@@ -399,7 +423,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                 selectable: widget.selectable,
                 emptyBuilder: widget.emptyBuilder,
                 bannerBuilder: _getFilterBanner,
-                scrollController: PrimaryScrollController.of(context),
+                scrollController: widget.scrollController,
                 tileLayout: tileLayout,
               ),
             );
@@ -458,11 +482,21 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   final GlobalKey scrollableKey = GlobalKey(debugLabel: 'filter-grid-page-scrollable');
 
+  FilterGroupNotifier? _groupNotifier;
+
   @override
   void initState() {
     super.initState();
     _registerWidget(widget);
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _unregisterDependencies();
+    _groupNotifier = context.read<FilterGroupNotifier?>();
+    _registerDependencies();
   }
 
   @override
@@ -474,8 +508,17 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   @override
   void dispose() {
+    _unregisterDependencies();
     _unregisterWidget(widget);
     super.dispose();
+  }
+
+  void _registerDependencies() {
+    _groupNotifier?.addListener(_scrollToTop);
+  }
+
+  void _unregisterDependencies() {
+    _groupNotifier?.removeListener(_scrollToTop);
   }
 
   void _registerWidget(_FilterSectionedContent<T> widget) {
@@ -488,15 +531,13 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
 
   @override
   Widget build(BuildContext context) {
-    final scrollView = AnimationLimiter(
-      child: _FilterScrollView<T>(
-        scrollableKey: scrollableKey,
-        appBar: appBar,
-        appBarHeightNotifier: appBarHeightNotifier,
-        sortFactor: widget.sortFactor,
-        emptyBuilder: emptyBuilder,
-        scrollController: scrollController,
-      ),
+    final scrollView = _FilterScrollView<T>(
+      scrollableKey: scrollableKey,
+      appBar: appBar,
+      appBarHeightNotifier: appBarHeightNotifier,
+      sortFactor: widget.sortFactor,
+      emptyBuilder: emptyBuilder,
+      scrollController: scrollController,
     );
 
     final scaler = _FilterScaler<T>(
@@ -540,6 +581,8 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
     final animate = context.read<Settings>().animate;
     highlightInfo.trackItem(item, animate: animate, highlightItem: filter);
   }
+
+  void _scrollToTop() => widget.scrollController.jumpTo(0);
 }
 
 class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
@@ -671,25 +714,51 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   }
 
   Widget _buildScrollView(BuildContext context) {
-    return CustomScrollView(
-      key: scrollableKey,
-      controller: scrollController,
-      slivers: [
-        appBar,
-        Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
-            selector: (context, layout) => layout.sections.isEmpty,
-            builder: (context, empty, child) {
-              return empty
+    return Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
+      selector: (context, layout) => layout.sections.isEmpty,
+      builder: (context, isEmpty, child) {
+        return CustomScrollView(
+          key: scrollableKey,
+          controller: scrollController,
+          // workaround to prevent scrolling the app bar away
+          // when there is no content and we use `SliverFillRemaining`
+          physics: isEmpty
+              ? const NeverScrollableScrollPhysics()
+              : SloppyScrollPhysics(
+                  gestureSettings: MediaQuery.gestureSettingsOf(context),
+                  parent: const AlwaysScrollableScrollPhysics(),
+                ),
+          slivers: [
+            appBar,
+            AnimationLimiter(
+              key: ValueKey(context.select<FilterGroupNotifier?, Uri?>((v) => v?.value)),
+              child: isEmpty
                   ? SliverFillRemaining(
                       hasScrollBody: false,
-                      child: emptyBuilder(),
+                      child: _buildEmptyContent(context),
                     )
-                  : SectionedListSliver<FilterGridItem<T>>();
-            }),
-        const NavBarPaddingSliver(),
-        const BottomPaddingSliver(),
-        const TvTileGridBottomPaddingSliver(),
-      ],
+                  : SectionedListSliver<FilterGridItem<T>>(),
+            ),
+            const NavBarPaddingSliver(),
+            const BottomPaddingSliver(),
+            const TvTileGridBottomPaddingSliver(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyContent(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    return ValueListenableBuilder<SourceState>(
+      valueListenable: source.stateNotifier,
+      builder: (context, sourceState, child) {
+        if (sourceState == SourceState.loading) {
+          return LoadingEmptyContent(source: source);
+        }
+
+        return emptyBuilder();
+      },
     );
   }
 }

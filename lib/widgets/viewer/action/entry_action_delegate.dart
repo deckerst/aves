@@ -148,9 +148,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     switch (action) {
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
-        return targetEntry.canRotate;
       case EntryAction.flip:
-        return targetEntry.canFlip;
       case EntryAction.editDate:
       case EntryAction.editLocation:
       case EntryAction.editTitleDescription:
@@ -163,6 +161,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.viewMotionPhotoVideo:
         return _metadataActionDelegate.canApply(targetEntry, action);
       case EntryAction.convert:
+      case EntryAction.rename:
       case EntryAction.copy:
       case EntryAction.move:
         return !availability.isLocked;
@@ -306,7 +305,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (_collection == null || resultUri == null) return;
 
     final editedEntry = await mediaFetchService.getEntry(resultUri, mimeType);
-    if (editedEntry == null) return;
+    if (editedEntry == null) {
+      debugPrint('failed to find edited entry with mimeType=$mimeType uri=$resultUri');
+      return;
+    }
 
     final editedUri = editedEntry.uri;
     final matchCurrentFilters = _collection.filters.every((filter) => filter.test(editedEntry));
@@ -337,17 +339,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback, showAction);
   }
 
-  Future<void> quickMove(BuildContext context, String album, {required bool copy}) async {
-    if (!await unlockAlbum(context, album)) return;
+  Future<void> quickMove(BuildContext context, String destinationAlbum, {required bool copy}) async {
+    if (!await unlockAlbum(context, destinationAlbum)) return;
 
     final targetEntry = _getTargetEntry(context, copy ? EntryAction.copy : EntryAction.move);
-    if (!copy && targetEntry.directory == album) return;
+    if (!copy && targetEntry.directory == destinationAlbum) return;
 
     await doQuickMove(
       context,
       moveType: copy ? MoveType.copy : MoveType.move,
       entriesByDestination: {
-        album: {targetEntry}
+        destinationAlbum: {targetEntry},
       },
     );
   }
@@ -497,11 +499,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
           loader: () async {
-            final data = await mediaFetchService.getSvg(
-              targetEntry.uri,
-              targetEntry.mimeType,
-              sizeBytes: targetEntry.sizeBytes,
-            );
+            final data = await mediaFetchService.getOriginalBytes(targetEntry);
             return utf8.decode(data);
           },
         ),

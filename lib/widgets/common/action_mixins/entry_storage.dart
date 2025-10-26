@@ -33,6 +33,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
+import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
@@ -42,7 +43,12 @@ import 'package:provider/provider.dart';
 mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   // returns whether it completed the action (with or without failures)
   Future<bool> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
-    final destinationAlbumFilter = await pickAlbum(context: context, moveType: MoveType.export, storedAlbumsOnly: true);
+    final destinationAlbumFilter = await pickAlbum(
+      context: context,
+      moveType: MoveType.export,
+      chipTypes: {AlbumChipType.stored},
+      initialGroup: null,
+    );
     if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
 
     final destinationAlbum = destinationAlbumFilter.album;
@@ -243,7 +249,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     }
 
-    if ({MoveType.move, MoveType.copy}.contains(moveType) && !await _checkUndatedItems(context, entries)) return false;
+    if ({MoveType.move, MoveType.copy, MoveType.toBin}.contains(moveType) && !await _checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -370,7 +376,12 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       case MoveType.copy:
       case MoveType.move:
       case MoveType.export:
-        final destinationAlbumFilter = await pickAlbum(context: context, moveType: moveType, storedAlbumsOnly: true);
+        final destinationAlbumFilter = await pickAlbum(
+          context: context,
+          moveType: moveType,
+          chipTypes: {AlbumChipType.stored},
+          initialGroup: null,
+        );
         if (destinationAlbumFilter == null || destinationAlbumFilter is! StoredAlbumFilter) return false;
 
         final destinationAlbum = destinationAlbumFilter.album;

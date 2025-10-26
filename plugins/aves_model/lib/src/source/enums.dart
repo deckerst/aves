@@ -2,10 +2,10 @@ enum SourceState { loading, cataloguing, locatingCountries, locatingPlaces, read
 
 enum ChipSortFactor { date, name, count, size, path }
 
-enum AlbumChipGroupFactor { none, importance, mimeType, volume }
+enum AlbumChipSectionFactor { none, importance, mimeType, volume }
 
-enum EntrySortFactor { date, name, rating, size, duration }
+enum EntrySortFactor { date, name, rating, size, duration, path }
 
-enum EntryGroupFactor { none, album, month, day }
+enum EntrySectionFactor { none, album, month, day }
 
 enum TileLayout { mosaic, grid, list }

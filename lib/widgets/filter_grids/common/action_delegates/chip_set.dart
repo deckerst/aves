@@ -1,9 +1,10 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/set_or.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -20,13 +21,14 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -94,6 +96,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return !useTvLayout && appMode.canNavigate && !isSelecting;
       case ChipSetAction.toggleTitleSearch:
         return !useTvLayout && !isSelecting;
+      case ChipSetAction.createGroup:
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         return false;
@@ -113,6 +116,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         return appMode.canNavigate;
       case ChipSetAction.delete:
       case ChipSetAction.remove:
+      case ChipSetAction.group:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
         return false;
@@ -137,13 +141,15 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     switch (action) {
       // general
-      case ChipSetAction.configureView:
       case ChipSetAction.select:
+        return hasItems;
+      case ChipSetAction.configureView:
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
       // browsing
       case ChipSetAction.search:
       case ChipSetAction.toggleTitleSearch:
+      case ChipSetAction.createGroup:
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         return true;
@@ -158,6 +164,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.hide:
       case ChipSetAction.pin:
       case ChipSetAction.unpin:
+      case ChipSetAction.group:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
       case ChipSetAction.showCollection:
@@ -189,6 +196,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         final routeName = context.currentRouteName!;
         settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));
         context.read<Query>().toggle();
+      case ChipSetAction.createGroup:
       case ChipSetAction.createAlbum:
       case ChipSetAction.createVault:
         break;
@@ -212,6 +220,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
         _goToCollection(context);
       case ChipSetAction.delete:
       case ChipSetAction.remove:
+      case ChipSetAction.group:
       case ChipSetAction.lockVault:
       case ChipSetAction.showCountryStates:
         break;
@@ -234,8 +243,29 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   Iterable<AvesEntry> _selectedEntries(BuildContext context) {
     final source = context.read<CollectionSource>();
     final visibleEntries = source.visibleEntries;
-    final filters = getSelectedFilters(context);
-    return filters.isEmpty ? visibleEntries : visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
+
+    final filters = <CollectionFilter>{};
+    // use user selected filters, if any
+    filters.addAll(getSelectedFilters(context));
+
+    if (filters.isEmpty) {
+      // use current group filters, if any
+      final groupUri = context.read<FilterGroupNotifier?>()?.value;
+      if (groupUri != null) {
+        final grouping = FilterGrouping.forUri(groupUri);
+        if (grouping != null) {
+          final groupContent = grouping.getDirectChildren(groupUri);
+          filters.addAll(groupContent);
+        }
+      }
+    }
+
+    if (filters.isNotEmpty) {
+      return visibleEntries.where((entry) => filters.any((f) => f.test(entry)));
+    }
+
+    // default to all content
+    return visibleEntries;
   }
 
   Future<void> configureView(BuildContext context) async {
@@ -359,6 +389,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     if (confirmed == null || !confirmed) return;
 
     final filters = getSelectedFilters(context);
+    if (!await unlockFilters(context, filters)) return;
+
     settings.changeFilterVisibility(filters, false);
 
     browse(context);

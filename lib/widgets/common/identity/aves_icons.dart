@@ -25,7 +25,7 @@ class VideoIcon extends StatelessWidget {
     final gridTheme = context.watch<GridThemeData>();
     final showDuration = gridTheme.showVideoDuration;
     Widget child = OverlayIcon(
-      icon: entry.is360 ? AIcons.sphericalVideo : AIcons.videoThumb,
+      icon: entry.is360 ? AIcons.sphericalVideo : AIcons.videoPlay,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,
     );

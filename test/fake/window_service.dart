@@ -11,7 +11,16 @@ class FakeWindowService extends Fake implements WindowService {
   Future<void> keepScreenOn(bool on) => SynchronousFuture(null);
 
   @override
+  Future<bool> isInMultiWindowMode() => SynchronousFuture(false);
+
+  @override
+  Future<bool> isInPictureInPictureMode() => SynchronousFuture(false);
+
+  @override
   Future<bool> isRotationLocked() => SynchronousFuture(false);
+
+  @override
+  Future<int> getOrientation() => SynchronousFuture(0);
 
   @override
   Future<void> requestOrientation([Orientation? orientation]) => SynchronousFuture(null);
@@ -27,4 +36,7 @@ class FakeWindowService extends Fake implements WindowService {
 
   @override
   Future<void> setColorMode({required bool wideColorGamut, required bool hdr}) => SynchronousFuture(null);
+
+  @override
+  Future<bool> startGlobalDrag(String uri, String? label, Size shadowSize, Uint8List shadowBytes) => SynchronousFuture(false);
 }

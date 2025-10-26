@@ -226,9 +226,9 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     );
     final duplicates = rows.map(AvesEntry.fromMap).toSet();
     if (duplicates.isNotEmpty) {
-      debugPrint('Found duplicates=$duplicates');
+      debugPrint('$runtimeType found duplicates=$duplicates');
     }
-    // return most recent duplicate for each duplicated content ID
+    // returns most recent duplicate for each duplicated content ID
     return duplicates;
   }
 
@@ -516,9 +516,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     final result = <CoverRow>{};
     final cursor = await _db.queryCursor(coverTable, bufferSize: _queryCursorBufferSize);
     while (await cursor.moveNext()) {
-      final row = CoverRow.fromMap(cursor.current);
+      final rowMap = cursor.current;
+      final row = CoverRow.fromMap(rowMap);
       if (row != null) {
         result.add(row);
+      } else {
+        debugPrint('$runtimeType failed to deserialize cover from row=$rowMap');
       }
     }
     return result;
@@ -576,19 +579,39 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   // dynamic albums
 
   @override
-  Future<void> clearDynamicAlbums() async {
+  Future<int> clearDynamicAlbums() async {
     final count = await _db.delete(dynamicAlbumTable, where: '1');
     debugPrint('$runtimeType clearDynamicAlbums deleted $count rows');
+    return count;
   }
 
   @override
-  Future<Set<DynamicAlbumRow>> loadAllDynamicAlbums() async {
+  Future<Set<DynamicAlbumRow>> loadAllDynamicAlbums({int bufferSize = _queryCursorBufferSize}) async {
     final result = <DynamicAlbumRow>{};
-    final cursor = await _db.queryCursor(dynamicAlbumTable, bufferSize: _queryCursorBufferSize);
-    while (await cursor.moveNext()) {
-      final row = DynamicAlbumRow.fromMap(cursor.current);
-      if (row != null) {
-        result.add(row);
+    try {
+      final cursor = await _db.queryCursor(dynamicAlbumTable, bufferSize: bufferSize);
+      while (await cursor.moveNext()) {
+        final rowMap = cursor.current;
+        final row = DynamicAlbumRow.fromMap(rowMap);
+        if (row != null) {
+          result.add(row);
+        } else {
+          debugPrint('$runtimeType failed to deserialize dynamic album from row=$rowMap');
+        }
+      }
+    } catch (error, stack) {
+      debugPrint('$runtimeType failed to query table=$dynamicAlbumTable error=$error\n$stack');
+      if (bufferSize > 1) {
+        // a large row may prevent reading from the table because of cursor window size limit,
+        // so we retry without buffer to read as many rows as we can, and removing the others
+        debugPrint('$runtimeType retry to query table=$dynamicAlbumTable with no cursor buffer');
+        final safeRows = await loadAllDynamicAlbums(bufferSize: 1);
+        final clearedCount = await clearDynamicAlbums();
+        await addDynamicAlbums(safeRows);
+        final addedCount = safeRows.length;
+        final lostCount = clearedCount - addedCount;
+        debugPrint('$runtimeType kept $addedCount rows, lost $lostCount rows from table=$dynamicAlbumTable');
+        return safeRows;
       }
     }
     return result;
@@ -634,9 +657,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     final result = <VideoPlaybackRow>{};
     final cursor = await _db.queryCursor(videoPlaybackTable, bufferSize: _queryCursorBufferSize);
     while (await cursor.moveNext()) {
-      final row = VideoPlaybackRow.fromMap(cursor.current);
+      final rowMap = cursor.current;
+      final row = VideoPlaybackRow.fromMap(rowMap);
       if (row != null) {
         result.add(row);
+      } else {
+        debugPrint('$runtimeType failed to deserialize video playback from row=$rowMap');
       }
     }
     return result;

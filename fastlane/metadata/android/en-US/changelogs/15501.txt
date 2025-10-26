@@ -1,0 +1,3 @@
+In v1.13.4:
+- add your own map styles
+Full changelog available on GitHub

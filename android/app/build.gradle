@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'com.google.devtools.ksp'
     id 'kotlin-android'
-    id 'kotlin-kapt'
     id 'dev.flutter.flutter-gradle-plugin'
 }
 
@@ -33,13 +32,13 @@ kotlin {
 }
 
 android {
-    namespace 'deckers.thibault.aves'
-    compileSdk 35
+    namespace = 'deckers.thibault.aves'
+    compileSdk = 36
 
     defaultConfig {
         applicationId packageName
         minSdk flutter.minSdkVersion
-        targetSdk 35
+        targetSdk 36
         versionCode flutter.versionCode
         versionName flutter.versionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>"]
@@ -55,7 +54,7 @@ android {
         }
     }
 
-    flavorDimensions = ["store"]
+    flavorDimensions += "store"
 
     productFlavors {
         play {
@@ -93,9 +92,9 @@ android {
             applicationIdSuffix ".profile"
         }
         release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources true
+            signingConfig = signingConfigs.release
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -134,14 +133,14 @@ flutter {
 
 repositories {
     maven {
-        url 'https://jitpack.io'
+        url = 'https://jitpack.io'
         content {
             includeGroup "com.github.deckerst"
             includeGroup "com.github.deckerst.mp4parser"
         }
     }
     maven {
-        url 'https://s3.amazonaws.com/repo.commonsware.com'
+        url = 'https://s3.amazonaws.com/repo.commonsware.com'
         content {
             excludeGroupByRegex "com\\.github\\.deckerst.*"
         }
@@ -149,38 +148,41 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
 
-    implementation "androidx.appcompat:appcompat:1.7.0"
-    implementation 'androidx.core:core-ktx:1.15.0'
-    implementation 'androidx.lifecycle:lifecycle-process:2.8.7'
-    implementation 'androidx.media:media:1.7.0'
+    implementation 'androidx.annotation:annotation:1.9.1'
+    implementation "androidx.appcompat:appcompat:1.7.1"
+    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.9.4'
+    implementation 'androidx.media:media:1.7.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
-    implementation 'androidx.work:work-runtime-ktx:2.10.0'
+    // Jetpack `security-crypto` library is deprecated:
+    // https://developer.android.com/privacy-and-security/cryptography#security-crypto-jetpack-deprecated
+    implementation 'androidx.security:security-crypto:1.1.0'
+    // `work-runtime:2.11.0` requires `minSdkVersion` 23+
+    implementation 'androidx.work:work-runtime:2.10.0'
 
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
     implementation "com.github.bumptech.glide:glide:$glide_version"
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.material:material:1.13.0'
     // SLF4J implementation for `mp4parser`
-    implementation 'org.slf4j:slf4j-simple:2.0.16'
+    implementation 'org.slf4j:slf4j-simple:2.0.17'
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     // - https://jitpack.io/p/deckerst/androidsvg
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:3ed067f021'
-    implementation 'com.github.deckerst:androidsvg:cc9d59a88f'
-    implementation 'com.github.deckerst.mp4parser:isoparser:d5caf7a3dd'
-    implementation 'com.github.deckerst.mp4parser:muxer:d5caf7a3dd'
-    implementation 'com.github.deckerst:pixymeta-android:71eee77dc4'
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:c747ae9ee9'
+    implementation 'com.github.deckerst:androidsvg:67db933051'
+    implementation 'com.github.deckerst.mp4parser:isoparser:c2898f1832'
+    implementation 'com.github.deckerst.mp4parser:muxer:c2898f1832'
+    implementation 'com.github.deckerst:pixymeta-android:f4513291b7'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:6.0.0'
 
-    kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')

@@ -18,6 +18,8 @@ class MimeTypes {
   static const art = 'image/x-jg';
   static const cdr = 'image/x-coreldraw';
   static const djvu = 'image/vnd.djvu';
+  static const dwg = 'image/vnd.dwg';
+  static const dxf = 'image/vnd.dxf';
   static const jpeg2000 = 'image/jp2';
   static const jxl = 'image/jxl';
   static const pat = 'image/x-coreldrawpattern';
@@ -25,6 +27,8 @@ class MimeTypes {
   static const pnm = 'image/x-portable-anymap';
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
+  static const tap = 'image/vnd.tencent.tap';
+  static const wmf = 'image/wmf';
 
   static const arw = 'image/x-sony-arw';
   static const cr2 = 'image/x-canon-cr2';
@@ -42,6 +46,7 @@ class MimeTypes {
   static const pef = 'image/x-pentax-pef';
   static const raf = 'image/x-fuji-raf';
   static const raw = 'image/x-panasonic-raw';
+  static const rgbe = 'image/vnd.radiance';
   static const rw2 = 'image/x-panasonic-rw2';
   static const sr2 = 'image/x-sony-sr2';
   static const srf = 'image/x-sony-srf';
@@ -57,6 +62,7 @@ class MimeTypes {
   static const aviVnd = 'video/vnd.avi';
   static const aviXMSVideo = 'video/x-msvideo';
   static const dvd = 'video/dvd';
+  static const flic = 'video/fli';
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
   static const mkv = 'video/mkv';

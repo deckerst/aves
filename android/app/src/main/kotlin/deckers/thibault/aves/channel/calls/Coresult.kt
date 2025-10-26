@@ -6,7 +6,6 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.reflect.KSuspendFunction2
 
 // ensure `result` methods are called on the main looper thread
 class Coresult internal constructor(private val call: MethodCall, private val methodResult: MethodChannel.Result) : MethodChannel.Result {
@@ -43,7 +42,11 @@ class Coresult internal constructor(private val call: MethodCall, private val me
     }
 
     companion object {
-        fun safe(call: MethodCall, result: MethodChannel.Result, function: (call: MethodCall, result: MethodChannel.Result) -> Unit) {
+        fun safe(
+            call: MethodCall,
+            result: MethodChannel.Result,
+            function: (call: MethodCall, result: MethodChannel.Result) -> Unit
+        ) {
             val res = Coresult(call, result)
             try {
                 function(call, res)
@@ -52,7 +55,11 @@ class Coresult internal constructor(private val call: MethodCall, private val me
             }
         }
 
-        suspend fun safeSuspend(call: MethodCall, result: MethodChannel.Result, function: KSuspendFunction2<MethodCall, MethodChannel.Result, Unit>) {
+        suspend fun safeSuspend(
+            call: MethodCall,
+            result: MethodChannel.Result,
+            function: suspend (call: MethodCall, result: MethodChannel.Result) -> Unit
+        ) {
             val res = Coresult(call, result)
             try {
                 function(call, res)

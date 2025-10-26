@@ -1,5 +1,5 @@
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/covered/location.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/place.dart';
@@ -40,7 +40,6 @@ class PlaceListPage extends StatelessWidget {
               sortFactor: settings.placeSortFactor,
               actionDelegate: PlaceChipSetActionDelegate(gridItems),
               filterSections: _groupToSections(gridItems),
-              applyQuery: applyQuery,
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.place,
                 text: context.l10n.placeEmpty,
@@ -50,10 +49,6 @@ class PlaceListPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<FilterGridItem<LocationFilter>> applyQuery(BuildContext context, List<FilterGridItem<LocationFilter>> filters, String query) {
-    return filters.where((item) => item.filter.getLabel(context).toUpperCase().contains(query)).toList();
   }
 
   List<FilterGridItem<LocationFilter>> _getGridItems(CollectionSource source) {

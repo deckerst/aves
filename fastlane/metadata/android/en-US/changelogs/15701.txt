@@ -1,0 +1,4 @@
+In v1.13.6:
+- customize the bottom nav bar
+- group tags
+Full changelog available on GitHub

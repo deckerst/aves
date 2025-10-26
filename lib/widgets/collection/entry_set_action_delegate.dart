@@ -9,9 +9,10 @@ import 'package:aves/model/entry/extensions/metadata_edition.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/set_and.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/naming_pattern.dart';
@@ -36,6 +37,7 @@ import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
@@ -43,11 +45,11 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_set_page.dart';
-import 'package:aves/widgets/dialogs/filter_editors/add_dynamic_album_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/create_dynamic_album_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -57,7 +59,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin {
+class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin, VaultAwareMixin {
   bool isVisible(
     EntrySetAction action, {
     required AppMode appMode,
@@ -360,6 +362,23 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     return true;
   }
 
+  Future<void> quickMove(BuildContext context, String destinationAlbum, {required bool copy}) async {
+    if (!await unlockAlbum(context, destinationAlbum)) return;
+
+    final entries = _getTargetItems(context);
+    final completed = await doQuickMove(
+      context,
+      moveType: copy ? MoveType.copy : MoveType.move,
+      entriesByDestination: {
+        destinationAlbum: entries,
+      },
+    );
+
+    if (completed) {
+      _browse(context);
+    }
+  }
+
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
     final completed = await doMove(context, moveType: moveType, entries: entries);
@@ -632,14 +651,31 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editTitleDescription(modifier));
   }
 
-  Future<void> _editRating(BuildContext context) async {
+  Future<void> quickRate(BuildContext context, int rating) => _editRating(context, rating: rating);
+
+  Future<void> _editRating(BuildContext context, {int? rating}) async {
     final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditRating);
     if (entries == null || entries.isEmpty) return;
 
-    final rating = await selectRating(context, entries);
+    rating ??= await selectRating(context, entries);
     if (rating == null) return;
 
     await _edit(context, entries, (entry) => entry.editRating(rating));
+  }
+
+  Future<void> quickTag(BuildContext context, CollectionFilter filter) async {
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTags);
+    if (entries == null || entries.isEmpty) return;
+
+    final newTagsByEntry = <AvesEntry, Set<String>>{};
+    await Future.forEach(entries, (entry) async {
+      newTagsByEntry[entry] = {
+        ...entry.tags,
+        ...await getTagsFromFilters({filter}, entry),
+      };
+    });
+
+    await _doEditTags(context, newTagsByEntry);
   }
 
   Future<void> _editTags(BuildContext context) async {
@@ -649,13 +685,18 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final newTagsByEntry = await selectTags(context, entries);
     if (newTagsByEntry == null) return;
 
+    await _doEditTags(context, newTagsByEntry);
+  }
+
+  Future<void> _doEditTags(BuildContext context, Map<AvesEntry, Set<String>> newTagsByEntry) async {
+    final entries = newTagsByEntry.keys.toSet();
+
     // only process modified items
     entries.removeWhere((entry) {
       final newTags = newTagsByEntry[entry] ?? entry.tags;
       final currentTags = entry.tags;
       return newTags.length == currentTags.length && newTags.every(currentTags.contains);
     });
-
     if (entries.isEmpty) return;
 
     await _edit(context, entries, (entry) => entry.editTags(newTagsByEntry[entry]!));
@@ -670,7 +711,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _removeMetadata(BuildContext context) async {
-    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canRemoveMetadata);
+    final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.isMetadataRemovalSupported);
     if (entries == null || entries.isEmpty) return;
 
     final types = await selectMetadataToRemove(context, entries);
@@ -771,8 +812,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final name = await showDialog<String>(
       context: context,
-      builder: (context) => const AddDynamicAlbumDialog(),
-      routeSettings: const RouteSettings(name: AddDynamicAlbumDialog.routeName),
+      builder: (context) => const CreateDynamicAlbumDialog(),
+      routeSettings: const RouteSettings(name: CreateDynamicAlbumDialog.routeName),
     );
     if (name == null) return;
 
@@ -792,19 +833,20 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  Future<void> _showDynamicAlbum(NavigatorState? navigator, DynamicAlbumFilter album) async {
+  Future<void> _showDynamicAlbum(NavigatorState? navigator, DynamicAlbumFilter albumFilter) async {
     // local context may be deactivated when action is triggered after navigation
     if (navigator != null) {
       final context = navigator.context;
       final highlightInfo = context.read<HighlightInfo>();
       if (context.currentRouteName == AlbumListPage.routeName) {
-        highlightInfo.trackItem(FilterGridItem(album, null), highlightItem: album);
+        highlightInfo.trackItem(FilterGridItem(albumFilter, null), highlightItem: albumFilter);
       } else {
-        highlightInfo.set(album);
+        highlightInfo.set(albumFilter);
+        final initialGroup = albumGrouping.getFilterParent(albumFilter);
         await navigator.pushAndRemoveUntil(
           MaterialPageRoute(
             settings: const RouteSettings(name: AlbumListPage.routeName),
-            builder: (_) => const AlbumListPage(),
+            builder: (_) => AlbumListPage(initialGroup: initialGroup),
           ),
           (route) => false,
         );

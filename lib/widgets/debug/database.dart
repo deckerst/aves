@@ -238,9 +238,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('cover rows: ${snapshot.data!.length} (${covers.count} in memory)'),
+                        child: Text('covers: ${snapshot.data!.length} rows\n(${covers.count} in memory)'),
                       ),
                       const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => localMediaDb.loadAllCovers().then((list) {
+                          debugPrint('covers dump start');
+                          list.forEach((v) => debugPrint('  $v'));
+                          debugPrint('covers albums dump end');
+                        }),
+                        child: const Text('Dump'),
+                      ),
                       ElevatedButton(
                         onPressed: () => covers.clear().then((_) => _reload()),
                         child: const Text('Clear'),
@@ -259,9 +267,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('dynamic album rows: ${snapshot.data!.length} (${dynamicAlbums.count} in memory)'),
+                        child: Text('dynamic albums: ${snapshot.data!.length} rows\n(${dynamicAlbums.count} in memory)'),
                       ),
                       const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => localMediaDb.loadAllDynamicAlbums().then((list) {
+                          debugPrint('dynamic albums dump start');
+                          list.forEach((v) => debugPrint('  $v'));
+                          debugPrint('dynamic albums dump end');
+                        }),
+                        child: const Text('Dump'),
+                      ),
                       ElevatedButton(
                         onPressed: () => dynamicAlbums.clear().then((_) => _reload()),
                         child: const Text('Clear'),

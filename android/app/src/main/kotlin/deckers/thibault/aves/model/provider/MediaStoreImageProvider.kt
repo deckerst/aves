@@ -256,61 +256,68 @@ class MediaStoreImageProvider : ImageProvider() {
                             Log.w(LOG_TAG, "failed to make entry from uri=$itemUri because of null MIME type")
                         } else {
                             val path = cursor.getString(pathColumn)
-                            var entryFields: FieldMap = hashMapOf(
-                                EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
-                                EntryFields.URI to itemUri.toString(),
-                                EntryFields.PATH to path,
-                                EntryFields.SOURCE_MIME_TYPE to mimeType,
-                                EntryFields.WIDTH to width,
-                                EntryFields.HEIGHT to height,
-                                EntryFields.SOURCE_ROTATION_DEGREES to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
-                                EntryFields.SIZE_BYTES to cursor.getLong(sizeColumn),
-                                EntryFields.DATE_ADDED_SECS to cursor.getInt(dateAddedSecsColumn),
-                                EntryFields.DATE_MODIFIED_MILLIS to dateModifiedMillis,
-                                EntryFields.SOURCE_DATE_TAKEN_MILLIS to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
-                                EntryFields.DURATION_MILLIS to durationMillis,
-                                // only for map export
-                                EntryFields.CONTENT_ID to id,
-                            )
 
-                            if (MimeTypes.isHeic(mimeType)) {
-                                // The reported size for some HEIC images is simply incorrect.
-                                try {
-                                    StorageUtils.openInputStream(context, itemUri)?.use { input ->
-                                        val options = BitmapFactory.Options().apply {
-                                            inJustDecodeBounds = true
+                            val isDir = path != null && File(path).isDirectory
+                            if (isDir) {
+                                // some directories are wrongly registered as media (e.g. `.../Android/media/is.xyz.mpv`)
+                                Log.w(LOG_TAG, "failed to make entry from uri=$itemUri because path=$path refers to a directory")
+                            } else {
+                                var entryFields: FieldMap = hashMapOf(
+                                    EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
+                                    EntryFields.URI to itemUri.toString(),
+                                    EntryFields.PATH to path,
+                                    EntryFields.SOURCE_MIME_TYPE to mimeType,
+                                    EntryFields.WIDTH to width,
+                                    EntryFields.HEIGHT to height,
+                                    EntryFields.SOURCE_ROTATION_DEGREES to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
+                                    EntryFields.SIZE_BYTES to cursor.getLong(sizeColumn),
+                                    EntryFields.DATE_ADDED_SECS to cursor.getInt(dateAddedSecsColumn),
+                                    EntryFields.DATE_MODIFIED_MILLIS to dateModifiedMillis,
+                                    EntryFields.SOURCE_DATE_TAKEN_MILLIS to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
+                                    EntryFields.DURATION_MILLIS to durationMillis,
+                                    // only for map export
+                                    EntryFields.CONTENT_ID to id,
+                                )
+
+                                if (MimeTypes.isHeic(mimeType)) {
+                                    // The reported size for some HEIC images is simply incorrect.
+                                    try {
+                                        StorageUtils.openInputStream(context, itemUri)?.use { input ->
+                                            val options = BitmapFactory.Options().apply {
+                                                inJustDecodeBounds = true
+                                            }
+                                            BitmapFactory.decodeStream(input, null, options)
+                                            val outWidth = options.outWidth
+                                            val outHeight = options.outHeight
+                                            if (outWidth > 0 && outHeight > 0) {
+                                                width = outWidth
+                                                height = outHeight
+                                                entryFields[EntryFields.WIDTH] = width
+                                                entryFields[EntryFields.HEIGHT] = height
+                                            }
                                         }
-                                        BitmapFactory.decodeStream(input, null, options)
-                                        val outWidth = options.outWidth
-                                        val outHeight = options.outHeight
-                                        if (outWidth > 0 && outHeight > 0) {
-                                            width = outWidth
-                                            height = outHeight
-                                            entryFields[EntryFields.WIDTH] = width
-                                            entryFields[EntryFields.HEIGHT] = height
-                                        }
+                                    } catch (_: IOException) {
+                                        // ignore
                                     }
-                                } catch (e: IOException) {
-                                    // ignore
                                 }
+
+                                if (MimeTypes.isRaw(mimeType)
+                                    || (width <= 0 || height <= 0) && needSize(mimeType)
+                                    || durationMillis == 0L && needDuration
+                                ) {
+                                    // Some images are incorrectly registered in the Media Store,
+                                    // missing some attributes such as width, height, orientation.
+                                    // Also, the reported size of raw images is inconsistent across devices
+                                    // and Android versions (sometimes the raw size, sometimes the decoded size).
+                                    val entry = SourceEntry(entryFields).fillPreCatalogMetadata(context)
+                                    entryFields = entry.toMap()
+                                }
+
+                                getFileModifiedDateMillis(path)?.let { entryFields[EntryFields.DATE_MODIFIED_MILLIS] = it }
+
+                                handleNewEntry(entryFields)
+                                found = true
                             }
-
-                            if (MimeTypes.isRaw(mimeType)
-                                || (width <= 0 || height <= 0) && needSize(mimeType)
-                                || durationMillis == 0L && needDuration
-                            ) {
-                                // Some images are incorrectly registered in the Media Store,
-                                // missing some attributes such as width, height, orientation.
-                                // Also, the reported size of raw images is inconsistent across devices
-                                // and Android versions (sometimes the raw size, sometimes the decoded size).
-                                val entry = SourceEntry(entryFields).fillPreCatalogMetadata(context)
-                                entryFields = entry.toMap()
-                            }
-
-                            getFileModifiedDateMillis(path)?.let { entryFields[EntryFields.DATE_MODIFIED_MILLIS] = it }
-
-                            handleNewEntry(entryFields)
-                            found = true
                         }
                     }
                 }
@@ -342,7 +349,7 @@ class MediaStoreImageProvider : ImageProvider() {
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
-    override suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
+    override fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         path ?: throw Exception("failed to delete file because path is null")
 
         // the following situations are possible:
@@ -557,6 +564,7 @@ class MediaStoreImageProvider : ImageProvider() {
         toBin: Boolean,
     ): FieldMap {
         val sourcePath = sourceFile?.path
+        val sourceExtension = sourceFile?.extension
         val sourceDir = sourceFile?.parent?.let { ensureTrailingSeparator(it) }
         if (sourceDir == targetDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
             // nothing to do unless it's a renamed copy
@@ -569,6 +577,7 @@ class MediaStoreImageProvider : ImageProvider() {
             dir = targetDir,
             desiredNameWithoutExtension = desiredNameWithoutExtension,
             mimeType = mimeType,
+            defaultExtension = sourceExtension,
             conflictStrategy = nameConflictStrategy,
         )
         val targetNameWithoutExtension = resolution.nameWithoutExtension ?: return skippedFieldMap
@@ -580,6 +589,7 @@ class MediaStoreImageProvider : ImageProvider() {
             targetDir = targetDir,
             targetDirDocFile = targetDirDocFile,
             targetNameWithoutExtension = targetNameWithoutExtension,
+            defaultExtension = sourceExtension,
         ) { output: OutputStream ->
             try {
                 sourceDocFile.copyTo(output)
@@ -615,12 +625,13 @@ class MediaStoreImageProvider : ImageProvider() {
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
         targetNameWithoutExtension: String,
+        defaultExtension: String?,
         write: (OutputStream) -> Unit,
     ): String {
         if (StorageUtils.isInVault(activity, targetDir)) {
             return insertByFile(
                 targetDir = targetDir,
-                targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}",
+                targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}",
                 write = write,
             )
         }
@@ -630,7 +641,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 return insertByMediaStore(
                     activity = activity,
                     targetDir = targetDir,
-                    targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}",
+                    targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}",
                     write = write,
                 )
             }
@@ -642,6 +653,7 @@ class MediaStoreImageProvider : ImageProvider() {
             targetDir = targetDir,
             targetDirDocFile = targetDirDocFile,
             targetNameWithoutExtension = targetNameWithoutExtension,
+            defaultExtension = defaultExtension,
             write = write,
         )
     }
@@ -700,6 +712,7 @@ class MediaStoreImageProvider : ImageProvider() {
         targetDir: String,
         targetDirDocFile: DocumentFileCompat?,
         targetNameWithoutExtension: String,
+        defaultExtension: String?,
         write: (OutputStream) -> Unit,
     ): String {
         targetDirDocFile ?: throw Exception("failed to get tree doc for directory at path=$targetDir")
@@ -708,8 +721,22 @@ class MediaStoreImageProvider : ImageProvider() {
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        val targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
-        val targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+        var targetTreeFile = targetDirDocFile.createFile(mimeType, targetNameWithoutExtension)
+        var targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+
+        // providing a display name and a MIME type does not guarantee
+        // that the created document will be backed by a file with a valid media extension,
+        // but having an extension is essential for media detection by Android,
+        // so we retry with a display name that includes the extension
+        if ((targetDocFile.extension == null || targetDocFile.extension.isEmpty() || targetDocFile.extension == "bin") && defaultExtension != null) {
+            if (targetDocFile.exists()) {
+                targetDocFile.delete()
+            }
+
+            val extension = if (defaultExtension.startsWith(".")) defaultExtension else ".$defaultExtension"
+            targetTreeFile = targetDirDocFile.createFile(mimeType, "$targetNameWithoutExtension$extension")
+            targetDocFile = DocumentFileCompat.fromSingleUri(activity, targetTreeFile.uri)
+        }
 
         try {
             targetDocFile.openOutputStream().use(write)
@@ -845,7 +872,7 @@ class MediaStoreImageProvider : ImageProvider() {
         if (path != null) {
             try {
                 return File(path).lastModified()
-            } catch (securityException: SecurityException) {
+            } catch (_: SecurityException) {
                 // ignore
             }
         }

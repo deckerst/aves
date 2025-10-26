@@ -14,7 +14,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
   final LocationLevel level;
   late final String _location;
   late final String? _code;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   static final unlocated = LocationFilter(LocationLevel.place, '');
   static final located = unlocated.reverse();
@@ -78,7 +78,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
   String get place => _location;
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => true;

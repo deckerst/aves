@@ -1,45 +1,29 @@
 import 'dart:async';
 
 import 'package:aves/l10n/l10n.dart';
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/db/db.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/grouping/common.dart';
+import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
-import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/services/device_service.dart';
-import 'package:aves/services/media/media_fetch_service.dart';
-import 'package:aves/services/media/media_store_service.dart';
-import 'package:aves/services/metadata/metadata_fetch_service.dart';
-import 'package:aves/services/storage_service.dart';
-import 'package:aves/services/window_service.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:aves_report/aves_report.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:path/path.dart' as p;
-import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
-import '../fake/android_app_service.dart';
-import '../fake/availability.dart';
-import '../fake/device_service.dart';
+import '../common.dart';
 import '../fake/media_fetch_service.dart';
 import '../fake/media_store_service.dart';
-import '../fake/db.dart';
 import '../fake/metadata_fetch_service.dart';
-import '../fake/report_service.dart';
 import '../fake/storage_service.dart';
-import '../fake/window_service.dart';
 
 void main() {
   const testAlbum = '${FakeStorageService.primaryPath}Pictures/test';
@@ -55,32 +39,15 @@ void main() {
   );
 
   setUpAll(() async {
-    // specify Posix style path context for consistent behaviour when running tests on Windows
-    getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
-    getIt.registerLazySingleton<AvesAvailability>(FakeAvesAvailability.new);
-    getIt.registerLazySingleton<LocalMediaDb>(FakeAvesDb.new);
-
-    getIt.registerLazySingleton<AppService>(FakeAppService.new);
-    getIt.registerLazySingleton<DeviceService>(FakeDeviceService.new);
-    getIt.registerLazySingleton<MediaFetchService>(FakeMediaFetchService.new);
-    getIt.registerLazySingleton<MediaStoreService>(FakeMediaStoreService.new);
-    getIt.registerLazySingleton<MetadataFetchService>(FakeMetadataFetchService.new);
-    getIt.registerLazySingleton<ReportService>(FakeReportService.new);
-    getIt.registerLazySingleton<StorageService>(FakeStorageService.new);
-    getIt.registerLazySingleton<WindowService>(FakeWindowService.new);
-
-    SharedPreferencesStorePlatform.instance = InMemorySharedPreferencesStore.empty();
-    await settings.init(monitorPlatformSettings: false);
-    settings.canUseAnalysisService = false;
-    await androidFileUtils.init();
+    await setUpAllServices();
   });
 
   setUp(() async {
-    (getIt<MediaStoreService>() as FakeMediaStoreService).reset();
+    await setUpServices();
   });
 
   tearDownAll(() async {
-    await getIt.reset();
+    await tearDownAllServices();
   });
 
   Future<MediaStoreSource> _initSource() async {
@@ -396,5 +363,29 @@ void main() {
         ),
       ),
     );
+  });
+
+  test('groups are cleared when removing entries', () async {
+    final image1 = FakeMediaStoreService.newImage(testAlbum, 'image1');
+    (mediaStoreService as FakeMediaStoreService).entries = {
+      image1,
+    };
+
+    final albumFilter = StoredAlbumFilter(image1.directory!, 'whatever');
+
+    final source = await _initSource();
+    final groupUri = albumGrouping.buildGroupUri(null, 'some group name');
+    final childUri = GroupingConversion.filterToUri(albumFilter);
+    albumGrouping.addToGroup({childUri}.nonNulls.toSet(), groupUri);
+    expect(source.rawAlbums.length, 1);
+    expect(albumGrouping.exists(groupUri), true);
+
+    await source.removeEntries({image1.uri}, includeTrash: true);
+
+    // waiting for microtask to make sure event bus listeners executed
+    await Future.microtask(() {});
+
+    expect(source.rawAlbums.length, 0);
+    expect(albumGrouping.exists(groupUri), false);
   });
 }

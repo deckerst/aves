@@ -15,9 +15,10 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.decoder.AvesAppGlideModule
+import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
 import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
 import deckers.thibault.aves.metadata.Metadata.TYPE_MP4
@@ -85,7 +86,7 @@ abstract class ImageProvider {
         }
     }
 
-    private suspend fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
+    private fun deletePath(contextWrapper: ContextWrapper, path: String, mimeType: String) {
         if (StorageUtils.isInVault(contextWrapper, path)) {
             FileImageProvider().apply {
                 val uri = Uri.fromFile(File(path))
@@ -100,7 +101,7 @@ abstract class ImageProvider {
         }
     }
 
-    open suspend fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
+    open fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
         throw UnsupportedOperationException("`delete` is not supported by this image provider")
     }
 
@@ -142,16 +143,18 @@ abstract class ImageProvider {
 
                         val oldFile = File(sourcePath)
                         if (oldFile.nameWithoutExtension != desiredNameWithoutExtension) {
+                            val defaultExtension = oldFile.extension
                             oldFile.parent?.let { dir ->
                                 val resolution = resolveTargetFileNameWithoutExtension(
                                     contextWrapper = activity,
                                     dir = dir,
                                     desiredNameWithoutExtension = desiredNameWithoutExtension,
                                     mimeType = mimeType,
+                                    defaultExtension = defaultExtension,
                                     conflictStrategy = NameConflictStrategy.RENAME,
                                 )
                                 resolution.nameWithoutExtension?.let { targetNameWithoutExtension ->
-                                    val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType)}"
+                                    val targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}"
                                     val newFile = File(dir, targetFileName)
                                     if (oldFile != newFile) {
                                         newFields = renameSingle(
@@ -277,11 +280,17 @@ abstract class ImageProvider {
             val page = if (sourceMimeType == MimeTypes.TIFF) pageId + 1 else pageId
             desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
         }
+
+        // there is no benefit providing input extension
+        // for known output MIME type
+        val defaultExtension = null
+
         val resolution = resolveTargetFileNameWithoutExtension(
             contextWrapper = activity,
             dir = targetDir,
             desiredNameWithoutExtension = desiredNameWithoutExtension,
             mimeType = exportMimeType,
+            defaultExtension = defaultExtension,
             conflictStrategy = nameConflictStrategy,
         )
         val targetNameWithoutExtension = resolution.nameWithoutExtension ?: return skippedFieldMap
@@ -300,8 +309,8 @@ abstract class ImageProvider {
                     sourceDocFile.copyTo(output)
                 }
             } else {
-                val targetWidthPx: Int
-                val targetHeightPx: Int
+                var targetWidthPx: Int
+                var targetHeightPx: Int
                 when (lengthUnit) {
                     LENGTH_UNIT_PERCENT -> {
                         targetWidthPx = sourceEntry.displayWidth * width / 100
@@ -314,6 +323,12 @@ abstract class ImageProvider {
                     }
                 }
 
+                val rotationDegrees = sourceEntry.rotationDegrees
+                val needRotationAfterGlide = MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)
+                if (rotationDegrees != 0 && needRotationAfterGlide) {
+                    targetWidthPx = targetHeightPx.also { targetHeightPx = targetWidthPx }
+                }
+
                 target = Glide.with(activity.applicationContext)
                     .asBitmap()
                     .apply(AvesAppGlideModule.uncachedFullImageOptions)
@@ -321,8 +336,8 @@ abstract class ImageProvider {
                     .submit(targetWidthPx, targetHeightPx)
 
                 var bitmap = withContext(Dispatchers.IO) { target.get() }
-                if (MimeTypes.needRotationAfterGlide(sourceMimeType, pageId)) {
-                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
+                if (needRotationAfterGlide) {
+                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image for mimeType=$sourceMimeType uri=$sourceUri page=$pageId")
 
@@ -358,6 +373,7 @@ abstract class ImageProvider {
                 targetDir = targetDir,
                 targetDirDocFile = targetDirDocFile,
                 targetNameWithoutExtension = targetNameWithoutExtension,
+                defaultExtension = defaultExtension,
                 write = write,
             )
 
@@ -465,6 +481,7 @@ abstract class ImageProvider {
                 dir = targetDir,
                 desiredNameWithoutExtension = desiredNameWithoutExtension,
                 mimeType = captureMimeType,
+                defaultExtension = null,
                 conflictStrategy = nameConflictStrategy,
             )
         } catch (e: Exception) {
@@ -566,18 +583,19 @@ abstract class ImageProvider {
     }
 
     // returns available name to use, or `null` to skip it
-    suspend fun resolveTargetFileNameWithoutExtension(
+    fun resolveTargetFileNameWithoutExtension(
         contextWrapper: ContextWrapper,
         dir: String,
         desiredNameWithoutExtension: String,
         mimeType: String,
+        defaultExtension: String?,
         conflictStrategy: NameConflictStrategy,
     ): NameConflictResolution {
         val sanitizedNameWithoutExtension = sanitizeDesiredFileName(desiredNameWithoutExtension)
         var resolvedName: String? = sanitizedNameWithoutExtension
         var replacementFile: File? = null
 
-        val extension = extensionFor(mimeType)
+        val extension = extensionFor(mimeType, defaultExtension)
         val targetFile = File(dir, "$sanitizedNameWithoutExtension$extension")
         when (conflictStrategy) {
             NameConflictStrategy.RENAME -> {
@@ -612,11 +630,11 @@ abstract class ImageProvider {
     }
 
     // cf `MetadataFetchHandler.getCatalogMetadataByMetadataExtractor()` for a more thorough check
-    private fun detectMimeType(context: Context, uri: Uri, mimeType: String): String? {
+    fun detectMimeType(context: Context, uri: Uri, mimeType: String?, sizeBytes: Long?): String? {
         var detectedMimeType: String? = null
         if (MimeTypes.canReadWithMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     detectedMimeType = Helper.readMimeType(input)
                 }
             } catch (e: Exception) {
@@ -680,12 +698,13 @@ abstract class ImageProvider {
         try {
             edit(ExifInterface(editableFile))
 
-            if (editableFile.length() == 0L) {
+            val editableFileSizeBytes = editableFile.length()
+            if (editableFileSizeBytes == 0L) {
                 callback.onFailure(Exception("editing Exif yielded an empty file"))
                 return false
             }
 
-            val editedMimeType = detectMimeType(context, Uri.fromFile(editableFile), mimeType)
+            val editedMimeType = detectMimeType(context, Uri.fromFile(editableFile), mimeType, editableFileSizeBytes)
             if (editedMimeType != mimeType) {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for uri=$uri path=$path")
             }
@@ -698,7 +717,7 @@ abstract class ImageProvider {
 
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(trailerVideoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes)
             }
 
             // copy the edited temporary file back to the original
@@ -789,7 +808,7 @@ abstract class ImageProvider {
 
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
-                editableFile.appendBytes(trailerVideoBytes!!)
+                editableFile.appendBytes(trailerVideoBytes)
             }
 
             // copy the edited temporary file back to the original

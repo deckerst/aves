@@ -50,7 +50,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun getDataUsage(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var internalCache = getFolderSize(context.cacheDir)
         internalCache += getFolderSize(context.codeCacheDir)
-        val externalCache = context.externalCacheDirs.map(::getFolderSize).sum()
+        val externalCache = context.externalCacheDirs.sumOf(::getFolderSize)
         val externalFilesDirs = context.getExternalFilesDirs(null)
 
         val dataDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) context.dataDir else File(context.applicationInfo.dataDir)
@@ -58,10 +58,10 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         val database = getFolderSize(File(dataDir, "databases"))
         val flutter = getFolderSize(File(PathUtils.getDataDirectory(context)))
         val vaults = getFolderSize(File(StorageUtils.getVaultRoot(context)))
-        val trash = externalFilesDirs.mapNotNull { StorageUtils.trashDirFor(context, it.path) }.map(::getFolderSize).sum()
+        val trash = externalFilesDirs.mapNotNull { StorageUtils.trashDirFor(context, it.path) }.sumOf(::getFolderSize)
 
         val internalData = getFolderSize(dataDir) - internalCache
-        val externalData = externalFilesDirs.map(::getFolderSize).sum()
+        val externalData = externalFilesDirs.sumOf(::getFolderSize)
         val miscData = internalData + externalData - (database + flutter + vaults + trash)
 
         result.success(
@@ -95,7 +95,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                                 )
                             )
                         }
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         // ignore
                     }
                 }
@@ -115,7 +115,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                             "state" to EnvironmentCompat.getStorageState(volumeFile)
                         )
                     )
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // ignore
                 }
             }
@@ -228,7 +228,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                 if (dir.isDirectory && dir.listFiles()?.isEmpty() == true && dir.delete()) {
                     deleted++
                 }
-            } catch (e: SecurityException) {
+            } catch (_: SecurityException) {
                 // ignore
             }
         }

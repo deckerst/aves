@@ -12,7 +12,12 @@ abstract class DeviceService {
 
   Future<void> setLocaleConfig(List<Locale> locales);
 
+  // 0 is Sunday
+  Future<int?> getFirstDayOfWeekIndex();
+
   Future<int> getPerformanceClass();
+
+  Future<double?> getWidgetCornerRadiusPx();
 
   Future<bool> isLocked();
 
@@ -82,6 +87,23 @@ class PlatformDeviceService implements DeviceService {
   }
 
   @override
+  Future<int?> getFirstDayOfWeekIndex() async {
+    try {
+      final result = await _platform.invokeMethod('getFirstDayOfWeek');
+      if (result != null) {
+        final day = result as String;
+        final index = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].indexOf(day);
+        if (index >= 0) {
+          return index;
+        }
+      }
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
+  }
+
+  @override
   Future<int> getPerformanceClass() async {
     try {
       final result = await _platform.invokeMethod('getPerformanceClass');
@@ -90,6 +112,17 @@ class PlatformDeviceService implements DeviceService {
       await reportService.recordError(e, stack);
     }
     return 0;
+  }
+
+  @override
+  Future<double?> getWidgetCornerRadiusPx() async {
+    try {
+      final result = await _platform.invokeMethod('getWidgetCornerRadiusPx');
+      if (result != null) return result as double;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
   }
 
   @override

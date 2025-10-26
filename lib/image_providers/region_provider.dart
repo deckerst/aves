@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
@@ -24,36 +25,25 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       codec: _loadAsync(key, decode),
       scale: 1.0,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=${key.uri}, pageId=${key.pageId}, mimeType=${key.mimeType}, region=${key.region}');
+        yield ErrorDescription('uri=${key.uri}, pageId=${key.pageId}, mimeType=${key.mimeType}, regionRect=${key.regionRect}');
       },
     );
   }
 
+  bool _shouldFetchRawBytes(RegionProviderKey key) => key.mimeType != MimeTypes.svg;
+
   Future<ui.Codec> _loadAsync(RegionProviderKey key, ImageDecoderCallback decode) async {
-    final uri = key.uri;
-    final mimeType = key.mimeType;
-    final pageId = key.pageId;
     try {
-      final descriptor = await mediaFetchService.getRegion(
-        uri,
-        mimeType,
-        key.rotationDegrees,
-        key.isFlipped,
-        key.sampleSize,
-        key.region,
-        key.imageSize,
-        pageId: pageId,
-        sizeBytes: key.sizeBytes,
+      return await mediaFetchService.getRegion(
+        decoded: _shouldFetchRawBytes(key),
+        request: key,
+        decode: decode,
         taskKey: key,
       );
-      if (descriptor == null) {
-        throw UnreportedStateError('$uri ($mimeType) region loading failed');
-      }
-      return descriptor.instantiateCodec();
     } catch (error) {
       // loading may fail if the provided MIME type is incorrect (e.g. the Media Store may report a JPEG as a TIFF)
-      debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw UnreportedStateError('$mimeType region decoding failed (page $pageId)');
+      debugPrint('$runtimeType _loadAsync failed for key=$key, error=$error');
+      throw UnreportedStateError('region decoding failed for key=$key, error=$error');
     }
   }
 
@@ -74,11 +64,11 @@ class RegionProviderKey extends Equatable {
   final int? pageId, sizeBytes;
   final int rotationDegrees, sampleSize;
   final bool isFlipped;
-  final Rectangle<int> region;
+  final Rectangle<int> regionRect;
   final Size imageSize;
 
   @override
-  List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, sampleSize, region, imageSize];
+  List<Object?> get props => [uri, mimeType, pageId, sizeBytes, rotationDegrees, isFlipped, sampleSize, regionRect, imageSize];
 
   const RegionProviderKey({
     required this.uri,
@@ -88,7 +78,7 @@ class RegionProviderKey extends Equatable {
     required this.rotationDegrees,
     required this.isFlipped,
     required this.sampleSize,
-    required this.region,
+    required this.regionRect,
     required this.imageSize,
   });
 }

@@ -4,6 +4,126 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.9"></a>[v1.13.9] - 2025-10-11
+
+### Added
+
+- Collection: long press on copy/move/rating/tag quick action for quicker action
+- Widget: more shape options
+- Viewer: drag and drop in multi-window mode
+- Vaults: allow hiding like other albums
+- 16 KB memory page size support
+- Finnish translation (thanks Åzze, Olli, Ricky Tigg, Oris5)
+
+### Changed
+
+- Albums: show hidden albums when they are pinned
+
+### Fixed
+
+- saving metadata date when moving items to bin
+- rescanning items in vaults
+- grouping when renaming album
+- thumbnail orientation for some RAW formats
+- converting portrait HEIF/RAW to requested size
+
+## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
+
+### Added
+
+- Collection: support for Motorola burst pattern
+- Stats: total video duration
+
+### Changed
+
+- manual rotation to landscape switches to current sensor orientation, then is fixed to it
+- improved image streaming and pixel format selection
+
+### Fixed
+
+- receiving `geo:` URI in some cases
+- visibility of hidden new albums
+- customizing cover or hiding tag groups
+
+## <a id="v1.13.7"></a>[v1.13.7] - 2025-09-07 [YANKED]
+
+## <a id="v1.13.6"></a>[v1.13.6] - 2025-07-28
+
+### Fixed
+
+- DB init when a serialized dynamic album is too large for cursor window
+
+## <a id="v1.13.5"></a>[v1.13.5] - 2025-07-23
+
+### Added
+
+- Tags: groups
+- bottom navigation bar customization
+
+### Fixed
+
+- crash when updating multiple home widgets
+
+## <a id="v1.13.4"></a>[v1.13.4] - 2025-07-09
+
+### Added
+
+- Map: allow setting subdomains, user-agent for custom styles
+
+### Fixed
+
+- showing directories wrongly registered as media in the Media Store
+- apply preferred first day of the week for date picker
+
+## <a id="v1.13.3"></a>[v1.13.3] - 2025-06-25
+
+### Added
+
+- Info: show matching dynamic albums
+- Map: allow adding custom map styles
+
+### Changed
+
+- Viewer: use nearest neighbor algorithm to render small raster images
+- revoke access when `DocumentsProvider` is not listing content as it should
+
+### Fixed
+
+- crash when decoding some large thumbnails
+- crash when editing metadata for some JPEG images
+- scrolling to top when leaving viewer to collection with title filter enabled
+- recovery of untracked binned items without extension
+
+## <a id="v1.13.2"></a>[v1.13.2] - 2025-06-02
+
+### Changed
+
+- downgraded Flutter to stable v3.27.4
+- prevent display orientation flip when device rotation is locked
+
+### Fixed
+
+- moved file losing its extension and no longer being detected as media in some cases
+- opening home when launching app as media picker
+- removing groups with obsolete albums
+- loading group custom covers
+- crash when parsing some large media with trailing thumbnail
+
+## <a id="v1.13.1"></a>[v1.13.1] - 2025-05-14
+
+### Fixed
+
+- albums: show groups to move/copy/export items
+- albums: hide grouped albums containing hidden items only
+
+## <a id="v1.13.0"></a>[v1.13.0] - 2025-05-12
+
+### Added
+
+- Albums: groups
+- Collection: sort by storage path
+- Search: week day filters
+
 ### Changed
 
 - revert to Skia rendering engine

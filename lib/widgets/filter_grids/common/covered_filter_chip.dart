@@ -2,11 +2,14 @@ import 'dart:math';
 
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/covers.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
@@ -59,9 +62,13 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
 
   static Radius radius(double extent) => Radius.circular(min<double>(AvesFilterChip.defaultRadius, extent / 4));
 
-  static double detailIconSize(double extent) => min<double>(AvesFilterChip.fontSize, extent / 8);
+  static double detailIconSize(double extent) => min<double>(AvesFilterChip.fontSize, extent / 7);
 
-  static double detailFontSize(double extent) => min<double>(AvesFilterChip.fontSize, extent / 6);
+  static double detailFontSize(double extent) => min<double>(AvesFilterChip.fontSize, extent / 7);
+
+  static double detailIconPadding(double extent) => min<double>(8.0, extent / 16);
+
+  static double detailIconTextPadding(double extent) => detailIconPadding(extent) / 2;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +89,20 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
               {
                 return StreamBuilder<DynamicAlbumSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<DynamicAlbumSummaryInvalidatedEvent>(),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            case AlbumGroupFilter _:
+              {
+                return StreamBuilder<AlbumGroupSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<AlbumGroupSummaryInvalidatedEvent>(),
+                  builder: (context, snapshot) => _buildChip(context, source),
+                );
+              }
+            case TagGroupFilter _:
+              {
+                return StreamBuilder<TagGroupSummaryInvalidatedEvent>(
+                  stream: source.eventBus.on<TagGroupSummaryInvalidatedEvent>(),
                   builder: (context, snapshot) => _buildChip(context, source),
                 );
               }
@@ -180,6 +201,10 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   Color _detailColor(BuildContext context) => Theme.of(context).colorScheme.onSurfaceVariant;
 
   Widget _buildDetails(BuildContext context, CollectionSource source, T filter) {
+    final textStyle = TextStyle(
+      color: _detailColor(context),
+      fontSize: detailFontSize(extent),
+    );
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -187,27 +212,41 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is StoredAlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)) _buildDetailIcon(context, AIcons.storageCard),
         if (filter is StoredAlbumFilter && vaults.isVault(filter.album)) _buildDetailIcon(context, AIcons.locked),
         if (filter is DynamicAlbumFilter) _buildDetailIcon(context, AIcons.dynamicAlbum),
-        Text(
-          locked ? AText.valueNotAvailable : NumberFormat.decimalPattern(context.locale).format(source.count(filter)),
-          style: TextStyle(
-            color: _detailColor(context),
-            fontSize: detailFontSize(extent),
+        if (filter is AlbumGroupFilter) ...[
+          _buildDetailIcon(context, AIcons.album, padding: detailIconTextPadding(extent)),
+          Text(
+            '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
+            style: textStyle,
+          ),
+        ],
+        if (filter is TagGroupFilter) ...[
+          _buildDetailIcon(context, AIcons.tag, padding: detailIconTextPadding(extent)),
+          Text(
+            '${NumberFormat.decimalPattern(context.locale).format(tagGrouping.countLeaves(filter.uri))}${AText.separator}',
+            style: textStyle,
+          ),
+        ],
+        Flexible(
+          child: Text(
+            locked ? AText.valueNotAvailable : NumberFormat.decimalPattern(context.locale).format(source.count(filter)),
+            style: textStyle,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDetailIcon(BuildContext context, IconData icon) {
-    final padding = min<double>(8.0, extent / 16);
-    final iconSize = detailIconSize(extent);
+  Widget _buildDetailIcon(BuildContext context, IconData icon, {double? padding}) {
     return AnimatedPadding(
-      padding: EdgeInsetsDirectional.only(end: padding),
+      padding: EdgeInsetsDirectional.only(end: padding ?? detailIconPadding(extent)),
       duration: ADurations.chipDecorationAnimation,
       child: Icon(
         icon,
         color: _detailColor(context),
-        size: iconSize,
+        size: detailIconSize(extent),
       ),
     );
   }

@@ -1,11 +1,12 @@
-import 'package:aves/model/filters/covered/album_base.dart';
-import 'package:aves/model/filters/covered/dynamic_album.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/vaults/vaults.dart';
@@ -47,9 +48,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.decompose:
         return filter is DynamicAlbumFilter;
       case ChipAction.reverse:
-        return true;
       case ChipAction.hide:
-        return !(filter is StoredAlbumFilter && vaults.isVault(filter.album));
+        return true;
       case ChipAction.lockVault:
         return (filter is StoredAlbumFilter && vaults.isVault(filter.album) && !vaults.isLocked(filter.album));
     }
@@ -59,13 +59,15 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
     reportService.log('$runtimeType handles $action');
     switch (action) {
       case ChipAction.goToAlbumPage:
-        _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
+        final initialGroup = albumGrouping.getFilterParent(filter);
+        _goTo(context, filter, AlbumListPage.routeName, (context) => AlbumListPage(initialGroup: initialGroup));
       case ChipAction.goToCountryPage:
         _goTo(context, filter, CountryListPage.routeName, (context) => const CountryListPage());
       case ChipAction.goToPlacePage:
         _goTo(context, filter, PlaceListPage.routeName, (context) => const PlaceListPage());
       case ChipAction.goToTagPage:
-        _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
+        final initialGroup = tagGrouping.getFilterParent(filter);
+        _goTo(context, filter, TagListPage.routeName, (context) => TagListPage(initialGroup: initialGroup));
       case ChipAction.goToExplorerPage:
         String? path;
         if (filter is StoredAlbumFilter) {
@@ -131,6 +133,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
     );
     if (confirmed == null || !confirmed) return;
+
+    if (!await unlockFilter(context, filter)) return;
 
     settings.changeFilterVisibility({filter}, false);
   }

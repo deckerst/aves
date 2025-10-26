@@ -12,6 +12,8 @@ import deckers.thibault.aves.utils.UriUtils.tryParseId
 object ContextUtils {
     private val LOG_TAG = LogUtils.createTag<ContextUtils>()
 
+    fun Context.devicePixelRatio(): Float = resources.displayMetrics.density
+
     fun Context.resourceUri(resourceId: Int): Uri = with(resources) {
         Uri.Builder()
             .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)

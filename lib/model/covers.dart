@@ -1,9 +1,14 @@
 import 'dart:async';
 
 import 'package:aves/model/app_inventory.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/common/services.dart';
@@ -14,12 +19,16 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
+import 'package:synchronized/synchronized.dart';
 
 final Covers covers = Covers._private();
 
 typedef CoverProps = (int? entryId, String? packageName, Color? color);
 
 class Covers {
+  final Set<StreamSubscription> _subscriptions = {};
+  final _lock = Lock();
+
   final StreamController<Set<CollectionFilter>?> _entryChangeStreamController = StreamController.broadcast();
   final StreamController<Set<CollectionFilter>?> _packageChangeStreamController = StreamController.broadcast();
   final StreamController<Set<CollectionFilter>?> _colorChangeStreamController = StreamController.broadcast();
@@ -32,10 +41,15 @@ class Covers {
 
   Set<CoverRow> _rows = {};
 
+  // do not subscribe to events from other modules in constructor
+  // so that modules can subscribe to each other
   Covers._private();
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllCovers();
+    _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) => _updateCoveredDynamicAlbums(e.changes)));
+    _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _updateCoveredGroup(e.oldGroupUri, e.newGroupUri)));
+    _subscriptions.add(tagGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _updateCoveredGroup(e.oldGroupUri, e.newGroupUri)));
   }
 
   int get count => _rows.length;
@@ -94,8 +108,13 @@ class Covers {
     bool notify = true,
   }) async {
     // erase contextual properties from filters before saving them
-    if (filter is StoredAlbumFilter) {
-      filter = StoredAlbumFilter(filter.album, null);
+    switch (filter) {
+      case StoredAlbumFilter _:
+        filter = StoredAlbumFilter(filter.album, null);
+      case AlbumGroupFilter _:
+        filter = AlbumGroupFilter.empty(filter.uri);
+      case TagGroupFilter _:
+        filter = TagGroupFilter.empty(filter.uri);
     }
 
     final oldRows = _rows.where((row) => row.filter == filter).toSet();
@@ -166,6 +185,49 @@ class Covers {
   String? effectiveAlbumPackage(String albumPath) {
     final filterPackage = of(StoredAlbumFilter(albumPath, null))?.$2;
     return filterPackage ?? appInventory.getAlbumAppPackageName(albumPath);
+  }
+
+  Future<void> _updateCoveredDynamicAlbums(Map<DynamicAlbumFilter, DynamicAlbumFilter?> changes) async {
+    await _lock.synchronized(() async {
+      await Future.forEach(changes.entries, (kv) async {
+        final oldFilter = kv.key;
+        final newFilter = kv.value;
+
+        final cover = await covers.remove(oldFilter, notify: false);
+        if (cover != null && newFilter != null) {
+          await covers.set(
+            filter: newFilter,
+            entryId: cover.$1,
+            packageName: cover.$2,
+            color: cover.$3,
+            notify: true,
+          );
+        }
+      });
+    });
+  }
+
+  Future<void> _updateCoveredGroup(Uri oldGroupUri, Uri newGroupUri) async {
+    await _lock.synchronized(() async {
+      final grouping = FilterGrouping.forUri(oldGroupUri);
+      if (grouping != null) {
+        final oldFilter = grouping.uriToFilter(oldGroupUri);
+        final newFilter = grouping.uriToFilter(newGroupUri);
+
+        if (oldFilter != null) {
+          final cover = await covers.remove(oldFilter, notify: false);
+          if (cover != null && newFilter != null) {
+            await covers.set(
+              filter: newFilter,
+              entryId: cover.$1,
+              packageName: cover.$2,
+              color: cover.$3,
+              notify: true,
+            );
+          }
+        }
+      }
+    });
   }
 
   // import/export

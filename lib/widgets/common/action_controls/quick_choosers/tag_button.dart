@@ -1,5 +1,5 @@
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/view/view.dart';
@@ -34,6 +34,15 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
 
   @override
   String get tooltip => action.getText(context);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final source = context.read<CollectionSource?>();
+      settings.removeObsoleteRecentTags(source);
+    });
+  }
 
   @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {

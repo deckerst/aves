@@ -7,19 +7,18 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.12.10+150
+version: 1.13.9+160
 publish_to: none
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.29.3
+  flutter: 3.27.4
   sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
 workspace:
   - plugins/aves_magnifier
   - plugins/aves_map
   - plugins/aves_model
-  - plugins/aves_platform_meta
   - plugins/aves_report
   - plugins/aves_report_crashlytics
   - plugins/aves_screen_state
@@ -72,7 +71,8 @@ dependencies:
   decorated_icon:
   device_info_plus:
   dlna_dart:
-  dynamic_color:
+  # `dynamic_color` v1.8.1 is broken, relying on `Color.toARGB32` which is not in Flutter v3.27.4
+  dynamic_color: 1.7.0
   equatable:
   event_bus:
   expansion_tile_card:
@@ -86,8 +86,9 @@ dependencies:
   flutter_localizations_plus:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git
+      ref: 6a8c14bceaefd00e703ad517fd2a32fa2081b5de
   flutter_map:
-  flutter_markdown: # discontinued on 2025/04/30
+  flutter_markdown_plus:
   flutter_staggered_animations:
   get_it:
   gpx:
@@ -124,6 +125,7 @@ dependencies:
   streams_channel:
     git:
       url: https://github.com/deckerst/aves_streams_channel.git
+  synchronized:
   url_launcher:
   vector_map_tiles: ^8.0.0 # vector_map_tiles v9.0.0-beta.6 has a buggy cross-platform definition for `cacheFolder`
   vector_math:

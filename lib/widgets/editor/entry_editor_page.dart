@@ -28,7 +28,7 @@ class ImageEditorPage extends StatefulWidget {
 }
 
 class _ImageEditorPageState extends State<ImageEditorPage> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<EditorAction?> _actionNotifier = ValueNotifier(null);
   final ValueNotifier<EdgeInsets> _marginNotifier = ValueNotifier(EdgeInsets.zero);
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier<ViewState>(ViewState.zero);
@@ -118,7 +118,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
   }
 
   void _onActionChanged() {
-    switch(_actionNotifier.value) {
+    switch (_actionNotifier.value) {
       case EditorAction.transform:
         _transformController.reset();
         _marginNotifier.value = Cropper.imageMargin;

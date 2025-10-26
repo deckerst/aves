@@ -43,6 +43,7 @@ class _RasterImageViewState extends State<RasterImageView> {
   final ValueNotifier<bool> _fullImageLoaded = ValueNotifier(false);
   ImageInfo? _fullImageInfo;
 
+  static const int _pixelArtMaxSize = 256; // px
   static const double _tilesByShortestSide = 2;
 
   AvesEntry get entry => widget.entry;
@@ -53,14 +54,12 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   ImageProvider get thumbnailProvider => entry.bestCachedThumbnail;
 
-  Rectangle<int> get fullImageRegion => Rectangle<int>(0, 0, entry.width, entry.height);
-
   ImageProvider get fullImageProvider {
     if (_useTiles) {
       assert(_isTilingInitialized);
       return entry.getRegion(
         sampleSize: _maxSampleSize,
-        region: fullImageRegion,
+        region: entry.fullImageRegion,
       );
     } else {
       return entry.fullImage;
@@ -143,7 +142,7 @@ class _RasterImageViewState extends State<RasterImageView> {
   Widget _buildFullImage() {
     final magnifierScale = viewState.scale!;
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final quality = _qualityForScale(
+    final quality = _qualityForScaleAndSize(
       magnifierScale: magnifierScale,
       sampleSize: 1,
       devicePixelRatio: devicePixelRatio,
@@ -255,9 +254,9 @@ class _RasterImageViewState extends State<RasterImageView> {
     final fullImageRegionTile = _RegionTile(
       entry: entry,
       tileRect: Rect.fromLTWH(0, 0, displayWidth * magnifierScale, displayHeight * magnifierScale),
-      regionRect: fullImageRegion,
+      regionRect: entry.fullImageRegion,
       sampleSize: _maxSampleSize,
-      quality: _qualityForScale(
+      quality: _qualityForScaleAndSize(
         magnifierScale: magnifierScale,
         sampleSize: _maxSampleSize,
         devicePixelRatio: devicePixelRatio,
@@ -287,7 +286,7 @@ class _RasterImageViewState extends State<RasterImageView> {
               tileRect: tileRect,
               regionRect: regionRect,
               sampleSize: sampleSize,
-              quality: _qualityForScale(
+              quality: _qualityForScaleAndSize(
                 magnifierScale: magnifierScale,
                 sampleSize: sampleSize,
                 devicePixelRatio: devicePixelRatio,
@@ -311,7 +310,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     return viewOrigin & viewportSize;
   }
 
-  (Rect tileRect, Rectangle<int> regionRect)? _getTileRects({
+  (Rect tileRect, Rectangle<num> regionRect)? _getTileRects({
     required int x,
     required int y,
     required int regionSide,
@@ -329,18 +328,18 @@ class _RasterImageViewState extends State<RasterImageView> {
     // only build visible tiles
     if (!viewRect.overlaps(tileRect)) return null;
 
-    Rectangle<int> regionRect;
+    Rectangle<num> regionRect;
     if (_tileTransform != null) {
       // apply EXIF orientation
       final regionRectDouble = Rect.fromLTWH(x.toDouble(), y.toDouble(), thisRegionWidth.toDouble(), thisRegionHeight.toDouble());
       final tl = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.topLeft);
       final br = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.bottomRight);
-      regionRect = Rectangle<int>.fromPoints(
-        Point<int>(tl.dx.round(), tl.dy.round()),
-        Point<int>(br.dx.round(), br.dy.round()),
+      regionRect = Rectangle<double>.fromPoints(
+        Point<double>(tl.dx, tl.dy),
+        Point<double>(br.dx, br.dy),
       );
     } else {
-      regionRect = Rectangle<int>(x, y, thisRegionWidth, thisRegionHeight);
+      regionRect = Rectangle<num>(x, y, thisRegionWidth, thisRegionHeight);
     }
     return (tileRect, regionRect);
   }
@@ -359,6 +358,24 @@ class _RasterImageViewState extends State<RasterImageView> {
       return renderingScale < .5 ? FilterQuality.medium : FilterQuality.high;
     }
   }
+
+  // usually follow recommendations, except for small images
+  // (like icons, pixel art, etc.) for which the "nearest neighbor" algorithm is used
+  FilterQuality _qualityForScaleAndSize({
+    required double magnifierScale,
+    required int sampleSize,
+    required double devicePixelRatio,
+  }) {
+    if (_displaySize.longestSide < _pixelArtMaxSize) {
+      return FilterQuality.none;
+    }
+
+    return _qualityForScale(
+      magnifierScale: magnifierScale,
+      sampleSize: sampleSize,
+      devicePixelRatio: devicePixelRatio,
+    );
+  }
 }
 
 class _RegionTile extends StatefulWidget {
@@ -367,7 +384,7 @@ class _RegionTile extends StatefulWidget {
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
   final Rect tileRect;
-  final Rectangle<int> regionRect;
+  final Rectangle<num> regionRect;
   final int sampleSize;
   final FilterQuality quality;
 
@@ -388,7 +405,7 @@ class _RegionTile extends StatefulWidget {
     properties.add(IntProperty('id', entry.id));
     properties.add(IntProperty('contentId', entry.contentId));
     properties.add(DiagnosticsProperty<Rect>('tileRect', tileRect));
-    properties.add(DiagnosticsProperty<Rectangle<int>>('regionRect', regionRect));
+    properties.add(DiagnosticsProperty<Rectangle<num>>('regionRect', regionRect));
     properties.add(IntProperty('sampleSize', sampleSize));
   }
 }

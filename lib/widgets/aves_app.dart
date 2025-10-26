@@ -26,6 +26,7 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/derived_material_localization.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
@@ -67,9 +68,9 @@ class AvesApp extends StatefulWidget {
     'az', // Azerbaijani
     'bn', // Bengali
     'ckb', // Kurdish (Central)
-    'fi', // Finnish
     'he', // Hebrew
     'hi', // Hindi
+    'kmr', // Kurdish (Northern)
     'ml', // Malayalam
     'my', // Burmese
     'ne', // Nepali
@@ -78,8 +79,10 @@ class AvesApp extends StatefulWidget {
     'sl', // Slovenian
     'sr', // Serbian
     'th', // Thai
+    'ur', // Urdu
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
+  static final ValueNotifier<bool> canGestureToOtherApps = ValueNotifier(false);
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
 
   // children widgets registering as `WidgetsBinding` observers and implementing `didChangeAppLifecycleState`
@@ -159,7 +162,7 @@ class AvesApp extends StatefulWidget {
 }
 
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   late final Future<void> _appSetup;
   late final Future<bool> _shouldUseBoldFontLoader;
   final TvRailController _tvRailController = TvRailController();
@@ -177,6 +180,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/new_intent_stream');
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
+  final EventChannel _platformWindowChangeChannel = const OptionalEventChannel('deckers.thibault/aves/window_change');
 
   // Flutter has various page transition implementations for Android:
   // - `FadeUpwardsPageTransitionsBuilder` on Oreo / Android 8 / API 27 and below
@@ -200,7 +204,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
     _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
+    _subscriptions.add(_platformWindowChangeChannel.receiveBroadcastStream().listen((event) => _updateWindowMode()));
     _updateCutoutInsets();
+    _updateWindowMode();
     _appModeNotifier.addListener(_onAppModeChanged);
 
     debugPrint('start listening to app lifecycle');
@@ -345,44 +351,46 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     return Selector<Settings, bool>(
       selector: (context, s) => s.initialized ? s.animate : true,
       builder: (context, areAnimationsEnabled, child) {
-        return FutureBuilder<bool>(
-          future: _shouldUseBoldFontLoader,
-          builder: (context, snapshot) {
-            // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
-            // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
-            final shouldUseBoldFont = snapshot.data ?? false;
-            final mq = MediaQuery.of(context).copyWith(
-              boldText: shouldUseBoldFont,
-            );
-            return ValueListenableBuilder<TvMediaQueryModifier?>(
-              valueListenable: _tvMediaQueryModifierNotifier,
-              builder: (context, modifier, child) {
-                return MediaQuery(
-                  data: modifier?.call(mq) ?? mq,
-                  child: AvesColorsProvider(
-                    child: ValueListenableBuilder<PageTransitionsBuilder>(
-                      valueListenable: _pageTransitionsBuilderNotifier,
-                      builder: (context, pageTransitionsBuilder, child) {
-                        final theme = Theme.of(context);
-                        return Theme(
-                          data: theme.copyWith(
-                            pageTransitionsTheme: areAnimationsEnabled
-                                ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
-                                // strip page transitions used by `MaterialPageRoute`
-                                : const DirectPageTransitionsTheme(),
-                            splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
-                          ),
-                          child: MediaQueryDataProvider(child: child!),
-                        );
-                      },
-                      child: child,
+        return MaterialLocalizationsRegionalizer(
+          child: FutureBuilder<bool>(
+            future: _shouldUseBoldFontLoader,
+            builder: (context, snapshot) {
+              // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+              // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+              final shouldUseBoldFont = snapshot.data ?? false;
+              final mq = MediaQuery.of(context).copyWith(
+                boldText: shouldUseBoldFont,
+              );
+              return ValueListenableBuilder<TvMediaQueryModifier?>(
+                valueListenable: _tvMediaQueryModifierNotifier,
+                builder: (context, modifier, child) {
+                  return MediaQuery(
+                    data: modifier?.call(mq) ?? mq,
+                    child: AvesColorsProvider(
+                      child: ValueListenableBuilder<PageTransitionsBuilder>(
+                        valueListenable: _pageTransitionsBuilderNotifier,
+                        builder: (context, pageTransitionsBuilder, child) {
+                          final theme = Theme.of(context);
+                          return Theme(
+                            data: theme.copyWith(
+                              pageTransitionsTheme: areAnimationsEnabled
+                                  ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                                  // strip page transitions used by `MaterialPageRoute`
+                                  : const DirectPageTransitionsTheme(),
+                              splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
+                            ),
+                            child: MediaQueryDataProvider(child: child!),
+                          );
+                        },
+                        child: child,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: child,
-            );
-          },
+                  );
+                },
+                child: child,
+              );
+            },
+          ),
         );
       },
       child: child,
@@ -430,15 +438,17 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void didChangeMetrics() => _updateCutoutInsets();
 
+  @override
+  void didChangeLocales(List<Locale>? locales) => _applyLocale();
+
   Future<void> _updateCutoutInsets() async {
     if (await windowService.isCutoutAware()) {
       AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
     }
   }
 
-  @override
-  void didChangeLocales(List<Locale>? locales) {
-    _applyLocale();
+  Future<void> _updateWindowMode() async {
+    AvesApp.canGestureToOtherApps.value = await windowService.isInMultiWindowMode() && !(await windowService.isInPictureInPictureMode());
   }
 
   void _applyLocale() {

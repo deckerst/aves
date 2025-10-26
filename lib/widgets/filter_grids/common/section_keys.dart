@@ -29,6 +29,8 @@ class AlbumImportanceSectionKey extends ChipSectionKey {
 
   factory AlbumImportanceSectionKey.pinned(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.pinned);
 
+  factory AlbumImportanceSectionKey.group(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.group);
+
   factory AlbumImportanceSectionKey.special(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.special);
 
   factory AlbumImportanceSectionKey.apps(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.apps);

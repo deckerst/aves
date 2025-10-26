@@ -60,6 +60,7 @@
   },
 
   "applyButtonLabel": "APPLY",
+  "createButtonLabel": "CREATE",
   "deleteButtonLabel": "DELETE",
   "nextButtonLabel": "NEXT",
   "showButtonLabel": "SHOW",
@@ -104,9 +105,11 @@
   "chipActionLock": "Lock",
   "chipActionPin": "Pin to top",
   "chipActionUnpin": "Unpin from top",
+  "chipActionGroup": "Change grouping",
   "chipActionRename": "Rename",
   "chipActionSetCover": "Set cover",
   "chipActionShowCountryStates": "Show states",
+  "chipActionCreateGroup": "Create group",
   "chipActionCreateAlbum": "Create album",
   "chipActionCreateVault": "Create vault",
   "chipActionConfigureVault": "Configure vault",
@@ -208,6 +211,7 @@
 
   "albumTierNew": "New",
   "albumTierPinned": "Pinned",
+  "albumTierGroups": "Groups",
   "albumTierSpecial": "Common",
   "albumTierApps": "Apps",
   "albumTierVaults": "Vaults",
@@ -443,6 +447,14 @@
   "newDynamicAlbumDialogTitle": "New Dynamic Album",
   "dynamicAlbumAlreadyExists": "Dynamic album already exists",
 
+  "newGroupDialogTitle": "New Group",
+  "newGroupDialogNameLabel": "Group name",
+  "groupAlreadyExists": "Group already exists",
+  "groupEmpty": "No groups",
+  "ungrouped": "Ungrouped",
+  "groupPickerTitle": "Pick Group",
+  "groupPickerUseThisGroupButton": "Use this group",
+
   "newVaultWarningDialogMessage": "Items in vaults are only available to this app and no others.\n\nIf you uninstall this app, or clear this app data, you will lose all these items.",
   "newVaultDialogTitle": "New Vault",
   "configureVaultDialogTitle": "Configure Vault",
@@ -558,7 +570,7 @@
   "menuActionStats": "Stats",
 
   "viewDialogSortSectionTitle": "Sort",
-  "viewDialogGroupSectionTitle": "Group",
+  "viewDialogGroupSectionTitle": "Sections",
   "viewDialogLayoutSectionTitle": "Layout",
   "viewDialogReverseSortOrder": "Reverse sort order",
 
@@ -630,8 +642,8 @@
   "collectionGroupAlbum": "By album",
   "collectionGroupMonth": "By month",
   "collectionGroupDay": "By day",
-  "collectionGroupNone": "Do not group",
 
+  "sectionNone": "No sections",
   "sectionUnknown": "Unknown",
   "dateToday": "Today",
   "dateYesterday": "Yesterday",
@@ -755,7 +767,7 @@
   "sortByName": "By name",
   "sortByItemCount": "By item count",
   "sortBySize": "By size",
-  "sortByAlbumFileName": "By album & file name",
+  "sortByAlbumFileName": "By album & item title",
   "sortByRating": "By rating",
   "sortByDuration": "By duration",
   "sortByPath": "By path",
@@ -774,7 +786,6 @@
   "albumGroupTier": "By tier",
   "albumGroupType": "By type",
   "albumGroupVolume": "By storage volume",
-  "albumGroupNone": "Do not group",
 
   "albumMimeTypeMixed": "Mixed",
 
@@ -805,6 +816,7 @@
 
   "tagPageTitle": "Tags",
   "tagEmpty": "No tags",
+  "tagPickPageTitle": "Pick Tag",
 
   "binPageTitle": "Recycle Bin",
 
@@ -848,7 +860,6 @@
   "settingsHomeTile": "Home",
   "settingsHomeDialogTitle": "Home",
   "setHomeCustom": "Custom",
-  "settingsShowBottomNavigationBar": "Show bottom navigation bar",
   "settingsKeepScreenOnTile": "Keep screen on",
   "settingsKeepScreenOnDialogTitle": "Keep Screen On",
   "settingsDoubleBackExit": "Tap “back” twice to exit",
@@ -868,6 +879,10 @@
   "settingsNavigationDrawerTabAlbums": "Albums",
   "settingsNavigationDrawerTabPages": "Pages",
   "settingsNavigationDrawerAddAlbum": "Add album",
+
+  "settingsNavigationBottomActionsTile": "Bottom navigation",
+  "settingsNavigationBottomActionEditorPageTitle": "Bottom Navigation",
+  "settingsNavigationBottomActionEditorBanner": "Touch and hold to move buttons and select which actions are displayed in the bottom navigation bar.",
 
   "settingsThumbnailSectionTitle": "Thumbnails",
   "settingsThumbnailOverlayTile": "Overlay",
@@ -1061,7 +1076,12 @@
   "viewerInfoLabelAddress": "Address",
 
   "mapStyleDialogTitle": "Map Style",
+  "mapStyleDialogAddStyle": "Add style",
   "mapStyleTooltip": "Select map style",
+  "mapStyleEditorDialogName": "Name",
+  "mapStyleEditorDialogUrl": "URL",
+  "mapStyleEditorDialogSubdomains": "Subdomains",
+  "mapStyleEditorDialogUserAgent": "User-Agent",
   "mapZoomInTooltip": "Zoom in",
   "mapZoomOutTooltip": "Zoom out",
   "mapPointNorthUpTooltip": "Point north up",
@@ -1101,11 +1121,5 @@
   "panoramaEnableSensorControl": "Enable sensor control",
   "panoramaDisableSensorControl": "Disable sensor control",
 
-  "sourceViewerPageTitle": "Source",
-
-  "filePickerShowHiddenFiles": "Show hidden files",
-  "filePickerDoNotShowHiddenFiles": "Don’t show hidden files",
-  "filePickerOpenFrom": "Open from",
-  "filePickerNoItems": "No items",
-  "filePickerUseThisFolder": "Use this folder"
+  "sourceViewerPageTitle": "Source"
 }

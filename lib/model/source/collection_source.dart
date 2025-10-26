@@ -8,12 +8,14 @@ import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/filters/covered/album_base.dart';
+import 'package:aves/model/filters/container/album_group.dart';
+import 'package:aves/model/filters/container/tag_group.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
-import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
+import 'package:aves/model/grouping/common.dart';
+import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -294,6 +296,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     final oldFilter = StoredAlbumFilter(sourceAlbum, null);
     final newFilter = StoredAlbumFilter(destinationAlbum, null);
 
+    final group = albumGrouping.getFilterParent(oldFilter);
     final pinned = settings.pinnedFilters.contains(oldFilter);
 
     if (vaults.isVault(sourceAlbum)) {
@@ -324,6 +327,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         albumBookmarks.removeAt(index);
         albumBookmarks.insert(index, newFilter);
         settings.drawerAlbumBookmarks = albumBookmarks;
+      }
+    }
+    // update group
+    if (group != null) {
+      final newFilterUri = GroupingConversion.filterToUri(newFilter);
+      if (newFilterUri != null) {
+        albumGrouping.addToGroup({newFilterUri}, group);
+      }
+      final oldFilterUri = GroupingConversion.filterToUri(oldFilter);
+      if (oldFilterUri != null) {
+        albumGrouping.addToGroup({oldFilterUri}, null);
       }
     }
     // restore pin, as the obsolete album got removed and its associated state cleaned
@@ -485,7 +499,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 
   Future<void> analyze(AnalysisController? analysisController, {Set<AvesEntry>? entries}) async {
-    final todoEntries = entries ?? visibleEntries;
+    // not only visible entries, as hidden and vault items may be analyzed
+    final todoEntries = entries ?? allEntries;
     final defaultAnalysisController = AnalysisController();
     final _analysisController = analysisController ?? defaultAnalysisController;
     final force = _analysisController.force;
@@ -505,6 +520,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         }
       }
 
+      debugPrint('analyze ${todoEntries.length} entries, force=$force, starting service=$startAnalysisService');
       if (startAnalysisService) {
         final lifecycleState = AvesApp.lifecycleStateNotifier.value;
         switch (lifecycleState) {
@@ -545,55 +561,49 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   // filter summary
 
   int count(CollectionFilter filter) {
-    if (filter is AlbumBaseFilter) {
-      return albumEntryCount(filter);
-    } else if (filter is LocationFilter) {
-      switch (filter.level) {
-        case LocationLevel.country:
-          return countryEntryCount(filter);
-        case LocationLevel.state:
-          return stateEntryCount(filter);
-        case LocationLevel.place:
-          return placeEntryCount(filter);
-      }
-    } else if (filter is TagFilter) {
-      return tagEntryCount(filter);
+    switch (filter) {
+      case AlbumBaseFilter _:
+        return albumEntryCount(filter);
+      case LocationFilter(level: LocationLevel.country):
+        return countryEntryCount(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateEntryCount(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeEntryCount(filter);
+      case TagBaseFilter _:
+        return tagEntryCount(filter);
     }
     return 0;
   }
 
   int size(CollectionFilter filter) {
-    if (filter is AlbumBaseFilter) {
-      return albumSize(filter);
-    } else if (filter is LocationFilter) {
-      switch (filter.level) {
-        case LocationLevel.country:
-          return countrySize(filter);
-        case LocationLevel.state:
-          return stateSize(filter);
-        case LocationLevel.place:
-          return placeSize(filter);
-      }
-    } else if (filter is TagFilter) {
-      return tagSize(filter);
+    switch (filter) {
+      case AlbumBaseFilter _:
+        return albumSize(filter);
+      case LocationFilter(level: LocationLevel.country):
+        return countrySize(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateSize(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeSize(filter);
+      case TagBaseFilter _:
+        return tagSize(filter);
     }
     return 0;
   }
 
   AvesEntry? recentEntry(CollectionFilter filter) {
-    if (filter is AlbumBaseFilter) {
-      return albumRecentEntry(filter);
-    } else if (filter is LocationFilter) {
-      switch (filter.level) {
-        case LocationLevel.country:
-          return countryRecentEntry(filter);
-        case LocationLevel.state:
-          return stateRecentEntry(filter);
-        case LocationLevel.place:
-          return placeRecentEntry(filter);
-      }
-    } else if (filter is TagFilter) {
-      return tagRecentEntry(filter);
+    switch (filter) {
+      case AlbumBaseFilter _:
+        return albumRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.country):
+        return countryRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.state):
+        return stateRecentEntry(filter);
+      case LocationFilter(level: LocationLevel.place):
+        return placeRecentEntry(filter);
+      case TagBaseFilter _:
+        return tagRecentEntry(filter);
     }
     return null;
   }

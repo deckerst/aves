@@ -1,10 +1,10 @@
-group 'deckers.thibault.aves.aves_screen_state'
-version '1.0-SNAPSHOT'
+group = 'deckers.thibault.aves.aves_screen_state'
+version = '1.0-SNAPSHOT'
 
 buildscript {
     ext {
-        kotlin_version = '2.1.10'
-        agp_version = '8.8.0'
+        kotlin_version = '2.2.0'
+        agp_version = '8.11.0'
     }
 
     repositories {
@@ -33,12 +33,12 @@ kotlin {
 }
 
 android {
-    namespace 'deckers.thibault.aves.aves_screen_state'
-    compileSdk 35
+    namespace = 'deckers.thibault.aves.aves_screen_state'
+    compileSdk = 36
 
     lintOptions {
-        checkAllWarnings true
-        warningsAsErrors true
+        checkAllWarnings = true
+        warningsAsErrors = true
         disable 'InvalidPackage'
     }
 
@@ -47,6 +47,6 @@ android {
     }
 
     defaultConfig {
-        minSdk 21
+        minSdk = 21
     }
 }

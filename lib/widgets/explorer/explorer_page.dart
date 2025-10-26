@@ -11,6 +11,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/loading.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
@@ -40,7 +41,7 @@ class ExplorerPage extends StatefulWidget {
 }
 
 class _ExplorerPageState extends State<ExplorerPage> {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<VolumeRelativeDirectory?> _directory = ValueNotifier(null);
   final ValueNotifier<VolumeRelativeDirectory?> _contentsDirectory = ValueNotifier(null);
   final ValueNotifier<List<Directory>> _contents = ValueNotifier([]);
@@ -54,11 +55,11 @@ class _ExplorerPageState extends State<ExplorerPage> {
     super.initState();
     final path = widget.path;
     if (path != null && androidFileUtils.getStorageVolume(path) != null) {
-      _goTo(path);
+      _goToPath(path);
     } else {
       final primaryVolume = _volumes.firstWhereOrNull((v) => v.isPrimary);
       if (primaryVolume != null) {
-        _goTo(primaryVolume.path);
+        _goToPath(primaryVolume.path);
       }
     }
     _contents.addListener(() => PrimaryScrollController.of(context).jumpTo(0));
@@ -91,7 +92,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
               canPop: (context) => atRoot,
               onPopBlocked: (context) {
                 if (path != null) {
-                  _goTo(pContext.dirname(path));
+                  _goToPath(pContext.dirname(path));
                 }
               },
             ),
@@ -116,7 +117,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
                             ExplorerAppBar(
                               key: const Key('appbar'),
                               directoryNotifier: _directory,
-                              goTo: _goTo,
+                              goToDir: _goToDir,
                             ),
                             AnimationLimiter(
                               // animation limiter should not be above the app bar
@@ -141,6 +142,7 @@ class _ExplorerPageState extends State<ExplorerPage> {
                             ),
                             contents.isEmpty
                                 ? SliverFillRemaining(
+                                    hasScrollBody: false,
                                     child: _buildEmptyContent(),
                                   )
                                 : const SliverPadding(padding: EdgeInsets.only(bottom: 8)),
@@ -181,41 +183,32 @@ class _ExplorerPageState extends State<ExplorerPage> {
   }
 
   Widget _buildEmptyContent() {
-    return Selector<CollectionSource, bool>(
-      selector: (context, source) => source.state == SourceState.loading,
-      builder: (context, loading, child) {
+    final source = context.read<CollectionSource>();
+    return ValueListenableBuilder<SourceState>(
+      valueListenable: source.stateNotifier,
+      builder: (context, sourceState, child) {
+        if (sourceState == SourceState.loading) {
+          return LoadingEmptyContent(source: source);
+        }
+
         Widget? bottom;
-        if (loading) {
-          bottom = const CircularProgressIndicator();
-        } else {
-          final dirPath = _pathOf(_contentsDirectory.value);
-          if (dirPath != null) {
-            final source = context.read<CollectionSource>();
-            final album = _getAlbumPath(source, Directory(dirPath));
-            if (album != null) {
-              bottom = AvesFilterChip(
-                filter: StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album)),
-                maxWidth: double.infinity,
-                onTap: (filter) => _goToCollectionPage(context, filter),
-                onLongPress: null,
-              );
-            }
+        final dirPath = _pathOf(_contentsDirectory.value);
+        if (dirPath != null) {
+          final album = _getAlbumPath(source, Directory(dirPath));
+          if (album != null) {
+            bottom = AvesFilterChip(
+              filter: StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album)),
+              maxWidth: double.infinity,
+              onTap: (filter) => _goToCollectionPage(context, filter),
+              onLongPress: null,
+            );
           }
         }
 
-        return SafeArea(
-          top: false,
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Center(
-              child: EmptyContent(
-                icon: AIcons.folder,
-                text: '',
-                bottom: bottom,
-              ),
-            ),
-          ),
+        return EmptyContent(
+          icon: AIcons.folder,
+          text: '',
+          bottom: bottom,
         );
       },
     );
@@ -250,17 +243,18 @@ class _ExplorerPageState extends State<ExplorerPage> {
               child: Icon(AIcons.folder),
             ),
       title: Text('${Unicode.FSI}${pContext.split(content.path).last}${Unicode.PDI}'),
-      onTap: () => _goTo(content.path),
+      onTap: () => _goToPath(content.path),
     );
   }
 
-  void _goTo(String path) {
-    final dir = androidFileUtils.relativeDirectoryFromPath(path);
+  void _goToDir(VolumeRelativeDirectory? dir) {
     if (dir != null) {
       _directory.value = dir;
       _updateContents();
     }
   }
+
+  void _goToPath(String path) => _goToDir(androidFileUtils.relativeDirectoryFromPath(path));
 
   void _updateContents() {
     final directory = _directory.value;

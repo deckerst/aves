@@ -12,7 +12,7 @@ class MissingFilter extends CollectionFilter {
 
   final String metadataType;
   late final IconData _icon;
-  late final EntryFilter _test;
+  late final EntryPredicate _test;
 
   static final date = MissingFilter._private(_date);
   static final fineAddress = MissingFilter._private(_fineAddress);
@@ -50,7 +50,7 @@ class MissingFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get positiveTest => _test;
+  EntryPredicate get positiveTest => _test;
 
   @override
   bool get exclusiveProp => false;

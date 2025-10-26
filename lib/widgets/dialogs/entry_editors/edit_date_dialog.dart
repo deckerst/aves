@@ -7,11 +7,11 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
+import 'package:aves/widgets/common/basic/time_shift_selector.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/common/basic/time_shift_selector.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -233,20 +233,23 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   }
 
   Future<void> _editDate() async {
+    final l10n = context.l10n;
+    final cancelText = Themes.asButtonLabel(l10n.cancelTooltip);
+
     final _date = await showDatePicker(
       context: context,
       initialDate: _customDateTime,
       firstDate: DateTime(0),
       lastDate: DateTime(2100),
-      cancelText: Themes.asButtonLabel(context.l10n.cancelTooltip),
-      confirmText: context.l10n.nextButtonLabel,
+      cancelText: cancelText,
+      confirmText: l10n.nextButtonLabel,
     );
     if (_date == null) return;
 
     final _time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_customDateTime),
-      cancelText: Themes.asButtonLabel(context.l10n.cancelTooltip),
+      cancelText: cancelText,
     );
     if (_time == null) return;
 

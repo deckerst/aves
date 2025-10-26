@@ -1,5 +1,4 @@
 import 'package:aves/model/device.dart';
-import 'package:aves/model/settings/enums/map_style.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -60,6 +59,6 @@ class LiveAvesAvailability implements AvesAvailability {
   @override
   List<EntryMapStyle> get mapStyles => [
         ...mobileServices.mapStyles,
-        ...EntryMapStyle.values.where((v) => !v.needMobileService),
+        ...EntryMapStyles.baseStyles,
       ];
 }

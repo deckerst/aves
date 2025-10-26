@@ -1,18 +1,20 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/app_inventory.dart';
+import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
+import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/rating.dart';
-import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/type.dart';
+import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -41,7 +43,7 @@ class BasicSection extends StatefulWidget {
   final EntryInfoActionDelegate actionDelegate;
   final ValueNotifier<bool> isScrollingNotifier;
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
-  final AFilterCallback onFilter;
+  final AFilterCallback onFilterSelection;
 
   const BasicSection({
     super.key,
@@ -50,7 +52,7 @@ class BasicSection extends StatefulWidget {
     required this.actionDelegate,
     required this.isScrollingNotifier,
     required this.isEditingMetadataNotifier,
-    required this.onFilter,
+    required this.onFilterSelection,
   });
 
   @override
@@ -130,8 +132,9 @@ class _BasicSectionState extends State<BasicSection> {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
-      if (dateTime != null) DateFilter(DateLevel.ymd, dateTime.date),
+      if (dateTime != null) ...[DateFilter(DateLevel.ymd, dateTime.date), WeekDayFilter(dateTime.weekday)],
       if (album != null) StoredAlbumFilter(album, collection?.source.getStoredAlbumDisplayName(context, album)),
+      ...dynamicAlbums.all.where((v) => v.test(entry)).toSet(),
       if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map(TagFilter.new),
     };
@@ -151,7 +154,7 @@ class _BasicSectionState extends State<BasicSection> {
             children: effectiveFilters
                 .map((filter) => AvesFilterChip(
                       filter: filter,
-                      onTap: widget.onFilter,
+                      onTap: widget.onFilterSelection,
                     ))
                 .toList(),
           ),

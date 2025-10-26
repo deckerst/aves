@@ -23,7 +23,7 @@ class FloatingNavBar extends StatefulWidget {
 }
 
 class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProviderStateMixin {
-  final List<StreamSubscription> _subscriptions = [];
+  final Set<StreamSubscription> _subscriptions = {};
   late AnimationController _controller;
   late CurvedAnimation _animation;
   late Animation<Offset> _offset;
