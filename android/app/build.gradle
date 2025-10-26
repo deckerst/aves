@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'com.google.devtools.ksp'
     id 'kotlin-android'
-    id 'kotlin-kapt'
     id 'dev.flutter.flutter-gradle-plugin'
 }
 
@@ -151,18 +150,22 @@ repositories {
 dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
 
+    implementation 'androidx.annotation:annotation:1.9.1'
     implementation "androidx.appcompat:appcompat:1.7.1"
-    implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.lifecycle:lifecycle-process:2.9.2'
-    implementation 'androidx.media:media:1.7.0'
+    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.9.4'
+    implementation 'androidx.media:media:1.7.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.security:security-crypto:1.1.0-beta01'
-    implementation 'androidx.work:work-runtime-ktx:2.10.3'
+    // Jetpack `security-crypto` library is deprecated:
+    // https://developer.android.com/privacy-and-security/cryptography#security-crypto-jetpack-deprecated
+    implementation 'androidx.security:security-crypto:1.1.0'
+    // `work-runtime:2.11.0` requires `minSdkVersion` 23+
+    implementation 'androidx.work:work-runtime:2.10.0'
 
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
     implementation "com.github.bumptech.glide:glide:$glide_version"
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.material:material:1.13.0'
     // SLF4J implementation for `mp4parser`
     implementation 'org.slf4j:slf4j-simple:2.0.17'
 
@@ -178,9 +181,8 @@ dependencies {
     implementation 'com.github.deckerst:pixymeta-android:f4513291b7'
     implementation project(':exifinterface')
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:6.0.0'
 
-    kapt 'androidx.annotation:annotation:1.9.1'
     ksp "com.github.bumptech.glide:ksp:$glide_version"
 
     compileOnly rootProject.findProject(':streams_channel')
