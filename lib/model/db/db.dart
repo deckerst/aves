@@ -24,9 +24,9 @@ abstract class LocalMediaDb {
 
   // debug
 
-  Future<void> logCatalog(String message);
+  Future<void> addDebugLog(String message);
 
-  Future<List<String>> getCatalogLog();
+  Future<List<String>> getDebugLog();
 
   // entries
 

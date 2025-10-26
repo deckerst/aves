@@ -182,6 +182,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
   final EventChannel _platformWindowChangeChannel = const OptionalEventChannel('deckers.thibault/aves/window_change');
 
+  // #977
+  final EventChannel _platformDebugChannel = const OptionalEventChannel('deckers.thibault/aves/platform_messages');
+
   // Flutter has various page transition implementations for Android:
   // - `FadeUpwardsPageTransitionsBuilder` on Oreo / Android 8 / API 27 and below
   // - `OpenUpwardsPageTransitionsBuilder` on Pie / Android 9 / API 28
@@ -208,6 +211,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _updateCutoutInsets();
     _updateWindowMode();
     _appModeNotifier.addListener(_onAppModeChanged);
+
+    // #977
+    _subscriptions.add(_platformDebugChannel.receiveBroadcastStream().listen((event) => localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} $event')));
 
     debugPrint('start listening to app lifecycle');
     WidgetsBinding.instance.addObserver(this);

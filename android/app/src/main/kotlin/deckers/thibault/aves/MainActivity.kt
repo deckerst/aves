@@ -49,6 +49,7 @@ import deckers.thibault.aves.channel.streams.darttoplatform.ImageOpStreamHandler
 import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.AnalysisStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.ErrorStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.MessageStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.IntentStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaStoreChangeStreamHandler
@@ -124,6 +125,10 @@ open class MainActivity : FlutterFragmentActivity() {
         }
         errorStreamHandler = ErrorStreamHandler().apply {
             EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        // #977
+        messageStreamHandler = MessageStreamHandler().apply {
+            EventChannel(messenger, MessageStreamHandler.CHANNEL).setStreamHandler(this)
         }
         mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
             EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
@@ -660,6 +665,14 @@ open class MainActivity : FlutterFragmentActivity() {
         fun notifyError(error: String) {
             Log.e(LOG_TAG, "notifyError error=$error")
             errorStreamHandler?.notifyError(error)
+        }
+
+        // #977
+        private var messageStreamHandler: MessageStreamHandler? = null
+
+        fun notifyDebug(message: String) {
+            Log.d(LOG_TAG, "notifyDebug message=$message")
+            messageStreamHandler?.notifyDebug(message)
         }
     }
 }

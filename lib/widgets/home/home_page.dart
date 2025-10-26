@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
 
       if (debug) {
         await localMediaDb.init();
-        final logs = await localMediaDb.getCatalogLog();
+        final logs = await localMediaDb.getDebugLog();
 
         final success = await storageService.createFile(
           'aves_issue977_logs-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.txt',

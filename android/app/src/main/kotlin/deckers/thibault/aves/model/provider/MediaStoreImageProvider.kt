@@ -257,6 +257,9 @@ class MediaStoreImageProvider : ImageProvider() {
                         } else {
                             val path = cursor.getString(pathColumn)
 
+                            // #977
+                            MainActivity.notifyDebug("$LOG_TAG fetch $path")
+
                             val isDir = path != null && File(path).isDirectory
                             if (isDir) {
                                 // some directories are wrongly registered as media (e.g. `.../Android/media/is.xyz.mpv`)

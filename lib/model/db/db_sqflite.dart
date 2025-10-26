@@ -105,12 +105,12 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   // debug
 
   @override
-  Future<void> logCatalog(String message) async {
+  Future<void> addDebugLog(String message) async {
     await _db.insert(debugTable, {'message': message});
   }
 
   @override
-  Future<List<String>> getCatalogLog() async {
+  Future<List<String>> getDebugLog() async {
     final rows = await _db.query(debugTable);
     return rows.map((row) => row['message'] as String).toList();
   }
