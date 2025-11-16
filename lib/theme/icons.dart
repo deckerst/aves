@@ -29,6 +29,7 @@ class AIcons {
   static const explorer = Symbols.account_tree;
   static const folder = Symbols.folder;
   static final github = MdiIcons.github;
+  static const histogram = Symbols.area_chart;
   static const home = Symbols.home;
 
   // as of Flutter v3.16.3,
@@ -39,6 +40,7 @@ class AIcons {
   static const language = Symbols.translate;
   static final legal = MdiIcons.scaleBalance;
   static const mimeType = Symbols.code;
+  static const minimap = Symbols.picture_in_picture;
   static const name = Symbols.match_word;
   static const newTier = Symbols.fiber_new;
   static const opacity = Symbols.opacity;
@@ -63,8 +65,10 @@ class AIcons {
   static final tagUntagged = MdiIcons.tagOffOutline;
   static const text = Symbols.format_quote;
   static const thumbnails = Symbols.grid_on;
+  static const thumbnailBar = Symbols.view_carousel;
   static const volumeMin = Symbols.volume_mute;
   static const volumeMax = Symbols.volume_up;
+  static const zoomLevel = Symbols.loupe;
 
   // time/space
   static const date = Symbols.calendar_today;

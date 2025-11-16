@@ -1,8 +1,11 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
+import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/details/details.dart';
 import 'package:aves/widgets/viewer/overlay/histogram.dart';
@@ -55,6 +58,45 @@ class ViewerTopOverlay extends StatelessWidget {
 
         final blurred = settings.enableBlurEffect;
         final viewInsetsPadding = (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero);
+
+        Widget _decorateCornerChild(Widget child) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8) + const EdgeInsets.only(top: 8),
+              child: FadeTransition(
+                opacity: scale,
+                child: child,
+              ),
+            );
+
+        final startCornerChildren = [
+          if (settings.showOverlayZoomLevel)
+            ZoomLevelIndicator(
+              viewStateNotifier: viewStateNotifier,
+            ),
+          if (settings.showOverlayMinimap)
+            Minimap(
+              viewStateNotifier: viewStateNotifier,
+            ),
+        ];
+
+        final endCornerChildren = [
+          if (settings.overlayHistogramStyle != OverlayHistogramStyle.none)
+            Selector<ViewStateConductor, ViewStateController>(
+              selector: (context, vsc) => vsc.getOrCreateController(pageEntry!),
+              builder: (context, viewStateController, child) {
+                return ValueListenableBuilder<ImageProvider?>(
+                  valueListenable: viewStateController.fullImageNotifier,
+                  builder: (context, fullImage, child) {
+                    if (fullImage == null || pageEntry == null) return const SizedBox();
+                    return ImageHistogram(
+                      viewStateController: viewStateController,
+                      image: fullImage,
+                    );
+                  },
+                );
+              },
+            ),
+        ];
+
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,61 +127,85 @@ class ViewerTopOverlay extends StatelessWidget {
                   ),
                 ),
               ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (settings.showOverlayMinimap)
-                  SafeArea(
-                    top: !showInfo,
-                    minimum: EdgeInsets.only(
-                      left: viewInsetsPadding.left,
-                      right: viewInsetsPadding.right,
+            SafeArea(
+              top: !showInfo,
+              minimum: EdgeInsets.only(
+                left: viewInsetsPadding.left,
+                right: viewInsetsPadding.right,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (startCornerChildren.isNotEmpty)
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: startCornerChildren.map(_decorateCornerChild).toList(),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: FadeTransition(
-                        opacity: scale,
-                        child: Minimap(
-                          viewStateNotifier: viewStateNotifier,
-                        ),
-                      ),
+                  const Spacer(),
+                  if (endCornerChildren.isNotEmpty)
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: endCornerChildren.map(_decorateCornerChild).toList(),
                     ),
-                  ),
-                const Spacer(),
-                if (settings.overlayHistogramStyle != OverlayHistogramStyle.none)
-                  SafeArea(
-                    top: !showInfo,
-                    minimum: EdgeInsets.only(
-                      left: viewInsetsPadding.left,
-                      right: viewInsetsPadding.right,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: FadeTransition(
-                        opacity: scale,
-                        child: Selector<ViewStateConductor, ViewStateController>(
-                          selector: (context, vsc) => vsc.getOrCreateController(pageEntry!),
-                          builder: (context, viewStateController, child) {
-                            return ValueListenableBuilder<ImageProvider?>(
-                              valueListenable: viewStateController.fullImageNotifier,
-                              builder: (context, fullImage, child) {
-                                if (fullImage == null || pageEntry == null) return const SizedBox();
-                                return ImageHistogram(
-                                  viewStateController: viewStateController,
-                                  image: fullImage,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class ZoomLevelIndicator extends StatelessWidget {
+  final ValueNotifier<ViewState> viewStateNotifier;
+
+  const ZoomLevelIndicator({
+    super.key,
+    required this.viewStateNotifier,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final blurred = settings.enableBlurEffect;
+    final border = AvesBorder.border(
+      context,
+      width: AvesBorder.curvedBorderWidth(context),
+    );
+    final borderRadius = BorderRadius.circular(4);
+    final zoomScaleFactor = MediaQuery.devicePixelRatioOf(context) * 100;
+
+    return IgnorePointer(
+      child: BlurredRRect(
+        enabled: blurred,
+        borderRadius: borderRadius,
+        child: Material(
+          type: MaterialType.button,
+          borderRadius: borderRadius,
+          color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            foregroundDecoration: BoxDecoration(
+              border: border,
+              borderRadius: borderRadius,
+            ),
+            child: ValueListenableBuilder<ViewState>(
+              valueListenable: viewStateNotifier,
+              builder: (context, viewState, child) {
+                final zoom = ((viewState.scale ?? 0) * zoomScaleFactor).round();
+                return Text(
+                  '$zoom${context.l10n.lengthUnitPercent}',
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        shadows: ViewerDetailOverlayContent.shadows(context),
+                      ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

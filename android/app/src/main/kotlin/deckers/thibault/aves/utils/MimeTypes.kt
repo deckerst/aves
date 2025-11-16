@@ -97,8 +97,10 @@ object MimeTypes {
         else -> true
     }
 
-    // as of `ExifInterface` v1.4.0-alpha01, `isSupportedMimeType` reports
-    // no support for AVIF/TIFF images, but it can actually open them (maybe other formats too)
+    // as of `ExifInterface` v1.4.1, method `isSupportedMimeType` reports no support for AVIF,
+    // but documentation reports:
+    // * Supported for reading: JPEG, PNG, WebP, HEIC, DNG, CR2, NEF, NRW, ARW, RW2, ORF, PEF, SRW, RAF, AVIF (on API 31+).
+    // * Supported for writing: JPEG, PNG, WebP.
     fun canReadWithExifInterface(mimeType: String, strict: Boolean = true): Boolean {
         if (!strict) return true
         return ExifInterface.isSupportedMimeType(mimeType) || mimeType == AVIF

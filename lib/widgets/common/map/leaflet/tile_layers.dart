@@ -1,8 +1,9 @@
-import 'dart:io';
+import 'dart:io' as io;
 
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/map/leaflet/vector_style_reader_extra.dart';
 import 'package:flutter/material.dart';
+import 'package:vector_map_tiles/src/io/io.dart' as vmtio show Directory; // ignore: implementation_imports
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
 
@@ -77,7 +78,16 @@ class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
               layerMode: VectorTileLayerMode.raster,
               cacheFolder: () async {
                 final cacheRoot = await storageService.getExternalCacheDirectory();
-                return Directory(pContext.join(cacheRoot, 'map_vector_tiles'));
+                final path = pContext.join(cacheRoot, 'map_vector_tiles');
+                dynamic result;
+                if (vmtio.Directory == String) {
+                  result = path;
+                } else if (vmtio.Directory == io.Directory) {
+                  result = io.Directory(path);
+                } else {
+                  throw Exception('vmtio.Directory type is not supported');
+                }
+                return result;
               },
             );
           },

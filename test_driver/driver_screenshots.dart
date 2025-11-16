@@ -46,6 +46,7 @@ Future<void> configureAndLaunch() async {
     ..viewerQuickActions = SettingsDefaults.viewerQuickActions
     ..showOverlayOnOpening = true
     ..showOverlayMinimap = false
+    ..showOverlayZoomLevel = false
     ..overlayHistogramStyle = OverlayHistogramStyle.none
     ..showOverlayInfo = true
     ..showOverlayDescription = false

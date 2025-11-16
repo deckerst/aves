@@ -1664,5 +1664,7 @@
     "settingsNavigationBottomActionEditorBanner": "Nuppude/ikoonide teisaldamiseks hoia neid all ja lohista uude kohta ning vali, mis tegevusi tahad ikooniribalt teha.",
     "@settingsNavigationBottomActionEditorBanner": {},
     "tagPickPageTitle": "Vali silt",
-    "@tagPickPageTitle": {}
+    "@tagPickPageTitle": {},
+    "settingsViewerShowZoomLevel": "Näita kasutusel suumi",
+    "@settingsViewerShowZoomLevel": {}
 }

@@ -1,7 +1,9 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/settings/common/switch_icon.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
@@ -14,80 +16,107 @@ class ViewerOverlayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final useTvLayout = settings.useTvLayout;
+
+    Widget _trailingIcon(BuildContext context, IconData data) => Icon(
+          data,
+          size: SettingSwitchTrailingIcon.getIconSize(context),
+          color: SettingSwitchTrailingIcon.getIconColor(context),
+        );
+
     return AvesScaffold(
       appBar: AppBar(
         automaticallyImplyLeading: !useTvLayout,
-        title: Text(context.l10n.settingsViewerOverlayPageTitle),
+        title: Text(l10n.settingsViewerOverlayPageTitle),
       ),
       body: SafeArea(
         child: ListView(
           children: [
-            if (!useTvLayout)
+            if (!useTvLayout) ...[
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayOnOpening,
                 onChanged: (v) => settings.showOverlayOnOpening = v,
-                title: context.l10n.settingsViewerShowOverlayOnOpening,
+                title: l10n.settingsViewerShowOverlayOnOpening,
               ),
+              const Divider(height: 32),
+            ],
             SettingsSwitchListTile(
               selector: (context, s) => s.showOverlayInfo,
               onChanged: (v) => settings.showOverlayInfo = v,
-              title: context.l10n.settingsViewerShowInformation,
-              subtitle: context.l10n.settingsViewerShowInformationSubtitle,
+              title: l10n.settingsViewerShowInformation,
+              subtitle: l10n.settingsViewerShowInformationSubtitle,
             ),
-            Selector<Settings, (bool, bool)>(
-              selector: (context, s) => (s.showOverlayInfo, s.showOverlayRatingTags),
-              builder: (context, s, child) {
-                final (showInfo, current) = s;
-                return SwitchListTile(
-                  value: current,
-                  onChanged: showInfo ? (v) => settings.showOverlayRatingTags = v : null,
-                  title: Text(context.l10n.settingsViewerShowRatingTags),
-                );
-              },
-            ),
-            Selector<Settings, (bool, bool)>(
-              selector: (context, s) => (s.showOverlayInfo, s.showOverlayShootingDetails),
-              builder: (context, s, child) {
-                final (showInfo, current) = s;
-                return SwitchListTile(
-                  value: current,
+            Selector<Settings, bool>(
+              selector: (context, s) => s.showOverlayInfo,
+              builder: (context, showInfo, child) {
+                return SettingsSwitchListTile(
+                  selector: (context, s) => s.showOverlayShootingDetails,
                   onChanged: showInfo ? (v) => settings.showOverlayShootingDetails = v : null,
-                  title: Text(context.l10n.settingsViewerShowShootingDetails),
+                  title: l10n.settingsViewerShowShootingDetails,
+                  trailing: _trailingIcon(context, AIcons.shooting),
                 );
               },
             ),
-            Selector<Settings, (bool, bool)>(
-              selector: (context, s) => (s.showOverlayInfo, s.showOverlayDescription),
-              builder: (context, s, child) {
-                final (showInfo, current) = s;
-                return SwitchListTile(
-                  value: current,
+            Selector<Settings, bool>(
+              selector: (context, s) => s.showOverlayInfo,
+              builder: (context, showInfo, child) {
+                return SettingsSwitchListTile(
+                  selector: (context, s) => s.showOverlayRatingTags,
+                  onChanged: showInfo ? (v) => settings.showOverlayRatingTags = v : null,
+                  title: l10n.settingsViewerShowRatingTags,
+                  trailing: _trailingIcon(context, AIcons.tag),
+                );
+              },
+            ),
+            Selector<Settings, bool>(
+              selector: (context, s) => s.showOverlayInfo,
+              builder: (context, showInfo, child) {
+                return SettingsSwitchListTile(
+                  selector: (context, s) => s.showOverlayDescription,
                   onChanged: showInfo ? (v) => settings.showOverlayDescription = v : null,
-                  title: Text(context.l10n.settingsViewerShowDescription),
+                  title: l10n.settingsViewerShowDescription,
+                  trailing: _trailingIcon(context, AIcons.description),
                 );
               },
             ),
-            if (!useTvLayout)
+            if (!useTvLayout) ...[
+              const Divider(height: 32),
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayZoomLevel,
+                onChanged: (v) => settings.showOverlayZoomLevel = v,
+                title: l10n.settingsViewerShowZoomLevel,
+                trailing: _trailingIcon(context, AIcons.zoomLevel),
+              ),
               SettingsSwitchListTile(
                 selector: (context, s) => s.showOverlayMinimap,
                 onChanged: (v) => settings.showOverlayMinimap = v,
-                title: context.l10n.settingsViewerShowMinimap,
+                title: l10n.settingsViewerShowMinimap,
+                trailing: _trailingIcon(context, AIcons.minimap),
               ),
-            if (!useTvLayout)
-              SettingsSwitchListTile(
-                selector: (context, s) => s.showOverlayThumbnailPreview,
-                onChanged: (v) => settings.showOverlayThumbnailPreview = v,
-                title: context.l10n.settingsViewerShowOverlayThumbnails,
-              ),
-            if (!useTvLayout)
               SettingsSelectionListTile<OverlayHistogramStyle>(
                 values: OverlayHistogramStyle.values,
                 getName: (context, v) => v.getName(context),
                 selector: (context, s) => s.overlayHistogramStyle,
                 onSelection: (v) => settings.overlayHistogramStyle = v,
-                tileTitle: context.l10n.settingsViewerShowHistogram,
+                tileTitle: l10n.settingsViewerShowHistogram,
+                trailingBuilder: (context) {
+                  final style = context.select<Settings, OverlayHistogramStyle>((v) => v.overlayHistogramStyle);
+                  return SettingSwitchTrailingIcon(
+                    key: ValueKey(style),
+                    icon: AIcons.histogram,
+                    disabled: style == OverlayHistogramStyle.none,
+                  );
+                },
               ),
+              const Divider(height: 32),
+              SettingsSwitchListTile(
+                selector: (context, s) => s.showOverlayThumbnailPreview,
+                onChanged: (v) => settings.showOverlayThumbnailPreview = v,
+                title: l10n.settingsViewerShowOverlayThumbnails,
+                trailing: _trailingIcon(context, AIcons.thumbnailBar),
+              ),
+            ],
           ],
         ),
       ),

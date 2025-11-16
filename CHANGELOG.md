@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.13.10"></a>[v1.13.10] - 2025-11-16
+
+### Added
+
+- Viewer: optionally show zoom level on overlay
+- Stats: export filter lists to CSV
+- build: `libre_rom` flavor as variant of `libre` flavor for integration in custom ROM
+
+### Changed
+
+- Viewer: allow zooming out of panoramas until 25%
+
+### Fixed
+
+- decoding images with pixel config unsupported by region decoder and bitmap compressor
+- cataloguing still AVIF images
+
 ## <a id="v1.13.9"></a>[v1.13.9] - 2025-10-11
 
 ### Added
@@ -13,7 +30,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: drag and drop in multi-window mode
 - Vaults: allow hiding like other albums
 - 16 KB memory page size support
-- Finnish translation (thanks Åzze, Olli, Ricky Tigg, Otso Karttunen)
+- Finnish translation (thanks Åzze, Olli, Ricky Tigg, Oris5)
 
 ### Changed
 
@@ -1724,12 +1741,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-Collection: identify multipage TIFF & multitrack HEIF Viewer: support for multipage TIFF
-Viewer: support for cropped panoramas Albums: grouping options
+- Collection: identify multipage TIFF & multitrack HEIF
+- Viewer: support for multipage TIFF
+- Viewer: support for cropped panoramas
+- Albums: grouping options
 
 ### Changed
 
-upgraded libtiff to 4.2.0 for TIFF decoding
+- upgraded libtiff to 4.2.0 for TIFF decoding
 
 ### Fixed
 

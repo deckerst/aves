@@ -573,7 +573,7 @@
             }
         }
     },
-    "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Poistetaanko tämä tiedosto?} other{Poistetaanko nämä {count} tiedostoa?}}",
+    "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Poista tämä tiedosto pysyvästi?} other{Poista nämä {count} tiedostoa pysyvästi?}}",
     "@deleteEntriesConfirmationDialogMessage": {
         "placeholders": {
             "count": {

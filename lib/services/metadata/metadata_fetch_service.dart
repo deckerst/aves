@@ -14,6 +14,7 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:aves/services/common/channel.dart';
 
 abstract class MetadataFetchService {
   // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
@@ -43,7 +44,7 @@ abstract class MetadataFetchService {
 }
 
 class PlatformMetadataFetchService implements MetadataFetchService {
-  static const _platform = MethodChannel('deckers.thibault/aves/metadata_fetch');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/metadata_fetch');
 
   @override
   Future<Map> getAllMetadata(AvesEntry entry) async {

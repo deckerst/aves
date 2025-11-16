@@ -5,6 +5,7 @@ import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/text.dart';
 import 'package:flutter/services.dart';
+import 'package:aves/services/common/channel.dart';
 
 abstract class EmbeddedDataService {
   Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry);
@@ -23,7 +24,7 @@ abstract class EmbeddedDataService {
 }
 
 class PlatformEmbeddedDataService implements EmbeddedDataService {
-  static const _platform = MethodChannel('deckers.thibault/aves/embedded');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/embedded');
 
   @override
   Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry) async {

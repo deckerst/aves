@@ -1,10 +1,11 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
 class AndroidDebugService {
-  static const _platform = MethodChannel('deckers.thibault/aves/debug');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/debug');
 
   static Future<void> crash() async {
     try {

@@ -1,11 +1,10 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/theme/colors.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
+import 'package:aves/widgets/settings/common/switch_icon.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves_model/aves_model.dart';
@@ -19,8 +18,8 @@ class ThumbnailOverlayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = _getIconSize(context);
-    final iconColor = _getIconColor(context);
+    final iconSize = SettingSwitchTrailingIcon.getIconSize(context);
+    final iconColor = SettingSwitchTrailingIcon.getIconColor(context);
 
     return AvesScaffold(
       appBar: AppBar(
@@ -98,34 +97,6 @@ class ThumbnailOverlayPage extends StatelessWidget {
       ),
     );
   }
-
-  static double _getIconSize(BuildContext context) {
-    final textScaler = MediaQuery.textScalerOf(context);
-    return textScaler.scale(IconTheme.of(context).size!);
-  }
-
-  static Color _getIconColor(BuildContext context) => context.select<AvesColorsData, Color>((v) => v.neutral);
-
-  static Widget buildTrailingIcon({
-    required BuildContext context,
-    required Object key,
-    required IconData icon,
-    required bool disabled,
-  }) {
-    return Padding(
-      // Switch width (`_kSwitchWidth`) + tile content padding
-      padding: const EdgeInsetsDirectional.only(end: 59 + 16),
-      child: AnimatedSwitcher(
-        duration: context.read<DurationsData>().iconAnimation,
-        child: Icon(
-          icon,
-          key: ValueKey(key),
-          size: _getIconSize(context),
-          color: _getIconColor(context).withValues(alpha: disabled ? SettingsSwitchListTile.disabledOpacity : 1),
-        ),
-      ),
-    );
-  }
 }
 
 class SettingsTileThumbnailLocationIcon extends SettingsTile {
@@ -144,9 +115,8 @@ class SettingsTileThumbnailLocationIcon extends SettingsTile {
 
   Widget _buildTrailing(BuildContext context) {
     final iconType = context.select<Settings, ThumbnailOverlayLocationIcon>((v) => v.thumbnailLocationIcon);
-    return ThumbnailOverlayPage.buildTrailingIcon(
-      context: context,
-      key: iconType,
+    return SettingSwitchTrailingIcon(
+      key: ValueKey(iconType),
       icon: iconType.getIcon(context),
       disabled: iconType == ThumbnailOverlayLocationIcon.none,
     );
@@ -169,9 +139,8 @@ class SettingsTileThumbnailTagIcon extends SettingsTile {
 
   Widget _buildTrailing(BuildContext context) {
     final iconType = context.select<Settings, ThumbnailOverlayTagIcon>((v) => v.thumbnailTagIcon);
-    return ThumbnailOverlayPage.buildTrailingIcon(
-      context: context,
-      key: iconType,
+    return SettingSwitchTrailingIcon(
+      key: ValueKey(iconType),
       icon: iconType.getIcon(context),
       disabled: iconType == ThumbnailOverlayTagIcon.none,
     );

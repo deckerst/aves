@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ئاڤیس</string>
+    <string name="app_name">ئاڤێس</string>
     <string name="app_widget_label">قەراغی وێنە</string>
-    <string name="wallpaper">ڕوونما</string>
+    <string name="wallpaper">پاشبنەما</string>
     <string name="search_shortcut_short_label">گەڕان</string>
     <string name="videos_shortcut_short_label">ڤیدیۆ</string>
-    <string name="analysis_channel_name">گەڕان لە پەڕگە</string>
-    <string name="analysis_notification_default_title">لە پەڕگەکان دەگەڕێت</string>
+    <string name="analysis_channel_name">گەڕان لە ڕەنگاڵە</string>
+    <string name="analysis_notification_default_title">لە ڕەنگاڵەکان دەگەڕێت</string>
     <string name="analysis_notification_action_stop">وەستاندن</string>
     <string name="map_shortcut_short_label">نەخشە</string>
 </resources>

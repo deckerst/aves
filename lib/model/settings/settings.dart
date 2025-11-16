@@ -160,6 +160,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
     bottomNavigationActions = [];
     showOverlayOnOpening = false;
     showOverlayMinimap = false;
+    showOverlayZoomLevel = false;
     showOverlayThumbnailPreview = false;
     viewerGestureSideTapNext = false;
     viewerUseCutout = true;
@@ -373,6 +374,7 @@ class Settings with ChangeNotifier, SettingsAccess, SearchSettings, AppSettings,
             case SettingKeys.tagSortReverseKey:
             case SettingKeys.showOverlayOnOpeningKey:
             case SettingKeys.showOverlayMinimapKey:
+            case SettingKeys.showOverlayZoomLevelKey:
             case SettingKeys.showOverlayInfoKey:
             case SettingKeys.showOverlayDescriptionKey:
             case SettingKeys.showOverlayRatingTagsKey:

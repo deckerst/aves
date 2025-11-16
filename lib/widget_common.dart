@@ -7,6 +7,7 @@ import 'package:aves/model/settings/enums/widget_outline.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/home_widget.dart';
@@ -15,7 +16,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const _widgetDrawChannel = MethodChannel('deckers.thibault/aves/widget_draw');
+const _widgetDrawChannel = AvesMethodChannel('deckers.thibault/aves/widget_draw');
 
 void widgetMainCommon(AppFlavor flavor) async {
   debugPrint('Widget main start');

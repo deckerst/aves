@@ -143,8 +143,7 @@ class ImageMarker extends StatelessWidget {
   static const _crs = Epsg3857();
 
   static GeoEntry<T>? markerMatch<T>(LatLng position, double zoom, Set<GeoEntry<T>> markers) {
-    final pressPoint = _crs.latLngToPoint(position, zoom);
-    final pressOffset = Offset(pressPoint.x.toDouble(), pressPoint.y.toDouble());
+    final pressOffset = _crs.latLngToOffset(position, zoom);
 
     const double markerWidth = extent;
     const double markerHeight = extent;
@@ -154,10 +153,10 @@ class ImageMarker extends StatelessWidget {
       final longitude = marker.longitude;
       if (latitude == null || longitude == null) return false;
 
-      final markerAnchorPoint = _crs.latLngToPoint(LatLng(latitude, longitude), zoom);
-      final bottom = markerAnchorPoint.y.toDouble();
+      final markerAnchorPoint = _crs.latLngToOffset(LatLng(latitude, longitude), zoom);
+      final bottom = markerAnchorPoint.dy;
       final top = bottom - markerHeight;
-      final left = markerAnchorPoint.x.toDouble() - markerWidth / 2;
+      final left = markerAnchorPoint.dx - markerWidth / 2;
       final right = left + markerWidth;
       final markerRect = Rect.fromLTRB(left, top, right, bottom);
 

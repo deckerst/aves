@@ -925,6 +925,7 @@
   "settingsViewerShowOverlayOnOpening": "Show on opening",
   "settingsViewerShowHistogram": "Show histogram",
   "settingsViewerShowMinimap": "Show minimap",
+  "settingsViewerShowZoomLevel": "Show zoom level",
   "settingsViewerShowInformation": "Show information",
   "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
   "settingsViewerShowRatingTags": "Show rating & tags",

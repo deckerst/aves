@@ -5,9 +5,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:aves/services/common/channel.dart';
 
 class GeocodingService {
-  static const _platform = MethodChannel('deckers.thibault/aves/geocoding');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/geocoding');
 
   // geocoding requires Google Play Services
   static Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {

@@ -9,18 +9,21 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.BitmapUtils.describe
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.ByteArrayInputStream
+import java.nio.ByteBuffer
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.math.max
@@ -45,12 +48,13 @@ class RegionFetcher internal constructor(
         result: ByteSink,
     ) {
         if (pageId != null && MultiPageImage.isSupported(mimeType)) {
-            // use JPEG export for requested page
+            // use export for requested page
+            val exportUri = exportUris.getOrPut(requestKey) { createTemporaryExport(uri, mimeType, pageId) }
             fetch(
-                uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
+                uri = exportUri,
                 pageId = null,
                 decoded = decoded,
-                mimeType = MimeTypes.JPEG,
+                mimeType = EXPORT_MIME_TYPE,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
@@ -124,14 +128,15 @@ class RegionFetcher internal constructor(
                 result.streamBytes(ByteArrayInputStream(bytes))
             }
         } catch (e: Exception) {
-            if (mimeType != MimeTypes.JPEG) {
-                // retry with JPEG export on failure,
+            if (EXPORT_MIME_TYPE != mimeType) {
+                // retry with export on failure,
                 // as some formats are not fully supported by `BitmapRegionDecoder`
+                val exportUri = exportUris.getOrPut(requestKey) { createTemporaryExport(uri, mimeType, pageId) }
                 fetch(
-                    uri = exportUris.getOrPut(requestKey) { createTemporaryJpegExport(uri, mimeType, pageId) },
+                    uri = exportUri,
                     pageId = null,
                     decoded = decoded,
-                    mimeType = MimeTypes.JPEG,
+                    mimeType = EXPORT_MIME_TYPE,
                     sampleSize = sampleSize,
                     regionRect = regionRect,
                     imageWidth = imageWidth,
@@ -146,8 +151,9 @@ class RegionFetcher internal constructor(
         }
     }
 
-    private fun createTemporaryJpegExport(uri: Uri, mimeType: String, pageId: Int?): Uri {
-        Log.d(LOG_TAG, "create JPEG export for uri=$uri mimeType=$mimeType pageId=$pageId")
+    private suspend fun createTemporaryExport(uri: Uri, mimeType: String, pageId: Int?): Uri {
+        val exportFormat = EXPORT_FORMAT
+        Log.d(LOG_TAG, "create export for uri=$uri mimeType=$mimeType pageId=$pageId exportFormat=$exportFormat")
         val target = Glide.with(context)
             .asBitmap()
             .apply(AvesAppGlideModule.uncachedFullImageOptions)
@@ -158,7 +164,20 @@ class RegionFetcher internal constructor(
             val bitmap = target.get()
             val tempFile = StorageUtils.createTempFile(context).apply {
                 outputStream().use { output ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+                    val encodedExport = bitmap.compress(exportFormat, 100, output)
+                    if (!encodedExport) {
+                        Log.w(LOG_TAG, "failed export via encoded bytes for uri=$uri mimeType=$mimeType pageId=$pageId exportFormat=$exportFormat, with bitmap=${bitmap.describe()}")
+
+                        val decodedBytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = true, mimeType)
+                        if (decodedBytes != null) {
+                            val exportBitmap = createBitmap(bitmap.width, bitmap.height, PREFERRED_CONFIG)
+                            exportBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(decodedBytes))
+                            val decodedExport = exportBitmap.compress(exportFormat, 100, output)
+                            if (!decodedExport) {
+                                Log.w(LOG_TAG, "failed to compress exportBitmap=${bitmap.describe()}")
+                            }
+                        }
+                    }
                 }
             }
             return Uri.fromFile(tempFile)
@@ -176,6 +195,8 @@ class RegionFetcher internal constructor(
         private val LOG_TAG = LogUtils.createTag<RegionFetcher>()
         private val PREFERRED_CONFIG = Bitmap.Config.ARGB_8888
         private const val DECODER_POOL_SIZE = 3
+        private const val EXPORT_MIME_TYPE = MimeTypes.JPEG
+        private val EXPORT_FORMAT = Bitmap.CompressFormat.JPEG
         private val decoderPool = ArrayList<DecoderRef>()
         private val exportUris = HashMap<Pair<Uri, Int?>, Uri>()
 

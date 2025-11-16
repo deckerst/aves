@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
@@ -18,7 +19,7 @@ abstract class AppProfileService {
 }
 
 class PlatformAppProfileService implements AppProfileService {
-  static const _platform = MethodChannel('deckers.thibault/aves/app_profile');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/app_profile');
 
   @override
   Future<bool> canInteractAcrossProfiles() async {

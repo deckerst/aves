@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:aves/model/covers.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/services.dart';
-import 'package:streams_channel/streams_channel.dart';
 
 abstract class StorageService {
   Future<Map<String, int>> getDataUsage();
@@ -59,8 +59,8 @@ abstract class StorageService {
 }
 
 class PlatformStorageService implements StorageService {
-  static const _platform = MethodChannel('deckers.thibault/aves/storage');
-  static final _stream = StreamsChannel('deckers.thibault/aves/activity_result_stream');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/storage');
+  static final _stream = AvesStreamsChannel('deckers.thibault/aves/activity_result_stream');
 
   @override
   Future<Map<String, int>> getDataUsage() async {

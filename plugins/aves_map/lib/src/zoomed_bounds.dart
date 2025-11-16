@@ -20,10 +20,10 @@ class ZoomedBounds extends Equatable {
 
   // The projected center appears visually in the middle of the bounds.
   LatLng get projectedCenter {
-    final swPoint = _crs.latLngToPoint(sw, zoom);
-    final nePoint = _crs.latLngToPoint(ne, zoom);
+    final swPoint = _crs.latLngToOffset(sw, zoom);
+    final nePoint = _crs.latLngToOffset(ne, zoom);
     // assume no padding around bounds
-    return _crs.pointToLatLng((swPoint + nePoint) / 2, zoom);
+    return _crs.offsetToLatLng((swPoint + nePoint) / 2, zoom);
   }
 
   @override
@@ -91,15 +91,15 @@ class ZoomedBounds extends Equatable {
   bool contains(LatLng location) => GeoUtils.contains(sw, ne, location);
 
   Size toDisplaySize() {
-    final swPoint = _crs.latLngToPoint(sw, zoom);
-    final nePoint = _crs.latLngToPoint(ne, zoom);
-    return Size((swPoint.x - nePoint.x).abs().toDouble(), (swPoint.y - nePoint.y).abs().toDouble());
+    final swPoint = _crs.latLngToOffset(sw, zoom);
+    final nePoint = _crs.latLngToOffset(ne, zoom);
+    return Size((swPoint.dx - nePoint.dx).abs(), (swPoint.dy - nePoint.dy).abs());
   }
 
   Offset offset(LatLng location) {
-    final swPoint = _crs.latLngToPoint(sw, zoom);
-    final nePoint = _crs.latLngToPoint(ne, zoom);
-    final point = _crs.latLngToPoint(location, zoom);
-    return Offset((point.x - swPoint.x).toDouble(), (point.y - nePoint.y).toDouble());
+    final swPoint = _crs.latLngToOffset(sw, zoom);
+    final nePoint = _crs.latLngToOffset(ne, zoom);
+    final point = _crs.latLngToOffset(location, zoom);
+    return Offset(point.dx - swPoint.dx, point.dy - nePoint.dy);
   }
 }

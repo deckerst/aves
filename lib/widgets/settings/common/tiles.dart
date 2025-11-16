@@ -40,7 +40,7 @@ class SettingsSubPageTile extends StatelessWidget {
 
 class SettingsSwitchListTile extends StatelessWidget {
   final bool Function(BuildContext, Settings) selector;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
   final String title;
   final String? subtitle;
   final Widget? trailing;
@@ -67,7 +67,7 @@ class SettingsSwitchListTile extends StatelessWidget {
             children: [
               Expanded(child: titleWidget),
               AnimatedOpacity(
-                opacity: current ? 1 : disabledOpacity,
+                opacity: current && onChanged != null ? 1 : disabledOpacity,
                 duration: ADurations.toggleableTransitionLoose,
                 child: trailing,
               ),

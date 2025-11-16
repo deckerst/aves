@@ -295,6 +295,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/denixport/dart.country',
     ),
     Dependency(
+      name: 'CSV',
+      license: mit,
+      sourceUrl: 'https://github.com/close2/csv',
+    ),
+    Dependency(
       name: 'DLNA Dart',
       license: bsd3,
       sourceUrl: 'https://github.com/suconghou/dlna-dart',

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
@@ -8,7 +9,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:streams_channel/streams_channel.dart';
 
 abstract class MediaEditService {
   String get newOpId;
@@ -50,8 +50,8 @@ abstract class MediaEditService {
 }
 
 class PlatformMediaEditService implements MediaEditService {
-  static const _platform = MethodChannel('deckers.thibault/aves/media_edit');
-  static final _opStream = StreamsChannel('deckers.thibault/aves/media_op_stream');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/media_edit');
+  static final _opStream = AvesStreamsChannel('deckers.thibault/aves/media_op_stream');
 
   @override
   String get newOpId => DateTime.now().millisecondsSinceEpoch.toString();

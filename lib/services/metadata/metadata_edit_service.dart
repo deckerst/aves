@@ -4,6 +4,7 @@ import 'package:aves/convert/convert.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
@@ -24,7 +25,7 @@ abstract class MetadataEditService {
 }
 
 class PlatformMetadataEditService implements MetadataEditService {
-  static const _platform = MethodChannel('deckers.thibault/aves/metadata_edit');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/metadata_edit');
 
   @override
   Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise}) async {

@@ -7,7 +7,7 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.13.9+160
+version: 1.13.10+161
 publish_to: none
 
 environment:
@@ -68,6 +68,7 @@ dependencies:
   collection:
   connectivity_plus:
   country_code:
+  csv:
   decorated_icon:
   device_info_plus:
   dlna_dart:
@@ -127,7 +128,8 @@ dependencies:
       url: https://github.com/deckerst/aves_streams_channel.git
   synchronized:
   url_launcher:
-  vector_map_tiles: ^8.0.0 # vector_map_tiles v9.0.0-beta.6 has a buggy cross-platform definition for `cacheFolder`
+  # vector_map_tiles v10.0.0-beta requires Flutter v3.37.0 and Impeller
+  vector_map_tiles: ^9.0.0-beta.8
   vector_math:
   vector_tile_renderer:
   volume_controller:

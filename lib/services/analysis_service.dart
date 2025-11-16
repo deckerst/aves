@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
@@ -18,7 +19,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AnalysisService {
-  static const _platform = MethodChannel('deckers.thibault/aves/analysis');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/analysis');
 
   static Future<void> registerCallback() async {
     try {
@@ -48,7 +49,7 @@ class AnalysisService {
   }
 }
 
-const _channel = MethodChannel('deckers.thibault/aves/analysis_service_background');
+const _channel = AvesMethodChannel('deckers.thibault/aves/analysis_service_background');
 
 @pragma('vm:entry-point')
 Future<void> _init() async {

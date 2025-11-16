@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aves</string>
+    <string name="app_widget_label">Çarçoveya wêneyê</string>
+    <string name="wallpaper">Paşrû</string>
+    <string name="map_shortcut_short_label">Nexşe</string>
+    <string name="search_shortcut_short_label">Bigere</string>
+    <string name="videos_shortcut_short_label">Vîdyo</string>
+    <string name="analysis_channel_name">Dîtina medya</string>
+    <string name="analysis_notification_default_title">Medya tê dîtin</string>
+    <string name="analysis_notification_action_stop">Rawestîne</string>
+</resources>

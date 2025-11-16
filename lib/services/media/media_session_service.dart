@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
@@ -23,7 +24,7 @@ abstract class MediaSessionService {
 }
 
 class PlatformMediaSessionService implements MediaSessionService, Disposable {
-  static const _platformObject = MethodChannel('deckers.thibault/aves/media_session');
+  static const _platformObject = AvesMethodChannel('deckers.thibault/aves/media_session');
 
   final Set<StreamSubscription> _subscriptions = {};
   final EventChannel _mediaCommandChannel = const OptionalEventChannel('deckers.thibault/aves/media_command');

@@ -79,6 +79,7 @@ class MimeTypes {
   static const webm = 'video/webm';
   static const wmv = 'video/x-ms-wmv';
 
+  static const csv = 'text/csv';
   static const json = 'application/json';
   static const plainText = 'text/plain';
   static const sqlite3 = 'application/vnd.sqlite3';
@@ -147,8 +148,10 @@ class MimeTypes {
 
   static const Map<String, String> _defaultExtensions = {
     bmp: '.bmp',
+    csv: '.csv',
     gif: '.gif',
     jpeg: '.jpg',
+    json: '.json',
     png: '.png',
     svg: '.svg',
     webp: '.webp',

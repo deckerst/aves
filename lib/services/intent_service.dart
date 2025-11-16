@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/app_service.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
-import 'package:streams_channel/streams_channel.dart';
 
 class IntentService {
-  static const _platform = MethodChannel('deckers.thibault/aves/intent');
-  static final _stream = StreamsChannel('deckers.thibault/aves/activity_result_stream');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/intent');
+  static final _stream = AvesStreamsChannel('deckers.thibault/aves/activity_result_stream');
 
   static Future<Map<String, dynamic>> getIntentData() async {
     try {

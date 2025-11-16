@@ -98,6 +98,7 @@ class SettingKeys {
   static const viewerQuickActionsKey = 'viewer_quick_actions';
   static const showOverlayOnOpeningKey = 'show_overlay_on_opening';
   static const showOverlayMinimapKey = 'show_overlay_minimap';
+  static const showOverlayZoomLevelKey = 'show_overlay_zoom_level';
   static const overlayHistogramStyleKey = 'show_overlay_histogram';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayDescriptionKey = 'show_overlay_description';

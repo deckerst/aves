@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/model/entry/sort.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
 import 'package:collection/collection.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class GlobalSearch {
-  static const _platform = MethodChannel('deckers.thibault/aves/global_search');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/global_search');
 
   static Future<void> registerCallback() async {
     try {
@@ -34,7 +35,7 @@ Future<void> _init() async {
   // `intl` initialization for date formatting
   await initializeDateFormatting();
 
-  const _channel = MethodChannel('deckers.thibault/aves/global_search_background');
+  const _channel = AvesMethodChannel('deckers.thibault/aves/global_search_background');
   _channel.setMethodCallHandler((call) async {
     switch (call.method) {
       case 'getSuggestions':

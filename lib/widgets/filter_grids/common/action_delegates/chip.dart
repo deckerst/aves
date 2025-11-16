@@ -42,9 +42,9 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
       case ChipAction.goToExplorerPage:
         return filter is StoredAlbumFilter || filter is PathFilter;
       case ChipAction.ratingOrGreater:
-        return filter is RatingFilter && 1 < filter.rating && filter.rating < 5 && filter.op != RatingFilter.opOrGreater;
+        return filter is RatingFilter && 1 <= filter.rating && filter.rating < 5 && filter.op != RatingFilter.opOrGreater;
       case ChipAction.ratingOrLower:
-        return filter is RatingFilter && 1 < filter.rating && filter.rating < 5 && filter.op != RatingFilter.opOrLower;
+        return filter is RatingFilter && 1 < filter.rating && filter.rating <= 5 && filter.op != RatingFilter.opOrLower;
       case ChipAction.decompose:
         return filter is DynamicAlbumFilter;
       case ChipAction.reverse:

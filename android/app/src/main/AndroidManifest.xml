@@ -131,12 +131,16 @@
             android:theme="@style/NormalTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
+                <!-- main entry point, navigating to home page -->
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.APP_GALLERY" />
             </intent-filter>
             <intent-filter tools:ignore="AppLinkUrlError">
+                <!-- viewer for media with no specified scheme -->
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <action android:name="android.intent.action.PICK" />
                 <action android:name="android.intent.action.SEND" />
@@ -158,6 +162,7 @@
                 <!-- no specified scheme -->
             </intent-filter>
             <intent-filter tools:ignore="AppLinkUrlError">
+                <!-- viewer for media with a specified scheme -->
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <action android:name="android.intent.action.PICK" />
                 <action android:name="android.intent.action.SEND" />
@@ -180,6 +185,7 @@
                 <data android:scheme="file" />
             </intent-filter>
             <intent-filter>
+                <!-- `geo` URI handling (view on map, or fill location editor) -->
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -210,6 +216,13 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+            <!-- launch size in desktop environments, like ChromeOS -->
+            <meta-data
+                android:name="WindowManagerPreference:FreeformWindowSize"
+                android:value="maximize" />
+            <meta-data
+                android:name="WindowManagerPreference:FreeformWindowOrientation"
+                android:value="landscape" />
         </activity>
 
         <activity

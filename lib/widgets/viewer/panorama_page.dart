@@ -40,6 +40,8 @@ class _PanoramaPageState extends State<PanoramaPage> {
 
   PanoramaInfo get info => widget.info;
 
+  static const _minZoom = .25;
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +75,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   final longitude = ((croppedArea.left + croppedArea.width / 2) / fullSize.width - 1 / 2) * 360;
                   return Panorama(
                     longitude: longitude,
+                    minZoom: _minZoom,
                     sensorControl: sensorControl,
                     croppedArea: croppedArea,
                     croppedFullWidth: fullSize.width,
@@ -82,6 +85,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   );
                 } else {
                   return Panorama(
+                    minZoom: _minZoom,
                     sensorControl: sensorControl,
                     onTap: onTap,
                     child: imageChild,

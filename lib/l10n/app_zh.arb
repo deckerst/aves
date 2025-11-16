@@ -1446,5 +1446,7 @@
     "settingsNavigationBottomActionEditorBanner": "长按以移动按钮，并选择在底部导航栏中显示哪些操作。",
     "@settingsNavigationBottomActionEditorBanner": {},
     "tagPickPageTitle": "选择标签",
-    "@tagPickPageTitle": {}
+    "@tagPickPageTitle": {},
+    "settingsViewerShowZoomLevel": "显示缩放级别",
+    "@settingsViewerShowZoomLevel": {}
 }

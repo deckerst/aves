@@ -22,13 +22,12 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/stats/date/histogram.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/stats/mime_donut.dart';
 import 'package:aves/widgets/stats/percent_text.dart';
+import 'package:aves/widgets/stats/top_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -279,14 +278,10 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
                 settings: const RouteSettings(name: StatsTopPage.routeName),
                 builder: (context) => StatsTopPage(
                   title: title,
-                  tableBuilder: (context) => FilterTable(
-                    totalEntryCount: totalEntryCount,
-                    entryCountMap: entryCountMap,
-                    filterBuilder: filterBuilder,
-                    sortByCount: sortByCount,
-                    maxRowCount: null,
-                    onFilterSelection: (filter) => _onFilterSelection(context, filter),
-                  ),
+                  totalEntryCount: totalEntryCount,
+                  entryCountMap: entryCountMap,
+                  filterBuilder: filterBuilder,
+                  sortByCount: sortByCount,
                   onFilterSelection: (filter) => _onFilterSelection(context, filter),
                 ),
               ),
@@ -381,51 +376,6 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
         ),
       ),
       (route) => false,
-    );
-  }
-}
-
-class StatsTopPage extends StatelessWidget {
-  static const routeName = '/collection/stats/top';
-
-  final String title;
-  final WidgetBuilder tableBuilder;
-  final AFilterCallback onFilterSelection;
-
-  const StatsTopPage({
-    super.key,
-    required this.title,
-    required this.tableBuilder,
-    required this.onFilterSelection,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AvesScaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: !settings.useTvLayout,
-        title: Text(title),
-      ),
-      body: GestureAreaProtectorStack(
-        child: SafeArea(
-          bottom: false,
-          child: Builder(builder: (context) {
-            return NotificationListener<SelectFilterNotification>(
-              onNotification: (notification) {
-                onFilterSelection(notification.filter);
-                return true;
-              },
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(vertical: 8) +
-                    EdgeInsets.only(
-                      bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
-                    ),
-                child: tableBuilder(context),
-              ),
-            );
-          }),
-        ),
-      ),
     );
   }
 }

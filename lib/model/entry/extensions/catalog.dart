@@ -48,7 +48,10 @@ extension ExtraAvesEntryCatalog on AvesEntry {
 
       // post-processing
       if ((isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) || (mimeType == MimeTypes.avif && durationMillis != null)) {
-        catalogMetadata = await VideoMetadataFormatter.completeCatalogMetadata(this);
+        final videoMetadata = await VideoMetadataFormatter.completeCatalogMetadata(this);
+        if (videoMetadata != null) {
+          catalogMetadata = videoMetadata;
+        }
       }
       if (isGeotiff && !hasGps) {
         final info = await metadataFetchService.getGeoTiffInfo(this);

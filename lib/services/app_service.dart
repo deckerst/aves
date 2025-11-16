@@ -8,13 +8,13 @@ import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:streams_channel/streams_channel.dart';
 
 abstract class AppService {
   Future<Set<Package>> getPackages();
@@ -47,8 +47,8 @@ abstract class AppService {
 }
 
 class PlatformAppService implements AppService {
-  static const _platform = MethodChannel('deckers.thibault/aves/app');
-  static final _stream = StreamsChannel('deckers.thibault/aves/activity_result_stream');
+  static const _platform = AvesMethodChannel('deckers.thibault/aves/app');
+  static final _stream = AvesStreamsChannel('deckers.thibault/aves/activity_result_stream');
 
   static final _knownAppDirs = {
     'com.google.android.apps.photos': {'Google Photos'},

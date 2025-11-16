@@ -96,10 +96,10 @@ class ScaleLayerWidget extends StatelessWidget {
         }
     }
 
-    final start = map.project(center);
+    final start = map.projectAtZoom(center);
     final targetPoint = _distanceCalculator.offset(center, distanceMeters, 90);
-    final end = map.project(targetPoint);
-    final width = max(0, end.x - start.x).toDouble();
+    final end = map.projectAtZoom(targetPoint);
+    final width = max(0, end.dx - start.dx).toDouble();
 
     return options.builder(width, displayDistance);
   }
