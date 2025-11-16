@@ -1446,5 +1446,7 @@
     "settingsNavigationBottomActionEditorPageTitle": "Barre de navigation inférieure",
     "@settingsNavigationBottomActionEditorPageTitle": {},
     "tagPickPageTitle": "Sélection",
-    "@tagPickPageTitle": {}
+    "@tagPickPageTitle": {},
+    "settingsViewerShowZoomLevel": "Afficher le niveau de zoom",
+    "@settingsViewerShowZoomLevel": {}
 }
