@@ -34,6 +34,15 @@ android {
     namespace = 'deckers.thibault.aves'
     compileSdk = 36
 
+    compileOptions {
+        // enable support for the new language APIs on older devices
+        // e.g. `java/util/function/Supplier` on Android 5.0 (API 21)
+        coreLibraryDesugaringEnabled = true
+        // should match `kotlin.jvmToolchain`
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
     defaultConfig {
         applicationId packageName
         minSdk flutter.minSdkVersion
@@ -160,6 +169,9 @@ repositories {
 }
 
 dependencies {
+    // cf https://developer.android.com/studio/write/java8-support#library-desugaring
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
 
     implementation 'androidx.annotation:annotation:1.9.1'

@@ -1,5 +1,6 @@
 buildscript {
     ext {
+        agp_version = '8.13.1'
         glide_version = '5.0.5'
         abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
         useCrashlytics = gradle.startParameter.taskNames.any { task -> task.containsIgnoreCase("play") }
@@ -11,6 +12,8 @@ buildscript {
     }
 
     dependencies {
+        classpath "com.android.tools.build:gradle:$agp_version"
+
         if (useCrashlytics) {
             // GMS & Firebase Crashlytics (used by some flavors only)
             classpath 'com.google.gms:google-services:4.4.3'
