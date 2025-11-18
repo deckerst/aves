@@ -1638,5 +1638,7 @@
     "settingsNavigationBottomActionEditorBanner": "Торкніться та утримуйте, щоб переміщувати кнопки та вибирати дії, які відображаються на нижній панелі навігації.",
     "@settingsNavigationBottomActionEditorBanner": {},
     "tagPickPageTitle": "Вибрати тег",
-    "@tagPickPageTitle": {}
+    "@tagPickPageTitle": {},
+    "settingsViewerShowZoomLevel": "Показати рівень масштабування",
+    "@settingsViewerShowZoomLevel": {}
 }

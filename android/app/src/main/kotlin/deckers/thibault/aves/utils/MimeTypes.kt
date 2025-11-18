@@ -68,7 +68,12 @@ object MimeTypes {
 
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith("video")
 
-    fun isHeic(mimeType: String?) = mimeType != null && (mimeType == HEIC || mimeType == HEIF)
+    // assume that `HEIF` is a `HEIC` (using the default `HEVC` codec)
+    fun isHeic(mimeType: String?) = mimeType == HEIC || mimeType == HEIF
+
+    // `AVIF` and `HEIC` both derive from `HEIF`, which derives from `ISOBMFF`.
+    // `MP4` also derives from `ISOBMFF` but is not an image format.
+    fun isIsoBMFFImage(mimeType: String?) = mimeType == AVIF || isHeic(mimeType)
 
     fun isRaw(mimeType: String): Boolean {
         return when (mimeType) {

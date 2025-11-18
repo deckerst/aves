@@ -20,6 +20,7 @@ import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.MultiTrackMedia
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
 
 @GlideModule
 class MultiPageImageGlideModule : LibraryGlideModule() {
@@ -32,7 +33,7 @@ class MultiPageImage(val context: Context, val uri: Uri, val mimeType: String, v
     override fun toString(): String = "MultiPageImage#${hashCode()}{uri=$uri mimeType=$mimeType pageId=$pageId}"
 
     companion object {
-        fun isSupported(mimeType: String) = MimeTypes.isHeic(mimeType) || mimeType == MimeTypes.JPEG
+        fun isSupported(mimeType: String) = isIsoBMFFImage(mimeType) || mimeType == MimeTypes.JPEG
     }
 }
 
@@ -62,7 +63,7 @@ internal class MultiPageImageFetcher(val model: MultiPageImage, val width: Int, 
         val mimeType = model.mimeType
 
         var bitmap: Bitmap? = null
-        if (MimeTypes.isHeic(mimeType)) {
+        if (isIsoBMFFImage(mimeType)) {
             val trackIndex = model.pageId
             bitmap = MultiTrackMedia.getImage(context, uri, trackIndex)
         } else if (mimeType == MimeTypes.JPEG) {

@@ -668,5 +668,7 @@
     "videoRepeatActionSetStart": "Destpêk saz bike",
     "@videoRepeatActionSetStart": {},
     "videoRepeatActionSetEnd": "Dawî saz bike",
-    "@videoRepeatActionSetEnd": {}
+    "@videoRepeatActionSetEnd": {},
+    "chipActionDecompose": "Veqetîne",
+    "@chipActionDecompose": {}
 }

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.13.10"></a>[v1.13.10] - 2025-11-16
+## <a id="v1.13.11"></a>[v1.13.11] - 2025-11-18
 
 ### Added
 
@@ -20,6 +20,8 @@ All notable changes to this project will be documented in this file.
 
 - decoding images with pixel config unsupported by region decoder and bitmap compressor
 - cataloguing still AVIF images
+
+## <a id="v1.13.10"></a>[v1.13.10] - 2025-11-16 [YANKED]
 
 ## <a id="v1.13.9"></a>[v1.13.9] - 2025-10-11
 

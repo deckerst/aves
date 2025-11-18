@@ -27,6 +27,8 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
+import deckers.thibault.aves.utils.MimeTypes.isHeic
+import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.indexOfBytes
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
@@ -86,11 +88,11 @@ object MultiPage {
         return tracks
     }
 
-    fun isHeicSefdMotionPhoto(context: Context, uri: Uri): Boolean {
-        return getHeicSefdMotionPhotoVideoSizing(context, uri) != null
+    fun isIsoBMFFImageSefdMotionPhoto(context: Context, uri: Uri): Boolean {
+        return getIsoBMFFImageSefdMotionPhotoVideoSizing(context, uri) != null
     }
 
-    private fun getHeicSefdMotionPhotoVideoSizing(context: Context, uri: Uri): Pair<Long, Long>? {
+    private fun getIsoBMFFImageSefdMotionPhotoVideoSizing(context: Context, uri: Uri): Pair<Long, Long>? {
         Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (sefdOffset, sefdBytes) ->
             // we could properly parse each tag until we find the "embedded video" tag (0x0a30)
             // but it seems that decoding the SEFT trailer is necessary for this,
@@ -299,7 +301,7 @@ object MultiPage {
     }
 
     fun getTrailerVideoSize(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
-        if (MimeTypes.isHeic(mimeType)) {
+        if (isHeic(mimeType)) {
             // XMP in HEIC motion photos (as taken with a Samsung Camera v12.0.01.50) indicates an `Item:Length` of 68 bytes for the video.
             // This item does not contain the video itself, but only some kind of metadata (no doc, no spec),
             // so we ignore the `Item:Length` and look instead for the MP4 marker bytes indicating the start of the video.
@@ -340,7 +342,7 @@ object MultiPage {
             Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
         }
 
-        XMP.checkHeic(context, mimeType, uri, foundXmp, ::processXmp)
+        XMP.checkIsoBMFFImage(context, mimeType, uri, foundXmp, ::processXmp)
 
         return offsetFromEnd
     }
@@ -393,9 +395,9 @@ object MultiPage {
             return Pair(videoOffset, videoSize)
         }
 
-        if (MimeTypes.isHeic(mimeType)) {
+        if (isIsoBMFFImage(mimeType)) {
             // fallback to video within Samsung SEFD box
-            return getHeicSefdMotionPhotoVideoSizing(context, uri)
+            return getIsoBMFFImageSefdMotionPhotoVideoSizing(context, uri)
         }
 
         return null

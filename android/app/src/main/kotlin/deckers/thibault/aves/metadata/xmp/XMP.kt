@@ -20,6 +20,7 @@ import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
 import deckers.thibault.aves.utils.StorageUtils
 import org.mp4parser.IsoFile
 import org.mp4parser.boxes.UserBox
@@ -66,19 +67,19 @@ object XMP {
 
     private val PMTM_IS_PANO360_PROP_NAME = XMPPropName(PMTM_NS_URI, "IsPano360")
 
-    // as of `metadata-extractor` v2.18.0, XMP is not discovered in HEIC images,
+    // as of `metadata-extractor` v2.18.0, XMP is not discovered in AVIF/HEIC images,
     // so we fall back to the native content resolver, if possible
-    fun checkHeic(
+    fun checkIsoBMFFImage(
         context: Context,
         mimeType: String,
         uri: Uri,
         foundXmp: Boolean,
         processXmp: (xmpMeta: XMPMeta) -> Unit,
     ) {
-        if (MimeTypes.isHeic(mimeType) && !foundXmp && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (!foundXmp && isIsoBMFFImage(mimeType) && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 val xmpBytes = context.queryContentPropValue(uri, mimeType, MediaStore.MediaColumns.XMP)
-                if (xmpBytes is ByteArray && xmpBytes.size > 0) {
+                if (xmpBytes is ByteArray && xmpBytes.isNotEmpty()) {
                     val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, SafeXmpReader.PARSE_OPTIONS)
                     processXmp(xmpMeta)
                 }

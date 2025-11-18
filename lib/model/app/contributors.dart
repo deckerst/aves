@@ -156,6 +156,7 @@ class Contributors {
     Contributor('Ricky Tigg', 'ricky.tigg@gmail.com'),
     Contributor('Oris5', 'otso.karttunen@gmail.com'),
     Contributor('nullspace', 'jxhchina@gmail.com'),
+    Contributor('dcre', 'realdcre@users.noreply.hosted.weblate.org'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali

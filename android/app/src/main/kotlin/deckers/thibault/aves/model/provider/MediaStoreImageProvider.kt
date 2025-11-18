@@ -27,6 +27,7 @@ import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
+import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
@@ -279,7 +280,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                     EntryFields.CONTENT_ID to id,
                                 )
 
-                                if (MimeTypes.isHeic(mimeType)) {
+                                if (isHeic(mimeType)) {
                                     // The reported size for some HEIC images is simply incorrect.
                                     try {
                                         StorageUtils.openInputStream(context, itemUri)?.use { input ->
