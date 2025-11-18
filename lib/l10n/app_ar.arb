@@ -1638,5 +1638,7 @@
     "settingsNavigationBottomActionEditorBanner": "المس باستمرار لتحريك الأزرار وتحديد الإجراءات التي يتم عرضها في شريط التنقل السفلي.",
     "@settingsNavigationBottomActionEditorBanner": {},
     "tagPickPageTitle": "اختر الوسم",
-    "@tagPickPageTitle": {}
+    "@tagPickPageTitle": {},
+    "settingsViewerShowZoomLevel": "إظهار مستوى التكبير",
+    "@settingsViewerShowZoomLevel": {}
 }

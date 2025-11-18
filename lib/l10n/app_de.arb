@@ -1434,5 +1434,17 @@
     "mapStyleEditorDialogName": "Name",
     "@mapStyleEditorDialogName": {},
     "mapStyleEditorDialogUrl": "URL",
-    "@mapStyleEditorDialogUrl": {}
+    "@mapStyleEditorDialogUrl": {},
+    "tagPickPageTitle": "Kategorieauswahl",
+    "@tagPickPageTitle": {},
+    "settingsNavigationBottomActionsTile": "Untere Navigationsleiste",
+    "@settingsNavigationBottomActionsTile": {},
+    "settingsNavigationBottomActionEditorPageTitle": "Untere Navigation",
+    "@settingsNavigationBottomActionEditorPageTitle": {},
+    "settingsNavigationBottomActionEditorBanner": "Tippen und halten sie um die Elemente der unteren Navigationsleiste zu verschieben und anzupassen.",
+    "@settingsNavigationBottomActionEditorBanner": {},
+    "settingsViewerShowZoomLevel": "Vergrößerungsgrad Anzeigen",
+    "@settingsViewerShowZoomLevel": {},
+    "mapStyleEditorDialogSubdomains": "Unterdomains",
+    "@mapStyleEditorDialogSubdomains": {}
 }
