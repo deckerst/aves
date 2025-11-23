@@ -88,8 +88,11 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
+    double? _lastspacing;
     final spacing = context.select<Settings, double>((v) => v.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
-    if (_tileExtentController?.spacing != spacing) {
+    if (_lastspacing != spacing) {
+      _lastspacing = spacing;
+      _tileExtentController?.dispose();
       _tileExtentController = TileExtentController(
         settingsRouteKey: settingsRouteKey,
         columnCountDefault: CollectionGrid.columnCountDefault,
@@ -134,9 +137,15 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
 
   @override
   Widget build(BuildContext context) {
-    final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
-    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
-    final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
+    final settings = context.read<Settings>();
+    final controller = context.read<TileExtentController>();
+
+    final selectable = context.select<ValueNotifier<AppMode>, bool>(
+      (v) => v.value.canSelectMedia,
+    );
+    final settingsRouteKey = controller.settingsRouteKey;
+    final tileLayout = settings.getTileLayout(settingsRouteKey);
+
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
@@ -315,7 +324,8 @@ class _CollectionSectionedContent extends StatefulWidget {
 
 class _CollectionSectionedContentState extends State<_CollectionSectionedContent> {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
+  static final GlobalKey _scrollableKey =
+    GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
 
   CollectionLens get collection => widget.collection;
 
@@ -377,7 +387,16 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
     );
   }
 
-  void _onAppBarHeightChanged() => setState(() {});
+  double? _lastAppBarHeight;
+
+  void _onAppBarHeightChanged() {
+    final newHeight = _appBarHeightNotifier.value;
+    if (_lastAppBarHeight != newHeight) {
+      _lastAppBarHeight = newHeight;
+      setState(() {});
+    }
+  }
+
 }
 
 class _CollectionScaler extends StatelessWidget {
@@ -582,6 +601,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
   }
 
   Widget _buildScrollView(Widget appBar, CollectionLens collection) {
+    final maxExtent = context.read<TileExtentController>().effectiveExtentMax;
     return CustomScrollView(
       key: widget.scrollableKey,
       primary: true,
@@ -593,7 +613,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
               gestureSettings: MediaQuery.gestureSettingsOf(context),
               parent: const AlwaysScrollableScrollPhysics(),
             ),
-      cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax),
+      cacheExtent: maxExtent,
       slivers: [
         appBar,
         collection.isEmpty
@@ -665,10 +685,13 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
 
   void _onScrollChanged() {
     widget.isScrollingNotifier.value = true;
-    _stopScrollMonitoringTimer();
-    _scrollMonitoringTimer = Timer(ADurations.collectionScrollMonitoringTimerDelay, () {
+    _scrollMonitoringTimer ??= Timer(
+    ADurations.collectionScrollMonitoringTimerDelay,
+    () {
       widget.isScrollingNotifier.value = false;
-    });
+      _scrollMonitoringTimer = null;
+    },
+  );
   }
 
   void _stopScrollMonitoringTimer() => _scrollMonitoringTimer?.cancel();
