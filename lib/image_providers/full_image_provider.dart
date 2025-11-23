@@ -14,9 +14,11 @@ class FullImage extends ImageProvider<FullImage> with EquatableMixin {
   final int? pageId, rotationDegrees, sizeBytes;
   final bool isFlipped, isAnimated;
   final double scale;
+  // optional target pixel size requested by the consumer (in physical pixels)
+  final Size? targetSize;
 
   @override
-  List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, isAnimated, scale];
+  List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, isAnimated, scale, targetSize?.width, targetSize?.height];
 
   const FullImage({
     required this.uri,
@@ -27,11 +29,34 @@ class FullImage extends ImageProvider<FullImage> with EquatableMixin {
     required this.isAnimated,
     this.sizeBytes,
     this.scale = 1.0,
+    this.targetSize,
   });
 
   @override
+  @override
   Future<FullImage> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture<FullImage>(this);
+    // Try to infer a target decode size from the provided configuration so the
+    // platform decoder can downscale early and reduce CPU/memory pressure while
+    // the user is scrolling.
+    final devicePixelRatio = configuration.devicePixelRatio ?? ui.window.devicePixelRatio;
+    final size = configuration.size;
+    if (size == null || size.isEmpty) return SynchronousFuture<FullImage>(this);
+    final target = Size(size.width * devicePixelRatio, size.height * devicePixelRatio);
+    if (target.width <= 0 || target.height <= 0) return SynchronousFuture<FullImage>(this);
+
+    return SynchronousFuture<FullImage>(
+      FullImage(
+        uri: uri,
+        mimeType: mimeType,
+        pageId: pageId,
+        rotationDegrees: rotationDegrees,
+        isFlipped: isFlipped,
+        isAnimated: isAnimated,
+        sizeBytes: sizeBytes,
+        scale: scale,
+        targetSize: target,
+      ),
+    );
   }
 
   @override

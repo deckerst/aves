@@ -1,5 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/enums/viewer_transition.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -44,6 +45,8 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    // cache local reference to avoid repeated getter work during builds
+    final localEntries = entries;
 
     return MagnifierGestureDetectorScope(
       axis: const [Axis.horizontal, Axis.vertical],
@@ -54,13 +57,15 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           key: const Key('horizontal-pageview'),
           scrollDirection: Axis.horizontal,
           controller: pageController,
+          // allow implicit scrolling for accessibility and improve prefetching behavior
+          allowImplicitScrolling: true,
           physics: MagnifierScrollerPhysics(
             gestureSettings: MediaQuery.gestureSettingsOf(context),
             parent: const BouncingScrollPhysics(),
           ),
           onPageChanged: widget.onPageChanged,
           itemBuilder: (context, index) {
-            final mainEntry = entries[index % entries.length];
+            final mainEntry = localEntries[index % localEntries.length];
 
             final child = mainEntry.isMultiPage
                 ? PageEntryBuilder(
@@ -82,10 +87,56 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
               child: child,
             );
           },
-          itemCount: viewerController.repeat ? null : entries.length,
+          itemCount: viewerController.repeat ? null : localEntries.length,
         ),
       ),
     );
+  }
+
+  int? _lastPrecachedIndex;
+  late final VoidCallback _pageListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageListener = () {
+      final p = pageController.page;
+      if (p == null) return;
+      final currentIndex = p.round();
+      if (currentIndex != _lastPrecachedIndex) {
+        _lastPrecachedIndex = currentIndex;
+        _precacheSurrounding(currentIndex);
+      }
+    };
+    pageController.addListener(_pageListener);
+  }
+
+  @override
+  void dispose() {
+    try {
+      pageController.removeListener(_pageListener);
+    } catch (_) {}
+    super.dispose();
+  }
+
+  void _precacheSurrounding(int index) {
+    final list = entries;
+    if (list.isEmpty) return;
+    final length = list.length;
+    // precache previous and next entries (if present)
+    final candidates = <int>[index - 1, index + 1];
+    for (var i in candidates) {
+      final wrapped = viewerController.repeat ? ((i % length) + length) % length : i;
+      if (wrapped >= 0 && wrapped < length) {
+        final entry = list[wrapped];
+        try {
+          precacheImage(entry.bestCachedThumbnail, context);
+        } catch (_) {}
+        try {
+          precacheImage(entry.fullImage, context);
+        } catch (_) {}
+      }
+    }
   }
 
   Widget _buildViewer(AvesEntry mainEntry, {AvesEntry? pageEntry}) {
