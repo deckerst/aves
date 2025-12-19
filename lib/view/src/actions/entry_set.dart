@@ -46,6 +46,10 @@ extension ExtraEntrySetActionView on EntrySetAction {
       EntrySetAction.editRating => l10n.entryInfoActionEditRating,
       EntrySetAction.editTags => l10n.entryInfoActionEditTags,
       EntrySetAction.removeMetadata => l10n.entryInfoActionRemoveMetadata,
+      EntrySetAction.group => l10n.entryActionGroup,
+      EntrySetAction.renameGroup => l10n.chipActionRename,
+      EntrySetAction.ungroup => l10n.entryActionUngroup,
+      EntrySetAction.removeFromGroup => l10n.entryActionRemoveFromGroup,
     };
   }
 
@@ -92,6 +96,10 @@ extension ExtraEntrySetActionView on EntrySetAction {
       EntrySetAction.editRating => AIcons.rating,
       EntrySetAction.editTags => AIcons.tag,
       EntrySetAction.removeMetadata => AIcons.clear,
+      EntrySetAction.group => AIcons.group,
+      EntrySetAction.renameGroup => AIcons.rename,
+      EntrySetAction.ungroup => AIcons.ungroup,
+      EntrySetAction.removeFromGroup => AIcons.remove,
     };
   }
 }

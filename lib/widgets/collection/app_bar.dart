@@ -5,6 +5,7 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/container/set_and.dart';
+
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/trash.dart';
@@ -362,6 +363,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
           isSelecting: isSelecting,
           collection: collection,
           selectedItemCount: selectedItemCount,
+          selection: selection,
         );
 
     return settings.useTvLayout
@@ -745,6 +747,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
+      default:
         _actionDelegate.onActionSelected(context, action);
     }
   }

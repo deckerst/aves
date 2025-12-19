@@ -12,6 +12,7 @@ import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/date.dart';
+import 'package:aves/model/filters/entry_group.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/missing.dart';
@@ -34,6 +35,7 @@ import 'package:provider/provider.dart';
 abstract class CollectionFilter extends Equatable implements Comparable<CollectionFilter> {
   static const List<String> categoryOrder = [
     TrashFilter.type,
+    EntryGroupFilter.type,
     QueryFilter.type,
     SetAndFilter.type,
     SetOrFilter.type,
@@ -77,6 +79,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return DynamicAlbumFilter.fromMap(jsonMap);
       case FavouriteFilter.type:
         return FavouriteFilter.fromMap(jsonMap);
+      case EntryGroupFilter.type:
+        return EntryGroupFilter.fromMap(jsonMap);
       case LocationFilter.type:
         return LocationFilter.fromMap(jsonMap);
       case MimeFilter.type:

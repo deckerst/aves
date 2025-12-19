@@ -25,6 +25,10 @@ enum EntrySetAction {
   rename,
   convert,
   toggleFavourite,
+  group,
+  renameGroup,
+  ungroup,
+  removeFromGroup,
   rotateCCW,
   rotateCW,
   flip,
@@ -57,6 +61,8 @@ class EntrySetActions {
     EntrySetAction.stats,
     null,
     EntrySetAction.rescan,
+    EntrySetAction.renameGroup,
+    EntrySetAction.ungroup,
     EntrySetAction.emptyBin,
   ];
 
@@ -81,6 +87,10 @@ class EntrySetActions {
     EntrySetAction.rename,
     EntrySetAction.convert,
     EntrySetAction.toggleFavourite,
+    EntrySetAction.group,
+    EntrySetAction.renameGroup,
+    EntrySetAction.ungroup,
+    EntrySetAction.removeFromGroup,
     null,
     EntrySetAction.map,
     EntrySetAction.slideshow,
@@ -125,5 +135,6 @@ class EntrySetActions {
     EntrySetAction.editRating,
     EntrySetAction.editTags,
     EntrySetAction.removeMetadata,
+    EntrySetAction.removeFromGroup,
   ];
 }

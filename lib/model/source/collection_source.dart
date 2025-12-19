@@ -19,6 +19,7 @@ import 'package:aves/model/grouping/convert.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/manual_group.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/model/source/location/country.dart';
@@ -29,6 +30,7 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/model/source/trash.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/analysis_service.dart';
+import 'package:aves/services/common/entry_group_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
@@ -68,7 +70,7 @@ mixin SourceBase {
   void invalidateEntries();
 }
 
-abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
+abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin, ManualGroupMixin {
   static const fullScope = <CollectionFilter>{};
 
   CollectionSource() {
@@ -89,6 +91,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       }
     });
     vaults.addListener(_onVaultsChanged);
+    _groupSubscriptions.add(entryGroupService.eventBus.on<EntryGroupCreatedEvent>().listen((_) => _onManualGroupChanged()));
+    _groupSubscriptions.add(entryGroupService.eventBus.on<EntryGroupDeletedEvent>().listen((_) => _onManualGroupChanged()));
+    _groupSubscriptions.add(entryGroupService.eventBus.on<EntryGroupUpdatedEvent>().listen((_) => _onManualGroupChanged()));
+    _groupSubscriptions.add(entryGroupService.eventBus.on<EntryGroupMembersAddedEvent>().listen((_) => _onManualGroupChanged()));
+    _groupSubscriptions.add(entryGroupService.eventBus.on<EntryGroupMembersRemovedEvent>().listen((_) => _onManualGroupChanged()));
   }
 
   @mustCallSuper
@@ -97,10 +104,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       LeakTracking.dispatchObjectDisposed(object: this);
     }
     vaults.removeListener(_onVaultsChanged);
+    _groupSubscriptions.forEach((sub) => sub.cancel());
     _rawEntries.forEach((v) => v.dispose());
   }
 
   set canAnalyze(bool enabled);
+
+  final List<StreamSubscription> _groupSubscriptions = [];
 
   final EventBus _eventBus = EventBus();
 
@@ -144,6 +154,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   Future<void> loadDates() async {
     _savedDates = Map.unmodifiable(await localMediaDb.loadDates());
+    updateManualGroups();
   }
 
   Set<CollectionFilter> _getAppHiddenFilters() => {
@@ -630,6 +641,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   void _onVaultsChanged() {
     final newlyVisibleFilters = vaults.vaultDirectories.whereNot(vaults.isLocked).map((v) => StoredAlbumFilter(v, null)).toSet();
     _onFilterVisibilityChanged(newlyVisibleFilters);
+  }
+
+  void _onManualGroupChanged() {
+    updateManualGroups();
+    _invalidate();
+    eventBus.fire(EntryRefreshedEvent(allEntries)); // Or just something to trigger UI refresh
   }
 }
 

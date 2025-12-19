@@ -18,6 +18,8 @@ class LocalMediaDbUpgrader {
   static const vaultTable = SqfliteLocalMediaDbSchema.vaultTable;
   static const trashTable = SqfliteLocalMediaDbSchema.trashTable;
   static const videoPlaybackTable = SqfliteLocalMediaDbSchema.videoPlaybackTable;
+  static const entryGroupTable = SqfliteLocalMediaDbSchema.entryGroupTable;
+  static const entryGroupMemberTable = SqfliteLocalMediaDbSchema.entryGroupMemberTable;
 
   // warning: "ALTER TABLE ... RENAME COLUMN ..." is not supported
   // on SQLite <3.25.0, bundled on older Android devices
@@ -53,6 +55,9 @@ class LocalMediaDbUpgrader {
           await _upgradeFrom13(db);
         case 14:
           await _upgradeFrom14(db);
+        case 15:
+        case 16:
+          await _upgradeFrom15(db);
       }
       oldVersion++;
     }
@@ -499,5 +504,27 @@ class LocalMediaDbUpgrader {
     // transitional upgrade previously used to sanitize rebuildable tables
     // (dateTakenTable, metadataTable, addressTable, trashTable, videoPlaybackTable)
     // for users with a potentially corrupted DB following upgrade to v1.12.4
+  }
+
+  static Future<void> _upgradeFrom15(Database db) async {
+    debugPrint('upgrading DB from v15');
+
+    // new tables for manual photo grouping feature
+    await db.execute('CREATE TABLE IF NOT EXISTS $entryGroupTable ('
+        'id INTEGER PRIMARY KEY AUTOINCREMENT'
+        ', name TEXT NOT NULL'
+        ', dateCreatedMillis INTEGER NOT NULL'
+        ', coverEntryId INTEGER'
+        ', sortOrder INTEGER DEFAULT 0'
+        ')');
+
+    await db.execute('CREATE TABLE IF NOT EXISTS $entryGroupMemberTable ('
+        'groupId INTEGER NOT NULL'
+        ', entryId INTEGER NOT NULL'
+        ', position INTEGER NOT NULL'
+        ', PRIMARY KEY (groupId, entryId)'
+        ', FOREIGN KEY (groupId) REFERENCES $entryGroupTable(id) ON DELETE CASCADE'
+        ', FOREIGN KEY (entryId) REFERENCES entry(id) ON DELETE CASCADE'
+        ')');
   }
 }

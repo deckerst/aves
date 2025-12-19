@@ -34,6 +34,8 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   static const vaultTable = SqfliteLocalMediaDbSchema.vaultTable;
   static const trashTable = SqfliteLocalMediaDbSchema.trashTable;
   static const videoPlaybackTable = SqfliteLocalMediaDbSchema.videoPlaybackTable;
+  static const entryGroupTable = SqfliteLocalMediaDbSchema.entryGroupTable;
+  static const entryGroupMemberTable = SqfliteLocalMediaDbSchema.entryGroupMemberTable;
 
   static const _entryInsertSliceMaxCount = 10000; // number of entries
   static const _queryCursorBufferSize = 1000; // number of rows
@@ -42,13 +44,23 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   @override
   int get nextId => ++_lastId;
 
+  Future<void>? _initFuture;
+
   @override
-  Future<void> init() async {
+  Future<void> init() {
+    _initFuture ??= _doInit();
+    return _initFuture!;
+  }
+
+  Future<void> _doInit() async {
     _db = await openDatabase(
       await path,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
       onCreate: (db, version) => SqfliteLocalMediaDbSchema.createLatestVersion(db),
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 15,
+      version: 17,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
@@ -700,5 +712,113 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       }
     }
     return result;
+  }
+
+  // entry groups
+
+  @override
+  Future<List<Map<String, dynamic>>> loadAllEntryGroups() async {
+    final result = <Map<String, dynamic>>[];
+    final cursor = await _db.queryCursor(
+      entryGroupTable,
+      orderBy: 'dateCreatedMillis DESC',
+      bufferSize: _queryCursorBufferSize,
+    );
+    while (await cursor.moveNext()) {
+      result.add(Map.from(cursor.current));
+    }
+    return result;
+  }
+
+  @override
+  Future<int> insertEntryGroup(Map<String, dynamic> groupMap) async {
+    final id = await _db.insert(
+      entryGroupTable,
+      groupMap,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return id;
+  }
+
+  @override
+  Future<void> updateEntryGroup(Map<String, dynamic> groupMap) async {
+    final id = groupMap['id'] as int?;
+    if (id == null) return;
+
+    await _db.update(
+      entryGroupTable,
+      groupMap,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  @override
+  Future<void> deleteEntryGroup(int groupId) async {
+    // CASCADE will auto-delete from entry_group_members
+    await _db.delete(
+      entryGroupTable,
+      where: 'id = ?',
+      whereArgs: [groupId],
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> loadEntryGroupMembers(int groupId) async {
+    // JOIN to get full entry data for group members
+    final rows = await _db.rawQuery('''
+      SELECT e.*
+      FROM $entryTable e
+      JOIN $entryGroupMemberTable gm ON e.id = gm.entryId
+      WHERE gm.groupId = ?
+      ORDER BY gm.position
+    ''', [groupId]);
+
+    return rows.map((row) => Map<String, dynamic>.from(row)).toList();
+  }
+
+  @override
+  Future<void> insertEntryGroupMember(int groupId, int entryId, int position) async {
+    await _db.insert(
+      entryGroupMemberTable,
+      {
+        'groupId': groupId,
+        'entryId': entryId,
+        'position': position,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  Future<void> deleteEntryGroupMembers(int groupId, List<int> entryIds) async {
+    if (entryIds.isEmpty) return;
+
+    final batch = _db.batch();
+    for (final entryId in entryIds) {
+      batch.delete(
+        entryGroupMemberTable,
+        where: 'groupId = ? AND entryId = ?',
+        whereArgs: [groupId, entryId],
+      );
+    }
+    await batch.commit(noResult: true);
+  }
+
+  @override
+  Future<int> getEntryGroupMemberCount(int groupId) async {
+    final result = await _db.rawQuery(
+      'SELECT COUNT(*) as count FROM $entryGroupMemberTable WHERE groupId = ?',
+      [groupId],
+    );
+    return (result.firstOrNull?['count'] as int?) ?? 0;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> loadAllEntryGroupMemberIds() async {
+    return _db.query(
+      entryGroupMemberTable,
+      columns: ['groupId', 'entryId'],
+    );
   }
 }

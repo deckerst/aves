@@ -1,10 +1,14 @@
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/selection.dart';
+import 'package:aves/model/filters/entry_group.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/widgets/collection/grid/list_details.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
+import 'package:aves/widgets/collection/grid/group_tile.dart';
 import 'package:aves/widgets/common/grid/scaling.dart';
 import 'package:aves/widgets/common/providers/viewer_entry_provider.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
@@ -32,6 +36,36 @@ class InteractiveTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (entry.entryGroup != null && entry.stackedEntries != null) {
+      final selection = context.watch<Selection<AvesEntry>>();
+      final isSelecting = selection.isSelecting;
+      final isSelected = selection.selectedItems.contains(entry);
+
+      return GroupTile(
+        group: entry.entryGroup!,
+        extent: thumbnailExtent,
+        coverEntryOverride: entry,
+        isSelected: isSelected,
+        onTap: () {
+          if (isSelecting) {
+            selection.toggleSelection(entry);
+          } else {
+            final source = context.read<CollectionSource>();
+            final filter = EntryGroupFilter(entry.entryGroup!.id!, entry.entryGroup!.name);
+            Navigator.maybeOf(context)?.push(
+              MaterialPageRoute(
+                settings: const RouteSettings(name: CollectionPage.routeName),
+                builder: (context) => CollectionPage(
+                  source: source,
+                  filters: {filter},
+                ),
+              ),
+            );
+          }
+        },
+        onLongPress: () => selection.toggleSelection(entry),
+      );
+    }
     return InkWell(
       onTap: () {
         final appMode = context.read<ValueNotifier<AppMode>>().value;

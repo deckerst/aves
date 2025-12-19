@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/entry_group.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/entry/sort.dart';
@@ -9,6 +10,7 @@ import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/entry_group.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/rating.dart';
@@ -23,6 +25,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/utils/collection_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:aves/services/common/entry_group_service.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -86,6 +89,13 @@ class CollectionLens with ChangeNotifier {
         }
       }));
       favourites.addListener(_onFavouritesChanged);
+
+      final entryGroupService = EntryGroupService();
+      _subscriptions.add(entryGroupService.eventBus.on<EntryGroupCreatedEvent>().listen((e) => refresh()));
+      _subscriptions.add(entryGroupService.eventBus.on<EntryGroupUpdatedEvent>().listen((e) => refresh()));
+      _subscriptions.add(entryGroupService.eventBus.on<EntryGroupDeletedEvent>().listen((e) => refresh()));
+      _subscriptions.add(entryGroupService.eventBus.on<EntryGroupMembersAddedEvent>().listen((e) => refresh()));
+      _subscriptions.add(entryGroupService.eventBus.on<EntryGroupMembersRemovedEvent>().listen((e) => refresh()));
     }
     _subscriptions.add(settings.updateStream
         .where((event) => [
@@ -200,12 +210,66 @@ class CollectionLens with ChangeNotifier {
     _disposeSyntheticEntries();
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
-    if (stackBursts) {
-      _stackBursts();
+    if (filters.isEmpty) {
+      _stackManualGroups();
     }
-    if (stackDevelopedRaws) {
-      _stackDevelopedRaws();
+  }
+
+  void _stackManualGroups() {
+    if (!EntryGroupService().isInitialized) {
+      unawaited(EntryGroupService().getAllGroups().then((_) {
+        refresh();
+      }));
+      return;
     }
+
+    final groups = EntryGroupService().cachedGroups;
+    if (groups.isEmpty) return;
+
+    // Optimize lookup: map entryId -> group
+    final entryToGroup = <int, EntryGroup>{};
+    for (final group in groups) {
+      // Skip stacking if we are explicitly viewing this group
+      if (filters.any((f) => f is EntryGroupFilter && f.groupId == group.id)) {
+        continue;
+      }
+      for (final id in group.memberIds) {
+        entryToGroup[id] = group;
+      }
+    }
+
+    if (entryToGroup.isEmpty) return;
+
+    final entriesByGroup = <int, List<AvesEntry>>{};
+    for (final entry in _filteredSortedEntries) {
+      final group = entryToGroup[entry.id];
+      if (group != null) {
+        entriesByGroup.putIfAbsent(group.id!, () => []).add(entry);
+      }
+    }
+
+    final manualGroupEntries = <AvesEntry>[];
+    final allGroupMemberIds = entryToGroup.keys.toSet();
+
+    for (var groupId in entriesByGroup.keys) {
+      final groupEntries = entriesByGroup[groupId]!;
+      final group = entryToGroup[groupEntries.first.id]!;
+
+      if (groupEntries.isNotEmpty) {
+        final coverEntry = groupEntries.firstWhereOrNull((e) => e.id == group.coverEntryId) ?? groupEntries.first;
+
+        final groupEntry = coverEntry.copyWith(
+          entryGroup: group,
+          stackedEntries: groupEntries,
+        );
+        _syntheticEntries.add(groupEntry);
+        manualGroupEntries.add(groupEntry);
+      }
+    }
+
+    // Remove all members and prepend the group entries to pin them at the top
+    _filteredSortedEntries.removeWhere((entry) => allGroupMemberIds.contains(entry.id));
+    _filteredSortedEntries.insertAll(0, manualGroupEntries);
   }
 
   void _stackBursts() {

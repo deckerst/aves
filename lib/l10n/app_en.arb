@@ -636,6 +636,9 @@
   "collectionActionMove": "Move to album",
   "collectionActionRescan": "Rescan",
   "collectionActionEdit": "Edit",
+  "entryActionGroup": "Group",
+  "entryActionUngroup": "Ungroup",
+  "entryActionRemoveFromGroup": "Remove from group",
 
   "collectionSearchTitlesHintText": "Search titles",
 

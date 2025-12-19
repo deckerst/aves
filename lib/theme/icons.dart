@@ -141,6 +141,7 @@ class AIcons {
   static const rotateScreen = Symbols.screen_rotation;
   static const search = Symbols.search;
   static const select = Symbols.select_all;
+  static const ungroup = Symbols.layers_clear;
   static const setAs = Symbols.wallpaper;
   static final setBoundEnd = MdiIcons.rayEnd;
   static final setBoundStart = MdiIcons.rayStart;

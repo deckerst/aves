@@ -19,6 +19,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/services/accessibility_service.dart';
+import 'package:aves/services/common/entry_group_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
@@ -515,6 +516,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     unawaited(storageService.deleteTempDirectory());
     unawaited(_setupErrorReporting());
 
+    unawaited(entryGroupService.getAllGroups());
     debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
   }
 

@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/entry/cache.dart';
 import 'package:aves/model/entry/dirs.dart';
+import 'package:aves/model/entry/entry_group.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
@@ -48,6 +49,9 @@ class AvesEntry with AvesEntryBase {
   // synthetic stack of related entries, e.g. burst shots or raw/developed pairs
   List<AvesEntry>? stackedEntries;
 
+  // manual group this entry represents (if it's a group cover)
+  EntryGroup? entryGroup;
+
   @override
   final AChangeNotifier visualChangeNotifier = AChangeNotifier();
 
@@ -72,6 +76,7 @@ class AvesEntry with AvesEntryBase {
     required this.trashed,
     required this.origin,
     this.stackedEntries,
+    this.entryGroup,
   }) : id = id ?? 0 {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
@@ -96,6 +101,7 @@ class AvesEntry with AvesEntryBase {
     int? dateModifiedMillis,
     int? origin,
     List<AvesEntry>? stackedEntries,
+    EntryGroup? entryGroup,
   }) {
     final copyEntryId = id ?? this.id;
     final copied = AvesEntry(
@@ -117,6 +123,7 @@ class AvesEntry with AvesEntryBase {
       trashed: trashed,
       origin: origin ?? this.origin,
       stackedEntries: stackedEntries ?? this.stackedEntries,
+      entryGroup: entryGroup ?? this.entryGroup,
     )
       ..catalogMetadata = _catalogMetadata?.copyWith(id: copyEntryId)
       ..addressDetails = _addressDetails?.copyWith(id: copyEntryId)

@@ -11,6 +11,8 @@ class SqfliteLocalMediaDbSchema {
   static const vaultTable = 'vaults';
   static const trashTable = 'trash';
   static const videoPlaybackTable = 'videoPlayback';
+  static const entryGroupTable = 'entry_groups';
+  static const entryGroupMemberTable = 'entry_group_members';
 
   static const allTables = [
     entryTable,
@@ -23,6 +25,8 @@ class SqfliteLocalMediaDbSchema {
     vaultTable,
     trashTable,
     videoPlaybackTable,
+    entryGroupTable,
+    entryGroupMemberTable,
   ];
 
   static Future<void> createLatestVersion(Database db) async {
@@ -110,6 +114,22 @@ class SqfliteLocalMediaDbSchema {
         return db.execute('CREATE TABLE $videoPlaybackTable('
             'id INTEGER PRIMARY KEY'
             ', resumeTimeMillis INTEGER'
+            ')');
+      case entryGroupTable:
+        return db.execute('CREATE TABLE $entryGroupTable('
+            'id INTEGER PRIMARY KEY AUTOINCREMENT'
+            ', name TEXT NOT NULL'
+            ', dateCreatedMillis INTEGER NOT NULL'
+            ', coverEntryId INTEGER'
+            ', sortOrder INTEGER DEFAULT 0'
+            ')');
+      case entryGroupMemberTable:
+        return db.execute('CREATE TABLE $entryGroupMemberTable('
+            'groupId INTEGER NOT NULL'
+            ', entryId INTEGER NOT NULL'
+            ', position INTEGER NOT NULL'
+            ', PRIMARY KEY (groupId, entryId)'
+            ', FOREIGN KEY (groupId) REFERENCES $entryGroupTable(id) ON DELETE CASCADE'
             ')');
       default:
         throw Exception('unknown table=$table');

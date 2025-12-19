@@ -133,4 +133,24 @@ abstract class LocalMediaDb {
   Future<void> addVideoPlayback(Set<VideoPlaybackRow> rows);
 
   Future<void> removeVideoPlayback(Set<int> ids);
+
+  // entry groups
+
+  Future<List<Map<String, dynamic>>> loadAllEntryGroups();
+
+  Future<int> insertEntryGroup(Map<String, dynamic> groupMap);
+
+  Future<void> updateEntryGroup(Map<String, dynamic> groupMap);
+
+  Future<void> deleteEntryGroup(int groupId);
+
+  Future<List<Map<String, dynamic>>> loadEntryGroupMembers(int groupId);
+
+  Future<void> insertEntryGroupMember(int groupId, int entryId, int position);
+
+  Future<void> deleteEntryGroupMembers(int groupId, List<int> entryIds);
+
+  Future<int> getEntryGroupMemberCount(int groupId);
+
+  Future<List<Map<String, dynamic>>> loadAllEntryGroupMemberIds();
 }

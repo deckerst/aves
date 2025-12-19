@@ -11,6 +11,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/container/set_and.dart';
+import 'package:aves/model/filters/entry_group.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/highlight.dart';
@@ -26,6 +27,7 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/common/entry_group_service.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
@@ -119,9 +121,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
-        return isMain && isSelecting && !isTrash && canWrite;
+      case EntrySetAction.group:
+      case EntrySetAction.renameGroup:
+      case EntrySetAction.ungroup:
+      case EntrySetAction.removeFromGroup:
+        if (isSelecting) return isMain && !isTrash && canWrite;
+        return isMain && !isTrash && !useTvLayout;
       case EntrySetAction.restore:
         return isMain && isSelecting && isTrash && canWrite;
+      default:
+        return false;
     }
   }
 
@@ -130,6 +139,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     required bool isSelecting,
     required CollectionLens collection,
     required int selectedItemCount,
+    Selection<AvesEntry>? selection,
   }) {
     final itemCount = collection.entryCount;
     final hasItems = itemCount > 0;
@@ -176,7 +186,25 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case EntrySetAction.editRating:
       case EntrySetAction.editTags:
       case EntrySetAction.removeMetadata:
+      case EntrySetAction.group:
         return hasSelection;
+      case EntrySetAction.removeFromGroup:
+        // Selecting items that belong to a group
+        if (isSelecting && selection != null) {
+          final service = EntryGroupService();
+          return selection.selectedItems.any((entry) => service.cachedGroups.any((g) => g.memberIds.contains(entry.id)) && entry.stackedEntries == null);
+        }
+        return false;
+      case EntrySetAction.renameGroup:
+      case EntrySetAction.ungroup:
+        // Either filtered by a group, OR selecting a group tile
+        if (!isSelecting && collection.filters.any((f) => f is EntryGroupFilter)) return true;
+        if (isSelecting && selection != null) {
+          return selection.selectedItems.any((entry) => entry.entryGroup != null && entry.stackedEntries != null);
+        }
+        return false;
+      default:
+        return false;
     }
   }
 
@@ -247,6 +275,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _editTags(context);
       case EntrySetAction.removeMetadata:
         _removeMetadata(context);
+      case EntrySetAction.group:
+        _group(context);
+      case EntrySetAction.renameGroup:
+        _renameGroup(context);
+      case EntrySetAction.ungroup:
+        _ungroup(context);
+      case EntrySetAction.removeFromGroup:
+        _removeFromGroup(context);
+      default:
+        break;
     }
   }
 
@@ -880,6 +918,181 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   void _setHome(BuildContext context) async {
     settings.setHome(HomePageSetting.collection, customCollection: context.read<CollectionLens>().filters);
+    showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+  }
+
+  Future<void> _group(BuildContext context) async {
+    final entries = _getTargetItems(context).toList();
+    if (entries.isEmpty) return;
+
+    final nameController = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        final l10n = context.l10n;
+        return AvesDialog(
+          title: l10n.newGroupDialogTitle,
+          content: TextField(
+            controller: nameController,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: l10n.newGroupDialogNameLabel,
+            ),
+          ),
+          actions: [
+            const CancelButton(),
+            TextButton(
+              onPressed: () => Navigator.maybeOf(context)?.pop(nameController.text),
+              child: Text(l10n.applyButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (name == null || name.isEmpty) return;
+
+    final service = EntryGroupService();
+    try {
+      await service.createGroup(name: name, entries: entries);
+      context.read<CollectionLens>().refresh();
+      _browse(context);
+      showFeedback(context, FeedbackType.info, 'Created group "$name"');
+    } catch (e, stack) {
+      debugPrint('Failed to create group: $e\n$stack');
+      showFeedback(context, FeedbackType.warn, 'Failed to create group: $e');
+    }
+  }
+
+  Future<void> _removeFromGroup(BuildContext context) async {
+    final entries = _getTargetItems(context).toList();
+    if (entries.isEmpty) return;
+
+    final collection = context.read<CollectionLens>();
+    final groupFilter = collection.filters.whereType<EntryGroupFilter>().firstOrNull;
+
+    final service = EntryGroupService();
+    if (groupFilter != null) {
+      await service.removeEntriesFromGroup(
+        groupId: groupFilter.groupId,
+        entryIds: entries.map((e) => e.id).toList(),
+      );
+    } else {
+      for (final entry in entries) {
+        final groupIds = service.cachedGroups.where((g) => g.memberIds.contains(entry.id)).map((g) => g.id!).toList();
+        for (final groupId in groupIds) {
+          await service.removeEntriesFromGroup(
+            groupId: groupId,
+            entryIds: [entry.id],
+          );
+        }
+      }
+    }
+
+    collection.refresh();
+    _browse(context);
+    showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+  }
+
+  Future<void> _ungroup(BuildContext context) async {
+    final collection = context.read<CollectionLens>();
+    final selection = context.read<Selection<AvesEntry>>();
+
+    final groupIds = <int>{};
+    if (selection.isSelecting) {
+      groupIds.addAll(selection.selectedItems.map((e) => e.entryGroup?.id).whereType<int>());
+    } else {
+      final groupFilter = collection.filters.whereType<EntryGroupFilter>().firstOrNull;
+      if (groupFilter != null) groupIds.add(groupFilter.groupId);
+    }
+
+    if (groupIds.isEmpty) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final l10n = context.l10n;
+        return AvesDialog(
+          content: Text('Are you sure you want to ungroup ${groupIds.length == 1 ? 'this group' : 'these groups'}? The photos will remain in the gallery.'),
+          actions: [
+            const CancelButton(),
+            TextButton(
+              onPressed: () => Navigator.maybeOf(context)?.pop(true),
+              child: Text(l10n.applyButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true) return;
+
+    final service = EntryGroupService();
+    for (final groupId in groupIds) {
+      await service.deleteGroup(groupId);
+    }
+
+    if (selection.isSelecting) {
+      _browse(context);
+    } else {
+      Navigator.maybeOf(context)?.pop();
+    }
+    collection.refresh();
+    showFeedback(context, FeedbackType.info, 'Ungrouped successfully');
+  }
+
+  Future<void> _renameGroup(BuildContext context) async {
+    final collection = context.read<CollectionLens>();
+    final selection = context.read<Selection<AvesEntry>>();
+
+    int? groupId;
+    String? oldName;
+    EntryGroupFilter? groupFilter;
+
+    if (selection.isSelecting) {
+      final groupEntry = selection.selectedItems.firstWhereOrNull((e) => e.entryGroup != null);
+      groupId = groupEntry?.entryGroup?.id;
+      oldName = groupEntry?.entryGroup?.name;
+    } else {
+      groupFilter = collection.filters.whereType<EntryGroupFilter>().firstOrNull;
+      groupId = groupFilter?.groupId;
+      oldName = groupFilter?.groupName;
+    }
+
+    if (groupId == null || oldName == null) return;
+
+    final nameController = TextEditingController(text: oldName);
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        final l10n = context.l10n;
+        return AvesDialog(
+          title: l10n.chipActionRename,
+          content: TextField(
+            controller: nameController,
+            autofocus: true,
+          ),
+          actions: [
+            const CancelButton(),
+            TextButton(
+              onPressed: () => Navigator.maybeOf(context)?.pop(nameController.text),
+              child: Text(l10n.applyButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
+    if (newName == null || newName.isEmpty || newName == oldName) return;
+
+    final service = EntryGroupService();
+    await service.renameGroup(groupId, newName);
+
+    if (groupFilter != null) {
+      collection.removeFilter(groupFilter);
+      collection.addFilters({EntryGroupFilter(groupId, newName)});
+    } else if (selection.isSelecting) {
+      _browse(context);
+    }
+    collection.refresh();
+
     showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
   }
 }
