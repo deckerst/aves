@@ -1638,5 +1638,7 @@
     "mapStyleEditorDialogSubdomains": "子域名",
     "@mapStyleEditorDialogSubdomains": {},
     "mapStyleEditorDialogUserAgent": "用戶代理（UA）",
-    "@mapStyleEditorDialogUserAgent": {}
+    "@mapStyleEditorDialogUserAgent": {},
+    "settingsViewerShowZoomLevel": "顯示縮放等級",
+    "@settingsViewerShowZoomLevel": {}
 }

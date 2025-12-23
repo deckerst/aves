@@ -1638,5 +1638,7 @@
     "settingsNavigationBottomActionEditorBanner": "Ýttu og haltu niðri til að færa hnappa og velja hvaða aðgerðir eiga að birtast á flakkstikunni neðst.",
     "@settingsNavigationBottomActionEditorBanner": {},
     "tagPickPageTitle": "Veldu merki",
-    "@tagPickPageTitle": {}
+    "@tagPickPageTitle": {},
+    "settingsViewerShowZoomLevel": "Birta aðdráttarstig",
+    "@settingsViewerShowZoomLevel": {}
 }

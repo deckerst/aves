@@ -1622,5 +1622,7 @@
     "sortByPath": "பாதைமூலம்",
     "@sortByPath": {},
     "searchFormatSectionTitle": "வடிவங்கள்",
-    "@searchFormatSectionTitle": {}
+    "@searchFormatSectionTitle": {},
+    "createButtonLabel": "உருவாக்கு",
+    "@createButtonLabel": {}
 }

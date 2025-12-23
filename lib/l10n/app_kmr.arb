@@ -670,5 +670,21 @@
     "videoRepeatActionSetEnd": "Dawî saz bike",
     "@videoRepeatActionSetEnd": {},
     "chipActionDecompose": "Veqetîne",
-    "@chipActionDecompose": {}
+    "@chipActionDecompose": {},
+    "albumTierPinned": "Bi dar xistî",
+    "@albumTierPinned": {},
+    "unitSystemImperial": "Imperial",
+    "@unitSystemImperial": {},
+    "vaultLockTypePattern": "Çûre",
+    "@vaultLockTypePattern": {},
+    "viewerTransitionParallax": "Parallax",
+    "@viewerTransitionParallax": {},
+    "viewerTransitionFade": "Wendabûn",
+    "@viewerTransitionFade": {},
+    "viewerTransitionNone": "Ne tişt",
+    "@viewerTransitionNone": {},
+    "renameProcessorCounter": "Jimêr",
+    "@renameProcessorCounter": {},
+    "editEntryDateDialogShift": "Biguherîne",
+    "@editEntryDateDialogShift": {}
 }

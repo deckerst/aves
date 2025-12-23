@@ -1654,5 +1654,7 @@
     "mapStyleEditorDialogSubdomains": "Subdominios",
     "@mapStyleEditorDialogSubdomains": {},
     "mapStyleEditorDialogUserAgent": "User-Agent",
-    "@mapStyleEditorDialogUserAgent": {}
+    "@mapStyleEditorDialogUserAgent": {},
+    "settingsViewerShowZoomLevel": "Amosar nivel de zoom",
+    "@settingsViewerShowZoomLevel": {}
 }
