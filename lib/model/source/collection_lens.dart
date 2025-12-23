@@ -239,11 +239,14 @@ class CollectionLens with ChangeNotifier {
             final rawFilename = rawEntry.filenameWithoutExtension;
             final developedEntry = dirDevelopedEntries.firstWhereOrNull((entry) => entry.filenameWithoutExtension == rawFilename);
             if (developedEntry != null) {
-              final stackEntry = rawEntry.copyWith(stackedEntries: [rawEntry, developedEntry]);
+              final mainEntry = developedEntry;
+              final subEntry = rawEntry;
+
+              final stackEntry = mainEntry.copyWith(stackedEntries: [mainEntry, subEntry]);
               _syntheticEntries.add(stackEntry);
 
-              _filteredSortedEntries.remove(developedEntry);
-              final index = _filteredSortedEntries.indexOf(rawEntry);
+              _filteredSortedEntries.remove(subEntry);
+              final index = _filteredSortedEntries.indexOf(mainEntry);
               _filteredSortedEntries.removeAt(index);
               _filteredSortedEntries.insert(0, stackEntry);
             }

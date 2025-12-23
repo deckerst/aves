@@ -1649,5 +1649,7 @@
     "settingsNavigationBottomActionsTile": "Nedre navigeringsfält",
     "@settingsNavigationBottomActionsTile": {},
     "settingsNavigationBottomActionEditorPageTitle": "Nedre navigeringsfält",
-    "@settingsNavigationBottomActionEditorPageTitle": {}
+    "@settingsNavigationBottomActionEditorPageTitle": {},
+    "settingsViewerShowZoomLevel": "Visa zoom nivå",
+    "@settingsViewerShowZoomLevel": {}
 }

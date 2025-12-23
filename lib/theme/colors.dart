@@ -83,7 +83,7 @@ abstract class AvesColorsData {
     ).then((palette) async {
       // `dominantColor` is most representative but can have low contrast with a dark background
       // `vibrantColor` is usually representative and has good contrast with a dark background
-      final color = palette.vibrantColor?.color ?? fromString(album);
+      final color = palette.vibrantColor?.color ?? palette.dominantColor?.color ?? fromString(album);
       _appColors[album] = color;
       return color;
     });

@@ -44,13 +44,13 @@ android {
     }
 
     defaultConfig {
-        applicationId packageName
-        minSdk flutter.minSdkVersion
-        targetSdk 36
-        versionCode flutter.versionCode
-        versionName flutter.versionName
+        applicationId = packageName
+        minSdk = flutter.minSdkVersion
+        targetSdk = 36
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
         manifestPlaceholders = [googleApiKey: keystoreProperties["googleApiKey"] ?: "<NONE>"]
-        multiDexEnabled true
+        multiDexEnabled = true
     }
 
     signingConfigs {
@@ -124,7 +124,7 @@ android {
             variant.resValue 'string', 'search_provider', "${applicationId}.search_provider"
 
             variant.outputs.each { output ->
-                def baseAbiVersionCode = rootProject.ext.abiCodes.get(output.getFilter(com.android.build.OutputFile.ABI))
+                def baseAbiVersionCode = rootProject.ext.abiCodes.get(output.getFilter('ABI'))
                 if (baseAbiVersionCode != null) {
                     output.versionCodeOverride = variant.versionCode * 100 + baseAbiVersionCode
                 }
@@ -177,6 +177,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation "androidx.appcompat:appcompat:1.7.1"
     implementation 'androidx.core:core-ktx:1.17.0'
+    // `lifecycle-process:2.10.0` requires `minSdkVersion` 23+
     implementation 'androidx.lifecycle:lifecycle-process:2.9.4'
     implementation 'androidx.media:media:1.7.1'
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -184,7 +185,7 @@ dependencies {
     // https://developer.android.com/privacy-and-security/cryptography#security-crypto-jetpack-deprecated
     implementation 'androidx.security:security-crypto:1.1.0'
     // `work-runtime:2.11.0` requires `minSdkVersion` 23+
-    implementation 'androidx.work:work-runtime:2.10.0'
+    implementation 'androidx.work:work-runtime:2.10.5'
 
     implementation 'com.commonsware.cwac:document:0.5.0'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
@@ -198,8 +199,8 @@ dependencies {
     // - https://jitpack.io/p/deckerst/androidsvg
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:c747ae9ee9'
-    implementation 'com.github.deckerst:androidsvg:67db933051'
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:424b18a4ae'
+    implementation 'com.github.deckerst:androidsvg:c7e58e8e59'
     implementation 'com.github.deckerst.mp4parser:isoparser:c2898f1832'
     implementation 'com.github.deckerst.mp4parser:muxer:c2898f1832'
     implementation 'com.github.deckerst:pixymeta-android:f4513291b7'

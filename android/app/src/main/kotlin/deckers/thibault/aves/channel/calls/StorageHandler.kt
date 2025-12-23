@@ -131,7 +131,12 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         }
 
         val dir = (if (external) context.externalCacheDir else context.cacheDir)
-        result.success(dir!!.path)
+        if (dir == null) {
+            result.error("getCacheDirectory-null", "context cache dir is null", null)
+            return
+        }
+
+        result.success(dir.path)
     }
 
 

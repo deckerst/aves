@@ -67,7 +67,6 @@ class ADurations {
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
   static const mediaContentChangeDebounceDelay = Duration(milliseconds: 1000);
-  static const viewerThumbnailScrollDebounceDelay = Duration(milliseconds: 1000);
   static const mapInfoDebounceDelay = Duration(milliseconds: 150);
   static const mapIdleDebounceDelay = Duration(milliseconds: 100);
 }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
+import deckers.thibault.aves.glide.TiffFetcher
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MimeTypes
 import org.beyka.tiffbitmapfactory.DecodeArea
@@ -30,7 +31,7 @@ class TiffRegionFetcher internal constructor(
             }
             pfd.use {
                 val fd = pfd.detachFd()
-                val options = TiffBitmapFactory.Options().apply {
+                val options = TiffFetcher.buildOptions().apply {
                     inDirectoryNumber = page
                     inSampleSize = sampleSize
                     inDecodeArea = DecodeArea(regionRect.left, regionRect.top, regionRect.width(), regionRect.height())

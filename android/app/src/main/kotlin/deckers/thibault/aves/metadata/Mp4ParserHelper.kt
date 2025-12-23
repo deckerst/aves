@@ -92,7 +92,11 @@ object Mp4ParserHelper {
                         var appendOffset = (isoFile.getBoxOffset { box -> box == lastContentBox })!! + lastContentBox.size
 
                         val edits = arrayListOf<Pair<Long, ByteArray>>()
-                        fun addFreeBoxEdit(offset: Long, size: Long) = edits.add(Pair(offset, FreeBox(size.toInt() - 8).toBytes()))
+                        fun addFreeBoxEdit(offset: Long, size: Long): Boolean {
+                            val boxSize = size.toInt() - 8
+                            if (boxSize > BOX_SIZE_DANGER_THRESHOLD) throw Exception("dangerous free box replacement for size=$boxSize")
+                            return edits.add(Pair(offset, FreeBox(boxSize).toBytes()))
+                        }
 
                         // replace existing movie box by a free box
                         isoFile.getBoxOffset { box -> box.type == MovieBox.TYPE }?.let { offset ->
@@ -293,7 +297,7 @@ object Mp4ParserHelper {
     }
 
     fun Box.toBytes(): ByteArray {
-        if (size > BOX_SIZE_DANGER_THRESHOLD) throw Exception("box (type=$type size=$size) is too large")
+        if (size > BOX_SIZE_DANGER_THRESHOLD) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
         val stream = ByteArrayOutputStream(size.toInt())
         Channels.newChannel(stream).use { getBox(it) }
         return stream.toByteArray()
@@ -311,7 +315,7 @@ object Mp4ParserHelper {
         )
         setBoxSkipper { type, size ->
             if (skippedTypes.contains(type)) return@setBoxSkipper true
-            if (size > BOX_SIZE_DANGER_THRESHOLD && !largerTypeWhitelist.contains(type)) throw Exception("box (type=$type size=$size) is too large")
+            if (size > BOX_SIZE_DANGER_THRESHOLD && !largerTypeWhitelist.contains(type)) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
             false
         }
     }

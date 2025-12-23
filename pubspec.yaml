@@ -7,7 +7,7 @@ repository: https://github.com/deckerst/aves
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.13.11+162
+version: 1.13.12+163
 publish_to: none
 
 environment:
@@ -120,7 +120,8 @@ dependencies:
   screen_brightness:
   shared_preferences:
   shelf:
-  smooth_page_indicator:
+  # smooth_page_indicator v2 requires a recent `vector` lib from Flutter
+  smooth_page_indicator: 1.2.1
   sqflite:
   stack_trace:
   streams_channel:

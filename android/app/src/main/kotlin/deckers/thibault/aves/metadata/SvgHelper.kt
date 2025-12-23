@@ -6,6 +6,8 @@ import java.io.InputStream
 import kotlin.math.max
 
 object SvgHelper {
+    const val IMAGE_BASE64_SIZE_DANGER_THRESHOLD: Long = 5 * (1 shl 20) // MB
+
     fun SVG.normalizeSize() {
         if (documentViewBox == null) {
             setDocumentViewBox(0f, 0f, documentWidth, documentHeight)

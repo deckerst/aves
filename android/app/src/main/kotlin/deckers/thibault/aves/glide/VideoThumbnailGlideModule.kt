@@ -29,7 +29,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -94,55 +93,58 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                             throw Exception("failed to get video dimensions")
                         }
 
+                        val rotationDegrees = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull() ?: 0
+                        val isRotated = rotationDegrees % 180 == 90
+                        if (isRotated) {
+                            videoWidth = videoHeight.also { videoHeight = videoWidth }
+                        }
+
                         var dstWidth = 0
                         var dstHeight = 0
                         if (width > 0 && height > 0) {
-                            val rotationDegrees = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toIntOrNull()
-                            if (rotationDegrees != null) {
-                                val isRotated = rotationDegrees % 180 == 90
-                                if (isRotated) {
-                                    val temp = videoWidth
-                                    videoWidth = videoHeight
-                                    videoHeight = temp
-                                }
-
-                                // cover fit
-                                val videoAspectRatio = videoWidth / videoHeight
-                                if (videoWidth > width || videoHeight > height) {
-                                    if (width / height.toFloat() > videoAspectRatio) {
-                                        dstHeight = ceil(videoHeight * width / videoWidth).toInt()
-                                        dstWidth = (dstHeight * videoAspectRatio).roundToInt()
-                                    } else {
-                                        dstWidth = ceil(videoWidth * height / videoHeight).toInt()
-                                        dstHeight = (dstWidth / videoAspectRatio).roundToInt()
-                                    }
-                                }
+                            // cover fit
+                            val targetAspectRatio = width / height.toFloat()
+                            val videoAspectRatio = videoWidth / videoHeight
+                            if (targetAspectRatio > videoAspectRatio) {
+                                dstHeight = (width / videoAspectRatio).roundToInt()
+                                dstWidth = (dstHeight * videoAspectRatio).roundToInt()
+                            } else {
+                                dstWidth = (height * videoAspectRatio).roundToInt()
+                                dstHeight = (dstWidth / videoAspectRatio).roundToInt()
                             }
+                        }
+                        if (dstWidth == 0 || dstWidth > videoWidth || dstHeight == 0 || dstHeight > videoHeight) {
+                            dstWidth = videoWidth.toInt()
+                            dstHeight = videoHeight.toInt()
                         }
 
                         // the returned frame is already rotated according to the video metadata
-                        bitmap = if (dstWidth > 0 && dstHeight > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                            val pixelCount = dstWidth * dstHeight
-                            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
-                            if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
-                                throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the scaled frame at $dstWidth x $dstHeight")
-                            }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                                retriever.getScaledFrameAtTime(timeMicros, option, dstWidth, dstHeight, getBitmapParams())
+                        fun getFrameAtTime(timeMicros: Long): Bitmap? {
+                            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                                val pixelCount = dstWidth * dstHeight
+                                val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
+                                if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
+                                    throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the scaled frame at $dstWidth x $dstHeight")
+                                }
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                    retriever.getScaledFrameAtTime(timeMicros, option, dstWidth, dstHeight, getBitmapParams())
+                                } else {
+                                    retriever.getScaledFrameAtTime(timeMicros, option, dstWidth, dstHeight)
+                                }
                             } else {
-                                retriever.getScaledFrameAtTime(timeMicros, option, dstWidth, dstHeight)
-                            }
-                        } else {
-                            val pixelCount = videoWidth * videoHeight
-                            val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
-                            if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
-                                throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the full frame at $videoWidth x $videoHeight")
-                            }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                                retriever.getFrameAtTime(timeMicros, option, getBitmapParams())
-                            } else {
+                                val pixelCount = videoWidth * videoHeight
+                                val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), getPreferredConfig())
+                                if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
+                                    throw Exception("not enough memory to allocate $targetBitmapSizeBytes bytes for the full frame at $videoWidth x $videoHeight")
+                                }
                                 retriever.getFrameAtTime(timeMicros, option)
                             }
+                        }
+
+                        bitmap = getFrameAtTime(timeMicros)
+                        if (bitmap == null && timeMicros > 0) {
+                            // retry to get the first frame instead of an arbitrary one
+                            bitmap = getFrameAtTime(0)
                         }
                     }
 

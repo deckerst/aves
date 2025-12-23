@@ -24,6 +24,7 @@ import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -247,6 +248,12 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         );
       }
 
+      // handle mouse wheel to jump to previous/next item
+      child = Listener(
+        onPointerSignal: _onPointerSignal,
+        child: child,
+      );
+
       return FocusableActionDetector(
         autofocus: true,
         shortcuts: shortcuts,
@@ -284,6 +291,16 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       );
     }
     return const SizedBox();
+  }
+
+  void _onPointerSignal(PointerSignalEvent event) {
+    // use the resolver so that the pager scrollable does not handle the pointer
+    GestureBinding.instance.pointerSignalResolver.register(event, (event) {
+      if (event is PointerScrollEvent && event.kind == PointerDeviceKind.mouse) {
+        final verticalDelta = event.scrollDelta.dy;
+        _goToHorizontalPage(verticalDelta.sign.round(), animate: false);
+      }
+    });
   }
 
   void _onEntryActionIntent(EntryAction action) {

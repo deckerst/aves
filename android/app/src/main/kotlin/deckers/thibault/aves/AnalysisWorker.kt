@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import app.loup.streams_channel.StreamsChannel
@@ -54,7 +55,16 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             suspendCancellableCoroutine { cont ->
                 workCont = cont
                 cont.invokeOnCancellation {
-                    Log.i(LOG_TAG, "Analysis worker got cancelled")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        val stopReasonString = when(stopReason) {
+                            WorkInfo.STOP_REASON_CANCELLED_BY_APP -> "CANCELLED_BY_APP"
+                            WorkInfo.STOP_REASON_FOREGROUND_SERVICE_TIMEOUT -> "FOREGROUND_SERVICE_TIMEOUT"
+                            else -> "[$stopReason]"
+                        }
+                        Log.i(LOG_TAG, "Analysis worker got cancelled with stopReason=$stopReasonString")
+                    } else {
+                        Log.i(LOG_TAG, "Analysis worker got cancelled")
+                    }
                     stopDartAnalysisService()
                     workCont?.resumeWithException(CancellationException())
                 }

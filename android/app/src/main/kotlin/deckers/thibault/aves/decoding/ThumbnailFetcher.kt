@@ -86,6 +86,7 @@ class ThumbnailFetcher internal constructor(
 
         if (bitmap != null) {
             if (bitmap.width > width && bitmap.height > height) {
+                // rescale when the resulting bitmap is larger than requested
                 val scalingFactor: Double = min(bitmap.width.toDouble() / width, bitmap.height.toDouble() / height)
                 val dstWidth = (bitmap.width / scalingFactor).roundToInt()
                 val dstHeight = (bitmap.height / scalingFactor).roundToInt()

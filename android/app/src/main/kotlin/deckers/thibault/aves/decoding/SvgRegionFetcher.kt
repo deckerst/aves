@@ -11,8 +11,10 @@ import com.caverock.androidsvg.PreserveAspectRatio
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
+import com.caverock.androidsvg.utils.SVGAndroidRenderer
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
+import deckers.thibault.aves.metadata.SvgHelper.IMAGE_BASE64_SIZE_DANGER_THRESHOLD
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MemoryUtils
@@ -88,6 +90,7 @@ class SvgRegionFetcher internal constructor(
 
             var bitmap = createBitmap(canvasWidth, canvasHeight, config)
             val canvas = Canvas(bitmap)
+            SVGAndroidRenderer.setImageBase64StringMaxSize(IMAGE_BASE64_SIZE_DANGER_THRESHOLD)
             svg.renderToCanvas(canvas, renderOptions)
 
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)

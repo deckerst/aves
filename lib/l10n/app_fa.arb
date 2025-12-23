@@ -1638,5 +1638,7 @@
     "mapStyleEditorDialogSubdomains": "زیربخش‌ها",
     "@mapStyleEditorDialogSubdomains": {},
     "mapStyleEditorDialogUserAgent": "نماینده کاربر",
-    "@mapStyleEditorDialogUserAgent": {}
+    "@mapStyleEditorDialogUserAgent": {},
+    "settingsViewerShowZoomLevel": "نمایش سطح بزرگنمایی",
+    "@settingsViewerShowZoomLevel": {}
 }

@@ -84,6 +84,7 @@ class GridThemeData {
     iconBuilder = (context, entry) {
       final located = entry.hasGps;
       final tagged = entry.tags.isNotEmpty;
+      final isMultiPage = entry.isMultiPage;
       return [
         if (entry.isFavourite && showFavourite) const FavouriteIcon(),
         if (tagged && showTagged) TagIcon.tagged(),
@@ -97,11 +98,11 @@ class GridThemeData {
         else if (entry.isAnimated)
           const AnimatedImageIcon()
         else ...[
-          if (entry.isRaw && showRaw) const RawIcon(),
+          if ((entry.isRaw || (isMultiPage && entry.stackedEntries?.any((v) => v.isRaw) == true)) && showRaw) const RawIcon(),
           if (entry.is360) const PanoramaIcon(),
         ],
         if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
-        if (entry.isMultiPage && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
+        if (isMultiPage && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
         if (entry.isGeotiff) const GeoTiffIcon(),
         if (entry.trashed && showTrash) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
       ];

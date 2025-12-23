@@ -13,6 +13,7 @@ import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -239,6 +240,7 @@ class PlatformAppService implements AppService {
             dateModifiedMillis: coverEntry.dateModifiedMillis ?? -1,
             extent: size,
           ),
+          decode: PaintingBinding.instance.instantiateImageCodecWithSize
         );
         final frameInfo = await codec.getNextFrame();
         final byteData = await frameInfo.image.toByteData(format: ImageByteFormat.png);

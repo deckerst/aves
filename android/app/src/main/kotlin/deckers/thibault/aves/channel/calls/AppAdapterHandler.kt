@@ -19,6 +19,7 @@ import androidx.core.content.FileProvider
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -54,6 +55,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
 import java.util.UUID
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 class AppAdapterHandler(private val context: Context) : MethodCallHandler {
@@ -174,7 +176,20 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                     .submit(size, size)
 
                 try {
-                    val bitmap = withContext(Dispatchers.IO) { target.get() }
+                    var bitmap = withContext(Dispatchers.IO) { target.get() }
+                    if (bitmap.width > size && bitmap.height > size) {
+                        // rescale when the resulting bitmap is larger than requested
+                        val scalingFactor: Double = min(bitmap.width.toDouble() / size, bitmap.height.toDouble() / size)
+                        val dstWidth = (bitmap.width / scalingFactor).roundToInt()
+                        val dstHeight = (bitmap.height / scalingFactor).roundToInt()
+                        Log.d(
+                            LOG_TAG, "rescale app icon for packageName=$packageName" +
+                                    ", with bitmap byteCount=${bitmap.byteCount} size=${bitmap.width}x${bitmap.height}" +
+                                    ", to target=${size}x${size}"
+                        )
+                        bitmap = bitmap.scale(dstWidth, dstHeight)
+                    }
+
                     // do not recycle bitmaps fetched from `ContentResolver` as their lifecycle is unknown
                     bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = true, mimeType = null)
                 } catch (e: Exception) {

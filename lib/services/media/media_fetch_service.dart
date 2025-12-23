@@ -77,7 +77,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {
       // do not report issues with media content as it is likely an obsolete Media Store entry
-      if (!uri.startsWith('content://media/')) {
+      if (!uri.startsWith('content://media/') && !_isUnknownVisual(mimeType)) {
         await reportService.recordError(e, stack);
       }
     }
@@ -149,6 +149,9 @@ class PlatformMediaFetchService implements MediaFetchService {
     final format = bytes[trailerOffset];
     switch (format) {
       case formatByteEncoded:
+        if (decode == null) {
+          throw Exception('failed to decode encoded image bytes because decoder callback is missing for args=$args');
+        }
         // bytes are expected to be in a basic format decodable by Flutter
         final codec = await InteropDecoding.encodedBytesToCodec(bytes, decode);
         if (codec == null) {
@@ -311,7 +314,7 @@ class PlatformMediaFetchService implements MediaFetchService {
 
   // convenience methods
 
-  bool _isUnknownVisual(String mimeType) => !_knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType);
+  bool _isUnknownVisual(String? mimeType) => mimeType != null && !_knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType);
 
   static const Set<String> _knownOpaqueImages = {
     MimeTypes.jpeg,

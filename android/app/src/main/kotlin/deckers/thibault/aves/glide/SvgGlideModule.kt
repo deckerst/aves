@@ -19,7 +19,9 @@ import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
+import com.caverock.androidsvg.utils.SVGAndroidRenderer
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
+import deckers.thibault.aves.metadata.SvgHelper.IMAGE_BASE64_SIZE_DANGER_THRESHOLD
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.StorageUtils
 import kotlin.math.ceil
@@ -72,6 +74,7 @@ internal class SvgFetcher(val model: SvgImage, val width: Int, val height: Int) 
                     val bitmap = createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
 
                     val canvas = Canvas(bitmap)
+                    SVGAndroidRenderer.setImageBase64StringMaxSize(IMAGE_BASE64_SIZE_DANGER_THRESHOLD)
                     svg.renderToCanvas(canvas)
                     bitmap
                 }

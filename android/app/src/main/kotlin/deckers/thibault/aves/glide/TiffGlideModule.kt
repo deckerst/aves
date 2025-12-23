@@ -57,7 +57,7 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
                 callback.onLoadFailed(Exception("null file descriptor"))
                 return
             }
-            val options = TiffBitmapFactory.Options().apply {
+            val options = buildOptions().apply {
                 inJustDecodeBounds = true
                 inDirectoryNumber = page
             }
@@ -77,8 +77,7 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
             callback.onLoadFailed(Exception("null file descriptor"))
             return
         }
-        val options = TiffBitmapFactory.Options().apply {
-            inJustDecodeBounds = false
+        val options = buildOptions().apply {
             inDirectoryNumber = page
             inSampleSize = sampleSize
         }
@@ -116,4 +115,13 @@ internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int
     override fun getDataClass(): Class<Bitmap> = Bitmap::class.java
 
     override fun getDataSource(): DataSource = DataSource.LOCAL
+
+    companion object {
+        fun buildOptions(): TiffBitmapFactory.Options {
+            return TiffBitmapFactory.Options().apply {
+                inThrowException = true
+                inUseOrientationTag = false
+            }
+        }
+    }
 }

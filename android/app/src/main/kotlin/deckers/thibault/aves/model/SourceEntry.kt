@@ -12,6 +12,7 @@ import com.drew.metadata.jpeg.JpegDirectory
 import com.drew.metadata.mp4.Mp4Directory
 import com.drew.metadata.mp4.media.Mp4VideoDirectory
 import com.drew.metadata.photoshop.PsdHeaderDirectory
+import deckers.thibault.aves.glide.TiffFetcher
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
@@ -251,7 +252,7 @@ class SourceEntry {
         try {
             context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
                 val fd = pfd.detachFd()
-                val options = TiffBitmapFactory.Options().apply {
+                val options = TiffFetcher.buildOptions().apply {
                     inJustDecodeBounds = true
                 }
                 TiffBitmapFactory.decodeFileDescriptor(fd, options)

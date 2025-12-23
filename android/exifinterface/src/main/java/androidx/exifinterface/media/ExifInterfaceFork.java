@@ -7436,6 +7436,13 @@ public class ExifInterfaceFork {
 
                 // Searches for SOF marker in JPEG data and updates IMAGE_LENGTH & IMAGE_WIDTH tags
                 in.seek(jpegInterchangeFormat);
+
+                // TLAD start
+                if (jpegInterchangeFormatLength > getAvailableHeapSize()) {
+                    throw new IOException("cannot allocate " + jpegInterchangeFormatLength + " bytes to retrieve image size");
+                }
+                // TLAD end
+
                 byte[] jpegBytes = new byte[jpegInterchangeFormatLength];
                 in.readFully(jpegBytes);
                 getJpegAttributes(new ByteOrderedDataInputStream(jpegBytes), jpegInterchangeFormat,

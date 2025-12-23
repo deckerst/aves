@@ -14,6 +14,7 @@ import com.drew.imaging.jpeg.JpegSegmentType
 import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.xmp.XmpDirectory
+import deckers.thibault.aves.glide.TiffFetcher
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
@@ -25,6 +26,7 @@ import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isHeic
@@ -307,13 +309,15 @@ object MultiPage {
             // so we ignore the `Item:Length` and look instead for the MP4 marker bytes indicating the start of the video.
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val bytes = ByteArray(sizeBytes.toInt())
-                    DataInputStream(input).use {
-                        it.readFully(bytes)
-                    }
-                    val index = bytes.indexOfBytes(heicMotionPhotoVideoStartIndicator)
-                    if (index != -1) {
-                        return sizeBytes - index
+                    if (MemoryUtils.canAllocate(sizeBytes)) {
+                        val bytes = ByteArray(sizeBytes.toInt())
+                        DataInputStream(input).use {
+                            it.readFully(bytes)
+                        }
+                        val index = bytes.indexOfBytes(heicMotionPhotoVideoStartIndicator)
+                        if (index != -1) {
+                            return sizeBytes - index
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -433,7 +437,7 @@ object MultiPage {
                 Log.w(LOG_TAG, "failed to get TIFF file descriptor for uri=$uri")
                 return null
             }
-            val options = TiffBitmapFactory.Options().apply {
+            val options = TiffFetcher.buildOptions().apply {
                 inJustDecodeBounds = true
                 inDirectoryNumber = page
             }

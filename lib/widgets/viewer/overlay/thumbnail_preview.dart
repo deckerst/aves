@@ -1,6 +1,4 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/theme/durations.dart';
-import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +23,6 @@ class ViewerThumbnailPreview extends StatefulWidget {
 
 class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
   late final ValueNotifier<int> _entryIndexNotifier;
-  final Debouncer _debouncer = Debouncer(delay: ADurations.viewerThumbnailScrollDebounceDelay);
 
   List<AvesEntry> get entries => widget.entries;
 
@@ -64,8 +61,8 @@ class _ViewerThumbnailPreviewState extends State<ViewerThumbnailPreview> {
     );
   }
 
-  void _onScrollerIndexChanged() => _debouncer(() {
-        if (!mounted) return;
-        ShowEntryNotification(animate: false, index: _entryIndexNotifier.value).dispatch(context);
-      });
+  void _onScrollerIndexChanged() {
+    if (!mounted) return;
+    ShowEntryNotification(animate: false, index: _entryIndexNotifier.value).dispatch(context);
+  }
 }

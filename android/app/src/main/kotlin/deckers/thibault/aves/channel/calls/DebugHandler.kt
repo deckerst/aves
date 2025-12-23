@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.glide.TiffFetcher
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.Metadata
@@ -373,7 +374,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 result.error("getTiffStructure-fd", "failed to get file descriptor", null)
                 return
             }
-            var options = TiffBitmapFactory.Options().apply {
+            var options = TiffFetcher.buildOptions().apply {
                 inJustDecodeBounds = true
             }
             TiffBitmapFactory.decodeFileDescriptor(fd, options)
@@ -385,7 +386,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     result.error("getTiffStructure-fd", "failed to get file descriptor", null)
                     return
                 }
-                options = TiffBitmapFactory.Options().apply {
+                options = TiffFetcher.buildOptions().apply {
                     inJustDecodeBounds = true
                     inDirectoryNumber = page
                 }
