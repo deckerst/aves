@@ -6,6 +6,7 @@
 
 ![Version badge][Version badge]
 ![Build badge][Build badge]
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdeckerst%2Faves.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdeckerst%2Faves?ref=badge_shield)
 
 Aves is a gallery and metadata explorer app. It is built for Android, with Flutter.
 
@@ -125,3 +126,7 @@ To run the app:
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
 [Build badge]: https://img.shields.io/github/actions/workflow/status/deckerst/aves/quality-check.yml?branch=develop
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdeckerst%2Faves.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdeckerst%2Faves?ref=badge_large)
