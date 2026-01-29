@@ -1448,5 +1448,9 @@
     "tagPickPageTitle": "选择标签",
     "@tagPickPageTitle": {},
     "settingsViewerShowZoomLevel": "显示缩放级别",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "已启用",
+    "@settingsEnabled": {},
+    "settingsForced": "已强制",
+    "@settingsForced": {}
 }

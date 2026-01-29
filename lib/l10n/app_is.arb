@@ -1640,5 +1640,9 @@
     "tagPickPageTitle": "Veldu merki",
     "@tagPickPageTitle": {},
     "settingsViewerShowZoomLevel": "Birta aðdráttarstig",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Virkt",
+    "@settingsEnabled": {},
+    "settingsForced": "Þvingað",
+    "@settingsForced": {}
 }

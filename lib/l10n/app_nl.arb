@@ -1449,5 +1449,9 @@
     "tagPickPageTitle": "Label kiezen",
     "@tagPickPageTitle": {},
     "settingsViewerShowZoomLevel": "Zoom niveau tonen",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsForced": "Gedwongen",
+    "@settingsForced": {},
+    "settingsEnabled": "Ingeschakeld",
+    "@settingsEnabled": {}
 }

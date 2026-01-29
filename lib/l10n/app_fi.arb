@@ -1653,5 +1653,7 @@
     "aboutLinkLicense": "Lisenssi",
     "@aboutLinkLicense": {},
     "aboutLinkPolicy": "Yksityisyyskäytäntö",
-    "@aboutLinkPolicy": {}
+    "@aboutLinkPolicy": {},
+    "settingsViewerShowZoomLevel": "Näytä suurennuksen taso",
+    "@settingsViewerShowZoomLevel": {}
 }

@@ -1446,5 +1446,9 @@
     "settingsNavigationBottomActionEditorPageTitle": "Alt Gezinme",
     "@settingsNavigationBottomActionEditorPageTitle": {},
     "settingsNavigationBottomActionEditorBanner": "Düğmeleri hareket ettirmek ve alt gezinme çubuğunda hangi eylemlerin görüntüleneceğini seçmek için dokunup basılı tutun.",
-    "@settingsNavigationBottomActionEditorBanner": {}
+    "@settingsNavigationBottomActionEditorBanner": {},
+    "settingsViewerShowZoomLevel": "Yakınlaştırma seviyesini göster",
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Etkin",
+    "@settingsEnabled": {}
 }

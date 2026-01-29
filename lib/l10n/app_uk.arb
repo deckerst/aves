@@ -1640,5 +1640,9 @@
     "tagPickPageTitle": "Вибрати тег",
     "@tagPickPageTitle": {},
     "settingsViewerShowZoomLevel": "Показати рівень масштабування",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Увімкнено",
+    "@settingsEnabled": {},
+    "settingsForced": "Примусово",
+    "@settingsForced": {}
 }

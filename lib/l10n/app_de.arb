@@ -1448,5 +1448,9 @@
     "mapStyleEditorDialogSubdomains": "Subdomains",
     "@mapStyleEditorDialogSubdomains": {},
     "mapStyleEditorDialogUserAgent": "User-Agent",
-    "@mapStyleEditorDialogUserAgent": {}
+    "@mapStyleEditorDialogUserAgent": {},
+    "settingsForced": "Erzwungen",
+    "@settingsForced": {},
+    "settingsEnabled": "Aktiviert",
+    "@settingsEnabled": {}
 }

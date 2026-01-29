@@ -1650,6 +1650,10 @@
     "@settingsNavigationBottomActionsTile": {},
     "settingsNavigationBottomActionEditorPageTitle": "Nedre navigeringsfält",
     "@settingsNavigationBottomActionEditorPageTitle": {},
-    "settingsViewerShowZoomLevel": "Visa zoom nivå",
-    "@settingsViewerShowZoomLevel": {}
+    "settingsViewerShowZoomLevel": "Visa zoomnivå",
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Aktiverad",
+    "@settingsEnabled": {},
+    "settingsForced": "Tvingad",
+    "@settingsForced": {}
 }

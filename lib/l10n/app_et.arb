@@ -1666,5 +1666,9 @@
     "tagPickPageTitle": "Vali silt",
     "@tagPickPageTitle": {},
     "settingsViewerShowZoomLevel": "Näita kasutusel suumi",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Kasutusel",
+    "@settingsEnabled": {},
+    "settingsForced": "Jõustatud",
+    "@settingsForced": {}
 }
