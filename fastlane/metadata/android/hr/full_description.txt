@@ -1,0 +1,5 @@
+<i>Aves</i> može upravljati svim vrstama slika i videa, uključujući tipčne JPEG i PNG, ali takošer i egzotičnije formate kao <b>višestranične TIFF-ove, SVGove, stare  AVI-jeve,  i još toga</b>! Skenira tvoju medijsku zbirku kako bi prepoznao <b>fotografije s pokretom</b>, <b>panorame</b> (tzv. foto-sfere), <b>360° videozapise</b>, kao i <b>GeoTIFF</b> datoteke.
+
+<b>Navigacija i pretraživanje</b> važan su dio <i>Avesa</i>. Cilj je da korisnici mogu lako i prirodno prelaziti s albuma na fotografije, zatim na oznake, karte i ostalo.
+
+<i>Aves</i> se integrira s Androidom (uključujući Android TV) uz značajke poput <b>widgeta</b>, <b>prečaca aplikacije</b>, <b>zaslonskog čuvara</b> i <b>globalnog pretraživanja</b>. Također radi kao <b>preglednik i birač medija</b>.
